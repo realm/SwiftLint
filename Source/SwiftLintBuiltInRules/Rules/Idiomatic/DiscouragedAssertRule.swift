@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct DiscouragedAssertRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct DiscouragedAssertRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

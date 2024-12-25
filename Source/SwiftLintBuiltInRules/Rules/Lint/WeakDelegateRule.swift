@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct WeakDelegateRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct WeakDelegateRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

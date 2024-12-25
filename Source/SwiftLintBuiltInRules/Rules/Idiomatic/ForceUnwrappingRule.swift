@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ForceUnwrappingRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ForceUnwrappingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ConvenienceTypeRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ConvenienceTypeRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

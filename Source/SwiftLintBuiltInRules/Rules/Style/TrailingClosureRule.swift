@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct TrailingClosureRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct TrailingClosureRule: Rule {
     var configuration = TrailingClosureConfiguration()
 
     static let description = RuleDescription(

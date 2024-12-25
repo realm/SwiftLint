@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct MissingDocsRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct MissingDocsRule: Rule {
     var configuration = MissingDocsConfiguration()
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct FallthroughRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FallthroughRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

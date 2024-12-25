@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct ToggleBoolRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct ToggleBoolRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

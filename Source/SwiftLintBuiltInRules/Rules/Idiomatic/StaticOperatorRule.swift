@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct StaticOperatorRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct StaticOperatorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

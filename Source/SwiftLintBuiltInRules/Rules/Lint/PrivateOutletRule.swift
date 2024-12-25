@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct PrivateOutletRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct PrivateOutletRule: Rule {
     var configuration = PrivateOutletConfiguration()
 
     static let description = RuleDescription(

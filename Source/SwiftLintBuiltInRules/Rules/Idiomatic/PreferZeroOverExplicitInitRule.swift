@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct PreferZeroOverExplicitInitRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct PreferZeroOverExplicitInitRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

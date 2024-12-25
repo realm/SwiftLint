@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ExplicitACLRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExplicitACLRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

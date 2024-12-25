@@ -39,6 +39,18 @@ enum SwiftSyntaxRule: ExtensionMacro {
                     """
                 )
             ),
+            try (node.correctableArgument(context) && !node.explicitRewriterArgument(context)).ifTrue(
+                try ExtensionDeclSyntax("""
+                    extension \(type): SwiftSyntaxCorrectableRule {}
+                    """
+                )
+            ),
+            try node.optInArgument(context).ifTrue(
+                try ExtensionDeclSyntax("""
+                    extension \(type): OptInRule {}
+                    """
+                )
+            ),
         ].compactMap { $0 }
     }
 }
@@ -50,6 +62,14 @@ private extension AttributeSyntax {
 
     func explicitRewriterArgument(_ context: some MacroExpansionContext) -> Bool {
         findArgument(withName: "explicitRewriter", in: context)
+    }
+
+    func correctableArgument(_ context: some MacroExpansionContext) -> Bool {
+        findArgument(withName: "correctable", in: context)
+    }
+
+    func optInArgument(_ context: some MacroExpansionContext) -> Bool {
+        findArgument(withName: "optIn", in: context)
     }
 
     private func findArgument(withName name: String, in context: some MacroExpansionContext) -> Bool {

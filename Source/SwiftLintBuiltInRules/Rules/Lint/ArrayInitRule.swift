@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ArrayInitRule: OptInRule, @unchecked Sendable {
+@SwiftSyntaxRule(optIn: true)
+struct ArrayInitRule: Rule, @unchecked Sendable {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

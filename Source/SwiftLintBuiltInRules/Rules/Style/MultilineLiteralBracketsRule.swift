@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct MultilineLiteralBracketsRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineLiteralBracketsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

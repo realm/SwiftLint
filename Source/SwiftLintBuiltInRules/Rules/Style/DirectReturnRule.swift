@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct DirectReturnRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct DirectReturnRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

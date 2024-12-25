@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct UnneededParenthesesInClosureArgumentRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct UnneededParenthesesInClosureArgumentRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

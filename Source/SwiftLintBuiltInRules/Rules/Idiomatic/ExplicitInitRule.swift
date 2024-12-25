@@ -1,8 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct ExplicitInitRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct ExplicitInitRule: Rule {
     var configuration = ExplicitInitConfiguration()
 
     static let description = RuleDescription(

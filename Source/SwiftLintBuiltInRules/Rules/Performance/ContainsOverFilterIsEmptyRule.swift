@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ContainsOverFilterIsEmptyRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ContainsOverFilterIsEmptyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

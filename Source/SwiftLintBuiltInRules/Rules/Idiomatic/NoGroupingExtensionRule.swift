@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct NoGroupingExtensionRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct NoGroupingExtensionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

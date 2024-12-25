@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ExtensionAccessModifierRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExtensionAccessModifierRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

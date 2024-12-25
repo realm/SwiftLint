@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct CollectionAlignmentRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct CollectionAlignmentRule: Rule {
     var configuration = CollectionAlignmentConfiguration()
 
     static let description = RuleDescription(

@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct ImplicitlyUnwrappedOptionalRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ImplicitlyUnwrappedOptionalRule: Rule {
     var configuration = ImplicitlyUnwrappedOptionalConfiguration()
 
     static let description = RuleDescription(

@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct OpeningBraceRule: SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(correctable: true)
+struct OpeningBraceRule: Rule {
     var configuration = OpeningBraceConfiguration()
 
     static let description = RuleDescription(

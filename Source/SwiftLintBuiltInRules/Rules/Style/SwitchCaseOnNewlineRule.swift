@@ -8,8 +8,8 @@ private func wrapInSwitch(_ str: String, file: StaticString = #filePath, line: U
     """, file: file, line: line)
 }
 
-@SwiftSyntaxRule
-struct SwitchCaseOnNewlineRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct SwitchCaseOnNewlineRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

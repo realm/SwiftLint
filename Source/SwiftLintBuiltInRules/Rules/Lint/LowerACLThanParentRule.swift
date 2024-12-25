@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct LowerACLThanParentRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct LowerACLThanParentRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

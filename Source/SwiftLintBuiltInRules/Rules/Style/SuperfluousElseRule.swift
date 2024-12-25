@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct SuperfluousElseRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct SuperfluousElseRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

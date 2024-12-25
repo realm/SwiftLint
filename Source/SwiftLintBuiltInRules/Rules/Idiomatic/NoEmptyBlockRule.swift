@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct NoEmptyBlockRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct NoEmptyBlockRule: Rule {
     var configuration = NoEmptyBlockConfiguration()
 
     static let description = RuleDescription(

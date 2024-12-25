@@ -1,8 +1,8 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct RedundantTypeAnnotationRule: OptInRule, SwiftSyntaxCorrectableRule {
+@SwiftSyntaxRule(correctable: true, optIn: true)
+struct RedundantTypeAnnotationRule: Rule {
     var configuration = RedundantTypeAnnotationConfiguration()
 
     static let description = RuleDescription(

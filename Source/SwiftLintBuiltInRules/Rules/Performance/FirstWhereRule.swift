@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct FirstWhereRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FirstWhereRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

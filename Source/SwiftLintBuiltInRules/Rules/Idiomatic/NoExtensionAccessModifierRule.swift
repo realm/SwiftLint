@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct NoExtensionAccessModifierRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct NoExtensionAccessModifierRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(

@@ -10,8 +10,8 @@ import SwiftSyntax
 ///
 /// Declare state and state objects as private to prevent setting them from a memberwise initializer,
 /// which can conflict with the storage management that SwiftUI provides:
-@SwiftSyntaxRule(explicitRewriter: true)
-struct PrivateSwiftUIStatePropertyRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct PrivateSwiftUIStatePropertyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

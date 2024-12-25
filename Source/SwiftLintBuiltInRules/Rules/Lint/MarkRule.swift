@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
-struct MarkRule: CorrectableRule {
+struct MarkRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

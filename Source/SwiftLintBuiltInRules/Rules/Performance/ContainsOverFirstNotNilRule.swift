@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(foldExpressions: true)
-struct ContainsOverFirstNotNilRule: OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct ContainsOverFirstNotNilRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

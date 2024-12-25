@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct SortedFirstLastRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct SortedFirstLastRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

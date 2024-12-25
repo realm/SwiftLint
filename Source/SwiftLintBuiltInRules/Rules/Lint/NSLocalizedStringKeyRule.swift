@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct NSLocalizedStringKeyRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct NSLocalizedStringKeyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

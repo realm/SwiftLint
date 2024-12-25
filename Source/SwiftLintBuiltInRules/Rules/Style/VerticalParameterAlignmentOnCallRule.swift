@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct VerticalParameterAlignmentOnCallRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct VerticalParameterAlignmentOnCallRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

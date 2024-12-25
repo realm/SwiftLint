@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct EmptyXCTestMethodRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct EmptyXCTestMethodRule: Rule {
     var configuration = EmptyXCTestMethodConfiguration()
 
     static let description = RuleDescription(

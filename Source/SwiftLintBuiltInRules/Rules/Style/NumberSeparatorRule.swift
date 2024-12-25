@@ -1,8 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct NumberSeparatorRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct NumberSeparatorRule: Rule {
     var configuration = NumberSeparatorConfiguration()
 
     static let description = RuleDescription(

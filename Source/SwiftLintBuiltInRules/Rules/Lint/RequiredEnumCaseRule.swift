@@ -67,8 +67,8 @@ import SwiftSyntax
 ///     case accountCreated
 /// }
 /// ````
-@SwiftSyntaxRule
-struct RequiredEnumCaseRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct RequiredEnumCaseRule: Rule {
     var configuration = RequiredEnumCaseConfiguration()
 
     private static let exampleConfiguration = [

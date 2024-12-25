@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
-struct QuickDiscouragedPendingTestRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct QuickDiscouragedPendingTestRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

@@ -43,6 +43,14 @@
   formatting for function and method call arguments.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Improve performance when exclude patterns resolve to a large set of files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5018](https://github.com/realm/SwiftLint/issues/5018)
+  [#5207](https://github.com/realm/SwiftLint/issues/5207)
+  [#5953](https://github.com/realm/SwiftLint/issues/5953)
+  [#6084](https://github.com/realm/SwiftLint/issues/6084)
+  [#6259](https://github.com/realm/SwiftLint/issues/6259)
+
 ### Bug Fixes
 
 * Fix `line_length` rule incorrectly ignoring function bodies when

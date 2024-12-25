@@ -37,7 +37,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
         let files = config.lintableFiles(
             inPath: searchPath,
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths())
+            excludeByPrefix: false
         )
 
         // Convert to relative paths for easier assertions
@@ -261,7 +261,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
         let files = config.lintableFiles(
             inPath: scenarioPath.stringByAppendingPathComponent("project"),
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths())
+            excludeByPrefix: false
         )
         let relativePaths = files.map { $0.path!.bridge().path(relativeTo: scenarioPath) }.sorted()
 
@@ -278,7 +278,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
         let files = config.lintableFiles(
             inPath: scenarioPath.stringByAppendingPathComponent("project"),
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths())
+            excludeByPrefix: false
         )
         let relativePaths = files.map { $0.path!.bridge().path(relativeTo: scenarioPath) }.sorted()
 
@@ -301,7 +301,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
         let files = config.lintableFiles(
             inPath: scenarioPath,
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths())
+            excludeByPrefix: false
         )
         let relativePaths = files.map { $0.path!.bridge().path(relativeTo: scenarioPath) }.sorted()
 

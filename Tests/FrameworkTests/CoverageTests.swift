@@ -37,7 +37,11 @@ final class CoverageTests: SwiftLintTestCase {
 
     func testDisableAllCoverage() {
         // The `disable` command line will still be linted, so coverage will not be zero.
-        testCoverageWithDisabledIdentifiers(disabledIdentifiers: ["all"], observedCoverage: 4, maximumCoverage: 40)
+        testCoverageWithDisabledIdentifiers(
+            disabledIdentifiers: [RuleIdentifier.all.stringRepresentation],
+            observedCoverage: 4,
+            maximumCoverage: 40
+        )
     }
 
     func testCoverageWithRegions() {
@@ -114,7 +118,7 @@ final class CoverageTests: SwiftLintTestCase {
 
         testCoverageWithDisabledIdentifiers(
             for: rules,
-            disabledIdentifiers: ["all"],
+            disabledIdentifiers: [RuleIdentifier.all.stringRepresentation],
             observedCoverage: 3,
             maximumCoverage: 30
         )
@@ -150,6 +154,34 @@ final class CoverageTests: SwiftLintTestCase {
         }
     }
 
+    func testRuleAliasesCoverage() {
+        let rules: [any Rule] = Self.rules.dropLast() + [ShorthandOptionalBindingRule()]
+        let ruleIdentifiers = ShorthandOptionalBindingRule.description.allIdentifiers
+        XCTAssertGreaterThan(ruleIdentifiers.count, 1)
+        testCoverageWithDisabledIdentifiers(
+            for: rules,
+            disabledIdentifiers: ruleIdentifiers,
+            observedCoverage: 31,
+            maximumCoverage: 40
+        )
+    }
+
+    func testCoverageReport() {
+        let source = """
+             func foo() -> Int {
+                 return 0 // swiftlint:disable:this direct_return
+             }
+             """
+
+        var coverage = Coverage(totalNumberOfRules: 10)
+        coverage.addCoverage(for: SwiftLintFile(contents: source), rules: Self.rules)
+        let expectedReport = """
+                             Enabled rules coverage: 0.917
+                                 All rules coverage: 0.367
+                             """
+        XCTAssertEqual(coverage.report, expectedReport)
+    }
+
     // MARK: - Private
     private func testCoverage(
         for rules: [any Rule] = CoverageTests.rules,
@@ -159,9 +191,8 @@ final class CoverageTests: SwiftLintTestCase {
     )
     {
         let file = SwiftLintFile(contents: source)
-        let numberOfLinesOfCode = file.contents.isEmpty ? 0 : file.lines.count
         let expectedCoverage = Coverage.Coverage(
-            numberOfLinesOfCode: numberOfLinesOfCode,
+            numberOfLinesOfCode: file.contents.isEmpty ? 0 : file.lines.count,
             observedCoverage: observedCoverage,
             maximumCoverage: maximumCoverage
         )

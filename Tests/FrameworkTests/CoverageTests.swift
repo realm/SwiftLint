@@ -9,7 +9,7 @@ final class CoverageTests: SwiftLintTestCase {
         BlockBasedKVORule(),
         ClosingBraceRule(),
         DirectReturnRule(),
-    ].map { (rule: any Rule) -> String in type(of: rule).description.identifier  }
+    ].map { (rule: any Rule) -> String in type(of: rule).description.identifier }
 
     private static let customRuleIdentifier1 = "custom1"
     private static let customRuleIdentifier2 = "custom2"
@@ -192,7 +192,7 @@ final class CoverageTests: SwiftLintTestCase {
     // MARK: - Private
     private func testCoverage(
         for ruleIdentifiers: [String] = CoverageTests.ruleIdentifiers,
-        customRules: [String:[String:String]] = [:],
+        customRules: [String: [String: String]] = [:],
         source: String,
         observedCoverage: Int = 0,
         maximumCoverage: Int = 0
@@ -213,7 +213,7 @@ final class CoverageTests: SwiftLintTestCase {
 
     private func coverage(
         for ruleIdentifiers: [String] = CoverageTests.ruleIdentifiers,
-        customRules: [String:[String:String]] = [:],
+        customRules: [String: [String: String]] = [:],
         file: SwiftLintFile
     ) throws -> Coverage {
         let configuration = try Configuration(dict: ["only_rules": ruleIdentifiers, "custom_rules": customRules])
@@ -226,7 +226,7 @@ final class CoverageTests: SwiftLintTestCase {
 
     private func testCoverageWithDisabledIdentifiers(
         for ruleIdentifiers: [String] = CoverageTests.ruleIdentifiers,
-        customRules: [String:[String:String]] = [:],
+        customRules: [String: [String: String]] = [:],
         disabledIdentifiers: [String],
         observedCoverage: Int,
         maximumCoverage: Int

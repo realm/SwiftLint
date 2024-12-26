@@ -57,11 +57,14 @@ final class IntegrationTests: SwiftLintTestCase {
         let defaultConfig = Configuration(rulesMode: .allCommandLine).rules
             .map { type(of: $0) }
             .filter { $0.identifier != "custom_rules" }
-            .map {
-                """
-                \($0.identifier):
-                \($0.init().createConfigurationDescription().yaml().indent(by: 2))
-                """
+            .map { ruleType in
+                let rule = ruleType.init()
+                return """
+                    \(ruleType.identifier):
+                    \(rule.createConfigurationDescription().yaml().indent(by: 2))
+                      meta:
+                        opt-in: \(rule is any OptInRule)
+                    """
             }
             .joined(separator: "\n")
         let referenceFile = URL(fileURLWithPath: #filePath)

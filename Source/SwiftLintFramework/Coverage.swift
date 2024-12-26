@@ -11,7 +11,8 @@ import Foundation
 ///
 /// No distinction is made between actual lines of Swift source, versus blank lines or comments, as SwiftLint may
 /// apply rules to those as well. Coverage is only calculated over input files, so if you exclude files in your
-/// configuration, they will be ignored.
+/// configuration, they will be ignored. Empty input files, or files containing a single blank line will be ignored, as
+/// SwiftLint ignores these files automatically.
 ///
 /// "All rules" can be defined either as *all enabled rules*, **or** *all available rules, enabled or not*, resulting
 /// in two different coverage metrics:
@@ -68,17 +69,8 @@ struct Coverage {
         """
     }
 
-    init(totalNumberOfRules: Int) {
-        self.totalNumberOfRules = totalNumberOfRules
-    }
-
     init(mode: LintOrAnalyzeMode, configuration: Configuration) {
-        let totalNumberOfRules: Int = if mode == .lint {
-            configuration.numberOfLinterRules()
-        } else {
-            RuleRegistry.shared.numberOfAnalyzerRules
-        }
-        self.init(totalNumberOfRules: totalNumberOfRules)
+        self.totalNumberOfRules = configuration.totalNumberOfRules(for: mode)
     }
 
     mutating func addCoverage(for linter: CollectedLinter) {
@@ -184,17 +176,15 @@ private extension Set<String> {
 }
 
 private extension Configuration {
-    func numberOfLinterRules() -> Int {
-        RuleRegistry.shared.numberOfLinterRules + max(rules.customRuleIdentifiers.count - 1, 0)
+    func totalNumberOfRules(for mode: LintOrAnalyzeMode) -> Int {
+        RuleRegistry.shared.totalNumberOfRules(for: mode) + max(rules.customRuleIdentifiers.count - 1, 0)
+
     }
 }
 
 private extension RuleRegistry {
-    var numberOfLinterRules: Int {
-        RuleRegistry.shared.list.list.filter({ !($1 is any AnalyzerRule.Type) }).count
-    }
-    var numberOfAnalyzerRules: Int {
-        RuleRegistry.shared.list.list.filter({ $1 is any AnalyzerRule.Type }).count
+    func totalNumberOfRules(for mode: LintOrAnalyzeMode) -> Int {
+        list.list.filter({ ($1 is any AnalyzerRule.Type) == (mode == .analyze) }).count
     }
 }
 

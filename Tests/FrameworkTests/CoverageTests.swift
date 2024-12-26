@@ -98,7 +98,7 @@ final class CoverageTests: SwiftLintTestCase {
     func testFinalEnable() throws {
         let source = """
                      //  swiftlint:disable direct_return
-                     
+
                      //  swiftlint:enable direct_return
                      """
         try testCoverage(source: source, observedCoverage: 10, maximumCoverage: 12)
@@ -174,7 +174,7 @@ final class CoverageTests: SwiftLintTestCase {
     func testFinalEnableWithCustomRules() throws {
         let source = """
                      //  swiftlint:disable \(Self.customRuleIdentifier1)
-                     
+
                      //  swiftlint:enable \(Self.customRuleIdentifier1)
                      """
         let enabledRuleIdentifiers = Self.ruleIdentifiers + [CustomRules.identifier]
@@ -198,7 +198,6 @@ final class CoverageTests: SwiftLintTestCase {
             observedCoverage: 13,
             maximumCoverage: 15
         )
-
     }
 
     func testRuleAliasesCoverage() throws {
@@ -263,7 +262,7 @@ final class CoverageTests: SwiftLintTestCase {
         customRules: [String: [String: String]] = [:],
         file: SwiftLintFile
     ) throws -> Coverage {
-        var configurationDictionary: [String:Any] = ["only_rules": enabledRuleIdentifiers]
+        var configurationDictionary: [String: Any] = ["only_rules": enabledRuleIdentifiers]
         if customRules.isNotEmpty {
             configurationDictionary[CustomRules.identifier] = customRules
         }

@@ -110,11 +110,11 @@ final class CoverageTests: SwiftLintTestCase {
         let source = """
                      // swiftlint:disable \(Self.customRuleIdentifier1)
                      // swiftlint:disable array_init
-                     // swiftlint:disable \(Self.customRuleIdentifier1) direct_return
+                     // swiftlint:disable \(Self.customRuleIdentifier2) direct_return
 
                      // swiftlint:enable array_init direct_return
                      // swiftlint:enable \(Self.customRuleIdentifier2)
-
+                     //
                      // swiftlint:enable \(Self.customRuleIdentifier1)
                      """
 
@@ -122,7 +122,7 @@ final class CoverageTests: SwiftLintTestCase {
             for: enabledRuleIdentifiers,
             customRules: Self.customRulesConfiguration,
             source: source,
-            observedCoverage: 36,
+            observedCoverage: 33,
             maximumCoverage: 48
         )
     }

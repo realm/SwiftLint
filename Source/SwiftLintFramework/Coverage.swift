@@ -178,7 +178,6 @@ private extension Set<String> {
 private extension Configuration {
     func totalNumberOfRules(for mode: LintOrAnalyzeMode) -> Int {
         RuleRegistry.shared.totalNumberOfRules(for: mode) + max(rules.customRuleIdentifiers.count - 1, 0)
-
     }
 }
 

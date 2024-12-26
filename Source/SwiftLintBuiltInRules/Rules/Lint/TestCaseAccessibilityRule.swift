@@ -1,8 +1,7 @@
-import Foundation
 import SwiftSyntax
 
-@SwiftSyntaxRule(optIn: true)
-struct TestCaseAccessibilityRule: Rule, SubstitutionCorrectableRule {
+@SwiftSyntaxRule(correctable: true, optIn: true)
+struct TestCaseAccessibilityRule: Rule {
     var configuration = TestCaseAccessibilityConfiguration()
 
     static let description = RuleDescription(
@@ -14,18 +13,6 @@ struct TestCaseAccessibilityRule: Rule, SubstitutionCorrectableRule {
         triggeringExamples: TestCaseAccessibilityRuleExamples.triggeringExamples,
         corrections: TestCaseAccessibilityRuleExamples.corrections
     )
-
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        makeVisitor(file: file)
-            .walk(tree: file.syntaxTree, handler: \.violations)
-            .compactMap {
-                file.stringView.NSRange(start: $0.position, end: $0.position)
-            }
-    }
-
-    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
-        (violationRange, "private ")
-    }
 }
 
 private extension TestCaseAccessibilityRule {
@@ -36,10 +23,17 @@ private extension TestCaseAccessibilityRule {
             guard !configuration.testParentClasses.isDisjoint(with: node.inheritedTypes) else {
                 return
             }
-            violations.append(
-                contentsOf: XCTestClassVisitor(configuration: configuration, file: file)
-                    .walk(tree: node.memberBlock, handler: \.violations)
-            )
+            XCTestClassVisitor(configuration: configuration, file: file)
+                .walk(tree: node.memberBlock, handler: \.violations)
+                .forEach { violation in
+                    let position = violation.position
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: position,
+                            correction: .init(start: position, end: position, replacement: "private ")
+                        )
+                    )
+                }
         }
     }
 

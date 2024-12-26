@@ -315,7 +315,7 @@
                 <a class="nav-group-task-link" href="Macros.html#/s:13SwiftLintCore16AutoConfigParseryycfm">AutoConfigParser()</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Macros.html#/s:13SwiftLintCore0A10SyntaxRule15foldExpressions16explicitRewriterySb_Sbtcfm">SwiftSyntaxRule(foldExpressions:explicitRewriter:)</a>
+                <a class="nav-group-task-link" href="Macros.html#/s:13SwiftLintCore0A10SyntaxRule15foldExpressions16explicitRewriter11correctable5optInySb_S3btcfm">SwiftSyntaxRule(foldExpressions:explicitRewriter:correctable:optIn:)</a>
               </li>
             </ul>
           </li>
@@ -407,9 +407,9 @@ automatically based on the defined <code><a href="Structs/ConfigurationElement.h
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore0A10SyntaxRule15foldExpressions16explicitRewriterySb_Sbtcfm"></a>
-                    <a name="//apple_ref/swift/Macro/SwiftSyntaxRule(foldExpressions:explicitRewriter:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore0A10SyntaxRule15foldExpressions16explicitRewriterySb_Sbtcfm">SwiftSyntaxRule(foldExpressions:<wbr>explicitRewriter:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore0A10SyntaxRule15foldExpressions16explicitRewriter11correctable5optInySb_S3btcfm"></a>
+                    <a name="//apple_ref/swift/Macro/SwiftSyntaxRule(foldExpressions:explicitRewriter:correctable:optIn:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore0A10SyntaxRule15foldExpressions16explicitRewriter11correctable5optInySb_S3btcfm">SwiftSyntaxRule(foldExpressions:<wbr>explicitRewriter:<wbr>correctable:<wbr>optIn:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -425,8 +425,8 @@ that creates a visitor defined in the rule struct.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@attached</span><span class="p">(</span><span class="kd">extension</span><span class="p">,</span> <span class="nv">conformances</span><span class="p">:</span> <span class="kt"><a href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a></span><span class="p">,</span> <span class="nv">names</span><span class="p">:</span> <span class="nf">named</span><span class="p">(</span><span class="nf">makeVisitor</span><span class="p">(</span><span class="nv">file</span><span class="p">:)</span>
-<span class="p">),</span> <span class="nf">named</span><span class="p">(</span><span class="nf">preprocess</span><span class="p">(</span><span class="nv">file</span><span class="p">:)),</span> <span class="nf">named</span><span class="p">(</span><span class="nf">makeRewriter</span><span class="p">(</span><span class="nv">file</span><span class="p">:)))</span> <span class="kd">public</span> <span class="kd">macro</span> <span class="kt"><a href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a></span><span class="p">(</span><span class="nv">foldExpressions</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">explicitRewriter</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">=</span> <span class="k">#externalMacro</span><span class="p">(</span>
+                          <pre class="highlight swift"><code><span class="kd">@attached</span><span class="p">(</span><span class="kd">extension</span><span class="p">,</span> <span class="nv">conformances</span><span class="p">:</span> <span class="kt"><a href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a></span><span class="p">,</span> <span class="kt"><a href="Protocols.html#/s:13SwiftLintCore9OptInRuleP">OptInRule</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span><span class="p">,</span> <span class="nv">names</span><span class="p">:</span> <span class="nf">named</span><span class="p">(</span><span class="nf">makeVisitor</span><span class="p">(</span><span class="nv">file</span><span class="p">:)</span>
+<span class="p">),</span> <span class="nf">named</span><span class="p">(</span><span class="nf">preprocess</span><span class="p">(</span><span class="nv">file</span><span class="p">:)),</span> <span class="nf">named</span><span class="p">(</span><span class="nf">makeRewriter</span><span class="p">(</span><span class="nv">file</span><span class="p">:)))</span> <span class="kd">public</span> <span class="kd">macro</span> <span class="kt"><a href="Protocols/SwiftSyntaxRule.html">SwiftSyntaxRule</a></span><span class="p">(</span><span class="nv">foldExpressions</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">explicitRewriter</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">correctable</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">optIn</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">=</span> <span class="k">#externalMacro</span><span class="p">(</span>
     <span class="nv">module</span><span class="p">:</span> <span class="s">"SwiftLintCoreMacros"</span><span class="p">,</span>
     <span class="nv">type</span><span class="p">:</span> <span class="s">"SwiftSyntaxRule"</span>
 <span class="p">)</span></code></pre>
@@ -464,11 +464,36 @@ that creates a visitor defined in the rule struct.</p>
                                 </div>
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>correctable</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Set it to <code>true</code> to make the rule conform to <code><a href="Protocols/SwiftSyntaxCorrectableRule.html">SwiftSyntaxCorrectableRule</a></code> without an explicit
+         rewriter.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>optIn</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Set it to <code>true</code> to make the rule conform to <code><a href="Protocols.html#/s:13SwiftLintCore9OptInRuleP">OptInRule</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Macros.swift#L60">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Helpers/Macros.swift#L63">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

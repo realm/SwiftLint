@@ -49,7 +49,6 @@ struct Coverage {
     }
 
     private let totalNumberOfRules: Int
-
     var coverage = Coverage() // swiftlint:disable:this prefer_self_in_static_references
 
     var enabledRulesCoverage: Double {
@@ -58,7 +57,6 @@ struct Coverage {
     var allRulesCoverage: Double {
         coverage(denominator: coverage.numberOfLinesOfCode * totalNumberOfRules)
     }
-
     var report: String {
         """
         Enabled rules coverage: \(enabledRulesCoverage.rounded(toNearestPlaces: 3))

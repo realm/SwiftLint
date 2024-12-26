@@ -1,34 +1,37 @@
 import Foundation
 
-/// Coverage is the total of the number of rules that are applied to each line of each input file, as a proportion
-/// of the total number of rules that could have been applied.
+/// Collects and reports coverage statistics.
 ///
-/// For example, if all rules are applied to every single line, then coverage would be 1. If half the rules are applied
-/// to all input lines, or if all the rules are applied to half of the input lines, then coverage would be 0.5, and if
-/// no rules are enabled, or there are no input lines, then coverage would be zero.
+/// Coverage is defined as the sum of the number of rules applied to each line of input, divided by the product of the
+/// number of input lines and the total number of rules.
+///
+/// If all rules are applied to every input line, then coverage would be `1` (or 100%). If half the rules are applied
+/// to all input lines, or if all the rules are applied to half of the input lines, then coverage would be `0.5`, and
+/// if no rules are enabled, or there is no input, then coverage would be zero.
 ///
 /// No distinction is made between actual lines of Swift source, versus blank lines or comments, as SwiftLint may
-/// apply rules to those as well.
+/// apply rules to those as well. Coverage is only calculated over input files, so if you exclude files in your
+/// configuration, they will be ignored.
 ///
-/// Two coverage metrics are calculated, based on different sets of rules:
+/// "All rules" can be defined either as *all enabled rules*, **or** *all available rules, enabled or not*, resulting
+/// in two different coverage metrics:
 ///
-/// * "Enabled rules coverage" is based on the enabled rules only, and measures how frequently these are being
-///   disabled by `swiftlint:disable` commands.
-/// * "All rules coverage" is based on all of the rules, and measures the coverage that's being achieved, compared
-///   to what could be achieved if all rules were enabled.
+/// * "Enabled rules coverage" measures how frequently enabled rules are being disabled by `swiftlint:disable`
+///   commands.
+/// * "All rules coverage" measures how many of all possible rules are actually being applied.
 ///
-/// When calculating `allRulesCoverage`, we only take acount of disable commands for enabled rules, so
-/// if there are any disable commands for non-enabled rules, then `allRulesCoverage` will slightly underestimate
-/// actual coverage (as if those rules were enabled, they would not apply to every line).
+/// When calculating all rules coverage `swiftlint:disable` commands are still accounted for, but only for enabled
+/// rules.
 ///
-/// Linter and analyzer rules will be counted separately, so coverage will be different for each.
+/// Coverage figures will be different for linting and analyzing as these use different sets of rules.
 ///
 /// The number of enabled rules is determined on a per-file basis, so child and local configurations will be accounted
 /// for.
 ///
-/// Rules defined by `CustomRules`, if enabled, will be counted as first class rules in both enabled and all rules
-/// coverage. If not enabled, `CustomRules` will be counted as a single rule, even if a configuration exists for it.
-/// When calculating enabled rules coverage, the custom rules in the configuration for each file (e.g. including
+/// Custom rules, if enabled and defined, will be counted as first class rules for both enabled and all rules coverage.
+/// If not enabled, `custom_rules` will be counted as a single rule, even if a configuration exists for it.
+///
+/// When calculating enabled rules coverage, the custom rules in the configuration for each input file (e.g. including
 /// child configurations) will be taken into account. When calculating all rules coverage, only the main configurations
 /// custom rules settings will be used.
 ///

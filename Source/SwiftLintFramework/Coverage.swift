@@ -20,6 +20,10 @@ import Foundation
 ///   commands.
 /// * "All rules coverage" measures how many of all possible rules are actually being applied.
 ///
+/// Typically, enabled rules coverage will be close to `1`,  as `swiftlint:disable` is used sparingly. All rules
+/// coverage will generally be much lower, as some rules are contradictory, and many rules are optin. With no opt-in
+/// rules enabled, all rules coverage will be about `0.4`, rising to `0.8` or more if many opt-in rules are enabled.
+///
 /// When calculating all rules coverage `swiftlint:disable` commands are still accounted for, but only for enabled
 /// rules.
 ///

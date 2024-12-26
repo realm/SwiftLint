@@ -23,7 +23,7 @@ final class CoverageTests: SwiftLintTestCase {
     }
 
     func testBlankLineSourceCoverage() throws {
-        try testCoverage(source: "\n", observedCoverage: 0, maximumCoverage: 0)
+        try testCoverage(source: "\n")
         try testCoverage(source: "\n\n", observedCoverage: 8, maximumCoverage: 8)
     }
 

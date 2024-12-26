@@ -473,7 +473,7 @@ public struct CollectedLinter {
     }
 }
 
-private extension SwiftLintFile {
+extension SwiftLintFile {
     var isEmpty: Bool {
         contents.isEmpty || contents == "\n"
     }

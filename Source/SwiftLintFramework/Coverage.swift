@@ -53,7 +53,7 @@ struct Coverage {
     }
 
     private let totalNumberOfRules: Int
-    var coverage = Coverage() // swiftlint:disable:this prefer_self_in_static_references
+    var coverage = Self.Coverage()
 
     var enabledRulesCoverage: Double {
         coverage(denominator: coverage.maximumCoverage)
@@ -82,11 +82,7 @@ struct Coverage {
     }
 
     mutating func addCoverage(for linter: CollectedLinter) {
-        addCoverage(for: linter.file, rules: linter.rules)
-    }
-
-    mutating func addCoverage(for file: SwiftLintFile, rules: [any Rule]) {
-        coverage.add(file.coverage(for: rules))
+        coverage.add(linter.file.coverage(for: linter.rules))
     }
 
     private func coverage(denominator: Int) -> Double {
@@ -96,7 +92,7 @@ struct Coverage {
 
 private extension SwiftLintFile {
     func coverage(for rules: [any Rule]) -> Coverage.Coverage {
-        guard !contents.isEmpty else {
+        guard !isEmpty else {
             return Coverage.Coverage()
         }
         let numberOfLinesInFile = lines.count

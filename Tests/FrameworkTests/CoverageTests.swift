@@ -96,7 +96,7 @@ final class CoverageTests: SwiftLintTestCase {
     }
 
     func testNestedAndOverlappingRegions() throws {
-        let ruleIdentifiers = Self.ruleIdentifiers + [CustomRules.identifier]
+        let enabledRuleIdentifiers = Self.ruleIdentifiers + [CustomRules.identifier]
 
         let source = """
                      // swiftlint:disable \(Self.customRuleIdentifier1)
@@ -110,7 +110,7 @@ final class CoverageTests: SwiftLintTestCase {
                      """
 
         try testCoverage(
-            for: ruleIdentifiers,
+            for: enabledRuleIdentifiers,
             customRules: Self.customRulesConfiguration,
             source: source,
             observedCoverage: 36, // or should it be 33?
@@ -119,10 +119,10 @@ final class CoverageTests: SwiftLintTestCase {
     }
 
     func testCoverageWithCustomRules() throws {
-        let ruleIdentifiers: [String] = [CustomRules.identifier, ArrayInitRule.identifier]
+        let enabledRuleIdentifiers: [String] = [CustomRules.identifier, ArrayInitRule.identifier]
 
         try testCoverageWithDisabledRuleIdentifiers(
-            for: ruleIdentifiers,
+            for: enabledRuleIdentifiers,
             customRules: Self.customRulesConfiguration,
             disabledRuleIdentifiers: [RuleIdentifier.all.stringRepresentation],
             observedCoverage: 3,
@@ -143,7 +143,7 @@ final class CoverageTests: SwiftLintTestCase {
 
         try disabledRuleIdentifiers.forEach {
             try testCoverageWithDisabledRuleIdentifiers(
-                for: ruleIdentifiers,
+                for: enabledRuleIdentifiers,
                 customRules: Self.customRulesConfiguration,
                 disabledRuleIdentifiers: $0,
                 observedCoverage: 12,
@@ -153,7 +153,7 @@ final class CoverageTests: SwiftLintTestCase {
 
         try [firstCustomRuleIdentifier, secondCustomRuleIdentifier].forEach {
             try testCoverageWithDisabledRuleIdentifiers(
-                for: ruleIdentifiers,
+                for: enabledRuleIdentifiers,
                 customRules: Self.customRulesConfiguration,
                 disabledRuleIdentifiers: [$0],
                 observedCoverage: 21,
@@ -163,11 +163,11 @@ final class CoverageTests: SwiftLintTestCase {
     }
 
     func testRuleAliasesCoverage() throws {
-        let ruleIdentifiers = Array(Self.ruleIdentifiers.dropLast() + [ShorthandOptionalBindingRule.identifier])
+        let enabledRuleIdentifiers = Array(Self.ruleIdentifiers.dropLast() + [ShorthandOptionalBindingRule.identifier])
         let disabledRuleIdentifiers = ShorthandOptionalBindingRule.description.allIdentifiers
-        XCTAssertGreaterThan(ruleIdentifiers.count, 1)
+        XCTAssertGreaterThan(enabledRuleIdentifiers.count, 1)
         try testCoverageWithDisabledRuleIdentifiers(
-            for: ruleIdentifiers,
+            for: enabledRuleIdentifiers,
             disabledRuleIdentifiers: disabledRuleIdentifiers,
             observedCoverage: 31,
             maximumCoverage: 40

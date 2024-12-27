@@ -51,16 +51,21 @@ struct Coverage {
             observedCoverage += coverage.observedCoverage
             maximumCoverage += coverage.maximumCoverage
         }
+
+        func coverage(denominator: Int? = nil) -> Double {
+            let denominator = denominator ?? maximumCoverage
+            return  denominator == 0 ? 0.0 : (Double(observedCoverage) / Double(denominator))
+        }
     }
 
     private let totalNumberOfRules: Int
     var coverage = Self.Coverage()
 
     var enabledRulesCoverage: Double {
-        coverage(denominator: coverage.maximumCoverage)
+        coverage.coverage()
     }
     var allRulesCoverage: Double {
-        coverage(denominator: coverage.numberOfLinesOfCode * totalNumberOfRules)
+        coverage.coverage(denominator: coverage.numberOfLinesOfCode * totalNumberOfRules)
     }
     var report: String {
         """
@@ -75,10 +80,6 @@ struct Coverage {
 
     mutating func addCoverage(for linter: CollectedLinter) {
         coverage.add(linter.file.coverage(for: linter.rules))
-    }
-
-    private func coverage(denominator: Int) -> Double {
-        denominator == 0 ? 0.0 : (Double(coverage.observedCoverage) / Double(denominator))
     }
 }
 

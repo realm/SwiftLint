@@ -20,6 +20,7 @@ struct EmptyCountRule: Rule {
             Example("[Int]().count == 0o07"),
             Example("discount == 0"),
             Example("order.discount == 0"),
+            Example("let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }"),
         ],
         triggeringExamples: [
             Example("[Int]().↓count == 0"),
@@ -32,6 +33,7 @@ struct EmptyCountRule: Rule {
             Example("[Int]().↓count == 0b00"),
             Example("[Int]().↓count == 0o00"),
             Example("↓count == 0"),
+            Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.↓count == 0 }"),
         ],
         corrections: [
             Example("[].↓count == 0"):
@@ -62,6 +64,8 @@ struct EmptyCountRule: Rule {
                 Example("isEmpty && [Int]().isEmpty"),
             Example("[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2"):
                 Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
+            Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.↓count == 0 }"):
+                Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.isEmpty }"),
         ]
     )
 }
@@ -76,6 +80,10 @@ private extension EmptyCountRule {
             if let (_, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
                 violations.append(position)
             }
+        }
+
+        override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
+            node.isTipsRuleMacro ? .skipChildren : .visitChildren
         }
     }
 
@@ -104,6 +112,14 @@ private extension EmptyCountRule {
                     }
             }
             return super.visit(node)
+        }
+
+        override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
+            if node.isTipsRuleMacro {
+                ExprSyntax(Syntax(node).cast(MacroExpansionExprSyntax.self))
+            } else {
+                super.visit(node)
+            }
         }
     }
 }
@@ -134,6 +150,14 @@ private extension TokenSyntax {
         default:
             return nil
         }
+    }
+}
+
+private extension MacroExpansionExprSyntax {
+    var isTipsRuleMacro: Bool {
+        self.macroName.text == "Rule" &&
+        self.arguments.isNotEmpty &&
+        self.trailingClosure != nil
     }
 }
 

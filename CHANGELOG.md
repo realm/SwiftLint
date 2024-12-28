@@ -58,6 +58,10 @@
 
 #### Bug Fixes
 
+* Ignore TipKit Rule Macro in `empty_count` rule.  
+  [Ueeek](https://github.com/Ueeek)
+  [#5883](https://github.com/realm/SwiftLint/issues/5883)
+
 * Ignore super calls with trailing closures in `unneeded_override` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5886](ttps://github.com/realm/SwiftLint/issues/5886)

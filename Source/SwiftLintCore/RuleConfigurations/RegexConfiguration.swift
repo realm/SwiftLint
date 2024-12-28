@@ -14,9 +14,9 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     @ConfigurationElement(key: "regex")
     package var regex: RegularExpression! // swiftlint:disable:this implicitly_unwrapped_optional
     /// Regular expressions to include when matching the file path.
-    public var included: [NSRegularExpression] = []
+    public var included: [RegularExpression] = []
     /// Regular expressions to exclude when matching the file path.
-    public var excluded: [NSRegularExpression] = []
+    public var excluded: [RegularExpression] = []
     /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
@@ -63,21 +63,21 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 
-        regex = try RegularExpression(pattern: regexString)
+        regex = try .from(pattern: regexString, for: Parent.identifier)
 
         if let includedString = configurationDict["included"] as? String {
-            included = [try .cached(pattern: includedString)]
+            included = [try .from(pattern: includedString, for: Parent.identifier)]
         } else if let includedArray = configurationDict["included"] as? [String] {
             included = try includedArray.map { pattern in
-                try .cached(pattern: pattern)
+                try .from(pattern: pattern, for: Parent.identifier)
             }
         }
 
         if let excludedString = configurationDict["excluded"] as? String {
-            excluded = [try .cached(pattern: excludedString)]
+            excluded = [try .from(pattern: excludedString, for: Parent.identifier)]
         } else if let excludedArray = configurationDict["excluded"] as? [String] {
             excluded = try excludedArray.map { pattern in
-                try .cached(pattern: pattern)
+                try .from(pattern: pattern, for: Parent.identifier)
             }
         }
 
@@ -107,7 +107,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     package func shouldValidate(filePath: String) -> Bool {
         let pathRange = filePath.fullNSRange
         let isIncluded = included.isEmpty || included.contains { regex in
-            regex.firstMatch(in: filePath, range: pathRange) != nil
+            regex.regex.firstMatch(in: filePath, range: pathRange) != nil
         }
 
         guard isIncluded else {
@@ -115,7 +115,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         }
 
         return excluded.allSatisfy { regex in
-            regex.firstMatch(in: filePath, range: pathRange) == nil
+            regex.regex.firstMatch(in: filePath, range: pathRange) == nil
         }
     }
 

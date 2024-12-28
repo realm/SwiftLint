@@ -5,6 +5,9 @@ public enum Issue: LocalizedError, Equatable {
     /// The configuration didn't match internal expectations.
     case invalidConfiguration(ruleID: String, message: String? = nil)
 
+    /// Issued when a regular expression pattern is invalid.
+    case invalidRegexPattern(ruleID: String, pattern: String)
+
     /// Issued when an option is deprecated. Suggests an alternative optionally.
     case deprecatedConfigurationOption(ruleID: String, key: String, alternative: String? = nil)
 
@@ -151,6 +154,8 @@ public enum Issue: LocalizedError, Equatable {
         case let .invalidConfiguration(id, message):
             let message = if let message { ": \(message)" } else { "." }
             return "Invalid configuration for '\(id)' rule\(message) Falling back to default."
+        case let .invalidRegexPattern(id, pattern):
+            return "Invalid regular expression pattern '\(pattern)' used to configure '\(id)' rule."
         case let .deprecatedConfigurationOption(id, key, alternative):
             let baseMessage = "Configuration option '\(key)' in '\(id)' rule is deprecated."
             if let alternative {

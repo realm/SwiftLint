@@ -7958,3 +7958,9 @@ This release has seen a phenomenal uptake in community contributions!
 ## 0.1.0: Fresh Out Of The Dryer
 
 First Version!
+
+* Teststate enhancement.
+  [@aydinomer00](https://github.com/aydinomer00)  
+  [#5920](https://github.com/realm/SwiftLint/issues/5920)
+
+

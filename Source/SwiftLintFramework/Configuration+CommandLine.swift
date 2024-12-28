@@ -11,7 +11,7 @@ private actor CounterActor {
     }
 }
 
-private func readFilesFromScriptInputFiles() throws -> [SwiftLintFile] {
+private func readFilesFromScriptInputFiles() throws(SwiftLintError) -> [SwiftLintFile] {
     let count = try fileCount(from: "SCRIPT_INPUT_FILE_COUNT")
     return (0..<count).compactMap { fileNumber in
         do {
@@ -31,7 +31,7 @@ private func readFilesFromScriptInputFiles() throws -> [SwiftLintFile] {
     }
 }
 
-private func readFilesFromScriptInputFileLists() throws -> [SwiftLintFile] {
+private func readFilesFromScriptInputFileLists() throws(SwiftLintError) -> [SwiftLintFile] {
     let count = try fileCount(from: "SCRIPT_INPUT_FILE_LIST_COUNT")
     return (0..<count).flatMap { fileNumber in
         var filesToLint: [SwiftLintFile] = []
@@ -59,12 +59,12 @@ private func readFilesFromScriptInputFileLists() throws -> [SwiftLintFile] {
     }
 }
 
-private func fileCount(from envVar: String) throws -> Int {
+private func fileCount(from envVar: String) throws(SwiftLintError) -> Int {
     guard let countString = ProcessInfo.processInfo.environment[envVar] else {
-        throw SwiftLintError.usageError(description: "\(envVar) variable not set")
+        throw .usageError(description: "\(envVar) variable not set")
     }
     guard let count = Int(countString) else {
-        throw SwiftLintError.usageError(description: "\(envVar) did not specify a number")
+        throw .usageError(description: "\(envVar) did not specify a number")
     }
     return count
 }
@@ -103,10 +103,10 @@ extension Configuration {
         return result.flatMap { $0 }
     }
 
-    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws
+    private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws(SwiftLintError)
         -> [Configuration: [SwiftLintFile]] {
         if files.isEmpty && !visitor.allowZeroLintableFiles {
-            throw SwiftLintError.usageError(
+            throw .usageError(
                 description: "No lintable files found at paths: '\(visitor.options.paths.joined(separator: ", "))'"
             )
         }
@@ -241,14 +241,14 @@ extension Configuration {
             linters.asyncMap(visit)
     }
 
-    fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
+    fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws(SwiftLintError) -> [SwiftLintFile] {
         let options = visitor.options
         if options.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
             if let stdinString = String(data: stdinData, encoding: .utf8) {
                 return [SwiftLintFile(contents: stdinString)]
             }
-            throw SwiftLintError.usageError(description: "stdin isn't a UTF8-encoded string")
+            throw .usageError(description: "stdin isn't a UTF8-encoded string")
         }
         if options.useScriptInputFiles || options.useScriptInputFileLists {
             let files = try options.useScriptInputFiles

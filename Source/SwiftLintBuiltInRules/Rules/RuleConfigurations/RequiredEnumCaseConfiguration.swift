@@ -30,9 +30,9 @@ struct RequiredEnumCaseConfiguration: RuleConfiguration {
         }
     }
 
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let config = configuration as? [String: [String: String]] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         register(protocols: config)

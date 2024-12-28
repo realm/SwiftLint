@@ -59,8 +59,7 @@ struct QuickDiscouragedCallRule: OptInRule {
                            reason: "Discouraged call inside a '\(name)' block")
         }
     }
-
-
+    
     private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [ByteCount] {
         substructure.flatMap { dictionary -> [ByteCount] in
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in

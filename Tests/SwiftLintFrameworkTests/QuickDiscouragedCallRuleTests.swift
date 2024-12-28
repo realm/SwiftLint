@@ -16,26 +16,23 @@ class QuickDiscouragedCallRuleTests: XCTestCase {
         return QuickDiscouragedCallRule().validate(file: file)
     }
 
-    
-    
-    
     func testQuickDiscouragedCallRule() {
-        // Örnek doğru kullanım (uyarı tetiklenmemeli)
+        // Example of correct usage (should not trigger a warning)
         let nonTriggeringExamples = [
-            "@TestState var foo = Foo()" // Bu uyarı vermemeli
+            "@TestState var foo = Foo()" // This should not trigger a warning
         ]
 
-        // Örnek yanlış kullanım (uyarı tetiklemeli)
+        // Example of incorrect usage (should trigger a warning)
         let triggeringExamples = [
-            "describe(\"foo\") { @TestState var foo = Foo() }"
+            "describe(\"foo\") { @TestState var foo = Foo() }" // This should trigger a warning
         ]
 
-        // Doğru kullanım testi
+        // Test for correct usage
         nonTriggeringExamples.forEach { example in
             XCTAssertEqual(lint(example), [])
         }
 
-        // Yanlış kullanım testi
+        // Test for incorrect usage
         triggeringExamples.forEach { example in
             XCTAssertFalse(lint(example).isEmpty)
         }

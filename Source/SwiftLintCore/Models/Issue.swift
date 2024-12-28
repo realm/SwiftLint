@@ -79,11 +79,9 @@ public enum Issue: LocalizedError, Equatable {
     case baselineNotReadable(path: String)
 
     /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
-    #if compiler(>=6.0)
     package nonisolated(unsafe) static var printDeprecationWarnings = true
-    #else
-    package static var printDeprecationWarnings = true
-    #endif
+
+    @TaskLocal private static var messageConsumer: (@Sendable (String) -> Void)?
 
     /// Hook used to capture all messages normally printed to stdout and return them back to the caller.
     ///
@@ -97,19 +95,16 @@ public enum Issue: LocalizedError, Equatable {
         actor Console {
             static var content = ""
         }
-        messageConsumer = {
-            Console.content += (Console.content.isEmpty ? "" : "\n") + $0
-        }
         defer {
-            messageConsumer = nil
             Console.content = ""
         }
-        try runner()
+        try $messageConsumer.withValue(
+            { Console.content += (Console.content.isEmpty ? "" : "\n") + $0 },
+            operation: runner
+        )
         await Task.yield()
         return Console.content
     }
-
-    @MainActor private static var messageConsumer: (@Sendable (String) -> Void)?
 
     /// Wraps any `Error` into a `SwiftLintError.genericWarning` if it is not already a `SwiftLintError`.
     ///
@@ -142,7 +137,7 @@ public enum Issue: LocalizedError, Equatable {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
             return
         }
-        Task { @MainActor in
+        Task(priority: .high) { @MainActor in
             if let consumer = Self.messageConsumer {
                 consumer(errorDescription)
             } else {

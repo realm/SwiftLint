@@ -59,11 +59,11 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 private func asOption() -> OptionType {
                     .symbol(rawValue)
                 }
-                private init(fromAny value: Any, context ruleID: String) throws {
+                private init(fromAny value: Any, context ruleID: String) throws(Issue) {
                     if let value = value as? String, let newSelf = Self(rawValue: value) {
                         self = newSelf
                     } else {
-                        throw Issue.invalidConfiguration(ruleID: ruleID)
+                        throw .invalidConfiguration(ruleID: ruleID)
                     }
                 }
             }
@@ -87,11 +87,11 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 public func asOption() -> OptionType {
                     .symbol(rawValue)
                 }
-                public init(fromAny value: Any, context ruleID: String) throws {
+                public init(fromAny value: Any, context ruleID: String) throws(Issue) {
                     if let value = value as? String, let newSelf = Self(rawValue: value) {
                         self = newSelf
                     } else {
-                        throw Issue.invalidConfiguration(ruleID: ruleID)
+                        throw .invalidConfiguration(ruleID: ruleID)
                     }
                 }
             }

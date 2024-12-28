@@ -31,9 +31,9 @@ struct MissingDocsConfiguration: RuleConfiguration {
         $evaluateEffectiveAccessControlLevel.key => .flag(evaluateEffectiveAccessControlLevel)
     }
 
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let dict = configuration as? [String: Any] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         if let shouldExcludeExtensions = dict[$excludesExtensions.key] as? Bool {
@@ -57,7 +57,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
         }
     }
 
-    private func parameters(from dict: [String: Any]) throws -> [RuleParameter<AccessControlLevel>]? {
+    private func parameters(from dict: [String: Any]) throws(Issue) -> [RuleParameter<AccessControlLevel>]? {
         var parameters: [RuleParameter<AccessControlLevel>] = []
 
         for (key, value) in dict {
@@ -67,9 +67,9 @@ struct MissingDocsConfiguration: RuleConfiguration {
 
             if let array = [String].array(of: value) {
                 let rules: [RuleParameter<AccessControlLevel>] = try array
-                    .map { val -> RuleParameter<AccessControlLevel> in
+                    .map { val throws(Issue) -> RuleParameter<AccessControlLevel> in
                         guard let acl = AccessControlLevel(description: val) else {
-                            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                            throw .invalidConfiguration(ruleID: Parent.identifier)
                         }
                         return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
                     }
@@ -83,7 +83,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
         }
 
         guard parameters.count == parameters.map(\.value).unique.count else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         return parameters.isNotEmpty ? parameters : nil

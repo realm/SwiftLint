@@ -19,17 +19,17 @@ public struct SeverityConfiguration<Parent: Rule>: SeverityBasedRuleConfiguratio
         self.severity = severity
     }
 
-    public mutating func apply(configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws(Issue) {
         let configString = configuration as? String
         let configDict = configuration as? [String: Any]
         if let severityString: String = configString ?? configDict?[$severity.key] as? String {
             if let severity = ViolationSeverity(rawValue: severityString.lowercased()) {
                 self.severity = severity
             } else {
-                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                throw .invalidConfiguration(ruleID: Parent.identifier)
             }
         } else {
-            throw Issue.nothingApplied(ruleID: Parent.identifier)
+            throw .nothingApplied(ruleID: Parent.identifier)
         }
     }
 }

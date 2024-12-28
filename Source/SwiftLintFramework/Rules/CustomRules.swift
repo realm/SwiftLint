@@ -20,9 +20,9 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
     var customRuleConfigurations = [RegexConfiguration<Parent>]()
     var defaultExecutionMode: RegexConfiguration<Parent>.ExecutionMode?
 
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         // Parse default execution mode if present

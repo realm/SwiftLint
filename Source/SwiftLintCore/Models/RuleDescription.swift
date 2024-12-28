@@ -65,6 +65,11 @@ public struct RuleDescription: Equatable, Sendable {
         rationale?.consoleRationale
     }
 
+    /// The rationale for this description, with MarkDown formatting.
+    public var formattedRationale: String? {
+        rationale?.formattedRationale
+    }
+
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.
     public var allIdentifiers: [String] {
         Array(deprecatedAliases) + [identifier]
@@ -110,5 +115,32 @@ public struct RuleDescription: Equatable, Sendable {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.identifier == rhs.identifier
+    }
+}
+
+private extension String {
+    var formattedRationale: String {
+        formattedRationale(forConsole: false)
+    }
+
+    var consoleRationale: String {
+        formattedRationale(forConsole: true)
+    }
+
+    private func formattedRationale(forConsole: Bool) -> String {
+        var insideMultilineString = false
+        return components(separatedBy: "\n").compactMap { line -> String? in
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                    return forConsole ? nil : line
+                }
+                insideMultilineString = true
+                if line.hasSuffix("```") {
+                    return forConsole ? nil : (line + "swift")
+                }
+            }
+            return line.indent(by: (insideMultilineString && forConsole) ? 4 : 0)
+        }.joined(separator: "\n")
     }
 }

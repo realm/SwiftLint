@@ -12,11 +12,11 @@ struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration {
             .symbol("\(min) ..< \(max)")
         }
 
-        init(fromAny value: Any, context ruleID: String) throws {
+        init(fromAny value: Any, context ruleID: String) throws(Issue) {
             guard let values = value as? [String: Any],
                   let min = values["min"] as? Double,
                   let max = values["max"] as? Double else {
-                throw Issue.invalidConfiguration(ruleID: ruleID)
+                throw .invalidConfiguration(ruleID: ruleID)
             }
             self.min = min
             self.max = max

@@ -47,7 +47,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
             self.patch = patch
         }
 
-        init(platform: Platform, value: Any) throws {
+        init(platform: Platform, value: Any) throws(Issue) {
             let (major, minor, patch) = try Self.parseVersion(string: String(describing: value))
             self.init(platform: platform, major: major, minor: minor, patch: patch)
         }
@@ -56,10 +56,10 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
             platform.configurationKey
         }
 
-        private static func parseVersion(string: String) throws -> (Int, Int, Int) {
-            func parseNumber(_ string: String) throws -> Int {
+        private static func parseVersion(string: String) throws(Issue) -> (Int, Int, Int) {
+            func parseNumber(_ string: String) throws(Issue) -> Int {
                 guard let number = Int(string) else {
-                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                    throw .invalidConfiguration(ruleID: Parent.identifier)
                 }
                 return number
             }
@@ -67,7 +67,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
             let parts = string.components(separatedBy: ".")
             switch parts.count {
             case 0:
-                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                throw .invalidConfiguration(ruleID: Parent.identifier)
             case 1:
                 return (try parseNumber(parts[0]), 0, 0)
             case 2:
@@ -122,9 +122,9 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
     }
 
     // swiftlint:disable:next cyclomatic_complexity
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
         for (key, value) in configuration {
             if key == "severity", let value = value as? String {
@@ -148,14 +148,14 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
                 try apply(value: value, to: \.tvOSDeploymentTarget, from: configuration)
             case tvOSAppExtensionDeploymentTarget.platform.configurationKey:
                 tvOSAppExtensionDeploymentTarget = try Version(platform: .tvOSApplicationExtension, value: value)
-            default: throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            default: throw .invalidConfiguration(ruleID: Parent.identifier)
             }
         }
     }
 
     private mutating func apply(value: Any,
                                 to target: WritableKeyPath<Self, Version>,
-                                from configuration: [String: Any]) throws {
+                                from configuration: [String: Any]) throws(Issue) {
         let platform = self[keyPath: target].platform
         self[keyPath: target] = try Version(platform: platform, value: value)
         if let counterpart = platform.appExtensionCounterpart,

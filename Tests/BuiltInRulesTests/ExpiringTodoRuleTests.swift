@@ -1,11 +1,8 @@
 @testable import SwiftLintBuiltInRules
-import SwiftLintFramework
 import TestHelpers
 import XCTest
 
 final class ExpiringTodoRuleTests: SwiftLintTestCase {
-    private lazy var config: Configuration = makeConfiguration()
-
     func testExpiringTodo() {
         verifyRule(ExpiringTodoRule.description, commentDoesntViolate: false)
     }
@@ -37,38 +34,34 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
     }
 
     func testExpiredCustomDelimiters() {
-        let ruleConfig: ExpiringTodoConfiguration = .init(
+        let ruleConfig = ExpiringTodoConfiguration(
             dateDelimiters: .init(opening: "<", closing: ">")
         )
-        config = makeConfiguration(with: ruleConfig)
-
         let example = Example("fatalError() // TODO: <\(dateString(for: .expired))> Implement")
-        let violations = self.violations(example)
+        let violations = self.violations(example, ruleConfig)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
     func testExpiredCustomSeparator() {
-        let ruleConfig: ExpiringTodoConfiguration = .init(
+        let ruleConfig = ExpiringTodoConfiguration(
             dateFormat: "MM-dd-yyyy",
             dateSeparator: "-"
         )
-        config = makeConfiguration(with: ruleConfig)
-
-        let example = Example("fatalError() // TODO: [\(dateString(for: .expired))] Implement")
-        let violations = self.violations(example)
+        let example = Example(
+            "fatalError() // TODO: [\(dateString(for: .expired, format: ruleConfig.dateFormat))] Implement"
+        )
+        let violations = self.violations(example, ruleConfig)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
 
     func testExpiredCustomFormat() {
-        let ruleConfig: ExpiringTodoConfiguration = .init(
-            dateFormat: "yyyy/MM/dd"
+        let ruleConfig = ExpiringTodoConfiguration(dateFormat: "yyyy/MM/dd")
+        let example = Example(
+            "fatalError() // TODO: [\(dateString(for: .expired, format: ruleConfig.dateFormat))] Implement"
         )
-        config = makeConfiguration(with: ruleConfig)
-
-        let example = Example("fatalError() // TODO: [\(dateString(for: .expired))] Implement")
-        let violations = self.violations(example)
+        let violations = self.violations(example, ruleConfig)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODO/FIXME has expired and must be resolved")
     }
@@ -131,30 +124,40 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
     }
 
     func testBadExpiryTodoFormat() throws {
-        let ruleConfig: ExpiringTodoConfiguration = .init(
+        let ruleConfig = ExpiringTodoConfiguration(
             dateFormat: "dd/yyyy/MM"
         )
-        config = makeConfiguration(with: ruleConfig)
-
         let example = Example("fatalError() // TODO: [31/01/2020] Implement")
-        let violations = self.violations(example)
+        let violations = self.violations(example, ruleConfig)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Expiring TODO/FIXME is incorrectly formatted")
     }
 
-    private func violations(_ example: Example) -> [StyleViolation] {
-        TestHelpers.violations(example, config: config)
+    private func violations(_ example: Example, _ config: ExpiringTodoConfiguration? = nil) -> [StyleViolation] {
+        let config = config ?? ExpiringTodoConfiguration()
+        let serializedConfig = [
+            "expired_severity": config.expiredSeverity.severity.rawValue,
+            "approaching_expiry_severity": config.approachingExpirySeverity.severity.rawValue,
+            "bad_formatting_severity": config.badFormattingSeverity.severity.rawValue,
+            "approaching_expiry_threshold": config.approachingExpiryThreshold,
+            "date_format": config.dateFormat,
+            "date_delimiters": [
+                "opening": config.dateDelimiters.opening,
+                "closing": config.dateDelimiters.closing,
+            ],
+            "date_separator": config.dateSeparator,
+        ] as [String: Any]
+        return TestHelpers.violations(example, config: makeConfig(serializedConfig, ExpiringTodoRule.identifier)!)
     }
 
-    private func dateString(for status: ExpiringTodoRule.ExpiryViolationLevel) -> String {
-        let formatter: DateFormatter = .init()
-        formatter.dateFormat = config.ruleConfiguration.dateFormat
-
+    private func dateString(for status: ExpiringTodoRule.ExpiryViolationLevel, format: String? = nil) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format ?? ExpiringTodoConfiguration().dateFormat
         return formatter.string(from: date(for: status))
     }
 
     private func date(for status: ExpiringTodoRule.ExpiryViolationLevel) -> Date {
-        let ruleConfiguration = config.ruleConfiguration
+        let ruleConfiguration = ExpiringTodoRule().configuration
 
         let daysToAdvance: Int
 
@@ -173,33 +176,5 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
                 value: daysToAdvance,
                 to: .init()
             )!
-    }
-
-    private func makeConfiguration(with ruleConfiguration: ExpiringTodoConfiguration? = nil) -> Configuration {
-        var serializedConfig: [String: Any]?
-
-        if let config = ruleConfiguration {
-            serializedConfig = [
-                "expired_severity": config.expiredSeverity.severity.rawValue,
-                "approaching_expiry_severity": config.approachingExpirySeverity.severity.rawValue,
-                "bad_formatting_severity": config.badFormattingSeverity.severity.rawValue,
-                "approaching_expiry_threshold": config.approachingExpiryThreshold,
-                "date_format": config.dateFormat,
-                "date_delimiters": [
-                    "opening": config.dateDelimiters.opening,
-                    "closing": config.dateDelimiters.closing,
-                ],
-                "date_separator": config.dateSeparator,
-            ]
-        }
-
-        return makeConfig(serializedConfig, ExpiringTodoRule.identifier)!
-    }
-}
-
-fileprivate extension Configuration {
-    var ruleConfiguration: ExpiringTodoConfiguration {
-        // swiftlint:disable:next force_cast
-        (rules.first(where: { $0 is ExpiringTodoRule }) as! ExpiringTodoRule).configuration
     }
 }

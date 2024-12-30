@@ -118,7 +118,6 @@ let package = Package(
             name: "BuiltInRulesTests",
             dependencies: [
                 "SwiftLintBuiltInRules",
-                "SwiftLintFramework",
                 "TestHelpers",
             ],
             exclude: [

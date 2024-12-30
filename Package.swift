@@ -113,18 +113,18 @@ let package = Package(
         ),
         .target(name: "DyldWarningWorkaround"),
         .target(
-            name: "SwiftLintTestHelpers",
+            name: "TestHelpers",
             dependencies: [
                 "SwiftLintFramework"
             ],
-            path: "Tests/SwiftLintTestHelpers",
+            path: "Tests/TestHelpers",
             swiftSettings: swiftFeatures
         ),
         .testTarget(
-            name: "SwiftLintFrameworkTests",
+            name: "FrameworkTests",
             dependencies: [
                 "SwiftLintFramework",
-                "SwiftLintTestHelpers",
+                "TestHelpers",
                 "SwiftLintCoreMacros",
             ],
             exclude: [
@@ -136,7 +136,7 @@ let package = Package(
             name: "GeneratedTests",
             dependencies: [
                 "SwiftLintFramework",
-                "SwiftLintTestHelpers",
+                "TestHelpers",
             ],
             swiftSettings: swiftFeatures
         ),
@@ -144,7 +144,7 @@ let package = Package(
             name: "IntegrationTests",
             dependencies: [
                 "SwiftLintFramework",
-                "SwiftLintTestHelpers",
+                "TestHelpers",
             ],
             exclude: [
                 "default_rule_configurations.yml"
@@ -152,10 +152,22 @@ let package = Package(
             swiftSettings: swiftFeatures
         ),
         .testTarget(
+            name: "BuiltInRulesTests",
+            dependencies: [
+                "SwiftLintBuiltInRules",
+                "SwiftLintFramework",
+                "TestHelpers",
+            ],
+            exclude: [
+                "Resources",
+            ],
+            swiftSettings: swiftFeatures
+        ),
+        .testTarget(
             name: "ExtraRulesTests",
             dependencies: [
                 "SwiftLintFramework",
-                "SwiftLintTestHelpers",
+                "TestHelpers",
             ],
             swiftSettings: swiftFeatures
         ),

@@ -5,7 +5,8 @@ included:
   - Tests
   - Package.swift
 excluded:
-  - Tests/SwiftLintFrameworkTests/Resources
+  - Tests/BuiltInRulesTests/Resources
+  - Tests/FrameworkTests/Resources
 
 # Enabled/disabled rules
 analyzer_rules:

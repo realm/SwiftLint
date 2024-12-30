@@ -1,6 +1,6 @@
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import SwiftLintTestHelpers
+import TestHelpers
 
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable file_length single_test_class type_name

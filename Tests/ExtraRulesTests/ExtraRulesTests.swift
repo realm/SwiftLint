@@ -1,5 +1,5 @@
 @testable import SwiftLintExtraRules
-import SwiftLintTestHelpers
+import TestHelpers
 
 final class ExtraRulesTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {

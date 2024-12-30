@@ -30,6 +30,29 @@ jobs:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
+- job: Plugins # Plugins shall be able to run on older Swift versions.
+  strategy:
+    maxParallel: 10
+    matrix:
+      ': macOS 13, Swift 5.9':
+        image: 'macOS-13'
+        xcode: '15.2'
+      ': macOS 14, Swift 5.10':
+        image: 'macOS-14'
+        xcode: '15.4'
+      ': macOS 14, Swift 6':
+        image: 'macOS-14'
+        xcode: '16.1'
+  pool:
+    vmImage: $(image)
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
+  steps:
+    - script: swift build -c release --product SwiftLintCommandPlugin
+      displayName: Command Plugin
+    - script: swift build -c release --product SwiftLintBuildToolPlugin
+      displayName: Build Tool Plugin
+
 - job: CocoaPods
   pool:
     vmImage: 'macOS-14'

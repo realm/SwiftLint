@@ -47,6 +47,7 @@ struct QuickDiscouragedCallRule: OptInRule {
         guard
             kind == .call,
             let name = dictionary.name,
+            name != "@TestState", // Exception: Do not trigger a warning for @TestState
             let kindName = QuickCallKind(rawValue: name),
             QuickCallKind.restrictiveKinds.contains(kindName)
             else { return [] }
@@ -58,7 +59,7 @@ struct QuickDiscouragedCallRule: OptInRule {
                            reason: "Discouraged call inside a '\(name)' block")
         }
     }
-
+    
     private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [ByteCount] {
         substructure.flatMap { dictionary -> [ByteCount] in
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in

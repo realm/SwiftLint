@@ -2,9 +2,9 @@ trigger:
 - main
 
 jobs:
-- job: Linux
+- job: Ubuntu
   pool:
-    vmImage: 'ubuntu-24.04'
+    vmImage: 'ubuntu-24.04' # "Noble Numbat"
   strategy:
     maxParallel: 10
     matrix:
@@ -19,9 +19,18 @@ jobs:
   strategy:
     maxParallel: 10
     matrix:
-      '14':
+      '14, Xcode 15.4':
         image: 'macOS-14'
         xcode: '15.4'
+      '14, Xcode 16.1':
+        image: 'macOS-14'
+        xcode: '16.1'
+      '15, Xcode 15.4':
+        image: 'macOS-15'
+        xcode: '15.4'
+      '15, Xcode 16.2':
+        image: 'macOS-15'
+        xcode: '16.2'
   pool:
     vmImage: $(image)
   variables:
@@ -34,7 +43,7 @@ jobs:
   pool:
     vmImage: 'macOS-14'
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_16.app
+    DEVELOPER_DIR: /Applications/Xcode_16.1.app
   steps:
     - script: bundle install --path vendor/bundle
       displayName: bundle install

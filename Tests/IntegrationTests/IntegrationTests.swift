@@ -1,6 +1,6 @@
 import Foundation
 import SwiftLintFramework
-import SwiftLintTestHelpers
+import TestHelpers
 import XCTest
 
 private let config: Configuration = {

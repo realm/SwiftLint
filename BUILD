@@ -194,9 +194,10 @@ cc_library(
 
 filegroup(
     name = "LintInputs",
-    srcs = glob(["Source/**/*.swift"]) + [
+    srcs = glob(["Plugins/**/*.swift", "Source/**/*.swift"]) + [
         ".swiftlint.yml",
-        "//Tests:SwiftLintFrameworkTestsData",
+        "Package.swift",
+        "//Tests:TestSources",
     ],
     visibility = ["//Tests:__subpackages__"],
 )

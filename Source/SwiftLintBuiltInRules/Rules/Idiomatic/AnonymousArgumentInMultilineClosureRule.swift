@@ -21,7 +21,7 @@ struct AnonymousArgumentInMultilineClosureRule: Rule {
 
         ```
         closure {
-        print(↓$0)
+            print(↓$0)
         }
         ```
         """,

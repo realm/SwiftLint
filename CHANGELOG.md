@@ -2,6 +2,11 @@
 
 #### Breaking
 
+* Teststate enhancement.
+  [@aydinomer00](https://github.com/aydinomer00)  
+  [#5803](https://github.com/realm/SwiftLint/issues/5803)
+
+
 * The command plugin now requires write permissions so that it works with the `--fix` option without an error.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
@@ -7959,8 +7964,5 @@ This release has seen a phenomenal uptake in community contributions!
 
 First Version!
 
-* Teststate enhancement.
-  [@aydinomer00](https://github.com/aydinomer00)  
-  [#5920](https://github.com/realm/SwiftLint/issues/5920)
 
 

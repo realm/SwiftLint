@@ -173,6 +173,13 @@ internal struct QuickDiscouragedCallRuleExamples {
            }
         }
         """),
+        Example("""
+            class TotoTests: QuickSpec {
+                override func spec() {
+                    @TestState var foo = Foo()
+                }
+            }
+            """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -324,5 +331,14 @@ internal struct QuickDiscouragedCallRuleExamples {
            }
         }
         """),
+        Example("""
+            class TotoTests: QuickSpec {
+                override func spec() {
+                    describe("foo") {
+                        @TestState var foo = Foo()
+                    }
+                }
+            }
+            """),
     ]
 }

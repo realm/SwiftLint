@@ -47,7 +47,7 @@ struct QuickDiscouragedCallRule: OptInRule {
         guard
             kind == .call,
             let name = dictionary.name,
-            name != "@TestState", // İstisna: @TestState için uyarı tetiklenmesin
+            name != "@TestState", // Exception: Do not trigger a warning for @TestState
             let kindName = QuickCallKind(rawValue: name),
             QuickCallKind.restrictiveKinds.contains(kindName)
             else { return [] }

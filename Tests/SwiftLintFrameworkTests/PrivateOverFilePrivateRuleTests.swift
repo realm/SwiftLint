@@ -29,3 +29,4 @@ final class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["validate_extensions": false])
     }
 }
+

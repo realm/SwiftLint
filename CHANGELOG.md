@@ -43,6 +43,10 @@
   [dk-talks](https://github.com/dk-talks)
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add option to disable `redundant_discardable_let` rule in SwiftUI view bodies.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3855](https://github.com/realm/SwiftLint/issues/3855)
+
 * Add new `redundant_sendable` rule that triggers on `Sendable` conformances of
   types that are implicitly already `Sendable` due to being actor-isolated. It
   is enabled by default.  

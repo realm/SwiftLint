@@ -795,6 +795,7 @@ reduce_into:
     opt-in: true
 redundant_discardable_let:
   severity: warning
+  ignore_swiftui_view_bodies: false
   meta:
     opt-in: false
 redundant_nil_coalescing:

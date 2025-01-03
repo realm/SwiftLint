@@ -78,7 +78,7 @@ class Repo
       percent_change *= -1
     end
     "Linting #{self} with this PR took #{@branch_duration}s " \
-    "vs #{@main_duration}s on main (#{percent_change.to_i}\% #{faster_slower})"
+    "vs #{@main_duration}s on main (#{percent_change.to_i}\% #{faster_slower})."
   end
 end
 
@@ -234,8 +234,8 @@ def diff_and_report_changes_to_danger
 
   @repos.each do |repo|
     if repo.main_exit_value != repo.branch_exit_value
-      warn "This PR changed the exit value when running on #{repo.name}: " \
-           "(#{repo.main_exit_value} to #{repo.branch_exit_value})"
+      warn "This PR changed the exit value from #{repo.main_exit_value} to #{repo.branch_exit_value} when " \
+           "running on #{repo.name}."
       # If the exit value changed, don't show the fixes or regressions for this
       # repo because it's likely due to a crash, and all violations would be noisy
       next
@@ -334,7 +334,7 @@ unless @options[:force]
   full_version_main = `#{@working_dir}/builds/swiftlint-main version --verbose`
 
   if full_version_branch == full_version_main
-    message "Skipping OSSCheck because SwiftLint hasn't changed compared to 'main'"
+    message "Skipping OSSCheck because SwiftLint hasn't changed compared to 'main'."
     # Clean up
     clean_up unless @options[:skip_clean]
     exit

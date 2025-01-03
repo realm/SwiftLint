@@ -8,6 +8,39 @@ struct BalancedXCTestLifecycleRule: Rule {
         identifier: "balanced_xctest_lifecycle",
         name: "Balanced XCTest Life Cycle",
         description: "Test classes must implement balanced setUp and tearDown methods",
+        rationale: """
+        The `setUp` method of `XCTestCase` can be used to set up variables and resources before \
+        each test is run (or with the `class` variant, before all tests are run).
+
+        The memory model for XCTestCase objects is non-obvious. An instance of the `XCTestCase` \
+        subclass will be created for each test method, and these will persist for the entire test run.
+
+        So in a test class with 10 tests, given
+
+        ```
+        private var foo: String = "Bar"
+        ```
+
+        "Bar" will be stored 10 times over, but with
+
+        ```
+        // swiftlint:disable:next implicitly_unwrapped_optional
+        private var foo: String!
+
+        func setUp() {
+            foo = "Bar"
+        }
+
+        func tearDown() {
+            foo = nil
+        }
+        ```
+
+        No memory will be consumed by the value of the variable.
+
+        More generally, if `setUp` is implemented, then `tearDown` should also be implemented, \
+        and cleanup performed there.
+        """,
         kind: .lint,
         nonTriggeringExamples: [
             Example(#"""

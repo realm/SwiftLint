@@ -287,6 +287,25 @@ def print_rules_changed
   end
 end
 
+def report_binary_size
+  size_branch = File.size("#{@working_dir}/builds/swiftlint-branch")
+  size_main = File.size("#{@working_dir}/builds/swiftlint-main")
+  if size_branch == size_main
+    message "Building this branch resulted in the same binary size as when built on `main`."
+  else
+    percent_change = 100 * (size_branch - size_main) / size_main
+    faster_slower = size_branch < size_main ? 'smaller' : 'larger'
+    in_kilo_bytes = ->(size) { (size / 1024.0).round(2) }
+    msg = "Building this branch resulted in a binary size of #{in_kilo_bytes.call(size_branch)} KiB " \
+          "vs #{in_kilo_bytes.call(size_main)} KiB when built on `main` (#{percent_change.to_i}\% #{faster_slower})."
+    if percent_change.abs < 2
+      message msg
+    else
+      warn msg
+    end
+  end
+end
+
 ################################
 # Script
 ################################
@@ -328,6 +347,9 @@ make_directory_structure
 %w[branch main].each do |branch|
   build(branch)
 end
+
+# Compare binary size of both builds.
+report_binary_size
 
 unless @options[:force]
   full_version_branch = `#{@working_dir}/builds/swiftlint-branch version --verbose`

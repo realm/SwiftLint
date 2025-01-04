@@ -649,6 +649,10 @@ one_declaration_per_file:
   severity: warning
   meta:
     opt-in: true
+opaque_over_existential:
+  severity: warning
+  meta:
+    opt-in: true
 opening_brace:
   severity: warning
   ignore_multiline_type_headers: false

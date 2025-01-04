@@ -14,7 +14,11 @@ private let config: Configuration = {
 }()
 
 final class IntegrationTests: SwiftLintTestCase {
-    func testSwiftLintLints() {
+    func testSwiftLintLints() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["CI"] == nil,
+            "Will be covered by separate linting job"
+        )
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(
             inPath: "",
@@ -36,7 +40,11 @@ final class IntegrationTests: SwiftLintTestCase {
         }
     }
 
-    func testSwiftLintAutoCorrects() {
+    func testSwiftLintAutoCorrects() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["CI"] == nil,
+            "Corrections are not verified in CI"
+        )
         let swiftFiles = config.lintableFiles(
             inPath: "",
             forceExclude: false,

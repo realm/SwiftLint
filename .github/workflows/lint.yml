@@ -1,0 +1,15 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04 # "Noble Numbat"
+    container: swift:6.0-noble
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: swift run swiftlint --reporter github-actions-logging --strict 2> /dev/null

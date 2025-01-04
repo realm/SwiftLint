@@ -32,6 +32,7 @@ copts = [
     "ForwardTrailingClosures",
     "-enable-upcoming-feature",
     "ImplicitOpenExistentials",
+    "-Xfrontend", "-warn-implicit-overrides",
 ]
 
 strict_concurrency_copts = [

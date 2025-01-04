@@ -10,9 +10,6 @@ public protocol Reporter: CustomStringConvertible {
     /// A more detailed description of the reporter's output.
     static var description: String { get }
 
-    /// For CustomStringConvertible conformance.
-    var description: String { get }
-
     /// Return a string with the report for the specified violations.
     ///
     /// - parameter violations: The violations to report.

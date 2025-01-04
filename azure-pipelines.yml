@@ -1,6 +1,9 @@
 trigger:
 - main
 
+variables:
+  CI: 'true'
+
 jobs:
 - job: Ubuntu
   pool:

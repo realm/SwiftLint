@@ -21,16 +21,16 @@ require 'erb'
 }
 
 OptionParser.new do |opts|
-  opts.on('--branch BRANCH', "compares the performance of BRANCH against 'main'") do |branch|
+  opts.on('--branch BRANCH', "Compares the performance of BRANCH against `main`") do |branch|
     @options[:branch] = branch
   end
-  opts.on('--iterations N', Integer, 'iterates lint N times on each repositories') do |iterations|
+  opts.on('--iterations N', Integer, 'Runs linting N times on each repository') do |iterations|
     @options[:iterations] = iterations
   end
-  opts.on('--skip-clean', 'skip cleaning on completion') do |skip_clean|
+  opts.on('--skip-clean', 'Skip cleaning upon completion') do |skip_clean|
     @options[:skip_clean] = skip_clean
   end
-  opts.on('--force', 'run oss-check even if binaries are equal') do |force|
+  opts.on('--force', 'Run oss-check even if binaries are equal') do |force|
     @options[:force] = force
   end
   opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
@@ -77,8 +77,8 @@ class Repo
       faster_slower = 'slower'
       percent_change *= -1
     end
-    "Linting #{self} with this PR took #{@branch_duration}s " \
-    "vs #{@main_duration}s on main (#{percent_change.to_i}\% #{faster_slower})."
+    "Linting #{self} with this PR took #{@branch_duration} s " \
+    "vs #{@main_duration} s on `main` (#{percent_change.to_i}\% #{faster_slower})."
   end
 end
 
@@ -235,7 +235,7 @@ def diff_and_report_changes_to_danger
   @repos.each do |repo|
     if repo.main_exit_value != repo.branch_exit_value
       warn "This PR changed the exit value from #{repo.main_exit_value} to #{repo.branch_exit_value} when " \
-           "running on #{repo.name}."
+           "running in #{repo.name}."
       # If the exit value changed, don't show the fixes or regressions for this
       # repo because it's likely due to a crash, and all violations would be noisy
       next
@@ -356,7 +356,7 @@ unless @options[:force]
   full_version_main = `#{@working_dir}/builds/swiftlint-main version --verbose`
 
   if full_version_branch == full_version_main
-    message "Skipping OSSCheck because SwiftLint hasn't changed compared to 'main'."
+    message "Skipping OSS check because SwiftLint hasn't changed compared to `main`."
     # Clean up
     clean_up unless @options[:skip_clean]
     exit

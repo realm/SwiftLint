@@ -9,7 +9,8 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ForwardTrailingClosures"),
     .enableUpcomingFeature("ImplicitOpenExistentials"),
 ]
-let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency")]
+let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=complete")]
+let targetedConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=targeted")]
 
 let swiftLintPluginDependencies: [Target.Dependency]
 
@@ -57,7 +58,7 @@ let package = Package(
                 "SwiftLintExtraRules",
                 "CollectionConcurrencyKit",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + targetedConcurrency
         ),
         .plugin(
             name: "SwiftLintBuildToolPlugin",

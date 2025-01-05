@@ -33,7 +33,7 @@ struct EmptyCountRule: Rule {
             Example("[Int]().↓count == 0b00"),
             Example("[Int]().↓count == 0o00"),
             Example("↓count == 0"),
-            Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.↓count == 0 }"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"),
         ],
         corrections: [
             Example("[].↓count == 0"):
@@ -64,8 +64,8 @@ struct EmptyCountRule: Rule {
                 Example("isEmpty && [Int]().isEmpty"),
             Example("[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2"):
                 Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
-            Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.↓count == 0 }"):
-                Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.isEmpty }"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"):
+                Example("#ExampleMacro { $0.list.isEmpty }"),
         ]
     )
 }
@@ -116,7 +116,7 @@ private extension EmptyCountRule {
 
         override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
             if node.isTipsRuleMacro {
-                ExprSyntax(Syntax(node).cast(MacroExpansionExprSyntax.self))
+                ExprSyntax(node)
             } else {
                 super.visit(node)
             }
@@ -155,9 +155,9 @@ private extension TokenSyntax {
 
 private extension MacroExpansionExprSyntax {
     var isTipsRuleMacro: Bool {
-        self.macroName.text == "Rule" &&
-        self.arguments.isNotEmpty &&
-        self.trailingClosure != nil
+        macroName.text == "Rule" &&
+        arguments.count == 1 &&
+        trailingClosure.map { $0.statements.onlyElement?.item.is(ReturnStmtSyntax.self) == false } ?? false
     }
 }
 

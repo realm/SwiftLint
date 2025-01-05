@@ -25,7 +25,7 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             Example("[Int]().↓count == 0x00_00\n"),
             Example("[Int]().↓count == 0b00\n"),
             Example("[Int]().↓count == 0o00\n"),
-            Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.↓count == 0 }"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"),
         ]
 
         let corrections = [
@@ -57,8 +57,8 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
                 Example("count == 0 && [Int]().isEmpty"),
             Example("[Int]().count != 3 && [Int]().↓count != 0 || count == 0 && [Int]().count > 2"):
                 Example("[Int]().count != 3 && ![Int]().isEmpty || count == 0 && [Int]().count > 2"),
-            Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.↓count == 0 }"):
-                Example("let predicate =  #Predicate<SwiftDataModel> { $0.list.isEmpty }"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"):
+                Example("#ExampleMacro { $0.list.isEmpty }"),
         ]
 
         let description = EmptyCountRule.description

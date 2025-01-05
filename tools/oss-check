@@ -315,7 +315,7 @@ end
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
-  Repo.new('Brave', 'brave/brave-ios', true),
+  Repo.new('Brave', 'brave/brave-core', false, 'included: ios/brave-ios'),
   Repo.new('DuckDuckGo', 'duckduckgo/iOS'),
   Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),

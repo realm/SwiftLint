@@ -20,8 +20,7 @@ of your source files for more accurate results.
 
 This project adheres to the
 [Contributor Covenant Code of Conduct](https://realm.io/conduct).
-By participating, you are expected to uphold this code. Please report
-unacceptable behavior to [info@realm.io](mailto:info@realm.io).
+By participating, you are expected to uphold this code.
 
 > Switch Language:
 > [中文](https://github.com/realm/SwiftLint/blob/main/README_CN.md)

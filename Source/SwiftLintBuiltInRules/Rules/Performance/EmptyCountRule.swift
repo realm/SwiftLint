@@ -21,6 +21,7 @@ struct EmptyCountRule: Rule {
             Example("discount == 0"),
             Example("order.discount == 0"),
             Example("let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }"),
+            Example("#Rule(param1: \"param1\")", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("[Int]().↓count == 0"),
@@ -34,6 +35,22 @@ struct EmptyCountRule: Rule {
             Example("[Int]().↓count == 0o00"),
             Example("↓count == 0"),
             Example("#ExampleMacro { $0.list.↓count == 0 }"),
+            Example("#Rule { $0.donations.↓count == 0 }", excludeFromDocumentation: true),
+            Example(
+                "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }",
+                excludeFromDocumentation: true
+            ),
+            Example(
+                "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }",
+                excludeFromDocumentation: true
+            ),
+            Example("#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }", excludeFromDocumentation: true),
+            Example("""
+                #Rule(param1: "param1") {
+                    doSomething()
+                    return $0.donations.↓count == 0
+                }
+            """, excludeFromDocumentation: true),
         ],
         corrections: [
             Example("[].↓count == 0"):
@@ -66,6 +83,38 @@ struct EmptyCountRule: Rule {
                 Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
             Example("#ExampleMacro { $0.list.↓count == 0 }"):
                 Example("#ExampleMacro { $0.list.isEmpty }"),
+            Example("#Rule { $0.donations.↓count == 0 }", excludeFromDocumentation: true):
+                Example("#Rule { $0.donations.isEmpty }"),
+            Example(
+                "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }",
+                excludeFromDocumentation: true
+            ): Example(
+                    "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.isEmpty }"
+                ),
+            Example(
+                "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }",
+                excludeFromDocumentation: true
+            ): Example(
+                "#Rule(param1: \"param1\") { $0.donations.isEmpty } closure2: { doSomething() }"
+                ),
+            Example(
+                "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }",
+                excludeFromDocumentation: true
+            ): Example(
+                "#Rule(param1: \"param1\") { return $0.donations.isEmpty }"
+                ),
+            Example("""
+                #Rule(param1: "param1") {
+                    doSomething()
+                    return $0.donations.↓count == 0
+                }
+            """, excludeFromDocumentation: true):
+                Example("""
+                #Rule(param1: "param1") {
+                    doSomething()
+                    return $0.donations.isEmpty
+                }
+            """),
         ]
     )
 }
@@ -156,6 +205,7 @@ private extension TokenSyntax {
 private extension MacroExpansionExprSyntax {
     var isTipsRuleMacro: Bool {
         macroName.text == "Rule" &&
+        additionalTrailingClosures.isEmpty &&
         arguments.count == 1 &&
         trailingClosure.map { $0.statements.onlyElement?.item.is(ReturnStmtSyntax.self) == false } ?? false
     }

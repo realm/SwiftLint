@@ -1,5 +1,5 @@
-import Dispatch
-import Foundation
+@preconcurrency import Dispatch
+@preconcurrency import Foundation
 
 private let outputQueue: DispatchQueue = {
     let queue = DispatchQueue(

@@ -382,6 +382,8 @@ false
 </code></pre>
 <pre class="highlight swift"><code><span class="n">order</span><span class="o">.</span><span class="n">discount</span> <span class="o">==</span> <span class="mi">0</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">rule</span> <span class="o">=</span> <span class="k">#Rule</span><span class="p">(</span><span class="kt">Tips</span><span class="o">.</span><span class="kt">Event</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"someTips"</span><span class="p">))</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">donations</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span>
 </code></pre>
@@ -402,6 +404,8 @@ false
 <pre class="highlight swift"><code><span class="p">[</span><span class="kt">Int</span><span class="p">]()</span><span class="o">.</span><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mo">0o00</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="err">↓</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="cp">#ExampleMacro { $0.list.↓count == 0 }</span>
 </code></pre>
 
           </div>

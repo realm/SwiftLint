@@ -124,14 +124,14 @@ let package = Package(
             exclude: [
                 "Resources",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "CLITests",
             dependencies: [
                 "SwiftLintFramework",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "ExtraRulesTests",
@@ -139,7 +139,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "TestHelpers",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "FrameworkTests",
@@ -151,7 +151,7 @@ let package = Package(
             exclude: [
                 "Resources",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "GeneratedTests",
@@ -159,7 +159,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "TestHelpers",
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
             name: "IntegrationTests",
@@ -170,7 +170,7 @@ let package = Package(
             exclude: [
                 "default_rule_configurations.yml"
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + targetedConcurrency // Set to strict once SwiftLintFramework is updated
         ),
         .testTarget(
             name: "MacroTests",
@@ -178,7 +178,7 @@ let package = Package(
                 "SwiftLintCoreMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ],
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(
             name: "TestHelpers",
@@ -186,7 +186,7 @@ let package = Package(
                 "SwiftLintFramework"
             ],
             path: "Tests/TestHelpers",
-            swiftSettings: swiftFeatures
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
     ]
 )

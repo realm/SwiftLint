@@ -3,6 +3,7 @@ load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 exports_files(["BUILD"])
 
 copts = [
+    "-warnings-as-errors",
     "-enable-upcoming-feature",
     "ExistentialAny",
     "-enable-upcoming-feature",
@@ -13,6 +14,15 @@ copts = [
     "ForwardTrailingClosures",
     "-enable-upcoming-feature",
     "ImplicitOpenExistentials",
+]
+
+strict_concurrency_copts = [
+    "-Xfrontend",
+    "-strict-concurrency=complete",
+]
+targeted_concurrency_copts = [
+    "-Xfrontend",
+    "-strict-concurrency=targeted",
 ]
 
 # CLITests
@@ -26,7 +36,7 @@ swift_library(
     deps = [
         "//:SwiftLintFramework",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -46,7 +56,7 @@ swift_library(
         "//:SwiftLintCoreMacrosLib",
         "@SwiftSyntax//:SwiftSyntaxMacrosTestSupport_opt",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -66,7 +76,7 @@ swift_library(
     deps = [
         "//:SwiftLintFramework",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 # BuiltInRulesTests
@@ -87,7 +97,7 @@ swift_library(
     deps = [
         ":TestHelpers",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -117,7 +127,7 @@ swift_library(
     deps = [
         ":TestHelpers",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -140,7 +150,7 @@ swift_library(
     deps = [
         ":TestHelpers",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -169,7 +179,7 @@ swift_library(
     deps = [
         ":TestHelpers",
     ],
-    copts = copts,
+    copts = copts + targeted_concurrency_copts, # Set to strict once SwiftLintFramework is updated
 )
 
 swift_test(
@@ -208,7 +218,7 @@ swift_library(
     deps = [
         ":TestHelpers",
     ],
-    copts = copts,
+    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(

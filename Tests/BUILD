@@ -208,6 +208,7 @@ swift_library(
     deps = [
         ":TestHelpers",
     ],
+    copts = copts,
 )
 
 swift_test(

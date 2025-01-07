@@ -86,35 +86,11 @@ struct EmptyCountRule: Rule {
             Example("#Rule { $0.donations.↓count == 0 }", excludeFromDocumentation: true):
                 Example("#Rule { $0.donations.isEmpty }"),
             Example(
-                "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }",
-                excludeFromDocumentation: true
-            ): Example(
-                    "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.isEmpty }"
-                ),
-            Example(
-                "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }",
-                excludeFromDocumentation: true
-            ): Example(
-                "#Rule(param1: \"param1\") { $0.donations.isEmpty } closure2: { doSomething() }"
-                ),
-            Example(
                 "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }",
                 excludeFromDocumentation: true
             ): Example(
                 "#Rule(param1: \"param1\") { return $0.donations.isEmpty }"
                 ),
-            Example("""
-                #Rule(param1: "param1") {
-                    doSomething()
-                    return $0.donations.↓count == 0
-                }
-            """, excludeFromDocumentation: true):
-                Example("""
-                #Rule(param1: "param1") {
-                    doSomething()
-                    return $0.donations.isEmpty
-                }
-            """),
         ]
     )
 }

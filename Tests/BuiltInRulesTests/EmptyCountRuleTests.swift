@@ -15,6 +15,7 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             Example("discount == 0\n"),
             Example("order.discount == 0\n"),
             Example("count == 0\n"),
+            Example("let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.isEmpty }"),
         ]
         let triggeringExamples = [
             Example("[Int]().↓count == 0\n"),
@@ -24,6 +25,7 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
             Example("[Int]().↓count == 0x00_00\n"),
             Example("[Int]().↓count == 0b00\n"),
             Example("[Int]().↓count == 0o00\n"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"),
         ]
 
         let corrections = [
@@ -55,6 +57,8 @@ final class EmptyCountRuleTests: SwiftLintTestCase {
                 Example("count == 0 && [Int]().isEmpty"),
             Example("[Int]().count != 3 && [Int]().↓count != 0 || count == 0 && [Int]().count > 2"):
                 Example("[Int]().count != 3 && ![Int]().isEmpty || count == 0 && [Int]().count > 2"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"):
+                Example("#ExampleMacro { $0.list.isEmpty }"),
         ]
 
         let description = EmptyCountRule.description

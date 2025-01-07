@@ -24,11 +24,12 @@ final class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
         XCTAssertTrue(config.allowRedundancy)
     }
 
-    @MainActor
     func testInvalidKeyInCustomConfiguration() async throws {
-        var config = ExplicitTypeInterfaceConfiguration()
         try await AsyncAssertEqual(
-            try await Issue.captureConsole { try config.apply(configuration: ["invalidKey": "error"]) },
+            try await Issue.captureConsole {
+                var config = ExplicitTypeInterfaceConfiguration()
+                try config.apply(configuration: ["invalidKey": "error"])
+            },
             "warning: Configuration for 'explicit_type_interface' rule contains the invalid key(s) 'invalidKey'."
         )
     }

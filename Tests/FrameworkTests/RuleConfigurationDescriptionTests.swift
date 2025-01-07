@@ -490,31 +490,29 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
         XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
     }
 
-    @MainActor
     func testDeprecationWarning() async throws {
-        var configuration = TestConfiguration()
-
         try await AsyncAssertEqual(
-            try await Issue.captureConsole { try configuration.apply(configuration: ["set": [6, 7]]) },
+            try await Issue.captureConsole {
+                var configuration = TestConfiguration()
+                try configuration.apply(configuration: ["set": [6, 7]])
+            },
             "warning: Configuration option 'set' in 'my_rule' rule is deprecated. Use the option 'other_opt' instead."
         )
     }
 
-    @MainActor
     func testNoDeprecationWarningIfNoDeprecatedPropertySet() async throws {
-        var configuration = TestConfiguration()
-
         try await AsyncAssertTrue(
-            try await Issue.captureConsole { try configuration.apply(configuration: ["flag": false]) }.isEmpty
+            try await Issue.captureConsole {
+                var configuration = TestConfiguration()
+                try configuration.apply(configuration: ["flag": false])
+            }.isEmpty
         )
     }
 
-    @MainActor
     func testInvalidKeys() async throws {
-        var configuration = TestConfiguration()
-
         try await AsyncAssertEqual(
             try await Issue.captureConsole {
+                var configuration = TestConfiguration()
                 try configuration.apply(configuration: [
                     "severity": "error",
                     "warning": 3,

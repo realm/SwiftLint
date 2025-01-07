@@ -47,7 +47,9 @@ final class BaselineTests: XCTestCase {
         DirectReturnRule.description,
     ]
 
-    private static var currentDirectoryPath: String?
+    private actor CurrentDirectoryHolder {
+        static var currentDirectoryPath: String?
+    }
 
     private static func violations(for filePath: String?) -> [StyleViolation] {
         ruleDescriptions.violations(for: filePath)
@@ -59,14 +61,14 @@ final class BaselineTests: XCTestCase {
 
     override static func setUp() {
         super.setUp()
-        currentDirectoryPath = FileManager.default.currentDirectoryPath
+        CurrentDirectoryHolder.currentDirectoryPath = FileManager.default.currentDirectoryPath
         XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(temporaryDirectoryPath))
     }
 
     override static func tearDown() {
-        if let currentDirectoryPath {
+        if let currentDirectoryPath = CurrentDirectoryHolder.currentDirectoryPath {
             XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath))
-            self.currentDirectoryPath = nil
+            CurrentDirectoryHolder.currentDirectoryPath = nil
         }
         super.tearDown()
     }

@@ -94,7 +94,7 @@ public enum Issue: LocalizedError, Equatable {
     ///
     /// - returns: The collected messages produced while running the code in the runner.
     @MainActor
-    static func captureConsole(runner: () throws -> Void) async rethrows -> String {
+    static func captureConsole(runner: @Sendable () throws -> Void) async rethrows -> String {
         actor Console {
             static var content = ""
         }

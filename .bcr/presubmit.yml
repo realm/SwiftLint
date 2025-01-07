@@ -5,7 +5,7 @@ tasks:
     bazel: 7.x
     environment:
       CC: "clang"
-      SWIFT_VERSION: "5.10"
+      SWIFT_VERSION: "6.0.3"
       SWIFT_HOME: "$HOME/swift-$SWIFT_VERSION"
       PATH: "$PATH:$SWIFT_HOME/usr/bin"
     shell_commands:

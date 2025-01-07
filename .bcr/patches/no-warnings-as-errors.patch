@@ -1,0 +1,10 @@
+--- BUILD
++++ BUILD
+@@ -21,7 +21,6 @@ config_setting(
+ )
+
+ copts = [
+-    "-warnings-as-errors",
+     "-enable-upcoming-feature",
+     "ExistentialAny",
+     "-enable-upcoming-feature",

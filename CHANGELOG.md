@@ -58,7 +58,7 @@
 
 #### Bug Fixes
 
-* Ignore TipKit Rule Macro in `empty_count` rule.  
+* Ignore TipKit's' `#Rule` macro in `empty_count` rule.  
   [Ueeek](https://github.com/Ueeek)
   [#5883](https://github.com/realm/SwiftLint/issues/5883)
 

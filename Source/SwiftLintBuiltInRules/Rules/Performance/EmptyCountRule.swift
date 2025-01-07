@@ -83,14 +83,8 @@ struct EmptyCountRule: Rule {
                 Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
             Example("#ExampleMacro { $0.list.↓count == 0 }"):
                 Example("#ExampleMacro { $0.list.isEmpty }"),
-            Example("#Rule { $0.donations.↓count == 0 }", excludeFromDocumentation: true):
-                Example("#Rule { $0.donations.isEmpty }"),
-            Example(
-                "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }",
-                excludeFromDocumentation: true
-            ): Example(
-                "#Rule(param1: \"param1\") { return $0.donations.isEmpty }"
-                ),
+            Example("#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }"):
+                Example("#Rule(param1: \"param1\") { return $0.donations.isEmpty }"),
         ]
     )
 }

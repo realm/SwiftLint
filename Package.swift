@@ -63,7 +63,8 @@ let package = Package(
         .plugin(
             name: "SwiftLintBuildToolPlugin",
             capability: .buildTool(),
-            dependencies: swiftLintPluginDependencies
+            dependencies: swiftLintPluginDependencies,
+            packageAccess: false
         ),
         .plugin(
             name: "SwiftLintCommandPlugin",
@@ -75,7 +76,8 @@ let package = Package(
                     ),
                 ]
             ),
-            dependencies: swiftLintPluginDependencies
+            dependencies: swiftLintPluginDependencies,
+            packageAccess: false
         ),
         .target(
             name: "SwiftLintCore",

@@ -1,8 +1,9 @@
 name: Release
 
 on:
-  release:
-    types: [released]
+  push:
+    tags:
+      - '0.[0-9]+.[0-9]+'
 
 jobs:
   dispatch-plugins:
@@ -13,6 +14,9 @@ jobs:
       - name: Parse checksum
         id: parse_checksum
         run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> $GITHUB_OUTPUT
+      - name: Extract release title
+        id: extract_title
+        run: echo "title=$(git tag -l --format='%(subject)' ${{ github.ref_name }})" >> $GITHUB_OUTPUT
       - name: Dispatch release of plugins package
         uses: peter-evans/repository-dispatch@v3
         with:
@@ -21,15 +25,15 @@ jobs:
           event-type: swiftlint-release
           client-payload: |-
             {
-              "title": "${{ github.event.release.name }}",
-              "tag": "${{ github.event.release.tag_name }}",
+              "title": "${{ steps.extract_title.outputs.title }}",
+              "tag": "${{ github.ref_name }}",
               "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
             }
   trigger-docker:
     uses: ./.github/workflows/docker.yml
     secrets: inherit
     with:
-      tag: ${{ github.event.release.tag_name }}
+      tag: ${{ github.ref_name }}
   upload-docker:
     needs: trigger-docker
     runs-on: ubuntu-20.04
@@ -46,8 +50,7 @@ jobs:
       - name: Retrieve author in uppercase
         id: retrieve_author
         run: |
-          author=${{ github.event.release.author.login }}
-          AUTHOR=$(echo $author | tr '[:lower:]' '[:upper:]')
+          AUTHOR=$(echo ${{ github.actor }} | tr '[:lower:]' '[:upper:]')
           echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
       - name: Deploy to CocoaPods
         run: make pod_publish

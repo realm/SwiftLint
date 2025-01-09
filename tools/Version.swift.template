@@ -1,5 +1,5 @@
 /// A type describing the SwiftLint version.
-public struct Version: VersionComparable {
+public struct Version: VersionComparable, Sendable {
     /// The string value for this version.
     public let value: String
 

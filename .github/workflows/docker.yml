@@ -6,13 +6,10 @@ on:
       - main
   workflow_call:
     inputs:
-      tag:
-        description: 'Docker tag'
+      sha:
+        description: 'Git commit SHA'
         required: true
         type: string
-        default: 'latest'
-  workflow_dispatch:
-    inputs:
       tag:
         description: 'Docker tag'
         required: true
@@ -24,6 +21,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
+      if: github.event_name != 'push' && inputs.tag != 'latest'
+      with:
+        ref: ${{ inputs.sha }}
+    - uses: actions/checkout@v4
+      if: github.event_name == 'push'
     - name: Set Docker tag
       if: github.event_name != 'push' && inputs.tag != 'latest'
       run: echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV

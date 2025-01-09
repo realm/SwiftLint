@@ -1,52 +1,124 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - '0.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        type: string
+      title:
+        description: 'Release title'
+        required: true
+        type: string
 
 jobs:
-  dispatch-plugins:
-    runs-on: ubuntu-latest
+  create-release:
+    runs-on: macOS-latest
+    outputs:
+      pre_release_sha: ${{ steps.pre_release.outputs.pre_release_sha }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Parse checksum
-        id: parse_checksum
-        run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> $GITHUB_OUTPUT
-      - name: Extract release title
-        id: extract_title
-        run: echo "title=$(git tag -l --format='%(subject)' ${{ github.ref_name }})" >> $GITHUB_OUTPUT
-      - name: Dispatch release of plugins package
-        uses: peter-evans/repository-dispatch@v3
+      - name: Update changelog
+        run: "sed -i '' 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
+      - name: Update built-in versions
+        run: |
+          sed 's/__VERSION__/${{ inputs.version }}/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+          sed -e '3s/.*/    version = "${{ inputs.version }}",/' -i '' MODULE.bazel
+      - name: Configure author
+        run: |
+          git config --local user.name SimplyDanny
+          git config --local user.email danny.moesch@icloud.com
+      - name: Commit changes
+        id: pre_release
+        run: |
+          git commit -a -m "Prepare ${{ inputs.version }} release"
+          echo "pre_release_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          git push origin HEAD
+      - uses: ./.github/workflows/docker.yml
         with:
-          token: ${{ secrets.SIMPLYDANNY_PLUGINS_SYNC }}
-          repository: SimplyDanny/SwiftLintPlugins
-          event-type: swiftlint-release
-          client-payload: |-
-            {
-              "title": "${{ steps.extract_title.outputs.title }}",
-              "tag": "${{ github.ref_name }}",
-              "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
-            }
-  trigger-docker:
-    uses: ./.github/workflows/docker.yml
-    secrets: inherit
-    with:
-      tag: ${{ github.ref_name }}
+          sha: ${{ steps.pre_release.outputs.pre_release_sha }}
+          tag: ${{ inputs.version }}
+      - name: Create SPM artifact bundle
+        run: make spm_artifactbundle
+      - name: Update binary target in Swift package
+        run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
+      - name: Create tag and release commit
+        run: |
+          git commit -a -m "Release ${{ inputs.version }}"
+          git tag -a ${{ inputs.version }} -m "${{ inputs.title }}"
+          git push origin HEAD
+          git push origin ${{ inputs.version }}
+      - name: Create release
+        run: |
+          release_notes=$(mktemp)
+          ./tools/generate-release-notes.sh "${{ inputs.version }}" > "$release_notes"
+          gh release create ${{ inputs.version }} --title ${{ inputs.title }} -F "$release_notes" --draft
+          rm "$release_notes"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact bundle to release
+        run: gh release upload ${{ inputs.version }} SwiftLintBinary.artifactbundle.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   upload-docker:
-    needs: trigger-docker
-    runs-on: ubuntu-20.04
+    needs: create-release
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
       - name: Upload binary to existing release
         run: make zip_linux_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  publish-pod:
+  upload-package:
+    needs: create-release
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+      - name: Create package
+        run: make package
+      - name: Upload package to existing release
+        run: gh release upload ${{ inputs.version }} SwiftLint.pkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  upload-bazel:
+    needs: create-release
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+      - name: Create Bazel release
+        run: make bazel_release
+      - name: Upload Bazel release to existing release
+        run: gh release upload ${{ inputs.version }} bazel.tar.gz bazel.tar.gz.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  upload-portable-zip:
+    needs: create-release
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+      - name: Create portable ZIP
+        run: make portable_zip
+      - name: Upload portable ZIP to existing release
+        run: gh release upload ${{ inputs.version }} portable_swiftlint.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish-pod:
+    needs: create-release
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
       - name: Retrieve author in uppercase
         id: retrieve_author
         run: |
@@ -56,3 +128,26 @@ jobs:
         run: make pod_publish
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+  dispatch-plugins:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+      - name: Parse checksum
+        id: parse_checksum
+        run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> $GITHUB_OUTPUT
+      - name: Dispatch release of plugins package
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SIMPLYDANNY_PLUGINS_SYNC }}
+          repository: SimplyDanny/SwiftLintPlugins
+          event-type: swiftlint-release
+          client-payload: |-
+            {
+              "title": "${{ inputs.title }}",
+              "tag": "${{ inputs.version }}",
+              "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
+            }

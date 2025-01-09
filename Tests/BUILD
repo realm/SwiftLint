@@ -3,7 +3,6 @@ load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 exports_files(["BUILD"])
 
 copts = [
-    "-warnings-as-errors",
     "-enable-upcoming-feature",
     "ExistentialAny",
     "-enable-upcoming-feature",

@@ -24,3 +24,4 @@ tasks:
       - '@swiftlint//:swiftlint'
     build_flags:
       - "--repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1"
+      - "--swiftcopt=-no-warnings-as-errors"

@@ -21,7 +21,6 @@ config_setting(
 )
 
 copts = [
-    "-warnings-as-errors",
     "-enable-upcoming-feature",
     "ExistentialAny",
     "-enable-upcoming-feature",
@@ -104,6 +103,7 @@ swift_library(
 swift_library(
     name = "SourceKittenFramework.wrapper",
     srcs = ["Source/SourceKittenFrameworkWrapper/Empty.swift"],
+    copts = ["-no-warnings-as-errors"],
     module_name = "SourceKittenFrameworkWrapper",
     visibility = ["//visibility:public"],
     deps = [

@@ -94,7 +94,9 @@ jobs:
         with:
           ref: ${{ inputs.version }}
       - name: Upload binary to existing release
-        run: make zip_linux_release
+        run: |
+          make zip_linux_release
+          gh release upload ${{ inputs.version }} swiftlint_linux.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   upload-package:

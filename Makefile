@@ -101,7 +101,7 @@ installables: build
 	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
 installables_linux: build_linux
-	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"	
+	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
 prefix_install: build_with_disable_sandbox
@@ -133,7 +133,6 @@ zip_linux_release: build_linux
 	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
-	gh release upload "$(VERSION_STRING)" swiftlint_linux.zip
 
 package: build
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

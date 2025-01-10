@@ -53,7 +53,7 @@ jobs:
       tag: ${{ inputs.version }}
   create-release:
     needs: build-docker
-    runs-on: macOS-latest
+    runs-on: macOS-14
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,6 +64,8 @@ jobs:
           git config --local user.email "danny.moesch@icloud.com"
       - name: Create SPM artifact bundle
         run: make spm_artifactbundle
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_16.2.app
       - name: Update binary target in Swift package
         run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
       - name: Create tag and release commit

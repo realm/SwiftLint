@@ -18,8 +18,8 @@ on:
         default: 'main'
 
 jobs:
-  create-release:
-    runs-on: macOS-latest
+  prepare-release:
+    runs-on: ubuntu-latest
     outputs:
       pre_release_sha: ${{ steps.pre_release.outputs.pre_release_sha }}
     steps:
@@ -29,25 +29,39 @@ jobs:
         if: inputs.branch != 'main'
         run: git checkout -b ${{ inputs.branch }}
       - name: Update changelog
-        run: "sed -i '' 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
+        run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
       - name: Update built-in versions
         run: |
           sed 's/__VERSION__/${{ inputs.version }}/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
-          sed -e '3s/.*/    version = "${{ inputs.version }}",/' -i '' MODULE.bazel
+          sed -i -e '3s/.*/    version = "${{ inputs.version }}",/' MODULE.bazel
       - name: Configure author
         run: |
-          git config --local user.name SimplyDanny
-          git config --local user.email danny.moesch@icloud.com
+          git config --local user.name "Danny Mösch"
+          git config --local user.email "danny.moesch@icloud.com"
       - name: Commit changes
         id: pre_release
         run: |
           git commit -a -m "Prepare ${{ inputs.version }} release"
           echo "pre_release_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           git push origin HEAD
-      - uses: ./.github/workflows/docker.yml
+  build-docker:
+    needs: prepare-release
+    uses: ./.github/workflows/docker.yml
+    secrets: inherit
+    with:
+      sha: ${{ needs.prepare-release.outputs.pre_release_sha }}
+      tag: ${{ inputs.version }}
+  create-release:
+    needs: build-docker
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
-          sha: ${{ steps.pre_release.outputs.pre_release_sha }}
-          tag: ${{ inputs.version }}
+          ref: ${{ inputs.branch }}
+      - name: Configure author
+        run: |
+          git config --local user.name "Danny Mösch"
+          git config --local user.email "danny.moesch@icloud.com"
       - name: Create SPM artifact bundle
         run: make spm_artifactbundle
       - name: Update binary target in Swift package

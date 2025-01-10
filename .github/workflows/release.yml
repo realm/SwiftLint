@@ -62,6 +62,16 @@ jobs:
         run: |
           git config --local user.name "Danny Mösch"
           git config --local user.email "danny.moesch@icloud.com"
+      - name: Create build folders
+        run: mkdir -p .build/linux
+      - name: Extract binary from Docker image
+        uses: shrink/actions-docker-extract@v3
+        with:
+          image: ghcr.io/realm/swiftlint:${{ inputs.version }}
+          path: /usr/bin/swiftlint
+          destination: .build/linux/swiftlint_linux_amd64
+      - name: Make binary executable
+        run: chmod +x .build/linux/swiftlint_linux_amd64
       - name: Create SPM artifact bundle
         run: make spm_artifactbundle
         env:

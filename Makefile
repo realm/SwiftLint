@@ -28,7 +28,7 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 
 VERSION_STRING=$(shell ./tools/get-version)
 
-.PHONY: all clean build build_linux install package test uninstall docs
+.PHONY: all clean build install package test uninstall docs
 
 all: build
 
@@ -65,7 +65,7 @@ analyze_autocorrect: write_xcodebuild_log
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	rm -rf rule_docs/ docs/
+	rm -rf rule_docs/ docs/ .build/
 	rm -f ./*.{zip,pkg} bazel.tar.gz bazel.tar.gz.sha256
 	swift package clean
 
@@ -80,7 +80,7 @@ build:
 	chmod +w "$(SWIFTLINT_EXECUTABLE)"
 	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
 
-build_linux:
+$(SWIFTLINT_EXECUTABLE_LINUX_AMD64):
 	mkdir -p "$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)"
 	docker run --platform linux/amd64 "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)"
 	chmod +x "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)"
@@ -100,7 +100,7 @@ installables: build
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
-installables_linux: build_linux
+installables_linux: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64)
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
@@ -122,13 +122,13 @@ spm_artifactbundle: installables installables_linux
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 
-zip_linux: docker_image build_linux
+zip_linux: docker_image $(SWIFTLINT_EXECUTABLE_LINUX_AMD64)
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	cp -f $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-zip_linux_release: build_linux
+zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64)
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"

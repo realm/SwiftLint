@@ -71,8 +71,9 @@ final class CollectingRuleTests: SwiftLintTestCase {
         XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
     }
 
+    // swiftlint:disable:next function_body_length
     func testCorrects() {
-        struct Spec: MockCollectingRule, CollectingCorrectableRule {
+        struct Spec: MockCollectingRule, CorrectableRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
             func collectInfo(for file: SwiftLintFile) -> String {
@@ -102,12 +103,16 @@ final class CollectingRuleTests: SwiftLintTestCase {
                 }
                 return []
             }
+
+            func correct(file: SwiftLintFile) -> [Correction] {
+                correct(file: file, collectedInfo: [file: collectInfo(for: file)])
+            }
         }
 
-        struct AnalyzerSpec: MockCollectingRule, AnalyzerRule, CollectingCorrectableRule {
+        struct AnalyzerSpec: MockCollectingRule, AnalyzerRule, CorrectableRule {
             var configuration = SeverityConfiguration<Self>(.warning)
 
-            func collectInfo(for file: SwiftLintFile, compilerArguments _: [String]) -> String {
+            func collectInfo(for file: SwiftLintFile) -> String {
                 file.contents
             }
 
@@ -130,6 +135,10 @@ final class CollectingRuleTests: SwiftLintTestCase {
                 collectedInfo[file] == "baz"
                     ? [Correction(ruleDescription: Spec.description, location: Location(file: file, byteOffset: 2))]
                     : []
+            }
+
+            func correct(file: SwiftLintFile) -> [Correction] {
+                correct(file: file, collectedInfo: [file: collectInfo(for: file)], compilerArguments: [])
             }
         }
 

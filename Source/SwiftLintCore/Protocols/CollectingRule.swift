@@ -89,69 +89,6 @@ public extension CollectingRule where Self: AnalyzerRule {
     }
 }
 
-/// A `CollectingRule` that is also a `CorrectableRule`.
-package protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
-    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
-    /// and returns all corrections that were applied.
-    ///
-    /// - note: This function is called by the linter and is always implemented in extensions.
-    ///
-    /// - parameter file:              The file for which to execute the rule.
-    /// - parameter collectedInfo:     All collected info.
-    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
-    ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile,
-                 collectedInfo: [SwiftLintFile: FileInfo],
-                 compilerArguments: [String]) -> [Correction]
-
-    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
-    /// and returns all corrections that were applied.
-    ///
-    /// - note: This function is called by the linter and is always implemented in extensions.
-    ///
-    /// - parameter file:          The file for which to execute the rule.
-    /// - parameter collectedInfo: All collected info.
-    ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction]
-}
-
-package extension CollectingCorrectableRule {
-    func correct(file: SwiftLintFile,
-                 collectedInfo: [SwiftLintFile: FileInfo],
-                 compilerArguments _: [String]) -> [Correction] {
-        correct(file: file, collectedInfo: collectedInfo)
-    }
-
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
-        guard let info = storage.collectedInfo(for: self) else {
-            queuedFatalError("Attempt to correct a CollectingRule before collecting info for it")
-        }
-        return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
-    }
-
-    func correct(file _: SwiftLintFile) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:)` for AnalyzerRule")
-    }
-
-    func correct(file _: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-}
-
-package extension CollectingCorrectableRule where Self: AnalyzerRule {
-    func correct(file _: SwiftLintFile) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-    func correct(file _: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-    func correct(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: FileInfo]) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-}
-
 // MARK: - == Implementations
 
 /// :nodoc:

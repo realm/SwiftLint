@@ -51,10 +51,12 @@ jobs:
         outputs: |
           type=registry
           type=local,dest=artifacts
+    - name: Rename binary artifact
+      run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
     - name: Upload binary artifact
       uses: actions/upload-artifact@v4
       with:
         name: swiftlint_linux_amd64
-        path: artifacts/usr/bin/swiftlint
+        path: artifacts/usr/bin/swiftlint_linux_amd64
         if-no-files-found: error
         retention-days: 2

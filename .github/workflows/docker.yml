@@ -46,10 +46,15 @@ jobs:
         registry: ghcr.io
     - uses: docker/build-push-action@v6
       with:
-        push: true
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
         platforms: linux/amd64
-        outputs: type=local,dest=artifacts
+        outputs:
+          - type=registry
+          - type=local,dest=artifacts
+    - name: List local files
+      run: |
+        ls -l
+        tree artifacts
     - name: Upload binary artifact
       uses: actions/upload-artifact@v4
       with:

@@ -98,7 +98,8 @@ jobs:
       - name: Make binary executable
         run: chmod +x .build/universal/swiftlint .build/linux/swiftlint_linux_amd64
       - name: List downloaded files
-        run: tree .build
+        if: always()
+        run: tree .build/{universal,linux}
       - name: Create SPM artifact bundle
         run: make --debug spm_artifactbundle
       - name: Update binary target in Swift package

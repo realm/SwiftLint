@@ -51,13 +51,9 @@ jobs:
         outputs: |
           type=registry
           type=local,dest=artifacts
-    - name: List local files
-      run: |
-        ls -l
-        tree artifacts
     - name: Upload binary artifact
       uses: actions/upload-artifact@v4
       with:
         name: swiftlint_linux_amd64
-        path: artifacts/linux_amd64/workspace/swiftlint
+        path: artifacts/usr/bin/swiftlint
         retention-days: 2

@@ -19,6 +19,8 @@ on:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_16.2.app
+  MACOS_BUILD_DIR: .build/universal
+  LINUX_BUILD_DIR: .build/linux
 
 jobs:
   prepare-release:
@@ -62,12 +64,15 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
       - name: Build SwiftLint for macOS
-        run: make .build/universal/swiftlint
+        run: make bazel_release
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v4
         with:
           name: swiftlint
-          path: .build/universal/swiftlint
+          path: |
+            ${{ env.MACOS_BUILD_DIR }}/swiftlint
+            bazel-bin/bazel.tar.gz
+            bazel-bin/bazel.tar.gz.sha256
           retention-days: 2
           if-no-files-found: error
   create-release:
@@ -84,25 +89,27 @@ jobs:
           git config --local user.name "Danny Mösch"
           git config --local user.email "danny.moesch@icloud.com"
       - name: Create build folders
-        run: mkdir -p .build/universal .build/linux
+        run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
       - name: Download binary artifact for macOS
         uses: actions/download-artifact@v4
         with:
           name: swiftlint
-          path: .build/universal
+          path: ${{ env.MACOS_BUILD_DIR }}
+      - name: Move Bazel release
+        run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
       - name: Download binary artifact for Linux
         uses: actions/download-artifact@v4
         with:
           name: swiftlint_linux_amd64
-          path: .build/linux
-      - name: Make binary executable
-        run: chmod +x .build/universal/swiftlint .build/linux/swiftlint_linux_amd64
+          path: ${{ env.LINUX_BUILD_DIR }}
+      - name: Make binaries executable
+        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
       - name: List downloaded files
         if: always()
         run: |
           ls -al .build
-          ls -al .build/universal
-          ls -al .build/linux
+          ls -al ${{ env.MACOS_BUILD_DIR }}
+          ls -al ${{ env.LINUX_BUILD_DIR }}
       - name: Create SPM artifact bundle
         run: make --debug spm_artifactbundle
       - name: Update binary target in Swift package

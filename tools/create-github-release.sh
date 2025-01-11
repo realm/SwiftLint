@@ -12,12 +12,12 @@ release_notes=$(mktemp)
 # Create GitHub Release
 
 release_title="$(sed -n '1s/^## //p' CHANGELOG.md)"
-gh release create "$version" --title "$release_title" -F "$release_notes" --draft   \
-    "bazel.tar.gz"                                                                  \
-    "bazel.tar.gz.sha256"                                                           \
-    "portable_swiftlint.zip"                                                        \
-    "swiftlint_linux.zip"                                                           \
-    "SwiftLint.pkg"                                                                 \
+gh release create "$version" --title "$release_title" -F "$release_notes" --draft --verify-tag  \
+    "bazel.tar.gz"                                                                              \
+    "bazel.tar.gz.sha256"                                                                       \
+    "portable_swiftlint.zip"                                                                    \
+    "swiftlint_linux.zip"                                                                       \
+    "SwiftLint.pkg"                                                                             \
     "SwiftLintBinary.artifactbundle.zip"
 
 rm "$release_notes"

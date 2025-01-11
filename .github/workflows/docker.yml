@@ -56,4 +56,5 @@ jobs:
       with:
         name: swiftlint_linux_amd64
         path: artifacts/usr/bin/swiftlint
+        if-no-files-found: error
         retention-days: 2

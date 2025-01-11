@@ -17,7 +17,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         let foo = bar!
         ```
 
-        which disables the `force_unwrapping` rule for the remainder the file, instead of just for the specific \
+        which disables the `force_unwrapping` rule for the remainder of the file, instead of just for the specific \
         violation.
 
         `next`, `this`, or `previous` can be used to restrict the disable command's scope to a single line, or it \

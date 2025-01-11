@@ -65,7 +65,7 @@ public struct RuleDescription: Equatable, Sendable {
         rationale?.consoleRationale
     }
 
-    /// The rationale for this description, with MarkDown formatting.
+    /// The rationale for this description, with Markdown formatting.
     public var formattedRationale: String? {
         rationale?.formattedRationale
     }

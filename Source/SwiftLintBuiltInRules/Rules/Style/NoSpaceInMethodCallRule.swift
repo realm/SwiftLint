@@ -61,12 +61,9 @@ private extension NoSpaceInMethodCallRule {
             guard node.hasNoSpaceInMethodCallViolation else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.calledExpression.endPositionBeforeTrailingTrivia)
-
+            numberOfCorrections += 1
             let newNode = node
                 .with(\.calledExpression, node.calledExpression.with(\.trailingTrivia, []))
-
             return super.visit(newNode)
         }
     }

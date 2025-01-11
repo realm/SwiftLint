@@ -185,8 +185,7 @@ private extension OptionalEnumCaseMatchingRule {
 
             if let expression = pattern.expression.as(OptionalChainingExprSyntax.self),
                !expression.expression.isDiscardAssignmentOrBoolLiteral {
-                let violationPosition = expression.questionMark.positionAfterSkippingLeadingTrivia
-                correctionPositions.append(violationPosition)
+                numberOfCorrections += 1
                 let newPattern = PatternSyntax(pattern.with(\.expression, expression.expression))
                 let newNode = node
                     .with(\.pattern, newPattern)
@@ -203,10 +202,7 @@ private extension OptionalEnumCaseMatchingRule {
                     else {
                         continue
                     }
-
-                    let violationPosition = optionalChainingExpression.questionMark.positionAfterSkippingLeadingTrivia
-                    correctionPositions.append(violationPosition)
-
+                    numberOfCorrections += 1
                     let newElement = element.with(\.expression, optionalChainingExpression.expression)
                     if let index = expression.elements.index(of: element) {
                         newExpression.elements = newExpression.elements.with(\.[index], newElement)

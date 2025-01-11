@@ -138,9 +138,7 @@ private extension RedundantOptionalInitializationRule {
             guard violations.isNotEmpty else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(contentsOf: violations.map(\.0))
-
+            numberOfCorrections += violations.count
             let violatingBindings = violations.map(\.1)
             let newBindings = PatternBindingListSyntax(node.bindings.map { binding in
                 guard violatingBindings.contains(binding) else {

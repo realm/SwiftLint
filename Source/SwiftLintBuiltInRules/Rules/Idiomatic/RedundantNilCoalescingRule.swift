@@ -44,9 +44,8 @@ private extension RedundantNilCoalescingRule {
             else {
                 return super.visit(node)
             }
-
+            numberOfCorrections += 1
             let newNode = ExprListSyntax(node.dropLast(2)).with(\.trailingTrivia, [])
-            correctionPositions.append(secondToLastExpression.operator.positionAfterSkippingLeadingTrivia)
             return super.visit(newNode)
         }
     }

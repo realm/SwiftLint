@@ -367,9 +367,9 @@ public struct CollectedLinter {
     /// - parameter storage: The storage object containing all collected info.
     ///
     /// - returns: All corrections that were applied.
-    public func correct(using storage: RuleStorage) -> [Correction] {
+    public func correct(using storage: RuleStorage) -> [String: Int] {
         if let violations = cachedStyleViolations()?.0, violations.isEmpty {
-            return []
+            return [:]
         }
 
         if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
@@ -377,19 +377,21 @@ public struct CollectedLinter {
                 "warning: Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
             )
             queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
-            return []
+            return [:]
         }
 
-        var corrections = [Correction]()
+        var corrections = [String: Int]()
         for rule in rules where rule.shouldRun(onFile: file) {
             guard let rule = rule as? any CorrectableRule else {
                 continue
             }
-            let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
-            corrections += newCorrections
-            if newCorrections.isNotEmpty, !file.isVirtual {
-                file.invalidateCache()
-            }
+            let corrected = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
+            if corrected != 0 {
+                corrections[type(of: rule).description.identifier] = corrected
+                if !file.isVirtual {
+                    file.invalidateCache()
+                }
+			}
         }
         return corrections
     }

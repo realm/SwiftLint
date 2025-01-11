@@ -50,16 +50,12 @@ private extension PreferZeroOverExplicitInitRule {
             guard node.hasViolation, let name = node.name else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let newNode = MemberAccessExprSyntax(name: "zero")
                 .with(\.base, "\(raw: name)")
-            return super.visit(
-                newNode
-                    .with(\.leadingTrivia, node.leadingTrivia)
-                    .with(\.trailingTrivia, node.trailingTrivia)
-            )
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
+            return super.visit(newNode)
         }
     }
 }

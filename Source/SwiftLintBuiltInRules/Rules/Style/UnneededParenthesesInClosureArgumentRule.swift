@@ -104,8 +104,7 @@ private extension UnneededParenthesesInClosureArgumentRule {
                 )
             }
 
-            correctionPositions.append(clause.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let paramList = ClosureShorthandParameterListSyntax(items).with(\.trailingTrivia, .spaces(1))
             return super.visit(node.with(\.parameterClause, .init(paramList)))
         }

@@ -38,14 +38,18 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
         return []
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         file.structureDictionary.traverseDepthFirst { subDict in
-            guard subDict.declarationKind != nil else { return nil }
-            return correct(file: file, dictionary: subDict)
-        }
+            guard subDict.declarationKind != nil else {
+                return [0]
+            }
+            return [correct(file: file, dictionary: subDict)]
+        }.reduce(0, +)
     }
-    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Correction] {
-        guard let offset = dictionary.offset else { return [] }
+    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Int {
+        guard dictionary.offset != nil else {
+            return 0
+        }
         let originalContents = file.stringView
         let violatingRanges = violatingModifiers(dictionary: dictionary)
             .compactMap { preferred, declared -> (NSRange, NSRange)? in
@@ -61,34 +65,19 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
                 }
                 return (preferredRange, declaredRange)
             }
-
-        let corrections: [Correction]
         if violatingRanges.isEmpty {
-            corrections = []
-        } else {
-            var correctedContents = originalContents.nsString
-
-            violatingRanges.reversed().forEach { arg in
-                let (preferredModifierRange, declaredModifierRange) = arg
-                correctedContents = correctedContents.replacingCharacters(
-                    in: declaredModifierRange,
-                    with: originalContents.substring(with: preferredModifierRange)
-                ).bridge()
-            }
-
-            file.write(correctedContents.bridge())
-
-            corrections = [
-                Correction(
-                    ruleDescription: Self.description,
-                    location: Location(
-                        file: file,
-                        byteOffset: offset
-                    )
-                ),
-            ]
+            return 0
         }
-        return corrections
+        var correctedContents = originalContents.nsString
+        violatingRanges.reversed().forEach { arg in
+            let (preferredModifierRange, declaredModifierRange) = arg
+            correctedContents = correctedContents.replacingCharacters(
+                in: declaredModifierRange,
+                with: originalContents.substring(with: preferredModifierRange)
+            ).bridge()
+        }
+        file.write(correctedContents.bridge())
+        return violatingRanges.count
     }
 
     private func violatableModifiers(declaredModifiers: [ModifierDescription]) -> [ModifierDescription] {

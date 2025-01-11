@@ -59,15 +59,14 @@ private extension EmptyParenthesesWithTrailingClosureRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard let violationPosition = node.violationPosition else {
+            guard node.violationPosition != nil else {
                 return super.visit(node)
             }
-
+            numberOfCorrections += 1
             let newNode = node
                 .with(\.leftParen, nil)
                 .with(\.rightParen, nil)
                 .with(\.trailingClosure, node.trailingClosure?.with(\.leadingTrivia, .spaces(1)))
-            correctionPositions.append(violationPosition)
             return super.visit(newNode)
         }
     }
@@ -80,7 +79,6 @@ private extension FunctionCallExprSyntax {
               arguments.isEmpty else {
             return nil
         }
-
         return leftParen.positionAfterSkippingLeadingTrivia
     }
 }

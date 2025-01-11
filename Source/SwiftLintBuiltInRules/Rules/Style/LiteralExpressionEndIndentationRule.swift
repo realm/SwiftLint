@@ -142,42 +142,31 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
 }
 
 extension LiteralExpressionEndIndentationRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let allViolations = violations(in: file).reversed().filter { violation in
             guard let nsRange = file.stringView.byteRangeToNSRange(violation.range) else {
                 return false
             }
-
             return file.ruleEnabled(violatingRanges: [nsRange], for: self).isNotEmpty
         }
-
         guard allViolations.isNotEmpty else {
-            return []
+            return 0
         }
-
         var correctedContents = file.contents
-        var correctedLocations: [Int] = []
-
         let actualLookup = actualViolationLookup(for: allViolations)
-
+        var numberOfCorrections = 0
         for violation in allViolations {
             let expected = actualLookup(violation).indentationRanges.expected
             let actual = violation.indentationRanges.actual
             if correct(contents: &correctedContents, expected: expected, actual: actual) {
-                correctedLocations.append(actual.location)
+                numberOfCorrections += 1
             }
         }
-
-        var corrections = correctedLocations.map {
-            Correction(ruleDescription: Self.description, location: Location(file: file, characterOffset: $0))
-        }
-
         file.write(correctedContents)
 
         // Re-correct to catch cascading indentation from the first round.
-        corrections += correct(file: file)
-
-        return corrections
+        numberOfCorrections += correct(file: file)
+        return numberOfCorrections
     }
 
     private func correct(contents: inout String, expected: NSRange, actual: NSRange) -> Bool {

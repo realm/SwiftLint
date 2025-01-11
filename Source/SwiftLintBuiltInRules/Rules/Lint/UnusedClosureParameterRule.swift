@@ -56,7 +56,7 @@ private extension UnusedClosureParameterRule {
                           let index = params.parameters.index(of: param) else {
                         continue
                     }
-                    correctionPositions.append(name.positionAfterSkippingLeadingTrivia)
+                    numberOfCorrections += 1
                     let newParameterList = newParams.parameters.with(
                         \.[index],
                         param.with(\.firstName, name.with(\.tokenKind, .wildcard))
@@ -74,7 +74,7 @@ private extension UnusedClosureParameterRule {
                       let index = params.index(of: param) else {
                     continue
                 }
-                correctionPositions.append(param.name.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 newParams = newParams.with(
                     \.[index],
                     param.with(\.name, param.name.with(\.tokenKind, .wildcard))

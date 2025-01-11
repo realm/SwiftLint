@@ -96,8 +96,7 @@ private extension LowerACLThanParentRule {
             guard node.isHigherACLThanParent else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let newNode: DeclModifierSyntax
             if node.name.tokenKind == .keyword(.open) {
                 newNode = DeclModifierSyntax(

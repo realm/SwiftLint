@@ -71,12 +71,9 @@ private extension PreferTypeCheckingRule {
             guard let asExpr = node.asExprWithOptionalTypeChecking else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(asExpr.asKeyword.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let expression = asExpr.expression.trimmed
             let type = asExpr.type.trimmed
-
             return ExprSyntax(stringLiteral: "\(expression) is \(type)")
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)

@@ -114,7 +114,7 @@ private extension ControlStatementRule {
             guard case let items = node.catchItems, items.containSuperfluousParens == true else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let node = node
                 .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .space))
                 .with(\.catchItems, items.withoutParens)
@@ -125,7 +125,7 @@ private extension ControlStatementRule {
             guard node.conditions.containSuperfluousParens else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let node = node
                 .with(\.guardKeyword, node.guardKeyword.with(\.trailingTrivia, .space))
                 .with(\.conditions, node.conditions.withoutParens)
@@ -136,7 +136,7 @@ private extension ControlStatementRule {
             guard node.conditions.containSuperfluousParens else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let node = node
                 .with(\.ifKeyword, node.ifKeyword.with(\.trailingTrivia, .space))
                 .with(\.conditions, node.conditions.withoutParens)
@@ -147,7 +147,7 @@ private extension ControlStatementRule {
             guard let tupleElement = node.subject.unwrapped else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let node = node
                 .with(\.switchKeyword, node.switchKeyword.with(\.trailingTrivia, .space))
                 .with(\.subject, tupleElement.with(\.trailingTrivia, .space))
@@ -158,7 +158,7 @@ private extension ControlStatementRule {
             guard node.conditions.containSuperfluousParens else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let node = node
                 .with(\.whileKeyword, node.whileKeyword.with(\.trailingTrivia, .space))
                 .with(\.conditions, node.conditions.withoutParens)

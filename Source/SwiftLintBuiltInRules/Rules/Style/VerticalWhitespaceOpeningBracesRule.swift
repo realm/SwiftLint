@@ -171,31 +171,22 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
 }
 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
-        let patternRegex: NSRegularExpression = regex(pattern)
-        let replacementTemplate = "$1$3"
-        let description = Self.description
-
-        var corrections = [Correction]()
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
+        let patternRegex = regex(pattern)
         var fileContents = file.contents
-
         for violationRange in violatingRanges.reversed() {
             fileContents = patternRegex.stringByReplacingMatches(
                 in: fileContents,
                 options: [],
                 range: violationRange,
-                withTemplate: replacementTemplate
+                withTemplate: "$1$3"
             )
-
-            let location = Location(file: file, characterOffset: violationRange.location)
-            let correction = Correction(ruleDescription: description, location: location)
-            corrections.append(correction)
         }
-
         file.write(fileContents)
-        return corrections
+        return violatingRanges.count
     }
 }

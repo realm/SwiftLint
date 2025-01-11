@@ -26,25 +26,23 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
         }
     }
 
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> Int {
         let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap(\.violationRange), for: self)
 
         var contents = file.stringView.nsString
-        let description = Self.description
-        var corrections = [Correction]()
+        var numberOfCorrections = 0
         for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "").bridge()
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
+            numberOfCorrections += 1
         }
 
-        if corrections.isNotEmpty {
+        if numberOfCorrections > 0 {
             file.write(contents.bridge())
         }
 
         guard configuration.requireExplicitImports else {
-            return corrections
+            return numberOfCorrections
         }
 
         let missingImports = importUsages.compactMap { importUsage -> String? in
@@ -57,7 +55,7 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
         }
 
         guard missingImports.isNotEmpty else {
-            return corrections
+            return numberOfCorrections
         }
 
         var insertionLocation = 0
@@ -72,14 +70,11 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
             .joined(separator: "\n")
         let newContents = contents.replacingCharacters(in: insertionRange, with: missingImportStatements + "\n")
         file.write(newContents)
-        let location = Location(file: file, characterOffset: 0)
-        let missingImportCorrections = missingImports.map { _ in
-            Correction(ruleDescription: description, location: location)
-        }
-        corrections.append(contentsOf: missingImportCorrections)
+        numberOfCorrections += missingImports.count
+
         // Attempt to sort imports
-        corrections.append(contentsOf: SortedImportsRule().correct(file: file))
-        return corrections
+        numberOfCorrections += SortedImportsRule().correct(file: file)
+        return numberOfCorrections
     }
 
     private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {

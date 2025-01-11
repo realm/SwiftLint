@@ -82,7 +82,7 @@ public extension Collection where Element == String {
                 .violations(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
 
-    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [String: Int] {
         map { SwiftLintFile.testFile(withContents: $0, persistToDisk: requiresFileOnDisk) }
             .corrections(config: config, requiresFileOnDisk: requiresFileOnDisk)
     }
@@ -103,17 +103,21 @@ public extension Collection where Element: SwiftLintFile {
             return requiresFileOnDisk ? violations.withoutFiles() : violations
     }
 
-    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [Correction] {
+    func corrections(config: Configuration = Configuration.default, requiresFileOnDisk: Bool = false) -> [String: Int] {
         let storage = RuleStorage()
-        let corrections = map({ file in
-            Linter(file: file, configuration: config,
-                   compilerArguments: requiresFileOnDisk ? file.makeCompilerArguments() : [])
-        }).map({ linter in
-            linter.collect(into: storage)
-        }).flatMap({ linter in
-            linter.correct(using: storage)
-        })
-        return requiresFileOnDisk ? corrections.withoutFiles() : corrections
+        var corrections = [String: Int]()
+        for file in self {
+            let linter = Linter(
+                file: file,
+                configuration: config,
+                compilerArguments: requiresFileOnDisk ? file.makeCompilerArguments() : []
+            )
+            let collectedLinter = linter.collect(into: storage)
+            for (ruleName, numberOfCorrections) in collectedLinter.correct(using: storage) {
+                corrections[ruleName] = numberOfCorrections
+            }
+        }
+        return corrections
     }
 }
 
@@ -123,16 +127,6 @@ private extension Collection where Element == StyleViolation {
             let locationWithoutFile = Location(file: nil, line: violation.location.line,
                                                character: violation.location.character)
             return violation.with(location: locationWithoutFile)
-        }
-    }
-}
-
-private extension Collection where Element == Correction {
-    func withoutFiles() -> [Correction] {
-        map { correction in
-            let locationWithoutFile = Location(file: nil, line: correction.location.line,
-                                               character: correction.location.character)
-            return Correction(ruleDescription: correction.ruleDescription, location: locationWithoutFile)
         }
     }
 }
@@ -200,43 +194,22 @@ private func render(locations: [Location], in contents: String) -> String {
 
 private extension Configuration {
     func assertCorrection(_ before: Example, expected: Example) {
-        let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before.code)
+        let (cleanedBefore, _) = cleanedContentsAndMarkerOffsets(from: before.code)
         let file = SwiftLintFile.testFile(withContents: cleanedBefore, persistToDisk: true)
         // expectedLocations are needed to create before call `correct()`
-        let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
         let includeCompilerArguments = self.rules.contains(where: { $0 is any AnalyzerRule })
         let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
         let storage = RuleStorage()
         let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
         let linter = collector.collect(into: storage)
-        let corrections = linter.correct(using: storage).sorted { $0.location < $1.location }
-        if expectedLocations.isEmpty {
-            XCTAssertGreaterThanOrEqual(
-                corrections.count,
-                before.code != expected.code ? 1 : 0,
-                #function + ".expectedLocationsEmpty",
-                file: before.file,
-                line: before.line
-            )
-        } else {
-            XCTAssertEqual(
-                corrections.count,
-                expectedLocations.count,
-                #function + ".expected locations: \(expectedLocations.count)",
-                file: before.file, line: before.line
-            )
-            // With SwiftSyntax rewriters, the visitors get called with the new nodes after previous mutations have
-            // been applied, so it's not straightforward to translate those back into the original source positions.
-            // So only check the first locations
-            if let firstCorrection = corrections.first {
-                XCTAssertEqual(
-                    firstCorrection.location,
-                    expectedLocations.first,
-                    #function + ".correction location",
-                    file: before.file, line: before.line
-                )
-            }
-        }
+        let corrections = linter.correct(using: storage)
+        XCTAssertGreaterThanOrEqual(
+            corrections.count,
+            before.code != expected.code ? 1 : 0,
+            #function + ".expectedLocationsEmpty",
+            file: before.file,
+            line: before.line
+        )
         XCTAssertEqual(
             file.contents,
             expected.code,

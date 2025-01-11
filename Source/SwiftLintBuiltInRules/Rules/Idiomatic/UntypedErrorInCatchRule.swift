@@ -124,8 +124,7 @@ private extension UntypedErrorInCatchRule {
             guard let item = node.catchItems.onlyElement, item.isIdentifierPattern else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.catchKeyword.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return super.visit(
                 node
                     .with(\.catchKeyword, node.catchKeyword.with(\.trailingTrivia, .spaces(1)))

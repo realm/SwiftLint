@@ -121,9 +121,7 @@ private extension PreferSelfTypeOverTypeOfSelfRule {
             guard let function = node.base?.as(FunctionCallExprSyntax.self), function.hasViolation else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(function.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let base = DeclReferenceExprSyntax(baseName: "Self")
             let baseWithTrivia = base
                 .with(\.leadingTrivia, function.leadingTrivia)

@@ -35,7 +35,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRul
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = violationRanges(file: file)
             .compactMap { byteRange, correction -> (NSRange, String)? in
                 guard let range = file.stringView.byteRangeToNSRange(byteRange) else {
@@ -49,22 +49,15 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRul
             }
 
         var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
+        var numberOfCorrections = 0
         for (violatingRange, correction) in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: correction)
-                adjustedLocations.insert(violatingRange.location, at: 0)
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: correction)
+                numberOfCorrections += 1
             }
         }
-
         file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+        return numberOfCorrections
     }
 
     private func isAlignedConstant(in byteRange: ByteRange, file: SwiftLintFile) -> Bool {

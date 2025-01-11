@@ -94,8 +94,12 @@ jobs:
         with:
           name: swiftlint_linux_amd64
           path: .build/linux
+      - name: Make binary executable
+        run: chmod +x .build/universal/swiftlint .build/linux/swiftlint_linux_amd64
+      - name: List downloaded files
+        run: tree .build
       - name: Create SPM artifact bundle
-        run: make spm_artifactbundle
+        run: make --debug spm_artifactbundle
       - name: Update binary target in Swift package
         run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
       - name: Create tag and release commit

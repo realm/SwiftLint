@@ -28,9 +28,9 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 
 VERSION_STRING=$(shell ./tools/get-version)
 
-.PHONY: all clean build install package test uninstall docs
+.PHONY: all clean install package test uninstall docs
 
-all: build
+all: $(SWIFTLINT_EXECUTABLE)
 
 sourcery: Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift Source/SwiftLintFramework/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
 
@@ -72,7 +72,7 @@ clean:
 clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-build:
+$(SWIFTLINT_EXECUTABLE):
 	mkdir -p "$(SWIFTLINT_EXECUTABLE_PARENT)"
 	bazel build --config release universal_swiftlint
 	$(eval SWIFTLINT_BINARY := $(shell bazel cquery --config release --output=files universal_swiftlint))
@@ -88,7 +88,7 @@ $(SWIFTLINT_EXECUTABLE_LINUX_AMD64):
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)
 
-install: build
+install: $(SWIFTLINT_EXECUTABLE)
 	install -d "$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(BINARIES_FOLDER)"
 
@@ -96,7 +96,7 @@ uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
-installables: build
+installables: $(SWIFTLINT_EXECUTABLE)
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
@@ -134,7 +134,7 @@ zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64)
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux.zip"
 
-package: build
+package: $(SWIFTLINT_EXECUTABLE)
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))
 	cp "$(SWIFTLINT_EXECUTABLE)" "$(PACKAGE_ROOT)"
 	pkgbuild \

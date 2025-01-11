@@ -194,10 +194,11 @@ let package = Package(
 )
 
 #if os(macOS)
+// TODO: in the next release the artifactbundle is not suffixed with "-macos"
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.57.1/SwiftLintBinary.artifactbundle.zip",
+        url: "https://github.com/realm/SwiftLint/releases/download/0.57.1/SwiftLintBinary-macos.artifactbundle.zip",
         checksum: "c88bf3e5bc1326d8ca66bc3f9eae786f2094c5172cd70b26b5f07686bb883899"
     )
 )

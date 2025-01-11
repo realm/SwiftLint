@@ -36,7 +36,7 @@ private extension LegacyConstantRule {
             guard let correction = LegacyConstantRuleExamples.patterns[node.baseName.text] else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return ("\(raw: correction)" as ExprSyntax)
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)
@@ -47,7 +47,7 @@ private extension LegacyConstantRule {
                   let calledExpression = node.calledExpression.as(DeclReferenceExprSyntax.self) else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return ("\(raw: calledExpression.baseName.text).pi" as ExprSyntax)
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)

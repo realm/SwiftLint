@@ -36,7 +36,7 @@ struct BalancedXCTestLifecycleRule: Rule {
         }
         ```
 
-        No memory will be consumed by the value of the variable.
+        no memory will be consumed by the value of the variable.
 
         More generally, if `setUp` is implemented, then `tearDown` should also be implemented, \
         and cleanup performed there.

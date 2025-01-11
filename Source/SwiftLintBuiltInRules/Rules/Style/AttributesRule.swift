@@ -14,7 +14,7 @@ struct AttributesRule: Rule {
         rationale: """
         Erica Sadun says:
 
-        > my take on things after the poll and after talking directly with a number of \
+        > My take on things after the poll and after talking directly with a number of \
         developers is this: Placing attributes like `@objc`, `@testable`, `@available`, `@discardableResult` on \
         their own lines before a member declaration has become a conventional Swift style.
 

@@ -40,8 +40,8 @@ jobs:
           sed -i -e '3s/.*/    version = "${{ inputs.version }}",/' MODULE.bazel
       - name: Configure author
         run: |
-          git config --local user.name "Danny Mösch"
-          git config --local user.email "danny.moesch@icloud.com"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Commit changes
         id: pre_release
         run: |
@@ -87,8 +87,8 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: Configure author
         run: |
-          git config --local user.name "Danny Mösch"
-          git config --local user.email "danny.moesch@icloud.com"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Create build folders
         run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
       - name: Download binary artifact for macOS

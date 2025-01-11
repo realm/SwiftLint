@@ -132,81 +132,21 @@ jobs:
         run: gh release upload ${{ inputs.version }} SwiftLintBinary.artifactbundle.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  upload-package:
-    needs: create-release
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
       - name: Create package
         run: make package
       - name: Upload package to existing release
         run: gh release upload ${{ inputs.version }} SwiftLint.pkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  upload-bazel:
-    needs: create-release
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
       - name: Create Bazel release
         run: make bazel_release
       - name: Upload Bazel release to existing release
         run: gh release upload ${{ inputs.version }} bazel.tar.gz bazel.tar.gz.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  upload-portable-zip:
-    needs: create-release
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
       - name: Create portable ZIP
         run: make portable_zip
       - name: Upload portable ZIP to existing release
         run: gh release upload ${{ inputs.version }} portable_swiftlint.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  publish-pod:
-    needs: create-release
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
-      - name: Retrieve author in uppercase
-        id: retrieve_author
-        run: |
-          AUTHOR=$(echo ${{ github.actor }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
-      - name: Deploy to CocoaPods
-        run: make pod_publish
-        env:
-          COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
-  dispatch-plugins:
-    needs: create-release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
-      - name: Parse checksum
-        id: parse_checksum
-        run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> $GITHUB_OUTPUT
-      - name: Dispatch release of plugins package
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.SIMPLYDANNY_PLUGINS_SYNC }}
-          repository: SimplyDanny/SwiftLintPlugins
-          event-type: swiftlint-release
-          client-payload: |-
-            {
-              "title": "${{ inputs.title }}",
-              "tag": "${{ inputs.version }}",
-              "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
-            }

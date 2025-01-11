@@ -54,6 +54,7 @@ jobs:
     - name: Rename binary artifact
       run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
     - name: Upload binary artifact
+      if: github.event_name != 'push'
       uses: actions/upload-artifact@v4
       with:
         name: swiftlint_linux_amd64

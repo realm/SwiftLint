@@ -149,7 +149,7 @@ bazel_test:
 
 bazel_release: $(SWIFTLINT_EXECUTABLE)
 	bazel build :release
-	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
+	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 $(SWIFTLINT_EXECUTABLE) .
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .

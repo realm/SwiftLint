@@ -65,14 +65,14 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: Build SwiftLint for macOS
         run: make bazel_release
-      - name: Upload binary as artifact
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: swiftlint
           path: |
-            ${{ env.MACOS_BUILD_DIR }}/swiftlint
-            bazel-bin/bazel.tar.gz
-            bazel-bin/bazel.tar.gz.sha256
+            swiftlint
+            bazel.tar.gz
+            bazel.tar.gz.sha256
           retention-days: 2
           if-no-files-found: error
   create-release:
@@ -95,21 +95,21 @@ jobs:
         with:
           name: swiftlint
           path: ${{ env.MACOS_BUILD_DIR }}
-      - name: Move Bazel release
-        run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
       - name: Download binary artifact for Linux
         uses: actions/download-artifact@v4
         with:
           name: swiftlint_linux_amd64
           path: ${{ env.LINUX_BUILD_DIR }}
-      - name: Make binaries executable
-        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
       - name: List downloaded files
         if: always()
         run: |
           ls -al .build
-          ls -al ${{ env.MACOS_BUILD_DIR }}
           ls -al ${{ env.LINUX_BUILD_DIR }}
+          ls -al ${{ env.MACOS_BUILD_DIR }}
+      - name: Move Bazel release
+        run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
+      - name: Make binaries executable
+        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
       - name: Create SPM artifact bundle
         run: make --debug spm_artifactbundle
       - name: Update binary target in Swift package

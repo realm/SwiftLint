@@ -110,6 +110,7 @@ jobs:
           make --debug spm_artifactbundle
           make --debug package
           make --debug portable_zip
+          make --debug zip_linux_release
       - name: Update binary target in Swift package
         run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
       - name: Create tag and release commit

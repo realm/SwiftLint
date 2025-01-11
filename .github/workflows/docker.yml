@@ -6,8 +6,8 @@ on:
       - main
   workflow_call:
     inputs:
-      sha:
-        description: 'Git commit SHA'
+      ref:
+        description: 'Git reference'
         required: true
         type: string
       tag:
@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
       if: github.event_name != 'push' && inputs.tag != 'latest'
       with:
-        ref: ${{ inputs.sha }}
+        ref: ${{ inputs.ref }}
     - uses: actions/checkout@v4
       if: github.event_name == 'push'
     - name: Set Docker tag

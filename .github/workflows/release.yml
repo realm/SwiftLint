@@ -24,9 +24,7 @@ env:
 
 jobs:
   prepare-release:
-    runs-on: ubuntu-latest
-    outputs:
-      pre_release_sha: ${{ steps.pre_release.outputs.pre_release_sha }}
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,14 +45,13 @@ jobs:
         id: pre_release
         run: |
           git commit -a -m "Prepare ${{ inputs.version }} release"
-          echo "pre_release_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           git push origin HEAD
   build-docker:
     needs: prepare-release
     uses: ./.github/workflows/docker.yml
     secrets: inherit
     with:
-      sha: ${{ needs.prepare-release.outputs.pre_release_sha }}
+      ref: ${{ inputs.branch }}
       tag: ${{ inputs.version }}
   build-macos:
     needs: prepare-release
@@ -64,7 +61,7 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
       - name: Build SwiftLint for macOS
-        run: make bazel_release
+        run: make --debug bazel_release
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -100,53 +97,29 @@ jobs:
         with:
           name: swiftlint_linux_amd64
           path: ${{ env.LINUX_BUILD_DIR }}
-      - name: List downloaded files
-        if: always()
-        run: |
-          ls -al .build
-          ls -al ${{ env.LINUX_BUILD_DIR }}
-          ls -al ${{ env.MACOS_BUILD_DIR }}
       - name: Move Bazel release
         run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
       - name: Make binaries executable
         run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
-      - name: Create SPM artifact bundle
-        run: make --debug spm_artifactbundle
+      - name: Create artifacts
+        run: |
+          make --debug spm_artifactbundle
+          make --debug package
+          make --debug portable_zip
       - name: Update binary target in Swift package
         run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
       - name: Create tag and release commit
         run: |
           git commit -a -m "Release ${{ inputs.version }}"
-          git tag -a ${{ inputs.version }} -m "${{ inputs.title }}"
+          git tag -a "${{ inputs.version }}"" -m "${{ inputs.title }}"
           git push origin HEAD
-          git push origin ${{ inputs.version }}
+          git push origin "${{ inputs.version }}"
       - name: Create release
+        run: ./tools/create-github-release.sh "${{ inputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add new changelog section
         run: |
-          release_notes=$(mktemp)
-          ./tools/generate-release-notes.sh "${{ inputs.version }}" > "$release_notes"
-          gh release create ${{ inputs.version }} --title ${{ inputs.title }} -F "$release_notes" --draft
-          rm "$release_notes"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifact bundle to release
-        run: gh release upload ${{ inputs.version }} SwiftLintBinary.artifactbundle.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create package
-        run: make package
-      - name: Upload package to existing release
-        run: gh release upload ${{ inputs.version }} SwiftLint.pkg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create Bazel release
-        run: make bazel_release
-      - name: Upload Bazel release to existing release
-        run: gh release upload ${{ inputs.version }} bazel.tar.gz bazel.tar.gz.sha256
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create portable ZIP
-        run: make portable_zip
-      - name: Upload portable ZIP to existing release
-        run: gh release upload ${{ inputs.version }} portable_swiftlint.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ./tools/add-new-changelog-section.sh
+          git commit -a -m "Add new changelog section"
+          git push origin HEAD

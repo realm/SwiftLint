@@ -2,12 +2,11 @@ name: Post Release
 
 on:
   release:
-    types:
-      - published
+    types: published
 
 jobs:
   publish-pod:
-    runs-on: macOS-latest
+    runs-on: macOS-14
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,9 +19,10 @@ jobs:
       - name: Deploy to CocoaPods
         run: make pod_publish
         env:
+          DEVELOPER_DIR: /Applications/Xcode_16.2.app
           COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
   dispatch-plugins:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
           event-type: swiftlint-release
           client-payload: |-
             {
-                "title": "${{ github.event.release.name }}",
-                "tag": "${{ github.event.release.tag_name }}",
-                "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
+              "title": "${{ github.event.release.name }}",
+              "tag": "${{ github.event.release.tag_name }}",
+              "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
             }

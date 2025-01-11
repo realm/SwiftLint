@@ -176,8 +176,7 @@ private extension DuplicateImportsRule {
             if itemsToRemove.isEmpty {
                 return super.visit(node)
             }
-            correctionPositions.append(contentsOf: itemsToRemove.map(\.absolutePosition))
-
+            numberOfCorrections += itemsToRemove.count
             var copy = node
             for indexInParent in itemsToRemove.map(\.indexInParent).reversed() {
                 let currentIndex = copy.index(copy.startIndex, offsetBy: indexInParent)
@@ -188,7 +187,6 @@ private extension DuplicateImportsRule {
                 }
                 copy.remove(at: currentIndex)
             }
-
             return super.visit(copy)
         }
     }

@@ -62,7 +62,7 @@ private extension VoidReturnRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ReturnClauseSyntax) -> ReturnClauseSyntax {
             if node.violates {
-                correctionPositions.append(node.type.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 let node = node
                     .with(\.type, TypeSyntax(IdentifierTypeSyntax(name: "Void")))
                     .with(\.trailingTrivia, node.type.trailingTrivia)

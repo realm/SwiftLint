@@ -106,9 +106,11 @@ struct VerticalWhitespaceRule: CorrectableRule {
         return blankLinesSections
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let linesSections = violatingLineSections(in: file)
-        if linesSections.isEmpty { return [] }
+        if linesSections.isEmpty {
+            return 0
+        }
 
         var indexOfLinesToDelete = [Int]()
 
@@ -119,32 +121,26 @@ struct VerticalWhitespaceRule: CorrectableRule {
         }
 
         var correctedLines = [String]()
-        var corrections = [Correction]()
+        var numberOfCorrections = 0
         for currentLine in file.lines {
             // Doesn't correct lines where rule is disabled
             if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
                 correctedLines.append(currentLine.content)
                 continue
             }
-
             // removes lines by skipping them from correctedLines
             if Set(indexOfLinesToDelete).contains(currentLine.index) {
-                let description = Self.description
-                let location = Location(file: file, characterOffset: currentLine.range.location)
-
                 // reports every line that is being deleted
-                corrections.append(Correction(ruleDescription: description, location: location))
+                numberOfCorrections += 1
                 continue // skips line
             }
-
             // all lines that pass get added to final output file
             correctedLines.append(currentLine.content)
         }
         // converts lines back to file and adds trailing line
-        if corrections.isNotEmpty {
+        if numberOfCorrections > 0 {
             file.write(correctedLines.joined(separator: "\n") + "\n")
-            return corrections
         }
-        return []
+        return numberOfCorrections
     }
 }

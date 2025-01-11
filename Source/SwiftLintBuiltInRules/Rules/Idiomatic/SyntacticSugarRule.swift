@@ -31,16 +31,14 @@ struct SyntacticSugarRule: CorrectableRule, SourceKitFreeRule {
         violations.flatMap { [$0] + flattenViolations($0.children) }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let visitor = SyntacticSugarRuleVisitor(viewMode: .sourceAccurate)
         return visitor.walk(file: file) { visitor in
             var context = CorrectingContext(rule: self, file: file, contents: file.contents)
             context.correctViolations(visitor.violations)
-
             file.write(context.contents)
-
-            return context.corrections
-        }
+            return [context.numberOfCorrections]
+        }.reduce(0, +)
     }
 }
 
@@ -259,7 +257,7 @@ private struct CorrectingContext<R: Rule> {
     let rule: R
     let file: SwiftLintFile
     var contents: String
-    var corrections: [Correction] = []
+    var numberOfCorrections = 0
 
     mutating func correctViolations(_ violations: [SyntacticSugarRuleViolation]) {
         let sortedVolations = violations.sorted(by: { $0.correction.typeStart > $1.correction.typeStart })
@@ -309,9 +307,7 @@ private struct CorrectingContext<R: Rule> {
             correctViolations(violation.children)
             replaceCharacters(in: leftRange, with: "")
         }
-
-        let location = Location(file: file, byteOffset: ByteCount(correction.typeStart))
-        corrections.append(Correction(ruleDescription: type(of: rule).description, location: location))
+        numberOfCorrections += 1
     }
 
     private func typeIsOpaqueOrExistential(correction: SyntacticSugarRuleViolation.Correction) -> Bool {

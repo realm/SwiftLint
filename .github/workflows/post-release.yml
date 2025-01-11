@@ -6,6 +6,7 @@ on:
 
 jobs:
   publish-pod:
+    name: Publish Pod
     runs-on: macOS-14
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +23,7 @@ jobs:
           DEVELOPER_DIR: /Applications/Xcode_16.2.app
           COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
   dispatch-plugins:
+    name: Dispatch Plugins Repository
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository

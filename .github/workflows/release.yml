@@ -24,6 +24,7 @@ env:
 
 jobs:
   prepare-release:
+    name: Prepare Release
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -47,6 +48,7 @@ jobs:
           git commit -a -m "Prepare ${{ inputs.version }} release"
           git push origin HEAD
   build-docker:
+    name: Build Linux Binaries
     needs: prepare-release
     uses: ./.github/workflows/docker.yml
     secrets: inherit
@@ -54,6 +56,7 @@ jobs:
       ref: ${{ inputs.branch }}
       tag: ${{ inputs.version }}
   build-macos:
+    name: Build macOS Binaries
     needs: prepare-release
     runs-on: macOS-14
     steps:
@@ -73,6 +76,7 @@ jobs:
           retention-days: 2
           if-no-files-found: error
   create-release:
+    name: Create Release
     needs:
       - build-docker
       - build-macos
@@ -111,7 +115,7 @@ jobs:
       - name: Create tag and release commit
         run: |
           git commit -a -m "Release ${{ inputs.version }}"
-          git tag -a "${{ inputs.version }}"" -m "${{ inputs.title }}"
+          git tag -a "${{ inputs.version }}" -m "${{ inputs.title }}"
           git push origin HEAD
           git push origin "${{ inputs.version }}"
       - name: Create release

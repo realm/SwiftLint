@@ -10,6 +10,7 @@ on:
 
 jobs:
   sync:
+    name: Sync Plugins Folder
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

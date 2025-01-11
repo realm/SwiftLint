@@ -48,9 +48,9 @@ jobs:
       with:
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
         platforms: linux/amd64
-        outputs:
-          - type=registry
-          - type=local,dest=artifacts
+        outputs: |
+          type=registry
+          type=local,dest=artifacts
     - name: List local files
       run: |
         ls -l

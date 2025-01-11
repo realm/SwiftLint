@@ -17,6 +17,9 @@ on:
         type: string
         default: 'main'
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_16.2.app
+
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
@@ -51,8 +54,25 @@ jobs:
     with:
       sha: ${{ needs.prepare-release.outputs.pre_release_sha }}
       tag: ${{ inputs.version }}
+  build-macos:
+    needs: prepare-release
+    runs-on: macOS-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      - name: Build SwiftLint for macOS
+        run: make build
+      - name: Upload binary as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint
+          path: .build/universal/swiftlint
+          retention-days: 2
   create-release:
-    needs: build-docker
+    needs:
+      - build-docker
+      - build-macos
     runs-on: macOS-14
     steps:
       - uses: actions/checkout@v4
@@ -63,19 +83,19 @@ jobs:
           git config --local user.name "Danny Mösch"
           git config --local user.email "danny.moesch@icloud.com"
       - name: Create build folders
-        run: mkdir -p .build/linux
-      - name: Extract binary from Docker image
-        uses: shrink/actions-docker-extract@v3
+        run: mkdir -p .build/universal .build/linux
+      - name: Download binary artifact for macOS
+        uses: actions/download-artifact@v4
         with:
-          image: ghcr.io/realm/swiftlint:${{ inputs.version }}
-          path: /usr/bin/swiftlint
-          destination: .build/linux/swiftlint_linux_amd64
-      - name: Make binary executable
-        run: chmod +x .build/linux/swiftlint_linux_amd64
+          name: swiftlint
+          path: .build/universal
+      - name: Download binary artifact for Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: swiftlint_linux_amd64
+          path: .build/linux
       - name: Create SPM artifact bundle
         run: make spm_artifactbundle
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_16.2.app
       - name: Update binary target in Swift package
         run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
       - name: Create tag and release commit
@@ -94,19 +114,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact bundle to release
         run: gh release upload ${{ inputs.version }} SwiftLintBinary.artifactbundle.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  upload-docker:
-    needs: create-release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
-      - name: Upload binary to existing release
-        run: |
-          make zip_linux_release
-          gh release upload ${{ inputs.version }} swiftlint_linux.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   upload-package:

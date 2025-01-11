@@ -48,3 +48,11 @@ jobs:
       with:
         push: true
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
+        platforms: linux/amd64
+        outputs: type=local,dest=artifacts
+    - name: Upload binary artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: swiftlint_linux_amd64
+        path: artifacts/linux_amd64/workspace/swiftlint
+        retention-days: 2

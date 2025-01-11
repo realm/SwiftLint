@@ -99,7 +99,10 @@ jobs:
         run: chmod +x .build/universal/swiftlint .build/linux/swiftlint_linux_amd64
       - name: List downloaded files
         if: always()
-        run: tree .build/{universal,linux}
+        run: |
+          ls -al .build
+          ls -al .build/universal
+          ls -al .build/linux
       - name: Create SPM artifact bundle
         run: make --debug spm_artifactbundle
       - name: Update binary target in Swift package

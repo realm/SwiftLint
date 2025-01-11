@@ -62,7 +62,7 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
       - name: Build SwiftLint for macOS
-        run: make build
+        run: make .build/universal/swiftlint
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v4
         with:

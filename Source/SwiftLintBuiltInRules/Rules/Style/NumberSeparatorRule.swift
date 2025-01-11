@@ -55,7 +55,7 @@ private extension NumberSeparatorRule {
                     .floatLiteral(violation.correction)
                 )
             )
-            correctionPositions.append(violation.position)
+            numberOfCorrections += 1
             return super.visit(newNode)
         }
 
@@ -64,7 +64,7 @@ private extension NumberSeparatorRule {
                 return super.visit(node)
             }
             let newNode = node.with(\.literal, node.literal.with(\.tokenKind, .integerLiteral(violation.correction)))
-            correctionPositions.append(violation.position)
+            numberOfCorrections += 1
             return super.visit(newNode)
         }
     }

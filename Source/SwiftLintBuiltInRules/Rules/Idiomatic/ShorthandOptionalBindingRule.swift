@@ -95,8 +95,7 @@ private extension ShorthandOptionalBindingRule {
             guard node.isShadowingOptionalBinding else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let newNode = node
                 .with(\.initializer, nil)
                 .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia))

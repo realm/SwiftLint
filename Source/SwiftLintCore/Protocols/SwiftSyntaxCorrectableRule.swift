@@ -17,33 +17,21 @@ public extension SwiftSyntaxCorrectableRule {
         nil
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         guard let syntaxTree = preprocess(file: file) else {
-            return []
+            return 0
         }
         if let rewriter = makeRewriter(file: file) {
             let newTree = rewriter.visit(syntaxTree)
-            let positions = rewriter.correctionPositions
-            guard positions.isNotEmpty else {
-                return []
-            }
-            let corrections = positions
-                .sorted()
-                .map { position in
-                    Correction(
-                        ruleDescription: Self.description,
-                        location: Location(file: file, position: position)
-                    )
-                }
             file.write(newTree.description)
-            return corrections
+            return rewriter.numberOfCorrections
         }
 
         // There is no rewriter. Falling back to the correction ranges collected by the visitor (if any).
         let violations = makeVisitor(file: file)
             .walk(tree: syntaxTree, handler: \.violations)
         guard violations.isNotEmpty else {
-            return []
+            return 0
         }
 
         let locationConverter = file.locationConverter
@@ -64,19 +52,16 @@ public extension SwiftSyntaxCorrectableRule {
                 lhs.range.location > rhs.range.location
             }
         guard correctionRanges.isNotEmpty else {
-            return []
+            return 0
         }
 
-        var corrections = [Correction]()
         var contents = file.contents
         for range in correctionRanges {
             let contentsNSString = contents.bridge()
             contents = contentsNSString.replacingCharacters(in: range.range, with: range.correction)
-            let location = Location(file: file, characterOffset: range.range.location)
-            corrections.append(Correction(ruleDescription: Self.description, location: location))
         }
         file.write(contents)
-        return corrections
+        return correctionRanges.count
     }
 }
 
@@ -96,8 +81,8 @@ open class ViolationsSyntaxRewriter<Configuration: RuleConfiguration>: SyntaxRew
             .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
     }()
 
-    /// Positions in a source file where corrections were applied.
-    public var correctionPositions = [AbsolutePosition]()
+    /// The number of corrections made by the rewriter.
+    public var numberOfCorrections = 0
 
     /// Initializer for a ``ViolationsSyntaxRewriter``.
     ///

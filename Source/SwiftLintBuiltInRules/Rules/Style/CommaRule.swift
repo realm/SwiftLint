@@ -120,7 +120,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
             }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let initialNSRanges = Dictionary(
             uniqueKeysWithValues: violationRanges(in: file)
                 .compactMap { byteRange, shouldAddSpace in
@@ -131,21 +131,18 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
         )
 
         let violatingRanges = file.ruleEnabled(violatingRanges: Array(initialNSRanges.keys), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
 
-        let description = Self.description
-        var corrections = [Correction]()
         var contents = file.contents
         for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
             let contentsNSString = contents.bridge()
             let shouldAddSpace = initialNSRanges[range] ?? true
             contents = contentsNSString.replacingCharacters(in: range, with: ",\(shouldAddSpace ? " " : "")")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
-
         file.write(contents)
-        return corrections
+        return violatingRanges.count
     }
 }
 

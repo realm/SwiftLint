@@ -40,8 +40,7 @@ private extension TrailingSemicolonRule {
             guard node.isTrailingSemicolon else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return .unknown("").with(\.trailingTrivia, node.trailingTrivia)
         }
     }

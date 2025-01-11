@@ -161,15 +161,15 @@ public protocol CorrectableRule: Rule {
     /// - parameter file:              The file for which to correct violations.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction]
+    /// - returns: Number of corrections that were applied.
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> Int
 
     /// Attempts to correct the violations to this rule in the specified file.
     ///
     /// - parameter file: The file for which to correct violations.
     ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile) -> [Correction]
+    /// - returns: Number of corrections that were applied.
+    func correct(file: SwiftLintFile) -> Int
 
     /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
     /// and returns all corrections that were applied.
@@ -181,14 +181,14 @@ public protocol CorrectableRule: Rule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
+    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> Int
 }
 
 public extension CorrectableRule {
-    func correct(file: SwiftLintFile, compilerArguments _: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments _: [String]) -> Int {
         correct(file: file)
     }
-    func correct(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> Int {
         correct(file: file, compilerArguments: compilerArguments)
     }
 }
@@ -213,24 +213,23 @@ public protocol SubstitutionCorrectableRule: CorrectableRule {
 }
 
 public extension SubstitutionCorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
-        let description = Self.description
-        var corrections = [Correction]()
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
+        var numberOfCorrections = 0
         var contents = file.contents
         for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
             let contentsNSString = contents.bridge()
             if let (rangeToRemove, substitution) = self.substitution(for: range, in: file) {
                 contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: substitution)
-                let location = Location(file: file, characterOffset: range.location)
-                corrections.append(Correction(ruleDescription: description, location: location))
+                numberOfCorrections += 1
             }
         }
 
         file.write(contents)
-        return corrections
+        return numberOfCorrections
     }
 }
 
@@ -249,7 +248,7 @@ public extension AnalyzerRule {
 
 /// :nodoc:
 public extension AnalyzerRule where Self: CorrectableRule {
-    func correct(file _: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> Int {
         queuedFatalError("Must call `correct(file:compilerArguments:)` for AnalyzerRule")
     }
 }

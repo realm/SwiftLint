@@ -1,5 +1,6 @@
 {
     "url": "https://github.com/realm/SwiftLint/releases/download/{TAG}/bazel.tar.gz",
     "integrity": "",
-    "strip_prefix": ""
+    "strip_prefix": "",
+    "patch_strip": 0
 }

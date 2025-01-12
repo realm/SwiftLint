@@ -13,7 +13,7 @@
 * The `inert_defer` and `unused_capture_list` rules have completely been removed after being deprecated for 2 years.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* SwiftLint now requires a Swift 6 or higher compiler to build.  
+* SwiftLint now requires a Swift 5.10 or higher compiler to build. [The Swift Package Manager plugins](https://github.com/SimplyDanny/SwiftLintPlugins) continue to work with Swift 5.9.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * The `private_unit_test` rule's deprecated `regex` configuration option has been removed after 2 years.  

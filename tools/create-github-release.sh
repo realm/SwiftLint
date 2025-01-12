@@ -15,9 +15,9 @@ release_title="$(sed -n '1s/^## //p' CHANGELOG.md)"
 gh release create "$version" --title "$release_title" -F "$release_notes" --draft --verify-tag  \
     "bazel.tar.gz"                                                                              \
     "bazel.tar.gz.sha256"                                                                       \
-    "portable_swiftlint.zip"                                                                    \
-    "swiftlint_linux.zip"                                                                       \
-    "SwiftLint.pkg"                                                                             \
+    "portable_swiftlint.zip#Universal macOS Binary"                                             \
+    "swiftlint_linux.zip#AMD64 Linux Binary"                                                    \
+    "SwiftLint.pkg#Universal macOS Installer"                                                   \
     "SwiftLintBinary.artifactbundle.zip"
 
 rm "$release_notes"

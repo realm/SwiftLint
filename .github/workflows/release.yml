@@ -11,16 +11,12 @@ on:
         description: 'Release title'
         required: true
         type: string
-      branch:
-        description: 'Release branch'
-        required: false
-        type: string
-        default: 'main'
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_16.2.app
   MACOS_BUILD_DIR: .build/universal
   LINUX_BUILD_DIR: .build/linux
+  RELEASE_BRANCH: release/${{ inputs.version }}
 
 jobs:
   prepare-release:
@@ -30,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Create release branch
-        run: git checkout ${{ inputs.branch }} || git checkout -b ${{ inputs.branch }}
+        run: git checkout ${{ env.RELEASE_BRANCH }} || git checkout -b ${{ env.RELEASE_BRANCH }}
       - name: Update changelog
         run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
       - name: Update built-in versions
@@ -52,7 +48,7 @@ jobs:
     uses: ./.github/workflows/docker.yml
     secrets: inherit
     with:
-      ref: ${{ inputs.branch }}
+      ref: release/${{ inputs.version }}
       tag: ${{ inputs.version }}
   build-macos:
     name: Build macOS Binaries
@@ -61,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ env.RELEASE_BRANCH }}
       - name: Build SwiftLint for macOS
         run: make --debug bazel_release
       - name: Upload build artifacts
@@ -83,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ env.RELEASE_BRANCH }}
       - name: Configure author
         run: |
           git config --local user.name "github-actions[bot]"

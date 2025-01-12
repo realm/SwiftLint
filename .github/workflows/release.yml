@@ -30,8 +30,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Create release branch
-        if: inputs.branch != 'main'
-        run: git checkout -b ${{ inputs.branch }}
+        run: git checkout ${{ inputs.branch }} || git checkout -b ${{ inputs.branch }}
       - name: Update changelog
         run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
       - name: Update built-in versions

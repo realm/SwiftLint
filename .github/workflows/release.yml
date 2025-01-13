@@ -114,10 +114,15 @@ jobs:
           git tag -a "${{ inputs.version }}" -m "${{ inputs.title }}"
           git push origin HEAD
           git push origin "${{ inputs.version }}"
+      - name: Retrieve author in uppercase
+        id: retrieve_author
+        run: |
+          AUTHOR=$(echo ${{ github.event.sender.login }} | tr '[:lower:]' '[:upper:]')
+          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
       - name: Create release
         run: ./tools/create-github-release.sh "${{ inputs.version }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
       - name: Add new changelog section
         run: |
           ./tools/add-new-changelog-section.sh

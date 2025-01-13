@@ -37,6 +37,8 @@ struct RedundantSendableRule: Rule {
                     actor A: B, C // comment
                     {}
                     """),
+            Example("@MainActor struct P: A, Sendable {}"):
+                Example("@MainActor struct P: A {}"),
         ]
     )
 }

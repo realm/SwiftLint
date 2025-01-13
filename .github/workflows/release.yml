@@ -117,7 +117,7 @@ jobs:
       - name: Retrieve author in uppercase
         id: retrieve_author
         run: |
-          AUTHOR=$(echo ${{ github.event.sender.login }} | tr '[:lower:]' '[:upper:]')
+          AUTHOR=$(echo ${{ github.actor }} | tr '[:lower:]' '[:upper:]')
           echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
       - name: Create release
         run: ./tools/create-github-release.sh "${{ inputs.version }}"

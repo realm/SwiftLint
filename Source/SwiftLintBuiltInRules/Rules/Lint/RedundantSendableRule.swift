@@ -15,6 +15,7 @@ struct RedundantSendableRule: Rule {
             Example("actor A {}"),
             Example("@MainActor struct S {}"),
             Example("@MyActor enum E: Sendable { case a }"),
+            Example("@MainActor protocol P: Sendable {}"),
         ],
         triggeringExamples: [
             Example("@MainActor struct ↓S: Sendable {}"),
@@ -36,8 +37,6 @@ struct RedundantSendableRule: Rule {
                     actor A: B, C // comment
                     {}
                     """),
-            Example("@MainActor protocol P: A, Sendable {}"):
-                Example("@MainActor protocol P: A {}"),
         ]
     )
 }
@@ -55,10 +54,6 @@ private extension RedundantSendableRule {
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            collectViolations(in: node)
-        }
-
-        override func visitPost(_ node: ProtocolDeclSyntax) {
             collectViolations(in: node)
         }
 
@@ -87,10 +82,6 @@ private extension RedundantSendableRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
-            super.visit(removeRedundantSendable(from: node))
-        }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> DeclSyntax {
             super.visit(removeRedundantSendable(from: node))
         }
 

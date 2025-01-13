@@ -33,6 +33,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5952](https://github.com/realm/SwiftLint/issues/5952)
 
+* Remove lints for `redundant_sendable` on protocols, where `Sendable` is not redundant.  
+  [riley-williams](https://github.com/riley-williams)
+  [#5958](https://github.com/realm/SwiftLint/issues/5958)
+
 ## 0.58.0: New Year’s Fresh Fold
 
 #### Breaking

@@ -643,7 +643,7 @@ following script implementation:</p>
 you may refer to the <code>swiftlint</code> executable in the
 following way:</p>
 <pre class="highlight shell"><code><span class="nv">SWIFT_PACKAGE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">BUILD_DIR</span><span class="p">%Build/*</span><span class="k">}</span><span class="s2">SourcePackages/artifacts"</span>
-<span class="nv">SWIFTLINT_CMD</span><span class="o">=</span><span class="si">$(</span><span class="nb">ls</span> <span class="s2">"</span><span class="nv">$SWIFT_PACKAGE_DIR</span><span class="s2">"</span>/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-<span class="k">*</span>/bin/swiftlint | <span class="nb">head</span> <span class="nt">-n</span> 1<span class="si">)</span>
+<span class="nv">SWIFTLINT_CMD</span><span class="o">=</span><span class="si">$(</span><span class="nb">ls</span> <span class="s2">"</span><span class="nv">$SWIFT_PACKAGE_DIR</span><span class="s2">"</span>/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-<span class="k">*</span><span class="nt">-macos</span>/bin/swiftlint | <span class="nb">head</span> <span class="nt">-n</span> 1<span class="si">)</span>
 
 <span class="k">if </span><span class="nb">test</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$SWIFTLINT_CMD</span><span class="s2">"</span> 2&gt;&amp;1
 <span class="k">then</span>

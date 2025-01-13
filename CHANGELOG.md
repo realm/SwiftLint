@@ -14,7 +14,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix `redundant_sendable` correction by removing a remaining trailing comma as well when `Sendable` was last.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5952](https://github.com/realm/SwiftLint/issues/5952)
 
 ## 0.58.0: New Year’s Fresh Fold
 

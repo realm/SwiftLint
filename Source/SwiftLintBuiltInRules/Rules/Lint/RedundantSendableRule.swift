@@ -24,12 +24,20 @@ struct RedundantSendableRule: Rule {
         corrections: [
             Example("@MainActor struct S: Sendable {}"):
                 Example("@MainActor struct S {}"),
-            Example("actor A: Sendable {}"):
-                Example("actor A {}"),
+            Example("actor A: Sendable /* trailing comment */{}"):
+                Example("actor A /* trailing comment */{}"),
             Example("@MyActor enum E: Sendable { case a }", configuration: ["global_actors": ["MyActor"]]):
                 Example("@MyActor enum E { case a }"),
-            Example("actor A: B, Sendable, C {}"):
-                Example("actor A: B, C {}"),
+            Example("""
+                actor A: B, Sendable, C // comment
+                {}
+                """):
+                Example("""
+                    actor A: B, C // comment
+                    {}
+                    """),
+            Example("@MainActor protocol P: A, Sendable {}"):
+                Example("@MainActor protocol P: A {}"),
         ]
     )
 }
@@ -114,17 +122,22 @@ private extension DeclGroupSyntax where Self: NamedDeclSyntax {
             return self
         }
         let inheritedTypes = inheritanceClause.inheritedTypes.filter { !$0.isSendable }
-        if inheritedTypes.isEmpty {
-            return with(\.inheritanceClause, nil)
-                .with(\.name.trailingTrivia, inheritanceClause.leadingTrivia + inheritanceClause.trailingTrivia)
+        if let lastType = inheritedTypes.last, let lastIndex = inheritedTypes.index(of: lastType) {
+            return with(\.inheritanceClause, inheritanceClause
+                .with(\.inheritedTypes, inheritedTypes.with(\.[lastIndex], lastType.withoutComma)))
         }
-        return with(\.inheritanceClause, inheritanceClause
-            .with(\.inheritedTypes, inheritedTypes))
+        return with(\.inheritanceClause, nil)
+            .with(\.name.trailingTrivia, inheritanceClause.leadingTrivia + inheritanceClause.trailingTrivia)
     }
 }
 
 private extension InheritedTypeSyntax {
     var isSendable: Bool {
         type.as(IdentifierTypeSyntax.self)?.name.text == "Sendable"
+    }
+
+    var withoutComma: InheritedTypeSyntax {
+        with(\.trailingComma, nil)
+            .with(\.trailingTrivia, trailingTrivia)
     }
 }

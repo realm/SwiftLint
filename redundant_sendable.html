@@ -374,6 +374,8 @@ global_actors
 </code></pre>
 <pre class="highlight swift"><code><span class="kd">@MyActor</span> <span class="kd">enum</span> <span class="kt">E</span><span class="p">:</span> <span class="kt">Sendable</span> <span class="p">{</span> <span class="k">case</span> <span class="n">a</span> <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">@MainActor</span> <span class="kd">protocol</span> <span class="kt">P</span><span class="p">:</span> <span class="kt">Sendable</span> <span class="p">{}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">@MainActor</span> <span class="kd">struct</span> <span class="err">↓</span><span class="kt">S</span><span class="p">:</span> <span class="kt">Sendable</span> <span class="p">{}</span>
 </code></pre>

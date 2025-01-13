@@ -2,7 +2,22 @@
 
 #### Breaking
 
-* None.
+* If you are referring to the `swiftlint` binary from an Artifact Bundle consumed via Swift Package Manager
+  in an Xcode Run Script Build Phase, make sure to update the path from
+
+  ```bash
+  "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*/bin/swiftlint
+  ```
+
+  to
+
+  ```bash
+  "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*-macos/bin/swiftlint
+  ```
+
+  in order to make Xcode use the binary built for macOS.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5954](https://github.com/realm/SwiftLint/issues/5954)
 
 #### Experimental
 

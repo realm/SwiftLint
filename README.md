@@ -860,7 +860,7 @@ All syntax kinds used in a snippet of Swift code can be extracted asking
 
 which match to `keyword` and `identifier` in the above list.
 
-If using custom rules in combination with `only_rules`, you must include the 
+If using custom rules in combination with `only_rules`, you must include the
 literal string `custom_rules` in the `only_rules` list:
 
 ```yaml

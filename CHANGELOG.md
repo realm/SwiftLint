@@ -44,7 +44,7 @@
 * The command plugin now requires write permissions so that it works with the `--fix` option without an error.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* The artifact bundle name has changed. `SwiftLintBinary-macos.artifactbundle.zip` is now called 
+* The artifact bundle name has changed. `SwiftLintBinary-macos.artifactbundle.zip` is now called
   `SwiftLintBinary.artifactbundle.zip`. It now includes an AMD64 Linux binary.
   [Bradley Mackey](https://github.com/bradleymackey)
   [#5514](https://github.com/realm/SwiftLint/issues/5514)
@@ -223,7 +223,7 @@
   [#5711](https://github.com/realm/SwiftLint/issues/5711)
 
 * Fixes `file_name` rule to match fully-qualified names of nested types.
-  Additionally adds a `require_fully_qualified_names` boolean option to enforce 
+  Additionally adds a `require_fully_qualified_names` boolean option to enforce
   that file names match nested types only using their fully-qualified name.  
   [fraioli](https://github.com/fraioli)
   [#5840](https://github.com/realm/SwiftLint/issues/5840)
@@ -682,7 +682,7 @@
 * Refine violation position of `trailing_closure` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* Trigger on the declaration keyword (i.e. `let`, `var`, `func`, `subscript`) 
+* Trigger on the declaration keyword (i.e. `let`, `var`, `func`, `subscript`)
   instead of the `static` or `class` keywords in the `explicit_acl` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
@@ -1376,7 +1376,7 @@
   [AndrewDMontgomery](https://github.com/andrewdmontgomery)
   [#4875](https://github.com/realm/SwiftLint/pull/4875)
 
-* Prepend `warning: ` to error messages so that they show in Xcode.  
+* Prepend `warning:` to error messages so that they show in Xcode.  
   [whiteio](https://github.com/whiteio)
   [#4923](https://github.com/realm/SwiftLint/issues/4923)
 
@@ -1773,149 +1773,149 @@
 
 * Rewrite some rules with SwiftSyntax, fixing some false positives and catching
   more violations:
-  - `anonymous_argument_in_multiline_closure`
-  - `array_init`
-  - `attributes`
-  - `balanced_xctest_lifecycle`
-  - `block_based_kvo`
-  - `class_delegate_protocol`
-  - `closing_brace`
-  - `closure_body_length`
-  - `closure_parameter_position`
-  - `collection_alignment`
-  - `comment_spacing`
-  - `computed_accessors_order`
-  - `conditional_returns_on_newline`
-  - `contains_over_filter_count`
-  - `contains_over_filter_is_empty`
-  - `contains_over_first_not_nil`
-  - `contains_over_range_nil_comparison`
-  - `convenience_type`
-  - `deployment_target`
-  - `discarded_notification_center_observer`
-  - `discouraged_assert`
-  - `discouraged_direct_init`
-  - `discouraged_none_name`
-  - `discouraged_object_literal`
-  - `discouraged_optional_boolean`
-  - `duplicate_enum_cases`
-  - `duplicated_key_in_dictionary_literal`
-  - `dynamic_inline`
-  - `empty_collection_literal`
-  - `empty_count`
-  - `empty_enum_arguments`
-  - `empty_parameters`
-  - `empty_parentheses_with_trailing_closure`
-  - `empty_string`
-  - `enum_case_associated_values_count`
-  - `explicit_enum_raw_value`
-  - `explicit_init`
-  - `explicit_top_level_acl`
-  - `fallthrough`
-  - `file_name`
-  - `first_where`
-  - `flatmap_over_map_reduce`
-  - `for_where`
-  - `force_try`
-  - `force_unwrapping`
-  - `function_body_length`
-  - `function_default_parameter_at_end`
-  - `function_parameter_count`
-  - `generic_type_name`
-  - `ibinspectable_in_extension`
-  - `identical_operands`
-  - `implicit_getter`
-  - `implicitly_unwrapped_optional`
-  - `inclusive_language`
-  - `inert_defer`
-  - `is_disjoint`
-  - `joined_default_parameter`
-  - `large_tuple`
-  - `last_where`
-  - `legacy_cggeometry_functions`
-  - `legacy_constant`
-  - `legacy_constructor`
-  - `legacy_hashing`
-  - `legacy_multiple`
-  - `legacy_nsgeometry_functions`
-  - `legacy_objc_type`
-  - `legacy_random`
-  - `lower_acl_than_parent`
-  - `multiline_arguments_brackets`
-  - `multiline_parameters`
-  - `multiple_closures_with_trailing_closure`
-  - `no_extension_access_modifier`
-  - `no_fallthrough_only`
-  - `no_space_in_method_call`
-  - `notification_center_detachment`
-  - `nslocalizedstring_key`
-  - `nslocalizedstring_require_bundle`
-  - `nsobject_prefer_isequal`
-  - `number_separator`
-  - `object_literal`
-  - `operator_whitespace`
-  - `optional_enum_case_matching`
-  - `orphaned_doc_comment`
-  - `overridden_super_call`
-  - `override_in_extension`
-  - `pattern_matching_keywords`
-  - `prefer_nimble`
-  - `prefer_self_in_static_references`
-  - `prefer_self_type_over_type_of_self`
-  - `prefer_zero_over_explicit_init`
-  - `prefixed_toplevel_constant`
-  - `private_action`
-  - `private_outlet`
-  - `private_over_fileprivate`
-  - `private_subject`
-  - `private_unit_test`
-  - `prohibited_interface_builder`
-  - `prohibited_super_call`
-  - `protocol_property_accessors_order`
-  - `quick_discouraged_focused_test`
-  - `quick_discouraged_pending_test`
-  - `raw_value_for_camel_cased_codable_enum`
-  - `reduce_boolean`
-  - `reduce_into`
-  - `redundant_discardable_let`
-  - `redundant_nil_coalescing`
-  - `redundant_objc_attribute`
-  - `redundant_optional_initialization`
-  - `redundant_set_access_control`
-  - `redundant_string_enum_value`
-  - `required_deinit`
-  - `required_enum_case`
-  - `return_arrow_whitespace`
-  - `self_in_property_initialization`
-  - `shorthand_operator`
-  - `single_test_class`
-  - `sorted_first_last`
-  - `static_operator`
-  - `strict_fileprivate`
-  - `strong_iboutlet`
-  - `switch_case_alignment`
-  - `switch_case_on_newline`
-  - `test_case_accessibility`
-  - `toggle_bool`
-  - `trailing_comma`
-  - `trailing_semicolon`
-  - `type_body_length`
-  - `type_name`
-  - `unneeded_break_in_switch`
-  - `unneeded_parentheses_in_closure_argument`
-  - `unowned_variable_capture`
-  - `untyped_error_in_catch`
-  - `unused_capture_list`
-  - `unused_closure_parameter`
-  - `unused_control_flow_label`
-  - `unused_enumerated`
-  - `unused_optional_binding`
-  - `unused_setter_value`
-  - `valid_ibinspectable`
-  - `vertical_parameter_alignment`
-  - `weak_delegate`
-  - `xct_specific_matcher`
-  - `xctfail_message`
+  * `anonymous_argument_in_multiline_closure`
+  * `array_init`
+  * `attributes`
+  * `balanced_xctest_lifecycle`
+  * `block_based_kvo`
+  * `class_delegate_protocol`
+  * `closing_brace`
+  * `closure_body_length`
+  * `closure_parameter_position`
+  * `collection_alignment`
+  * `comment_spacing`
+  * `computed_accessors_order`
+  * `conditional_returns_on_newline`
+  * `contains_over_filter_count`
+  * `contains_over_filter_is_empty`
+  * `contains_over_first_not_nil`
+  * `contains_over_range_nil_comparison`
+  * `convenience_type`
+  * `deployment_target`
+  * `discarded_notification_center_observer`
+  * `discouraged_assert`
+  * `discouraged_direct_init`
+  * `discouraged_none_name`
+  * `discouraged_object_literal`
+  * `discouraged_optional_boolean`
+  * `duplicate_enum_cases`
+  * `duplicated_key_in_dictionary_literal`
+  * `dynamic_inline`
+  * `empty_collection_literal`
+  * `empty_count`
+  * `empty_enum_arguments`
+  * `empty_parameters`
+  * `empty_parentheses_with_trailing_closure`
+  * `empty_string`
+  * `enum_case_associated_values_count`
+  * `explicit_enum_raw_value`
+  * `explicit_init`
+  * `explicit_top_level_acl`
+  * `fallthrough`
+  * `file_name`
+  * `first_where`
+  * `flatmap_over_map_reduce`
+  * `for_where`
+  * `force_try`
+  * `force_unwrapping`
+  * `function_body_length`
+  * `function_default_parameter_at_end`
+  * `function_parameter_count`
+  * `generic_type_name`
+  * `ibinspectable_in_extension`
+  * `identical_operands`
+  * `implicit_getter`
+  * `implicitly_unwrapped_optional`
+  * `inclusive_language`
+  * `inert_defer`
+  * `is_disjoint`
+  * `joined_default_parameter`
+  * `large_tuple`
+  * `last_where`
+  * `legacy_cggeometry_functions`
+  * `legacy_constant`
+  * `legacy_constructor`
+  * `legacy_hashing`
+  * `legacy_multiple`
+  * `legacy_nsgeometry_functions`
+  * `legacy_objc_type`
+  * `legacy_random`
+  * `lower_acl_than_parent`
+  * `multiline_arguments_brackets`
+  * `multiline_parameters`
+  * `multiple_closures_with_trailing_closure`
+  * `no_extension_access_modifier`
+  * `no_fallthrough_only`
+  * `no_space_in_method_call`
+  * `notification_center_detachment`
+  * `nslocalizedstring_key`
+  * `nslocalizedstring_require_bundle`
+  * `nsobject_prefer_isequal`
+  * `number_separator`
+  * `object_literal`
+  * `operator_whitespace`
+  * `optional_enum_case_matching`
+  * `orphaned_doc_comment`
+  * `overridden_super_call`
+  * `override_in_extension`
+  * `pattern_matching_keywords`
+  * `prefer_nimble`
+  * `prefer_self_in_static_references`
+  * `prefer_self_type_over_type_of_self`
+  * `prefer_zero_over_explicit_init`
+  * `prefixed_toplevel_constant`
+  * `private_action`
+  * `private_outlet`
+  * `private_over_fileprivate`
+  * `private_subject`
+  * `private_unit_test`
+  * `prohibited_interface_builder`
+  * `prohibited_super_call`
+  * `protocol_property_accessors_order`
+  * `quick_discouraged_focused_test`
+  * `quick_discouraged_pending_test`
+  * `raw_value_for_camel_cased_codable_enum`
+  * `reduce_boolean`
+  * `reduce_into`
+  * `redundant_discardable_let`
+  * `redundant_nil_coalescing`
+  * `redundant_objc_attribute`
+  * `redundant_optional_initialization`
+  * `redundant_set_access_control`
+  * `redundant_string_enum_value`
+  * `required_deinit`
+  * `required_enum_case`
+  * `return_arrow_whitespace`
+  * `self_in_property_initialization`
+  * `shorthand_operator`
+  * `single_test_class`
+  * `sorted_first_last`
+  * `static_operator`
+  * `strict_fileprivate`
+  * `strong_iboutlet`
+  * `switch_case_alignment`
+  * `switch_case_on_newline`
+  * `test_case_accessibility`
+  * `toggle_bool`
+  * `trailing_comma`
+  * `trailing_semicolon`
+  * `type_body_length`
+  * `type_name`
+  * `unneeded_break_in_switch`
+  * `unneeded_parentheses_in_closure_argument`
+  * `unowned_variable_capture`
+  * `untyped_error_in_catch`
+  * `unused_capture_list`
+  * `unused_closure_parameter`
+  * `unused_control_flow_label`
+  * `unused_enumerated`
+  * `unused_optional_binding`
+  * `unused_setter_value`
+  * `valid_ibinspectable`
+  * `vertical_parameter_alignment`
+  * `weak_delegate`
+  * `xct_specific_matcher`
+  * `xctfail_message`
 
   [Marcelo Fabri](https://github.com/marcelofabri)
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -1958,7 +1958,7 @@
   `if let self {}`) when using a `bind_identifier` different than `self`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Add `library_content_provider` file type to `file_types_order` rule 
+* Add `library_content_provider` file type to `file_types_order` rule
   to allow `LibraryContentProvider` to be ordered independent from `main_type`.  
   [dahlborn](https://github.com/dahlborn)
 
@@ -6673,14 +6673,14 @@ The next release will require Swift 4.0 or higher to build.
 
 * Add `attributes` opt-in rule which validates if an attribute (`@objc`,
   `@IBOutlet`, `@discardableResult`, etc) is in the right position:
-    - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
+  * If the attribute is `@IBAction` or `@NSManaged`, it should always be on
     the same line as the declaration
-    - If the attribute has parameters, it should always be on the line above
+  * If the attribute has parameters, it should always be on the line above
     the declaration
-    - Otherwise:
-      - if the attribute is applied to a variable, it should be on the same line
-      - if it's applied to a type or function, it should be on the line above
-      - if it's applied to an import (the only option is `@testable import`),
+  * Otherwise:
+    * if the attribute is applied to a variable, it should be on the same line
+    * if it's applied to a type or function, it should be on the line above
+    * if it's applied to an import (the only option is `@testable import`),
       it should be on the same line.
   You can also configure what attributes should be always on a new line or on
   the same line as the declaration with the `always_on_same_line` and
@@ -6715,8 +6715,8 @@ The next release will require Swift 4.0 or higher to build.
   [JP Simard](https://github.com/jpsim)
   [#964](https://github.com/realm/SwiftLint/issues/964)
 
-* Add correctable `empty_parameters` rule to validate usage of `() -> `
-  over `Void -> `.  
+* Add correctable `empty_parameters` rule to validate usage of `() ->`
+  over `Void ->`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#573](https://github.com/realm/SwiftLint/issues/573)
 
@@ -7608,7 +7608,6 @@ This release has seen a phenomenal uptake in community contributions!
   [JP Simard](https://github.com/jpsim)
   [#316](https://github.com/realm/SwiftLint/issues/316)
 
-
 ## 0.5.4: Bounce™
 
 #### Breaking
@@ -7646,7 +7645,6 @@ This release has seen a phenomenal uptake in community contributions!
 * The `valid_docs` rule now handles multibyte characters.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#295](https://github.com/realm/SwiftLint/issues/295)
-
 
 ## 0.5.3: Mountain Scent
 
@@ -7689,7 +7687,6 @@ This release has seen a phenomenal uptake in community contributions!
   [diogoguimaraes](https://github.com/diogoguimaraes)
   [#267](https://github.com/realm/SwiftLint/issues/267)
 
-
 ## 0.5.1: Lint Tray Malfunction
 
 #### Breaking
@@ -7711,7 +7708,6 @@ This release has seen a phenomenal uptake in community contributions!
   build phase.  
   [JP Simard](https://github.com/jpsim)
   [#264](https://github.com/realm/SwiftLint/issues/264)
-
 
 ## 0.5.0: Downy™
 
@@ -7751,7 +7747,6 @@ This release has seen a phenomenal uptake in community contributions!
 * Fix issues with multi-byte characters.  
   [JP Simard](https://github.com/jpsim)
   [#234](https://github.com/realm/SwiftLint/issues/234)
-
 
 ## 0.4.0: Wrinkle Release
 
@@ -7812,7 +7807,6 @@ This release has seen a phenomenal uptake in community contributions!
   [JP Simard](https://github.com/jpsim)
   [#200](https://github.com/realm/SwiftLint/issues/200)
 
-
 ## 0.3.0: Wrinkly Rules
 
 #### Breaking
@@ -7864,7 +7858,6 @@ This release has seen a phenomenal uptake in community contributions!
 * Deduplicate files in the current directory.  
   [JP Simard](https://github.com/jpsim)
   [#154](https://github.com/realm/SwiftLint/issues/154)
-
 
 ## 0.2.0: Tumble Dry
 
@@ -7921,7 +7914,6 @@ This release has seen a phenomenal uptake in community contributions!
 * Allow newlines in function return arrow.  
   [JP Simard](https://github.com/jpsim)
 
-
 ## 0.1.2: FabricSoftenerRule
 
 #### Breaking
@@ -7952,7 +7944,6 @@ This release has seen a phenomenal uptake in community contributions!
 #### Bug Fixes
 
 * None.
-
 
 ## 0.1.1: Top Loading
 
@@ -8000,7 +7991,6 @@ This release has seen a phenomenal uptake in community contributions!
 * Trailing newline and file length violations are now displayed in Xcode.  
   [JP Simard](https://github.com/jpsim)
   [#43](https://github.com/realm/SwiftLint/issues/43)
-
 
 ## 0.1.0: Fresh Out Of The Dryer
 

@@ -38,7 +38,7 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration {
         [.initializer],
         [.typeMethod],
         [.viewLifeCycleMethod],
-        [.ibAction],
+        [.ibAction, .ibSegueAction],
         [.otherMethod],
         [.subscript],
         [.deinitializer],

@@ -37,6 +37,10 @@
   [riley-williams](https://github.com/riley-williams)
   [#5958](https://github.com/realm/SwiftLint/issues/5958)
 
+* Add `ib_segue_action` to default configuration of `type_contents_order` rule on the same level as `ib_action` to define and document a standard position.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5524](https://github.com/realm/SwiftLint/issues/5524)
+
 ## 0.58.0: New Year’s Fresh Fold
 
 #### Breaking

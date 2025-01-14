@@ -19,6 +19,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5954](https://github.com/realm/SwiftLint/issues/5954)
 
+* Revert changes to improve performance when exclude patterns resolve to a large set of files. While resolving files
+  indeed got much faster in certain setups, it leads to missed exclusions for nested configurations and when the linted
+  folder is not the current folder.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5953](https://github.com/realm/SwiftLint/issues/5953)
+
 #### Experimental
 
 * None.

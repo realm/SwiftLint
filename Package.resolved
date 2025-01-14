@@ -37,15 +37,6 @@
       }
     },
     {
-      "identity" : "swift-filename-matcher",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ileitch/swift-filename-matcher",
-      "state" : {
-        "revision" : "516ff95f6a06c7a9eff8e944e989c7af076c5cdb",
-        "version" : "2.0.0"
-      }
-    },
-    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",

@@ -5,33 +5,42 @@ variables:
   CI: 'true'
 
 jobs:
-- job: Ubuntu
+- job: spm_linux
+  displayName: 'SPM, Linux : Swift 6'
   pool:
     vmImage: 'ubuntu-24.04' # "Noble Numbat"
-  strategy:
-    maxParallel: 10
-    matrix:
-      'Swift 6':
-        image: swift:6.0-noble
-  container: $[ variables['image'] ]
+  container: swift:6.0-noble
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
-- job: macOS
+- job: bazel_linux
+  displayName: 'Bazel, Linux : Swift 6'
+  pool:
+    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+  steps:
+    - script: |
+        bazel build :swiftlint
+        bazel test --test_output=errors //Tests/...
+      displayName: bazel test
+      env:
+        CC: "clang"
+
+- job: tests_macos
+  displayName: 'Tests, macOS'
   strategy:
-    maxParallel: 10
+    maxParallel: '10'
     matrix:
-      '14, Xcode 15.4':
+      '14 : Xcode 15.4':
         image: 'macOS-14'
         xcode: '15.4'
-      '14, Xcode 16.1':
+      '14 : Xcode 16.1':
         image: 'macOS-14'
         xcode: '16.1'
-      '15, Xcode 15.4':
+      '15 : Xcode 15.4':
         image: 'macOS-15'
         xcode: '15.4'
-      '15, Xcode 16.2':
+      '15 : Xcode 16.2':
         image: 'macOS-15'
         xcode: '16.2'
   pool:
@@ -42,23 +51,20 @@ jobs:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
       displayName: swift test
 
-- job: Plugins # Plugins shall be able to run on older Swift versions.
-  strategy:
-    maxParallel: 10
-    matrix:
-      ': macOS 13, Swift 5.9':
-        image: 'macOS-13'
-        xcode: '15.2'
-      ': macOS 14, Swift 5.10':
-        image: 'macOS-14'
-        xcode: '15.4'
-      ': macOS 14, Swift 6':
-        image: 'macOS-14'
-        xcode: '16.1'
+- job: plugins_linux # Plugins shall be able to run on older Swift versions.
+  displayName: 'Plugins, Linux'
   pool:
-    vmImage: $(image)
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
+    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+  strategy:
+    maxParallel: '10'
+    matrix:
+      ': Swift 5.9':
+        image: swift:5.9-focal
+      ': Swift 5.10':
+        image: swift:5.10-noble
+      ': Swift 6':
+        image: swift:6.0-noble
+  container: $[ variables['image'] ]
   steps:
     - script: swift build -c release --product SwiftLintCommandPlugin
       displayName: Command Plugin

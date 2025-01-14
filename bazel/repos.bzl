@@ -58,7 +58,7 @@ def swiftlint_repos(bzlmod = False):
 
     http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",
-        sha256 = "3d649cccfe9ae0572163cde0201f013d10349a035c15225e7a4bd83c85fb0d1d",
+        sha256 = "69b23102ff453990d03aff4d3fabd172d0667b2b3ed95730021d60a0f8d50d14",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
         strip_prefix = "CryptoSwift-1.8.4",
         url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.8.4.tar.gz",

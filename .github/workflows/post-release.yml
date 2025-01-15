@@ -54,6 +54,8 @@ jobs:
         run: |
           AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
           echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
+      - name: Prepare Homebrew
+        run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
       - name: Update Homebrew formula
         uses: Homebrew/actions/bump-packages@master
         with:

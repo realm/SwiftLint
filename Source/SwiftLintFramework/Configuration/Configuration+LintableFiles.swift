@@ -20,7 +20,9 @@ extension Configuration {
                               forceExclude: Bool,
                               excludeBy: ExcludeBy) -> [SwiftLintFile] {
         lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
-            .compactMap(SwiftLintFile.init(pathDeferringReading:))
+            .parallelCompactMap {
+                SwiftLintFile(pathDeferringReading: $0)
+            }
     }
 
     /// Returns the paths for files that can be linted by SwiftLint in the specified parent path.

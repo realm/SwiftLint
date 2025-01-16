@@ -14,25 +14,28 @@ on:
         description: 'Docker tag'
         required: true
         type: string
-        default: 'latest'
 
 jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-24.04
     steps:
+    - name: Define variables on push to `main`
+      if: github.event_name == 'push'
+      run: |
+        echo "CHECKOUT_REF=main" >> $GITHUB_ENV
+        echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+    - name: Define variables on workflow call
+      if: github.event_name != 'push'
+      run: |
+        echo "CHECKOUT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
+        echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
     - uses: actions/checkout@v4
-      if: github.event_name != 'push' && inputs.tag != 'latest'
       with:
-        ref: ${{ inputs.ref }}
-    - uses: actions/checkout@v4
-      if: github.event_name == 'push'
-    - name: Set Docker tag
-      if: github.event_name != 'push' && inputs.tag != 'latest'
-      run: echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
-    - name: Use default Docker tag
-      if: github.event_name == 'push'
-      run: echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+        ref: ${{ env.CHECKOUT_REF }}
+    - name: Update branch
+      if: github.event_name != 'push'
+      run: git pull 
     - name: Set lowercase repository name
       run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> $GITHUB_ENV
       env:

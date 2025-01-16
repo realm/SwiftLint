@@ -2,33 +2,32 @@
 
 set -euo pipefail
 
-# Text to prepend
+# Header with new section
 new_section=$(cat <<EOF
+# Changelog
+
 ## Main
 
-#### Breaking
+### Breaking
 
 * None.
 
-#### Experimental
+### Experimental
 
 * None.
 
-#### Enhancements
+### Enhancements
 
 * None.
 
-#### Bug Fixes
+### Bug Fixes
 
 * None.
 EOF
 )
 
-# Create a temporary file
-temp_file=$(mktemp)
+# Read changelog skipping the first line
+changelog=$(tail -n +2 CHANGELOG.md)
 
-# Prepend the new section and a newline to the changelog
-{ echo -e "$new_section"; echo; cat CHANGELOG.md; } > "$temp_file"
-
-# Replace the changelog file with this new file
-mv "$temp_file" CHANGELOG.md
+# Prepend the new section and a newline to the existing changelog
+{ echo -e "$new_section"; echo "$changelog"; } > CHANGELOG.md

@@ -26,7 +26,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Create release branch
-        run: git checkout ${{ env.RELEASE_BRANCH }} || git checkout -b ${{ env.RELEASE_BRANCH }}
+        run: >-
+          git fetch origin ${{ env.RELEASE_BRANCH }}
+          && git checkout ${{ env.RELEASE_BRANCH }}
+          || git checkout -b ${{ env.RELEASE_BRANCH }}
       - name: Update changelog
         run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
       - name: Update built-in versions

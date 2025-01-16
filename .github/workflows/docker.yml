@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: published
   workflow_call:
     inputs:
       ref:
@@ -25,11 +27,19 @@ jobs:
       run: |
         echo "CHECKOUT_REF=main" >> $GITHUB_ENV
         echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+        echo "OUTPUT_TYPE='type=registry'" >> $GITHUB_ENV
+    - name: Define variable on release event
+      if: github.event_name == 'release'
+      run: |
+        echo "CHECKOUT_REF=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        echo "DOCKER_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        echo "OUTPUT_TYPE='type=registry'" >> $GITHUB_ENV
     - name: Define variables on workflow call
-      if: github.event_name != 'push'
+      if: github.event_name != 'push' && github.event_name != 'release'
       run: |
         echo "CHECKOUT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
         echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
+        echo "OUTPUT_TYPE='type=local,dest=artifacts'" >> $GITHUB_ENV
     - uses: actions/checkout@v4
       with:
         ref: ${{ env.CHECKOUT_REF }}
@@ -50,13 +60,12 @@ jobs:
         context: .
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
         platforms: linux/amd64
-        outputs: |
-          type=registry
-          type=local,dest=artifacts
+        outputs: ${{ env.OUTPUT_TYPE }}
     - name: Rename binary artifact
+      if: contains(env.OUTPUT_TYPE, 'local')
       run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
     - name: Upload binary artifact
-      if: github.event_name != 'push'
+      if: contains(env.OUTPUT_TYPE, 'local')
       uses: actions/upload-artifact@v4
       with:
         name: swiftlint_linux_amd64

@@ -27,19 +27,19 @@ jobs:
       run: |
         echo "CHECKOUT_REF=main" >> $GITHUB_ENV
         echo "DOCKER_TAG=latest" >> $GITHUB_ENV
-        echo "OUTPUT_TYPE='type=registry'" >> $GITHUB_ENV
+        echo "OUTPUT_TYPE=type=registry" >> $GITHUB_ENV
     - name: Define variable on release event
       if: github.event_name == 'release'
       run: |
         echo "CHECKOUT_REF=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
         echo "DOCKER_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-        echo "OUTPUT_TYPE='type=registry'" >> $GITHUB_ENV
+        echo "OUTPUT_TYPE=type=registry" >> $GITHUB_ENV
     - name: Define variables on workflow call
       if: github.event_name != 'push' && github.event_name != 'release'
       run: |
         echo "CHECKOUT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
         echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
-        echo "OUTPUT_TYPE='type=local,dest=artifacts'" >> $GITHUB_ENV
+        echo "OUTPUT_TYPE=type=local,dest=artifacts" >> $GITHUB_ENV
     - uses: actions/checkout@v4
       with:
         ref: ${{ env.CHECKOUT_REF }}

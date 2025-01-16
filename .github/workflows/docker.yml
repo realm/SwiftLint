@@ -33,9 +33,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: ${{ env.CHECKOUT_REF }}
-    - name: Update branch
-      if: github.event_name != 'push'
-      run: git pull 
     - name: Set lowercase repository name
       run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> $GITHUB_ENV
       env:
@@ -50,6 +47,7 @@ jobs:
         registry: ghcr.io
     - uses: docker/build-push-action@v6
       with:
+        context: .
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
         platforms: linux/amd64
         outputs: |

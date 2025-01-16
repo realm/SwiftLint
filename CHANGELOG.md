@@ -16,7 +16,9 @@
 
 ### Bug Fixes
 
-* None.
+* Fix version being reported by the binary consumed from the Docker image.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5966](https://github.com/realm/SwiftLint/issues/5966)
 
 ## 0.58.1: New Year’s Fresh Fold
 

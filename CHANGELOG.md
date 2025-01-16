@@ -1,6 +1,6 @@
 # Changelog
 
-## Main
+## 0.58.2: New Year’s Fresh Fold
 
 ### Breaking
 

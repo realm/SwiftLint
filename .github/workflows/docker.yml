@@ -28,7 +28,7 @@ jobs:
         echo "CHECKOUT_REF=main" >> $GITHUB_ENV
         echo "DOCKER_TAG=latest" >> $GITHUB_ENV
         echo "OUTPUT_TYPE=type=registry" >> $GITHUB_ENV
-    - name: Define variable on release event
+    - name: Define variables on release event
       if: github.event_name == 'release'
       run: |
         echo "CHECKOUT_REF=${{ github.event.release.tag_name }}" >> $GITHUB_ENV

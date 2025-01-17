@@ -48,14 +48,23 @@ jobs:
   bump-homebrew:
     name: Bump Homebrew Formula
     runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/homebrew/ubuntu24.04:latest
     steps:
       - name: Retrieve author in uppercase
         id: retrieve_author
         run: |
           AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
           echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
-      - name: Prepare Homebrew
-        run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+        with:
+          test-bot: false
+      - name: Configure Git author
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
       - name: Update Homebrew formula
         uses: Homebrew/actions/bump-packages@master
         with:

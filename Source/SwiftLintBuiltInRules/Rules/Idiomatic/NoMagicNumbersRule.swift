@@ -81,9 +81,26 @@ struct NoMagicNumbersRule: Rule {
             Example("let (lowerBound, upperBound) = (400, 599)"),
             Example("let a = (5, 10)"),
             Example("let notFound = (statusCode: 404, description: \"Not Found\", isError: true)"),
+            Example("#Preview { ContentView(value: 5) }"),
+            Example("@Test func f() { let _ = 2 + 2 }"),
             Example("""
-            #Preview {
-                ContentView(value: 5)
+            @Suite struct Test {
+                @Test func f() {
+                    func g() { let _ = 2 + 2 }
+                    let _ = 2 + 2
+                }
+            }
+            """),
+            Example("""
+            @Suite actor Test {
+                private var a: Int { 2 }
+                @Test func f() { let _ = 2 + a }
+            }
+            """),
+            Example("""
+            class Test { // @Suite implicitly
+                private var a: Int { 2 }
+                @Test func f() { let _ = 2 + a }
             }
             """),
         ],
@@ -127,12 +144,12 @@ private extension NoMagicNumbersRule {
         private var nonTestClasses: Set<String> = []
         private var possibleViolations: [String: Set<AbsolutePosition>] = [:]
 
-        override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
-            node.isSimpleTupleAssignment ? .skipChildren : .visitChildren
+        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isTestSuite ? .skipChildren : .visitChildren
         }
 
-        override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
-            node.macroName.text == "Preview" ? .skipChildren : .visitChildren
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isTestSuite ? .skipChildren : .visitChildren
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
@@ -145,6 +162,10 @@ private extension NoMagicNumbersRule {
             }
         }
 
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isTestSuite ? .skipChildren : .visitChildren
+        }
+
         override func visitPost(_ node: FloatLiteralExprSyntax) {
             guard node.literal.isMagicNumber else {
                 return
@@ -152,11 +173,27 @@ private extension NoMagicNumbersRule {
             collectViolation(forNode: node)
         }
 
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.attributes.contains(attributeNamed: "Test") ? .skipChildren : .visitChildren
+        }
+
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
             guard node.literal.isMagicNumber else {
                 return
             }
             collectViolation(forNode: node)
+        }
+
+        override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
+            node.macroName.text == "Preview" ? .skipChildren : .visitChildren
+        }
+
+        override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
+            node.isSimpleTupleAssignment ? .skipChildren : .visitChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isTestSuite ? .skipChildren : .visitChildren
         }
 
         private func collectViolation(forNode node: some ExprSyntaxProtocol) {
@@ -186,6 +223,17 @@ private extension NoMagicNumbersRule {
             let violationsToRemove = Set(possibleViolationsForClass.map { ReasonedRuleViolation(position: $0) })
             violations.removeAll { violationsToRemove.contains($0) }
             possibleViolations.removeValue(forKey: className)
+        }
+    }
+}
+
+private extension DeclGroupSyntax {
+    var isTestSuite: Bool {
+        if attributes.contains(attributeNamed: "Suite") {
+            return true
+        }
+        return memberBlock.members.contains {
+            $0.decl.as(FunctionDeclSyntax.self)?.attributes.contains(attributeNamed: "Test") == true
         }
     }
 }

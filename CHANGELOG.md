@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Exclude types with a `@Suite` attribute and functions annotated with `@Test` from `no_magic_numbers` rule.
+  Also treat a type as a `@Suite` if it contains `@Test` functions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5964](https://github.com/realm/SwiftLint/issues/5964)
 
 ### Bug Fixes
 

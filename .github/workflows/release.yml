@@ -23,7 +23,9 @@ jobs:
     name: Prepare Release
     runs-on: ubuntu-24.04
     outputs:
+      author_name: ${{ steps.configure_git_author.outputs.name }}
       author_uppercase: ${{ steps.retrieve_author.outputs.name }}
+      author_email: ${{ steps.configure_git_author.outputs.email }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -98,8 +100,8 @@ jobs:
           ref: ${{ env.RELEASE_BRANCH }}
       - name: Configure author
         run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "${{ needs.prepare-release.outputs.author_name }}"
+          git config --local user.email "${{ needs.prepare-release.outputs.author_email }}"
       - name: Create build folders
         run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
       - name: Download binary artifact for macOS

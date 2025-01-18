@@ -12,7 +12,7 @@ jobs:
   container: swift:6.0-noble
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: swift test
+      displayName: Run tests
 
 - job: bazel_linux
   displayName: 'Bazel, Linux : Swift 6'
@@ -23,7 +23,7 @@ jobs:
         export PATH="/usr/share/swift/usr/bin:$PATH"
         git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
         bazel build :swiftlint
-      displayName: bazel test
+      displayName: Build SwiftLint with Bazel
       env:
         CC: "clang"
 
@@ -48,7 +48,7 @@ jobs:
     DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: swift test
+      displayName: Run tests
 
 - job: plugins_linux # Plugins shall be able to run on older Swift versions.
   displayName: 'Plugins, Linux'
@@ -66,9 +66,9 @@ jobs:
   container: $[ variables['image'] ]
   steps:
     - script: swift build -c release --product SwiftLintCommandPlugin
-      displayName: Command Plugin
+      displayName: Build command plugin
     - script: swift build -c release --product SwiftLintBuildToolPlugin
-      displayName: Build Tool Plugin
+      displayName: Build build tool plugin
 
 - job: CocoaPods
   pool:
@@ -77,11 +77,11 @@ jobs:
     DEVELOPER_DIR: /Applications/Xcode_16.1.app
   steps:
     - script: bundle install --path vendor/bundle
-      displayName: bundle install
+      displayName: Install dependencies
     - script: bundle exec pod repo update
-      displayName: pod repo update
+      displayName: Update CocoaPods repo
     - script: bundle exec pod lib lint --platforms=macos --verbose
-      displayName: pod lib lint
+      displayName: Lint Podspec for macOS
 
 - job: Jazzy
   pool:
@@ -90,11 +90,11 @@ jobs:
     DEVELOPER_DIR: /Applications/Xcode_15.4.app
   steps:
     - script: swift run swiftlint generate-docs
-      displayName: Run swiftlint generate-docs
+      displayName: Generate documentation
     - script: bundle install --path vendor/bundle
-      displayName: bundle install
+      displayName: Install dependencies
     - script: bundle exec jazzy
-      displayName: Run jazzy
+      displayName: Run Jazzy
     - script: >
         if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
           echo "Undocumented declarations:"
@@ -106,10 +106,12 @@ jobs:
       inputs:
         artifactName: 'API Docs'
         targetPath: 'docs'
+      displayName: Publish API docs
     - task: DownloadSecureFile@1
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
       inputs:
         secureFile: doc_deploy_key
+      displayName: Download deploy key
     - script: ./tools/push-docs
-      displayName: Publish
+      displayName: Push documentation to GitHub Pages
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')

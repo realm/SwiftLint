@@ -8,7 +8,7 @@ jobs:
 - job: spm_linux
   displayName: 'SPM, Linux : Swift 6'
   pool:
-    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+    vmImage: 'ubuntu-24.04-arm' # "Noble Numbat"
   container: swift:6.0-noble
   steps:
     - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
@@ -17,7 +17,7 @@ jobs:
 - job: bazel_linux
   displayName: 'Bazel, Linux : Swift 6'
   pool:
-    vmImage: 'ubuntu-24.04'
+    vmImage: 'ubuntu-24.04-arm'
   steps:
     - script: |
         export PATH="/usr/share/swift/usr/bin:$PATH"
@@ -53,7 +53,7 @@ jobs:
 - job: plugins_linux # Plugins shall be able to run on older Swift versions.
   displayName: 'Plugins, Linux'
   pool:
-    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+    vmImage: 'ubuntu-24.04-arm' # "Noble Numbat"
   strategy:
     maxParallel: '10'
     matrix:

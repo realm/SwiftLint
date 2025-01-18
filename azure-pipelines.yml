@@ -20,6 +20,10 @@ jobs:
     vmImage: 'ubuntu-24.04' # "Noble Numbat"
   steps:
     - script: |
+        which swift
+        which clang
+        ls -al /usr/local/bin
+        ls -al /usr/share/swift/usr/bin/
         bazel build :swiftlint
         bazel test --test_output=errors //Tests/...
       displayName: bazel test

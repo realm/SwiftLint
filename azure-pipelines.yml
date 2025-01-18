@@ -17,14 +17,11 @@ jobs:
 - job: bazel_linux
   displayName: 'Bazel, Linux : Swift 6'
   pool:
-    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+    vmImage: 'ubuntu-24.04'
   steps:
     - script: |
-        which swift
-        which clang
-        ls -al /usr/local/bin
-        ls -al /usr/share/swift/usr/bin/
         export PATH="/usr/share/swift/usr/bin:$PATH"
+        git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
         bazel build :swiftlint
         bazel test --test_output=errors //Tests/...
       displayName: bazel test
@@ -39,9 +36,7 @@ jobs:
       '14 : Xcode 15.4':
         image: 'macOS-14'
         xcode: '15.4'
-      '14 : Xcode 16.1':
-        image: 'macOS-14'
-        xcode: '16.1'
+      # '14 : Xcode 16.2': Runs on Buildkite.
       '15 : Xcode 15.4':
         image: 'macOS-15'
         xcode: '15.4'

@@ -24,6 +24,7 @@ jobs:
         which clang
         ls -al /usr/local/bin
         ls -al /usr/share/swift/usr/bin/
+        export PATH="/usr/share/swift/usr/bin:$PATH"
         bazel build :swiftlint
         bazel test --test_output=errors //Tests/...
       displayName: bazel test

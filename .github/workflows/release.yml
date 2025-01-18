@@ -34,6 +34,12 @@ jobs:
           git fetch origin ${{ env.RELEASE_BRANCH }}
           && git checkout ${{ env.RELEASE_BRANCH }}
           || git checkout -b ${{ env.RELEASE_BRANCH }}
+      - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
+        run: |
+          make pod_lint
+          grep -q 'DEVELOPER_DIR: ${{ env.DEVELOPER_DIR }}' .github/workflows/post-release.yml || echo "Xcode version not in sync with post-release workflow"
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
       - name: Update changelog
         run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
       - name: Update built-in versions

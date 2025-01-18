@@ -20,7 +20,7 @@ jobs:
       - name: Deploy to CocoaPods
         run: make pod_publish
         env:
-          DEVELOPER_DIR: /Applications/Xcode_16.2.app
+          DEVELOPER_DIR: /Applications/Xcode_15.0.1.app
           COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
   dispatch-plugins:
     name: Dispatch Plugins Repository

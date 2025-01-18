@@ -171,6 +171,10 @@ pod_publish:
 	bundle install
 	bundle exec pod trunk push SwiftLint.podspec
 
+pod_lint:
+	bundle install
+	bundle exec pod lib lint SwiftLint.podspec
+
 docs:
 	swift run swiftlint generate-docs
 	bundle install

@@ -11,19 +11,19 @@ jobs:
     vmImage: 'ubuntu-24.04' # "Noble Numbat"
   container: swift:6.0-noble
   steps:
-    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: swift test
+    - displayName: Run tests
+      script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
 
 - job: bazel_linux
   displayName: 'Bazel, Linux : Swift 6'
   pool:
     vmImage: 'ubuntu-24.04'
   steps:
-    - script: |
+    - displayName: Build SwiftLint
+      script: |
         export PATH="/usr/share/swift/usr/bin:$PATH"
         git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
         bazel build :swiftlint
-      displayName: bazel test
       env:
         CC: "clang"
 
@@ -47,8 +47,8 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
   steps:
-    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: swift test
+    - displayName: Run tests
+      script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
 
 - job: plugins_linux # Plugins shall be able to run on older Swift versions.
   displayName: 'Plugins, Linux'
@@ -65,10 +65,10 @@ jobs:
         image: swift:6.0-noble
   container: $[ variables['image'] ]
   steps:
-    - script: swift build -c release --product SwiftLintCommandPlugin
-      displayName: Command Plugin
-    - script: swift build -c release --product SwiftLintBuildToolPlugin
-      displayName: Build Tool Plugin
+    - displayName: Build command plugin
+      script: swift build -c release --product SwiftLintCommandPlugin
+    - displayName: Build tool plugin
+      script: swift build -c release --product SwiftLintBuildToolPlugin
 
 - job: CocoaPods
   pool:
@@ -76,12 +76,12 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_16.1.app
   steps:
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec pod repo update
-      displayName: pod repo update
-    - script: bundle exec pod lib lint --platforms=macos --verbose
-      displayName: pod lib lint
+    - displayName: Install bundles
+      script: bundle install --path vendor/bundle
+    - displayName: Update Pod repo
+      script: bundle exec pod repo update
+    - displayName: Lint Podspec for macOS
+      script: bundle exec pod lib lint --platforms=macos --verbose
 
 - job: Jazzy
   pool:
@@ -89,27 +89,29 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_15.4.app
   steps:
-    - script: swift run swiftlint generate-docs
-      displayName: Run swiftlint generate-docs
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec jazzy
-      displayName: Run jazzy
-    - script: >
+    - displayName: Generate docs
+      script: swift run swiftlint generate-docs
+    - displayName: Install Jazzy
+      script: bundle install --path vendor/bundle
+    - displayName: Run Jazzy
+      script: bundle exec jazzy
+    - displayName: Validate documentation coverage
+      script: >
         if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
           echo "Undocumented declarations:"
           cat docs/undocumented.json
           exit 1
         fi
-      displayName: Validate documentation coverage
-    - task: PublishPipelineArtifact@0
+    - displayName: Publish documentation
+      task: PublishPipelineArtifact@0
       inputs:
         artifactName: 'API Docs'
         targetPath: 'docs'
-    - task: DownloadSecureFile@1
+    - displayName: Download secure file
+      task: DownloadSecureFile@1
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
       inputs:
         secureFile: doc_deploy_key
-    - script: ./tools/push-docs
-      displayName: Publish
+    - displayName: Publish
+      script: ./tools/push-docs
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')

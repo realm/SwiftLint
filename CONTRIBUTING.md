@@ -44,7 +44,9 @@ Then you can use the full power of Xcode/LLDB/Instruments to develop and debug y
 1. `git clone https://github.com/realm/SwiftLint.git`
 1. `cd SwiftLint`
 1. `swift build [-c release]`
-1. Use the produced `swiftlint` binary from the command line, either by running `swift run [-c release] [swiftlint] [arguments]` or by invoking the binary directly at `.build/[release|debug]/swiftlint`
+1. Use the produced `swiftlint` binary from the command line, either by running
+   `swift run [-c release] [swiftlint] [arguments]` or by invoking the binary directly at
+   `.build/[release|debug]/swiftlint`.
 1. For debugging, attach LLDB: `lldb -- .build/[release|debug]/swiftlint [arguments]`
 
 ### Code Generation

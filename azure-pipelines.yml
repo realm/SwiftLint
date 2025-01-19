@@ -70,19 +70,6 @@ jobs:
     - script: swift build -c release --product SwiftLintBuildToolPlugin
       displayName: Build build tool plugin
 
-- job: CocoaPods
-  pool:
-    vmImage: 'macOS-14'
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_16.1.app
-  steps:
-    - script: bundle install --path vendor/bundle
-      displayName: Install dependencies
-    - script: bundle exec pod repo update
-      displayName: Update CocoaPods repo
-    - script: bundle exec pod lib lint --platforms=macos --verbose
-      displayName: Lint Podspec for macOS
-
 - job: Jazzy
   pool:
     vmImage: 'macOS-14'

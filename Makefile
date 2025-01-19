@@ -173,7 +173,7 @@ pod_publish:
 
 pod_lint:
 	bundle install
-	bundle exec pod lib lint SwiftLint.podspec
+	bundle exec pod lib lint --verbose SwiftLint.podspec
 
 docs:
 	swift run swiftlint generate-docs

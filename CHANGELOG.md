@@ -83,7 +83,8 @@
   [riley-williams](https://github.com/riley-williams)
   [#5958](https://github.com/realm/SwiftLint/issues/5958)
 
-* Add `ib_segue_action` to default configuration of `type_contents_order` rule on the same level as `ib_action` to define and document a standard position.  
+* Add `ib_segue_action` to default configuration of `type_contents_order` rule on the same level as `ib_action` to
+  define and document a standard position.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5524](https://github.com/realm/SwiftLint/issues/5524)
 
@@ -95,14 +96,16 @@
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * The artifact bundle name has changed. `SwiftLintBinary-macos.artifactbundle.zip` is now called
-  `SwiftLintBinary.artifactbundle.zip`. It now includes an AMD64 Linux binary.
+  `SwiftLintBinary.artifactbundle.zip`. It now includes an AMD64 Linux binary.  
   [Bradley Mackey](https://github.com/bradleymackey)
   [#5514](https://github.com/realm/SwiftLint/issues/5514)
 
 * The `inert_defer` and `unused_capture_list` rules have completely been removed after being deprecated for 2 years.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
-* SwiftLint now requires a Swift 5.10 or higher compiler to build. [The Swift Package Manager plugins](https://github.com/SimplyDanny/SwiftLintPlugins) continue to work with Swift 5.9.  
+* SwiftLint now requires a Swift 5.10 or higher compiler to build.
+  [The Swift Package Manager plugins](https://github.com/SimplyDanny/SwiftLintPlugins) continue to work with
+  Swift 5.9.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * The `private_unit_test` rule's deprecated `regex` configuration option has been removed after 2 years.  
@@ -8045,5 +8048,3 @@ This release has seen a phenomenal uptake in community contributions!
 ## 0.1.0: Fresh Out Of The Dryer
 
 First Version!
-
-<!-- markdownlint-configure-file { "MD024": { "siblings_only": true } } -->

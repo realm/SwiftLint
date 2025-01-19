@@ -6,11 +6,22 @@ on:
       - '*'
 
 jobs:
-  lint:
-    name: Lint Repository
+  lint-swift:
+    name: Lint Swift
     runs-on: ubuntu-24.04 # "Noble Numbat"
     container: swift:6.0-noble
     steps:
       - uses: actions/checkout@v4
       - name: Lint
         run: swift run swiftlint --reporter github-actions-logging --strict 2> /dev/null
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            CHANGELOG.md
+            CONTRIBUTING.md

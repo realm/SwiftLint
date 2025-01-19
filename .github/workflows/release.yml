@@ -29,11 +29,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Create release branch
-        run: >-
-          git fetch origin ${{ env.RELEASE_BRANCH }}
-          && git checkout ${{ env.RELEASE_BRANCH }}
-          || git checkout -b ${{ env.RELEASE_BRANCH }}
+      - name: Checkout or create release branch
+        run: |
+          if git ls-remote --exit-code --heads origin ${{ env.RELEASE_BRANCH }}; then
+            git fetch origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+            git checkout ${{ env.RELEASE_BRANCH }}
+          else
+            git checkout -b ${{ env.RELEASE_BRANCH }}
+          fi
       - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
         run: |
           make pod_lint
@@ -50,7 +53,7 @@ jobs:
         id: retrieve_author
         run: |
           AUTHOR=$(echo ${{ github.actor }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
+          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - name: Configure Git author
         id: configure_git_author
         uses: Homebrew/actions/git-user-config@master

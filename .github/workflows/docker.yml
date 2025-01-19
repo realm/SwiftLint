@@ -25,28 +25,34 @@ jobs:
     - name: Define variables on push to `main`
       if: github.event_name == 'push'
       run: |
-        echo "CHECKOUT_REF=main" >> $GITHUB_ENV
-        echo "DOCKER_TAG=latest" >> $GITHUB_ENV
-        echo "OUTPUT_TYPE=type=registry" >> $GITHUB_ENV
+        {
+          echo "CHECKOUT_REF=main"
+          echo "DOCKER_TAG=latest"
+          echo "OUTPUT_TYPE=type=registry"
+        } >> "$GITHUB_ENV"
     - name: Define variables on release event
       if: github.event_name == 'release'
       run: |
-        echo "CHECKOUT_REF=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-        echo "DOCKER_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-        echo "OUTPUT_TYPE=type=registry" >> $GITHUB_ENV
+        {
+          echo "CHECKOUT_REF=${{ github.event.release.tag_name }}"
+          echo "DOCKER_TAG=${{ github.event.release.tag_name }}"
+          echo "OUTPUT_TYPE=type=registry"
+        } >> "$GITHUB_ENV"
     - name: Define variables on workflow call
       if: github.event_name != 'push' && github.event_name != 'release'
       run: |
-        echo "CHECKOUT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
-        echo "DOCKER_TAG=${{ inputs.tag }}" >> $GITHUB_ENV
-        echo "OUTPUT_TYPE=type=local,dest=artifacts" >> $GITHUB_ENV
+        {
+          echo "CHECKOUT_REF=${{ inputs.ref }}"
+          echo "DOCKER_TAG=${{ inputs.tag }}"
+          echo "OUTPUT_TYPE=type=local,dest=artifacts"
+        } >> "$GITHUB_ENV"
     - uses: actions/checkout@v4
       with:
         ref: ${{ env.CHECKOUT_REF }}
     - name: Set lowercase repository name
-      run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> $GITHUB_ENV
+      run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> "$GITHUB_ENV"
       env:
-        REPOSITORY: '${{ github.repository }}'
+        REPOSITORY: ${{ github.repository }}
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to GitHub registry

@@ -16,7 +16,7 @@ jobs:
         id: retrieve_author
         run: |
           AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
+          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - name: Deploy to CocoaPods
         run: make pod_publish
         env:
@@ -32,7 +32,7 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
       - name: Parse checksum
         id: parse_checksum
-        run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> $GITHUB_OUTPUT
+        run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> "$GITHUB_OUTPUT"
       - name: Dispatch release of plugins package
         uses: peter-evans/repository-dispatch@v3
         with:
@@ -55,7 +55,7 @@ jobs:
         id: retrieve_author
         run: |
           AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
+          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master

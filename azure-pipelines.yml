@@ -11,8 +11,9 @@ jobs:
     vmImage: 'ubuntu-24.04' # "Noble Numbat"
   container: swift:6.0-noble
   steps:
-    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: Run tests
+    - template: .azure/templates/run-make.yml
+      parameters:
+        rule: spm_test
 
 - job: bazel_linux
   displayName: 'Bazel, Linux : Swift 6'
@@ -47,7 +48,7 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
   steps:
-    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+    - script: make spm_test
       displayName: Run tests
 
 - job: plugins_linux # Plugins shall be able to run on older Swift versions.
@@ -65,10 +66,9 @@ jobs:
         image: swift:6.0-noble
   container: $[ variables['image'] ]
   steps:
-    - script: swift build -c release --product SwiftLintCommandPlugin
-      displayName: Build command plugin
-    - script: swift build -c release --product SwiftLintBuildToolPlugin
-      displayName: Build build tool plugin
+    - template: .azure/templates/run-make.yml
+      parameters:
+        rule: spm_build_plugins
 
 - job: Jazzy
   pool:
@@ -76,11 +76,7 @@ jobs:
   variables:
     DEVELOPER_DIR: /Applications/Xcode_15.4.app
   steps:
-    - script: swift run swiftlint generate-docs
-      displayName: Generate documentation
-    - script: bundle install --path vendor/bundle
-      displayName: Install dependencies
-    - script: bundle exec jazzy
+    - script: make docs
       displayName: Run Jazzy
     - script: >
         if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then

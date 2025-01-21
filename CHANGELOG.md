@@ -16,7 +16,9 @@
 
 ### Bug Fixes
 
-* None.
+* Fix issue referencing the Tests package from another Bazel workspace.  
+  [jszumski](https://github.com/jszumski)
+  [#5977](https://github.com/realm/SwiftLint/issues/5977)
 
 ## 0.58.2: New Year’s Fresh Fold
 

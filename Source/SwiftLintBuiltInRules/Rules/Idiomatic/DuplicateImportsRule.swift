@@ -26,6 +26,7 @@ struct DuplicateImportsRule: SwiftSyntaxCorrectableRule {
         file.duplicateImportsViolationPositions().map { position in
             StyleViolation(
                 ruleDescription: Self.description,
+                severity: configuration.severity,
                 location: Location(file: file, position: position)
             )
         }

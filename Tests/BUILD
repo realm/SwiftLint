@@ -104,6 +104,7 @@ swift_test(
     name = "BuiltInRulesTests",
     data = glob(
         ["BuiltInRulesTests/Resources/**"],
+        allow_empty = True,
         # Bazel doesn't support paths with spaces in them
         exclude = ["BuiltInRulesTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),

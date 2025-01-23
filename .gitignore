@@ -60,7 +60,8 @@ Packages/
 .DS_Store
 
 # Bundler
-.bundler/
+.bundle/
+bundle/
 
 # Bazel
 bazel-*

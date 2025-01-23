@@ -53,6 +53,13 @@ test_tsan:
 	swift build --build-tests $(TSAN_SWIFT_BUILD_FLAGS)
 	DYLD_INSERT_LIBRARIES=$(TSAN_LIB) $(TSAN_XCTEST) $(TSAN_TEST_BUNDLE)
 
+spm_build_plugins:
+	swift build -c release --product SwiftLintCommandPlugin
+	swift build -c release --product SwiftLintBuildToolPlugin
+
+spm_test:
+	swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+
 write_xcodebuild_log:
 	xcodebuild -scheme swiftlint clean build-for-testing -destination "platform=macOS" > xcodebuild.log
 
@@ -147,6 +154,9 @@ package: $(SWIFTLINT_EXECUTABLE)
 bazel_test:
 	bazel test --test_output=errors //Tests/...
 
+bazel_test_tsan:
+	bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+
 bazel_release: $(SWIFTLINT_EXECUTABLE)
 	bazel build :release
 	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 $(SWIFTLINT_EXECUTABLE) .
@@ -167,17 +177,20 @@ display_compilation_time:
 formula_bump:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
 
-pod_publish:
+bundle_install:
 	bundle install
+
+oss_scan: bundle_install
+	bundle exec danger --verbose
+
+pod_publish: bundle_install
 	bundle exec pod trunk push SwiftLint.podspec
 
-pod_lint:
-	bundle install
+pod_lint: bundle_install
 	bundle exec pod lib lint --verbose SwiftLint.podspec
 
-docs:
+docs: bundle_install
 	swift run swiftlint generate-docs
-	bundle install
 	bundle exec jazzy
 
 get_version:

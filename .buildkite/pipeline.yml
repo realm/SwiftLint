@@ -4,23 +4,21 @@ steps:
       - echo "+++ Build"
       - bazel build :swiftlint
       - echo "+++ Test"
-      - bazel test --test_output=errors //Tests/...
+      - make bazel_test
   - label: "SwiftPM"
     commands:
       - echo "+++ Test"
-      - swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+      - make spm_test
   - label: "Danger"
     commands:
-      - echo "--- Install Bundler"
+      - echo "+++ Install Bundler"
       - gem install bundler -v 2.4.22
-      - echo "--- Bundle Install"
-      - bundle install
-      - echo "+++ Run Danger"
-      - bundle exec danger --verbose
+      - echo "+++ Run OSS Scan"
+      - make oss_scan
   - label: "TSan Tests"
     commands:
       - echo "+++ Test"
-      - bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
+      - make bazel_test_tsan
   - label: "Sourcery"
     commands:
       - echo "+++ Run Sourcery"

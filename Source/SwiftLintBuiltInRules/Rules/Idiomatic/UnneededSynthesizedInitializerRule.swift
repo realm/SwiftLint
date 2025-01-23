@@ -60,7 +60,7 @@ private extension UnneededSynthesizedInitializerRule {
 
         override func visit(_ node: InitializerDeclSyntax) -> DeclSyntax {
             if unneededInitializers.contains(node) {
-                correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 let expr: DeclSyntax = ""
                 return expr
                     .with(\.leadingTrivia, node.leadingTrivia)

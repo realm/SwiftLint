@@ -43,6 +43,8 @@ public protocol CollectingRule: AnyCollectingRule {
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation]
 }
 
+// MARK: - == Implementations
+
 public extension CollectingRule {
     func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
         storage.collect(info: collectInfo(for: file, compilerArguments: compilerArguments),
@@ -88,8 +90,6 @@ public extension CollectingRule where Self: AnalyzerRule {
         )
     }
 }
-
-// MARK: - == Implementations
 
 /// :nodoc:
 public extension Array where Element == any Rule {

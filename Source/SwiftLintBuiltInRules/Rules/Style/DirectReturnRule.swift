@@ -199,7 +199,7 @@ private extension DirectReturnRule {
                   var initExpression = binding.initializer?.value else {
                 return super.visit(statements)
             }
-            correctionPositions.append(binding.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             var newStmtList = Array(statements.dropLast(2))
             let newBindingList = bindingList
                 .filter { $0 != binding }

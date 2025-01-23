@@ -37,7 +37,7 @@ private extension ClosingBraceRule {
             guard node.hasClosingBraceViolation else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return super.visit(node.with(\.trailingTrivia, Trivia()))
         }
     }

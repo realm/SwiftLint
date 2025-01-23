@@ -45,7 +45,7 @@ private extension ToggleBoolRule {
             guard node.hasToggleBoolViolation, let firstExpr = node.first, let index = node.index(of: firstExpr) else {
                 return super.visit(node)
             }
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let elements = node
                 .with(
                     \.[index],

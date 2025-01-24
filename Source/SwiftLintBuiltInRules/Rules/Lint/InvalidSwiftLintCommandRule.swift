@@ -15,7 +15,8 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             Example("// swiftlint:disable:previous unused_import"),
             Example("// swiftlint:disable:this unused_import"),
             Example("//swiftlint:disable:this unused_import"),
-            Example("_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import"),
+            Example("_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import", excludeFromDocumentation: true),
+            Example("_ = \"🤵🏼‍♀️ 🤵🏼‍♀️\" // swiftlint:disable:this unused_import", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("// ↓swiftlint:"),
@@ -33,6 +34,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             Example("// ↓swiftlint:enable: "),
             Example("// ↓swiftlint:disable: unused_import"),
             Example("// s↓swiftlint:disable unused_import"),
+            Example("// 🤵🏼‍♀️swiftlint:disable unused_import", excludeFromDocumentation: true),
         ].skipWrappingInCommentTests()
     )
 
@@ -42,15 +44,13 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
 
     private func badPrefixViolations(in file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
-            if let precedingCharacter = command.precedingCharacter(in: file)?.unicodeScalars.first,
-               !CharacterSet.whitespaces.union(CharacterSet(charactersIn: "/")).contains(precedingCharacter) {
-                return styleViolation(
+            command.isPrecededByInvalidCharacter(in: file)
+                ? styleViolation(
                     for: command,
                     in: file,
                     reason: "swiftlint command should be preceded by whitespace or a comment character"
                 )
-            }
-            return nil
+                : nil
         }
     }
 
@@ -61,53 +61,26 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
     }
 
     private func styleViolation(for command: Command, in file: SwiftLintFile, reason: String) -> StyleViolation {
-        let character = command.startingCharacterPosition(in: file)
-        let characterOffset = character.flatMap {
-            if let line = command.lineOfCommand(in: file) {
-                return line.distance(from: line.startIndex, to: $0)
-            }
-            return nil
-        }
-        return StyleViolation(
+        StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severity,
-            location: Location(file: file.path, line: command.line, character: characterOffset),
+            location: Location(file: file.path, line: command.line, character: command.character),
             reason: reason
         )
     }
 }
 
 private extension Command {
-    func lineOfCommand(in file: SwiftLintFile) -> String? {
-        guard line > 0, line <= file.lines.count else {
-            return nil
+    func isPrecededByInvalidCharacter(in file: SwiftLintFile) -> Bool {
+        guard line > 0, let character, character > 1, line <= file.lines.count else {
+            return false
         }
-        return file.lines[line - 1].content
-    }
-
-    func startingCharacterPosition(in file: SwiftLintFile) -> String.Index? {
-        guard let line = lineOfCommand(in: file), line.isNotEmpty else {
-            return nil
+        let line = file.lines[line - 1].content
+        guard line.count > character,
+              let char = line[line.index(line.startIndex, offsetBy: character - 2)].unicodeScalars.first else {
+            return false
         }
-        if let commandIndex = line.range(of: "swiftlint:")?.lowerBound {
-            let distance = line.distance(from: line.startIndex, to: commandIndex)
-            return line.index(line.startIndex, offsetBy: distance + 1)
-        }
-        if let character {
-            return line.index(line.startIndex, offsetBy: character)
-        }
-        return nil
-    }
-
-    func precedingCharacter(in file: SwiftLintFile) -> Character? {
-        guard let startingCharacterPosition = startingCharacterPosition(in: file),
-              let line = lineOfCommand(in: file) else {
-            return nil
-        }
-        guard line.distance(from: line.startIndex, to: startingCharacterPosition) > 2 else {
-            return nil
-        }
-        return line[line.index(startingCharacterPosition, offsetBy: -2)...].first
+        return !CharacterSet.whitespaces.union(CharacterSet(charactersIn: "/")).contains(char)
     }
 
     func invalidReason() -> String? {

@@ -51,7 +51,7 @@ public struct Command: Equatable {
     public let ruleIdentifiers: Set<RuleIdentifier>
     /// The line in the source file where this command is defined.
     public let line: Int
-    /// The character offset within the line in the source file where this command is defined.
+    /// The character offset within the line in the source file where this command starts.
     public let character: Int?
     /// This command's modifier, if any.
     public let modifier: Modifier?
@@ -63,8 +63,7 @@ public struct Command: Equatable {
     /// - parameter action:          This command's action.
     /// - parameter ruleIdentifiers: The identifiers for the rules associated with this command.
     /// - parameter line:            The line in the source file where this command is defined.
-    /// - parameter character:       The character offset within the line in the source file where this command is
-    ///                              defined.
+    /// - parameter character:       The character offset within the line in the source file where this command starts.
     /// - parameter modifier:        This command's modifier, if any.
     /// - parameter trailingComment: The comment following this command's `-` delimiter, if any.
     public init(action: Action,
@@ -85,8 +84,7 @@ public struct Command: Equatable {
     ///
     /// - parameter actionString: The string in the command's definition describing its action.
     /// - parameter line:         The line in the source file where this command is defined.
-    /// - parameter character:    The character offset within the line in the source file where this command is
-    ///                           defined.
+    /// - parameter character:    The character offset within the line in the source file where this command starts.
     public init(actionString: String, line: Int, character: Int) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString("swiftlint:")

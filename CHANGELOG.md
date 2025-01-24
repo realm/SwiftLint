@@ -34,6 +34,7 @@
 
 * Fix issue referencing the Tests package from another Bazel workspace.  
   [jszumski](https://github.com/jszumski)
+
 * Fix crash when a disable command is preceded by a unicode character.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5945](https://github.com/realm/SwiftLint/issues/5945)

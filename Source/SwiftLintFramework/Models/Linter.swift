@@ -381,13 +381,10 @@ public struct CollectedLinter {
         }
 
         var corrections = [Correction]()
-        for rule in rules.compactMap({ (rule: any Rule) -> (any CorrectableRule)? in
-            guard rule.shouldRun(onFile: file) else {
-                return nil
+        for rule in rules where rule.shouldRun(onFile: file) {
+            guard let rule = rule as? any CorrectableRule else {
+                continue
             }
-
-            return rule as? any CorrectableRule
-        }) {
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
             if newCorrections.isNotEmpty, !file.isVirtual {

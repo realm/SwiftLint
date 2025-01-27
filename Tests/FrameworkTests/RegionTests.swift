@@ -18,14 +18,14 @@ final class RegionTests: SwiftLintTestCase {
         // disable
         do {
             let file = SwiftLintFile(contents: "// swiftlint:disable rule_id\n")
-            let start = Location(file: nil, line: 1, character: 4)
+            let start = Location(file: nil, line: 1, character: 29)
             let end = Location(file: nil, line: .max, character: .max)
             XCTAssertEqual(file.regions(), [Region(start: start, end: end, disabledRuleIdentifiers: ["rule_id"])])
         }
         // enable
         do {
             let file = SwiftLintFile(contents: "// swiftlint:enable rule_id\n")
-            let start = Location(file: nil, line: 1, character: 4)
+            let start = Location(file: nil, line: 1, character: 28)
             let end = Location(file: nil, line: .max, character: .max)
             XCTAssertEqual(file.regions(), [Region(start: start, end: end, disabledRuleIdentifiers: [])])
         }
@@ -36,10 +36,10 @@ final class RegionTests: SwiftLintTestCase {
         do {
             let file = SwiftLintFile(contents: "// swiftlint:disable rule_id\n// swiftlint:enable rule_id\n")
             XCTAssertEqual(file.regions(), [
-                Region(start: Location(file: nil, line: 1, character: 4),
-                       end: Location(file: nil, line: 2, character: 3),
+                Region(start: Location(file: nil, line: 1, character: 29),
+                       end: Location(file: nil, line: 2, character: 27),
                        disabledRuleIdentifiers: ["rule_id"]),
-                Region(start: Location(file: nil, line: 2, character: 4),
+                Region(start: Location(file: nil, line: 2, character: 28),
                        end: Location(file: nil, line: .max, character: .max),
                        disabledRuleIdentifiers: []),
             ])
@@ -48,10 +48,10 @@ final class RegionTests: SwiftLintTestCase {
         do {
             let file = SwiftLintFile(contents: "// swiftlint:enable rule_id\n// swiftlint:disable rule_id\n")
             XCTAssertEqual(file.regions(), [
-                Region(start: Location(file: nil, line: 1, character: 4),
-                       end: Location(file: nil, line: 2, character: 3),
+                Region(start: Location(file: nil, line: 1, character: 28),
+                       end: Location(file: nil, line: 2, character: 28),
                        disabledRuleIdentifiers: []),
-                Region(start: Location(file: nil, line: 2, character: 4),
+                Region(start: Location(file: nil, line: 2, character: 29),
                        end: Location(file: nil, line: .max, character: .max),
                        disabledRuleIdentifiers: ["rule_id"]),
             ])
@@ -83,22 +83,22 @@ final class RegionTests: SwiftLintTestCase {
             """
         )
         XCTAssertEqual(file.regions(), [
-            Region(start: Location(file: nil, line: 1, character: 4),
-                   end: Location(file: nil, line: 2, character: 3),
+            Region(start: Location(file: nil, line: 1, character: 23),
+                   end: Location(file: nil, line: 2, character: 22),
                    disabledRuleIdentifiers: ["1"]),
-            Region(start: Location(file: nil, line: 2, character: 4),
-                   end: Location(file: nil, line: 3, character: 3),
+            Region(start: Location(file: nil, line: 2, character: 23),
+                   end: Location(file: nil, line: 3, character: 22),
                    disabledRuleIdentifiers: ["1", "2"]),
-            Region(start: Location(file: nil, line: 3, character: 4),
-                   end: Location(file: nil, line: 4, character: 3),
+            Region(start: Location(file: nil, line: 3, character: 23),
+                   end: Location(file: nil, line: 4, character: 21),
                    disabledRuleIdentifiers: ["1", "2", "3"]),
-            Region(start: Location(file: nil, line: 4, character: 4),
-                   end: Location(file: nil, line: 5, character: 3),
+            Region(start: Location(file: nil, line: 4, character: 22),
+                   end: Location(file: nil, line: 5, character: 21),
                    disabledRuleIdentifiers: ["2", "3"]),
-            Region(start: Location(file: nil, line: 5, character: 4),
-                   end: Location(file: nil, line: 6, character: 3),
+            Region(start: Location(file: nil, line: 5, character: 22),
+                   end: Location(file: nil, line: 6, character: 21),
                    disabledRuleIdentifiers: ["3"]),
-            Region(start: Location(file: nil, line: 6, character: 4),
+            Region(start: Location(file: nil, line: 6, character: 22),
                    end: Location(file: nil, line: .max, character: .max),
                    disabledRuleIdentifiers: []),
         ])

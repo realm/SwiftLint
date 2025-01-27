@@ -51,8 +51,8 @@ public struct Command: Equatable {
     public let ruleIdentifiers: Set<RuleIdentifier>
     /// The line in the source file where this command is defined.
     public let line: Int
-    /// The character offset within the line in the source file where this command starts.
-    public let character: Int?
+    /// The range of the command in the line (0-based).
+    public let range: Range<Int>?
     /// This command's modifier, if any.
     public let modifier: Modifier?
     /// The comment following this command's `-` delimiter, if any.
@@ -63,19 +63,19 @@ public struct Command: Equatable {
     /// - parameter action:          This command's action.
     /// - parameter ruleIdentifiers: The identifiers for the rules associated with this command.
     /// - parameter line:            The line in the source file where this command is defined.
-    /// - parameter character:       The character offset within the line in the source file where this command starts.
+    /// - parameter range:           The range of the command in the line (0-based).
     /// - parameter modifier:        This command's modifier, if any.
     /// - parameter trailingComment: The comment following this command's `-` delimiter, if any.
     public init(action: Action,
                 ruleIdentifiers: Set<RuleIdentifier> = [],
                 line: Int = 0,
-                character: Int? = nil,
+                range: Range<Int>? = nil,
                 modifier: Modifier? = nil,
                 trailingComment: String? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
         self.line = line
-        self.character = character
+        self.range = range
         self.modifier = modifier
         self.trailingComment = trailingComment
     }
@@ -84,20 +84,20 @@ public struct Command: Equatable {
     ///
     /// - parameter actionString: The string in the command's definition describing its action.
     /// - parameter line:         The line in the source file where this command is defined.
-    /// - parameter character:    The character offset within the line in the source file where this command starts.
-    public init(actionString: String, line: Int, character: Int) {
+    /// - parameter range:        The range of the command in the line (0-based).
+    public init(actionString: String, line: Int, range: Range<Int>) {
         let scanner = Scanner(string: actionString)
         _ = scanner.scanString("swiftlint:")
         // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" ") else {
-            self.init(action: .invalid, line: line, character: character)
+            self.init(action: .invalid, line: line, range: range)
             return
         }
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         guard let actionString = actionAndModifierScanner.scanUpToString(":"),
               let action = Action(rawValue: actionString)
         else {
-            self.init(action: .invalid, line: line, character: character)
+            self.init(action: .invalid, line: line, range: range)
             return
         }
 
@@ -135,7 +135,7 @@ public struct Command: Equatable {
             action: action,
             ruleIdentifiers: ruleIdentifiers,
             line: line,
-            character: character,
+            range: range,
             modifier: modifier,
             trailingComment: trailingComment
         )
@@ -153,17 +153,17 @@ public struct Command: Equatable {
         case .previous:
             return [
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
-                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1, character: Int.max),
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1, range: 0..<Int.max),
             ]
         case .this:
             return [
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
-                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line, character: Int.max),
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line, range: 0..<Int.max),
             ]
         case .next:
             return [
                 Self(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
-                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max),
+                Self(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, range: 0..<Int.max),
             ]
         case .invalid:
             return []

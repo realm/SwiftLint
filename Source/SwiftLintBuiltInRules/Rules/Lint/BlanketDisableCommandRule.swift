@@ -59,6 +59,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
             Example("""
             // swiftlint:enable ↓unused_import
             """),
+            Example("// swiftlint:disable all"),
         ].skipWrappingInCommentTests().skipDisableCommandTests()
      )
 
@@ -210,7 +211,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
 
 private extension Command {
     func location(of ruleIdentifier: String, in file: SwiftLintFile) -> Location {
-        var location = character
+        var location = range?.upperBound
         if line > 0, line <= file.lines.count {
             let line = file.lines[line - 1].content
             if let ruleIdentifierIndex = line.range(of: ruleIdentifier)?.lowerBound {

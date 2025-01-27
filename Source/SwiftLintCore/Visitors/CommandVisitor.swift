@@ -34,7 +34,7 @@ final class CommandVisitor: SyntaxVisitor {
                 let command = Command(
                     actionString: String(comment[lower...]),
                     line: location.line,
-                    character: character
+                    range: character..<(character + piece.sourceLength.utf8Length - offset)
                 )
                 commands.append(command)
             default:

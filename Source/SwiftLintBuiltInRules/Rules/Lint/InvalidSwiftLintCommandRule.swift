@@ -64,7 +64,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
         StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severity,
-            location: Location(file: file.path, line: command.line, character: command.character),
+            location: Location(file: file.path, line: command.line, character: command.range?.lowerBound),
             reason: reason
         )
     }
@@ -72,7 +72,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
 
 private extension Command {
     func isPrecededByInvalidCharacter(in file: SwiftLintFile) -> Bool {
-        guard line > 0, let character, character > 1, line <= file.lines.count else {
+        guard line > 0, let character = range?.lowerBound, character > 1, line <= file.lines.count else {
             return false
         }
         let line = file.lines[line - 1].content

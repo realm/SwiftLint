@@ -13,14 +13,6 @@ extension SwiftLint {
         var compilerLogPath: String?
         @Option(help: "The path of a compilation database to use when running AnalyzerRules.")
         var compileCommands: String?
-        @Option(
-            parsing: .singleValue,
-            help: """
-                    Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`.
-                    Can be specified repeatedly to run multiple rules.
-                    """
-        )
-        var onlyRule: [String] = []
         @Argument(help: pathsArgumentDescription(for: .analyze))
         var paths = [String]()
 
@@ -49,7 +41,7 @@ extension SwiftLint {
                 cachePath: nil,
                 ignoreCache: true,
                 enableAllRules: false,
-                onlyRule: onlyRule,
+                onlyRule: common.onlyRule,
                 autocorrect: common.fix,
                 format: common.format,
                 compilerLogPath: compilerLogPath,

@@ -32,7 +32,7 @@ final class CommandVisitor: SyntaxVisitor {
                     break
                 }
                 let command = Command(
-                    actionString: String(comment[lower...]),
+                    commandString: String(comment[lower...]),
                     line: location.line,
                     range: character..<(character + piece.sourceLength.utf8Length - offset)
                 )

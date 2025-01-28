@@ -82,11 +82,11 @@ public struct Command: Equatable {
 
     /// Creates a command based on the specified parameters.
     ///
-    /// - parameter actionString: The string in the command's definition describing its action.
-    /// - parameter line:         The line in the source file where this command is defined.
-    /// - parameter range:        The range of the command in the line (0-based).
-    public init(actionString: String, line: Int, range: Range<Int>) {
-        let scanner = Scanner(string: actionString)
+    /// - parameter commandString: The whole command string as found in the code.
+    /// - parameter line:          The line in the source file where this command is defined.
+    /// - parameter range:         The range of the command in the line (0-based).
+    public init(commandString: String, line: Int, range: Range<Int>) {
+        let scanner = Scanner(string: commandString)
         _ = scanner.scanString("swiftlint:")
         // (enable|disable)(:previous|:this|:next)
         guard let actionAndModifierString = scanner.scanUpToString(" ") else {

@@ -10,7 +10,7 @@ private extension Command {
         let nsString = string.bridge()
         guard nsString.length > 7 else { return nil }
         let subString = nsString.substring(with: NSRange(location: 3, length: nsString.length - 4))
-        self.init(actionString: subString, line: 1, range: 4..<nsString.length)
+        self.init(commandString: subString, line: 1, range: 4..<nsString.length)
     }
 }
 

@@ -53,6 +53,14 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var progress = false
     @Flag(help: "Check whether a later version of SwiftLint is available after processing all files.")
     var checkForUpdates = false
+    @Option(
+        parsing: .singleValue,
+        help: """
+                Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`.
+                Can be specified repeatedly to run multiple rules.
+                """
+    )
+    var onlyRule: [String] = []
 }
 
 // MARK: - Common Argument Help

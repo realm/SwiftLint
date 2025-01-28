@@ -19,14 +19,6 @@ extension SwiftLint {
         var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
-        @Option(
-            parsing: .singleValue,
-            help: """
-                    Run only the specified rule, ignoring `only_rules`, `opt_in_rules` and `disabled_rules`.
-                    Can be specified repeatedly to run multiple rules.
-                    """
-        )
-        var onlyRule: [String] = []
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 
@@ -61,7 +53,7 @@ extension SwiftLint {
                 cachePath: cachePath,
                 ignoreCache: noCache,
                 enableAllRules: enableAllRules,
-                onlyRule: onlyRule,
+                onlyRule: common.onlyRule,
                 autocorrect: common.fix,
                 format: common.format,
                 compilerLogPath: nil,

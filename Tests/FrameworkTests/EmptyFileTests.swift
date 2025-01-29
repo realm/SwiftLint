@@ -6,18 +6,12 @@ final class EmptyFileTests: SwiftLintTestCase {
     var ruleStorage: RuleStorage! // swiftlint:disable:this implicitly_unwrapped_optional
 
     override func setUpWithError() throws {
-        let ruleList = RuleList(rules: RuleMock<DontLintEmptyFiles>.self,
-                                RuleMock<LintEmptyFiles>.self)
+        let ruleList = RuleList(rules: RuleMock<DontLintEmptyFiles>.self, RuleMock<LintEmptyFiles>.self)
         let configuration = try Configuration(dict: [:], ruleList: ruleList)
         let file = SwiftLintFile(contents: "")
         let linter = Linter(file: file, configuration: configuration)
         ruleStorage = RuleStorage()
         collectedLinter = linter.collect(into: ruleStorage)
-    }
-
-    override func tearDownWithError() throws {
-        collectedLinter = nil
-        ruleStorage = nil
     }
 
     func testShouldLintEmptyFileRespectedDuringLint() throws {

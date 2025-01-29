@@ -1,6 +1,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable:next balanced_xctest_lifecycle
 final class EmptyFileTests: SwiftLintTestCase {
     var collectedLinter: CollectedLinter! // swiftlint:disable:this implicitly_unwrapped_optional
     var ruleStorage: RuleStorage! // swiftlint:disable:this implicitly_unwrapped_optional

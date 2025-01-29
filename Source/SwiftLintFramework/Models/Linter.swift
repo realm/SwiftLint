@@ -66,29 +66,33 @@ private extension Rule {
         return superfluousDisableCommandViolations
     }
 
+    func shouldRun(onFile file: SwiftLintFile) -> Bool {
+        // We shouldn't lint if the current Swift version is not supported by the rule
+        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
+            return false
+        }
+
+        // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
+        if file.isEmpty, !shouldLintEmptyFiles {
+            return false
+        }
+
+        if !(self is any SourceKitFreeRule) && file.sourcekitdFailed {
+            warnSourceKitFailedOnce()
+            return false
+        }
+
+        return true
+    }
+
     // As we need the configuration to get custom identifiers.
-    // swiftlint:disable:next function_parameter_count function_body_length
+    // swiftlint:disable:next function_parameter_count
     func lint(file: SwiftLintFile,
               regions: [Region],
               benchmark: Bool,
               storage: RuleStorage,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-              compilerArguments: [String]) -> LintResult? {
-        // We shouldn't lint if the current Swift version is not supported by the rule
-        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
-            return nil
-        }
-
-        // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
-        if file.isEmpty, !shouldLintEmptyFiles {
-            return nil
-        }
-
-        if !(self is any SourceKitFreeRule) && file.sourcekitdFailed {
-            warnSourceKitFailedOnce()
-            return nil
-        }
-
+              compilerArguments: [String]) -> LintResult {
         let ruleID = Self.identifier
 
         let violations: [StyleViolation]
@@ -226,12 +230,7 @@ public struct Linter {
         self.configuration = configuration
         self.compilerArguments = compilerArguments
 
-        let fileIsEmpty = file.isEmpty
         let rules = configuration.rules.filter { rule in
-            if fileIsEmpty, !rule.shouldLintEmptyFiles {
-                return false
-            }
-
             if compilerArguments.isEmpty {
                 return !(rule is any AnalyzerRule)
             }
@@ -307,11 +306,15 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelCompactMap {
-            $0.lint(file: file, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    compilerArguments: compilerArguments)
+        let validationResults: [LintResult] = rules.parallelCompactMap {
+            guard $0.shouldRun(onFile: file) else {
+                return nil
+            }
+
+            return $0.lint(file: file, regions: regions, benchmark: benchmark,
+                           storage: storage,
+                           superfluousDisableCommandRule: superfluousDisableCommandRule,
+                           compilerArguments: compilerArguments)
         }
         let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
@@ -378,7 +381,10 @@ public struct CollectedLinter {
         }
 
         var corrections = [Correction]()
-        for rule in rules.compactMap({ $0 as? any CorrectableRule }) {
+        for rule in rules where rule.shouldRun(onFile: file) {
+            guard let rule = rule as? any CorrectableRule else {
+                continue
+            }
             let newCorrections = rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             corrections += newCorrections
             if newCorrections.isNotEmpty, !file.isVirtual {

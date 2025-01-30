@@ -23,6 +23,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5978](https://github.com/realm/SwiftLint/issues/5978)
 
+* Consider types restricting a protocol to classes in composed inherited types in `class_delegate_protocol` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5982](https://github.com/realm/SwiftLint/issues/5982)
+
 ## 0.58.2: New Year’s Fresh Fold
 
 ### Breaking

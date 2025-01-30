@@ -18,15 +18,22 @@ struct ClassDelegateProtocolRule: Rule {
             Example("@objc(MyFooDelegate)\n protocol FooDelegate {}"),
             Example("protocol FooDelegate: BarDelegate {}"),
             Example("protocol FooDelegate: AnyObject {}"),
+            Example("protocol FooDelegate: AnyObject & Foo {}"),
+            Example("protocol FooDelegate: Foo, AnyObject & Foo {}"),
+            Example("protocol FooDelegate: Foo & AnyObject & Bar {}"),
             Example("protocol FooDelegate: NSObjectProtocol {}"),
             Example("protocol FooDelegate where Self: BarDelegate {}"),
+            Example("protocol FooDelegate where Self: BarDelegate & Bar {}"),
+            Example("protocol FooDelegate where Self: Foo & BarDelegate & Bar {}"),
             Example("protocol FooDelegate where Self: AnyObject {}"),
             Example("protocol FooDelegate where Self: NSObjectProtocol {}"),
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}"),
             Example("↓protocol FooDelegate: Bar {}"),
+            Example("↓protocol FooDelegate: Foo & Bar {}"),
             Example("↓protocol FooDelegate where Self: StringProtocol {}"),
+            Example("↓protocol FooDelegate where Self: A & B {}"),
         ]
     )
 }
@@ -38,10 +45,10 @@ private extension ClassDelegateProtocolRule {
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if node.name.text.hasSuffix("Delegate") &&
-                !node.hasObjCAttribute() &&
-                !node.isClassRestricted() &&
-                !node.inheritsFromObjectOrDelegate() {
+            if node.name.text.hasSuffix("Delegate"),
+               !node.hasObjCAttribute(),
+               !node.isClassRestricted(),
+               !node.inheritsFromObjectOrDelegate() {
                 violations.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -81,10 +88,12 @@ private extension ProtocolDeclSyntax {
 
 private extension TypeSyntax {
     func isObjectOrDelegate() -> Bool {
-        guard let typeName = self.as(IdentifierTypeSyntax.self)?.typeName else {
-            return false
+        if let typeName = `as`(IdentifierTypeSyntax.self)?.typeName {
+            return typeName == "AnyObject" || typeName == "NSObjectProtocol" || typeName.hasSuffix("Delegate")
         }
-
-        return typeName == "AnyObject" || typeName == "NSObjectProtocol" || typeName.hasSuffix("Delegate")
+        if let combined = `as`(CompositionTypeSyntax.self) {
+            return combined.elements.contains { $0.type.isObjectOrDelegate() }
+        }
+        return false
     }
 }

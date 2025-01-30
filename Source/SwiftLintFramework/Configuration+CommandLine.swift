@@ -111,8 +111,7 @@ extension Configuration {
             )
         }
 
-        var groupedFiles = [Configuration: [SwiftLintFile]]()
-        for file in files {
+        return files.parallelFilterGroup { file in
             let fileConfiguration = configuration(for: file)
             let fileConfigurationRootPath = fileConfiguration.rootDirectory.bridge()
 
@@ -124,12 +123,8 @@ extension Configuration {
                 return filePathComponents.starts(with: excludedPathComponents)
             }
 
-            if !shouldSkip {
-                groupedFiles[fileConfiguration, default: []].append(file)
-            }
+            return shouldSkip ? nil : fileConfiguration
         }
-
-        return groupedFiles
     }
 
     private func outputFilename(for path: String, duplicateFileNames: Set<String>) -> String {

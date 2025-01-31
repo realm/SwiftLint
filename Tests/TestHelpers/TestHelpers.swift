@@ -357,6 +357,7 @@ public extension XCTestCase {
                                testMultiByteOffsets: testMultiByteOffsets)
     }
 
+    // swiftlint:disable:next function_body_length
     func verifyLint(_ ruleDescription: RuleDescription,
                     config: Configuration,
                     commentDoesntViolate: Bool = true,
@@ -376,8 +377,11 @@ public extension XCTestCase {
             violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
 
-        let ruleDescription = ruleDescription.focused()
-        let (triggers, nonTriggers) = (ruleDescription.triggeringExamples, ruleDescription.nonTriggeringExamples)
+        let focusedRuleDescription = ruleDescription.focused()
+        let (triggers, nonTriggers) = (
+            focusedRuleDescription.triggeringExamples,
+            focusedRuleDescription.nonTriggeringExamples
+        )
         verify(triggers: triggers, nonTriggers: nonTriggers)
 
         if testMultiByteOffsets {
@@ -431,6 +435,27 @@ public extension XCTestCase {
                           file: trigger.file,
                           line: trigger.line)
             }
+        }
+
+        // Severity can be changed
+        let ruleType = RuleRegistry.shared.rule(forID: ruleDescription.identifier)
+        if ruleType?.init().configuration is (any SeverityBasedRuleConfiguration),
+           let example = triggers.first(where: { $0.configuration == nil }) {
+            let withWarning = Example(example.code, configuration: ["severity": "warning"])
+            XCTAssert(
+                violations(withWarning, config: config).allSatisfy { $0.severity == .warning },
+                "Violation severity cannot be changed to warning",
+                file: example.file,
+                line: 1
+            )
+
+            let withError = Example(example.code, configuration: ["severity": "error"])
+            XCTAssert(
+                violations(withError, config: config).allSatisfy { $0.severity == .error },
+                "Violation severity cannot be changed to error",
+                file: example.file,
+                line: 1
+            )
         }
     }
 

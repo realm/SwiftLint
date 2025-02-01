@@ -39,6 +39,7 @@ let package = Package(
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", from: "0.2.0"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMinor(from: "1.8.4")),
+        .package(url: "https://github.com/mattmassicotte/Queue", from: "0.2.0"),
     ],
     targets: [
         .executableTarget(
@@ -93,6 +94,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
                 .product(name: "Yams", package: "Yams"),
+                .product(name: "Queue", package: "Queue"),
                 "SwiftLintCoreMacros",
             ],
             swiftSettings: swiftFeatures + strictConcurrency

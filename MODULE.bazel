@@ -19,6 +19,7 @@ swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
     swiftlint_repos,
     "com_github_johnsundell_collectionconcurrencykit",
+    "com_github_mattmassicotte_queue",
     "com_github_krzyzanowskim_cryptoswift",
     "swiftlint_com_github_scottrhoyt_swifty_text_table",
 )

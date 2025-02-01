@@ -1,4 +1,5 @@
 import Foundation
+import Queue
 
 /// All possible SwiftLint issues which are printed as warnings by default.
 public enum Issue: LocalizedError, Equatable {
@@ -84,7 +85,8 @@ public enum Issue: LocalizedError, Equatable {
     /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
     package nonisolated(unsafe) static var printDeprecationWarnings = true
 
-    @TaskLocal private static var messageConsumer: (@Sendable (String) -> Void)?
+    @TaskLocal private static var messageConsumer: (@Sendable @MainActor (String) async -> Void)?
+    @TaskLocal private static var printQueue: AsyncQueue?
 
     /// Hook used to capture all messages normally printed to stdout and return them back to the caller.
     ///
@@ -95,18 +97,18 @@ public enum Issue: LocalizedError, Equatable {
     /// - returns: The collected messages produced while running the code in the runner.
     @MainActor
     static func captureConsole(runner: @Sendable () throws -> Void) async rethrows -> String {
-        actor Console {
-            static var content = ""
-        }
-        defer {
-            Console.content = ""
-        }
-        try $messageConsumer.withValue(
-            { Console.content += (Console.content.isEmpty ? "" : "\n") + $0 },
-            operation: runner
+        var content = [String]()
+        let queue = AsyncQueue()
+        try $printQueue.withValue(
+            queue,
+            operation: {
+                try $messageConsumer.withValue(
+                    { content.append($0) },
+                    operation: runner
+                )
+            }
         )
-        await Task.yield()
-        return Console.content
+        return await queue.addBarrierOperation { content.joined(separator: "\n") }.value
     }
 
     /// Wraps any `Error` into a `SwiftLintError.genericWarning` if it is not already a `SwiftLintError`.
@@ -140,13 +142,8 @@ public enum Issue: LocalizedError, Equatable {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
             return
         }
-        Task(priority: .high) { @MainActor in
-            if let consumer = Self.messageConsumer {
-                consumer(errorDescription)
-            } else {
-                queuedPrintError(errorDescription)
-            }
-        }
+        Self.printQueue?.addOperation { await Self.messageConsumer?(errorDescription) }
+        queuedPrintError(errorDescription)
     }
 
     private var message: String {

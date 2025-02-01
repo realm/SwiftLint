@@ -57,6 +57,14 @@ def swiftlint_repos(bzlmod = False):
     )
 
     http_archive(
+        name = "com_github_mattmassicotte_queue",
+        sha256 = "2c00cde22406d868b2341432c119c73d0c1a8ce40a663469b1b8cc5c39007737",
+        build_file = "@SwiftLint//bazel:Queue.BUILD",
+        strip_prefix = "Queue-0.2.0",
+        url = "https://github.com/mattmassicotte/Queue/archive/refs/tags/0.2.0.tar.gz",
+    )
+
+    http_archive(
         name = "com_github_krzyzanowskim_cryptoswift",
         sha256 = "69b23102ff453990d03aff4d3fabd172d0667b2b3ed95730021d60a0f8d50d14",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",

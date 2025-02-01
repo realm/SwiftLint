@@ -1,8 +1,11 @@
-@testable import SwiftLintBuiltInRules
-import XCTest
+import Testing
 
-final class DuplicateImportsRuleTests: XCTestCase {
-    func testDisableCommand() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct DuplicateImportsRuleTests {
+    @Test
+    func disableCommand() {
         let content = """
             import InspireAPI
             // swiftlint:disable:next duplicate_imports
@@ -12,6 +15,6 @@ final class DuplicateImportsRuleTests: XCTestCase {
 
         _ = DuplicateImportsRule().correct(file: file)
 
-        XCTAssertEqual(file.contents, content)
+        #expect(file.contents == content)
     }
 }

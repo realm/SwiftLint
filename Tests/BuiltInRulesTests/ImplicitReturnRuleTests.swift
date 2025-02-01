@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class ImplicitReturnRuleTests: SwiftLintTestCase {
-    func testOnlyClosureKindIncluded() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ImplicitReturnRuleTests {
+    @Test
+    func onlyClosureKindIncluded() {
         var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
                                     ImplicitReturnRuleExamples.triggeringExamples
         nonTriggeringExamples.removeAll(
@@ -17,7 +21,8 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testOnlyFunctionKindIncluded() {
+    @Test
+    func onlyFunctionKindIncluded() {
         var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
                                     ImplicitReturnRuleExamples.triggeringExamples
         nonTriggeringExamples.removeAll(
@@ -32,7 +37,8 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testOnlyGetterKindIncluded() {
+    @Test
+    func onlyGetterKindIncluded() {
         var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
                                     ImplicitReturnRuleExamples.triggeringExamples
         nonTriggeringExamples.removeAll(
@@ -47,7 +53,8 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testOnlyInitializerKindIncluded() {
+    @Test
+    func onlyInitializerKindIncluded() {
         var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
                                     ImplicitReturnRuleExamples.triggeringExamples
         nonTriggeringExamples.removeAll(
@@ -62,7 +69,8 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testOnlySubscriptKindIncluded() {
+    @Test
+    func onlySubscriptKindIncluded() {
         var nonTriggeringExamples = ImplicitReturnRuleExamples.nonTriggeringExamples +
                                     ImplicitReturnRuleExamples.triggeringExamples
         nonTriggeringExamples.removeAll(
@@ -88,6 +96,6 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, ruleConfiguration: ["included": [kind.rawValue]])
+        verifyRule(description, ruleConfiguration: ["included": [kind.rawValue]])
     }
 }

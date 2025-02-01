@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class StatementPositionRuleTests: SwiftLintTestCase {
-    func testStatementPositionUncuddled() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct StatementPositionRuleTests {
+    @Test
+    func statementPositionUncuddled() {
         let configuration = ["statement_mode": "uncuddled_else"]
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }

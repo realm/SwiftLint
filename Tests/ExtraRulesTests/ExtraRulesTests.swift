@@ -1,8 +1,12 @@
-@testable import SwiftLintExtraRules
 import TestHelpers
+import Testing
 
-final class ExtraRulesTests: SwiftLintTestCase, @unchecked Sendable {
-    func testWithDefaultConfiguration() {
+@testable import SwiftLintExtraRules
+
+@Suite
+struct ExtraRulesTests {
+    @Test
+    func withDefaultConfiguration() {
         for ruleType in extraRules() {
             verifyRule(ruleType.description)
         }
@@ -11,6 +15,6 @@ final class ExtraRulesTests: SwiftLintTestCase, @unchecked Sendable {
 
 extension ExtraRulesTests {
     static var allTests: [(String, (ExtraRulesTests) -> () throws -> Void)] {
-        [("testWithDefaultConfiguration", testWithDefaultConfiguration)]
+        [("testWithDefaultConfiguration", withDefaultConfiguration)]
     }
 }

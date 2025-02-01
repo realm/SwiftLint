@@ -1,69 +1,79 @@
-@testable import SwiftLintCore
-import TestHelpers
-import XCTest
+import Foundation
+import Testing
 
-final class SwiftLintFileTests: SwiftLintTestCase {
+@testable import SwiftLintCore
+
+@Suite
+final class SwiftLintFileTests {
     private let tempFile = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
-    override func setUp() async throws {
-        try await super.setUp()
+    init() throws {
         try Data("let i = 2".utf8).write(to: tempFile)
     }
 
-    override func tearDown() async throws {
-        try FileManager.default.removeItem(at: tempFile)
-        try await super.tearDown()
+    deinit {
+        do {
+            try FileManager.default.removeItem(at: tempFile)
+        } catch {
+            Issue.record("Failed to remove temporary file: \(error)")
+        }
     }
 
-    func testFileFromStringUpdate() {
+    @Test
+    func fileFromStringUpdate() {
         let file = SwiftLintFile(contents: "let i = 1")
 
-        XCTAssertTrue(file.isVirtual)
-        XCTAssertNil(file.path)
-        XCTAssertEqual(file.contents, "let i = 1")
+        #expect(file.isVirtual)
+        #expect(file.path == nil)
+        #expect(file.contents == "let i = 1")
 
         file.write("let j = 2")
 
-        XCTAssertEqual(file.contents, "let j = 2")
+        #expect(file.contents == "let j = 2")
 
         file.append("2")
 
-        XCTAssertEqual(file.contents, "let j = 22")
+        #expect(file.contents == "let j = 22")
     }
 
-    func testFileUpdate() throws {
+    @Test
+    func fileUpdate() throws {
         let file = SwiftLintFile(path: tempFile.path)!
 
-        XCTAssertFalse(file.isVirtual)
-        XCTAssertNotNil(file.path)
-        XCTAssertEqual(file.contents, "let i = 2")
+        #expect(!file.isVirtual)
+        #expect(file.path != nil)
+        #expect(file.contents == "let i = 2")
 
         file.write("let j = 2")
 
-        XCTAssertEqual(file.contents, "let j = 2")
-        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let j = 2".utf8))
+        #expect(file.contents == "let j = 2")
+        #expect(FileManager.default.contents(atPath: tempFile.path) == Data("let j = 2".utf8))
 
         file.append("2")
 
-        XCTAssertEqual(file.contents, "let j = 22")
-        XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let j = 22".utf8))
+        #expect(file.contents == "let j = 22")
+        #expect(FileManager.default.contents(atPath: tempFile.path) == Data("let j = 22".utf8))
     }
 
-    func testFileNotTouchedIfNothingAppended() throws {
+    @Test
+    func fileNotTouchedIfNothingAppended() throws {
         let file = SwiftLintFile(path: tempFile.path)!
-        let initialModificationData = FileManager.default.modificationDate(forFileAtPath: tempFile.path)
+        let initialModificationData = FileManager.default.modificationDate(
+            forFileAtPath: tempFile.path)
 
         file.append("")
 
-        XCTAssertEqual(initialModificationData, FileManager.default.modificationDate(forFileAtPath: tempFile.path))
+        #expect(initialModificationData == FileManager.default.modificationDate(forFileAtPath: tempFile.path))
     }
 
-    func testFileNotTouchedIfNothingNewWritten() throws {
+    @Test
+    func fileNotTouchedIfNothingNewWritten() throws {
         let file = SwiftLintFile(path: tempFile.path)!
-        let initialModificationData = FileManager.default.modificationDate(forFileAtPath: tempFile.path)
+        let initialModificationData = FileManager.default.modificationDate(
+            forFileAtPath: tempFile.path)
 
         file.write("let i = 2")
 
-        XCTAssertEqual(initialModificationData, FileManager.default.modificationDate(forFileAtPath: tempFile.path))
+        #expect(initialModificationData == FileManager.default.modificationDate(forFileAtPath: tempFile.path))
     }
 }

@@ -1,10 +1,14 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
-    func testWarning() {
-        let example = Example("""
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct FunctionBodyLengthRuleTests {
+    @Test
+    func warning() {
+        let example = Example(
+            """
             func f() {
                 let x = 0
                 let y = 1
@@ -12,9 +16,8 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             }
             """)
 
-        XCTAssertEqual(
-            self.violations(example, configuration: ["warning": 2, "error": 4]),
-            [
+        #expect(
+            self.violations(example, configuration: ["warning": 2, "error": 4]) == [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
                     severity: .warning,
@@ -28,7 +31,8 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testError() {
+    @Test
+    func error() {
         let example = Example("""
             func f() {
                 let x = 0
@@ -37,9 +41,8 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             }
             """)
 
-        XCTAssertEqual(
-            self.violations(example, configuration: ["warning": 1, "error": 2]),
-            [
+        #expect(
+            self.violations(example, configuration: ["warning": 1, "error": 2]) == [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
                     severity: .error,
@@ -53,16 +56,16 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testViolationMessages() {
+    @Test
+    func violationMessages() {
         let types = FunctionBodyLengthRule.description.triggeringExamples.flatMap {
-            self.violations($0, configuration: ["warning": 2])
+            violations($0, configuration: ["warning": 2])
         }.compactMap {
             $0.reason.split(separator: " ", maxSplits: 1).first
         }
 
-        XCTAssertEqual(
-            types,
-            ["Function", "Deinitializer", "Initializer", "Subscript", "Accessor", "Accessor", "Accessor"]
+        #expect(
+            types == ["Function", "Deinitializer", "Initializer", "Subscript", "Accessor", "Accessor", "Accessor"]
         )
     }
 

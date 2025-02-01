@@ -1,9 +1,11 @@
 @testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class ImplicitReturnConfigurationTests: SwiftLintTestCase {
-    func testImplicitReturnConfigurationFromDictionary() throws {
+@Suite(.rulesRegistered)
+struct ImplicitReturnConfigurationTests {
+    @Test
+    func implicitReturnConfigurationFromDictionary() throws {
         var configuration = ImplicitReturnConfiguration(includedKinds: Set<ImplicitReturnConfiguration.ReturnKind>())
         let config: [String: Any] = [
             "severity": "error",
@@ -24,11 +26,12 @@ final class ImplicitReturnConfigurationTests: SwiftLintTestCase {
             .initializer,
             .subscript,
         ])
-        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
-        XCTAssertEqual(configuration.includedKinds, expectedKinds)
+        #expect(configuration.severityConfiguration.severity == .error)
+        #expect(configuration.includedKinds == expectedKinds)
     }
 
-    func testImplicitReturnConfigurationThrowsOnUnrecognizedModifierGroup() {
+    @Test
+    func implicitReturnConfigurationThrowsOnUnrecognizedModifierGroup() {
         var configuration = ImplicitReturnConfiguration()
         let config = ["included": ["foreach"]] as [String: any Sendable]
 

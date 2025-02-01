@@ -1,8 +1,10 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct FunctionNameWhitespaceRuleTests {
     private typealias GenericSpacingType = FunctionNameWhitespaceConfiguration.GenericSpacingType
 
     private static let operatorWhitespaceViolationReason =
@@ -16,7 +18,7 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         _ source: String,
         configuration: [String: String]? = nil,
         expected: String,
-        file: StaticString = #filePath,
+        file: String = #filePath,
         line: UInt = #line
     ) {
         let example = configuration == nil
@@ -24,7 +26,10 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
             : Example(source, configuration: configuration!)
 
         let violations = ruleViolations(example)
-        XCTAssertEqual(violations.first?.reason, expected, file: file, line: line)
+        #expect(
+            violations.first?.reason == expected,
+            sourceLocation: SourceLocation(fileID: #fileID, filePath: file, line: Int(line), column: 1)
+        )
     }
 
     private func ruleViolations(
@@ -39,7 +44,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
 
     // MARK: - func keyword spacing
 
-    func testSpaceBetweenFuncKeywordAndName_ShouldReportReason() {
+    @Test
+    func spaceBetweenFuncKeywordAndName_ShouldReportReason() {
         assertReason(
             "func  abc(lhs: Int, rhs: Int) -> Int {}",
             expected: Self.funcKeywordSpacingViolationReason
@@ -48,35 +54,40 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
 
     // MARK: - operator functions
 
-    func testOperatorFunctionSpacing_WhenNoSpaceAfterOperator_ShouldReportOperatorMessage() {
+    @Test
+    func operatorFunctionSpacing_WhenNoSpaceAfterOperator_ShouldReportOperatorMessage() {
         assertReason(
             "func <|(lhs: Int, rhs: Int) -> Int {}",
             expected: Self.operatorWhitespaceViolationReason
         )
     }
 
-    func testOperatorFunctionSpacing_WhenTooManySpacesAfterOperator_ShouldReportOperatorMessage() {
+    @Test
+    func operatorFunctionSpacing_WhenTooManySpacesAfterOperator_ShouldReportOperatorMessage() {
         assertReason(
             "func <|  (lhs: Int, rhs: Int) -> Int {}",
             expected: Self.operatorWhitespaceViolationReason
         )
     }
 
-    func testOperatorFunctionWithGenerics_WhenNoSpaceAfterOperator_ShouldReportOperatorMessage() {
+    @Test
+    func operatorFunctionWithGenerics_WhenNoSpaceAfterOperator_ShouldReportOperatorMessage() {
         assertReason(
             "func <|<<A>(lhs: A, rhs: A) -> A {}",
             expected: Self.operatorWhitespaceViolationReason
         )
     }
 
-    func testOperatorFunctionSpacing_WhenMultipleViolations_ShouldReportOperatorMessage() {
+    @Test
+    func operatorFunctionSpacing_WhenMultipleViolations_ShouldReportOperatorMessage() {
         assertReason(
             "func  <| (lhs: Int, rhs: Int) -> Int {}",
             expected: Self.operatorWhitespaceViolationReason
         )
     }
 
-    func testOperatorFunctionSpacing_WhenTooManySpacesBeforeAndAfter_ShouldReportOperatorMessage() {
+    @Test
+    func operatorFunctionSpacing_WhenTooManySpacesBeforeAndAfter_ShouldReportOperatorMessage() {
         assertReason(
             "func  <|  (lhs: Int, rhs: Int) -> Int {}",
             expected: Self.operatorWhitespaceViolationReason
@@ -85,7 +96,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
 
     // MARK: - generic_spacing = no_space
 
-    func testSpaceAfterFuncName_WhenNoSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterFuncName_WhenNoSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc (lhs: Int) {}",
             configuration: ["generic_spacing": "no_space"],
@@ -93,7 +105,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSpaceAfterGeneric_WhenNoSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterGeneric_WhenNoSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T> (lhs: Int) {}",
             configuration: ["generic_spacing": "no_space"],
@@ -103,7 +116,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
 
     // MARK: - generic_spacing = leading_space
 
-    func testSpaceAfterFuncName_WhenLeadingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterFuncName_WhenLeadingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc(lhs: Int) {}",
             configuration: ["generic_spacing": "leading_space"],
@@ -111,7 +125,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSpaceBeforeGeneric_WhenLeadingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceBeforeGeneric_WhenLeadingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T>(lhs: Int) {}",
             configuration: ["generic_spacing": "leading_space"],
@@ -121,7 +136,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
 
     // MARK: - generic_spacing = trailing_space
 
-    func testSpaceAfterFuncName_WhenTrailingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterFuncName_WhenTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc (lhs: Int) {}",
             configuration: ["generic_spacing": "trailing_space"],
@@ -129,7 +145,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSpaceAfterGeneric_WhenTrailingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterGeneric_WhenTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T>(lhs: Int) {}",
             configuration: ["generic_spacing": "trailing_space"],
@@ -139,7 +156,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
 
     // MARK: - generic_spacing = leading_trailing_space
 
-    func testSpaceAfterFuncName_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterFuncName_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc(lhs: Int) {}",
             configuration: ["generic_spacing": "leading_trailing_space"],
@@ -147,7 +165,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSpaceBeforeGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceBeforeGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T>(lhs: Int) {}",
             configuration: ["generic_spacing": "leading_trailing_space"],
@@ -155,7 +174,8 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSpaceAfterGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
+    @Test
+    func spaceAfterGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc <T>(lhs: Int) {}",
             configuration: ["generic_spacing": "leading_trailing_space"],

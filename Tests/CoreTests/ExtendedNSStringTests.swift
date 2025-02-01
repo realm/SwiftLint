@@ -1,9 +1,10 @@
 import SourceKittenFramework
-import TestHelpers
-import XCTest
+import Testing
 
-final class ExtendedNSStringTests: SwiftLintTestCase {
-    func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {
+@Suite
+struct ExtendedNSStringTests {
+    @Test
+    func lineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {
         let contents = "" +
         "import Foundation\n" +                               // 18 characters
         "class Test {\n" +                                    // 13 characters
@@ -14,10 +15,10 @@ final class ExtendedNSStringTests: SwiftLintTestCase {
         "}"
         // A character placed on 80 offset indicates a white-space before 'do' at 5th line.
         if let lineAndCharacter = StringView(contents).lineAndCharacter(forCharacterOffset: 80) {
-            XCTAssertEqual(lineAndCharacter.line, 5)
-            XCTAssertEqual(lineAndCharacter.character, 3)
+            #expect(lineAndCharacter.line == 5)
+            #expect(lineAndCharacter.character == 3)
         } else {
-            XCTFail("NSString.lineAndCharacterForByteOffset should return non-nil tuple.")
+            Issue.record("NSString.lineAndCharacterForByteOffset should return non-nil tuple.")
         }
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 @testable import SwiftLintFramework
 import TestHelpers
-import XCTest
+import Testing
 
 private struct CacheTestHelper {
     fileprivate let configuration: Configuration
@@ -69,7 +69,8 @@ private class TestFileManager: LintableFileManager {
     }
 }
 
-final class LinterCacheTests: SwiftLintTestCase {
+@Suite(.rulesRegistered)
+final class LinterCacheTests {
     // MARK: Test Helpers
 
     private var cache = LinterCache(fileManager: TestFileManager())
@@ -81,16 +82,18 @@ final class LinterCacheTests: SwiftLintTestCase {
     private func cacheAndValidate(violations: [StyleViolation],
                                   forFile: String,
                                   configuration: Configuration,
-                                  file: StaticString = #filePath,
+                                  file: String = #filePath,
                                   line: UInt = #line) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
-        XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
-                       violations, file: (file), line: line)
+        #expect(
+            cache.violations(forFile: forFile, configuration: configuration)! == violations,
+            sourceLocation: SourceLocation(fileID: #fileID, filePath: file, line: Int(line), column: 1)
+        )
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
-                                                      file: StaticString = #filePath,
+                                                      file: String = #filePath,
                                                       line: UInt = #line) {
         let (file1, file2) = ("file1.swift", "file2.swift")
         // swiftlint:disable:next force_cast
@@ -103,22 +106,36 @@ final class LinterCacheTests: SwiftLintTestCase {
 
     private func validateNewConfigDoesntHitCache(dict: [String: Any],
                                                  initialConfig: Configuration,
-                                                 file: StaticString = #filePath,
+                                                 file: String = #filePath,
                                                  line: UInt = #line) throws {
         let newConfig = try Configuration(dict: dict)
         let (file1, file2) = ("file1.swift", "file2.swift")
+        let location = SourceLocation(fileID: #fileID, filePath: file, line: Int(line), column: 1)
 
-        XCTAssertNil(cache.violations(forFile: file1, configuration: newConfig), file: (file), line: line)
-        XCTAssertNil(cache.violations(forFile: file2, configuration: newConfig), file: (file), line: line)
+        #expect(
+            cache.violations(forFile: file1, configuration: newConfig) == nil,
+            sourceLocation: location
+        )
+        #expect(
+            cache.violations(forFile: file2, configuration: newConfig) == nil,
+            sourceLocation: location
+        )
 
-        XCTAssertEqual(cache.violations(forFile: file1, configuration: initialConfig)!, [], file: (file), line: line)
-        XCTAssertEqual(cache.violations(forFile: file2, configuration: initialConfig)!, [], file: (file), line: line)
+        #expect(
+            cache.violations(forFile: file1, configuration: initialConfig)!.isEmpty,
+            sourceLocation: location
+        )
+        #expect(
+            cache.violations(forFile: file2, configuration: initialConfig)!.isEmpty,
+            sourceLocation: location
+        )
     }
 
     // MARK: Cache Reuse
 
     // Two subsequent lints with no changes reuses cache
-    func testUnchangedFilesReusesCache() {
+    @Test
+    func unchangedFilesReusesCache() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"]])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
@@ -126,50 +143,54 @@ final class LinterCacheTests: SwiftLintTestCase {
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
         helper.touch(file: file)
 
-        XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
+        #expect(cache.violations(forFile: file, configuration: helper.configuration) == nil)
     }
 
-    func testConfigFileReorderedReusesCache() {
+    @Test
+    func configFileReorderedReusesCache() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "disabled_rules": [Any]()])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
         let configuration2 = helper.makeConfig(dict: ["disabled_rules": [Any](), "only_rules": ["mock"]])
-        XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
+        #expect(cache.violations(forFile: file, configuration: configuration2)! == violations)
     }
 
-    func testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache() throws {
+    @Test
+    func configFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache() throws {
         let helper = makeCacheTestHelper(dict: try YamlParser.parse("only_rules:\n  - mock"))
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
         let configuration2 = helper.makeConfig(dict: ["disabled_rules": [Any](), "only_rules": ["mock"]])
-        XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
+        #expect(cache.violations(forFile: file, configuration: configuration2)! == violations)
         let configYamlWithComment = try YamlParser.parse("# comment1\nonly_rules:\n  - mock # comment2")
         let configuration3 = helper.makeConfig(dict: configYamlWithComment)
-        XCTAssertEqual(cache.violations(forFile: file, configuration: configuration3)!, violations)
-        XCTAssertEqual(cache.violations(forFile: file, configuration: helper.configuration)!, violations)
+        #expect(cache.violations(forFile: file, configuration: configuration3)! == violations)
+        #expect(cache.violations(forFile: file, configuration: helper.configuration)! == violations)
     }
 
-    func testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache() {
+    @Test
+    func configFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
         let configuration2 = helper.makeConfig(dict: ["only_rules": ["mock"], "reporter": "xcode"])
-        XCTAssertEqual(cache.violations(forFile: file, configuration: configuration2)!, violations)
+        #expect(cache.violations(forFile: file, configuration: configuration2)! == violations)
         let configuration3 = helper.makeConfig(dict: ["only_rules": ["mock"]])
-        XCTAssertEqual(cache.violations(forFile: file, configuration: configuration3)!, violations)
+        #expect(cache.violations(forFile: file, configuration: configuration3)! == violations)
     }
 
     // MARK: Sing-File Cache Invalidation
 
     // Two subsequent lints with a file touch in between causes just that one
     // file to be re-linted, with the cache used for all other files
-    func testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers() {
+    @Test
+    func changedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
         let (file1, file2) = ("file1.swift", "file2.swift")
         let violations1 = helper.makeViolations(file: file1)
@@ -178,11 +199,12 @@ final class LinterCacheTests: SwiftLintTestCase {
         cacheAndValidate(violations: violations1, forFile: file1, configuration: helper.configuration)
         cacheAndValidate(violations: violations2, forFile: file2, configuration: helper.configuration)
         helper.touch(file: file2)
-        XCTAssertEqual(cache.violations(forFile: file1, configuration: helper.configuration)!, violations1)
-        XCTAssertNil(cache.violations(forFile: file2, configuration: helper.configuration))
+        #expect(cache.violations(forFile: file1, configuration: helper.configuration)! == violations1)
+        #expect(cache.violations(forFile: file2, configuration: helper.configuration) == nil)
     }
 
-    func testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted() {
+    @Test
+    func fileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
         let (file1, file2) = ("file1.swift", "file2.swift")
         let violations1 = helper.makeViolations(file: file1)
@@ -190,15 +212,16 @@ final class LinterCacheTests: SwiftLintTestCase {
 
         cacheAndValidate(violations: violations1, forFile: file1, configuration: helper.configuration)
         cacheAndValidate(violations: violations2, forFile: file2, configuration: helper.configuration)
-        XCTAssertEqual(helper.fileCount(), 2)
+        #expect(helper.fileCount() == 2)
         helper.remove(file: file2)
-        XCTAssertEqual(cache.violations(forFile: file1, configuration: helper.configuration)!, violations1)
-        XCTAssertEqual(helper.fileCount(), 1)
+        #expect(cache.violations(forFile: file1, configuration: helper.configuration)! == violations1)
+        #expect(helper.fileCount() == 1)
     }
 
     // MARK: All-File Cache Invalidation
 
-    func testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
+    @Test
+    func customRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
         let initialConfig = try Configuration(
             dict: [
                 "only_rules": ["custom_rules", "rule1"],
@@ -230,7 +253,8 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(dict: ["only_rules": ["custom_rules"]], initialConfig: initialConfig)
     }
 
-    func testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
+    @Test
+    func disabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
         let initialConfig = try Configuration(dict: ["disabled_rules": ["nesting"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -242,7 +266,8 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(dict: ["disabled_rules": [Any]()], initialConfig: initialConfig)
     }
 
-    func testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
+    @Test
+    func optInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
         let initialConfig = try Configuration(dict: ["opt_in_rules": ["attributes"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -255,7 +280,8 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(dict: ["opt_in_rules": [Any]()], initialConfig: initialConfig)
     }
 
-    func testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
+    @Test
+    func enabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
         let initialConfig = try Configuration(dict: ["enabled_rules": ["attributes"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -268,7 +294,8 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(dict: ["enabled_rules": [Any]()], initialConfig: initialConfig)
     }
 
-    func testOnlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
+    @Test
+    func onlyRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
         let initialConfig = try Configuration(dict: ["only_rules": ["nesting"]])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -280,7 +307,8 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(dict: ["only_rules": [Any]()], initialConfig: initialConfig)
     }
 
-    func testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
+    @Test
+    func ruleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted() throws {
         let initialConfig = try Configuration(dict: ["line_length": 120])
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -293,7 +321,8 @@ final class LinterCacheTests: SwiftLintTestCase {
         try validateNewConfigDoesntHitCache(dict: [:], initialConfig: initialConfig)
     }
 
-    func testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted() {
+    @Test
+    func swiftVersionChangedRemovedCausesAllFilesToBeReLinted() {
         let fileManager = TestFileManager()
         cache = LinterCache(fileManager: fileManager)
         let helper = makeCacheTestHelper(dict: [:])
@@ -306,7 +335,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         let differentSwiftVersion: SwiftVersion = .five
         cache = LinterCache(fileManager: fileManager, swiftVersion: differentSwiftVersion)
 
-        XCTAssertNotNil(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration))
-        XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
+        #expect(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration) != nil)
+        #expect(cache.violations(forFile: file, configuration: helper.configuration) == nil)
     }
 }

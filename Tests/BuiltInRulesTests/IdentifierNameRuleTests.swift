@@ -1,9 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class IdentifierNameRuleTests: SwiftLintTestCase {
-    func testIdentifierNameWithExcluded() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct IdentifierNameRuleTests {
+    @Test
+    func identifierNameWithExcluded() {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("let Apple = 0"),
@@ -19,7 +22,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["excluded": ["Apple", "some.*", ".*\\d+.*"]])
     }
 
-    func testIdentifierNameWithAllowedSymbols() {
+    @Test
+    func identifierNameWithAllowedSymbols() {
         let baseDescription = IdentifierNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("let myLet$ = 0"),
@@ -33,7 +37,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%", "_"]])
     }
 
-    func testIdentifierNameWithAllowedSymbolsAndViolation() {
+    @Test
+    func identifierNameWithAllowedSymbolsAndViolation() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
             Example("let ↓my_Let$ = 0")
@@ -43,7 +48,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testIdentifierNameWithIgnoreStartWithLowercase() {
+    @Test
+    func identifierNameWithIgnoreStartWithLowercase() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
             Example("let ↓MyLet = 0"),
@@ -65,7 +71,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": "off"])
     }
 
-    func testStartsWithLowercaseCheck() {
+    @Test
+    func startsWithLowercaseCheck() {
         let triggeringExamples = [
             Example("let ↓MyLet = 0"),
             Example("enum Foo { case ↓MyCase }"),
@@ -92,7 +99,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testStartsWithLowercaseCheckInCombinationWithAllowedSymbols() {
+    @Test
+    func startsWithLowercaseCheckInCombinationWithAllowedSymbols() {
         verifyRule(
             IdentifierNameRule.description
                 .with(triggeringExamples: [
@@ -109,7 +117,8 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLinuxCrashOnEmojiNames() {
+    @Test
+    func linuxCrashOnEmojiNames() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamples = [
             Example("let 👦🏼 = \"👦🏼\"")
@@ -119,12 +128,13 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testFunctionNameInViolationMessage() {
+    @Test
+    func functionNameInViolationMessage() {
         let example = SwiftLintFile(contents: "func _abc(arg: String) {}")
         let violations = IdentifierNameRule().validate(file: example)
-        XCTAssertEqual(
-            violations.map(\.reason),
-            ["Function name \'_abc(arg:)\' should start with a lowercase character"]
+        #expect(
+            violations.map(\.reason)
+                == ["Function name \'_abc(arg:)\' should start with a lowercase character"]
         )
     }
 }

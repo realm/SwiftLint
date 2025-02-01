@@ -1,10 +1,13 @@
-@testable import SwiftLintBuiltInRules
 import SwiftParser
 import TestHelpers
-import XCTest
+import Testing
 
-final class NumberSeparatorRuleTests: SwiftLintTestCase {
-    func testNumberSeparatorWithMinimumLength() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct NumberSeparatorRuleTests {
+    @Test
+    func numberSeparatorWithMinimumLength() {
         let nonTriggeringExamples = [
             Example("let foo = 10_000"),
             Example("let foo = 1000"),
@@ -31,7 +34,8 @@ final class NumberSeparatorRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["minimum_length": 5])
     }
 
-    func testNumberSeparatorWithMinimumFractionLength() {
+    @Test
+    func numberSeparatorWithMinimumFractionLength() {
         let nonTriggeringExamples = [
             Example("let foo = 1_000.000_000_1"),
             Example("let foo = 1.000_001"),
@@ -57,7 +61,8 @@ final class NumberSeparatorRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
     }
 
-    func testNumberSeparatorWithExcludeRanges() {
+    @Test
+    func numberSeparatorWithExcludeRanges() {
         let nonTriggeringExamples = [
             Example("let foo = 1950"),
             Example("let foo = 1_950"),
@@ -100,38 +105,24 @@ final class NumberSeparatorRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSpecificViolationReasons() {
-        XCTAssertEqual(
-            violations(in: "1_000"),
-            []
+    @Test
+    func specificViolationReasons() {
+        #expect(violations(in: "1_000").isEmpty)
+        #expect(violations(in: "1000") == [NumberSeparatorRule.missingSeparatorsReason])
+        #expect(
+            violations(in: "1.000000", config: ["minimum_fraction_length": 5])
+                == [NumberSeparatorRule.missingSeparatorsReason]
         )
-        XCTAssertEqual(
-            violations(in: "1000"),
-            [NumberSeparatorRule.missingSeparatorsReason]
+        #expect(violations(in: "10_00") == [NumberSeparatorRule.misplacedSeparatorsReason])
+        #expect(violations(in: "1_000_0") == [NumberSeparatorRule.misplacedSeparatorsReason])
+        #expect(violations(in: "1000.0_00") == [NumberSeparatorRule.misplacedSeparatorsReason])
+        #expect(
+            violations(in: "10_00", config: ["minimum_length": 5])
+                == [NumberSeparatorRule.misplacedSeparatorsReason]
         )
-        XCTAssertEqual(
-            violations(in: "1.000000", config: ["minimum_fraction_length": 5]),
-            [NumberSeparatorRule.missingSeparatorsReason]
-        )
-        XCTAssertEqual(
-            violations(in: "10_00"),
-            [NumberSeparatorRule.misplacedSeparatorsReason]
-        )
-        XCTAssertEqual(
-            violations(in: "1_000_0"),
-            [NumberSeparatorRule.misplacedSeparatorsReason]
-        )
-        XCTAssertEqual(
-            violations(in: "1000.0_00"),
-            [NumberSeparatorRule.misplacedSeparatorsReason]
-        )
-        XCTAssertEqual(
-            violations(in: "10_00", config: ["minimum_length": 5]),
-            [NumberSeparatorRule.misplacedSeparatorsReason]
-        )
-        XCTAssertEqual(
-            violations(in: "1000.0_00", config: ["minimum_fraction_length": 5]),
-            [NumberSeparatorRule.misplacedSeparatorsReason]
+        #expect(
+            violations(in: "1000.0_00", config: ["minimum_fraction_length": 5])
+                == [NumberSeparatorRule.misplacedSeparatorsReason]
         )
     }
 

@@ -1,10 +1,12 @@
 import SwiftLintCore
 import SwiftParser
 import SwiftSyntax
-import XCTest
+import Testing
 
-final class CodeIndentingRewriterTests: XCTestCase {
-    func testIndentDefaultStyle() {
+@Suite
+struct CodeIndentingRewriterTests {
+    @Test
+    func indentDefaultStyle() {
         assertIndent(
             source: """
                 if c {
@@ -14,17 +16,18 @@ final class CodeIndentingRewriterTests: XCTestCase {
                 }
                 """,
             indentedSource: """
-                if c {
-                    // comment
-                    return 1
-                    // another comment
-                }
-            """,
+                    if c {
+                        // comment
+                        return 1
+                        // another comment
+                    }
+                """,
             style: .indentSpaces(4)
         )
     }
 
-    func testIndentThreeSpaces() {
+    @Test
+    func indentThreeSpaces() {
         assertIndent(
             source: """
                  if c {
@@ -34,17 +37,18 @@ final class CodeIndentingRewriterTests: XCTestCase {
                  }
                 """,
             indentedSource: """
-                if c {
-                      // comment
-                    return 1
-                    // another comment
-                }
-            """,
+                    if c {
+                          // comment
+                        return 1
+                        // another comment
+                    }
+                """,
             style: .indentSpaces(3)
         )
     }
 
-    func testIndentTabs() {
+    @Test
+    func indentTabs() {
         assertIndent(
             source: """
                 if c {
@@ -54,17 +58,18 @@ final class CodeIndentingRewriterTests: XCTestCase {
                 }
                 """,
             indentedSource: """
-            \tif c {
-            \t    // comment
-            \t    return 1
-            \t       // another comment
-            \t}
-            """,
+                \tif c {
+                \t    // comment
+                \t    return 1
+                \t       // another comment
+                \t}
+                """,
             style: .indentTabs(1)
         )
     }
 
-    func testIndentCodeBlock() {
+    @Test
+    func indentCodeBlock() {
         assertIndent(
             source: """
                 // initial comment
@@ -92,15 +97,16 @@ final class CodeIndentingRewriterTests: XCTestCase {
         )
     }
 
-    func testUnindentDefaultStyle() {
+    @Test
+    func unindentDefaultStyle() {
         assertIndent(
             source: """
-                if c {
-                    // comment
-                    return 1
-                    // another comment
-                }
-            """,
+                    if c {
+                        // comment
+                        return 1
+                        // another comment
+                    }
+                """,
             indentedSource: """
                 if c {
                     // comment
@@ -112,15 +118,16 @@ final class CodeIndentingRewriterTests: XCTestCase {
         )
     }
 
-    func testUnindentTwoSpaces() {
+    @Test
+    func unindentTwoSpaces() {
         assertIndent(
             source: """
-              if c {
-                   // comment
-                  return 1
-                  // another comment
-              }
-            """,
+                  if c {
+                       // comment
+                      return 1
+                      // another comment
+                  }
+                """,
             indentedSource: """
                 if c {
                      // comment
@@ -132,15 +139,16 @@ final class CodeIndentingRewriterTests: XCTestCase {
         )
     }
 
-    func testUnindentTabs() {
+    @Test
+    func unindentTabs() {
         assertIndent(
             source: """
-            \tif c {
-            \t\t   // comment
-            \t\treturn 1
-            \t\t\t// another comment
-            \t}
-            """,
+                \tif c {
+                \t\t   // comment
+                \t\treturn 1
+                \t\t\t// another comment
+                \t}
+                """,
             indentedSource: """
                 if c {
                 \t   // comment
@@ -154,6 +162,6 @@ final class CodeIndentingRewriterTests: XCTestCase {
 
     private func assertIndent(source: String, indentedSource: String, style: CodeIndentingRewriter.IndentationStyle) {
         let rewritten = CodeIndentingRewriter(style: style).rewrite(Parser.parse(source: source))
-        XCTAssertEqual(rewritten.description, indentedSource)
+        #expect(rewritten.description == indentedSource)
     }
 }

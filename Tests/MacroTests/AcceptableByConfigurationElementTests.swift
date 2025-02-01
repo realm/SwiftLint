@@ -1,13 +1,16 @@
-@testable import SwiftLintCoreMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
+
+@testable import SwiftLintCoreMacros
 
 private let macros = [
     "AcceptableByConfigurationElement": AcceptableByConfigurationElement.self
 ]
 
-final class AcceptableByConfigurationElementTests: XCTestCase {
-    func testNoEnum() {
+@Suite
+struct AcceptableByConfigurationElementTests {
+    @Test
+    func noEnum() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -25,7 +28,8 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             macros: macros)
     }
 
-    func testNoStringRawType() {
+    @Test
+    func noStringRawType() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -43,7 +47,8 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             macros: macros)
     }
 
-    func testPrivateEnum() {
+    @Test
+    func privateEnum() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -71,7 +76,8 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             macros: macros)
     }
 
-    func testPublicEnum() {
+    @Test
+    func publicEnum() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement

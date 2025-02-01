@@ -1,83 +1,95 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class LineLengthConfigurationTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct LineLengthConfigurationTests {
     private let severityLevels = SeverityLevelsConfiguration<LineLengthRule>(warning: 100, error: 150)
 
-    func testLineLengthConfigurationInitializerSetsLength() {
+    @Test
+    func lineLengthConfigurationInitializerSetsLength() {
         let configuration1 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertEqual(configuration1.length, severityLevels)
+        #expect(configuration1.length == severityLevels)
 
         let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: 100, error: nil)
         let configuration2 = LineLengthConfiguration(length: length2)
-        XCTAssertEqual(configuration2.length, length2)
+        #expect(configuration2.length == length2)
     }
 
-    func testLineLengthConfigurationInitialiserSetsIgnoresURLs() {
+    @Test
+    func lineLengthConfigurationInitialiserSetsIgnoresURLs() {
         let configuration1 = LineLengthConfiguration(length: severityLevels, ignoresURLs: true)
 
-        XCTAssertTrue(configuration1.ignoresURLs)
+        #expect(configuration1.ignoresURLs)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertFalse(configuration2.ignoresURLs)
+        #expect(!configuration2.ignoresURLs)
     }
 
-    func testLineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations() {
+    @Test
+    func lineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations() {
         let configuration1 = LineLengthConfiguration(length: severityLevels, ignoresFunctionDeclarations: true)
-        XCTAssertTrue(configuration1.ignoresFunctionDeclarations)
+        #expect(configuration1.ignoresFunctionDeclarations)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertFalse(configuration2.ignoresFunctionDeclarations)
+        #expect(!configuration2.ignoresFunctionDeclarations)
     }
 
-    func testLineLengthConfigurationInitialiserSetsIgnoresComments() {
+    @Test
+    func lineLengthConfigurationInitialiserSetsIgnoresComments() {
         let configuration1 = LineLengthConfiguration(length: severityLevels, ignoresComments: true)
-        XCTAssertTrue(configuration1.ignoresComments)
+        #expect(configuration1.ignoresComments)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertFalse(configuration2.ignoresComments)
+        #expect(!configuration2.ignoresComments)
     }
 
-    func testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings() {
+    @Test
+    func lineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings() {
         let configuration1 = LineLengthConfiguration(length: severityLevels, ignoresInterpolatedStrings: true)
-        XCTAssertTrue(configuration1.ignoresInterpolatedStrings)
+        #expect(configuration1.ignoresInterpolatedStrings)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertFalse(configuration2.ignoresInterpolatedStrings)
+        #expect(!configuration2.ignoresInterpolatedStrings)
     }
 
-    func testLineLengthConfigurationInitialiserSetsIgnoresMultilineStrings() {
+    @Test
+    func lineLengthConfigurationInitialiserSetsIgnoresMultilineStrings() {
         let configuration1 = LineLengthConfiguration(length: severityLevels, ignoresMultilineStrings: true)
-        XCTAssertTrue(configuration1.ignoresMultilineStrings)
+        #expect(configuration1.ignoresMultilineStrings)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertFalse(configuration2.ignoresMultilineStrings)
+        #expect(!configuration2.ignoresMultilineStrings)
     }
 
-    func testLineLengthConfigurationInitialiserSetsExcludedLinesPatterns() {
+    @Test
+    func lineLengthConfigurationInitialiserSetsExcludedLinesPatterns() {
         let patterns: Set = ["foo", "bar"]
         let configuration1 = LineLengthConfiguration(length: severityLevels, excludedLinesPatterns: patterns)
-        XCTAssertEqual(configuration1.excludedLinesPatterns, patterns)
+        #expect(configuration1.excludedLinesPatterns == patterns)
 
         let configuration2 = LineLengthConfiguration(length: severityLevels)
-        XCTAssertTrue(configuration2.excludedLinesPatterns.isEmpty)
+        #expect(configuration2.excludedLinesPatterns.isEmpty)
     }
 
-    func testLineLengthConfigurationParams() {
+    @Test
+    func lineLengthConfigurationParams() {
         let warning = 13
         let error = 10
         let configuration = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: warning, error: error))
         let params = [RuleParameter(severity: .error, value: error), RuleParameter(severity: .warning, value: warning)]
-        XCTAssertEqual(configuration.params, params)
+        #expect(configuration.params == params)
     }
 
-    func testLineLengthConfigurationPartialParams() {
+    @Test
+    func lineLengthConfigurationPartialParams() {
         let configuration = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 13))
-        XCTAssertEqual(configuration.params, [RuleParameter(severity: .warning, value: 13)])
+        #expect(configuration.params == [RuleParameter(severity: .warning, value: 13)])
     }
 
-    func testLineLengthConfigurationThrowsOnBadConfig() {
+    @Test
+    func lineLengthConfigurationThrowsOnBadConfig() {
         let config = ["warning": "unknown"]
         var configuration = LineLengthConfiguration(length: severityLevels)
         checkError(Issue.invalidConfiguration(ruleID: LineLengthRule.identifier)) {
@@ -85,7 +97,8 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testLineLengthConfigurationThrowsOnBadConfigValues() {
+    @Test
+    func lineLengthConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
             ["ignores_function_declarations": 300],
@@ -99,7 +112,8 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testLineLengthConfigurationApplyConfigurationWithArray() throws {
+    @Test
+    func lineLengthConfigurationApplyConfigurationWithArray() throws {
         var configuration = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 0, error: 0))
 
         let warning1 = 100
@@ -112,13 +126,14 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         let config2 = [warning2]
 
         try configuration.apply(configuration: config1)
-        XCTAssertEqual(configuration.length, length1)
+        #expect(configuration.length == length1)
 
         try configuration.apply(configuration: config2)
-        XCTAssertEqual(configuration.length, length2)
+        #expect(configuration.length == length2)
     }
 
-    func testLineLengthConfigurationApplyConfigurationWithDictionary() throws {
+    @Test
+    func lineLengthConfigurationApplyConfigurationWithDictionary() throws {
         var configuration = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 0, error: 0))
 
         let warning1 = 100
@@ -144,47 +159,48 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         ]
 
         try configuration.apply(configuration: config1)
-        XCTAssertEqual(configuration.length, length1)
-        XCTAssertTrue(configuration.ignoresURLs)
-        XCTAssertTrue(configuration.ignoresFunctionDeclarations)
-        XCTAssertTrue(configuration.ignoresComments)
+        #expect(configuration.length == length1)
+        #expect(configuration.ignoresURLs)
+        #expect(configuration.ignoresFunctionDeclarations)
+        #expect(configuration.ignoresComments)
 
         try configuration.apply(configuration: config2)
-        XCTAssertEqual(configuration.length, length2)
-        XCTAssertTrue(configuration.ignoresURLs)
-        XCTAssertTrue(configuration.ignoresFunctionDeclarations)
-        XCTAssertTrue(configuration.ignoresComments)
+        #expect(configuration.length == length2)
+        #expect(configuration.ignoresURLs)
+        #expect(configuration.ignoresFunctionDeclarations)
+        #expect(configuration.ignoresComments)
 
         try configuration.apply(configuration: config3)
-        XCTAssertEqual(configuration.length, length2)
-        XCTAssertFalse(configuration.ignoresURLs)
-        XCTAssertFalse(configuration.ignoresFunctionDeclarations)
-        XCTAssertFalse(configuration.ignoresComments)
+        #expect(configuration.length == length2)
+        #expect(!configuration.ignoresURLs)
+        #expect(!configuration.ignoresFunctionDeclarations)
+        #expect(!configuration.ignoresComments)
     }
 
-    func testLineLengthConfigurationCompares() {
+    @Test
+    func lineLengthConfigurationCompares() {
         let configuration1 = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 100, error: 100))
         let configuration2 = LineLengthConfiguration(
             length: SeverityLevelsConfiguration(warning: 100, error: 100),
             ignoresFunctionDeclarations: true,
             ignoresComments: true
         )
-        XCTAssertNotEqual(configuration1, configuration2)
+        #expect(configuration1 != configuration2)
 
         let configuration3 = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 100, error: 200))
-        XCTAssertNotEqual(configuration1, configuration3)
+        #expect(configuration1 != configuration3)
 
         let configuration4 = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 200, error: 200))
-        XCTAssertNotEqual(configuration1, configuration4)
+        #expect(configuration1 != configuration4)
 
         let configuration5 = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 100, error: 100))
-        XCTAssertEqual(configuration1, configuration5)
+        #expect(configuration1 == configuration5)
 
         let configuration6 = LineLengthConfiguration(
             length: SeverityLevelsConfiguration(warning: 100, error: 100),
             ignoresFunctionDeclarations: true,
             ignoresComments: true
         )
-        XCTAssertEqual(configuration2, configuration6)
+        #expect(configuration2 == configuration6)
     }
 }

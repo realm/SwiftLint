@@ -17,7 +17,7 @@ enum WorkingDirectory: BodyMacro {
         return [
             """
             let _currentDirectory = FileManager.default.currentDirectoryPath
-            FileManager.default.changeCurrentDirectoryPath(\(path))
+            FileManager.default.changeCurrentDirectoryPath(\(path).filepath)
             defer { FileManager.default.changeCurrentDirectoryPath(_currentDirectory) }
             """,
         ] + Array(body.statements)

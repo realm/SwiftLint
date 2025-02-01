@@ -234,11 +234,15 @@ private extension SwiftLintDev.Rules.Template {
 
     var testTemplate: String {
         """
-        @testable import SwiftLintBuiltInRules
         import TestHelpers
+        import Testing
 
-        final class \(name)RuleTests: SwiftLintTestCase {
-            func test() {
+        @testable import SwiftLintBuiltInRules
+
+        @Suite(.rulesRegistered)
+        struct \(name)RuleTests {
+            @Test
+            func verify() {
                 verifyRule(\(name)Rule.description, ruleConfiguration: [])
             }
         }

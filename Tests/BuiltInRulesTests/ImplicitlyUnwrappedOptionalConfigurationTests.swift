@@ -1,33 +1,37 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-// swiftlint:disable:next type_name
-final class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
-    func testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ImplicitlyUnwrappedOptionalConfigurationTests { // swiftlint:disable:this type_name
+
+    @Test
+    func implicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
         var configuration = ImplicitlyUnwrappedOptionalConfiguration(
             severityConfiguration: SeverityConfiguration(.warning),
             mode: .allExceptIBOutlets
         )
 
         try configuration.apply(configuration: ["mode": "all", "severity": "error"])
-        XCTAssertEqual(configuration.mode, .all)
-        XCTAssertEqual(configuration.severity, .error)
+        #expect(configuration.mode == .all)
+        #expect(configuration.severity == .error)
 
         try configuration.apply(configuration: ["mode": "all_except_iboutlets"])
-        XCTAssertEqual(configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(configuration.severity, .error)
+        #expect(configuration.mode == .allExceptIBOutlets)
+        #expect(configuration.severity == .error)
 
         try configuration.apply(configuration: ["severity": "warning"])
-        XCTAssertEqual(configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(configuration.severity, .warning)
+        #expect(configuration.mode == .allExceptIBOutlets)
+        #expect(configuration.severity == .warning)
 
         try configuration.apply(configuration: ["mode": "all", "severity": "warning"])
-        XCTAssertEqual(configuration.mode, .all)
-        XCTAssertEqual(configuration.severity, .warning)
+        #expect(configuration.mode == .all)
+        #expect(configuration.severity == .warning)
     }
 
-    func testImplicitlyUnwrappedOptionalConfigurationThrowsOnBadConfig() {
+    @Test
+    func implicitlyUnwrappedOptionalConfigurationThrowsOnBadConfig() {
         let badConfigs: [[String: Any]] = [
             ["mode": "everything"],
             ["mode": false],
@@ -40,7 +44,7 @@ final class ImplicitlyUnwrappedOptionalConfigurationTests: SwiftLintTestCase {
                 mode: .allExceptIBOutlets
             )
 
-            checkError(Issue.invalidConfiguration(ruleID: ImplicitlyUnwrappedOptionalRule.identifier)) {
+            #expect(throws: Issue.invalidConfiguration(ruleID: ImplicitlyUnwrappedOptionalRule.identifier)) {
                 try configuration.apply(configuration: badConfig)
             }
         }

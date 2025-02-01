@@ -1,8 +1,11 @@
-@testable import SwiftLintBuiltInRules
-import XCTest
+import Testing
 
-final class UnusedDeclarationConfigurationTests: XCTestCase {
-    func testParseConfiguration() throws {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct UnusedDeclarationConfigurationTests {
+    @Test
+    func parseConfiguration() throws {
         var testee = UnusedDeclarationConfiguration()
         let config = [
             "severity": "warning",
@@ -12,8 +15,8 @@ final class UnusedDeclarationConfigurationTests: XCTestCase {
 
         try testee.apply(configuration: config)
 
-        XCTAssertEqual(testee.severityConfiguration.severity, .warning)
-        XCTAssertTrue(testee.includePublicAndOpen)
-        XCTAssertEqual(testee.relatedUSRsToSkip, ["a", "b", "s:7SwiftUI15PreviewProviderP"])
+        #expect(testee.severityConfiguration.severity == .warning)
+        #expect(testee.includePublicAndOpen)
+        #expect(testee.relatedUSRsToSkip == ["a", "b", "s:7SwiftUI15PreviewProviderP"])
     }
 }

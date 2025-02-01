@@ -1,16 +1,20 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class TypeBodyLengthConfigurationTests: SwiftLintTestCase {
-    func testDefaultConfiguration() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TypeBodyLengthConfigurationTests {
+    @Test
+    func defaultConfiguration() {
         let config = TypeBodyLengthConfiguration()
-        XCTAssertEqual(config.severityConfiguration.warning, 250)
-        XCTAssertEqual(config.severityConfiguration.error, 350)
-        XCTAssertEqual(config.excludedTypes, [.extension, .protocol])
+        #expect(config.severityConfiguration.warning == 250)
+        #expect(config.severityConfiguration.error == 350)
+        #expect(config.excludedTypes == [.extension, .protocol])
     }
 
-    func testApplyingCustomConfiguration() throws {
+    @Test
+    func applyingCustomConfiguration() throws {
         var config = TypeBodyLengthConfiguration()
         try config.apply(
             configuration: [
@@ -19,58 +23,63 @@ final class TypeBodyLengthConfigurationTests: SwiftLintTestCase {
                 "excluded_types": ["struct", "class"],
             ] as [String: any Sendable]
         )
-        XCTAssertEqual(config.severityConfiguration.warning, 150)
-        XCTAssertEqual(config.severityConfiguration.error, 200)
-        XCTAssertEqual(config.excludedTypes, Set([.struct, .class]))
+        #expect(config.severityConfiguration.warning == 150)
+        #expect(config.severityConfiguration.error == 200)
+        #expect(config.excludedTypes == Set([.struct, .class]))
     }
 
-    func testApplyingOnlyExcludedTypesConfiguration() throws {
+    @Test
+    func applyingOnlyExcludedTypesConfiguration() throws {
         var config = TypeBodyLengthConfiguration()
         try config.apply(
-                configuration: [
-                    "excluded_types": ["actor", "enum"]
-                ] as [String: any Sendable]
-            )
+            configuration: [
+                "excluded_types": ["actor", "enum"]
+            ] as [String: any Sendable]
+        )
 
         // Severity should remain default
-        XCTAssertEqual(config.severityConfiguration.warning, 250)
-        XCTAssertEqual(config.severityConfiguration.error, 350)
+        #expect(config.severityConfiguration.warning == 250)
+        #expect(config.severityConfiguration.error == 350)
 
         // Excluded types should be updated
-        XCTAssertEqual(config.excludedTypes, Set([.actor, .enum]))
+        #expect(config.excludedTypes == Set([.actor, .enum]))
     }
 
-    func testApplyingAllTypesAsExcludedConfiguration() throws {
+    @Test
+    func applyingAllTypesAsExcludedConfiguration() throws {
         var config = TypeBodyLengthConfiguration()
         try config.apply(
             configuration: [
                 "excluded_types": ["struct", "class", "actor", "enum", "extension", "protocol"]
             ] as [String: any Sendable]
         )
-        XCTAssertEqual(config.excludedTypes, Set(TypeBodyLengthCheckType.allCases))
+        #expect(config.excludedTypes == Set(TypeBodyLengthCheckType.allCases))
     }
 
-    func testApplyingEmptyExcludedTypesConfiguration() throws {
+    @Test
+    func applyingEmptyExcludedTypesConfiguration() throws {
         var config = TypeBodyLengthConfiguration()
         try config.apply(
             configuration: [
                 "excluded_types": [] as [String]
             ] as [String: any Sendable]
         )
-        XCTAssertTrue(config.excludedTypes.isEmpty)
+        #expect(config.excludedTypes.isEmpty)
     }
 
-    func testApplyingSingleExcludedTypeConfiguration() throws {
+    @Test
+    func applyingSingleExcludedTypeConfiguration() throws {
         var config = TypeBodyLengthConfiguration()
         try config.apply(
             configuration: [
                 "excluded_types": ["extension"]
             ] as [String: any Sendable]
         )
-        XCTAssertEqual(config.excludedTypes, Set([.extension]))
+        #expect(config.excludedTypes == Set([.extension]))
     }
 
-    func testInvalidExcludedTypeConfiguration() throws {
+    @Test
+    func invalidExcludedTypeConfiguration() throws {
         var config = TypeBodyLengthConfiguration()
         checkError(Issue.invalidConfiguration(ruleID: TypeBodyLengthRule.identifier)) {
             try config.apply(
@@ -79,13 +88,13 @@ final class TypeBodyLengthConfigurationTests: SwiftLintTestCase {
                 ] as [String: any Sendable]
             )
         }
-        XCTAssertEqual(config.excludedTypes, Set([.extension, .protocol]))
+        #expect(config.excludedTypes == Set([.extension, .protocol]))
     }
 
-    func testTypeEnumComparability() {
-        XCTAssertEqual(
-            TypeBodyLengthCheckType.allCases.sorted(),
-            [.actor, .class, .enum, .extension, .protocol, .struct]
+    @Test
+    func typeEnumComparability() {
+        #expect(
+            TypeBodyLengthCheckType.allCases.sorted() == [.actor, .class, .enum, .extension, .protocol, .struct]
         )
     }
 }

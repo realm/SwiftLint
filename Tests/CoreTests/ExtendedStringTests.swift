@@ -1,10 +1,11 @@
-import TestHelpers
-import XCTest
+import Testing
 
-final class ExtendedStringTests: SwiftLintTestCase {
-    func testCountOccurrences() {
-        XCTAssertEqual("aabbabaaba".countOccurrences(of: "a"), 6)
-        XCTAssertEqual("".countOccurrences(of: "a"), 0)
-        XCTAssertEqual("\n\n".countOccurrences(of: "\n"), 2)
+@Suite
+struct ExtendedStringTests {
+    @Test
+    func countOccurrences() {
+        #expect("aabbabaaba".countOccurrences(of: "a") == 6)
+        #expect("".countOccurrences(of: "a") == 0)
+        #expect("\n\n".countOccurrences(of: "\n") == 2)
     }
 }

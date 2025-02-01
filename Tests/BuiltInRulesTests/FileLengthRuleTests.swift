@@ -1,13 +1,18 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class FileLengthRuleTests: SwiftLintTestCase {
-    func testFileLengthWithDefaultConfiguration() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct FileLengthRuleTests {
+    @Test
+    func fileLengthWithDefaultConfiguration() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
                    testMultiByteOffsets: false, testShebang: false)
     }
 
-    func testFileLengthIgnoringLinesWithOnlyComments() {
+    @Test
+    func fileLengthIgnoringLinesWithOnlyComments() {
         let triggeringExamples = [
             Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined())
         ]

@@ -1,7 +1,6 @@
 import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacrosGenericTestSupport
-import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
 
 @testable import SwiftLintCoreMacros
 
@@ -9,8 +8,10 @@ private let macros = [
     "AutoConfigParser": MacroSpec(type: AutoConfigParser.self)
 ]
 
-final class AutoConfigParserTests: XCTestCase {
-    func testAttachToClass() {
+@Suite
+struct AutoConfigParserTests {
+    @Test
+    func attachToClass() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -26,11 +27,12 @@ final class AutoConfigParserTests: XCTestCase {
                 DiagnosticSpec(message: SwiftLintCoreMacroError.notStruct.message, line: 1, column: 1)
             ],
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testNoConfigurationElements() {
+    @Test
+    func noConfigurationElements() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -41,24 +43,28 @@ final class AutoConfigParserTests: XCTestCase {
             """
             struct S {
 
-                mutating func apply(configuration: Any) throws(Issue) {
+                mutating func apply(configuration: Any) throws(SwiftLintCore.Issue) {
                     guard let configuration = configuration as? [String: Any] else {
                         throw .invalidConfiguration(ruleID: Parent.identifier)
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
+                        SwiftLintCore.Issue.invalidConfigurationKeys(
+                            ruleID: Parent.identifier,
+                            keys: unknownKeys
+                        ).print()
                     }
                     try validate()
                 }
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testConfigurationElementsWithoutKeys() {
+    @Test
+    func configurationElementsWithoutKeys() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -77,7 +83,7 @@ final class AutoConfigParserTests: XCTestCase {
                 @ConfigurationElement(key: "name")
                 var eB = 2
 
-                mutating func apply(configuration: Any) throws(Issue) {
+                mutating func apply(configuration: Any) throws(SwiftLintCore.Issue) {
                     if $eA.key.isEmpty {
                         $eA.key = "e_a"
                     }
@@ -95,18 +101,22 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
+                        SwiftLintCore.Issue.invalidConfigurationKeys(
+                            ruleID: Parent.identifier,
+                            keys: unknownKeys
+                        ).print()
                     }
                     try validate()
                 }
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testInlinedConfigurationElements() {
+    @Test
+    func inlinedConfigurationElements() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -129,7 +139,7 @@ final class AutoConfigParserTests: XCTestCase {
                 @ConfigurationElement(inline: false)
                 var eC = 3
 
-                mutating func apply(configuration: Any) throws(Issue) {
+                mutating func apply(configuration: Any) throws(SwiftLintCore.Issue) {
                     if $eA.key.isEmpty {
                         $eA.key = "e_a"
                     }
@@ -138,7 +148,7 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     do {
                         try eB.apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue where issue == SwiftLintCore.Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {
@@ -152,17 +162,21 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
+                        SwiftLintCore.Issue.invalidConfigurationKeys(
+                            ruleID: Parent.identifier,
+                            keys: unknownKeys
+                        ).print()
                     }
                     try validate()
                 }
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler)
+            failureHandler: FailureHandler.instance        )
     }
 
-    func testSeverityBasedConfigurationWithoutSeverityProperty() {
+    @Test
+    func severityBasedConfigurationWithoutSeverityProperty() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -173,13 +187,16 @@ final class AutoConfigParserTests: XCTestCase {
             """
             struct S: SeverityBasedRuleConfiguration {
 
-                mutating func apply(configuration: Any) throws(Issue) {
+                mutating func apply(configuration: Any) throws(SwiftLintCore.Issue) {
                     guard let configuration = configuration as? [String: Any] else {
                         throw .invalidConfiguration(ruleID: Parent.identifier)
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
+                        SwiftLintCore.Issue.invalidConfigurationKeys(
+                            ruleID: Parent.identifier,
+                            keys: unknownKeys
+                        ).print()
                     }
                     try validate()
                 }
@@ -193,11 +210,12 @@ final class AutoConfigParserTests: XCTestCase {
                 ),
             ],
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testSeverityAppliedTwice() {
+    @Test
+    func severityAppliedTwice() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -216,7 +234,7 @@ final class AutoConfigParserTests: XCTestCase {
                 @ConfigurationElement
                 var foo = 2
 
-                mutating func apply(configuration: Any) throws(Issue) {
+                mutating func apply(configuration: Any) throws(SwiftLintCore.Issue) {
                     if $severityConfiguration.key.isEmpty {
                         $severityConfiguration.key = "severity_configuration"
                     }
@@ -225,7 +243,7 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     do {
                         try severityConfiguration.apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue where issue == SwiftLintCore.Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {
@@ -239,14 +257,17 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                        Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
+                        SwiftLintCore.Issue.invalidConfigurationKeys(
+                            ruleID: Parent.identifier,
+                            keys: unknownKeys
+                        ).print()
                     }
                     try validate()
                 }
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 }

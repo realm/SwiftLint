@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class ContainsOverFilterCountRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ContainsOverFilterCountRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ContainsOverFilterCountRule.description)
     }
 }
 
-final class ContainsOverFilterIsEmptyRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ContainsOverFilterIsEmptyRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ContainsOverFilterIsEmptyRule.description)
     }
 }
 
-final class ContainsOverFirstNotNilRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ContainsOverFirstNotNilRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ContainsOverFirstNotNilRule.description)
     }
 }
 
-final class ContainsOverRangeNilComparisonRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ContainsOverRangeNilComparisonRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ContainsOverRangeNilComparisonRule.description)
     }
 }
 
-final class ContrastedOpeningBraceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ContrastedOpeningBraceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ContrastedOpeningBraceRule.description)
     }
 }
 
-final class ControlStatementRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ControlStatementRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ControlStatementRule.description)
     }
 }
 
-final class ConvenienceTypeRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ConvenienceTypeRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ConvenienceTypeRule.description)
     }
 }
 
-final class CyclomaticComplexityRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CyclomaticComplexityRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CyclomaticComplexityRule.description)
     }
 }
 
-final class DeploymentTargetRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DeploymentTargetRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DeploymentTargetRule.description)
     }
 }
 
-final class DirectReturnRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DirectReturnRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DirectReturnRule.description)
     }
 }
 
-final class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscardedNotificationCenterObserverRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 }
 
-final class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscouragedAssertRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
     }
 }
 
-final class DiscouragedDirectInitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscouragedDirectInitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscouragedDirectInitRule.description)
     }
 }
 
-final class DiscouragedNoneNameRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscouragedNoneNameRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscouragedNoneNameRule.description)
     }
 }
 
-final class DiscouragedObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscouragedObjectLiteralRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscouragedObjectLiteralRule.description)
     }
 }
 
-final class DiscouragedOptionalBooleanRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscouragedOptionalBooleanRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscouragedOptionalBooleanRule.description)
     }
 }
 
-final class DiscouragedOptionalCollectionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DiscouragedOptionalCollectionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DiscouragedOptionalCollectionRule.description)
     }
 }
 
-final class DuplicateConditionsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DuplicateConditionsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DuplicateConditionsRule.description)
     }
 }
 
-final class DuplicateEnumCasesRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DuplicateEnumCasesRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DuplicateEnumCasesRule.description)
     }
 }
 
-final class DuplicateImportsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DuplicateImportsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DuplicateImportsRule.description)
     }
 }
 
-final class DuplicatedKeyInDictionaryLiteralRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DuplicatedKeyInDictionaryLiteralRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DuplicatedKeyInDictionaryLiteralRule.description)
     }
 }
 
-final class DynamicInlineRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct DynamicInlineRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(DynamicInlineRule.description)
     }
 }
 
-final class EmptyCollectionLiteralRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyCollectionLiteralRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyCollectionLiteralRule.description)
     }
 }
 
-final class EmptyCountRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyCountRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)
     }
 }
 
-final class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyEnumArgumentsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyEnumArgumentsRule.description)
     }
 }

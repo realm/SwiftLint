@@ -1,10 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
+
+@testable import SwiftLintBuiltInRules
 
 private let fixturesDirectory = "\(TestResources.path())/FileNameRuleFixtures"
 
-final class FileNameRuleTests: SwiftLintTestCase {
+@Suite(.rulesRegistered)
+struct FileNameRuleTests {
     private func validate(fileName: String,
                           excluded: [String]? = nil,
                           excludedPaths: [String]? = nil,
@@ -40,94 +42,113 @@ final class FileNameRuleTests: SwiftLintTestCase {
         return rule.validate(file: file)
     }
 
-    func testMainDoesntTrigger() {
-        XCTAssert(try validate(fileName: "main.swift").isEmpty)
+    @Test
+    func mainDoesntTrigger() throws {
+        try #expect(validate(fileName: "main.swift").isEmpty)
     }
 
-    func testLinuxMainDoesntTrigger() {
-        XCTAssert(try validate(fileName: "LinuxMain.swift").isEmpty)
+    @Test
+    func linuxMainDoesntTrigger() throws {
+        try #expect(validate(fileName: "LinuxMain.swift").isEmpty)
     }
 
-    func testClassNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "MyClass.swift").isEmpty)
+    @Test
+    func classNameDoesntTrigger() throws {
+        try #expect(validate(fileName: "MyClass.swift").isEmpty)
     }
 
-    func testStructNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "MyStruct.swift").isEmpty)
+    @Test
+    func structNameDoesntTrigger() throws {
+        try #expect(validate(fileName: "MyStruct.swift").isEmpty)
     }
 
-    func testMacroNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "MyMacro.swift").isEmpty)
+    @Test
+    func macroNameDoesntTrigger() throws {
+        try #expect(validate(fileName: "MyMacro.swift").isEmpty)
     }
 
-    func testExtensionNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
+    @Test
+    func extensionNameDoesntTrigger() throws {
+        try #expect(validate(fileName: "NSString+Extension.swift").isEmpty)
     }
 
-    func testNestedExtensionDoesntTrigger() {
-        XCTAssert(try validate(fileName: "Notification.Name+Extension.swift").isEmpty)
+    @Test
+    func nestedExtensionDoesntTrigger() throws {
+        try #expect(validate(fileName: "Notification.Name+Extension.swift").isEmpty)
     }
 
-    func testNestedTypeDoesntTrigger() {
-        XCTAssert(try validate(fileName: "Nested.MyType.swift").isEmpty)
+    @Test
+    func nestedTypeDoesntTrigger() throws {
+        try #expect(validate(fileName: "Nested.MyType.swift").isEmpty)
     }
 
-    func testMultipleLevelsDeeplyNestedTypeDoesntTrigger() {
-        XCTAssert(try validate(fileName: "Multiple.Levels.Deeply.Nested.MyType.swift").isEmpty)
+    @Test
+    func multipleLevelsDeeplyNestedTypeDoesntTrigger() throws {
+        try #expect(validate(fileName: "Multiple.Levels.Deeply.Nested.MyType.swift").isEmpty)
     }
 
-    func testNestedTypeNotFullyQualifiedDoesntTrigger() {
-        XCTAssert(try validate(fileName: "MyType.swift").isEmpty)
+    @Test
+    func nestedTypeNotFullyQualifiedDoesntTrigger() throws {
+        try #expect(validate(fileName: "MyType.swift").isEmpty)
     }
 
-    func testNestedTypeNotFullyQualifiedDoesTriggerWithOverride() {
-        XCTAssert(try validate(fileName: "MyType.swift", requireFullyQualifiedNames: true).isNotEmpty)
+    @Test
+    func nestedTypeNotFullyQualifiedDoesTriggerWithOverride() throws {
+        try #expect(validate(fileName: "MyType.swift", requireFullyQualifiedNames: true).isNotEmpty)
     }
 
-    func testNestedTypeSeparatorDoesntTrigger() {
-        XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "").isEmpty)
-        XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: "__").isEmpty)
+    @Test
+    func nestedTypeSeparatorDoesntTrigger() throws {
+        try #expect(validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "").isEmpty)
+        try #expect(validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: "__").isEmpty)
     }
 
-    func testWrongNestedTypeSeparatorDoesTrigger() {
-        XCTAssert(try validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isNotEmpty)
-        XCTAssert(try validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isNotEmpty)
+    @Test
+    func wrongNestedTypeSeparatorDoesTrigger() throws {
+        try #expect(validate(fileName: "Notification__Name+Extension.swift", nestedTypeSeparator: ".").isNotEmpty)
+        try #expect(validate(fileName: "NotificationName+Extension.swift", nestedTypeSeparator: "__").isNotEmpty)
     }
 
-    func testMisspelledNameDoesTrigger() {
-        XCTAssertEqual(try validate(fileName: "MyStructf.swift").count, 1)
+    @Test
+    func misspelledNameDoesTrigger() throws {
+        try #expect(validate(fileName: "MyStructf.swift").count == 1)
     }
 
-    func testMisspelledNameDoesntTriggerWithOverride() {
-        XCTAssert(try validate(fileName: "MyStructf.swift", excluded: ["MyStructf.swift"]).isEmpty)
+    @Test
+    func misspelledNameDoesntTriggerWithOverride() throws {
+        try #expect(validate(fileName: "MyStructf.swift", excluded: ["MyStructf.swift"]).isEmpty)
     }
 
-    func testMainDoesTriggerWithoutOverride() {
-        XCTAssertEqual(try validate(fileName: "main.swift", excluded: []).count, 1)
+    @Test
+    func mainDoesTriggerWithoutOverride() throws {
+        try #expect(validate(fileName: "main.swift", excluded: []).count == 1)
     }
 
-    func testCustomSuffixPattern() {
-        XCTAssert(try validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?").isEmpty)
-        XCTAssert(try validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?").isEmpty)
-        XCTAssert(try validate(fileName: "BoolExtensionTests.swift", suffixPattern: "Extensions?|\\+.*").isEmpty)
+    @Test
+    func customSuffixPattern() throws {
+        try #expect(validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?").isEmpty)
+        try #expect(validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?").isEmpty)
+        try #expect(validate(fileName: "BoolExtensionTests.swift", suffixPattern: "Extensions?|\\+.*").isEmpty)
     }
 
-    func testCustomPrefixPattern() {
-        XCTAssert(try validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?").isEmpty)
-        XCTAssert(try validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?").isEmpty)
+    @Test
+    func customPrefixPattern() throws {
+        try #expect(validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?").isEmpty)
+        try #expect(validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?").isEmpty)
     }
 
-    func testCustomPrefixAndSuffixPatterns() {
-        XCTAssert(
-            try validate(
+    @Test
+    func customPrefixAndSuffixPatterns() throws {
+        try #expect(
+            validate(
                 fileName: "SLBoolExtension.swift",
                 prefixPattern: "SL",
                 suffixPattern: "Extensions?|\\+.*"
             ).isEmpty
         )
 
-        XCTAssert(
-            try validate(
+        try #expect(
+            validate(
                 fileName: "ExtensionBool+SwiftLint.swift",
                 prefixPattern: "Extensions?",
                 suffixPattern: "Extensions?|\\+.*"
@@ -135,34 +156,36 @@ final class FileNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testExcludedDoesntSupportRegex() {
-        XCTAssert(
-            try validate(
+    @Test
+    func excludedDoesntSupportRegex() throws {
+        try #expect(
+            validate(
                 fileName: "main.swift",
                 excluded: [".*"]
             ).isNotEmpty
         )
     }
 
-    func testExcludedPathPatternsSupportRegex() {
-        XCTAssert(
-            try validate(
+    @Test
+    func excludedPathPatternsSupportRegex() throws {
+        try #expect(
+            validate(
                 fileName: "main.swift",
                 excluded: [],
                 excludedPaths: [".*"]
             ).isEmpty
         )
 
-        XCTAssert(
-            try validate(
+        try #expect(
+            validate(
                 fileName: "main.swift",
                 excluded: [],
                 excludedPaths: [".*.swift"]
             ).isEmpty
         )
 
-        XCTAssert(
-            try validate(
+        try #expect(
+            validate(
                 fileName: "main.swift",
                 excluded: [],
                 excludedPaths: [".*/FileNameRuleFixtures/.*"]
@@ -170,9 +193,10 @@ final class FileNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testExcludedPathPatternsWithRegexDoesntMatch() {
-        XCTAssert(
-            try validate(
+    @Test
+    func excludedPathPatternsWithRegexDoesntMatch() throws {
+        try #expect(
+            validate(
                 fileName: "main.swift",
                 excluded: [],
                 excludedPaths: [".*/OtherFolder/.*", "MAIN\\.swift"]
@@ -180,8 +204,9 @@ final class FileNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testInvalidRegex() {
-        XCTAssertThrowsError(
+    @Test
+    func invalidRegex() throws {
+        #expect(throws: (any Error).self) {
             try validate(
                 fileName: "NSString+Extension.swift",
                 excluded: [],
@@ -189,24 +214,24 @@ final class FileNameRuleTests: SwiftLintTestCase {
                 prefixPattern: "",
                 suffixPattern: ""
             )
-        )
+        }
     }
 
-    func testExcludedPathPatternsWithMultipleRegexs() {
-        XCTAssertThrowsError(
+    @Test
+    func excludedPathPatternsWithMultipleRegexs() throws {
+        #expect(throws: (any Error).self) {
             try validate(
                 fileName: "main.swift",
                 excluded: [],
                 excludedPaths: ["/FileNameRuleFixtures/.*", "("]
             )
-        )
-
-        XCTAssertThrowsError(
+        }
+        #expect(throws: (any Error).self) {
             try validate(
                 fileName: "main.swift",
                 excluded: [],
                 excludedPaths: ["/FileNameRuleFixtures/.*", "(", ".*.swift"]
             )
-        )
+        }
     }
 }

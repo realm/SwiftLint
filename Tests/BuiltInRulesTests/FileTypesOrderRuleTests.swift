@@ -1,9 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class FileTypesOrderRuleTests: SwiftLintTestCase {
-    // swiftlint:disable:next function_body_length
-    func testFileTypesOrderReversedOrder() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct FileTypesOrderRuleTests {
+    @Test
+    func fileTypesOrderReversedOrder() { // swiftlint:disable:this function_body_length
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
             Example(FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"))
@@ -82,7 +85,8 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testFileTypesOrderGroupedOrder() {
+    @Test
+    func fileTypesOrderGroupedOrder() {
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
             Example("""

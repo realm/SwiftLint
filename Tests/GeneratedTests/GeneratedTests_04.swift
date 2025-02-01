@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class ForceTryRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ForceTryRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ForceTryRule.description)
     }
 }
 
-final class ForceUnwrappingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ForceUnwrappingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ForceUnwrappingRule.description)
     }
 }
 
-final class FunctionBodyLengthRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FunctionBodyLengthRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FunctionBodyLengthRule.description)
     }
 }
 
-final class FunctionDefaultParameterAtEndRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FunctionDefaultParameterAtEndRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FunctionDefaultParameterAtEndRule.description)
     }
 }
 
-final class FunctionNameWhitespaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FunctionNameWhitespaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FunctionNameWhitespaceRule.description)
     }
 }
 
-final class FunctionParameterCountRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FunctionParameterCountRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FunctionParameterCountRule.description)
     }
 }
 
-final class GenericTypeNameRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct GenericTypeNameRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(GenericTypeNameRule.description)
     }
 }
 
-final class IBInspectableInExtensionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct IBInspectableInExtensionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(IBInspectableInExtensionRule.description)
     }
 }
 
-final class IdenticalOperandsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct IdenticalOperandsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)
     }
 }
 
-final class IdentifierNameRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct IdentifierNameRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(IdentifierNameRule.description)
     }
 }
 
-final class ImplicitGetterRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ImplicitGetterRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ImplicitGetterRule.description)
     }
 }
 
-final class ImplicitOptionalInitializationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ImplicitOptionalInitializationRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ImplicitOptionalInitializationRule.description)
     }
 }
 
-final class ImplicitReturnRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ImplicitReturnRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ImplicitReturnRule.description)
     }
 }
 
-final class ImplicitlyUnwrappedOptionalRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ImplicitlyUnwrappedOptionalRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 }
 
-final class InclusiveLanguageRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct InclusiveLanguageRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(InclusiveLanguageRule.description)
     }
 }
 
-final class IndentationWidthRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct IndentationWidthRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(IndentationWidthRule.description)
     }
 }
 
-final class InvalidSwiftLintCommandRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct InvalidSwiftLintCommandRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(InvalidSwiftLintCommandRule.description)
     }
 }
 
-final class IsDisjointRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct IsDisjointRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)
     }
 }
 
-final class JoinedDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct JoinedDefaultParameterRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(JoinedDefaultParameterRule.description)
     }
 }
 
-final class LargeTupleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct LargeTupleRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(LargeTupleRule.description)
     }
 }
 
-final class LastWhereRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct LastWhereRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
     }
 }
 
-final class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct LeadingWhitespaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(LeadingWhitespaceRule.description)
     }
 }
 
-final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct LegacyCGGeometryFunctionsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
 }
 
-final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct LegacyConstantRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(LegacyConstantRule.description)
     }
 }
 
-final class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct LegacyConstructorRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(LegacyConstructorRule.description)
     }
 }

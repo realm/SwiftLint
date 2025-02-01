@@ -1,16 +1,20 @@
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
-import XCTest
 
-final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
-    func testDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoEmptyBlockConfigurationTests {
+    @Test
+    func defaultConfiguration() {
         let config = NoEmptyBlockConfiguration()
-        XCTAssertEqual(config.severityConfiguration.severity, .warning)
-        XCTAssertEqual(config.enabledBlockTypes, NoEmptyBlockConfiguration.CodeBlockType.all)
+        #expect(config.severityConfiguration.severity == .warning)
+        #expect(config.enabledBlockTypes == NoEmptyBlockConfiguration.CodeBlockType.all)
     }
 
-    func testApplyingCustomConfiguration() throws {
+    @Test
+    func applyingCustomConfiguration() throws {
         var config = NoEmptyBlockConfiguration()
         try config.apply(
             configuration: [
@@ -18,41 +22,44 @@ final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
                 "disabled_block_types": ["function_bodies"],
             ] as [String: any Sendable]
         )
-        XCTAssertEqual(config.severityConfiguration.severity, .error)
-        XCTAssertEqual(config.enabledBlockTypes, Set([.initializerBodies, .statementBlocks, .closureBlocks]))
+        #expect(config.severityConfiguration.severity == .error)
+        #expect(config.enabledBlockTypes == Set([.initializerBodies, .statementBlocks, .closureBlocks]))
     }
 
-    func testInvalidKeyInCustomConfiguration() async throws {
+    @Test
+    func invalidKeyInCustomConfiguration() async throws {
         let console = try await Issue.captureConsole {
             var config = NoEmptyBlockConfiguration()
             try config.apply(configuration: ["invalidKey": "error"])
         }
-        XCTAssertEqual(
-            console,
-            "warning: Configuration for 'no_empty_block' rule contains the invalid key(s) 'invalidKey'."
+        #expect(
+            console == "warning: Configuration for 'no_empty_block' rule contains the invalid key(s) 'invalidKey'."
         )
     }
 
-    func testInvalidTypeOfCustomConfiguration() {
+    @Test
+    func invalidTypeOfCustomConfiguration() {
         var config = NoEmptyBlockConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.identifier)) {
+        #expect(throws: Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.identifier)) {
             try config.apply(configuration: "invalidKey")
         }
     }
 
-    func testInvalidTypeOfValueInCustomConfiguration() {
+    @Test
+    func invalidTypeOfValueInCustomConfiguration() {
         var config = NoEmptyBlockConfiguration()
-        checkError(Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.identifier)) {
+        #expect(throws: Issue.invalidConfiguration(ruleID: NoEmptyBlockRule.identifier)) {
             try config.apply(configuration: ["severity": "foo"])
         }
     }
 
-    func testConsoleDescription() throws {
+    @Test
+    func consoleDescription() throws {
         var config = NoEmptyBlockConfiguration()
         try config.apply(configuration: ["disabled_block_types": ["initializer_bodies", "statement_blocks"]])
-        XCTAssertEqual(
-            RuleConfigurationDescription.from(configuration: config).oneLiner(),
-            "severity: warning; disabled_block_types: [initializer_bodies, statement_blocks]"
+        #expect(
+            RuleConfigurationDescription.from(configuration: config).oneLiner()
+                == "severity: warning; disabled_block_types: [initializer_bodies, statement_blocks]"
         )
     }
 }

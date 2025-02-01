@@ -21,7 +21,7 @@ enum DisabledWithoutSourceKit: ExtensionMacro {
             try ExtensionDeclSyntax("""
                 extension \(type) {
                     private static let postMessage: Void = {
-                        Issue.genericWarning(\(raw: message)).print()
+                        SwiftLintCore.Issue.genericWarning(\(raw: message)).print()
                     }()
 
                     func notifyRuleDisabledOnce() {

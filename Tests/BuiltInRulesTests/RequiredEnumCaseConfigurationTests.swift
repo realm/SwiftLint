@@ -1,8 +1,10 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+final class RequiredEnumCaseConfigurationTests {
     private typealias RuleConfiguration = RequiredEnumCaseConfiguration
     private typealias RequiredCase = RuleConfiguration.RequiredCase
 
@@ -20,56 +22,64 @@ final class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
         return config
     }()
 
-    func testRequiredCaseHashValue() {
+    @Test
+    func requiredCaseHashValue() {
         let requiredCase = RequiredCase(name: "success")
-        XCTAssertEqual(requiredCase.hashValue, RequiredCase(name: "success").hashValue)
+        #expect(requiredCase.hashValue == RequiredCase(name: "success").hashValue)
     }
 
-    func testRequiredCaseEquatableReturnsTrue() {
+    @Test
+    func requiredCaseEquatableReturnsTrue() {
         let lhs = RequiredCase(name: "success")
         let rhs = RequiredCase(name: "success")
-        XCTAssertEqual(lhs, rhs)
+        #expect(lhs == rhs)
     }
 
-    func testRequiredCaseEquatableReturnsFalseBecauseOfDifferentName() {
+    @Test
+    func requiredCaseEquatableReturnsFalseBecauseOfDifferentName() {
         let lhs = RequiredCase(name: "success")
         let rhs = RequiredCase(name: "error")
-        XCTAssertNotEqual(lhs, rhs)
+        #expect(lhs != rhs)
     }
 
-    func testConsoleDescriptionReturnsAllConfiguredProtocols() {
+    @Test
+    func consoleDescriptionReturnsAllConfiguredProtocols() {
         let expected = "NetworkResults: error: warning; RequiredProtocol: error: warning, success: warning"
-        XCTAssertEqual(config.parameterDescription?.oneLiner(), expected)
+        #expect(config.parameterDescription?.oneLiner() == expected)
     }
 
-    func testConsoleDescriptionReturnsNoConfiguredProtocols() {
+    @Test
+    func consoleDescriptionReturnsNoConfiguredProtocols() {
         let expected = "{Protocol Name}: {Case Name 1}: {warning|error}, {Case Name 2}: {warning|error}"
 
         config.protocols.removeAll()
-        XCTAssertEqual(config.parameterDescription?.oneLiner(), expected)
+        #expect(config.parameterDescription?.oneLiner() == expected)
     }
 
     private func validateRulesExistForProtocol1() {
-        XCTAssertTrue(self.config.protocols[Self.protocol1]?.contains(Self.rule1) ?? false)
-        XCTAssertTrue(self.config.protocols[Self.protocol1]?.contains(Self.rule2) ?? false)
+        #expect(self.config.protocols[Self.protocol1]?.contains(Self.rule1) ?? false)
+        #expect(self.config.protocols[Self.protocol1]?.contains(Self.rule2) ?? false)
     }
 
-    func testRegisterProtocolCasesRegistersCasesWithSpecifiedSeverity() {
+    @Test
+    func registerProtocolCasesRegistersCasesWithSpecifiedSeverity() {
         config.register(protocol: Self.protocol3, cases: ["success": "error", "error": "warning"])
         validateRulesExistForProtocol3()
     }
 
     private func validateRulesExistForProtocol3() {
-        XCTAssertTrue(self.config.protocols[Self.protocol3]?.contains(Self.rule3) ?? false)
-        XCTAssertTrue(self.config.protocols[Self.protocol3]?.contains(Self.rule2) ?? false)
+        #expect(self.config.protocols[Self.protocol3]?.contains(Self.rule3) ?? false)
+        #expect(self.config.protocols[Self.protocol3]?.contains(Self.rule2) ?? false)
     }
 
-    func testRegisterProtocols() {
+    @Test
+    func registerProtocols() {
         config.register(protocols: [Self.protocol1: ["success": "warning", "error": "warning"]])
         validateRulesExistForProtocol1()
     }
 
-    func testApplyThrowsErrorBecausePassedConfigurationCantBeCast() {
+    @Test
+    func applyThrowsErrorBecausePassedConfigurationCantBeCast() {
         var errorThrown = false
 
         do {
@@ -78,41 +88,45 @@ final class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
             errorThrown = true
         }
 
-        XCTAssertTrue(errorThrown)
+        #expect(errorThrown)
     }
 
-    func testApplyRegistersProtocols() {
+    @Test
+    func applyRegistersProtocols() {
         try? config.apply(configuration: [Self.protocol1: ["success": "warning", "error": "warning"]])
         validateRulesExistForProtocol1()
     }
 
-    func testEqualsReturnsTrue() {
+    @Test
+    func equalsReturnsTrue() {
         var lhs = RuleConfiguration()
         try? lhs.apply(configuration: [Self.protocol1: ["success", "error"]])
 
         var rhs = RuleConfiguration()
         try? rhs.apply(configuration: [Self.protocol1: ["success", "error"]])
 
-        XCTAssertEqual(lhs, rhs)
+        #expect(lhs == rhs)
     }
 
-    func testEqualsReturnsFalseBecauseProtocolsArentEqual() {
+    @Test
+    func equalsReturnsFalseBecauseProtocolsArentEqual() {
         var lhs = RuleConfiguration()
         try? lhs.apply(configuration: [Self.protocol1: ["success": "error"]])
 
         var rhs = RuleConfiguration()
         try? rhs.apply(configuration: [Self.protocol2: ["success": "error", "error": "warning"]])
 
-        XCTAssertNotEqual(lhs, rhs)
+        #expect(lhs != rhs)
     }
 
-    func testEqualsReturnsFalseBecauseSeverityIsntEqual() {
+    @Test
+    func equalsReturnsFalseBecauseSeverityIsntEqual() {
         var lhs = RuleConfiguration()
         try? lhs.apply(configuration: [Self.protocol1: ["success": "error", "error": "error"]])
 
         var rhs = RuleConfiguration()
         try? rhs.apply(configuration: [Self.protocol1: ["success": "warning", "error": "error"]])
 
-        XCTAssertNotEqual(lhs, rhs)
+        #expect(lhs != rhs)
     }
 }

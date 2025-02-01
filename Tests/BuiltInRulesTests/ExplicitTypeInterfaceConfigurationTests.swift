@@ -1,16 +1,20 @@
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
-import XCTest
 
-final class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
-    func testDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitTypeInterfaceConfigurationTests {
+    @Test
+    func defaultConfiguration() {
         let config = ExplicitTypeInterfaceConfiguration()
-        XCTAssertEqual(config.severityConfiguration.severity, .warning)
-        XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static, .local]))
+        #expect(config.severityConfiguration.severity == .warning)
+        #expect(config.allowedKinds == Set([.instance, .class, .static, .local]))
     }
 
-    func testApplyingCustomConfiguration() throws {
+    @Test
+    func applyingCustomConfiguration() throws {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(
             configuration: [
@@ -19,42 +23,46 @@ final class ExplicitTypeInterfaceConfigurationTests: SwiftLintTestCase {
                 "allow_redundancy": true,
             ] as [String: any Sendable]
         )
-        XCTAssertEqual(config.severityConfiguration.severity, .error)
-        XCTAssertEqual(config.allowedKinds, Set([.instance, .class, .static]))
-        XCTAssertTrue(config.allowRedundancy)
+        #expect(config.severityConfiguration.severity == .error)
+        #expect(config.allowedKinds == Set([.instance, .class, .static]))
+        #expect(config.allowRedundancy)
     }
 
-    func testInvalidKeyInCustomConfiguration() async throws {
+    @Test
+    func invalidKeyInCustomConfiguration() async throws {
         let console = try await Issue.captureConsole {
             var config = ExplicitTypeInterfaceConfiguration()
             try config.apply(configuration: ["invalidKey": "error"])
         }
-        XCTAssertEqual(
-            console,
-            "warning: Configuration for 'explicit_type_interface' rule contains the invalid key(s) 'invalidKey'."
+        #expect(
+            console
+                == "warning: Configuration for 'explicit_type_interface' rule contains the invalid key(s) 'invalidKey'."
         )
     }
 
-    func testInvalidTypeOfCustomConfiguration() {
+    @Test
+    func invalidTypeOfCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
         checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.identifier)) {
             try config.apply(configuration: "invalidKey")
         }
     }
 
-    func testInvalidTypeOfValueInCustomConfiguration() {
+    @Test
+    func invalidTypeOfValueInCustomConfiguration() {
         var config = ExplicitTypeInterfaceConfiguration()
         checkError(Issue.invalidConfiguration(ruleID: ExplicitTypeInterfaceRule.identifier)) {
             try config.apply(configuration: ["severity": "foo"])
         }
     }
 
-    func testConsoleDescription() throws {
+    @Test
+    func consoleDescription() throws {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(configuration: ["excluded": ["class", "instance"]])
-        XCTAssertEqual(
-            RuleConfigurationDescription.from(configuration: config).oneLiner(),
-            "severity: warning; excluded: [class, instance]; allow_redundancy: false"
+        #expect(
+            RuleConfigurationDescription.from(configuration: config).oneLiner()
+                == "severity: warning; excluded: [class, instance]; allow_redundancy: false"
         )
     }
 }

@@ -1,14 +1,16 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
+
+@testable import SwiftLintBuiltInRules
 
 // swiftlint:disable file_length
 
 private let detectingTypes = ["actor", "class", "struct", "enum"]
 
-// swiftlint:disable:next type_body_length
-final class NestingRuleTests: SwiftLintTestCase {
-    // swiftlint:disable:next function_body_length
-    func testNestingWithAlwaysAllowOneTypeInFunctions() {
+@Suite(.rulesRegistered)
+struct NestingRuleTests { // swiftlint:disable:this type_body_length
+    @Test
+    func nestingWithAlwaysAllowOneTypeInFunctions() { // swiftlint:disable:this function_body_length
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
@@ -212,8 +214,8 @@ final class NestingRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["always_allow_one_type_in_functions": true])
     }
 
-    // swiftlint:disable:next function_body_length
-    func testNestingWithoutCheckNestingInClosuresAndStatements() {
+    @Test
+    func nestingWithoutCheckNestingInClosuresAndStatements() { // swiftlint:disable:this function_body_length
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         // swiftlint:disable:next closure_body_length
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
@@ -511,7 +513,8 @@ final class NestingRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
     }
 
-    func testNestingWithoutTypealiasAndAssociatedtype() {
+    @Test
+    func nestingWithoutTypealiasAndAssociatedtype() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [

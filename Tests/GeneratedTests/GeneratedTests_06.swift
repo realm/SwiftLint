@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NimbleOperatorRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)
     }
 }
 
-final class NoEmptyBlockRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoEmptyBlockRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NoEmptyBlockRule.description)
     }
 }
 
-final class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoExtensionAccessModifierRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 }
 
-final class NoFallthroughOnlyRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoFallthroughOnlyRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NoFallthroughOnlyRule.description)
     }
 }
 
-final class NoGroupingExtensionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoGroupingExtensionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NoGroupingExtensionRule.description)
     }
 }
 
-final class NoMagicNumbersRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoMagicNumbersRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NoMagicNumbersRule.description)
     }
 }
 
-final class NoSpaceInMethodCallRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NoSpaceInMethodCallRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NoSpaceInMethodCallRule.description)
     }
 }
 
-final class NonOptionalStringDataConversionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NonOptionalStringDataConversionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NonOptionalStringDataConversionRule.description)
     }
 }
 
-final class NonOverridableClassDeclarationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NonOverridableClassDeclarationRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NonOverridableClassDeclarationRule.description)
     }
 }
 
-final class NotificationCenterDetachmentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NotificationCenterDetachmentRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }
 }
 
-final class NumberSeparatorRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct NumberSeparatorRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(NumberSeparatorRule.description)
     }
 }
 
-final class ObjectLiteralRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ObjectLiteralRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ObjectLiteralRule.description)
     }
 }
 
-final class OneDeclarationPerFileRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OneDeclarationPerFileRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OneDeclarationPerFileRule.description)
     }
 }
 
-final class OpeningBraceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OpeningBraceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OpeningBraceRule.description)
     }
 }
 
-final class OperatorUsageWhitespaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OperatorUsageWhitespaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 }
 
-final class OptionalDataStringConversionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OptionalDataStringConversionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OptionalDataStringConversionRule.description)
     }
 }
 
-final class OptionalEnumCaseMatchingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OptionalEnumCaseMatchingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OptionalEnumCaseMatchingRule.description)
     }
 }
 
-final class OrphanedDocCommentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OrphanedDocCommentRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OrphanedDocCommentRule.description)
     }
 }
 
-final class OverriddenSuperCallRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OverriddenSuperCallRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OverriddenSuperCallRule.description)
     }
 }
 
-final class OverrideInExtensionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct OverrideInExtensionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(OverrideInExtensionRule.description)
     }
 }
 
-final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PatternMatchingKeywordsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PatternMatchingKeywordsRule.description)
     }
 }
 
-final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PeriodSpacingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PeriodSpacingRule.description)
     }
 }
 
-final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferConditionListRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferConditionListRule.description)
     }
 }
 
-final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferKeyPathRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
     }
 }
 
-final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferNimbleRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
     }
 }

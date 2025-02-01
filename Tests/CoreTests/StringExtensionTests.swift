@@ -1,48 +1,52 @@
-import TestHelpers
-import XCTest
+import Testing
 
-final class StringExtensionTests: SwiftLintTestCase {
-    func testRelativePathExpression() {
-        XCTAssertEqual("Folder/Test", "Root/Folder/Test".path(relativeTo: "Root"))
-        XCTAssertEqual("Test", "Root/Folder/Test".path(relativeTo: "Root/Folder"))
-        XCTAssertEqual("", "Root/Folder/Test".path(relativeTo: "Root/Folder/Test"))
-        XCTAssertEqual("../Test", "Root/Folder/Test".path(relativeTo: "Root/Folder/SubFolder"))
-        XCTAssertEqual("../..", "Root".path(relativeTo: "Root/Folder/SubFolder"))
-        XCTAssertEqual("../../OtherFolder/Test", "Root/OtherFolder/Test".path(relativeTo: "Root/Folder/SubFolder"))
-        XCTAssertEqual("../MyFolder123", "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder"))
-        XCTAssertEqual("../MyFolder123", "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder/"))
-        XCTAssertEqual("Test", "Root////Folder///Test/".path(relativeTo: "Root//Folder////"))
-        XCTAssertEqual("Root/Folder/Test", "Root/Folder/Test/".path(relativeTo: ""))
+@Suite
+struct StringExtensionTests {
+    @Test
+    func relativePathExpression() {
+        #expect("Folder/Test" == "Root/Folder/Test".path(relativeTo: "Root"))
+        #expect("Test" == "Root/Folder/Test".path(relativeTo: "Root/Folder"))
+        #expect("" == "Root/Folder/Test".path(relativeTo: "Root/Folder/Test"))
+        #expect("../Test" == "Root/Folder/Test".path(relativeTo: "Root/Folder/SubFolder"))
+        #expect("../.." == "Root".path(relativeTo: "Root/Folder/SubFolder"))
+        #expect("../../OtherFolder/Test" == "Root/OtherFolder/Test".path(relativeTo: "Root/Folder/SubFolder"))
+        #expect("../MyFolder123" == "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder"))
+        #expect("../MyFolder123" == "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder/"))
+        #expect("Test" == "Root////Folder///Test/".path(relativeTo: "Root//Folder////"))
+        #expect("Root/Folder/Test" == "Root/Folder/Test/".path(relativeTo: ""))
     }
 
-    func testIndent() {
-        XCTAssertEqual("string".indent(by: 3), "   string")
-        XCTAssertEqual(" string".indent(by: 2), "   string")
-        XCTAssertEqual("""
+    @Test
+    func indent() {
+        #expect("string".indent(by: 3) == "   string")
+        #expect(" string".indent(by: 2) == "   string")
+        #expect(
+            """
             1
             2
             3
-            """.indent(by: 2), """
-              1
-              2
-              3
-            """
+            """.indent(by: 2) == """
+                  1
+                  2
+                  3
+                """
         )
     }
 
-    func testCharacterPosition() {
-        XCTAssertNil("string".characterPosition(of: -1))
-        XCTAssertEqual("string".characterPosition(of: 0), 0)
-        XCTAssertEqual("string".characterPosition(of: 1), 1)
-        XCTAssertNil("string".characterPosition(of: 6))
-        XCTAssertNil("string".characterPosition(of: 7))
+    @Test
+    func characterPosition() {
+        #expect("string".characterPosition(of: -1) == nil)
+        #expect("string".characterPosition(of: 0) == 0)
+        #expect("string".characterPosition(of: 1) == 1)
+        #expect("string".characterPosition(of: 6) == nil)
+        #expect("string".characterPosition(of: 7) == nil)
 
-        XCTAssertEqual("s🤵🏼‍♀️s".characterPosition(of: 0), 0)
-        XCTAssertEqual("s🤵🏼‍♀️s".characterPosition(of: 1), 1)
+        #expect("s🤵🏼‍♀️s".characterPosition(of: 0) == 0)
+        #expect("s🤵🏼‍♀️s".characterPosition(of: 1) == 1)
         for bytes in 2...17 {
-            XCTAssertNil("s🤵🏼‍♀️s".characterPosition(of: bytes))
+            #expect("s🤵🏼‍♀️s".characterPosition(of: bytes) == nil)
         }
-        XCTAssertEqual("s🤵🏼‍♀️s".characterPosition(of: 18), 2)
-        XCTAssertNil("s🤵🏼‍♀️s".characterPosition(of: 19))
+        #expect("s🤵🏼‍♀️s".characterPosition(of: 18) == 2)
+        #expect("s🤵🏼‍♀️s".characterPosition(of: 19) == nil)
     }
 }

@@ -1,13 +1,12 @@
 import SwiftLintFramework
-import TestHelpers
-import XCTest
+import Testing
 
-// swiftlint:disable:next balanced_xctest_lifecycle
-final class EmptyFileTests: SwiftLintTestCase {
-    var collectedLinter: CollectedLinter! // swiftlint:disable:this implicitly_unwrapped_optional
-    var ruleStorage: RuleStorage! // swiftlint:disable:this implicitly_unwrapped_optional
+@Suite
+struct EmptyFileTests {
+    var collectedLinter: CollectedLinter!  // swiftlint:disable:this implicitly_unwrapped_optional
+    var ruleStorage: RuleStorage!  // swiftlint:disable:this implicitly_unwrapped_optional
 
-    override func setUpWithError() throws {
+    init() throws {
         let ruleList = RuleList(rules: RuleMock<DontLintEmptyFiles>.self, RuleMock<LintEmptyFiles>.self)
         let configuration = try Configuration(dict: [:], ruleList: ruleList)
         let file = SwiftLintFile(contents: "")
@@ -16,15 +15,17 @@ final class EmptyFileTests: SwiftLintTestCase {
         collectedLinter = linter.collect(into: ruleStorage)
     }
 
-    func testShouldLintEmptyFileRespectedDuringLint() throws {
+    @Test
+    func shouldLintEmptyFileRespectedDuringLint() throws {
         let styleViolations = collectedLinter.styleViolations(using: ruleStorage)
-        XCTAssertEqual(styleViolations.count, 1)
-        XCTAssertEqual(styleViolations.first?.ruleIdentifier, "rule_mock<LintEmptyFiles>")
+        #expect(styleViolations.count == 1)
+        #expect(styleViolations.first?.ruleIdentifier == "rule_mock<LintEmptyFiles>")
     }
 
-    func testShouldLintEmptyFileRespectedDuringCorrect() throws {
+    @Test
+    func shouldLintEmptyFileRespectedDuringCorrect() throws {
         let corrections = collectedLinter.correct(using: ruleStorage)
-        XCTAssertEqual(corrections, ["rule_mock<LintEmptyFiles>": 1])
+        #expect(corrections == ["rule_mock<LintEmptyFiles>": 1])
     }
 }
 
@@ -44,11 +45,12 @@ private struct RuleMock<ShouldLintEmptyFiles: ShouldLintEmptyFilesProtocol>: Cor
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static var description: RuleDescription {
-        RuleDescription(identifier: "rule_mock<\(ShouldLintEmptyFiles.self)>",
-                        name: "",
-                        description: "",
-                        kind: .style,
-                        deprecatedAliases: ["mock"])
+        RuleDescription(
+            identifier: "rule_mock<\(ShouldLintEmptyFiles.self)>",
+            name: "",
+            description: "",
+            kind: .style,
+            deprecatedAliases: ["mock"])
     }
 
     var shouldLintEmptyFiles: Bool {

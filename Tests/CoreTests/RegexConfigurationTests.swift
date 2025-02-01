@@ -1,25 +1,29 @@
-@testable import SwiftLintCore
+import SwiftLintCore
 import TestHelpers
-import XCTest
+import Testing
 
-final class RegexConfigurationTests: SwiftLintTestCase {
-    func testShouldValidateIsTrueByDefault() {
+@Suite
+struct RegexConfigurationTests {
+    @Test
+    func shouldValidateIsTrueByDefault() {
         let config = RegexConfiguration<RuleMock>(identifier: "example")
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        #expect(config.shouldValidate(filePath: "App/file.swift"))
     }
 
-    func testShouldValidateWithSingleExluded() throws {
+    @Test
+    func shouldValidateWithSingleExluded() throws {
         var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": "Tests/.*\\.swift",
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift"))
+        #expect(config.shouldValidate(filePath: "App/file.swift"))
     }
 
-    func testShouldValidateWithArrayExluded() throws {
+    @Test
+    func shouldValidateWithArrayExluded() throws {
         var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
@@ -29,24 +33,26 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift"))
+        #expect(!config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
+        #expect(config.shouldValidate(filePath: "App/file.swift"))
     }
 
-    func testShouldValidateWithSingleIncluded() throws {
+    @Test
+    func shouldValidateWithSingleIncluded() throws {
         var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": "App/.*\\.swift",
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift"))
+        #expect(!config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
+        #expect(config.shouldValidate(filePath: "App/file.swift"))
     }
 
-    func testShouldValidateWithArrayIncluded() throws {
+    @Test
+    func shouldValidateWithArrayIncluded() throws {
         var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
@@ -56,12 +62,13 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift"))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift"))
+        #expect(config.shouldValidate(filePath: "App/file.swift"))
+        #expect(config.shouldValidate(filePath: "MyFramework/file.swift"))
     }
 
-    func testShouldValidateWithIncludedAndExcluded() throws {
+    @Test
+    func shouldValidateWithIncludedAndExcluded() throws {
         var config = RegexConfiguration<RuleMock>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
@@ -75,11 +82,11 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift"))
+        #expect(config.shouldValidate(filePath: "App/file.swift"))
+        #expect(config.shouldValidate(filePath: "MyFramework/file.swift"))
 
-        XCTAssertFalse(config.shouldValidate(filePath: "App/Fixtures/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
+        #expect(!config.shouldValidate(filePath: "App/Fixtures/file.swift"))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift"))
+        #expect(!config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
     }
 }

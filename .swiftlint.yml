@@ -73,6 +73,7 @@ file_name:
     - RuleConfigurationMacros.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
+    - Traits.swift
   excluded_paths:
     - Tests/GeneratedTests/GeneratedTests_\d\d\.swift
     - Tests/FileSystemAccessTests/.+\.swift

@@ -1,9 +1,8 @@
 import Foundation
 import SourceKittenFramework
-import SwiftSyntax
-import XCTest
-
 import SwiftLintFramework
+import SwiftSyntax
+import Testing
 
 #if os(Windows)
 private struct PlatformInfo {
@@ -261,30 +260,29 @@ private extension Configuration {
         let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
         let linter = collector.collect(into: storage)
         let corrections = linter.correct(using: storage)
-        XCTAssertGreaterThanOrEqual(
-            corrections.count,
-            before.code != expected.code ? 1 : 0,
-            #function + ".expectedLocationsEmpty",
-            file: before.file,
-            line: before.line
+        #expect(
+            corrections.count >= (before.code != expected.code ? 1 : 0),
+            "Expected at least one correction to be applied when before and expected code differs",
+            sourceLocation: before.sourceLocation
         )
-        XCTAssertEqual(
-            file.contents,
-            expected.code,
-            #function + ".file contents",
-            file: before.file, line: before.line)
+        #expect(
+            file.contents == expected.code,
+            "Expected fixed code to match the suggested correction",
+            sourceLocation: before.sourceLocation
+        )
         let path = file.path!
         do {
             let corrected = try String(contentsOf: path, encoding: .utf8)
-            XCTAssertEqual(
-                corrected,
-                expected.code,
-                #function + ".corrected file equals expected",
-                file: before.file, line: before.line)
+            #expect(
+                corrected == expected.code,
+                "Expected content of fixed file to match the suggested correction",
+                sourceLocation: before.sourceLocation
+            )
         } catch {
-            XCTFail(
-                "couldn't read file at path '\(path)': \(error)",
-                file: before.file, line: before.line)
+            Testing.Issue.record(
+                Comment(rawValue: "Couldn't read file at path '\(path)': \(error)"),
+                sourceLocation: before.sourceLocation
+            )
         }
     }
 }
@@ -351,275 +349,314 @@ private func addShebang(_ example: Example) -> Example {
     example.with(code: "#!/usr/bin/env swift\n\(example.code)")
 }
 
-public extension XCTestCase {
-    var isRunningWithBazel: Bool { FileManager.default.currentDirectoryPath.contains("bazel-out") }
+public var isRunningWithBazel: Bool { FileManager.default.currentDirectoryPath.contains("bazel-out") }
 
-    func verifyRule(_ ruleDescription: RuleDescription,
-                    ruleConfiguration: Any? = nil,
-                    commentDoesntViolate: Bool = true,
-                    stringDoesntViolate: Bool = true,
-                    skipCommentTests: Bool = false,
-                    skipStringTests: Bool = false,
-                    skipDisableCommandTests: Bool = false,
-                    testMultiByteOffsets: Bool = true,
-                    testShebang: Bool = true,
-                    file: StaticString = #filePath,
-                    line: UInt = #line) {
-        guard ruleDescription.minSwiftVersion <= .current else {
-            return
+public func verifyCorrections(_ ruleDescription: RuleDescription,
+                              config: Configuration,
+                              disableCommands: [String],
+                              testMultiByteOffsets: Bool,
+                              parserDiagnosticsDisabledForTests: Bool = true) {
+    let ruleDescription = ruleDescription.focused()
+    SwiftLintCore.$parserDiagnosticsDisabledForTests.withValue(parserDiagnosticsDisabledForTests) {
+        // corrections
+        ruleDescription.corrections.forEach {
+            testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
+        }
+        // make sure strings that don't trigger aren't corrected
+        ruleDescription.nonTriggeringExamples.forEach {
+            testCorrection(($0, $0), configuration: config, testMultiByteOffsets: testMultiByteOffsets)
         }
 
-        guard let config = makeConfig(
-                ruleConfiguration,
-                ruleDescription.identifier,
-                skipDisableCommandTests: skipDisableCommandTests) else {
-            XCTFail("Failed to create configuration", file: (file), line: line)
-            return
+        // "disable" commands do not correct
+        ruleDescription.corrections.forEach { before, _ in
+            for command in disableCommands {
+                let beforeDisabled = command + before.code
+                let expectedCleaned = before.with(code: cleanedContentsAndMarkerOffsets(from: beforeDisabled).0)
+                config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+            }
         }
+    }
+}
 
-        let disableCommands: [String]
-        if skipDisableCommandTests {
-            disableCommands = []
-        } else {
-            disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+public func verifyRule(_ ruleDescription: RuleDescription,
+                       ruleConfiguration: Any? = nil,
+                       commentDoesntViolate: Bool = true,
+                       stringDoesntViolate: Bool = true,
+                       skipCommentTests: Bool = false,
+                       skipStringTests: Bool = false,
+                       skipDisableCommandTests: Bool = false,
+                       testMultiByteOffsets: Bool = true,
+                       testShebang: Bool = true,
+                       fileID: String = #fileID,
+                       file: StaticString = #filePath,
+                       line: UInt = #line) {
+    guard ruleDescription.minSwiftVersion <= .current else {
+        return
+    }
+
+    guard let config = makeConfig(
+            ruleConfiguration,
+            ruleDescription.identifier,
+            skipDisableCommandTests: skipDisableCommandTests) else {
+        Testing.Issue.record(
+            Comment(rawValue: "Failed to create configuration"),
+            sourceLocation: SourceLocation(fileID: fileID, filePath: "\(file)", line: Int(line), column: 1)
+        )
+        return
+    }
+
+    let disableCommands: [String]
+    if skipDisableCommandTests {
+        disableCommands = []
+    } else {
+        disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+    }
+
+    verifyLint(
+        ruleDescription,
+        config: config,
+        commentDoesntViolate: commentDoesntViolate,
+        stringDoesntViolate: stringDoesntViolate,
+        skipCommentTests: skipCommentTests,
+        skipStringTests: skipStringTests,
+        disableCommands: disableCommands,
+        testMultiByteOffsets: testMultiByteOffsets,
+        testShebang: testShebang
+    )
+    verifyCorrections(
+        ruleDescription,
+        config: config,
+        disableCommands: disableCommands,
+        testMultiByteOffsets: testMultiByteOffsets
+    )
+}
+
+// swiftlint:disable:next function_body_length cyclomatic_complexity
+func verifyLint(_ ruleDescription: RuleDescription,
+                config: Configuration,
+                commentDoesntViolate: Bool = true,
+                stringDoesntViolate: Bool = true,
+                skipCommentTests: Bool = false,
+                skipStringTests: Bool = false,
+                disableCommands: [String] = [],
+                testMultiByteOffsets: Bool = true,
+                testShebang: Bool = true) {
+    func verify(triggers: [Example], nonTriggers: [Example]) {
+        verifyExamples(
+            triggers: triggers,
+            nonTriggers: nonTriggers,
+            configuration: config,
+            requiresFileOnDisk: ruleDescription.requiresFileOnDisk
+        )
+    }
+    func makeViolations(_ example: Example) -> [StyleViolation] {
+        violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+    }
+
+    let focusedRuleDescription = ruleDescription.focused()
+    let (triggers, nonTriggers) = (
+        focusedRuleDescription.triggeringExamples,
+        focusedRuleDescription.nonTriggeringExamples
+    )
+    verify(triggers: triggers, nonTriggers: nonTriggers)
+
+    if testMultiByteOffsets {
+        verify(
+            triggers: triggers.filter(\.testMultiByteOffsets).map(addEmoji),
+            nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addEmoji)
+        )
+    }
+
+    if testShebang {
+        verify(
+            triggers: triggers.filter(\.testMultiByteOffsets).map(addShebang),
+            nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addShebang)
+        )
+    }
+
+    // Comment doesn't violate
+    if !skipCommentTests {
+        for example in triggers.filter(\.testWrappingInComment) {
+            let wrapped = example.with(code: "/*\n  " + example.code + "\n */")
+            let violations = makeViolations(wrapped)
+            if commentDoesntViolate {
+                #expect(
+                    violations.isEmpty,
+                    "Expected no violations when code is nested inside a comment",
+                    sourceLocation: example.sourceLocation
+                )
+            } else {
+                #expect(
+                    violations.count == 1,
+                    "Expected exaclty one violation when code is nested inside a comment",
+                    sourceLocation: example.sourceLocation
+                )
+            }
         }
+    }
 
-        verifyLint(
-            ruleDescription,
+    // String doesn't violate
+    if !skipStringTests {
+        for example in triggers.filter(\.testWrappingInString) {
+            let wrapped = example.with(code: example.code.toStringLiteral())
+            let violations = makeViolations(wrapped)
+            if stringDoesntViolate {
+                #expect(
+                    violations.isEmpty,
+                    "Expected no violations when code is nested inside a string literal",
+                    sourceLocation: example.sourceLocation
+                )
+            } else {
+                #expect(
+                    violations.count == 1,
+                    "Expected exaclty one violation when code is nested inside a string literal",
+                    sourceLocation: example.sourceLocation
+                )
+            }
+        }
+    }
+
+    // Disabled rule doesn't violate and disable command isn't superfluous
+    for command in disableCommands {
+        let disabledTriggers = triggers
+            .filter(\.testDisableCommand)
+            .map { $0.with(code: command + $0.code) }
+
+        for trigger in disabledTriggers {
+            let violationsPartitionedByType = makeViolations(trigger)
+                .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.identifier }
+
+            #expect(
+                violationsPartitionedByType.first.isEmpty,
+                "Violation(s) still triggered although rule was disabled",
+                sourceLocation: trigger.sourceLocation
+            )
+            #expect(
+                violationsPartitionedByType.second.isEmpty,
+                "Disable command was superfluous since no violations(s) triggered",
+                sourceLocation: trigger.sourceLocation
+            )
+        }
+    }
+
+    // Severity can be changed
+    let ruleType = RuleRegistry.shared.rule(forID: ruleDescription.identifier)
+    if ruleType?.init().configuration is (any SeverityBasedRuleConfiguration),
+        let example = triggers.first(where: { $0.configuration == nil }) {
+        let withWarning = Example(example.code, configuration: ["severity": "warning"])
+        #expect(
+            violations(withWarning, config: config).allSatisfy { $0.severity == .warning },
+            "Violation severity cannot be changed to warning",
+            sourceLocation: example.sourceLocation
+        )
+
+        let withError = Example(example.code, configuration: ["severity": "error"])
+        #expect(
+            violations(withError, config: config).allSatisfy { $0.severity == .error },
+            "Violation severity cannot be changed to error",
+            sourceLocation: example.sourceLocation
+        )
+    }
+}
+
+// swiftlint:disable:next function_body_length
+private func verifyExamples(triggers: [Example],
+                            nonTriggers: [Example],
+                            configuration config: Configuration,
+                            requiresFileOnDisk: Bool) {
+    // Non-triggering examples don't violate
+    for nonTrigger in nonTriggers {
+        let unexpectedViolations = violations(
+            nonTrigger,
             config: config,
-            commentDoesntViolate: commentDoesntViolate,
-            stringDoesntViolate: stringDoesntViolate,
-            skipCommentTests: skipCommentTests,
-            skipStringTests: skipStringTests,
-            disableCommands: disableCommands,
-            testMultiByteOffsets: testMultiByteOffsets,
-            testShebang: testShebang,
-            file: file,
-            line: line
+            requiresFileOnDisk: requiresFileOnDisk
         )
-        verifyCorrections(
-            ruleDescription,
+        if unexpectedViolations.isEmpty { continue }
+        let nonTriggerWithViolations = render(violations: unexpectedViolations, in: nonTrigger.code)
+        Testing.Issue.record(
+            "nonTriggeringExample violated: \n\(nonTriggerWithViolations)",
+            sourceLocation: nonTrigger.sourceLocation
+        )
+    }
+
+    // Triggering examples violate
+    for trigger in triggers {
+        let triggerViolations = violations(
+            trigger,
             config: config,
-            disableCommands: disableCommands,
-            testMultiByteOffsets: testMultiByteOffsets
+            requiresFileOnDisk: requiresFileOnDisk
         )
-    }
 
-    // swiftlint:disable:next function_body_length
-    func verifyLint(_ ruleDescription: RuleDescription,
-                    config: Configuration,
-                    commentDoesntViolate: Bool = true,
-                    stringDoesntViolate: Bool = true,
-                    skipCommentTests: Bool = false,
-                    skipStringTests: Bool = false,
-                    disableCommands: [String] = [],
-                    testMultiByteOffsets: Bool = true,
-                    testShebang: Bool = true,
-                    file: StaticString = #filePath,
-                    line: UInt = #line) {
-        func verify(triggers: [Example], nonTriggers: [Example]) {
-            verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config,
-                           requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+        // Triggering examples with violation markers violate at the marker's location
+        let (cleanTrigger, markerOffsets) = cleanedContentsAndMarkerOffsets(from: trigger.code)
+        if markerOffsets.isEmpty {
+            if triggerViolations.isEmpty {
+                Testing.Issue.record(
+                    "Triggering example did not violate in: \n```\n\(trigger.code)\n```",
+                    sourceLocation: trigger.sourceLocation
+                )
+            }
+            continue
         }
-        func makeViolations(_ example: Example) -> [StyleViolation] {
-            violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+        let file = SwiftLintFile.testFile(withContents: cleanTrigger)
+        let expectedLocations = markerOffsets.map { Location(file: file, position: $0) }
+
+        // Assert violations on unexpected location
+        let violationsAtUnexpectedLocation = triggerViolations
+            .filter { !expectedLocations.contains($0.location) }
+        if !violationsAtUnexpectedLocation.isEmpty {
+            Testing.Issue.record(
+                """
+                Triggering example violated at unexpected location \
+                '\(render(violations: violationsAtUnexpectedLocation, in: cleanTrigger))'
+                """,
+                sourceLocation: trigger.sourceLocation
+            )
         }
 
-        let focusedRuleDescription = ruleDescription.focused()
-        let (triggers, nonTriggers) = (
-            focusedRuleDescription.triggeringExamples,
-            focusedRuleDescription.nonTriggeringExamples
+        // Assert locations missing violation
+        let violatedLocations = triggerViolations.map(\.location)
+        let locationsWithoutViolation = expectedLocations
+            .filter { !violatedLocations.contains($0) }
+        if !locationsWithoutViolation.isEmpty {
+            Testing.Issue.record(
+                """
+                Triggering example did not violate at expected location \
+                '\(render(locations: locationsWithoutViolation, in: cleanTrigger))'
+                """,
+                sourceLocation: trigger.sourceLocation
+            )
+        }
+
+        #expect(
+            triggerViolations.count == expectedLocations.count,
+            sourceLocation: trigger.sourceLocation
         )
-        verify(triggers: triggers, nonTriggers: nonTriggers)
-
-        if testMultiByteOffsets {
-            verify(triggers: triggers.filter(\.testMultiByteOffsets).map(addEmoji),
-                   nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addEmoji))
-        }
-
-        if testShebang {
-            verify(triggers: triggers.filter(\.testMultiByteOffsets).map(addShebang),
-                   nonTriggers: nonTriggers.filter(\.testMultiByteOffsets).map(addShebang))
-        }
-
-        // Comment doesn't violate
-        if !skipCommentTests {
-            let triggersToCheck = triggers.filter(\.testWrappingInComment)
-            XCTAssertEqual(
-                triggersToCheck.flatMap { makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }.count,
-                commentDoesntViolate ? 0 : triggersToCheck.count,
-                "Violation(s) still triggered when code was nested inside a comment",
-                file: (file), line: line
-            )
-        }
-
-        // String doesn't violate
-        if !skipStringTests {
-            let triggersToCheck = triggers.filter(\.testWrappingInString)
-            XCTAssertEqual(
-                triggersToCheck.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
-                stringDoesntViolate ? 0 : triggersToCheck.count,
-                "Violation(s) still triggered when code was nested inside a string literal",
-                file: (file), line: line
-            )
-        }
-
-        // Disabled rule doesn't violate and disable command isn't superfluous
-        for command in disableCommands {
-            let disabledTriggers = triggers
-                .filter(\.testDisableCommand)
-                .map { $0.with(code: command + $0.code) }
-
-            for trigger in disabledTriggers {
-                let violationsPartitionedByType = makeViolations(trigger)
-                    .partitioned { $0.ruleIdentifier == SuperfluousDisableCommandRule.identifier }
-
-                XCTAssert(violationsPartitionedByType.first.isEmpty,
-                          "Violation(s) still triggered although rule was disabled",
-                          file: trigger.file,
-                          line: trigger.line)
-                XCTAssert(violationsPartitionedByType.second.isEmpty,
-                          "Disable command was superfluous since no violations(s) triggered",
-                          file: trigger.file,
-                          line: trigger.line)
-            }
-        }
-
-        // Severity can be changed
-        let ruleType = RuleRegistry.shared.rule(forID: ruleDescription.identifier)
-        if ruleType?.init().configuration is (any SeverityBasedRuleConfiguration),
-           let example = triggers.first(where: { $0.configuration == nil }) {
-            let withWarning = Example(example.code, configuration: ["severity": "warning"])
-            XCTAssert(
-                violations(withWarning, config: config).allSatisfy { $0.severity == .warning },
-                "Violation severity cannot be changed to warning",
-                file: example.file,
-                line: 1
-            )
-
-            let withError = Example(example.code, configuration: ["severity": "error"])
-            XCTAssert(
-                violations(withError, config: config).allSatisfy { $0.severity == .error },
-                "Violation severity cannot be changed to error",
-                file: example.file,
-                line: 1
+        for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
+            #expect(
+                triggerViolation.location == expectedLocation,
+                "'\(trigger)' violation didn't match expected location.",
+                sourceLocation: trigger.sourceLocation
             )
         }
     }
+}
 
-    func verifyCorrections(_ ruleDescription: RuleDescription,
-                           config: Configuration,
-                           disableCommands: [String],
-                           testMultiByteOffsets: Bool,
-                           parserDiagnosticsDisabledForTests: Bool = true) {
-        let ruleDescription = ruleDescription.focused()
-
-        SwiftLintCore.$parserDiagnosticsDisabledForTests.withValue(parserDiagnosticsDisabledForTests) {
-            // corrections
-            ruleDescription.corrections.forEach {
-                testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
-            }
-            // make sure strings that don't trigger aren't corrected
-            ruleDescription.nonTriggeringExamples.forEach {
-                testCorrection(($0, $0), configuration: config, testMultiByteOffsets: testMultiByteOffsets)
-            }
-
-            // "disable" commands do not correct
-            ruleDescription.corrections.forEach { before, _ in
-                for command in disableCommands {
-                    let beforeDisabled = command + before.code
-                    let expectedCleaned = before.with(code: cleanedContentsAndMarkerOffsets(from: beforeDisabled).0)
-                    config.assertCorrection(expectedCleaned, expected: expectedCleaned)
-                }
-            }
-        }
-    }
-
-    private func verifyExamples(triggers: [Example],
-                                nonTriggers: [Example],
-                                configuration config: Configuration,
-                                requiresFileOnDisk: Bool) {
-        // Non-triggering examples don't violate
-        for nonTrigger in nonTriggers {
-            let unexpectedViolations = violations(nonTrigger, config: config,
-                                                  requiresFileOnDisk: requiresFileOnDisk)
-            if unexpectedViolations.isEmpty { continue }
-            let nonTriggerWithViolations = render(violations: unexpectedViolations, in: nonTrigger.code)
-            XCTFail(
-                "nonTriggeringExample violated: \n\(nonTriggerWithViolations)",
-                file: nonTrigger.file,
-                line: nonTrigger.line)
-        }
-
-        // Triggering examples violate
-        for trigger in triggers {
-            let triggerViolations = violations(trigger, config: config,
-                                               requiresFileOnDisk: requiresFileOnDisk)
-
-            // Triggering examples with violation markers violate at the marker's location
-            let (cleanTrigger, markerOffsets) = cleanedContentsAndMarkerOffsets(from: trigger.code)
-            if markerOffsets.isEmpty {
-                if triggerViolations.isEmpty {
-                    XCTFail(
-                        "triggeringExample did not violate: \n```\n\(trigger.code)\n```",
-                        file: trigger.file,
-                        line: trigger.line)
-                }
-                continue
-            }
-            let file = SwiftLintFile.testFile(withContents: cleanTrigger)
-
-            let expectedLocations = markerOffsets.map { Location(file: file, position: $0) }
-
-            // Assert violations on unexpected location
-            let violationsAtUnexpectedLocation = triggerViolations
-                .filter { !expectedLocations.contains($0.location) }
-            if !violationsAtUnexpectedLocation.isEmpty {
-                XCTFail("triggeringExample violated at unexpected location: \n" +
-                    "\(render(violations: violationsAtUnexpectedLocation, in: cleanTrigger))",
-                    file: trigger.file,
-                    line: trigger.line)
-            }
-
-            // Assert locations missing violation
-            let violatedLocations = triggerViolations.map(\.location)
-            let locationsWithoutViolation = expectedLocations
-                .filter { !violatedLocations.contains($0) }
-            if !locationsWithoutViolation.isEmpty {
-                XCTFail("triggeringExample did not violate at expected location: \n" +
-                    "\(render(locations: locationsWithoutViolation, in: cleanTrigger))",
-                    file: trigger.file,
-                    line: trigger.line)
-            }
-
-            XCTAssertEqual(triggerViolations.count, expectedLocations.count,
-                           file: trigger.file, line: trigger.line)
-            for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
-                XCTAssertEqual(
-                    triggerViolation.location, expectedLocation,
-                    "'\(trigger)' violation didn't match expected location.",
-                    file: trigger.file,
-                    line: trigger.line)
-            }
-        }
-    }
-
-    // file and line parameters are first so we can use trailing closure syntax with the closure
-    func checkError<T: Error & Equatable>(
-        file: StaticString = #filePath,
-        line: UInt = #line,
-        _ error: T,
-        closure: () throws -> Void) {
-        do {
-            try closure()
-            XCTFail("No error caught", file: (file), line: line)
-        } catch let rError as T {
-            if error != rError {
-                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)", file: (file), line: line)
-            }
-        } catch {
-            XCTFail("Wrong error caught", file: (file), line: line)
-        }
+// file and line parameters are first so we can use trailing closure syntax with the closure
+public func checkError<T: Error & Equatable>(sourceLocation: Testing.SourceLocation = #_sourceLocation,
+                                             _ error: T,
+                                             closure: () throws -> Void) {
+    do {
+        try closure()
+        Testing.Issue.record("No error caught", sourceLocation: sourceLocation)
+    } catch let rError as T {
+        #expect(
+            error == rError,
+            "Wrong error caught. Got \(rError) but was expecting \(error)",
+            sourceLocation: sourceLocation
+        )
+    } catch {
+        Testing.Issue.record("Wrong error caught", sourceLocation: sourceLocation)
     }
 }
 
@@ -640,7 +677,7 @@ private struct FocusedRuleDescription {
             self.corrections = corrections
 #if DISABLE_FOCUSED_EXAMPLES
             (nonTriggering + triggering + corrections.values).forEach { example in
-                XCTFail("Focused examples are disabled", file: example.file, line: example.line)
+                Testing.Issue.record("Focused examples are disabled", sourceLocation: example.sourceLocation)
             }
 #endif
         } else {
@@ -660,5 +697,16 @@ private extension RuleDescription {
 package extension [any Rule] {
     var customRules: CustomRules? {
         first(where: { $0 is CustomRules }) as? CustomRules
+    }
+}
+
+package extension Example {
+    var sourceLocation: Testing.SourceLocation {
+        SourceLocation(
+            fileID: fileID,
+            filePath: String(describing: file),
+            line: Int(line),
+            column: 1
+        )
     }
 }

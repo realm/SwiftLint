@@ -61,7 +61,7 @@ struct Glob {
                 baseDirPath = String(native[..<lastSep])
                 remainder = String(native[native.index(after: lastSep)...])
             } else {
-                baseDirPath = FileManager.default.currentDirectoryPath
+                baseDirPath = URL.cwd.path
                 remainder = String(native)
             }
         } else {

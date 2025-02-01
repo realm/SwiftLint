@@ -1,10 +1,12 @@
 @testable import SwiftLintFramework
-import XCTest
+import Testing
 
-final class LintOrAnalyzeOptionsTests: XCTestCase {
+@Suite
+struct LintOrAnalyzeOptionsTests {
     private typealias Leniency = LintOrAnalyzeOptions.Leniency
 
-    func testLeniency() {
+    @Test
+    func leniency() {
         let parameters = [
             Leniency(strict: false, lenient: false),
             Leniency(strict: true, lenient: true),
@@ -18,20 +20,20 @@ final class LintOrAnalyzeOptionsTests: XCTestCase {
                 let leniency = options.leniency(strict: configuration.strict, lenient: configuration.lenient)
                 if commandLine.strict {
                     // Command line takes precedence.
-                    XCTAssertTrue(leniency.strict)
+                    #expect(leniency.strict)
                     if !commandLine.lenient {
                         // `--strict` should disable configuration lenience.
-                        XCTAssertFalse(leniency.lenient)
+                        #expect(!leniency.lenient)
                     }
                 } else if commandLine.lenient {
                     // Command line takes precedence, and should override
                     // `strict` in the configuration.
-                    XCTAssertTrue(leniency.lenient)
-                    XCTAssertFalse(leniency.strict)
+                    #expect(leniency.lenient)
+                    #expect(!leniency.strict)
                 } else if configuration.strict {
-                    XCTAssertTrue(leniency.strict)
+                    #expect(leniency.strict)
                 } else if configuration.lenient {
-                    XCTAssertTrue(leniency.lenient)
+                    #expect(leniency.lenient)
                 }
             }
         }

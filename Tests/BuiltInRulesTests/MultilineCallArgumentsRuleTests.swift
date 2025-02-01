@@ -1,36 +1,38 @@
 @testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class MultilineCallArgumentsRuleTests: XCTestCase {
-    func testReason_singleLineMultipleArgumentsNotAllowed() throws {
+@Suite(.rulesRegistered)
+struct MultilineCallArgumentsRuleTests {
+    @Test
+    func reasonSingleLineMultipleArgumentsNotAllowed() throws {
         let violations = try validate(
             "foo(a: 1, b: 2)",
             config: ["allows_single_line": false]
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.singleLineMultipleArgumentsNotAllowed
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.singleLineMultipleArgumentsNotAllowed
         )
     }
 
-    func testReason_tooManyArgumentsOnASingleLine() throws {
+    @Test
+    func reasonTooManyArgumentsOnASingleLine() throws {
         let max = 2
         let violations = try validate(
             "foo(a: 1, b: 2, c: 3)",
             config: ["max_number_of_single_line_parameters": max]
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.tooManyArgumentsOnSingleLine(max: max)
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.tooManyArgumentsOnSingleLine(max: max)
         )
     }
 
-    func testReason_multilineEachArgumentMustStartOnItsOwnLine() throws {
+    @Test
+    func reasonMultilineEachArgumentMustStartOnItsOwnLine() throws {
         let violations = try validate("""
             foo(
                 a: 1, b: 2,
@@ -39,14 +41,14 @@ final class MultilineCallArgumentsRuleTests: XCTestCase {
             """
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.eachArgumentMustStartOnOwnLine
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.eachArgumentMustStartOnOwnLine
         )
     }
 
-    func testReason_multilineEachArgumentMustStartOnItsOwnLine_detectsSameLineAfterNewline() throws {
+    @Test
+    func reasonMultilineEachArgumentMustStartOnItsOwnLineDetectsSameLineAfterNewline() throws {
         let violations = try validate("""
             foo(
                 a: 1,
@@ -55,14 +57,14 @@ final class MultilineCallArgumentsRuleTests: XCTestCase {
             """
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.eachArgumentMustStartOnOwnLine
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.eachArgumentMustStartOnOwnLine
         )
     }
 
-    func testReason_multilineRequiresNewlineAfterCommaInSplitLayout() throws {
+    @Test
+    func reasonMultilineRequiresNewlineAfterCommaInSplitLayout() throws {
         let violations = try validate("""
             foo(
                 a: (
@@ -73,14 +75,14 @@ final class MultilineCallArgumentsRuleTests: XCTestCase {
             """
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.newlineRequiredAfterCommaInMultilineCall
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.newlineRequiredAfterCommaInMultilineCall
         )
     }
 
-    func testReason_tooManyArgumentsOnASingleLine_worksWithTrailingClosure() throws {
+    @Test
+    func reasonTooManyArgumentsOnASingleLineWorksWithTrailingClosure() throws {
         let max = 1
         let violations = try validate("""
             foo(a: 1, b: 2) { _ in
@@ -90,14 +92,14 @@ final class MultilineCallArgumentsRuleTests: XCTestCase {
             config: ["max_number_of_single_line_parameters": max]
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.tooManyArgumentsOnSingleLine(max: max)
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.tooManyArgumentsOnSingleLine(max: max)
         )
     }
 
-    func testReason_singleLineNotAllowed_hasPriorityOverMaxNumberOfSingleLineParameters() throws {
+    @Test
+    func reasonSingleLineNotAllowedHasPriorityOverMaxNumberOfSingleLineParameters() throws {
         let violations = try validate(
             "foo(a: 1, b: 2, c: 3)",
             config: [
@@ -106,10 +108,9 @@ final class MultilineCallArgumentsRuleTests: XCTestCase {
             ]
         )
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(
-            violations.first?.reason,
-            MultilineCallArgumentsRule.Reason.singleLineMultipleArgumentsNotAllowed
+        #expect(violations.count == 1)
+        #expect(
+            violations.first?.reason == MultilineCallArgumentsRule.Reason.singleLineMultipleArgumentsNotAllowed
         )
     }
 

@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class UnusedOptionalBindingRuleTests: SwiftLintTestCase {
-    func testDefaultConfiguration() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct UnusedOptionalBindingRuleTests {
+    @Test
+    func defaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [
             Example("guard let _ = try? alwaysThrows() else { return }")
@@ -12,7 +16,8 @@ final class UnusedOptionalBindingRuleTests: SwiftLintTestCase {
         verifyRule(description)
     }
 
-    func testIgnoreOptionalTryEnabled() {
+    @Test
+    func ignoreOptionalTryEnabled() {
         // Perform additional tests with the ignore_optional_try settings enabled.
         let baseDescription = UnusedOptionalBindingRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [

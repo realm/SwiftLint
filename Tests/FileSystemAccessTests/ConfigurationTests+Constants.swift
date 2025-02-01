@@ -5,7 +5,7 @@ import TestHelpers
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable identifier_name
 
-enum Mock {
+enum Constants {
     // MARK: Test Resources Path
     static let testResourcesPath = TestResources.path()
 

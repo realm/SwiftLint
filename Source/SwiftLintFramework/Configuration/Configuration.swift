@@ -210,8 +210,6 @@ public struct Configuration {
     /// - parameter enableAllRules:             Enable all available rules.
     /// - parameter cachePath:                  The location of the persisted cache to use whith this configuration.
     /// - parameter ignoreParentAndChildConfigs:If `true`, child and parent config references will be ignored.
-    /// - parameter mockedNetworkResults:       For testing purposes only. Instead of loading the specified urls,
-    ///                                         the mocked value will be used. Example: ["http://mock.com": "content"]
     /// - parameter useDefaultConfigOnFailure:  If this value is specified, it will override the normal behavior.
     ///                                         This is only intended for tests checking whether invalid configs fail.
     public init(
@@ -220,17 +218,8 @@ public struct Configuration {
         onlyRule: [String] = [],
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
-        mockedNetworkResults: [String: String] = [:],
         useDefaultConfigOnFailure: Bool? = nil // swiftlint:disable:this discouraged_optional_boolean
     ) {
-        // Handle mocked network results if needed
-        Self.FileGraph.FilePath.mockedNetworkResults = mockedNetworkResults
-        defer {
-            if !mockedNetworkResults.isEmpty {
-                Self.FileGraph.FilePath.deleteGitignoreAndSwiftlintCache()
-            }
-        }
-
         // Store whether there are custom configuration files; use default config file name if there are none
         let hasCustomConfigurationFiles: Bool = configurationFiles.isNotEmpty
         let configurationFiles = configurationFiles.isEmpty

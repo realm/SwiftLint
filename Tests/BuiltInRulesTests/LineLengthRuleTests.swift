@@ -1,7 +1,10 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class LineLengthRuleTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct LineLengthRuleTests {
     private static let longString = String(repeating: "a", count: 121)
 
     private let longFunctionDeclarations = [
@@ -72,56 +75,56 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     private let longBlockComment = Example("/*" + String(repeating: " ", count: 121) + "*/\n")
     private let longRealBlockComment = Example("""
         /*
-        \(LineLengthRuleTests.longString)
+        \(Self.longString)
         */
 
         """)
     private let declarationWithTrailingLongComment = Example("let foo = 1 " + String(repeating: "/", count: 121) + "\n")
     private let interpolatedString = Example("print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
-    private let plainString = Example("print(\"" + LineLengthRuleTests.longString + ")\"\n")
+    private let plainString = Example("print(\"" + Self.longString + ")\"\n")
 
     private let multilineString = Example("""
         let multilineString = \"\"\"
-        \(LineLengthRuleTests.longString)
+        \(Self.longString)
         \"\"\"
 
         """)
     private let tripleStringSingleLine = Example(
-        "let tripleString = \"\"\"\(LineLengthRuleTests.longString)\"\"\"\n"
+        "let tripleString = \"\"\"\(Self.longString)\"\"\"\n"
     )
-    private let poundStringSingleLine = Example("let poundString = #\"\(LineLengthRuleTests.longString)\"#\n")
+    private let poundStringSingleLine = Example("let poundString = #\"\(Self.longString)\"#\n")
     private let multilineStringWithExpression = Example("""
         let multilineString = \"\"\"
-        \(LineLengthRuleTests.longString)
+        \(Self.longString)
 
         \"\"\"; let a = 1
         """)
     private let multilineStringWithNewlineExpression = Example("""
         let multilineString = \"\"\"
-        \(LineLengthRuleTests.longString)
+        \(Self.longString)
 
         \"\"\"
         ; let a = 1
         """)
     private let multilineStringFail = Example("""
         let multilineString = "A" +
-        "\(LineLengthRuleTests.longString)"
+        "\(Self.longString)"
 
         """)
     private let multilineStringWithFunction = Example("""
         let multilineString = \"\"\"
-        \(LineLengthRuleTests.longString)
+        \(Self.longString)
         \"\"\".functionCall()
         """)
 
     // Regex literal examples
     // swiftlint:disable line_length
     private let regexLiteral = Example("""
-        let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^\(LineLengthRuleTests.longString)$/
+        let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^\(Self.longString)$/
 
         """)
     private let regexLiteralWithCapture = Example("""
-        let urlRegex = /^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})(\\/\(LineLengthRuleTests.longString))?$/
+        let urlRegex = /^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})(\\/\(Self.longString))?$/
 
         """)
     private let regexLiteralMultiline = Example("""
@@ -130,15 +133,17 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         """)
     // swiftlint:enable line_length
     private let regexLiteralFail = Example("""
-        let longRegexString = "\(LineLengthRuleTests.longString)"
+        let longRegexString = "\(Self.longString)"
 
         """)
 
-    func testLineLength() {
+    @Test
+    func lineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreFunctionDeclarationsEnabled() {
+    @Test
+    func lineLengthWithIgnoreFunctionDeclarationsEnabled() {
         let baseDescription = LineLengthRule.description
         let description = baseDescription.with(
             nonTriggeringExamples:
@@ -156,7 +161,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLineLengthWithIgnoreCommentsEnabled() {
+    @Test
+    func lineLengthWithIgnoreCommentsEnabled() {
         let baseDescription = LineLengthRule.description
         let triggeringExamples = longFunctionDeclarations + [declarationWithTrailingLongComment] + longMacroDeclarations
         let nonTriggeringExamples = [longComment, longBlockComment, longRealBlockComment]
@@ -173,7 +179,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLineLengthWithIgnoreURLsEnabled() {
+    @Test
+    func lineLengthWithIgnoreURLsEnabled() {
         let url = "https://github.com/realm/SwiftLint"
         let triggeringLines = [Example(String(repeating: "/", count: 121) + "\(url)\n")]
         let nonTriggeringLines = [
@@ -192,7 +199,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreInterpolatedStringsTrue() {
+    @Test
+    func lineLengthWithIgnoreInterpolatedStringsTrue() {
         let triggeringLines = [plainString]
         let nonTriggeringLines = [interpolatedString]
 
@@ -207,7 +215,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreMultilineStringsTrue() {
+    @Test
+    func lineLengthWithIgnoreMultilineStringsTrue() {
         let triggeringLines = [
             multilineStringFail,
             tripleStringSingleLine,
@@ -231,7 +240,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreInterpolatedStringsFalse() {
+    @Test
+    func lineLengthWithIgnoreInterpolatedStringsFalse() {
         let triggeringLines = [plainString, interpolatedString]
 
         let baseDescription = LineLengthRule.description
@@ -245,7 +255,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithExcludedLinesPatterns() {
+    @Test
+    func lineLengthWithExcludedLinesPatterns() {
         let nonTriggeringLines = [plainString, interpolatedString]
 
         let baseDescription = LineLengthRule.description
@@ -264,7 +275,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLineLengthWithEmptyExcludedLinesPatterns() {
+    @Test
+    func lineLengthWithEmptyExcludedLinesPatterns() {
         let triggeringLines = [plainString, interpolatedString]
 
         let baseDescription = LineLengthRule.description
@@ -283,7 +295,8 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLineLengthWithIgnoreRegexLiteralsTrue() {
+    @Test
+    func lineLengthWithIgnoreRegexLiteralsTrue() {
         let triggeringLines = [
             regexLiteralFail,
             plainString,

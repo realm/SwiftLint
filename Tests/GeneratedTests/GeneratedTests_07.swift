@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PatternMatchingKeywordsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PatternMatchingKeywordsRule.description)
     }
 }
 
-final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PeriodSpacingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PeriodSpacingRule.description)
     }
 }
 
-final class PreferAssetSymbolsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferAssetSymbolsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferAssetSymbolsRule.description)
     }
 }
 
-final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferConditionListRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferConditionListRule.description)
     }
 }
 
-final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferKeyPathRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
     }
 }
 
-final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferNimbleRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
     }
 }
 
-final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferSelfInStaticReferencesRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }
 
-final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferSelfTypeOverTypeOfSelfRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
     }
 }
 
-final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferTypeCheckingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferTypeCheckingRule.description)
     }
 }
 
-final class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PreferZeroOverExplicitInitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)
     }
 }
 
-final class PrefixedTopLevelConstantRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrefixedTopLevelConstantRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrefixedTopLevelConstantRule.description)
     }
 }
 
-final class PrivateActionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrivateActionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)
     }
 }
 
-final class PrivateOutletRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrivateOutletRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrivateOutletRule.description)
     }
 }
 
-final class PrivateOverFilePrivateRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrivateOverFilePrivateRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrivateOverFilePrivateRule.description)
     }
 }
 
-final class PrivateSubjectRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrivateSubjectRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrivateSubjectRule.description)
     }
 }
 
-final class PrivateSwiftUIStatePropertyRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrivateSwiftUIStatePropertyRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrivateSwiftUIStatePropertyRule.description)
     }
 }
 
-final class PrivateUnitTestRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct PrivateUnitTestRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(PrivateUnitTestRule.description)
     }
 }
 
-final class ProhibitedInterfaceBuilderRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ProhibitedInterfaceBuilderRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ProhibitedInterfaceBuilderRule.description)
     }
 }
 
-final class ProhibitedSuperRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ProhibitedSuperRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ProhibitedSuperRule.description)
     }
 }
 
-final class ProtocolPropertyAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ProtocolPropertyAccessorsOrderRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 }
 
-final class QuickDiscouragedCallRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct QuickDiscouragedCallRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(QuickDiscouragedCallRule.description)
     }
 }
 
-final class QuickDiscouragedFocusedTestRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct QuickDiscouragedFocusedTestRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(QuickDiscouragedFocusedTestRule.description)
     }
 }
 
-final class QuickDiscouragedPendingTestRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct QuickDiscouragedPendingTestRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(QuickDiscouragedPendingTestRule.description)
     }
 }
 
-final class RawValueForCamelCasedCodableEnumRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RawValueForCamelCasedCodableEnumRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)
     }
 }
 
-final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ReduceBooleanRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ReduceBooleanRule.description)
     }
 }

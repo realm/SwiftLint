@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class TypeNameRuleTests: SwiftLintTestCase {
-    func testTypeNameWithExcluded() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TypeNameRuleTests {
+    @Test
+    func typeNameWithExcluded() {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class apple {}"),
@@ -18,7 +22,8 @@ final class TypeNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
     }
 
-    func testTypeNameWithAllowedSymbols() {
+    @Test
+    func typeNameWithAllowedSymbols() {
         let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("class MyType$ {}"),
@@ -32,7 +37,8 @@ final class TypeNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
     }
 
-    func testTypeNameWithAllowedSymbolsAndViolation() {
+    @Test
+    func typeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = TypeNameRule.description
         let triggeringExamples = [
             Example("class ↓My_Type$ {}")
@@ -42,7 +48,8 @@ final class TypeNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testTypeNameWithIgnoreStartWithLowercase() {
+    @Test
+    func typeNameWithIgnoreStartWithLowercase() {
         let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
             Example("private typealias ↓foo = Void"),

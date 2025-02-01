@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class GenericTypeNameRuleTests: SwiftLintTestCase {
-    func testGenericTypeNameWithExcluded() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct GenericTypeNameRuleTests {
+    @Test
+    func genericTypeNameWithExcluded() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("func foo<apple> {}"),
@@ -18,7 +22,8 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
     }
 
-    func testGenericTypeNameWithAllowedSymbols() {
+    @Test
+    func genericTypeNameWithAllowedSymbols() {
         let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("func foo<T$>() {}"),
@@ -33,7 +38,8 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testGenericTypeNameWithAllowedSymbolsAndViolation() {
+    @Test
+    func genericTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamples = [
             Example("func foo<↓T_$>() {}")
@@ -43,7 +49,8 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testGenericTypeNameWithIgnoreStartWithLowercase() {
+    @Test
+    func genericTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamplesToRemove = [
             Example("func foo<↓type>() {}"),

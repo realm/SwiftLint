@@ -1,5 +1,6 @@
+import Foundation
 import TestHelpers
-import XCTest
+import Testing
 
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintFramework
@@ -13,62 +14,46 @@ private extension Configuration {
 }
 
 // swiftlint:disable:next type_body_length
-final class MultipleConfigurationsTests: SwiftLintTestCase {
-    // MARK: Setup & Teardown
-    private var previousWorkingDir: String! // swiftlint:disable:this implicitly_unwrapped_optional
-
-    override func setUp() {
-        super.setUp()
-        Configuration.resetCache()
-        previousWorkingDir = FileManager.default.currentDirectoryPath
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0.filepath))
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(previousWorkingDir))
-    }
-
+extension FileSystemAccessTestSuite.ConfigurationTests {
     // MARK: - Rules Merging
-    func testMerge() {
-        let config0Merge2 = Mock.Config._0.merged(withChild: Mock.Config._2)
+    @Test
+    @WorkingDirectory(path: Constants.Dir.level0)
+    func merge() {
+        let config0Merge2 = Constants.Config._0.merged(withChild: Constants.Config._2)
 
-        XCTAssertFalse(Mock.Config._0.contains(rule: ForceCastRule.self))
-        XCTAssertTrue(Mock.Config._2.contains(rule: ForceCastRule.self))
-        XCTAssertFalse(config0Merge2.contains(rule: ForceCastRule.self))
+        #expect(!Constants.Config._0.contains(rule: ForceCastRule.self))
+        #expect(Constants.Config._2.contains(rule: ForceCastRule.self))
+        #expect(!config0Merge2.contains(rule: ForceCastRule.self))
 
-        XCTAssertTrue(Mock.Config._0.contains(rule: TodoRule.self))
-        XCTAssertTrue(Mock.Config._2.contains(rule: TodoRule.self))
-        XCTAssertTrue(config0Merge2.contains(rule: TodoRule.self))
+        #expect(Constants.Config._0.contains(rule: TodoRule.self))
+        #expect(Constants.Config._2.contains(rule: TodoRule.self))
+        #expect(config0Merge2.contains(rule: TodoRule.self))
 
-        XCTAssertFalse(Mock.Config._3.contains(rule: TodoRule.self))
-        XCTAssertFalse(
-            config0Merge2.merged(withChild: Mock.Config._3).contains(rule: TodoRule.self)
-        )
+        #expect(!Constants.Config._3.contains(rule: TodoRule.self))
+        #expect(!config0Merge2.merged(withChild: Constants.Config._3).contains(rule: TodoRule.self))
     }
 
     // MARK: - Merging Aspects
-    func testWarningThresholdMerging() {
+    @Test
+    func warningThresholdMerging() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             Configuration(
                 warningThreshold: warningThreshold,
                 reporter: XcodeReporter.identifier
             )
         }
-        XCTAssertEqual(configuration(forWarningThreshold: 3)
-            .merged(withChild: configuration(forWarningThreshold: 2)).warningThreshold,
-                       2)
-        XCTAssertEqual(configuration(forWarningThreshold: nil)
-            .merged(withChild: configuration(forWarningThreshold: 2)).warningThreshold,
-                       2)
-        XCTAssertEqual(configuration(forWarningThreshold: 3)
-            .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold,
-                       3)
-        XCTAssertNil(configuration(forWarningThreshold: nil)
-            .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold)
+        #expect(configuration(forWarningThreshold: 3)
+            .merged(withChild: configuration(forWarningThreshold: 2)).warningThreshold == 2)
+        #expect(configuration(forWarningThreshold: nil)
+            .merged(withChild: configuration(forWarningThreshold: 2)).warningThreshold == 2)
+        #expect(configuration(forWarningThreshold: 3)
+            .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold == 3)
+        #expect(configuration(forWarningThreshold: nil)
+            .merged(withChild: configuration(forWarningThreshold: nil)).warningThreshold == nil)
     }
 
-    func testOnlyRulesMerging() {
+    @Test
+    func onlyRulesMerging() {
         let baseConfiguration = Configuration(
             rulesMode: .defaultConfiguration(
                 disabled: [],
@@ -79,264 +64,260 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             )
         )
         let onlyConfiguration = Configuration(rulesMode: .onlyConfiguration([TodoRule.identifier]))
-        XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
-        XCTAssertEqual(onlyConfiguration.rules.count, 1)
-        XCTAssertTrue(onlyConfiguration.rules[0] is TodoRule)
+        #expect(baseConfiguration.contains(rule: TodoRule.self))
+        #expect(onlyConfiguration.rules.count == 1)
+        #expect(onlyConfiguration.rules.first is TodoRule)
 
         let mergedConfiguration1 = baseConfiguration.merged(withChild: onlyConfiguration)
-        XCTAssertEqual(mergedConfiguration1.rules.count, 1)
-        XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
+        #expect(mergedConfiguration1.rules.count == 1)
+        #expect(mergedConfiguration1.rules.first is TodoRule)
 
         // Also test the other way around
         let mergedConfiguration2 = onlyConfiguration.merged(withChild: baseConfiguration)
-        XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the only rules
-        XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
-        XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
-        XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
+        #expect(mergedConfiguration2.rules.count == 3) // 2 opt-ins + 1 from the only rules
+        #expect(mergedConfiguration2.contains(rule: TodoRule.self))
+        #expect(mergedConfiguration2.contains(rule: ForceCastRule.self))
+        #expect(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
 
-    func testOnlyRuleMerging() {
+    @Test
+    func onlyRuleMerging() {
         let ruleIdentifier = TodoRule.identifier
         let onlyRuleConfiguration = Configuration.onlyRuleConfiguration(ruleIdentifier)
 
         let emptyDefaultConfiguration = Configuration.emptyDefaultConfiguration()
         let mergedConfiguration1 = onlyRuleConfiguration.merged(withChild: emptyDefaultConfiguration)
-        XCTAssertEqual(mergedConfiguration1.rules.count, 1)
-        XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
+        #expect(mergedConfiguration1.rules.count == 1)
+        #expect(mergedConfiguration1.rules.first is TodoRule)
 
         let disabledDefaultConfiguration = Configuration.disabledDefaultConfiguration(ruleIdentifier)
         let mergedConfiguration2 = onlyRuleConfiguration.merged(withChild: disabledDefaultConfiguration)
-        XCTAssertTrue(mergedConfiguration2.rules.isEmpty)
+        #expect(mergedConfiguration2.rules.isEmpty)
 
         let enabledOnlyConfiguration = Configuration.enabledOnlyConfiguration(ForceTryRule.identifier)
         let mergedConfiguration3 = onlyRuleConfiguration.merged(withChild: enabledOnlyConfiguration)
-        XCTAssertEqual(mergedConfiguration3.rules.count, 1)
-        XCTAssertTrue(mergedConfiguration3.rules[0] is TodoRule)
+        #expect(mergedConfiguration3.rules.count == 1)
+        #expect(mergedConfiguration3.rules.first is TodoRule)
     }
 
-    func testCustomRulesMerging() {
-        let mergedConfiguration = Mock.Config._0CustomRules.merged(
-            withChild: Mock.Config._2CustomRules,
+    @Test
+    func customRulesMerging() {
+        let mergedConfiguration = Constants.Config._0CustomRules.merged(
+            withChild: Constants.Config._2CustomRules,
             rootDirectory: URL.cwd
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
-            XCTFail("Custom rules are expected to be present")
+            Issue.record("Custom rules are expected to be present")
             return
         }
-        XCTAssertTrue(
+        #expect(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
         )
-        XCTAssertTrue(
+        #expect(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" }
         )
     }
 
-    func testMergingAllowsDisablingParentsCustomRules() {
-        let mergedConfiguration = Mock.Config._0CustomRules.merged(
-            withChild: Mock.Config._2CustomRulesDisabled,
+    @Test
+    func mergingAllowsDisablingParentsCustomRules() {
+        let mergedConfiguration = Constants.Config._0CustomRules.merged(
+            withChild: Constants.Config._2CustomRulesDisabled,
             rootDirectory: URL.cwd
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
-            XCTFail("Custom rules are expected to be present")
+            Issue.record("Custom rules are expected to be present")
             return
         }
-        XCTAssertFalse(
-            mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
-        )
-        XCTAssertTrue(
-            mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" }
-        )
+        #expect(!mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" })
+        #expect(mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" })
     }
 
-    func testCustomRulesMergingWithOnlyRulesCase1() {
+    @Test
+    func customRulesMergingWithOnlyRulesCase1() {
         // The base configuration is in only rules mode
         // The child configuration is in the default rules mode
         // => all custom rules should be considered
-        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
-            withChild: Mock.Config._2CustomRules,
+        let mergedConfiguration = Constants.Config._0CustomRulesOnly.merged(
+            withChild: Constants.Config._2CustomRules,
             rootDirectory: URL.cwd
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
-            XCTFail("Custom rules are expected to be present")
+            Issue.record("Custom rules are expected to be present")
             return
         }
-        XCTAssertTrue(
+        #expect(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
         )
-        XCTAssertTrue(
+        #expect(
             mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" }
         )
     }
 
-    func testCustomRulesMergingWithOnlyRulesCase2() {
+    @Test
+    func customRulesMergingWithOnlyRulesCase2() {
         // The base configuration is in only rules mode
         // The child configuration is in the only rules mode
         // => only the custom rules from the child configuration should be considered
         // (because custom rules from base configuration would require explicit mention as one of the `only_rules`)
-        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
-            withChild: Mock.Config._2CustomRulesOnly,
+        let mergedConfiguration = Constants.Config._0CustomRulesOnly.merged(
+            withChild: Constants.Config._2CustomRulesOnly,
             rootDirectory: URL.cwd
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
-            XCTFail("Custom rules are expected to be present")
+            Issue.record("Custom rules are expected to be present")
             return
         }
-        XCTAssertFalse(
-            mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" }
-        )
-        XCTAssertTrue(
-            mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" }
-        )
+        #expect(!mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abc" })
+        #expect(mergedCustomRules.configuration.customRuleConfigurations.contains { $0.identifier == "no_abcd" })
     }
 
-    func testCustomRulesReconfiguration() {
+    @Test
+    func customRulesReconfiguration() {
         // Custom Rule severity gets reconfigured to "error"
-        let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
-            withChild: Mock.Config._2CustomRulesReconfig,
+        let mergedConfiguration = Constants.Config._0CustomRulesOnly.merged(
+            withChild: Constants.Config._2CustomRulesReconfig,
             rootDirectory: URL.cwd
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
-            XCTFail("Custom rules are expected to be present")
+            Issue.record("Custom rules are expected to be present")
             return
         }
-        XCTAssertEqual(
-            mergedCustomRules.configuration.customRuleConfigurations.filter { $0.identifier == "no_abc" }.count, 1
+        #expect(
+            mergedCustomRules.configuration.customRuleConfigurations.filter { $0.identifier == "no_abc" }.count == 1
         )
         guard let customRule = (mergedCustomRules.configuration.customRuleConfigurations.first {
             $0.identifier == "no_abc"
         }) else {
-            XCTFail("Custom rule is expected to be present")
+            Issue.record("Custom rule is expected to be present")
             return
         }
-        XCTAssertEqual(customRule.severityConfiguration.severity, .error)
+        #expect(customRule.severityConfiguration.severity == .error)
     }
 
     // MARK: - Nested Configurations
-    func testLevel0() {
-        XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._0)!),
-                       Mock.Config._0)
-    }
-
-    func testLevel1() {
-        XCTAssertEqual(Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._1)!),
-                       Mock.Config._0)
-    }
-
-    func testLevel2() {
-        let config = Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._2)!)
-        var config2 = Mock.Config._2
-        config2.fileGraph = Configuration.FileGraph(rootDirectory: Mock.Dir.level2)
-
-        XCTAssertEqual(
-            config,
-            Mock.Config._0.merged(withChild: config2, rootDirectory: config.rootDirectory)
+    @Test
+    @WorkingDirectory(path: Constants.Dir.level0)
+    func level0() {
+        #expect(
+            Constants.Config._0.configuration(for: SwiftLintFile(path: Constants.Swift._0)!)
+                == Constants.Config._0
         )
     }
 
-    func testLevel3() {
-        let config = Mock.Config._0.configuration(for: SwiftLintFile(path: Mock.Swift._3)!)
-        var config3 = Mock.Config._3
-        config3.fileGraph = Configuration.FileGraph(rootDirectory: Mock.Dir.level3)
-
-        XCTAssertEqual(
-            config,
-            Mock.Config._0.merged(withChild: config3, rootDirectory: config.rootDirectory)
+    @Test
+    @WorkingDirectory(path: Constants.Dir.level0)
+    func level1() {
+        #expect(
+            Constants.Config._0.configuration(for: SwiftLintFile(path: Constants.Swift._1)!)
+                == Constants.Config._0
         )
     }
 
-    func testNestedConfigurationForOnePathPassedIn() {
+    @Test
+    func level2() {
+        let config = Constants.Config._0.configuration(for: SwiftLintFile(path: Constants.Swift._2)!)
+        var config2 = Constants.Config._2
+        config2.fileGraph = Configuration.FileGraph(rootDirectory: Constants.Dir.level2)
+
+        #expect(config == Constants.Config._0.merged(withChild: config2, rootDirectory: config.rootDirectory))
+    }
+
+    @Test
+    func level3() {
+        let config = Constants.Config._0.configuration(for: SwiftLintFile(path: Constants.Swift._3)!)
+        var config3 = Constants.Config._3
+        config3.fileGraph = Configuration.FileGraph(rootDirectory: Constants.Dir.level3)
+
+        #expect(config == Constants.Config._0.merged(withChild: config3, rootDirectory: config.rootDirectory))
+    }
+
+    @Test
+    func nestedConfigurationForOnePathPassedIn() {
         // If a path to one or more configuration files is specified, nested configurations should be ignored
-        let config = Configuration(configurationFiles: [Mock.Yml._0])
-        XCTAssertEqual(
-            config.configuration(for: SwiftLintFile(path: Mock.Swift._3)!),
-            config
-        )
+        let config = Configuration(configurationFiles: [Constants.Yml._0])
+        #expect(config.configuration(for: SwiftLintFile(path: Constants.Swift._3)!) == config)
     }
 
-    func testParentConfigIsIgnoredAsNestedConfiguration() {
+    @Test
+    func parentConfigIsIgnoredAsNestedConfiguration() {
         // If a configuration has already been used to build the main config,
         // it should not again be regarded as a nested config
-        XCTAssertEqual(
-            Mock.Config.nested.configuration(for: SwiftLintFile(path: Mock.Swift.nestedSub)!),
-            Mock.Config.nested
+        #expect(
+            Constants.Config.nested.configuration(for: SwiftLintFile(path: Constants.Swift.nestedSub)!)
+                == Constants.Config.nested
         )
     }
 
     // MARK: - Child & Parent Configs
-    func testValidChildConfig() {
-        guard !isRunningWithBazel else {
-            return
-        }
-
-        for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
-
-            assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["main.yml".url()]),
-                Configuration(configurationFiles: ["expected.yml".url()])
-            )
-        }
+    @Test(
+        .disabled(if: isRunningWithBazel),
+        arguments: [Constants.Dir.childConfigTest1, Constants.Dir.childConfigTest2],
+    )
+    @WorkingDirectory(path: Constants.Dir.emptyFolder)
+    func validChildConfig(_ path: URL) {
+        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
+        assertEqualExceptForFileGraph(
+            Configuration(configurationFiles: ["main.yml".url()]),
+            Configuration(configurationFiles: ["expected.yml".url()])
+        )
     }
 
-    func testValidParentConfig() {
-        for path in [Mock.Dir.parentConfigTest1, Mock.Dir.parentConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
+    @Test(arguments: [Constants.Dir.parentConfigTest1, Constants.Dir.parentConfigTest2])
+    @WorkingDirectory(path: Constants.Dir.emptyFolder)
+    func validParentConfig(_ path: URL) {
+        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
 
-            assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["main.yml".url()]),
-                Configuration(configurationFiles: ["expected.yml".url()])
-            )
-        }
+        assertEqualExceptForFileGraph(
+            Configuration(configurationFiles: ["main.yml".url()]),
+            Configuration(configurationFiles: ["expected.yml".url()])
+        )
     }
 
-    func testCommandLineChildConfigs() {
-        guard !isRunningWithBazel else {
-            return
-        }
-
-        for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
-
-            assertEqualExceptForFileGraph(
-                Configuration(
-                    configurationFiles: [
-                        "main.yml".url(),
-                        "child1.yml".url(),
-                        "child2.yml".url(),
-                    ]
-                ),
-                Configuration(configurationFiles: ["expected.yml".url()])
-            )
-        }
+    @Test(
+        .disabled(if: isRunningWithBazel),
+        arguments: [Constants.Dir.childConfigTest1, Constants.Dir.childConfigTest2],
+    )
+    @WorkingDirectory(path: Constants.Dir.emptyFolder)
+    func commandLineChildConfigs(_ path: URL) {
+        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
+        assertEqualExceptForFileGraph(
+            Configuration(
+                configurationFiles: [
+                    "main.yml".url(),
+                    "child1.yml".url(),
+                    "child2.yml".url(),
+                ]
+            ),
+            Configuration(configurationFiles: ["expected.yml".url()])
+        )
     }
 
-    func testConfigCycleDetection() {
-        for path in [
-            Mock.Dir.childConfigCycle1,
-            Mock.Dir.childConfigCycle2,
-            Mock.Dir.childConfigCycle3,
-            Mock.Dir.parentConfigCycle1,
-            Mock.Dir.parentConfigCycle2,
-            Mock.Dir.parentConfigCycle3,
-        ] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
+    @Test(
+        arguments: [
+            Constants.Dir.childConfigCycle1,
+            Constants.Dir.childConfigCycle2,
+            Constants.Dir.childConfigCycle3,
+            Constants.Dir.parentConfigCycle1,
+            Constants.Dir.parentConfigCycle2,
+            Constants.Dir.parentConfigCycle3,
+        ],
+    )
+    @WorkingDirectory(path: Constants.Dir.emptyFolder)
+    func configCycleDetection(_ path: URL) {
+        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
 
-            // If the cycle is properly detected, the config should equal the default config.
-            XCTAssertEqual(
-                Configuration(configurationFiles: []), // not specifying a file means the .swiftlint.yml will be used
-                Configuration()
-            )
-        }
+        // If the cycle is properly detected, the config should equal the default config.
+        #expect(Configuration(configurationFiles: []) == Configuration())
     }
 
-    func testCommandLineConfigsCycleDetection() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4.filepath))
-
+    @Test
+    @WorkingDirectory(path: Constants.Dir.childConfigCycle4)
+    func commandLineConfigsCycleDetection() {
         // If the cycle is properly detected, the config should equal the default config.
         assertEqualExceptForFileGraph(
             Configuration(
@@ -347,7 +328,8 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
         )
     }
 
-    func testParentChildOptInAndDisable() {
+    @Test
+    func parentChildOptInAndDisable() {
         struct TestCase: Equatable {
             let optedInInParent: Bool
             let disabledInParent: Bool
@@ -381,9 +363,9 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             TestCase(optedInInParent: true, disabledInParent: true, optedInInChild: true, disabledInChild: true, isEnabled: false),
             // swiftlint:enable line_length
         ]
-        XCTAssertEqual(testCases.unique.count, 4 * 4)
+        #expect(testCases.unique.count == 4 * 4)
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
+        #expect((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(rulesMode: .defaultConfiguration(
@@ -396,11 +378,12 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
+            #expect(isEnabled == testCase.isEnabled, Comment(rawValue: testCase.message))
         }
     }
 
-    func testParentChildDisableForDefaultRule() {
+    @Test
+    func parentChildDisableForDefaultRule() {
         struct TestCase: Equatable {
             let disabledInParent: Bool
             let disabledInChild: Bool
@@ -415,9 +398,9 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             TestCase(disabledInParent: false, disabledInChild: true, isEnabled: false),
             TestCase(disabledInParent: true, disabledInChild: true, isEnabled: false),
         ]
-        XCTAssertEqual(testCases.unique.count, 2 * 2)
+        #expect(testCases.unique.count == 2 * 2)
         let ruleType = BlanketDisableCommandRule.self
-        XCTAssertFalse(ruleType is any OptInRule.Type)
+        #expect(!(ruleType is any OptInRule.Type))
         let ruleIdentifier = ruleType.identifier
         for testCase in testCases {
             let parentConfiguration = Configuration(
@@ -428,11 +411,12 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             )
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
+            #expect(isEnabled == testCase.isEnabled, Comment(rawValue: testCase.message))
         }
     }
 
-    func testParentOnlyRulesAndChildOptInAndDisabled() {
+    @Test
+    func parentOnlyRulesAndChildOptInAndDisabled() {
         struct TestCase: Equatable {
             let optedInInChild: Bool
             let disabledInChild: Bool
@@ -447,9 +431,9 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             TestCase(optedInInChild: false, disabledInChild: true, isEnabled: false),
             TestCase(optedInInChild: true, disabledInChild: true, isEnabled: false),
         ]
-        XCTAssertEqual(testCases.unique.count, 2 * 2)
+        #expect(testCases.unique.count == 2 * 2)
         let ruleType = ImplicitReturnRule.self
-        XCTAssertTrue((ruleType as Any) is any OptInRule.Type)
+        #expect((ruleType as Any) is any OptInRule.Type)
         let ruleIdentifier = ruleType.identifier
         let parentConfiguration = Configuration(rulesMode: .onlyConfiguration([ruleIdentifier]))
         for testCase in testCases {
@@ -459,18 +443,19 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             ))
             let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
             let isEnabled = mergedConfiguration.contains(rule: ruleType)
-            XCTAssertEqual(isEnabled, testCase.isEnabled, testCase.message)
+            #expect(isEnabled == testCase.isEnabled, Comment(rawValue: testCase.message))
         }
     }
 
     // MARK: Warnings about configurations for disabled rules
-    func testDefaultConfigurationDisabledRuleWarnings() {
+    @Test
+    func defaultConfigurationDisabledRuleWarnings() {
         let optInRuleType = ImplicitReturnRule.self
-        XCTAssertTrue((optInRuleType as Any) is any OptInRule.Type)
+        #expect((optInRuleType as Any) is any OptInRule.Type)
         testDefaultConfigurationDisabledRuleWarnings(for: optInRuleType)
 
         let defaultRuleType = BlockBasedKVORule.self
-        XCTAssertFalse((defaultRuleType as Any) is any OptInRule.Type)
+        #expect(!((defaultRuleType as Any) is any OptInRule.Type))
         testDefaultConfigurationDisabledRuleWarnings(for: defaultRuleType)
     }
 
@@ -508,7 +493,7 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
         ruleType: any Rule.Type
     ) {
         guard case let .defaultConfiguration(disabledRules, optInRules) = configuration.rulesMode else {
-            XCTFail("Configuration rulesMode was not the default")
+            Issue.record("Configuration rulesMode was not the default")
             return
         }
 
@@ -520,54 +505,55 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
             optInRules: optInRules,
             ruleType: ruleType
         )
-        XCTAssertEqual(isEnabled, issue == nil)
+        #expect(isEnabled == (issue == nil))
         guard let issue else {
             return
         }
         let ruleIdentifier = ruleType.identifier
 
         guard disabledRules.isEmpty, optInRules.isEmpty else {
-            XCTAssertEqual(issue, Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier))
+            #expect(issue == Issue.ruleDisabledInDisabledRules(ruleID: ruleIdentifier))
             return
         }
 
         if parentConfiguration == nil ||
             parentConfiguration == Configuration.emptyDefaultConfiguration() {
-            XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+            #expect(issue == Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
         } else if parentConfiguration == Configuration.emptyOnlyConfiguration() {
             if ruleType is any OptInRule.Type {
-                XCTAssertEqual(issue, Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
+                #expect(issue == Issue.ruleNotEnabledInOptInRules(ruleID: ruleIdentifier))
             } else {
-                XCTAssertEqual(issue, Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
+                #expect(issue == Issue.ruleNotEnabledInParentOnlyRules(ruleID: ruleIdentifier))
             }
         } else if parentConfiguration == Configuration.optInDisabledDefaultConfiguration(ruleIdentifier) ||
             parentConfiguration == Configuration.disabledDefaultConfiguration(ruleIdentifier) {
-            XCTAssertEqual(issue, Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
+            #expect(issue == Issue.ruleDisabledInParentConfiguration(ruleID: ruleIdentifier))
         }
     }
 
-    func testOnlyConfigurationDisabledRulesWarnings() {
+    @Test
+    func onlyConfigurationDisabledRulesWarnings() {
         let optInRuleType = ImplicitReturnRule.self
-        XCTAssertTrue((optInRuleType as Any) is any OptInRule.Type)
+        #expect((optInRuleType as Any) is any OptInRule.Type)
         testOnlyConfigurationDisabledRulesWarnings(ruleType: optInRuleType)
 
         let defaultRuleType = BlockBasedKVORule.self
-        XCTAssertFalse((defaultRuleType as Any) is any OptInRule.Type)
+        #expect(!((defaultRuleType as Any) is any OptInRule.Type))
         testOnlyConfigurationDisabledRulesWarnings(ruleType: defaultRuleType)
     }
 
     private func testOnlyConfigurationDisabledRulesWarnings(ruleType: any Rule.Type) {
         let issue = Configuration.validateConfiguredRuleIsEnabled(onlyRules: [], ruleType: ruleType)
-        XCTAssertEqual(issue, Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier))
-        XCTAssertNil(
-            Configuration.validateConfiguredRuleIsEnabled(onlyRules: [ruleType.identifier], ruleType: ruleType)
+        #expect(issue == Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier))
+        #expect(
+            Configuration.validateConfiguredRuleIsEnabled(onlyRules: [ruleType.identifier], ruleType: ruleType) == nil
         )
     }
 
     // MARK: - Remote Configs
-    func testValidRemoteChildConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild.filepath))
-
+    @Test
+    @WorkingDirectory(path: Constants.Dir.remoteConfigChild)
+    func validRemoteChildConfig() {
         assertEqualExceptForFileGraph(
             Configuration(
                 configurationFiles: ["main.yml".url()],
@@ -584,9 +570,9 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
         )
     }
 
-    func testValidRemoteParentConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent.filepath))
-
+    @Test
+    @WorkingDirectory(path: Constants.Dir.remoteConfigParent)
+    func validRemoteParentConfig() {
         assertEqualExceptForFileGraph(
             Configuration(
                 configurationFiles: ["main.yml".url()],
@@ -609,11 +595,11 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
         )
     }
 
-    func testsRemoteConfigNotAllowedToReferenceLocalConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef.filepath))
-
+    @Test
+    @WorkingDirectory(path: Constants.Dir.remoteConfigLocalRef)
+    func remoteConfigNotAllowedToReferenceLocalConfig() {
         // If the remote file is not allowed to reference a local file, the config should equal the default config.
-        XCTAssertEqual(
+        #expect(
             Configuration(
                 configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
                 mockedNetworkResults: [
@@ -624,16 +610,15 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
                     child_config: child2.yml
                     """,
                 ]
-            ),
-            Configuration()
+            ) == Configuration()
         )
     }
 
-    func testRemoteConfigCycleDetection() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle.filepath))
-
+    @Test
+    @WorkingDirectory(path: Constants.Dir.remoteConfigCycle)
+    func remoteConfigCycleDetection() {
         // If the cycle is properly detected, the config should equal the default config.
-        XCTAssertEqual(
+        #expect(
             Configuration(
                 configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
                 mockedNetworkResults: [
@@ -642,8 +627,7 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
                     child_config: https://www.mock.com
                     """,
                 ]
-            ),
-            Configuration()
+            ) == Configuration()
         )
     }
 
@@ -651,34 +635,21 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
     /// This helper function checks whether two configurations are equal except for their file graph.
     /// This is needed to test a child/parent merged config against an expected config.
     func assertEqualExceptForFileGraph(_ configuration1: Configuration, _ configuration2: Configuration) {
-        XCTAssertEqual(
-            configuration1.rulesWrapper.disabledRuleIdentifiers,
-            configuration2.rulesWrapper.disabledRuleIdentifiers
+        #expect(
+            configuration1.rulesWrapper.disabledRuleIdentifiers == configuration2.rulesWrapper.disabledRuleIdentifiers
         )
-
-        XCTAssertEqual(
-            configuration1.rules.map { type(of: $0).identifier },
-            configuration2.rules.map { type(of: $0).identifier }
+        #expect(
+            configuration1.rules.map { type(of: $0).identifier } == configuration2.rules.map { type(of: $0).identifier }
         )
-
-        XCTAssertEqual(
+        #expect(
             Set(configuration1.rulesWrapper.allRulesWrapped.map {
                 $0.rule.createConfigurationDescription().oneLiner()
-            }),
-            Set(configuration2.rulesWrapper.allRulesWrapped.map {
+            }) == Set(configuration2.rulesWrapper.allRulesWrapped.map {
                 $0.rule.createConfigurationDescription().oneLiner()
             })
         )
-
-        XCTAssertEqual(
-            configuration1.includedPaths.map(\.path).sorted(),
-            configuration2.includedPaths.map(\.path).sorted()
-        )
-
-        XCTAssertEqual(
-            configuration1.excludedPaths.map(\.path).sorted(),
-            configuration2.excludedPaths.map(\.path).sorted()
-        )
+        #expect(configuration1.includedPaths.map(\.path).sorted() == configuration2.includedPaths.map(\.path).sorted())
+        #expect(configuration1.excludedPaths.map(\.path).sorted() == configuration2.excludedPaths.map(\.path).sorted())
     }
 }
 

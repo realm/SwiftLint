@@ -1,9 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
-    func testSetGetConfiguration() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ComputedAccessorsOrderRuleTests {
+    @Test
+    func setGetConfiguration() {
         let nonTriggeringExamples = [
             Example("""
             class Foo {
@@ -40,7 +43,8 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["order": "set_get"])
     }
 
-    func testGetSetPropertyReason() {
+    @Test
+    func getSetPropertyReason() {
         let example = Example("""
         class Foo {
             var foo: Int {
@@ -54,13 +58,14 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        XCTAssertEqual(
-            ruleViolations(example).first?.reason,
-            "Computed properties should first declare the getter and then the setter"
+        #expect(
+            ruleViolations(example).first?.reason
+                == "Computed properties should first declare the getter and then the setter"
         )
     }
 
-    func testGetSetSubscriptReason() {
+    @Test
+    func getSetSubscriptReason() {
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {
@@ -74,13 +79,14 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        XCTAssertEqual(
-            ruleViolations(example).first?.reason,
-            "Computed subscripts should first declare the getter and then the setter"
+        #expect(
+            ruleViolations(example).first?.reason
+                == "Computed subscripts should first declare the getter and then the setter"
         )
     }
 
-    func testSetGetPropertyReason() {
+    @Test
+    func setGetPropertyReason() {
         let example = Example("""
         class Foo {
             var foo: Int {
@@ -94,13 +100,14 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        XCTAssertEqual(
-            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
-            "Computed properties should first declare the setter and then the getter"
+        #expect(
+            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason
+                == "Computed properties should first declare the setter and then the getter"
         )
     }
 
-    func testSetGetSubscriptReason() {
+    @Test
+    func setGetSubscriptReason() {
         let example = Example("""
         class Foo {
             subscript(i: Int) -> Int {
@@ -114,9 +121,9 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         }
         """)
 
-        XCTAssertEqual(
-            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason,
-            "Computed subscripts should first declare the setter and then the getter"
+        #expect(
+            ruleViolations(example, ruleConfiguration: ["order": "set_get"]).first?.reason
+                == "Computed subscripts should first declare the setter and then the getter"
         )
     }
 
@@ -124,7 +131,6 @@ final class ComputedAccessorsOrderRuleTests: SwiftLintTestCase {
         guard let config = makeConfig(ruleConfiguration, ComputedAccessorsOrderRule.identifier) else {
             return []
         }
-
         return violations(example, config: config)
     }
 }

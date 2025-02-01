@@ -1,8 +1,11 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class CyclomaticComplexityRuleTests: SwiftLintTestCase {
-    private lazy var complexSwitchExample: Example = {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct CyclomaticComplexityRuleTests {
+    private static let complexSwitchExample: Example = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"
         for index in (0...30) {
@@ -13,7 +16,7 @@ final class CyclomaticComplexityRuleTests: SwiftLintTestCase {
         return Example(example)
     }()
 
-    private lazy var complexSwitchInitExample: Example = {
+    private static let complexSwitchInitExample: Example = {
         var example = "init() {\n"
         example += "    switch foo {\n"
         for index in (0...30) {
@@ -24,7 +27,7 @@ final class CyclomaticComplexityRuleTests: SwiftLintTestCase {
         return Example(example)
     }()
 
-    private lazy var complexIfExample: Example = {
+    private static let complexIfExample: Example = {
         let nest = 22
         var example = "func nestThoseIfs() {\n"
         for index in (0...nest) {
@@ -41,14 +44,16 @@ final class CyclomaticComplexityRuleTests: SwiftLintTestCase {
         return Example(example)
     }()
 
-    func testCyclomaticComplexity() {
+    @Test
+    func cyclomaticComplexity() {
         verifyRule(CyclomaticComplexityRule.description, commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testIgnoresCaseStatementsConfigurationEnabled() {
+    @Test
+    func ignoresCaseStatementsConfigurationEnabled() {
         let baseDescription = CyclomaticComplexityRule.description
-        let triggeringExamples = [complexIfExample]
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [complexSwitchExample]
+        let triggeringExamples = [Self.complexIfExample]
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [Self.complexSwitchExample]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
@@ -57,9 +62,13 @@ final class CyclomaticComplexityRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testIgnoresCaseStatementsConfigurationDisabled() {
+    @Test
+    func ignoresCaseStatementsConfigurationDisabled() {
         let baseDescription = CyclomaticComplexityRule.description
-        let triggeringExamples = baseDescription.triggeringExamples + [complexSwitchExample, complexSwitchInitExample]
+        let triggeringExamples = baseDescription.triggeringExamples + [
+            Self.complexSwitchExample,
+            Self.complexSwitchInitExample,
+        ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)

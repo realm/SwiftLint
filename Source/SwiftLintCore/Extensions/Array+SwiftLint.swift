@@ -66,7 +66,7 @@ public extension Array {
     /// Elements for which the `transform` returns a `nil` key are removed.
     ///
     /// - parameter transform: The transformation function to extract an element to its group key,
-    ///                        or exclude the element..
+    ///                        or exclude the element.
     ///
     /// - returns: The elements grouped by applying the specified transformation.
     func filterGroup<U: Hashable & Sendable>(by transform: (Element) -> U?) ->

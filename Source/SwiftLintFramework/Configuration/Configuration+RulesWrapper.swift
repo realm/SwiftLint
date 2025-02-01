@@ -4,6 +4,7 @@ internal extension Configuration {
     class RulesWrapper {
         // MARK: - Properties
         private static var isOptInRuleCache: [String: Bool] = [:]
+        private static let isOptInRuleCacheLock = NSLock()
 
         let allRulesWrapped: [ConfigurationRuleWrapper]
         internal let mode: RulesMode
@@ -293,13 +294,18 @@ internal extension Configuration {
         private func isOptInRule(
             _ identifier: String, allRulesWrapped: [ConfigurationRuleWrapper]
         ) -> Bool {
-            if let cachedIsOptInRule = Self.isOptInRuleCache[identifier] {
+            let cachedIsOptInRule = Self.isOptInRuleCacheLock.withLock {
+                Self.isOptInRuleCache[identifier]
+            }
+            if let cachedIsOptInRule {
                 return cachedIsOptInRule
             }
 
             let isOptInRule = allRulesWrapped
                 .first { type(of: $0.rule).identifier == identifier }?.rule is any OptInRule
-            Self.isOptInRuleCache[identifier] = isOptInRule
+            Self.isOptInRuleCacheLock.withLock {
+                Self.isOptInRuleCache[identifier] = isOptInRule
+            }
             return isOptInRule
         }
     }

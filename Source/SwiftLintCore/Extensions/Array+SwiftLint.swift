@@ -62,6 +62,46 @@ public extension Array {
         Dictionary(grouping: self, by: { transform($0) })
     }
 
+    /// Group the elements in this array into a dictionary, keyed by applying the specified `transform`.
+    /// Elements for which the `transform` returns a `nil` key are removed.
+    ///
+    /// - parameter transform: The transformation function to extract an element to its group key,
+    ///                        or exclude the element.
+    ///
+    /// - returns: The elements grouped by applying the specified transformation.
+    func filterGroup<U: Hashable & Sendable>(by transform: (Element) -> U?) ->
+        [U: [Element]] where Element: Sendable {
+        var result = [U: [Element]]()
+        for element in self {
+            if let key = transform(element) {
+                result[key, default: []].append(element)
+            }
+        }
+        return result
+    }
+
+    /// Same as `filterGroup`, but spreads the work in the `transform` block in parallel using GCD's
+    /// `concurrentPerform`.
+    ///
+    /// - parameter transform: The transformation function to extract an element to its group key,
+    ///                        or exclude the element.
+    ///
+    /// - returns: The elements grouped by applying the specified transformation.
+    func parallelFilterGroup<U: Hashable & Sendable>(by transform: @Sendable (Element) -> U?) ->
+        [U: [Element]] where Element: Sendable {
+        if count < 16 {
+            return filterGroup(by: transform)
+        }
+        let pivot = count / 2
+        let results = [
+            Array(self[0..<pivot]),
+            Array(self[pivot...]),
+        ].parallelMap { subarray in
+            subarray.parallelFilterGroup(by: transform)
+        }
+        return results[0].merging(results[1], uniquingKeysWith: +)
+    }
+
     /// Returns the elements failing the `belongsInSecondPartition` test, followed by the elements passing the
     /// `belongsInSecondPartition` test.
     ///

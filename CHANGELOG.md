@@ -168,7 +168,6 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
-### Bug Fixes
 * Add a new rationale property to rule descriptions, providing a more expansive
   description of the motivation behind each rule.  
   [Martin Redington](https://github.com/mildm8nnered)

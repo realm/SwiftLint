@@ -5,8 +5,21 @@ on:
     types: published
 
 jobs:
+  merge-into-main:
+    name: Merge into main
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Merge release branch
+        run: |
+          git fetch origin release/${{ github.event.release.tag_name }}
+          git merge --ff-only release/${{ github.event.release.tag_name }}
+          git push origin main
   publish-pod:
     name: Publish Pod
+    needs: merge-into-main
     runs-on: macOS-14
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +37,7 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
   dispatch-plugins:
     name: Dispatch Plugins Repository
+    needs: merge-into-main
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -47,6 +61,7 @@ jobs:
             }
   bump-homebrew:
     name: Bump Homebrew Formula
+    needs: merge-into-main
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/homebrew/ubuntu24.04:latest

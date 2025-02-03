@@ -53,7 +53,7 @@ jobs:
         id: retrieve_author
         run: |
           AUTHOR=$(echo ${{ github.actor }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
+          echo "name=${AUTHOR}" >> $GITHUB_OUTPUT
       - name: Configure Git author
         id: configure_git_author
         uses: Homebrew/actions/git-user-config@master
@@ -75,7 +75,7 @@ jobs:
     secrets: inherit
     with:
       ref: release/${{ inputs.version }}
-      tag: ${{ inputs.version }}
+      tags: ${{ inputs.version }}
   build-macos:
     name: Build macOS Binaries
     needs: prepare-release

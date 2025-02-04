@@ -7,7 +7,12 @@ extension SwiftLint {
         static let configuration = CommandConfiguration(abstract: "Display the list of reporters and their identifiers")
 
         func run() throws {
-            print(TextTable(reporters: reportersList).render())
+            print(Self.reportersTable)
+        }
+
+
+        static func reportersTable() -> String {
+            TextTable(reporters: reportersList).render()
         }
     }
 }

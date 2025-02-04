@@ -36,10 +36,7 @@ extension SwiftLint {
                 .list
                 .sorted { $0.0 < $1.0 }
             if configOnly {
-                rules
-                    .map(\.value)
-                    .map { createInstance(of: $0, using: configuration, configure: !defaultConfig) }
-                    .forEach { printConfig(for: $0) }
+                rules.forEach { printConfig(for: createInstance(of: $0.value, using: configuration)) }
             } else {
                 let table = TextTable(
                     ruleList: rules,
@@ -54,7 +51,7 @@ extension SwiftLint {
         private func printDescription(for ruleType: any Rule.Type, with configuration: Configuration) {
             let description = ruleType.description
 
-            let rule = createInstance(of: ruleType, using: configuration, configure: !defaultConfig)
+            let rule = createInstance(of: ruleType, using: configuration)
             if configOnly {
                 printConfig(for: rule)
                 return
@@ -76,7 +73,7 @@ extension SwiftLint {
             }
         }
 
-        private func printConfig(for rule: any Rule) {
+        private func printConfig(for rule: some Rule) {
             let configDescription = rule.createConfigurationDescription()
             if configDescription.hasContent {
                 print("\(type(of: rule).identifier):")
@@ -84,12 +81,10 @@ extension SwiftLint {
             }
         }
 
-        private func createInstance(of ruleType: any Rule.Type,
-                                    using config: Configuration,
-                                    configure: Bool) -> any Rule {
-            configure
-                ? config.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
-                : ruleType.init()
+        private func createInstance(of ruleType: any Rule.Type, using config: Configuration) -> any Rule {
+            defaultConfig
+                ? ruleType.init()
+                : config.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
         }
     }
 }

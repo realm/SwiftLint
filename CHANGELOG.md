@@ -12,7 +12,9 @@
 
 ### Enhancements
 
-* None.
+* Add new `opaque_over_existential` opt-in rule that triggers when the existential `any` type of a
+  function parameter can be replaced with an opaque `some` type.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

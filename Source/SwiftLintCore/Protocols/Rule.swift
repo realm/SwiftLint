@@ -48,7 +48,7 @@ public protocol Rule {
     /// - parameter rule: The `rule` value to compare against.
     ///
     /// - returns: Whether or not the specified rule is equivalent to the current rule.
-    func isEqualTo(_ rule: any Rule) -> Bool
+    func isEqualTo(_ rule: some Rule) -> Bool
 
     /// Collects information for the specified file in a storage object, to be analyzed by a `CollectedLinter`.
     ///
@@ -110,7 +110,7 @@ public extension Rule {
         validate(file: file)
     }
 
-    func isEqualTo(_ rule: any Rule) -> Bool {
+    func isEqualTo(_ rule: some Rule) -> Bool {
         if let rule = rule as? Self {
             return configuration == rule.configuration
         }

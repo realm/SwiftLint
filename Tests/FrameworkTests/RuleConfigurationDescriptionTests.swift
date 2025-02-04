@@ -221,7 +221,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             @ConfigurationElement(key: "invisible")
             var invisible = true
 
-            mutating func apply(configuration _: Any) throws { /* conformance for test */ }
+            mutating func apply(configuration _: Any) throws(Issue) { /* conformance for test */ }
 
             func isEqualTo(_: some RuleConfiguration) -> Bool { false }
         }

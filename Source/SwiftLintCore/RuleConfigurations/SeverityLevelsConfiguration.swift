@@ -27,7 +27,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
         return [RuleParameter(severity: .warning, value: warning)]
     }
 
-    public mutating func apply(configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws(Issue) {
         if let configurationArray = [Int].array(of: configuration), configurationArray.isNotEmpty {
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
@@ -36,7 +36,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
                 if let warning = warningValue as? Int {
                     self.warning = warning
                 } else {
-                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                    throw .invalidConfiguration(ruleID: Parent.identifier)
                 }
             }
             if let errorValue = configDict[$error.key] {
@@ -45,13 +45,13 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
                 } else if let error = errorValue as? Int {
                     self.error = error
                 } else {
-                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                    throw .invalidConfiguration(ruleID: Parent.identifier)
                 }
             } else {
                 self.error = nil
             }
         } else {
-            throw Issue.nothingApplied(ruleID: Parent.identifier)
+            throw .nothingApplied(ruleID: Parent.identifier)
         }
     }
 }

@@ -25,3 +25,16 @@ jobs:
           globs: |
             CHANGELOG.md
             CONTRIBUTING.md
+  lint-actions:
+    name: Lint Actions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Register problem matcher
+        run: |
+          curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/main/.github/actionlint-matcher.json > actionlint-matcher.json
+          echo "::add-matcher::actionlint-matcher.json"
+      - name: Lint
+        uses: docker://rhysd/actionlint:latest
+        with:
+          args: -color

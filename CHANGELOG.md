@@ -12,7 +12,8 @@
 
 ### Enhancements
 
-* None.
+* Add new `multiple_variable_declaration` opt-in rule that triggers when the there's any declaration of variable and/or constants at the same line.  
+  [AhmadZaghloul](https://github.com/AhmedZaghloul19)
 
 ### Bug Fixes
 

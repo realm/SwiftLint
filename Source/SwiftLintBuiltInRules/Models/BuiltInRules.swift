@@ -246,4 +246,5 @@ public let builtInRules: [any Rule.Type] = [
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self,
+    MultipleVariableDeclarationRule.self,
 ]

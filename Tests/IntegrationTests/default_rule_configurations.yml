@@ -1139,3 +1139,7 @@ yoda_condition:
   severity: warning
   meta:
     opt-in: true
+multiple_variable_declaration:
+  severity: warning
+  meta:
+    opt-in: true

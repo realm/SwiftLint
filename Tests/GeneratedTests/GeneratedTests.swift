@@ -1464,3 +1464,9 @@ final class YodaConditionRuleGeneratedTests: SwiftLintTestCase {
         verifyRule(YodaConditionRule.description)
     }
 }
+
+final class MultipleVariableDeclarationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultipleVariableDeclarationRule.description)
+    }
+}

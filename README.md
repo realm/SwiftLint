@@ -16,7 +16,7 @@ of your source files for more accurate results.
 [![Azure Build Status](https://dev.azure.com/jpsim/SwiftLint/_apis/build/status/realm.SwiftLint?branchName=main)](https://dev.azure.com/jpsim/SwiftLint/_build/latest?definitionId=4?branchName=main)
 [![Buildkite Build Status](https://badge.buildkite.com/e2a5bc32c347e76e2793e4c5764a5f42bcd42bbe32f79c3a53.svg?branch=main)](https://buildkite.com/swiftlint/swiftlint)
 
-![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/screenshot.png)
+![SwiftLint violations highlighted in the Xcode editor](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/screenshot.png)
 
 This project adheres to the
 [Contributor Covenant Code of Conduct](https://realm.io/conduct).
@@ -353,7 +353,7 @@ fi
 > The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
 > tested on Xcode 15/16. In case of another configuration (e.g. a custom
 > Swift package path), please adapt the values accordingly.
-
+<!-- markdownlint-disable MD028 -->
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental
 > builds, suppressing the unspecified outputs warning.
@@ -817,7 +817,7 @@ custom_rules:
 
 This is what the output would look like:
 
-![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/custom-rule.png)
+![Custom violations highlighted in the Xcode editor](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/custom-rule.png)
 
 It is important to note that the regular expression pattern is used with the
 flags `s` and `m` enabled, that is `.`
@@ -1041,7 +1041,7 @@ and helping others in the community.
 Special thanks go to [MacStadium](https://www.macstadium.com) for providing
 physical Mac mini machines to run our performance tests.
 
-<img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/macstadium.png" width="184" />
+![MacStadium](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/macstadium.png)
 
 We also thank Realm (now MongoDB) for their inital contributions and setup of
 the project.

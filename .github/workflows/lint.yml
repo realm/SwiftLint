@@ -25,6 +25,7 @@ jobs:
           globs: |
             CHANGELOG.md
             CONTRIBUTING.md
+            README.md
   lint-actions:
     name: Lint Actions
     runs-on: ubuntu-24.04

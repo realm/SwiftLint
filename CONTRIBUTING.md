@@ -168,8 +168,9 @@ SwiftLint repository. Make sure you have the following steps completed once befo
 
 1. Navigate to [Action secrets and variables](https://github.com/realm/SwiftLint/settings/secrets/actions) in the
    repository settings.
-1. Add a new secret named `PERSONAL_GITHUB_TOKEN_<USERNAME>` where `<USERNAME>` is your GitHub username in all uppercase. The
-   value must be a personal access token with the `read:user`, `repo`, `user:email` and `workflow` scopes.
+1. Add a new secret named `PERSONAL_GITHUB_TOKEN_<USERNAME>` where `<USERNAME>` is your GitHub username in all
+   uppercase. The value must be a personal access token with the `read:user`, `repo`, `user:email` and
+   `workflow` scopes.
 1. Follow [these instructions](https://medium.com/swlh/automated-cocoapod-releases-with-github-actions-8526dd4535c7) to
    set the variable `COCOAPODS_TRUNK_TOKEN_<USERNAME>` to your CocoaPods trunk token.
 

@@ -11,7 +11,8 @@ All changes, no matter how trivial, must be done via pull requests. Commits shou
 branch. If possible, avoid mixing different aspects in one pull request. Prefer squashing if there are commits that are
 not reasonable alone. To update your PR branch and resolve conflicts, use rebasing instead of merging `main`.
 
-> [!IMPORTANT] If you have commit access to SwiftLint and believe your change to be trivial and not worth waiting for
+> [!IMPORTANT]
+> If you have commit access to SwiftLint and believe your change to be trivial and not worth waiting for
 > review, you may open a pull request and merge it immediately, but this should be the exception, not the norm.
 
 ## Building and Running Locally
@@ -42,11 +43,11 @@ Then you can use the full power of Xcode/LLDB/Instruments to develop and debug y
 
 1. `code .`
 1. Wait for the setup to complete.
-1. `⌘ Cmd` `⇧ Shift` `P` to open the command palette.
+1. Press `⌘ Cmd` `⇧ Shift` `P` to open the command palette.
 1. With the [Swift extension](https://github.com/swiftlang/vscode-swift) installed search for and select
    "Task: Run Build Task".
 1. Decide to build the `swiftlint` binary only or to build everything including tests.
-1. The extension allows to to debug the binary and run tests.
+1. The extension allows you to debug the binary and run tests.
 
 ### Using the Command Line
 
@@ -61,8 +62,8 @@ Then you can use the full power of Xcode/LLDB/Instruments to develop and debug y
 If rules are added/removed/renamed, you'll need to run `make sourcery`, which requires that [Bazel](https://bazel.build)
 is installed on your machine (`brew install bazelisk`). This will update source files to reflect these changes.
 
-If you'd like to avoid installing Bazel, you can run Sourcery manually. Make sure to use the same version of Sourcery as
-defined in [WORKSPACE](WORKSPACE).
+If you'd rather like to avoid installing Bazel, you can run Sourcery manually. Make sure to use the same version of
+Sourcery as defined in [WORKSPACE](WORKSPACE).
 
 ### Tests
 
@@ -76,7 +77,7 @@ make bazel_test
 make docker_test
 ```
 
-In case you consider it too much effort to installed all the tooling required for the different build/test methods, just
+If you find it too much effort to installed all the tooling required for the different build/test methods, just
 open a pull request and watch the CI results carefully. They include all the necessary builds and checks.
 
 ## Rules
@@ -167,8 +168,9 @@ SwiftLint repository. Make sure you have the following steps completed once befo
 
 1. Navigate to [Action secrets and variables](https://github.com/realm/SwiftLint/settings/secrets/actions) in the
    repository settings.
-1. Add a new secret named `PERSONAL_GITHUB_TOKEN_<USERNAME>` where `<USERNAME>` is your GitHub username. The value must
-   be a personal access token with the `read:user`, `repo`, `user:email` and `workflow` scopes.
+1. Add a new secret named `PERSONAL_GITHUB_TOKEN_<USERNAME>` where `<USERNAME>` is your GitHub username in all
+   uppercase. The value must be a personal access token with the `read:user`, `repo`, `user:email` and
+   `workflow` scopes.
 1. Follow [these instructions](https://medium.com/swlh/automated-cocoapod-releases-with-github-actions-8526dd4535c7) to
    set the variable `COCOAPODS_TRUNK_TOKEN_<USERNAME>` to your CocoaPods trunk token.
 
@@ -179,15 +181,18 @@ SwiftLint maintainers follow these steps to cut a release:
     * FabricSoftenerRule
     * Top Loading
     * Fresh Out Of The Dryer
+
    You may ask your favorite AI chat bot for suggestions. :robot:
 1. In the [GitHub UI](https://github.com/realm/SwiftLint/actions/workflows/release.yml) press "Run workflow". Enter the
-   new release version and the title. Start the workflow and wait for it to **create a release branch**,
-   **build the most important artifacts** and **create a draft release**.
-1. Review the draft release making sure that the artifacts have been attached to it and the release notes are correct.
-1. If everything looks good and the **release branch has not diverged from `main`**, publish the release. :rocket:
-1. A few "post-release" jobs will get started completing the list of artifacts on the release page. It will also
-   fast-forward merge the release branch into `main`.
-1. Celebrate. :tada:
+   release version and the title. Start the workflow and wait for it to **create a release branch**,
+   **build the most important artifacts** and **prepare a draft release**.
+1. Review the draft release thoroughly making sure that the artifacts have been attached to it and the release notes are
+   correct.
+1. If everything looks good and the **release branch has not diverged from `main`** in the meantime, publish the
+   release. :rocket:
+1. A few "post-release" jobs will get started to complete the list of artifacts on the release page. One of them
+   will also fast-forward merge the release branch into `main`. All jobs fail if that's not possible.
+1. Celebrate! :tada:
 
 In case the CocoaPods release fails, you can try to publish it manually:
 

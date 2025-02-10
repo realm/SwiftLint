@@ -3,11 +3,13 @@ import CompilerPluginSupport
 import PackageDescription
 
 let swiftFeatures: [SwiftSetting] = [
-    .enableUpcomingFeature("ExistentialAny"),
     .enableUpcomingFeature("ConciseMagicFile"),
-    .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+    .enableUpcomingFeature("ExistentialAny"),
     .enableUpcomingFeature("ForwardTrailingClosures"),
+    .enableUpcomingFeature("GlobalActorIsolatedTypesUsability"),
     .enableUpcomingFeature("ImplicitOpenExistentials"),
+    .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+    .enableUpcomingFeature("InferSendableFromCaptures"),
 ]
 let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=complete")]
 let targetedConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=targeted")]

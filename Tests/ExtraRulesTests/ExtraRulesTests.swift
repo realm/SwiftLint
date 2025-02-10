@@ -1,7 +1,7 @@
 @testable import SwiftLintExtraRules
 import TestHelpers
 
-final class ExtraRulesTests: SwiftLintTestCase {
+final class ExtraRulesTests: SwiftLintTestCase, @unchecked Sendable {
     func testWithDefaultConfiguration() {
         for ruleType in extraRules() {
             verifyRule(ruleType.description)

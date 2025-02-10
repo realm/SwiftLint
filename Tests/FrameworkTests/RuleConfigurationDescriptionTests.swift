@@ -491,35 +491,36 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     }
 
     func testDeprecationWarning() async throws {
-        try await AsyncAssertEqual(
-            try await Issue.captureConsole {
-                var configuration = TestConfiguration()
-                try configuration.apply(configuration: ["set": [6, 7]])
-            },
+        let console = try await Issue.captureConsole {
+            var configuration = TestConfiguration()
+            try configuration.apply(configuration: ["set": [6, 7]])
+        }
+        XCTAssertEqual(
+            console,
             "warning: Configuration option 'set' in 'my_rule' rule is deprecated. Use the option 'other_opt' instead."
         )
     }
 
     func testNoDeprecationWarningIfNoDeprecatedPropertySet() async throws {
-        try await AsyncAssertTrue(
-            try await Issue.captureConsole {
-                var configuration = TestConfiguration()
-                try configuration.apply(configuration: ["flag": false])
-            }.isEmpty
-        )
+        let console = try await Issue.captureConsole {
+            var configuration = TestConfiguration()
+            try configuration.apply(configuration: ["flag": false])
+        }
+        XCTAssertTrue(console.isEmpty)
     }
 
     func testInvalidKeys() async throws {
-        try await AsyncAssertEqual(
-            try await Issue.captureConsole {
-                var configuration = TestConfiguration()
-                try configuration.apply(configuration: [
-                    "severity": "error",
-                    "warning": 3,
-                    "unknown": 1,
-                    "unsupported": true,
-                ])
-            },
+        let console = try await Issue.captureConsole {
+            var configuration = TestConfiguration()
+            try configuration.apply(configuration: [
+                "severity": "error",
+                "warning": 3,
+                "unknown": 1,
+                "unsupported": true,
+            ])
+        }
+        XCTAssertEqual(
+            console,
             "warning: Configuration for 'RuleMock' rule contains the invalid key(s) 'unknown', 'unsupported'."
         )
     }

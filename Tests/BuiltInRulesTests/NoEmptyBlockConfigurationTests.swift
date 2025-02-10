@@ -23,11 +23,12 @@ final class NoEmptyBlockConfigurationTests: SwiftLintTestCase {
     }
 
     func testInvalidKeyInCustomConfiguration() async throws {
-        try await AsyncAssertEqual(
-            try await Issue.captureConsole {
-                var config = NoEmptyBlockConfiguration()
-                try config.apply(configuration: ["invalidKey": "error"])
-            },
+        let console = try await Issue.captureConsole {
+            var config = NoEmptyBlockConfiguration()
+            try config.apply(configuration: ["invalidKey": "error"])
+        }
+        XCTAssertEqual(
+            console,
             "warning: Configuration for 'no_empty_block' rule contains the invalid key(s) 'invalidKey'."
         )
     }

@@ -6,13 +6,14 @@ import XCTest
 final class MultilineParametersConfigurationTests: SwiftLintTestCase {
     func testInvalidMaxNumberOfSingleLineParameters() async throws {
         for maxNumberOfSingleLineParameters in [0, -1] {
-            try await AsyncAssertEqual(
-                try await Issue.captureConsole {
-                    var config = MultilineParametersConfiguration()
-                    try config.apply(
-                        configuration: ["max_number_of_single_line_parameters": maxNumberOfSingleLineParameters]
-                    )
-                },
+            let console = try await Issue.captureConsole {
+                var config = MultilineParametersConfiguration()
+                try config.apply(
+                    configuration: ["max_number_of_single_line_parameters": maxNumberOfSingleLineParameters]
+                )
+            }
+            XCTAssertEqual(
+                console,
                 """
                 warning: Inconsistent configuration for 'multiline_parameters' rule: Option \
                 'max_number_of_single_line_parameters' should be >= 1.
@@ -22,13 +23,14 @@ final class MultilineParametersConfigurationTests: SwiftLintTestCase {
     }
 
     func testInvalidMaxNumberOfSingleLineParametersWithSingleLineEnabled() async throws {
-        try await AsyncAssertEqual(
-            try await Issue.captureConsole {
-                var config = MultilineParametersConfiguration()
-                try config.apply(
-                    configuration: ["max_number_of_single_line_parameters": 2, "allows_single_line": false]
-                )
-            },
+        let console = try await Issue.captureConsole {
+            var config = MultilineParametersConfiguration()
+            try config.apply(
+                configuration: ["max_number_of_single_line_parameters": 2, "allows_single_line": false]
+            )
+        }
+        XCTAssertEqual(
+            console,
             """
             warning: Inconsistent configuration for 'multiline_parameters' rule: Option \
             'max_number_of_single_line_parameters' has no effect when 'allows_single_line' is false.

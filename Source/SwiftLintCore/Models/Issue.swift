@@ -140,7 +140,7 @@ public enum Issue: LocalizedError, Equatable {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
             return
         }
-        Task(priority: .high) { @MainActor in
+        Task { @MainActor in
             if let consumer = Self.messageConsumer {
                 consumer(errorDescription)
             } else {

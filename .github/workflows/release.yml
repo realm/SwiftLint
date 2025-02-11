@@ -26,6 +26,8 @@ jobs:
       author_name: ${{ steps.configure_git_author.outputs.name }}
       author_uppercase: ${{ steps.retrieve_author.outputs.name }}
       author_email: ${{ steps.configure_git_author.outputs.email }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -72,6 +74,9 @@ jobs:
     name: Build Linux Binaries
     needs: prepare-release
     uses: ./.github/workflows/docker.yml
+    permissions:
+      contents: read
+      packages: write
     secrets: inherit
     with:
       ref: release/${{ inputs.version }}
@@ -80,6 +85,8 @@ jobs:
     name: Build macOS Binaries
     needs: prepare-release
     runs-on: macOS-14
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -103,6 +110,9 @@ jobs:
       - build-docker
       - build-macos
     runs-on: macOS-14
+    permissions:
+      actions: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:

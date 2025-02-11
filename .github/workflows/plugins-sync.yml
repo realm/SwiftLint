@@ -8,6 +8,9 @@ on:
       - 'Plugins/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     name: Sync Plugins Folder

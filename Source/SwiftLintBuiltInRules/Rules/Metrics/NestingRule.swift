@@ -64,7 +64,9 @@ private extension NestingRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.enumKeyword)
+            if !configuration.ignoreCodingKeys || !node.definesCodingKeys {
+                validate(forFunction: false, triggeringToken: node.enumKeyword)
+            }
             return .visitChildren
         }
 

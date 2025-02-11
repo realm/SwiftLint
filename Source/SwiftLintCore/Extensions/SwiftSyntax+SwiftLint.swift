@@ -184,6 +184,18 @@ public extension EnumDeclSyntax {
             return rawValueTypes.contains(identifier)
         }
     }
+
+    /// True if this enum is a `CodingKey`. For that, it has to be named `CodingKeys` and must conform to the `CodingKey` protocol. 
+    var definesCodingKeys: Bool {
+        guard let inheritedTypeCollection = inheritanceClause?.inheritedTypes,
+              name.text == "CodingKeys" else { 
+            return false
+        }
+
+        return inheritedTypeCollection.contains { element in
+            element.type.as(IdentifierTypeSyntax.self)?.name.text == "CodingKey"
+        }
+    }
 }
 
 public extension FunctionDeclSyntax {

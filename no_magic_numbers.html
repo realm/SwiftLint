@@ -445,8 +445,25 @@ test_parent_classes
 </code></pre>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">notFound</span> <span class="o">=</span> <span class="p">(</span><span class="nv">statusCode</span><span class="p">:</span> <span class="mi">404</span><span class="p">,</span> <span class="nv">description</span><span class="p">:</span> <span class="s">"Not Found"</span><span class="p">,</span> <span class="nv">isError</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
 </code></pre>
-<pre class="highlight swift"><code><span class="cp">#Preview {</span>
-    <span class="kt">ContentView</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="cp">#Preview { ContentView(value: 5) }</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">@Test</span> <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">@Suite</span> <span class="kd">struct</span> <span class="kt">Test</span> <span class="p">{</span>
+    <span class="kd">@Test</span> <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">func</span> <span class="nf">g</span><span class="p">()</span> <span class="p">{</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">}</span>
+        <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">@Suite</span> <span class="kd">actor</span> <span class="kt">Test</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="mi">2</span> <span class="p">}</span>
+    <span class="kd">@Test</span> <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">a</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Test</span> <span class="p">{</span> <span class="c1">// @Suite implicitly</span>
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">a</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="mi">2</span> <span class="p">}</span>
+    <span class="kd">@Test</span> <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">a</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>

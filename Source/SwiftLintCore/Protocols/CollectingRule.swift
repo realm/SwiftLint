@@ -94,7 +94,12 @@ public extension CollectingRule where Self: AnalyzerRule {
 /// :nodoc:
 public extension Array where Element == any Rule {
     static func == (lhs: Array, rhs: Array) -> Bool {
-        if lhs.count != rhs.count { return false }
-        return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+        guard lhs.count == rhs.count else {
+            return false
+        }
+        return !zip(lhs, rhs).contains { pair in
+            let first = pair.0, second = pair.1
+            return !first.isEqualTo(second)
+        }
     }
 }

@@ -823,6 +823,12 @@ final class OneDeclarationPerFileRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class OpaqueOverExistentialParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(OpaqueOverExistentialParameterRule.description)
+    }
+}
+
 final class OpeningBraceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OpeningBraceRule.description)

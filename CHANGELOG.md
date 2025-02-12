@@ -17,6 +17,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5964](https://github.com/realm/SwiftLint/issues/5964)
 
+* Add new `opaque_over_existential` opt-in rule that triggers when the existential `any` type of a
+  function parameter can be replaced with an opaque `some` type.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  

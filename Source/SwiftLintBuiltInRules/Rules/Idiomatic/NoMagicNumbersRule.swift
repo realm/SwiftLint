@@ -103,6 +103,13 @@ struct NoMagicNumbersRule: Rule {
                 @Test func f() { let _ = 2 + a }
             }
             """),
+            Example("""
+            #if compiler(<6.0) && compiler(>4.0)
+            let a = 1
+            #elseif compiler(<3.0)
+            let a = 2
+            #endif
+            """),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -133,6 +140,15 @@ struct NoMagicNumbersRule: Rule {
             #ExampleMacro {
                 ContentView(value: ↓5)
             }
+            """),
+            Example("""
+            #if compiler(<6.0) && compiler(>4.0)
+            f(↓6.0)
+            #elseif compiler(<3.0)
+            f(↓3.0)
+            #else
+            f(↓4.0)
+            #endif
             """),
         ]
     )
@@ -175,6 +191,13 @@ private extension NoMagicNumbersRule {
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             node.attributes.contains(attributeNamed: "Test") ? .skipChildren : .visitChildren
+        }
+
+        override func visit(_ node: IfConfigClauseSyntax) -> SyntaxVisitorContinueKind {
+            if let elements = node.elements {
+                walk(elements)
+            }
+            return .skipChildren
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {

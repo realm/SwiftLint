@@ -39,7 +39,7 @@ def run(issue)
 end
 
 def created_by_maintainer?(comment)
-    comment && (comment['author'] == 'github-actions[bot]' || comment['authorAssociation'] == 'COLLABORATOR')
+    comment && (comment['author']['login'] == 'github-actions' || comment['authorAssociation'] == 'COLLABORATOR')
 end
 
 issues_query = "repo:#{$repository} is:issue is:open label:stale,help,repro-needed"

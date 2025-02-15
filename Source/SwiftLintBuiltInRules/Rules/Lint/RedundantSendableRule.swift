@@ -73,7 +73,7 @@ private extension RedundantSendableRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
             if node.conformsToSendable {
-                correctionPositions.append(node.name.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 return super.visit(node.withoutSendable)
             }
             return super.visit(node)
@@ -93,7 +93,7 @@ private extension RedundantSendableRule {
 
         private func removeRedundantSendable<T: DeclGroupSyntax & NamedDeclSyntax>(from decl: T) -> T {
             if decl.conformsToSendable, decl.isIsolatedToActor(actors: configuration.globalActors) {
-                correctionPositions.append(decl.name.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 return decl.withoutSendable
             }
             return decl

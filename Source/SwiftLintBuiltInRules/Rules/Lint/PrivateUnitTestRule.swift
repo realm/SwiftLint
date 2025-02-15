@@ -153,8 +153,7 @@ private extension PrivateUnitTestRule {
             guard node.isPrivate, node.isXCTestCase(configuration.testParentClasses) else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.classKeyword)
             return super.visit(node.with(\.modifiers, modifiers).with(\.classKeyword, declKeyword))
         }
@@ -163,8 +162,7 @@ private extension PrivateUnitTestRule {
             guard node.isTestMethod, node.isPrivate else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let (modifiers, declKeyword) = withoutPrivate(modifiers: node.modifiers, declKeyword: node.funcKeyword)
             return super.visit(node.with(\.modifiers, modifiers).with(\.funcKeyword, declKeyword))
         }

@@ -44,13 +44,9 @@ private extension ProtocolPropertyAccessorsOrderRule {
             guard node.hasViolation else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.accessors.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let reversedAccessors = AccessorDeclListSyntax(Array(node.accessorsList.reversed()))
-            return super.visit(
-                node.with(\.accessors, .accessors(reversedAccessors))
-            )
+            return super.visit(node.with(\.accessors, .accessors(reversedAccessors)))
         }
     }
 }

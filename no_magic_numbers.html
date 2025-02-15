@@ -466,6 +466,12 @@ test_parent_classes
     <span class="kd">@Test</span> <span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{</span> <span class="k">let</span> <span class="nv">_</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">a</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="cp">#if compiler(&lt;6.0) &amp;&amp; compiler(&gt;4.0)</span>
+<span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="cp">#elseif compiler(&lt;3.0)</span>
+<span class="k">let</span> <span class="nv">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="cp">#endif</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="err">↓</span><span class="mi">321</span><span class="p">)</span>
 </code></pre>
@@ -505,6 +511,14 @@ test_parent_classes
 <pre class="highlight swift"><code><span class="cp">#ExampleMacro {</span>
     <span class="kt">ContentView</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="err">↓</span><span class="mi">5</span><span class="p">)</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="cp">#if compiler(&lt;6.0) &amp;&amp; compiler(&gt;4.0)</span>
+<span class="nf">f</span><span class="p">(</span><span class="err">↓</span><span class="mf">6.0</span><span class="p">)</span>
+<span class="cp">#elseif compiler(&lt;3.0)</span>
+<span class="nf">f</span><span class="p">(</span><span class="err">↓</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="cp">#else</span>
+<span class="nf">f</span><span class="p">(</span><span class="err">↓</span><span class="mf">4.0</span><span class="p">)</span>
+<span class="cp">#endif</span>
 </code></pre>
 
           </div>

@@ -1,4 +1,4 @@
-name: Mark or Close Stale Issues
+name: Stale Issues
 
 on:
   schedule:
@@ -12,7 +12,7 @@ jobs:
   close-stale-issues:
     runs-on: ubuntu-latest
     steps:
-      - name: Mark or close
+      - name: Mark or close stale issues
         run: |
           ./tools/stale-issues.rb ${{ github.repository }}
         env:

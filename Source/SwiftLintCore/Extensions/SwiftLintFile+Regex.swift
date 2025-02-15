@@ -36,7 +36,7 @@ extension SwiftLintFile {
                 break
             }
 
-            let start = Location(file: path, line: command.line, character: command.character)
+            let start = Location(file: path, line: command.line, character: command.range?.upperBound)
             let end = endOf(next: nextCommand)
             guard start < end else { continue }
             var didSetRegion = false
@@ -67,7 +67,7 @@ extension SwiftLintFile {
         let rangeEnd = Location(file: self, characterOffset: NSMaxRange(range))
         return commands
             .filter { command in
-                let commandLocation = Location(file: path, line: command.line, character: command.character)
+                let commandLocation = Location(file: path, line: command.line, character: command.range?.upperBound)
                 return rangeStart <= commandLocation && commandLocation <= rangeEnd
             }
             .flatMap { $0.expand() }
@@ -79,7 +79,7 @@ extension SwiftLintFile {
         }
         let nextLine: Int
         let nextCharacter: Int?
-        if let nextCommandCharacter = nextCommand.character {
+        if let nextCommandCharacter = nextCommand.range?.upperBound {
             nextLine = nextCommand.line
             if nextCommandCharacter > 0 {
                 nextCharacter = nextCommandCharacter - 1

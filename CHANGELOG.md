@@ -30,6 +30,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5978](https://github.com/realm/SwiftLint/issues/5978)
 
+* Silence `no_magic_numbers` rule in conditions of `#if` directives.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6000](https://github.com/realm/SwiftLint/issues/6000)
+
 * Consider types restricting a protocol to classes in composed inherited types in `class_delegate_protocol` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5982](https://github.com/realm/SwiftLint/issues/5982)

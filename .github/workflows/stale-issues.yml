@@ -12,6 +12,8 @@ jobs:
   close-stale-issues:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Mark or close stale issues
         run: |
           ./tools/stale-issues.rb ${{ github.repository }}

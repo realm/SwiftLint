@@ -1,6 +1,8 @@
 import SourceKittenFramework
+import SwiftSyntax
 
-struct TypeContentsOrderRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct TypeContentsOrderRule: Rule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: ByteCount)
 
     var configuration = TypeContentsOrderConfiguration()
@@ -13,135 +15,135 @@ struct TypeContentsOrderRule: OptInRule {
         nonTriggeringExamples: TypeContentsOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeContentsOrderRuleExamples.triggeringExamples
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
-        let substructures = dict.substructure
-        return substructures.reduce(into: [StyleViolation]()) { violations, substructure in
-            violations.append(contentsOf: validateTypeSubstructure(substructure, in: file))
+private extension TypeContentsOrderRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private static let viewLifecycleMethodNames = [
+            "loadView",
+            "loadViewIfNeeded",
+            "viewIsAppearing",
+            "viewDidLoad",
+            "viewWillAppear",
+            "viewWillLayoutSubviews",
+            "viewDidLayoutSubviews",
+            "viewDidAppear",
+            "viewWillDisappear",
+            "viewDidDisappear",
+            "willMove",
+        ]
+
+        override func visitPost(_ node: ActorDeclSyntax) {
+            collectViolations(for: node)
         }
-    }
 
-    private func validateTypeSubstructure(
-        _ substructure: SourceKittenDictionary,
-        in file: SwiftLintFile
-    ) -> [StyleViolation] {
-        let typeContentOffsets = self.typeContentOffsets(in: substructure)
-        let orderedTypeContentOffsets = typeContentOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
+        override func visitPost(_ node: ClassDeclSyntax) {
+            collectViolations(for: node)
+        }
 
-        var violations = [StyleViolation]()
+        override func visitPost(_ node: EnumDeclSyntax) {
+            collectViolations(for: node)
+        }
 
-        var lastMatchingIndex = -1
-        for expectedTypesContents in configuration.order {
-            var potentialViolatingIndexes = [Int]()
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            collectViolations(for: node)
+        }
 
-            let startIndex = lastMatchingIndex + 1
-            (startIndex..<orderedTypeContentOffsets.count).forEach { index in
-                let typeContent = orderedTypeContentOffsets[index].typeContent
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            collectViolations(for: node)
+        }
 
-                if expectedTypesContents.contains(typeContent) {
-                    lastMatchingIndex = index
-                } else {
-                    potentialViolatingIndexes.append(index)
+        override func visitPost(_ node: StructDeclSyntax) {
+            collectViolations(for: node)
+        }
+
+        private func collectViolations(for typeDecl: some DeclGroupSyntax) {
+            let categories = typeDecl.memberBlock.members.compactMap(categorize)
+            let sortedCategories = categories.sorted { $0.position < $1.position }
+
+            var lastMatchingIndex = -1
+            for expectedTypesContents in configuration.order {
+                var potentialViolatingIndexes = [Int]()
+
+                let startIndex = lastMatchingIndex + 1
+                for index in startIndex..<sortedCategories.count {
+                    let category = sortedCategories[index].category
+                    if expectedTypesContents.contains(category) {
+                        lastMatchingIndex = index
+                    } else {
+                        potentialViolatingIndexes.append(index)
+                    }
+                }
+
+                let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
+                violatingIndexes.forEach { index in
+                    let category = sortedCategories[index].category
+                    let content = category.rawValue
+                    let expected = expectedTypesContents.map(\.rawValue).joined(separator: ",")
+                    let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
+                    violations.append(.init(
+                        position: sortedCategories[index].position,
+                        reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'"
+                    ))
                 }
             }
-
-            let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
-            violatingIndexes.forEach { index in
-                let typeContentOffset = orderedTypeContentOffsets[index]
-
-                let content = typeContentOffset.typeContent.rawValue
-                let expected = expectedTypesContents.map(\.rawValue).joined(separator: ",")
-                let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
-
-                let styleViolation = StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, byteOffset: typeContentOffset.offset),
-                    reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'"
-                )
-                violations.append(styleViolation)
-            }
         }
 
-        return violations
-    }
-
-    private func typeContentOffsets(in typeStructure: SourceKittenDictionary) -> [TypeContentOffset] {
-        typeStructure.substructure.compactMap { typeContentStructure in
-            guard let typeContent = typeContent(for: typeContentStructure) else { return nil }
-            return (typeContent, typeContentStructure.offset!)
-        }
-    }
-
-    // swiftlint:disable:next cyclomatic_complexity
-    private func typeContent(for typeContentStructure: SourceKittenDictionary) -> TypeContent? {
-        guard let typeContentKind = typeContentStructure.declarationKind else { return nil }
-
-        switch typeContentKind {
-        case .enumcase, .enumelement:
-            return .case
-
-        case .typealias:
-            return .typeAlias
-
-        case .associatedtype:
-            return .associatedType
-
-        case .class, .enum, .extension, .protocol, .struct:
-            return .subtype
-
-        case .varClass, .varStatic:
-            return .typeProperty
-
-        case .varInstance:
-            if typeContentStructure.enclosedSwiftAttributes.contains(.iboutlet) {
-                return .ibOutlet
+        // swiftlint:disable:next cyclomatic_complexity
+        private func categorize(member: MemberBlockItemSyntax) -> (position: AbsolutePosition, category: TypeContent)? {
+            let decl = member.decl
+            if let decl = decl.as(EnumCaseDeclSyntax.self) {
+                return (decl.caseKeyword.positionAfterSkippingLeadingTrivia, .case)
             }
-            if typeContentStructure.enclosedSwiftAttributes.contains(.ibinspectable) {
-                return .ibInspectable
+            if let decl = decl.as(TypeAliasDeclSyntax.self) {
+                return (decl.typealiasKeyword.positionAfterSkippingLeadingTrivia, .typeAlias)
             }
-            return .instanceProperty
-
-        case .functionMethodClass, .functionMethodStatic:
-            return .typeMethod
-
-        case .functionMethodInstance:
-            let viewLifecycleMethodNames = [
-                "loadView(",
-                "loadViewIfNeeded(",
-                "viewIsAppearing(",
-                "viewDidLoad(",
-                "viewWillAppear(",
-                "viewWillLayoutSubviews(",
-                "viewDidLayoutSubviews(",
-                "viewDidAppear(",
-                "viewWillDisappear(",
-                "viewDidDisappear(",
-                "willMove(",
-            ]
-
-            if typeContentStructure.name!.starts(with: "init(") {
-                return .initializer
+            if let decl = decl.as(AssociatedTypeDeclSyntax.self) {
+                return (decl.associatedtypeKeyword.positionAfterSkippingLeadingTrivia, .associatedType)
             }
-            if typeContentStructure.name!.starts(with: "deinit") {
-                return .deinitializer
+            if let decl = decl.asProtocol((any DeclGroupSyntax).self) {
+                return (decl.introducer.positionAfterSkippingLeadingTrivia, .subtype)
             }
-            if viewLifecycleMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
-                return .viewLifeCycleMethod
+            if let decl = decl.as(VariableDeclSyntax.self) {
+                let position = decl.modifiers.first(where: \.isStaticOrClass)?.positionAfterSkippingLeadingTrivia
+                    ?? decl.bindingSpecifier.positionAfterSkippingLeadingTrivia
+                if decl.modifiers.containsStaticOrClass {
+                    return (position, .typeProperty)
+                }
+                if decl.attributes.contains(attributeNamed: "IBOutlet") {
+                    return (position, .ibOutlet)
+                }
+                if decl.attributes.contains(attributeNamed: "IBInspectable") {
+                    return (position, .ibInspectable)
+                }
+                return (position, .instanceProperty)
             }
-            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
-                return .ibAction
+            if let decl = decl.as(FunctionDeclSyntax.self) {
+                let position = decl.modifiers.first(where: \.isStaticOrClass)?.positionAfterSkippingLeadingTrivia
+                    ?? decl.funcKeyword.positionAfterSkippingLeadingTrivia
+                if decl.modifiers.containsStaticOrClass {
+                    return (position, .typeMethod)
+                }
+                if Self.viewLifecycleMethodNames.contains(decl.name.text) {
+                    return (position, .viewLifeCycleMethod)
+                }
+                if decl.attributes.contains(attributeNamed: "IBAction") {
+                    return (position, .ibAction)
+                }
+                if decl.attributes.contains(attributeNamed: "IBSegueAction") {
+                    return (position, .ibSegueAction)
+                }
+                return (position, .otherMethod)
             }
-            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibsegueaction) {
-                return .ibSegueAction
+            if let decl = decl.as(InitializerDeclSyntax.self) {
+                return (decl.initKeyword.positionAfterSkippingLeadingTrivia, .initializer)
             }
-            return .otherMethod
-
-        case .functionSubscript:
-            return .subscript
-
-        default:
+            if let decl = decl.as(DeinitializerDeclSyntax.self) {
+                return (decl.deinitKeyword.positionAfterSkippingLeadingTrivia, .deinitializer)
+            }
+            if let decl = decl.as(SubscriptDeclSyntax.self) {
+                return (decl.subscriptKeyword.positionAfterSkippingLeadingTrivia, .subscript)
+            }
             return nil
         }
     }

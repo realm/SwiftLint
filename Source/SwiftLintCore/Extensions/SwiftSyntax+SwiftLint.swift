@@ -125,6 +125,10 @@ public extension DeclModifierSyntax {
             return nil
         }
     }
+
+    var isStaticOrClass: Bool {
+        name.tokenKind == .keyword(.static) || name.tokenKind == .keyword(.class)
+    }
 }
 
 public extension AttributeSyntax {

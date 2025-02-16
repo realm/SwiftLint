@@ -15,6 +15,7 @@ steps:
       - gem install bundler -v 2.4.22
       - echo "+++ Run OSS Scan"
       - make oss_scan
+    priority: 10
   - label: "TSan Tests"
     commands:
       - echo "+++ Test"

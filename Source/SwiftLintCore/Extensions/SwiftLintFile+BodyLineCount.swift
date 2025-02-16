@@ -44,12 +44,12 @@ public extension SwiftLintFile {
             .tokens(viewMode: .sourceAccurate)
             .reduce(into: []) { linesWithTokens, token in
                 if case .stringSegment = token.tokenKind {
-                    let sourceRange = token
-                        .trimmed
-                        .sourceRange(converter: locationConverter)
-                    let startLine = sourceRange.start.line
-                    let endLine = sourceRange.end.line
-                    linesWithTokens.formUnion(startLine...endLine)
+                    let sourceRange = token.sourceRange(
+                        converter: locationConverter,
+                        afterLeadingTrivia: true,
+                        afterTrailingTrivia: true
+                    )
+                    linesWithTokens.formUnion(sourceRange.start.line...sourceRange.end.line)
                 } else {
                     let line = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia).line
                     linesWithTokens.insert(line)

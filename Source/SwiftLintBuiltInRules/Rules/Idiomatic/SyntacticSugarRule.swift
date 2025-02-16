@@ -151,10 +151,10 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: SameTypeRequirementSyntax) {
         // @_specialize(where S == ↓Array<Character>)
-        if let violation = violation(in: node.leftType) {
+        if let violation = violation(in: node.leftType.as(TypeSyntax.self)) {
             violations.append(violation)
         }
-        if let violation = violation(in: node.rightType) {
+        if let violation = violation(in: node.rightType.as(TypeSyntax.self)) {
             violations.append(violation)
         }
     }
@@ -180,7 +180,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
         node.genericArgumentClause.arguments
             .lazy
-            .compactMap { self.violation(in: $0.argument) }
+            .compactMap { self.violation(in: $0.argument.as(TypeSyntax.self)) }
             .first
             .map { violations.append($0) }
     }
@@ -203,7 +203,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
 
             // If there's no type, check all inner generics like in the case of 'Box<Array<T>>'
             guard let genericArguments = simpleType.genericArgumentClause else { return nil }
-            let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argument) }
+            let innerTypes = genericArguments.arguments.compactMap { violation(in: $0.argument.as(TypeSyntax.self)) }
             return innerTypes.first
         }
 
@@ -238,8 +238,10 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
             correctionType = .dictionary(commaStart: lastArgumentEnd, commaEnd: comma.endPosition)
         }
 
-        let firstInnerViolation = violation(in: firstGenericType.argument)
-        let secondInnerViolation = generic.arguments.count > 1 ? violation(in: lastGenericType.argument) : nil
+        let firstInnerViolation = violation(in: firstGenericType.argument.as(TypeSyntax.self))
+        let secondInnerViolation = generic.arguments.count > 1
+            ? violation(in: lastGenericType.argument.as(TypeSyntax.self))
+            : nil
 
         return SyntacticSugarRuleViolation(
             position: node.positionAfterSkippingLeadingTrivia,

@@ -8,6 +8,7 @@ enum AutoConfigParser: MemberMacro {
     static func expansion(
         of _: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
+        conformingTo _: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard let configuration = declaration.as(StructDeclSyntax.self) else {

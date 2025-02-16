@@ -41,9 +41,12 @@ public extension AbsolutePosition {
     }
 }
 
-public extension ByteSourceRange {
+public extension Range<AbsolutePosition> {
     func toSourceKittenByteRange() -> ByteRange {
-        ByteRange(location: ByteCount(offset), length: ByteCount(length))
+        ByteRange(
+            location: ByteCount(lowerBound),
+            length: ByteCount(upperBound.utf8Offset) - ByteCount(lowerBound.utf8Offset)
+        )
     }
 }
 
@@ -341,7 +344,7 @@ public extension DeclReferenceExprSyntax {
 
 public extension ClosureCaptureSyntax {
     var capturesSelf: Bool {
-        expression.as(DeclReferenceExprSyntax.self)?.isSelf == true
+        name.text == "self"
     }
 
     var capturesWeakly: Bool {

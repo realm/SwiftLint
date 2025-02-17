@@ -7,6 +7,7 @@ extension Configuration {
         case excluded = "excluded"
         case included = "included"
         case optInRules = "opt_in_rules"
+        case reportCoverage = "report_coverage"
         case reporter = "reporter"
         case swiftlintVersion = "swiftlint_version"
         case warningThreshold = "warning_threshold"
@@ -99,6 +100,7 @@ extension Configuration {
             excludedPaths: defaultStringArray(dict[Key.excluded.rawValue]),
             indentation: Self.getIndentationLogIfInvalid(from: dict),
             warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
+            reportCoverage: dict[Key.reportCoverage.rawValue] as? Bool ?? false,
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
             cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
             pinnedVersion: dict[Key.swiftlintVersion.rawValue].map { ($0 as? String) ?? String(describing: $0) },

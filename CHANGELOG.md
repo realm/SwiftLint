@@ -21,7 +21,7 @@
   function parameter can be replaced with an opaque `some` type.  
   [SimplyDanny](https://github.com/SimplyDanny)
 * Add new `multiple_variable_declaration` opt-in rule that triggers when the there's any declaration of variable and/or constants at the same line.  
-  [AhmadZaghloul](https://github.com/AhmedZaghloul19)
+  [Ahmad Zaghloul](https://github.com/AhmedZaghloul19)
 
 ### Bug Fixes
 

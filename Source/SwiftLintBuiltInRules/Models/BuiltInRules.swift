@@ -121,6 +121,7 @@ public let builtInRules: [any Rule.Type] = [
     MultilineParametersBracketsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
+    MultipleVariableDeclarationRule.self,
     NSLocalizedStringKeyRule.self,
     NSLocalizedStringRequireBundleRule.self,
     NSNumberInitAsFunctionReferenceRule.self,
@@ -246,5 +247,4 @@ public let builtInRules: [any Rule.Type] = [
     XCTFailMessageRule.self,
     XCTSpecificMatcherRule.self,
     YodaConditionRule.self,
-    MultipleVariableDeclarationRule.self,
 ]

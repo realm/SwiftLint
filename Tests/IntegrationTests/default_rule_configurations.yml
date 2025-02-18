@@ -567,7 +567,7 @@ multiple_closures_with_trailing_closure:
 multiple_variable_declaration:
   severity: warning
   meta:
-    opt-in: false
+    opt-in: true
 nesting:
   type_level:
     warning: 1

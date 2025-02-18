@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule
+@SwiftSyntaxRule(optIn: true)
 struct MultipleVariableDeclarationRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

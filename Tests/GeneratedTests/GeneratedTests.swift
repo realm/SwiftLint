@@ -715,6 +715,12 @@ final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTest
     }
 }
 
+final class MultipleVariableDeclarationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultipleVariableDeclarationRule.description)
+    }
+}
+
 final class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringKeyRule.description)
@@ -1462,11 +1468,5 @@ final class XCTSpecificMatcherRuleGeneratedTests: SwiftLintTestCase {
 final class YodaConditionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(YodaConditionRule.description)
-    }
-}
-
-final class MultipleVariableDeclarationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(MultipleVariableDeclarationRule.description)
     }
 }

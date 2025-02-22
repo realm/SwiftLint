@@ -91,23 +91,13 @@ swift_library(
         "@SwiftSyntax//:SwiftParserDiagnostics_opt",
         "@SwiftSyntax//:SwiftSyntaxBuilder_opt",
         "@SwiftSyntax//:SwiftSyntax_opt",
-        ":SourceKittenFramework.wrapper",
+        "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
         "@sourcekitten_com_github_jpsim_yams//:Yams",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
-)
-
-swift_library(
-    name = "SourceKittenFramework.wrapper",
-    srcs = ["Source/SourceKittenFrameworkWrapper/Empty.swift"],
-    module_name = "SourceKittenFrameworkWrapper",
-    visibility = ["//visibility:public"],
-    deps = [
-        "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
-    ],
 )
 
 swift_library(

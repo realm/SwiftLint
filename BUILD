@@ -7,6 +7,8 @@ load(
     "swift_library",
     "universal_swift_compiler_plugin",
 )
+load("@build_bazel_rules_cc//cc:cc_library.bzl", "cc_library")
+load("@build_bazel_rules_shell//shell:sh_test.bzl", "sh_test")
 
 bool_flag(
     name = "universal_tools",
@@ -32,13 +34,15 @@ copts = [
     "ForwardTrailingClosures",
     "-enable-upcoming-feature",
     "ImplicitOpenExistentials",
-    "-Xfrontend", "-warn-implicit-overrides",
+    "-Xfrontend",
+    "-warn-implicit-overrides",
 ]
 
 strict_concurrency_copts = [
     "-Xfrontend",
     "-strict-concurrency=complete",
 ]
+
 targeted_concurrency_copts = [
     "-Xfrontend",
     "-strict-concurrency=targeted",
@@ -188,7 +192,10 @@ cc_library(
 
 filegroup(
     name = "LintInputs",
-    srcs = glob(["Plugins/**/*.swift", "Source/**/*.swift"]) + [
+    srcs = glob([
+        "Plugins/**/*.swift",
+        "Source/**/*.swift",
+    ]) + [
         ".swiftlint.yml",
         "Package.swift",
         "//Tests:TestSources",

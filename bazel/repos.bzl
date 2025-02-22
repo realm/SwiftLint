@@ -6,15 +6,15 @@ def swiftlint_repos(bzlmod = False):
         http_archive(
             name = "com_github_jpsim_sourcekitten",
             sha256 = "d9c559166f01627826505b0e655b56a59f86938389e1739259e6ce49c9fd95f0",
-            strip_prefix = "SourceKitten-0.35.0",
-            url = "https://github.com/jpsim/SourceKitten/releases/download/0.35.0/SourceKitten-0.35.0.tar.gz",
+            strip_prefix = "SourceKitten-0.37.0",
+            url = "https://github.com/jpsim/SourceKitten/releases/download/0.37.0/SourceKitten-0.37.0.tar.gz",
         )
 
         http_archive(
             name = "SwiftSyntax",
             sha256 = "6572f60ca3c75c2a40f8ccec98c5cd0d3994599a39402d69b433381aaf2c1712",
-            strip_prefix = "swift-syntax-510.0.2",
-            url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/510.0.2.tar.gz",
+            strip_prefix = "swift-syntax-600.0.0",
+            url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/600.0.0.tar.gz",
         )
 
         http_archive(
@@ -27,17 +27,17 @@ def swiftlint_repos(bzlmod = False):
 
         http_archive(
             name = "sourcekitten_com_github_jpsim_yams",
-            url = "https://github.com/jpsim/Yams/releases/download/5.0.6/Yams-5.0.6.tar.gz",
+            url = "https://github.com/jpsim/Yams/releases/download/5.3.0/Yams-5.3.0.tar.gz",
             sha256 = "a81c6b93f5d26bae1b619b7f8babbfe7c8abacf95b85916961d488888df886fb",
-            strip_prefix = "Yams-5.0.6",
+            strip_prefix = "Yams-5.3.0",
         )
 
         http_archive(
             name = "sourcekitten_com_github_drmohundro_SWXMLHash",
-            url = "https://github.com/drmohundro/SWXMLHash/archive/refs/tags/7.0.1.tar.gz",
+            url = "https://github.com/drmohundro/SWXMLHash/archive/refs/tags/7.0.2.tar.gz",
             build_file = "@com_github_jpsim_sourcekitten//bazel:SWXMLHash.BUILD",
             sha256 = "bafa037a09aa296f180e5613206748db5053b79aa09258c78d093ae9f8102a18",
-            strip_prefix = "SWXMLHash-7.0.1",
+            strip_prefix = "SWXMLHash-7.0.2",
         )
 
     http_archive(

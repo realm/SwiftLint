@@ -38,6 +38,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5982](https://github.com/realm/SwiftLint/issues/5982)
 
+* Rewrite `type_contents_order` rule with SwiftSyntax fixing an issue with experimental availability macros.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5999](https://github.com/realm/SwiftLint/issues/5999)
+
 ## 0.58.2: New Year’s Fresh Fold
 
 ### Breaking

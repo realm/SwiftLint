@@ -14,9 +14,9 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
     }
     var customRuleConfigurations = [RegexConfiguration<Parent>]()
 
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         for (key, value) in configurationDict {

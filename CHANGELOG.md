@@ -21,6 +21,11 @@
   function parameter can be replaced with an opaque `some` type.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add a new rationale property to rule descriptions, providing a more expansive
+  description of the motivation behind each rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5681](https://github.com/realm/SwiftLint/issues/5681)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  
@@ -168,7 +173,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
-### Bug Fixes
+#### Bug Fixes
 
 * Ignore TipKit's `#Rule` macro in `empty_count` rule.  
   [Ueeek](https://github.com/Ueeek)

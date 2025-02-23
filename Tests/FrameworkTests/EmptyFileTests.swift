@@ -23,8 +23,7 @@ final class EmptyFileTests: SwiftLintTestCase {
 
     func testShouldLintEmptyFileRespectedDuringCorrect() throws {
         let corrections = collectedLinter.correct(using: ruleStorage)
-        XCTAssertEqual(corrections.count, 1)
-        XCTAssertEqual(corrections.first?.ruleDescription.identifier, "rule_mock<LintEmptyFiles>")
+        XCTAssertEqual(corrections, ["rule_mock<LintEmptyFiles>": 1])
     }
 }
 
@@ -56,14 +55,10 @@ private struct RuleMock<ShouldLintEmptyFiles: ShouldLintEmptyFilesProtocol>: Cor
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        [
-            StyleViolation(ruleDescription: Self.description, location: Location(file: file.path))
-        ]
+        [StyleViolation(ruleDescription: Self.description, location: Location(file: file.path))]
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
-        [
-            Correction(ruleDescription: Self.description, location: Location(file: file.path))
-        ]
+    func correct(file _: SwiftLintFile) -> Int {
+        1
     }
 }

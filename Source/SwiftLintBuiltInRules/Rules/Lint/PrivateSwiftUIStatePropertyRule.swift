@@ -117,7 +117,7 @@ private extension PrivateSwiftUIStatePropertyRule {
                 return DeclSyntax(node)
             }
 
-            correctionPositions.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
 
             // If there are no modifiers present on the current syntax node,
             // then we should retain the binding specifier's leading trivia

@@ -96,10 +96,10 @@ private extension UnusedControlFlowLabelRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: LabeledStmtSyntax) -> StmtSyntax {
-            guard let violationPosition = node.violationPosition else {
+            guard node.violationPosition != nil else {
                 return super.visit(node)
             }
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             return visit(node.statement.with(\.leadingTrivia, node.leadingTrivia))
         }
     }

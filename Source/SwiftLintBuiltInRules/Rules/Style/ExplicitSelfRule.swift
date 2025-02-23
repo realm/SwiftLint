@@ -23,21 +23,18 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
         }
     }
 
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> Int {
         let violations = violationRanges(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
-
+        if matches.isEmpty {
+            return 0
+        }
         var contents = file.contents.bridge()
-        let description = Self.description
-        var corrections = [Correction]()
         for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "self.").bridge()
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents.bridge())
-        return corrections
+        return matches.count
     }
 
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {

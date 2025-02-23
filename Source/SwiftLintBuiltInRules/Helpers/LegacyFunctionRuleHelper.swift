@@ -52,12 +52,9 @@ enum LegacyFunctionRuleHelper {
                   let funcName = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let trimmedArguments = node.arguments.map { $0.trimmingTrailingComma() }
             let rewriteStrategy = legacyFunctions[funcName]
-
             let expr: ExprSyntax
             switch rewriteStrategy {
             case .equal:

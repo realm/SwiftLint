@@ -44,7 +44,7 @@ private extension FinalTestCaseRule {
         override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
             var newNode = node
             if node.isNonFinalTestClass(parentClasses: configuration.testParentClasses) {
-                correctionPositions.append(node.name.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 let finalModifier = DeclModifierSyntax(name: .keyword(.final))
                 newNode =
                     if node.modifiers.isEmpty {

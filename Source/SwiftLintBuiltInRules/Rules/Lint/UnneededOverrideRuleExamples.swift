@@ -137,6 +137,13 @@ struct UnneededOverrideRuleExamples {
             }
         }
         """),
+        Example("""
+        class Foo {
+            override func setUp() {
+                super.setUp()
+            }
+        }
+        """, configuration: ["excluded": ["setUp"]]),
     ]
 
     static let triggeringExamples = [

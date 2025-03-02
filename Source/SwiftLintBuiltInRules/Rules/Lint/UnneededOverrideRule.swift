@@ -19,7 +19,7 @@ struct UnneededOverrideRule: Rule {
 private extension UnneededOverrideRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if node.isUnneededOverride {
+            if node.isUnneededOverride(configuration: configuration) {
                 self.violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -33,7 +33,7 @@ private extension UnneededOverrideRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionDeclSyntax) -> DeclSyntax {
-            guard node.isUnneededOverride else {
+            guard node.isUnneededOverride(configuration: configuration) else {
                 return super.visit(node)
             }
 
@@ -59,8 +59,8 @@ private extension UnneededOverrideRule {
 }
 
 private extension FunctionDeclSyntax {
-    var isUnneededOverride: Bool {
-        mayBeUnneededOverride(name: name.text)
+    func isUnneededOverride(configuration: UnneededOverrideRuleConfiguration) -> Bool {
+        mayBeUnneededOverride(name: name.text) && !configuration.excluded.contains(name.text)
     }
 }
 
@@ -83,7 +83,7 @@ private protocol OverridableDecl: WithAttributesSyntax, WithModifiersSyntax {
 }
 
 private extension OverridableDecl {
-    /// Perform checks common to all overridable types of declarations.
+    /// Perform checks common to all overridable types of declarations. Returns `true` if the `override` appears to be unneeded.
     func mayBeUnneededOverride(name: String) -> Bool {
         guard modifiers.contains(keyword: .override), let statement = body?.statements.onlyElement else {
             return false

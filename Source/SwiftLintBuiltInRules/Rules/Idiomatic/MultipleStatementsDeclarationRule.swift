@@ -10,36 +10,10 @@ struct MultipleStatementsDeclarationRule: Rule {
         description: "Statements should not be on the same line",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example(
-                """
-                    let a = 1;
-                    let b = 2;
-                """
-                ),
-            Example(
-                """
-                    var x = 10
-                    var y = 20;
-                """
-            ),
-            Example(
-                """
-                    let x = 10;
-                    var y = 20
-                """
-            ),
-            Example(
-                """
-                    let a = 1;
-                    return a
-                """
-            ),
-            Example(
-                """
-                    if b { return };  
-                    let a = 1
-                """
-            ),
+            Example("let a = 1;\nlet b = 2;"),
+            Example("var x = 10\nvar y = 20;"),
+            Example("let a = 1;\nreturn a"),
+            Example("if b { return };  \nlet a = 1"),
         ],
         triggeringExamples: [
             Example("let a = 1; return a"),
@@ -51,7 +25,8 @@ struct MultipleStatementsDeclarationRule: Rule {
         ],
         corrections: [
             Example("let a = 0↓; let b = 0"): Example("let a = 0\nlet b = 0"),
-            Example("let a = 0↓; let b = 0↓; let c = 0"): Example("let a = 0\nlet b = 0\nlet c = 0"),
+            Example("let a = 0↓; let b = 0↓; let c = 0"):
+                Example("let a = 0\nlet b = 0\nlet c = 0"),
             Example("let a = 0↓; print(\"Hello\")"): Example("let a = 0\nprint(\"Hello\")"),
         ]
     )
@@ -73,7 +48,6 @@ private extension MultipleStatementsDeclarationRule {
             }
 
             correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            
             let newNode = TokenSyntax(
                 .unknown(""),
                 leadingTrivia: node.leadingTrivia,
@@ -83,24 +57,23 @@ private extension MultipleStatementsDeclarationRule {
             return super.visit(newNode)
         }
     }
-
 }
 
 private extension TokenSyntax {
     var isThereStatementAfterSemicolon: Bool {
-        guard tokenKind == .semicolon, !trailingTrivia.isEmpty else { return false }
+        guard tokenKind == .semicolon,
+            !trailingTrivia.isEmpty else { return false }
 
         if let nextToken = nextToken(viewMode: .sourceAccurate),
            isFollowedOnlyByWhitespaceOrNewline {
             return nextToken.leadingTrivia.containsNewlines() == false
-        } else {
-            return true
         }
+        return true
     }
-    
+
     var isFollowedOnlyByWhitespaceOrNewline: Bool {
         guard let nextToken = nextToken(viewMode: .sourceAccurate),
-              !nextToken.trailingTrivia.isEmpty else {
+            !nextToken.trailingTrivia.isEmpty else {
             return true
         }
         return nextToken.leadingTrivia.allSatisfy { $0.isWhitespaceOrNewline }

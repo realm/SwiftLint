@@ -12,6 +12,9 @@
 
 ### Enhancements
 
+* Add new `multiple_statements_declaration` opt-in rule that triggers when the there's multiple statements at the same line.  
+  [Ahmad Zaghloul](https://github.com/AhmedZaghloul19)
+
 * Exclude types with a `@Suite` attribute and functions annotated with `@Test` from `no_magic_numbers` rule.
   Also treat a type as a `@Suite` if it contains `@Test` functions.  
   [SimplyDanny](https://github.com/SimplyDanny)
@@ -20,8 +23,6 @@
 * Add new `opaque_over_existential` opt-in rule that triggers when the existential `any` type of a
   function parameter can be replaced with an opaque `some` type.  
   [SimplyDanny](https://github.com/SimplyDanny)
-* Add new `multiple_variable_declaration` opt-in rule that triggers when the there's any declaration of variable and/or constants at the same line.  
-  [Ahmad Zaghloul](https://github.com/AhmedZaghloul19)
 
 ### Bug Fixes
 

@@ -62,12 +62,9 @@ struct LineLengthRule: Rule {
                 return nil
             }
 
-            if configuration.ignoresMultilineStrings,
-               syntaxKindsByLine.value[line.index] == [.string] {
-                let lastStringLineIndex = (syntaxKindsByLine.value.dropFirst(line.index + 1).firstIndex(where: { $0 != [.string] }) ?? (file.lines.count + 1)) - 2
-                if file.lines[lastStringLineIndex].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") {
-                    return nil
-                }
+            if configuration.ignoresMultilineStrings &&
+               lineIsMultilineString(line, file: file, syntaxKindsByLine: syntaxKindsByLine.value) {
+                return nil
             }
 
             for pattern in configuration.excludedLinesPatterns where line.containsMatchingPattern(pattern) {
@@ -94,6 +91,30 @@ struct LineLengthRule: Rule {
             }
             return nil
         }
+    }
+
+    /// Checks if the given line is part of a multiline string
+    /// - Example:
+    /// ```
+    /// let a = """
+    /// <line is somewhere in here>
+    /// """
+    /// ```
+    private func lineIsMultilineString(_ line: Line, file: SwiftLintFile, syntaxKindsByLine: [[SyntaxKind]]) -> Bool {
+        // contents of multiline strings only include one string element per line
+        guard syntaxKindsByLine[line.index] == [.string] else { return false }
+
+        // find the trailing delimiter `"""` in to make sure we're not in a list of concatinated strings
+        let lastStringLineIndex = syntaxKindsByLine.dropFirst(line.index + 1).firstIndex(where: { $0 != [.string] })
+        guard let lastStringLineIndex else {
+            return file.lines.last?.content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") == true
+        }
+        
+        // lines include leading empty element
+        // check last string line for single `"""`
+        // and if it fails, check the next line contains more than just a string for `"""; let a = 1`
+        return file.lines[lastStringLineIndex - 1].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") ||
+        file.lines[lastStringLineIndex - 2].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"")
     }
 
     /// Takes a string and replaces any literals specified by the `delimiter` parameter with `#`

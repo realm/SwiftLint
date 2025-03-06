@@ -26,6 +26,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5681](https://github.com/realm/SwiftLint/issues/5681)
 
+* Add new `allowed_types` option to `legacy_objc_type` rule to ignore certain types.  
+  [kapitoshka438](https://github.com/kapitoshka438)
+  [#3723](https://github.com/realm/SwiftLint/issues/3723)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  

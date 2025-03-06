@@ -121,6 +121,7 @@ public let builtInRules: [any Rule.Type] = [
     MultilineParametersBracketsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
+    MultipleStatementsDeclarationRule.self,
     NSLocalizedStringKeyRule.self,
     NSLocalizedStringRequireBundleRule.self,
     NSNumberInitAsFunctionReferenceRule.self,

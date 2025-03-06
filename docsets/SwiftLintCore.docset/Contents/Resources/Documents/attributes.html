@@ -379,6 +379,19 @@ always_on_line_above
 </tbody>
 </table></li>
 </ul>
+<h2 id='rationale' class='heading'>Rationale</h2>
+
+<p>Erica Sadun says:</p>
+
+<blockquote>
+<p>My take on things after the poll and after talking directly with a number of developers is this: Placing attributes like <code>@objc</code>, <code>@testable</code>, <code>@available</code>, <code>@discardableResult</code> on their own lines before a member declaration has become a conventional Swift style.</p>
+
+<p>This approach limits declaration length. It allows a member to float below its attribute and supports flush-left access modifiers, so <code>internal</code>, <code>public</code>, etc appear in the leftmost column. Many developers mix-and-match styles for short Swift attributes like <code>@objc</code></p>
+</blockquote>
+
+<p>See <a href="https://ericasadun.com/2016/10/02/quick-style-survey/">https://ericasadun.com/2016/10/02/quick-style-survey/</a> for discussion.</p>
+
+<p>SwiftLint&rsquo;s rule requires attributes to be on their own lines for functions and types, but on the same line for variables and imports.</p>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">@objc</span> <span class="k">var</span> <span class="nv">x</span><span class="p">:</span> <span class="kt">String</span>
 </code></pre>

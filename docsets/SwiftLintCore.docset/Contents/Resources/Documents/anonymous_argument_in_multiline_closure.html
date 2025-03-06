@@ -355,6 +355,19 @@ warning
 </tbody>
 </table></li>
 </ul>
+<h2 id='rationale' class='heading'>Rationale</h2>
+
+<p>In multiline closures, for clarity, prefer using named arguments</p>
+<pre class="highlight swift"><code><span class="n">closure</span> <span class="p">{</span> <span class="n">arg</span> <span class="k">in</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>to anonymous arguments</p>
+<pre class="highlight swift"><code><span class="n">closure</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="err">↓</span><span class="nv">$0</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="n">closure</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
 </code></pre>

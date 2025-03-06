@@ -355,6 +355,27 @@ warning
 </tbody>
 </table></li>
 </ul>
+<h2 id='rationale' class='heading'>Rationale</h2>
+
+<p>When converting the elements of a sequence directly into an <code>Array</code>, for clarity, prefer using the <code>Array</code> constructor over calling <code>map</code>. For example</p>
+<pre class="highlight swift"><code><span class="kt">Array</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</code></pre>
+
+<p>rather than</p>
+<pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="err">↓</span><span class="nf">map</span><span class="p">({</span> <span class="nv">$0</span> <span class="p">})</span>
+</code></pre>
+
+<p>If some processing of the elements is required, then using <code>map</code> is fine. For example</p>
+<pre class="highlight swift"><code><span class="n">foo</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">!</span><span class="nv">$0</span> <span class="p">}</span>
+</code></pre>
+
+<p>Constructs like</p>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">MyError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{}</span>
+<span class="k">let</span> <span class="nv">myResult</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">MyError</span><span class="o">&gt;</span> <span class="o">=</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="s">""</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">result</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Any</span><span class="p">,</span> <span class="kt">MyError</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">myResult</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+</code></pre>
+
+<p>may be picked up as false positives by the <code>array_init</code> rule. If your codebase contains constructs like this, consider using the <code><a href="typesafe_array_init.html">typesafe_array_init</a></code> analyzer rule instead.</p>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kt">Array</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </code></pre>

@@ -363,6 +363,13 @@ test_parent_classes
 </tbody>
 </table></li>
 </ul>
+<h2 id='rationale' class='heading'>Rationale</h2>
+
+<p>The <code>setUp</code> method of <code>XCTestCase</code> can be used to set up variables and resources before each test is run (or with the <code>class</code> variant, before all tests are run).</p>
+
+<p>This rule verifies that every class with an implementation of a <code>setUp</code> method also has a <code>tearDown</code> method (and vice versa).</p>
+
+<p>The <code>tearDown</code> method should be used to cleanup or reset any resources that could otherwise have any effects on subsequent tests, and to free up any instance variables.</p>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">FooTests</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
     <span class="k">override</span> <span class="kd">func</span> <span class="nf">setUp</span><span class="p">()</span> <span class="p">{}</span>

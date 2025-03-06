@@ -371,6 +371,21 @@ always_blanket_disable
 </tbody>
 </table></li>
 </ul>
+<h2 id='rationale' class='heading'>Rationale</h2>
+
+<p>The intent of this rule is to prevent code like</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable force_unwrapping</span>
+<span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="n">bar</span><span class="o">!</span>
+</code></pre>
+
+<p>which disables the <code><a href="force_unwrapping.html">force_unwrapping</a></code> rule for the remainder of the file, instead of just for the specific violation.</p>
+
+<p><code>next</code>, <code>this</code>, or <code>previous</code> can be used to restrict the disable command&rsquo;s scope to a single line, or it can be re-enabled after the violations.</p>
+
+<p>To disable this rule in code you will need to do something like</p>
+<pre class="highlight swift"><code><span class="c1">// swiftlint:disable:next blanket_disable_command</span>
+<span class="c1">// swiftlint:disable force_unwrapping</span>
+</code></pre>
 <h2 id='non-triggering-examples' class='heading'>Non Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="c1">// swiftlint:disable unused_import</span>
 <span class="c1">// swiftlint:enable unused_import</span>

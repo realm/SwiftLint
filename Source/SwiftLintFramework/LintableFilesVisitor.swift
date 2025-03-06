@@ -129,10 +129,11 @@ struct LintableFilesVisitor {
         }
     }
 
-    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions) throws -> CompilerInvocations {
+    private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions)
+            throws(SwiftLintError) -> CompilerInvocations {
         if let path = options.compilerLogPath {
             guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
-                throw SwiftLintError.usageError(description: "Could not read compiler log at path: '\(path)'")
+                throw .usageError(description: "Could not read compiler log at path: '\(path)'")
             }
 
             return .buildLog(compilerInvocations: compilerInvocations)
@@ -141,13 +142,13 @@ struct LintableFilesVisitor {
             do {
                 return .compilationDatabase(compileCommands: try self.loadCompileCommands(path))
             } catch {
-                throw SwiftLintError.usageError(
+                throw .usageError(
                     description: "Could not read compilation database at path: '\(path)' \(error.localizedDescription)"
                 )
             }
         }
 
-        throw SwiftLintError.usageError(description: "Could not read compiler invocations")
+        throw .usageError(description: "Could not read compiler invocations")
     }
 
     private static func loadLogCompilerInvocations(_ path: String) -> [[String]]? {

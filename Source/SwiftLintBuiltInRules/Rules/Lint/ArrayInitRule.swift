@@ -8,6 +8,37 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         identifier: "array_init",
         name: "Array Init",
         description: "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
+        rationale: """
+        When converting the elements of a sequence directly into an `Array`, for clarity, prefer using the `Array` \
+        constructor over calling `map`. For example
+
+        ```
+        Array(foo)
+        ```
+
+        rather than
+
+        ```
+        foo.↓map({ $0 })
+        ```
+
+        If some processing of the elements is required, then using `map` is fine. For example
+
+        ```
+        foo.map { !$0 }
+        ```
+
+        Constructs like
+
+        ```
+        enum MyError: Error {}
+        let myResult: Result<String, MyError> = .success("")
+        let result: Result<Any, MyError> = myResult.map { $0 }
+        ```
+
+        may be picked up as false positives by the `array_init` rule. If your codebase contains constructs like this, \
+        consider using the `typesafe_array_init` analyzer rule instead.
+        """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("Array(foo)"),

@@ -40,6 +40,10 @@ struct RuleDocumentation {
     var fileContents: String {
         let description = ruleType.description
         var content = [h1(description.name), description.description, detailsSummary(ruleType.init())]
+        if let formattedRationale = description.formattedRationale {
+            content += [h2("Rationale")]
+            content.append(formattedRationale)
+        }
         let nonTriggeringExamples = description.nonTriggeringExamples.filter { !$0.excludeFromDocumentation }
         if nonTriggeringExamples.isNotEmpty {
             content += [h2("Non Triggering Examples")]

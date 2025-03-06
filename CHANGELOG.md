@@ -173,7 +173,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
-#### Bug Fixes
+### Bug Fixes
 
 * Ignore TipKit's `#Rule` macro in `empty_count` rule.  
   [Ueeek](https://github.com/Ueeek)

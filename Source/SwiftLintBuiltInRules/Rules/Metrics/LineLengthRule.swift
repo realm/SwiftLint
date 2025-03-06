@@ -109,7 +109,7 @@ struct LineLengthRule: Rule {
         guard let lastStringLineIndex else {
             return file.lines.last?.content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") == true
         }
-        
+
         // lines include leading empty element
         // check last string line for single `"""`
         // and if it fails, check the next line contains more than just a string for `"""; let a = 1`

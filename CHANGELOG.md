@@ -12,6 +12,10 @@
 
 ### Enhancements
 
+* Exclude swift-testing macro (`@Test`) in `identifier_name` rules.
+  [coffmark](https://github.com/coffmark)
+  [#6009](https://github.com/realm/SwiftLint/pull/6009)
+
 * Exclude types with a `@Suite` attribute and functions annotated with `@Test` from `no_magic_numbers` rule.
   Also treat a type as a `@Suite` if it contains `@Test` functions.  
   [SimplyDanny](https://github.com/SimplyDanny)

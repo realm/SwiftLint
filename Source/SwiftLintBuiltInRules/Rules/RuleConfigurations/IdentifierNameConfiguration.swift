@@ -15,4 +15,7 @@ struct IdentifierNameConfiguration: RuleConfiguration {
 
     @ConfigurationElement(key: "additional_operators", postprocessor: { $0.formUnion(Self.defaultOperators) })
     private(set) var additionalOperators = Set<String>()
+
+    @ConfigurationElement(key: "excluded_swift_testing")
+    private(set) var excludedSwiftTesting = false
 }

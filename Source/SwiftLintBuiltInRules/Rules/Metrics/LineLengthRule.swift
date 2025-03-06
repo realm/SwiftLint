@@ -62,6 +62,14 @@ struct LineLengthRule: Rule {
                 return nil
             }
 
+            if configuration.ignoresMultilineStrings,
+               syntaxKindsByLine.value[line.index] == [.string] {
+                let lastStringLineIndex = (syntaxKindsByLine.value.dropFirst(line.index + 1).firstIndex(where: { $0 != [.string] }) ?? (file.lines.count + 1)) - 2
+                if file.lines[lastStringLineIndex].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") {
+                    return nil
+                }
+            }
+
             for pattern in configuration.excludedLinesPatterns where line.containsMatchingPattern(pattern) {
                 return nil
             }

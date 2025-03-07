@@ -51,6 +51,7 @@ private extension LintOrAnalyzeOptions {
                   useScriptInputFiles: false,
                   useScriptInputFileLists: false,
                   benchmark: false,
+                  reportCoverage: false,
                   reporter: nil,
                   baseline: nil,
                   writeBaseline: nil,

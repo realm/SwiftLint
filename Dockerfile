@@ -16,8 +16,5 @@ RUN --mount=type=cache,target=/workspace/.build,id=build-$TARGETPLATFORM \
 FROM scratch AS runner
 COPY --from=builder /workspace/swiftlint /usr/bin/swiftlint
 
-RUN /usr/bin/swiftlint version
-RUN echo "_ = 0" | /usr/bin/swiftlint --use-stdin
-
 ENTRYPOINT [ "/usr/bin/swiftlint" ]
 CMD ["."]

@@ -25,9 +25,6 @@ jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        platform: [amd64, arm64]
     steps:
     - name: Define variables on push to `main`
       if: github.event_name == 'push'
@@ -62,6 +59,8 @@ jobs:
         REPOSITORY: ${{ github.repository }}
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
+    - name: Install cross-binutils for aarch64
+      run: sudo apt install -y binutils-aarch64-linux-gnu
     - name: Login to GitHub registry
       uses: docker/login-action@v3
       with:
@@ -72,16 +71,29 @@ jobs:
       with:
         context: .
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
-        platforms: linux/${{ matrix.platform }}
+        platforms: linux/amd64, linux/arm64
         outputs: ${{ env.OUTPUT_TYPE }}
-    - name: Rename binary artifact
+    - name: Strip and move binary artifacts
       if: contains(env.OUTPUT_TYPE, 'local')
-      run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_${{ matrix.platform }}
-    - name: Upload binary artifact
+      run: |
+        strip artifacts/linux_amd64/usr/bin/swiftformat
+        mv artifacts/linux_amd64/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
+        aarch64-linux-gnu-strip artifacts/linux_arm64/usr/bin/swiftformat
+        mv artifacts/linux_arm64/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_arm64
+
+    - name: Upload AMD64 binary artifact
       if: contains(env.OUTPUT_TYPE, 'local')
       uses: actions/upload-artifact@v4
       with:
-        name: swiftlint_linux_${{ matrix.platform }}
-        path: artifacts/usr/bin/swiftlint_linux_${{ matrix.platform }}
+        name: swiftlint_linux_amd64
+        path: artifacts/usr/bin/swiftlint_linux_amd64
+        if-no-files-found: error
+        retention-days: 2
+    - name: Upload ARM64 binary artifact
+      if: contains(env.OUTPUT_TYPE, 'local')
+      uses: actions/upload-artifact@v4
+      with:
+        name: swiftlint_linux_arm64
+        path: artifacts/usr/bin/swiftlint_linux_arm64
         if-no-files-found: error
         retention-days: 2

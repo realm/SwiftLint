@@ -5,8 +5,6 @@ steps:
       - bazel build :swiftlint
       - echo "+++ Test"
       - make bazel_test
-    env:
-      SKIP_INTEGRATION_TESTS: true
   - label: "SwiftPM"
     commands:
       - echo "+++ Test"

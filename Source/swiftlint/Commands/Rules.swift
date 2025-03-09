@@ -57,7 +57,7 @@ extension SwiftLint {
                 guard !json else {
                     let serializableRules = rules.map { ruleID, ruleType in
                         let rType = ruleType.init()
-                        return CodableRule(
+                        return EncodableRule(
                             ruleID: ruleID,
                             ruleType: ruleType,
                             rule: createInstance(of: ruleType, using: configuration),
@@ -187,7 +187,7 @@ private struct Terminal {
     }
 }
 
-private struct CodableRule: Codable {
+private struct EncodableRule: Encodable {
     let identifier: String
     let optIn: Bool
     let correctable: Bool

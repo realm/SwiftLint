@@ -69,7 +69,7 @@ extension SwiftLint {
                         )
                     }
                     let encoder = JSONEncoder()
-                    encoder.outputFormatting = .sortedKeys
+                    encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
                     let data = try encoder.encode(serializableRules)
                     print(String(data: data, encoding: .utf8)!)
                     return

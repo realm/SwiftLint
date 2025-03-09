@@ -32,6 +32,9 @@ extension SwiftLint {
                 if configOnly {
                     throw ValidationError("The `--config-only` and `--json` flags are mutually exclusive")
                 }
+                if ruleID != nil {
+                    throw ValidationError("The `--json` cannot be used with a `rule-id`")
+                }
             }
         }
 

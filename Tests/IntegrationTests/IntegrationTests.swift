@@ -14,7 +14,7 @@ private let config: Configuration = {
 }()
 
 final class IntegrationTests: SwiftLintTestCase {
-    func testSwiftLintLints() throws  {
+    func testSwiftLintLints() throws {
         try XCTSkipUnless(
             ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
             "Will be covered by separate linting job"

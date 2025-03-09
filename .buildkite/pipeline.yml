@@ -5,10 +5,14 @@ steps:
       - bazel build :swiftlint
       - echo "+++ Test"
       - make bazel_test
+    env:
+      SKIP_INTEGRATION_TESTS: true
   - label: "SwiftPM"
     commands:
       - echo "+++ Test"
       - make spm_test
+    env:
+      SKIP_INTEGRATION_TESTS: true
   - label: "Danger"
     commands:
       - echo "+++ Install Bundler"

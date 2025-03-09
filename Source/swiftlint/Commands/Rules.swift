@@ -21,6 +21,19 @@ extension SwiftLint {
         var defaultConfig = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
+        @Flag(name: .shortAndLong, help: "Display output as JSON")
+        var json = false
+
+        mutating func validate() throws {
+            if json {
+                if verbose {
+                    throw ValidationError("The `--verbose` and `--json` flags are mutually exclusive")
+                }
+                if configOnly {
+                    throw ValidationError("The `--config-only` and `--json` flags are mutually exclusive")
+                }
+            }
+        }
 
         func run() throws {
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
@@ -38,6 +51,26 @@ extension SwiftLint {
             if configOnly {
                 rules.forEach { printConfig(for: createInstance(of: $0.value, using: configuration)) }
             } else {
+                guard !json else {
+                    let serializableRules = rules.map { ruleID, ruleType in
+                        let rType = ruleType.init()
+                        return CodableRule(
+                            ruleID: ruleID,
+                            ruleType: ruleType,
+                            rule: createInstance(of: ruleType, using: configuration),
+                            configuredRule: configuration.configuredRule(forID: ruleID),
+                            configurationDescription: (
+                                defaultConfig ? rType : configuration.configuredRule(forID: ruleID) ?? rType
+                            )
+                                .createConfigurationDescription()
+                        )
+                    }
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = .sortedKeys
+                    let data = try encoder.encode(serializableRules)
+                    print(String(data: data, encoding: .utf8)!)
+                    return
+                }
                 let table = TextTable(
                     ruleList: rules,
                     configuration: configuration,
@@ -148,5 +181,33 @@ private struct Terminal {
         _ = ioctl(STDOUT_FILENO, TIOCGWINSZ, &size)
 #endif
         return Int(size.ws_col)
+    }
+}
+
+private struct CodableRule: Codable {
+    let identifier: String
+    let optIn: Bool
+    let correctable: Bool
+    let enabled: Bool
+    let kind: String
+    let analyzer: Bool
+    let usesSourcekit: Bool
+    let configuration: RuleConfigurationDescription
+
+    init(
+        ruleID: String,
+        ruleType: any Rule.Type,
+        rule: any Rule,
+        configuredRule: (any Rule)?,
+        configurationDescription: RuleConfigurationDescription
+    ) {
+        identifier = ruleID
+        optIn = rule is any OptInRule
+        correctable = rule is any CorrectableRule
+        enabled = configuredRule != nil
+        kind = ruleType.description.kind.rawValue
+        analyzer = rule is any AnalyzerRule
+        usesSourcekit = rule is any SourceKitFreeRule
+        configuration = configurationDescription
     }
 }

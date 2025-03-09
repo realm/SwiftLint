@@ -26,6 +26,10 @@
   [Martin Redington](https://github.com/mildm8nnered)
   [#5681](https://github.com/realm/SwiftLint/issues/5681)
 
+* Add JSON output for `swiftlint rules`.  
+  [cadnza](https://github.com/cadnza)
+  [#6016](https://github.com/realm/SwiftLint/issues/6016)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  

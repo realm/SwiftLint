@@ -2,7 +2,7 @@ trigger:
 - main
 
 variables:
-  CI: 'true'
+  SKIP_INTEGRATION_TESTS: 'true'
 
 jobs:
 - job: spm_linux

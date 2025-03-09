@@ -50,15 +50,10 @@ final class IntegrationTests: SwiftLintTestCase {
             forceExclude: false,
             excludeBy: .paths(excludedPaths: config.excludedPaths()))
         let storage = RuleStorage()
-        let corrections = swiftFiles.parallelFlatMap {
+        let corrections = swiftFiles.parallelMap {
             Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
         }
-        for correction in corrections {
-            correction.location.file!.withStaticString {
-                XCTFail(correction.ruleDescription.description,
-                        file: $0, line: UInt(correction.location.line!))
-            }
-        }
+        XCTAssert(corrections.allSatisfy { $0.isEmpty }, "Unexpected corrections have been applied")
     }
 
     func testDefaultConfigurations() {

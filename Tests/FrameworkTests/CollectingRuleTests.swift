@@ -71,7 +71,6 @@ final class CollectingRuleTests: SwiftLintTestCase {
         XCTAssertFalse(violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isEmpty)
     }
 
-    // swiftlint:disable:next function_body_length
     func testCorrects() {
         struct Spec: MockCollectingRule, CorrectableRule {
             var configuration = SeverityConfiguration<Self>(.warning)
@@ -92,19 +91,11 @@ final class CollectingRuleTests: SwiftLintTestCase {
                 return []
             }
 
-            func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> [Correction] {
-                if collectedInfo[file] == "baz" {
-                    return [
-                        Correction(
-                            ruleDescription: Self.description,
-                            location: Location(file: file, byteOffset: 2)
-                        ),
-                    ]
-                }
-                return []
+            func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String]) -> Int {
+                collectedInfo[file] == "baz" ? 1 : 0
             }
 
-            func correct(file: SwiftLintFile) -> [Correction] {
+            func correct(file: SwiftLintFile) -> Int {
                 correct(file: file, collectedInfo: [file: collectInfo(for: file)])
             }
         }
@@ -118,26 +109,18 @@ final class CollectingRuleTests: SwiftLintTestCase {
 
             func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: String], compilerArguments _: [String])
                 -> [StyleViolation] {
-                    if collectedInfo[file] == "baz" {
-                        return [
-                            StyleViolation(
-                                ruleDescription: Spec.description,
-                                location: Location(file: file, byteOffset: 2)
-                            ),
-                        ]
-                    }
-                    return []
+                    collectedInfo[file] == "baz"
+                        ? [.init(ruleDescription: Spec.description, location: Location(file: file, byteOffset: 2))]
+                        : []
             }
 
             func correct(file: SwiftLintFile,
                          collectedInfo: [SwiftLintFile: String],
-                         compilerArguments _: [String]) -> [Correction] {
-                collectedInfo[file] == "baz"
-                    ? [Correction(ruleDescription: Spec.description, location: Location(file: file, byteOffset: 2))]
-                    : []
+                         compilerArguments _: [String]) -> Int {
+                collectedInfo[file] == "baz" ? 1 : 0
             }
 
-            func correct(file: SwiftLintFile) -> [Correction] {
+            func correct(file: SwiftLintFile) -> Int {
                 correct(file: file, collectedInfo: [file: collectInfo(for: file)], compilerArguments: [])
             }
         }

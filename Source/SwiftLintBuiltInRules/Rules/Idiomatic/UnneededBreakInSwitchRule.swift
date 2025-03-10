@@ -95,7 +95,6 @@ private extension UnneededBreakInSwitchRule {
             guard let statement = node.unneededBreak else {
                 return
             }
-
             violations.append(statement.item.positionAfterSkippingLeadingTrivia)
         }
     }
@@ -103,22 +102,17 @@ private extension UnneededBreakInSwitchRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: SwitchCaseSyntax) -> SwitchCaseSyntax {
             let stmts = CodeBlockItemListSyntax(node.statements.dropLast())
-
             guard let breakStatement = node.unneededBreak, let secondLast = stmts.last else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(breakStatement.item.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let trivia = breakStatement.item.leadingTrivia + breakStatement.item.trailingTrivia
-
             let newNode = node
                 .with(\.statements, stmts)
                 .with(\.statements.trailingTrivia, secondLast.item.trailingTrivia + trivia)
                 .trimmed { !$0.isComment }
                 .formatted()
                 .as(SwitchCaseSyntax.self)!
-
             return super.visit(newNode)
         }
     }
@@ -131,7 +125,6 @@ private extension SwitchCaseSyntax {
               breakStatement.label == nil else {
             return nil
         }
-
         return statements.last
     }
 }

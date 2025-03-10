@@ -81,8 +81,7 @@ private extension SelfBindingRule {
 
             if let initializerIdentifier = node.initializer?.value.as(DeclReferenceExprSyntax.self),
                initializerIdentifier.baseName.text == "self" {
-                correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
-
+                numberOfCorrections += 1
                 let newPattern = PatternSyntax(
                     identifierPattern
                         .with(\.identifier, identifierPattern.identifier
@@ -94,8 +93,7 @@ private extension SelfBindingRule {
             if node.initializer == nil,
                       identifierPattern.identifier.text == "self",
                       configuration.bindIdentifier != "self" {
-                correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
-
+                numberOfCorrections += 1
                 let newPattern = PatternSyntax(
                     identifierPattern
                         .with(\.identifier, identifierPattern.identifier

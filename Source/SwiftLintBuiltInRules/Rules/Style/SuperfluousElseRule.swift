@@ -266,14 +266,14 @@ private extension SuperfluousElseRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override init(configuration: ConfigurationType, file: SwiftLintFile) {
             super.init(configuration: configuration, file: file)
-            let correctionPositions = Visitor(configuration: configuration, file: file).walk(file: file) {
-                $0.violations.map(\.position)
-            }.filter { !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
-            self.correctionPositions.append(contentsOf: correctionPositions)
+            numberOfCorrections += Visitor(configuration: configuration, file: file)
+                .walk(file: file) { $0.violations.map(\.position) }
+                .filter { !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
+                .count
         }
 
         override func visitAny(_ node: Syntax) -> Syntax? {
-            correctionPositions.isEmpty ? node : nil // Avoid skipping all `if` expressions in a code block.
+            numberOfCorrections == 0 ? node : nil // Avoid skipping all `if` expressions in a code block.
         }
 
         override func visit(_ list: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {

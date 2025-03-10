@@ -53,15 +53,15 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
         ]
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         guard let count = file.contents.trailingNewlineCount(), count != 1 else {
-            return []
+            return 0
         }
         guard let lastLineRange = file.lines.last?.range else {
-            return []
+            return 0
         }
         if file.ruleEnabled(violatingRanges: [lastLineRange], for: self).isEmpty {
-            return []
+            return 0
         }
         if count < 1 {
             file.append("\n")
@@ -69,7 +69,6 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
             let index = file.contents.index(file.contents.endIndex, offsetBy: 1 - count)
             file.write(file.contents[..<index])
         }
-        let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: Self.description, location: location)]
+        return 1
     }
 }

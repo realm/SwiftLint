@@ -46,10 +46,10 @@ private extension EmptyParametersRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionTypeSyntax) -> TypeSyntax {
-            guard let violationPosition = node.emptyParametersViolationPosition else {
+            guard node.emptyParametersViolationPosition != nil else {
                 return super.visit(node)
             }
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             return super.visit(node.with(\.parameters, TupleTypeElementListSyntax([])))
         }
     }

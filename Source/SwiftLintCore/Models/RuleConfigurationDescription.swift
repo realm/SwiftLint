@@ -24,7 +24,7 @@ public protocol Documentable {
 }
 
 /// Description of a rule configuration.
-public struct RuleConfigurationDescription: Equatable, Sendable, Codable {
+public struct RuleConfigurationDescription: Equatable, Sendable, Encodable {
     fileprivate let options: [RuleConfigurationOption]
 
     fileprivate init(options: [RuleConfigurationOption], exclusiveOptions: Set<String> = []) {
@@ -122,7 +122,7 @@ extension RuleConfigurationDescription: Documentable {
 }
 
 /// A single option of a ``RuleConfigurationDescription``.
-public struct RuleConfigurationOption: Equatable, Sendable, Codable {
+public struct RuleConfigurationOption: Equatable, Sendable, Encodable {
     /// An option serving as a marker for an empty configuration description.
     public static let noOptions = Self(key: "<nothing>", value: .empty)
 
@@ -164,7 +164,7 @@ extension RuleConfigurationOption: Documentable {
 }
 
 /// Type of an option.
-public enum OptionType: Equatable, Sendable, Codable {
+public enum OptionType: Equatable, Sendable, Encodable {
     /// An irrelevant option. It will be ignored in documentation serialization.
     case empty
     /// A boolean flag.
@@ -238,7 +238,7 @@ extension OptionType: Documentable {
 
 /// A result builder creating configuration descriptions.
 @resultBuilder
-public struct RuleConfigurationDescriptionBuilder: Codable {
+public struct RuleConfigurationDescriptionBuilder: Encodable {
     /// :nodoc:
     public typealias Description = RuleConfigurationDescription
 

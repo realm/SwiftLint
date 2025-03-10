@@ -128,6 +128,13 @@ internal struct TypeContentsOrderRuleExamples {
         \(Self.defaultOrderParts.joined(separator: "\n\n")),
         }
         """),
+        Example("""
+        struct ContentView: View {
+            @available(SwiftUI_v5, *) // Availability macro syntax: https://github.com/swiftlang/swift/pull/65218
+            var v5Body: some View { EmptyView() }
+            var body: some View { EmptyView() }
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -255,5 +262,20 @@ internal struct TypeContentsOrderRuleExamples {
             func goToNextVc() { /* TODO */ }
         }
         """),
+        Example("""
+        protocol P {
+            ↓var x: U { get }
+            @available(*, unavailable)
+            ↓associatedtype T
+            typealias U = Int
+        }
+        """, configuration: ["order": [["type_alias"], ["associated_type"]]], excludeFromDocumentation: true),
+        Example("""
+        enum E {
+            @available(*, unavailable)
+            ↓case a
+            func f() {}
+        }
+        """, configuration: ["order": [["other_method"], ["case"]]], excludeFromDocumentation: true),
     ]
 }

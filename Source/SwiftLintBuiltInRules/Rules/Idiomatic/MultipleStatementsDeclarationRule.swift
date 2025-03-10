@@ -1,13 +1,13 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)
-struct MultipleStatementsDeclarationRule: Rule {
+struct MultipleStatementsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "multiple_statements_declaration",
-        name: "Multiple Statements Declaration",
-        description: "Statements should not be on the same line",
+        identifier: "multiple_statements",
+        name: "Multiple Statements",
+        description: "Every statement should be on its own line",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("let a = 1;\nlet b = 2;"),

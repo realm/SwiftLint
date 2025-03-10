@@ -57,13 +57,18 @@ extension SwiftLint {
                 guard !json else {
                     let serializableRules = rules.map { ruleID, ruleType in
                         let rType = ruleType.init()
+                        let rule = createInstance(of: ruleType, using: configuration)
+                        let configuredRule = configuration.configuredRule(forID: ruleID)
                         return CodableRule(
-                            ruleID: ruleID,
-                            ruleType: ruleType,
-                            rule: createInstance(of: ruleType, using: configuration),
-                            configuredRule: configuration.configuredRule(forID: ruleID),
-                            configurationDescription: (
-                                defaultConfig ? rType : configuration.configuredRule(forID: ruleID) ?? rType
+                            identifier: ruleID,
+                            optIn: rule is any OptInRule,
+                            correctable: rule is any CorrectableRule,
+                            enabled: configuredRule != nil,
+                            kind: ruleType.description.kind.rawValue,
+                            analyzer: rule is any AnalyzerRule,
+                            usesSourcekit: rule is any SourceKitFreeRule,
+                            configuration: (
+                                defaultConfig ? rType : configuredRule ?? rType
                             )
                                 .createConfigurationDescription()
                         )
@@ -196,21 +201,4 @@ private struct CodableRule: Codable {
     let analyzer: Bool
     let usesSourcekit: Bool
     let configuration: RuleConfigurationDescription
-
-    init(
-        ruleID: String,
-        ruleType: any Rule.Type,
-        rule: any Rule,
-        configuredRule: (any Rule)?,
-        configurationDescription: RuleConfigurationDescription
-    ) {
-        identifier = ruleID
-        optIn = rule is any OptInRule
-        correctable = rule is any CorrectableRule
-        enabled = configuredRule != nil
-        kind = ruleType.description.kind.rawValue
-        analyzer = rule is any AnalyzerRule
-        usesSourcekit = rule is any SourceKitFreeRule
-        configuration = configurationDescription
-    }
 }

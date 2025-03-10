@@ -21,6 +21,22 @@ extension SwiftLint {
         var defaultConfig = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
+        @Flag(name: .shortAndLong, help: "Display output as JSON")
+        var json = false
+
+        mutating func validate() throws {
+            if json {
+                if verbose {
+                    throw ValidationError("The `--verbose` and `--json` flags are mutually exclusive")
+                }
+                if configOnly {
+                    throw ValidationError("The `--config-only` and `--json` flags are mutually exclusive")
+                }
+                if ruleID != nil {
+                    throw ValidationError("The `--json` cannot be used with a `rule-id`")
+                }
+            }
+        }
 
         func run() throws {
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
@@ -38,6 +54,31 @@ extension SwiftLint {
             if configOnly {
                 rules.forEach { printConfig(for: createInstance(of: $0.value, using: configuration)) }
             } else {
+                guard !json else {
+                    let serializableRules = rules.map { ruleID, ruleType in
+                        let rType = ruleType.init()
+                        let rule = createInstance(of: ruleType, using: configuration)
+                        let configuredRule = configuration.configuredRule(forID: ruleID)
+                        return EncodableRule(
+                            identifier: ruleID,
+                            optIn: rule is any OptInRule,
+                            correctable: rule is any CorrectableRule,
+                            enabled: configuredRule != nil,
+                            kind: ruleType.description.kind.rawValue,
+                            analyzer: rule is any AnalyzerRule,
+                            usesSourcekit: rule is any SourceKitFreeRule,
+                            configuration: (
+                                defaultConfig ? rType : configuredRule ?? rType
+                            )
+                                .createConfigurationDescription()
+                        )
+                    }
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
+                    let data = try encoder.encode(serializableRules)
+                    print(String(data: data, encoding: .utf8)!)
+                    return
+                }
                 let table = TextTable(
                     ruleList: rules,
                     configuration: configuration,
@@ -149,4 +190,15 @@ private struct Terminal {
 #endif
         return Int(size.ws_col)
     }
+}
+
+private struct EncodableRule: Encodable {
+    let identifier: String
+    let optIn: Bool
+    let correctable: Bool
+    let enabled: Bool
+    let kind: String
+    let analyzer: Bool
+    let usesSourcekit: Bool
+    let configuration: RuleConfigurationDescription
 }

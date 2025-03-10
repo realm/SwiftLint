@@ -30,6 +30,10 @@
   [kapitoshka438](https://github.com/kapitoshka438)
   [#3723](https://github.com/realm/SwiftLint/issues/3723)
 
+* Add JSON output for `swiftlint rules`.  
+  [cadnza](https://github.com/cadnza)
+  [#6016](https://github.com/realm/SwiftLint/issues/6016)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  

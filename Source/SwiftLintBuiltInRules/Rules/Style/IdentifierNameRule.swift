@@ -59,6 +59,9 @@ private extension IdentifierNameRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             let name = node.name.text
+            if configuration.excludedSwiftTesting && node.attributes.contains(attributeNamed: "Test") {
+                return
+            }
             if node.modifiers.contains(keyword: .override) || isOperator(name: name) {
                 return
             }

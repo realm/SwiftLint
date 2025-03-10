@@ -43,6 +43,15 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
+    func testIdentifierNameWithExcludedSwiftTesting() {
+        let baseDescription = IdentifierNameRule.description
+        let nonTriggeringExamples = [
+            Example("@Test func MyFunc()")
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+        verifyRule(description, ruleConfiguration: ["excluded_swift_testing": true])
+    }
+
     func testIdentifierNameWithIgnoreStartWithLowercase() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
@@ -53,6 +62,7 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
             Example("class C { static func ↓MyFunc() {} }"),
             Example("class C { class func ↓MyFunc() {} }"),
             Example("func ↓√ (arg: Double) -> Double { arg }"),
+            Example("@Test func ↓MyFunc()"),
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()

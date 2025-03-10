@@ -30,6 +30,7 @@ internal struct IdentifierNameRuleExamples {
                 }
                 """),
         Example("func √ (arg: Double) -> Double { arg }", configuration: ["additional_operators": "√"]),
+        Example("@Test func MyFunc()", configuration: ["excluded_swift_testing": true]),
     ]
 
     static let triggeringExamples = [

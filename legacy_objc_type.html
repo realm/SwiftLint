@@ -352,6 +352,14 @@ severity
 warning
 </td>
 </tr>
+<tr>
+<td>
+allowed_types
+</td>
+<td>
+[]
+</td>
+</tr>
 </tbody>
 </table></li>
 </ul>
@@ -367,6 +375,16 @@ warning
 <pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">URLRequest</span><span class="o">.</span><span class="kt">CachePolicy</span><span class="o">.</span><span class="n">reloadIgnoringLocalCacheData</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="n">_</span> <span class="o">=</span> <span class="kt">Notification</span><span class="o">.</span><span class="kt">Name</span><span class="p">(</span><span class="s">"com.apple.Music.playerInfo"</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// allowed_types: ["NSData", "NSNumber", "NSURLRequest"]</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">SLURLRequest</span><span class="p">:</span> <span class="kt">NSURLRequest</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="kt">NSData</span><span class="p">()</span>
+    <span class="k">let</span> <span class="nv">number</span><span class="p">:</span> <span class="kt">NSNumber</span>
+<span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">array</span> <span class="o">=</span> <span class="err">↓</span><span class="kt">NSArray</span><span class="p">()</span>

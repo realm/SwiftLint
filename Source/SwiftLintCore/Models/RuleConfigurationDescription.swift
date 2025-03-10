@@ -126,7 +126,7 @@ extension RuleConfigurationDescription: Documentable {
 }
 
 /// A single option of a ``RuleConfigurationDescription``.
-public struct RuleConfigurationOption: Equatable, Sendable {
+public struct RuleConfigurationOption: Equatable, Sendable, Encodable {
   /// An option serving as a marker for an empty configuration description.
   public static let noOptions = Self(key: "<nothing>", value: .empty)
 
@@ -168,7 +168,7 @@ extension RuleConfigurationOption: Documentable {
 }
 
 /// Type of an option.
-public enum OptionType: Equatable, Sendable {
+public enum OptionType: Equatable, Sendable, Encodable {
   /// An irrelevant option. It will be ignored in documentation serialization.
   case empty
   /// A boolean flag.
@@ -242,7 +242,7 @@ extension OptionType: Documentable {
 
 /// A result builder creating configuration descriptions.
 @resultBuilder
-public struct RuleConfigurationDescriptionBuilder {
+public struct RuleConfigurationDescriptionBuilder: Encodable {
   /// :nodoc:
   public typealias Description = RuleConfigurationDescription
 

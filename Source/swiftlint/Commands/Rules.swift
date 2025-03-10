@@ -59,7 +59,7 @@ extension SwiftLint {
                         let rType = ruleType.init()
                         let rule = createInstance(of: ruleType, using: configuration)
                         let configuredRule = configuration.configuredRule(forID: ruleID)
-                        return CodableRule(
+                        return EncodableRule(
                             identifier: ruleID,
                             optIn: rule is any OptInRule,
                             correctable: rule is any CorrectableRule,
@@ -192,7 +192,7 @@ private struct Terminal {
     }
 }
 
-private struct CodableRule: Codable {
+private struct EncodableRule: Encodable {
     let identifier: String
     let optIn: Bool
     let correctable: Bool

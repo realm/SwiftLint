@@ -77,29 +77,25 @@ struct LegacyObjcTypeRule: Rule {
 private extension LegacyObjcTypeRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IdentifierTypeSyntax) {
-            if let typeName = node.typeName,
-               legacyObjcTypes.contains(typeName),
-               !configuration.allowedTypes.contains(typeName) {
+            if let name = node.typeName, isViolatingType(name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if legacyObjcTypes.contains(node.baseName.text),
-               !configuration.allowedTypes.contains(node.baseName.text) {
+            if isViolatingType(node.baseName.text) {
                 violations.append(node.baseName.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: MemberTypeSyntax) {
-            guard node.baseType.as(IdentifierTypeSyntax.self)?.typeName == "Foundation",
-                  legacyObjcTypes.contains(node.name.text),
-                  !configuration.allowedTypes.contains(node.name.text)
-            else {
-                return
+            if node.baseType.as(IdentifierTypeSyntax.self)?.typeName == "Foundation", isViolatingType(node.name.text) {
+                violations.append(node.name.positionAfterSkippingLeadingTrivia)
             }
+        }
 
-            violations.append(node.name.positionAfterSkippingLeadingTrivia)
+        private func isViolatingType(_ name: String) -> Bool {
+            legacyObjcTypes.contains(name) && !configuration.allowedTypes.contains(name)
         }
     }
 }

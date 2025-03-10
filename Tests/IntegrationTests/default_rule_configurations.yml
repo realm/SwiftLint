@@ -484,6 +484,7 @@ legacy_nsgeometry_functions:
     opt-in: false
 legacy_objc_type:
   severity: warning
+  allowed_types: []
   meta:
     opt-in: true
 legacy_random:

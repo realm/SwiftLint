@@ -30,7 +30,7 @@ private let legacyObjcTypes = [
 
 @SwiftSyntaxRule(optIn: true)
 struct LegacyObjcTypeRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = LegacyObjcTypeConfiguration()
 
     static let description = RuleDescription(
         identifier: "legacy_objc_type",
@@ -44,6 +44,12 @@ struct LegacyObjcTypeRule: Rule {
             Example("var className: String = NSStringFromClass(MyClass.self)"),
             Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
             Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#),
+            Example(#"""
+            class SLURLRequest: NSURLRequest {
+                let data = NSData()
+                let number: NSNumber
+            }
+            """#, configuration: ["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
         ],
         triggeringExamples: [
             Example("var array = ↓NSArray()"),
@@ -71,20 +77,24 @@ struct LegacyObjcTypeRule: Rule {
 private extension LegacyObjcTypeRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IdentifierTypeSyntax) {
-            if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {
+            if let typeName = node.typeName,
+               legacyObjcTypes.contains(typeName),
+               !configuration.allowedTypes.contains(typeName) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if legacyObjcTypes.contains(node.baseName.text) {
+            if legacyObjcTypes.contains(node.baseName.text),
+               !configuration.allowedTypes.contains(node.baseName.text) {
                 violations.append(node.baseName.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: MemberTypeSyntax) {
             guard node.baseType.as(IdentifierTypeSyntax.self)?.typeName == "Foundation",
-               legacyObjcTypes.contains(node.name.text)
+                  legacyObjcTypes.contains(node.name.text),
+                  !configuration.allowedTypes.contains(node.name.text)
             else {
                 return
             }

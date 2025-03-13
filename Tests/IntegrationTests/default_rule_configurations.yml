@@ -813,6 +813,7 @@ redundant_objc_attribute:
     opt-in: false
 redundant_optional_initialization:
   severity: warning
+  excluded_attribute_names: ["Parameter"]
   meta:
     opt-in: false
 redundant_self_in_closure:

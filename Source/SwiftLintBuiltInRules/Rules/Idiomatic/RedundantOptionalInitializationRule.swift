@@ -1,35 +1,37 @@
 import SwiftSyntax
+import SwiftLintCore
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct RedundantOptionalInitializationRule: Rule {
-    struct ConfigurationWrapper: RuleConfiguration {
+    @AutoConfigParser
+    struct Configuration: SeverityBasedRuleConfiguration {
         typealias Parent = RedundantOptionalInitializationRule
-        var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-        var excludedAttributeNames: Set<String> = ["Parameter"]  // Default to excluding @Parameter
+
+        @ConfigurationElement(key: "severity")
+        private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
         
-        mutating func apply(configuration: Any) throws {
-            guard let configuration = configuration as? [String: Any] else {
-                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
-            }
-            
-            if let severityString = configuration["severity"] as? String {
-                try severityConfiguration.apply(configuration: severityString)
-            }
-            
-            if let excludedAttributes = configuration["excluded_attribute_names"] as? [String] {
-                self.excludedAttributeNames = Set(excludedAttributes)
-            }
-        }
+        @ConfigurationElement(key: "excluded_attribute_names")
+        private(set) var excludedAttributeNames: Set<String> = ["Parameter"]
     }
     
-    var configuration = ConfigurationWrapper()
+    var configuration = Configuration()
 
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
         description: """
-            Initializing an optional variable with nil is redundant. \
-            Configure 'excluded_attribute_names' to skip variables with specific attributes.
+            Initializing an optional variable with nil is redundant.
+
+            Configuration:
+            - severity: warning | error (default: warning)
+            - excluded_attribute_names: array of attribute names to exclude (default: ["Parameter"])
+
+            Example configuration in yaml:
+            ```yaml
+            redundant_optional_initialization:
+              severity: error
+              excluded_attribute_names: ["Parameter"]
+            ```
             """,
         kind: .idiomatic,
         nonTriggeringExamples: [
@@ -145,7 +147,7 @@ private extension RedundantOptionalInitializationRule {
         }
     }
 
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+    final class Visitor: ViolationsSyntaxVisitor<Configuration> {
         override func visitPost(_ node: VariableDeclSyntax) {
             // Early return if no configuration or empty attributes to check
             guard !configuration.excludedAttributeNames.isEmpty else {
@@ -167,7 +169,7 @@ private extension RedundantOptionalInitializationRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+    final class Rewriter: ViolationsSyntaxRewriter<Configuration> {
         override func visitAny(_: Syntax) -> Syntax? { nil }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {

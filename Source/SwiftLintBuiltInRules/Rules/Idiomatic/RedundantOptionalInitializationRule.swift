@@ -2,12 +2,35 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct RedundantOptionalInitializationRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    struct ConfigurationWrapper: RuleConfiguration {
+        typealias Parent = RedundantOptionalInitializationRule
+        var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+        var excludedAttributeNames: Set<String> = ["Parameter"]  // Default to excluding @Parameter
+        
+        mutating func apply(configuration: Any) throws {
+            guard let configuration = configuration as? [String: Any] else {
+                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            }
+            
+            if let severityString = configuration["severity"] as? String {
+                try severityConfiguration.apply(configuration: severityString)
+            }
+            
+            if let excludedAttributes = configuration["excluded_attribute_names"] as? [String] {
+                self.excludedAttributeNames = Set(excludedAttributes)
+            }
+        }
+    }
+    
+    var configuration = ConfigurationWrapper()
 
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
-        description: "Initializing an optional variable with nil is redundant",
+        description: """
+            Initializing an optional variable with nil is redundant. \
+            Configure 'excluded_attribute_names' to skip variables with specific attributes.
+            """,
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var myVar: Int?"),
@@ -17,6 +40,7 @@ struct RedundantOptionalInitializationRule: Rule {
             Example("var myVar: Optional<Int>"),
             Example("let myVar: Optional<Int> = nil"),
             Example("var myVar: Optional<Int> = 0"),
+            Example("@Parameter static var someParameter: Bool? = nil"),  // Add example for @Parameter
             // properties with body should be ignored
             Example("""
             var foo: Int? {
@@ -113,6 +137,17 @@ private extension RedundantOptionalInitializationRule {
                   !node.modifiers.contains(keyword: .lazy) else {
                 return
             }
+            
+            // Skip if any of the variable's attributes are in the excluded set
+            let hasExcludedAttribute = node.attributes.contains { attr -> Bool in
+                guard let identAttr = attr.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self) else {
+                    return false
+                }
+                return configuration.excludedAttributeNames.contains(identAttr.name.text)
+            }
+            guard !hasExcludedAttribute else {
+                return
+            }
 
             violations.append(contentsOf: node.bindings.compactMap(\.violationPosition))
         }
@@ -124,6 +159,17 @@ private extension RedundantOptionalInitializationRule {
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
                   !node.modifiers.contains(keyword: .lazy) else {
+                return super.visit(node)
+            }
+
+            // Skip if any of the variable's attributes are in the excluded set
+            let hasExcludedAttribute = node.attributes.contains { attr -> Bool in
+                guard let identAttr = attr.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self) else {
+                    return false
+                }
+                return configuration.excludedAttributeNames.contains(identAttr.name.text)
+            }
+            guard !hasExcludedAttribute else {
                 return super.visit(node)
             }
 

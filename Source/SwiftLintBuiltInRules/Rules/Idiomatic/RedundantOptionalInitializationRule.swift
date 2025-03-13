@@ -131,21 +131,35 @@ struct RedundantOptionalInitializationRule: Rule {
 }
 
 private extension RedundantOptionalInitializationRule {
+    // Helper function to check for excluded attributes
+    static func hasExcludedAttribute(_ node: VariableDeclSyntax, excludedNames: Set<String>) -> Bool {
+        guard !excludedNames.isEmpty else { return false }
+        
+        return node.attributes.contains { attr -> Bool in
+            guard let identAttr = attr.as(AttributeSyntax.self),
+                  let nameIdentifier = identAttr.attributeName.as(IdentifierTypeSyntax.self),
+                  !nameIdentifier.name.text.isEmpty else {
+                return false
+            }
+            return excludedNames.contains(nameIdentifier.name.text)
+        }
+    }
+
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.bindingSpecifier.tokenKind == .keyword(.var),
-                  !node.modifiers.contains(keyword: .lazy) else {
+            // Early return if no configuration or empty attributes to check
+            guard !configuration.excludedAttributeNames.isEmpty else {
+                // If no attributes to exclude, proceed with original logic
+                if node.bindingSpecifier.tokenKind == .keyword(.var),
+                   !node.modifiers.contains(keyword: .lazy) {
+                    violations.append(contentsOf: node.bindings.compactMap(\.violationPosition))
+                }
                 return
             }
-            
-            // Skip if any of the variable's attributes are in the excluded set
-            let hasExcludedAttribute = node.attributes.contains { attr -> Bool in
-                guard let identAttr = attr.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self) else {
-                    return false
-                }
-                return configuration.excludedAttributeNames.contains(identAttr.name.text)
-            }
-            guard !hasExcludedAttribute else {
+
+            guard node.bindingSpecifier.tokenKind == .keyword(.var),
+                  !node.modifiers.contains(keyword: .lazy),
+                  !RedundantOptionalInitializationRule.hasExcludedAttribute(node, excludedNames: configuration.excludedAttributeNames) else {
                 return
             }
 
@@ -157,22 +171,26 @@ private extension RedundantOptionalInitializationRule {
         override func visitAny(_: Syntax) -> Syntax? { nil }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.bindingSpecifier.tokenKind == .keyword(.var),
-                  !node.modifiers.contains(keyword: .lazy) else {
-                return super.visit(node)
-            }
-
-            // Skip if any of the variable's attributes are in the excluded set
-            let hasExcludedAttribute = node.attributes.contains { attr -> Bool in
-                guard let identAttr = attr.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self) else {
-                    return false
+            // Early return if no configuration or empty attributes to check
+            guard !configuration.excludedAttributeNames.isEmpty else {
+                // If no attributes to exclude, proceed with original logic
+                if node.bindingSpecifier.tokenKind == .keyword(.var),
+                   !node.modifiers.contains(keyword: .lazy) {
+                    return processViolations(for: node)
                 }
-                return configuration.excludedAttributeNames.contains(identAttr.name.text)
-            }
-            guard !hasExcludedAttribute else {
                 return super.visit(node)
             }
 
+            guard node.bindingSpecifier.tokenKind == .keyword(.var),
+                  !node.modifiers.contains(keyword: .lazy),
+                  !RedundantOptionalInitializationRule.hasExcludedAttribute(node, excludedNames: configuration.excludedAttributeNames) else {
+                return super.visit(node)
+            }
+
+            return processViolations(for: node)
+        }
+
+        private func processViolations(for node: VariableDeclSyntax) -> DeclSyntax {
             let violations = node.bindings
                 .compactMap { binding in
                     binding.violationPosition.map { ($0, binding) }

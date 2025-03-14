@@ -3,17 +3,6 @@ import SwiftLintCore
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct RedundantOptionalInitializationRule: Rule {
-    @AutoConfigParser
-    struct Configuration: SeverityBasedRuleConfiguration {
-        typealias Parent = RedundantOptionalInitializationRule
-
-        @ConfigurationElement(key: "severity")
-        private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-        
-        @ConfigurationElement(key: "excluded_attribute_names")
-        private(set) var excludedAttributeNames: Set<String> = ["Parameter"]
-    }
-    
     var configuration = Configuration()
 
     static let description = RuleDescription(
@@ -42,24 +31,20 @@ struct RedundantOptionalInitializationRule: Rule {
             Example("var myVar: Optional<Int>"),
             Example("let myVar: Optional<Int> = nil"),
             Example("var myVar: Optional<Int> = 0"),
-            Example("@Parameter static var someParameter: Bool? = nil"),  // Add example for @Parameter
-            // properties with body should be ignored
+            Example("@Parameter static var someParameter: Bool? = nil"),
             Example("""
             var foo: Int? {
               if bar != nil { }
               return 0
             }
             """),
-            // properties with a closure call
             Example("""
             var foo: Int? = {
               if bar != nil { }
               return 0
             }()
             """),
-            // lazy variables need to be initialized
             Example("lazy var test: Int? = nil"),
-            // local variables
             Example("""
             func funcName() {
               var myVar: String?
@@ -132,15 +117,28 @@ struct RedundantOptionalInitializationRule: Rule {
     ]
 }
 
+// MARK: - Configuration
+@AutoConfigParser
+struct RedundantOptionalInitializationConfiguration: SeverityBasedRuleConfiguration {
+    typealias Parent = RedundantOptionalInitializationRule
+
+    @ConfigurationElement(key: "severity")
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "excluded_attribute_names")
+    private(set) var excludedAttributeNames: Set<String> = ["Parameter"]
+}
+
 private extension RedundantOptionalInitializationRule {
+    typealias Configuration = RedundantOptionalInitializationConfiguration
+
     // Helper function to check for excluded attributes
     static func hasExcludedAttribute(_ node: VariableDeclSyntax, excludedNames: Set<String>) -> Bool {
         guard !excludedNames.isEmpty else { return false }
         
         return node.attributes.contains { attr -> Bool in
             guard let identAttr = attr.as(AttributeSyntax.self),
-                  let nameIdentifier = identAttr.attributeName.as(IdentifierTypeSyntax.self),
-                  !nameIdentifier.name.text.isEmpty else {
+                let nameIdentifier = identAttr.attributeName.as(IdentifierTypeSyntax.self),
+                !nameIdentifier.name.text.isEmpty else {
                 return false
             }
             return excludedNames.contains(nameIdentifier.name.text)
@@ -149,19 +147,12 @@ private extension RedundantOptionalInitializationRule {
 
     final class Visitor: ViolationsSyntaxVisitor<Configuration> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            // Early return if no configuration or empty attributes to check
-            guard !configuration.excludedAttributeNames.isEmpty else {
-                // If no attributes to exclude, proceed with original logic
-                if node.bindingSpecifier.tokenKind == .keyword(.var),
-                   !node.modifiers.contains(keyword: .lazy) {
-                    violations.append(contentsOf: node.bindings.compactMap(\.violationPosition))
-                }
-                return
-            }
-
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
-                  !node.modifiers.contains(keyword: .lazy),
-                  !RedundantOptionalInitializationRule.hasExcludedAttribute(node, excludedNames: configuration.excludedAttributeNames) else {
+                !node.modifiers.contains(keyword: .lazy),
+                !RedundantOptionalInitializationRule.hasExcludedAttribute(
+                    node,
+                    excludedNames: configuration.excludedAttributeNames
+                ) else {
                 return
             }
 
@@ -173,19 +164,12 @@ private extension RedundantOptionalInitializationRule {
         override func visitAny(_: Syntax) -> Syntax? { nil }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            // Early return if no configuration or empty attributes to check
-            guard !configuration.excludedAttributeNames.isEmpty else {
-                // If no attributes to exclude, proceed with original logic
-                if node.bindingSpecifier.tokenKind == .keyword(.var),
-                   !node.modifiers.contains(keyword: .lazy) {
-                    return processViolations(for: node)
-                }
-                return super.visit(node)
-            }
-
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
-                  !node.modifiers.contains(keyword: .lazy),
-                  !RedundantOptionalInitializationRule.hasExcludedAttribute(node, excludedNames: configuration.excludedAttributeNames) else {
+                !node.modifiers.contains(keyword: .lazy),
+                !RedundantOptionalInitializationRule.hasExcludedAttribute(
+                    node,
+                    excludedNames: configuration.excludedAttributeNames
+                ) else {
                 return super.visit(node)
             }
 
@@ -230,9 +214,9 @@ private extension RedundantOptionalInitializationRule {
 private extension PatternBindingSyntax {
     var violationPosition: AbsolutePosition? {
         guard let initializer,
-              let type = typeAnnotation,
-              initializer.isInitializingToNil,
-              type.isOptionalType else {
+            let type = typeAnnotation,
+            initializer.isInitializingToNil,
+            type.isOptionalType else {
             return nil
         }
 

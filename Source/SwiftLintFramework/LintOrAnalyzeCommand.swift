@@ -222,7 +222,7 @@ package struct LintOrAnalyzeCommand {
                 builder.ruleBenchmark.record(id: id, time: time)
             }
             builder.ruleBenchmark.save()
-            if !options.quiet, let memoryUsage = memoryUsage() {
+            if !options.quiet, let memoryUsage = memoryUsageString() {
                 queuedPrintError(memoryUsage)
             }
         }
@@ -250,6 +250,12 @@ package struct LintOrAnalyzeCommand {
         let pluralSuffix = { (collection: [Any]) -> String in
             collection.count != 1 ? "s" : ""
         }
+        
+        #if os(Windows)
+        // On Windows, ensure we're on a new line for the final status
+        queuedPrintError("\r")
+        #endif
+        
         queuedPrintError(
             "Done \(verb)! Found \(violations.count) violation\(pluralSuffix(violations)), " +
             "\(serious) serious in \(files.count) file\(pluralSuffix(files))."
@@ -274,7 +280,8 @@ package struct LintOrAnalyzeCommand {
             ruleDescription: description,
             severity: .error,
             location: Location(file: "", line: 0, character: 0),
-            reason: "Number of warnings exceeded threshold of \(threshold).")
+            reason: "Number of warnings exceeded threshold of \(threshold)."
+        )
     }
 
     private static func applyLeniency(
@@ -438,10 +445,12 @@ private actor CorrectionsBuilder {
     }
 }
 
-private func memoryUsage() -> String? {
-#if os(Linux)
+private func memoryUsageString() -> String? {
+    #if os(Windows)
     return nil
-#else
+    #elseif os(Linux)
+    return nil
+    #else
     var info = mach_task_basic_info()
     let basicInfoCount = MemoryLayout<mach_task_basic_info>.stride / MemoryLayout<natural_t>.stride
     var count = mach_msg_type_number_t(basicInfoCount)
@@ -454,10 +463,11 @@ private func memoryUsage() -> String? {
 
     if kerr == KERN_SUCCESS {
         let bytes = Measurement<UnitInformationStorage>(value: Double(info.resident_size), unit: .bytes)
-        let formatted = ByteCountFormatter().string(from: bytes)
+        let formatted = ByteCountFormatter().string(fromByteCount: Int64(bytes.value))
         return "Memory used: \(formatted)"
     }
+
     let errorMessage = String(cString: mach_error_string(kerr), encoding: .ascii)
     return "Error with task_info(): \(errorMessage ?? "unknown")"
-#endif
+    #endif
 }

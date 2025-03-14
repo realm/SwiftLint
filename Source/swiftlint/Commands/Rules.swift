@@ -1,3 +1,6 @@
+#if os(Windows)
+import WinSDK
+#endif
 import ArgumentParser
 import Foundation
 import SwiftLintFramework
@@ -141,12 +144,21 @@ private extension TextTable {
 
 private struct Terminal {
     static func currentWidth() -> Int {
+        #if os(Windows)
+        let handle = GetStdHandle(DWORD(STD_OUTPUT_HANDLE))
+        var csbi = CONSOLE_SCREEN_BUFFER_INFO()
+        if GetConsoleScreenBufferInfo(handle, &csbi) {
+            return Int(csbi.srWindow.Right - csbi.srWindow.Left + 1)
+        }
+        return 80 // Fallback to standard terminal width
+        #else
         var size = winsize()
-#if os(Linux)
+        #if os(Linux)
         _ = ioctl(CInt(STDOUT_FILENO), UInt(TIOCGWINSZ), &size)
-#else
+        #else
         _ = ioctl(STDOUT_FILENO, TIOCGWINSZ, &size)
-#endif
+        #endif
         return Int(size.ws_col)
+        #endif
     }
 }

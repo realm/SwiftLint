@@ -159,50 +159,24 @@ extension Configuration {
         return linters
     }
 
-    private func collect(linters: [Linter],
-                         visitor: LintableFilesVisitor,
-                         storage: RuleStorage,
-                         duplicateFileNames: Set<String>) async -> ([CollectedLinter], Set<String>) {
-        let counter = CounterActor()
-        let total = linters.filter(\.isCollecting).count
-        let progress = ProgressBar(count: total)
-        if visitor.options.progress && total > 0 {
-            await progress.initialize()
+    private func collect(_ linter: Linter, storage: RuleStorage) async -> CollectedLinter? {
+        let result = linter.collect(into: storage)
+        return result
+    }
+
+    private func collect(linters: [Linter], visitor: LintableFilesVisitor, storage: RuleStorage,
+                        duplicateFileNames: Set<String>) async -> ([CollectedLinter], Set<String>) {
+        if visitor.parallel {
+            let collectedLinters = await linters.concurrentCompactMap { linter -> CollectedLinter? in
+                await collect(linter, storage: storage)
+            }
+            return (collectedLinters, duplicateFileNames)
+        } else {
+            let collectedLinters = await linters.asyncCompactMap { linter -> CollectedLinter? in
+                await collect(linter, storage: storage)
+            }
+            return (collectedLinters, duplicateFileNames)
         }
-        let collect = { (linter: Linter) -> CollectedLinter? in
-            let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
-            if !visitor.options.quiet && linter.isCollecting {
-                if visitor.options.progress {
-                    await progress.printNext()
-                } else if let filePath = linter.file.path {
-                    let outputFilename = self.outputFilename(for: filePath, duplicateFileNames: duplicateFileNames)
-                    let collected = await counter.next()
-                    if skipFile {
-                        Issue.genericWarning(
-                            """
-                            Skipping '\(outputFilename)' (\(collected)/\(total)) \
-                            because its compiler arguments could not be found
-                            """
-                        ).print()
-                    } else {
-                        queuedPrintError("Collecting '\(outputFilename)' (\(collected)/\(total))")
-                    }
-                }
-            }
-
-            guard !skipFile else {
-                return nil
-            }
-
-            return autoreleasepool {
-                linter.collect(into: storage)
-            }
-        }
-
-        let collectedLinters = await visitor.parallel ?
-            linters.concurrentCompactMap(collect) :
-            linters.asyncCompactMap(collect)
-        return (collectedLinters, duplicateFileNames)
     }
 
     private func visit(linters: [CollectedLinter],

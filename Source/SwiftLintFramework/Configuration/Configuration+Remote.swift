@@ -87,7 +87,11 @@ internal extension Configuration.FileGraph.FilePath {
             while true {
                 if taskDone { break }
                 if Date().timeIntervalSince(startDate) > timeout { task.cancel(); break }
+                #if os(Windows)
+                Thread.sleep(forTimeInterval: 0.05) // Sleep for 50 ms
+                #else
                 usleep(50_000) // Sleep for 50 ms
+                #endif
             }
 
             // Handle wrong data
@@ -270,5 +274,55 @@ internal extension Configuration.FileGraph.FilePath {
                 )
             }
         }
+    }
+
+    private actor TaskState {
+        var result: (Data?, URLResponse?, (any Error)?)?
+        var done: Bool = false
+        
+        func setResult(_ data: Data?, _ response: URLResponse?, _ error: (any Error)?) {
+            result = (data, response, error)
+            done = true
+        }
+        
+        func getResult() -> (Data?, URLResponse?, (any Error)?)? {
+            return result
+        }
+        
+        func isDone() -> Bool {
+            return done
+        }
+    }
+
+    private func waitForTask(url: URL) async throws -> (Data?, URLResponse?, (any Error)?) {
+        let state = TaskState()
+        let task = URLSession(configuration: .ephemeral).dataTask(with: url) { data, response, error in
+            Task {
+                await state.setResult(data, response, error)
+            }
+        }
+        task.resume()
+        
+        while await !state.isDone() {
+            try await Task.sleep(nanoseconds: 50_000_000) // 50ms
+        }
+        
+        return await state.getResult() ?? (nil, nil, nil)
+    }
+
+    private func downloadFile(url: URL) async throws -> (Data?, URLResponse?, (any Error)?) {
+        let state = TaskState()
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        let task = URLSession(configuration: .ephemeral).dataTask(with: url) { data, response, error in
+            Task {
+                await state.setResult(data, response, error)
+                semaphore.signal()
+            }
+        }
+        task.resume()
+        
+        semaphore.wait()
+        return await state.getResult() ?? (nil, nil, nil)
     }
 }

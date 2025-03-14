@@ -44,9 +44,33 @@ struct CodeClimateReporter: Reporter {
             character: violation.location.character
         )
 
-        return [
+        let components = [
             "\(fingerprintLocation)",
             "\(violation.ruleIdentifier)",
-        ].joined().sha256()
+        ]
+        
+        // Simple string hashing approach
+        var hash = 5381
+        components.joined().utf8.forEach { byte in
+            hash = ((hash << 5) &+ hash) &+ Int(byte)
+        }
+        
+        return String(format: "%016llx", UInt64(abs(hash)))
+    }
+
+    private func fingerprint(for violation: StyleViolation) -> String {
+        let fingerprintLocation = violation.location.description
+        let components = [
+            "\(fingerprintLocation)",
+            "\(violation.ruleIdentifier)",
+        ]
+        
+        // Simple string hashing approach
+        var hash = 5381
+        components.joined().utf8.forEach { byte in
+            hash = ((hash << 5) &+ hash) &+ Int(byte)
+        }
+        
+        return String(format: "%016llx", UInt64(abs(hash)))
     }
 }

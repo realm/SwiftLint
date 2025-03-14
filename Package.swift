@@ -22,6 +22,225 @@ swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
 swiftLintPluginDependencies = [.target(name: "swiftlint")]
 #endif
 
+// Define package dependencies
+let packageDependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.1")),
+    .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "600.0.0"),
+    .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMajor(from: "0.37.0")),
+    .package(url: "https://github.com/jpsim/Yams.git", .upToNextMajor(from: "5.3.0")),
+    .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", .upToNextMajor(from: "0.9.0")),
+    .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", .upToNextMajor(from: "0.2.0")),
+    .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.8.4")),
+]
+
+// Define main targets
+let mainTargets: [Target] = [
+    .executableTarget(
+        name: "swiftlint",
+        dependencies: [
+            .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            "CollectionConcurrencyKit",
+            "SwiftLintFramework",
+            "SwiftyTextTable",
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency,
+        linkerSettings: [
+            .linkedFramework("CoreFoundation", .when(platforms: [.macOS])),
+            .unsafeFlags(["-Xlinker", "/subsystem:console"], .when(platforms: [.windows]))
+        ]
+    ),
+    .target(
+        name: "SwiftLintFramework",
+        dependencies: [
+            "SwiftLintBuiltInRules",
+            "SwiftLintCore",
+            "SwiftLintExtraRules",
+            "CollectionConcurrencyKit",
+        ],
+        swiftSettings: swiftFeatures + targetedConcurrency
+    ),
+]
+
+// Define plugin targets
+let pluginTargets: [Target] = [
+    .plugin(
+        name: "SwiftLintBuildToolPlugin",
+        capability: .buildTool(),
+        dependencies: swiftLintPluginDependencies,
+        packageAccess: false
+    ),
+    .plugin(
+        name: "SwiftLintCommandPlugin",
+        capability: .command(
+            intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin"),
+            permissions: [
+                .writeToPackageDirectory(
+                    reason: "When this command is run with the `--fix` option it may modify source files."
+                ),
+            ]
+        ),
+        dependencies: swiftLintPluginDependencies,
+        packageAccess: false
+    ),
+]
+
+// Define core targets
+let coreTargets: [Target] = [
+    .target(
+        name: "SwiftLintCore",
+        dependencies: [
+            .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux])),
+            .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
+            .product(name: "SourceKittenFramework", package: "SourceKitten"),
+            .product(name: "SwiftIDEUtils", package: "swift-syntax"),
+            .product(name: "SwiftOperators", package: "swift-syntax"),
+            .product(name: "SwiftParser", package: "swift-syntax"),
+            .product(name: "SwiftSyntax", package: "swift-syntax"),
+            .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+            .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
+            .product(name: "Yams", package: "Yams"),
+            .target(name: "SwiftLintCoreMacros", condition: .when(platforms: [.macOS])),
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency
+    ),
+]
+
+// Define additional targets
+let additionalTargets: [Target] = [
+    .target(
+        name: "SwiftLintBuiltInRules",
+        dependencies: ["SwiftLintCore"],
+        swiftSettings: swiftFeatures + strictConcurrency
+    ),
+    .target(
+        name: "SwiftLintExtraRules",
+        dependencies: ["SwiftLintCore"],
+        swiftSettings: swiftFeatures + strictConcurrency
+    ),
+    .target(name: "DyldWarningWorkaround"),
+    .macro(
+        name: "SwiftLintCoreMacros",
+        dependencies: [
+            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+        ],
+        path: "Source/SwiftLintCoreMacros",
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFTLINT_MACRO_PLUGIN", .when(configuration: .release))
+        ],
+        linkerSettings: [
+            .linkedFramework("CoreFoundation", .when(platforms: [.macOS])),
+            .unsafeFlags(["-Xlinker", "/subsystem:console"], .when(platforms: [.windows]))
+        ]
+    ),
+]
+
+// Define test targets
+let testTargets: [Target] = [
+    .testTarget(
+        name: "BuiltInRulesTests",
+        dependencies: [
+            "SwiftLintBuiltInRules",
+            "TestHelpers",
+        ],
+        exclude: [
+            "Resources",
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .testTarget(
+        name: "CLITests",
+        dependencies: [
+            "SwiftLintFramework",
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .testTarget(
+        name: "ExtraRulesTests",
+        dependencies: [
+            "SwiftLintFramework",
+            "TestHelpers",
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .testTarget(
+        name: "FrameworkTests",
+        dependencies: [
+            "SwiftLintFramework",
+            "TestHelpers",
+            .target(name: "SwiftLintCoreMacros", condition: .when(platforms: [.macOS])),
+        ],
+        exclude: [
+            "Resources",
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .testTarget(
+        name: "GeneratedTests",
+        dependencies: [
+            "SwiftLintFramework",
+            "TestHelpers",
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .testTarget(
+        name: "IntegrationTests",
+        dependencies: [
+            "SwiftLintFramework",
+            "TestHelpers",
+        ],
+        exclude: [
+            "default_rule_configurations.yml"
+        ],
+        swiftSettings: swiftFeatures + targetedConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .testTarget(
+        name: "MacroTests",
+        dependencies: [
+            .target(name: "SwiftLintCoreMacros", condition: .when(platforms: [.macOS])),
+            .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax", condition: .when(platforms: [.macOS])),
+        ],
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+    .target(
+        name: "TestHelpers",
+        dependencies: [
+            "SwiftLintFramework"
+        ],
+        path: "Tests/TestHelpers",
+        swiftSettings: swiftFeatures + strictConcurrency + [
+            .define("SWIFT_PACKAGE_TESTS")
+        ]
+    ),
+]
+
+// Combine all targets
+var allTargets = mainTargets + pluginTargets + coreTargets + additionalTargets + testTargets
+
+#if os(macOS)
+allTargets.append(
+    .binaryTarget(
+        name: "SwiftLintBinary",
+        url: "https://github.com/realm/SwiftLint/releases/download/0.58.2/SwiftLintBinary.artifactbundle.zip",
+        checksum: "f2de7c148dba39bf0ad55ada8f60b15dde383c643c69f7eb2448bd2ed532f659"
+    )
+)
+#endif
+
 let package = Package(
     name: "SwiftLint",
     platforms: [.macOS(.v12)],
@@ -31,174 +250,6 @@ let package = Package(
         .plugin(name: "SwiftLintBuildToolPlugin", targets: ["SwiftLintBuildToolPlugin"]),
         .plugin(name: "SwiftLintCommandPlugin", targets: ["SwiftLintCommandPlugin"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.1")),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "600.0.0"),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMajor(from: "0.37.0")),
-        .package(url: "https://github.com/jpsim/Yams.git", .upToNextMajor(from: "5.3.0")),
-        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", .upToNextMajor(from: "0.9.0")),
-        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", .upToNextMajor(from: "0.2.0")),
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.8.4")),
-    ],
-    targets: [
-        .executableTarget(
-            name: "swiftlint",
-            dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "CollectionConcurrencyKit",
-                "SwiftLintFramework",
-                "SwiftyTextTable",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .target(
-            name: "SwiftLintFramework",
-            dependencies: [
-                "SwiftLintBuiltInRules",
-                "SwiftLintCore",
-                "SwiftLintExtraRules",
-                "CollectionConcurrencyKit",
-            ],
-            swiftSettings: swiftFeatures + targetedConcurrency
-        ),
-        .plugin(
-            name: "SwiftLintBuildToolPlugin",
-            capability: .buildTool(),
-            dependencies: swiftLintPluginDependencies,
-            packageAccess: false
-        ),
-        .plugin(
-            name: "SwiftLintCommandPlugin",
-            capability: .command(
-                intent: .custom(verb: "swiftlint", description: "SwiftLint Command Plugin"),
-                permissions: [
-                    .writeToPackageDirectory(
-                        reason: "When this command is run with the `--fix` option it may modify source files."
-                    ),
-                ]
-            ),
-            dependencies: swiftLintPluginDependencies,
-            packageAccess: false
-        ),
-        .target(
-            name: "SwiftLintCore",
-            dependencies: [
-                .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux])),
-                .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
-                .product(name: "SourceKittenFramework", package: "SourceKitten"),
-                .product(name: "SwiftIDEUtils", package: "swift-syntax"),
-                .product(name: "SwiftOperators", package: "swift-syntax"),
-                .product(name: "SwiftParser", package: "swift-syntax"),
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
-                .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
-                .product(name: "Yams", package: "Yams"),
-                "SwiftLintCoreMacros",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .target(
-            name: "SwiftLintBuiltInRules",
-            dependencies: ["SwiftLintCore"],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .target(
-            name: "SwiftLintExtraRules",
-            dependencies: ["SwiftLintCore"],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .target(name: "DyldWarningWorkaround"),
-        .macro(
-            name: "SwiftLintCoreMacros",
-            dependencies: [
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            ],
-            path: "Source/SwiftLintCoreMacros",
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
-            name: "BuiltInRulesTests",
-            dependencies: [
-                "SwiftLintBuiltInRules",
-                "TestHelpers",
-            ],
-            exclude: [
-                "Resources",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
-            name: "CLITests",
-            dependencies: [
-                "SwiftLintFramework",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
-            name: "ExtraRulesTests",
-            dependencies: [
-                "SwiftLintFramework",
-                "TestHelpers",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
-            name: "FrameworkTests",
-            dependencies: [
-                "SwiftLintFramework",
-                "TestHelpers",
-                "SwiftLintCoreMacros",
-            ],
-            exclude: [
-                "Resources",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
-            name: "GeneratedTests",
-            dependencies: [
-                "SwiftLintFramework",
-                "TestHelpers",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
-            name: "IntegrationTests",
-            dependencies: [
-                "SwiftLintFramework",
-                "TestHelpers",
-            ],
-            exclude: [
-                "default_rule_configurations.yml"
-            ],
-            swiftSettings: swiftFeatures + targetedConcurrency // Set to strict once SwiftLintFramework is updated
-        ),
-        .testTarget(
-            name: "MacroTests",
-            dependencies: [
-                "SwiftLintCoreMacros",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .target(
-            name: "TestHelpers",
-            dependencies: [
-                "SwiftLintFramework"
-            ],
-            path: "Tests/TestHelpers",
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-    ]
+    dependencies: packageDependencies,
+    targets: allTargets
 )
-
-#if os(macOS)
-package.targets.append(
-    .binaryTarget(
-        name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.58.2/SwiftLintBinary.artifactbundle.zip",
-        checksum: "f2de7c148dba39bf0ad55ada8f60b15dde383c643c69f7eb2448bd2ed532f659"
-    )
-)
-#endif

@@ -3,7 +3,9 @@ import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
 
+#if SWIFTLINT_MACRO_PLUGIN && !SWIFT_PACKAGE_TESTS && os(macOS)
 @main
+#endif
 struct SwiftLintCoreMacros: CompilerPlugin {
     let providingMacros: [any Macro.Type] = [
         AutoConfigParser.self,

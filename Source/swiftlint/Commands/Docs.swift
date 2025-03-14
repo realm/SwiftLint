@@ -21,22 +21,21 @@ extension SwiftLint {
                     subPage = ruleID + ".html"
                 }
             }
-            open(URL(string: "https://realm.github.io/SwiftLint/\(subPage)")!)
+            try open(url: URL(string: "https://realm.github.io/SwiftLint/\(subPage)")!)
         }
     }
 }
 
-private func open(_ url: URL) {
+func open(url: URL) throws {
     let process = Process()
-#if os(Linux)
-    process.executableURL = URL(fileURLWithPath: "/usr/bin/env", isDirectory: false)
-    let command = "xdg-open"
-    process.arguments = [command, url.absoluteString]
-    try? process.run()
-#else
-    process.launchPath = "/usr/bin/env"
+    #if os(Windows)
+    process.executableURL = URL(fileURLWithPath: "cmd.exe")
+    process.arguments = ["/c", "start", url.absoluteString]
+    try process.run()
+    #else
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
     let command = "open"
     process.arguments = [command, url.absoluteString]
-    process.launch()
-#endif
+    try process.run()
+    #endif
 }

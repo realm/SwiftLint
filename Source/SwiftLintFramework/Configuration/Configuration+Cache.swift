@@ -64,7 +64,12 @@ extension Configuration {
             .sorted { $0[0] < $1[0] }
         let jsonObject: [Any] = [rootDirectory, cacheRulesDescriptions]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
-            return jsonData.sha256().toHexString()
+            // Simple string hashing approach
+            var hash = 5381
+            jsonData.forEach { byte in
+                hash = ((hash << 5) &+ hash) &+ Int(byte)
+            }
+            return String(format: "%016llx", UInt64(abs(hash)))
         }
         queuedFatalError("Could not serialize configuration for cache")
     }
@@ -96,5 +101,24 @@ extension Configuration {
         }
 
         return folder
+    }
+
+    private func cacheIdentifier() -> String {
+        let jsonObject: [String: Any] = [
+            "rootDirectory": rootDirectory,
+            "rules": rules.map { String(describing: $0) }
+        ]
+        
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) else {
+            return ""
+        }
+        
+        // Simple string hashing approach
+        var hash = 5381
+        jsonData.forEach { byte in
+            hash = ((hash << 5) &+ hash) &+ Int(byte)
+        }
+        
+        return String(format: "%016llx", UInt64(abs(hash)))
     }
 }

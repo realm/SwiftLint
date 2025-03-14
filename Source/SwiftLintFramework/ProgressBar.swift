@@ -7,6 +7,7 @@ actor ProgressBar {
     private var lastPrintedTime: TimeInterval = 0.0
     private let startTime = uptime()
     private let count: Int
+    private var lastLineLength = 0
 
     init(count: Int) {
         self.count = count
@@ -22,11 +23,27 @@ actor ProgressBar {
 
         let currentTime = uptime()
         if currentTime - lastPrintedTime > 0.1 || index == count {
+            #if os(Windows)
+            // On Windows, use carriage return to overwrite the line
+            let lineReset = "\r"
+            #else
+            // On Unix systems, use ANSI escape codes
             let lineReset = "\u{1B}[1A\u{1B}[K"
+            #endif
+            
             let bar = makeBar()
             let timeEstimate = makeTimeEstimate(currentTime: currentTime)
             let lineContents = "\(index) of \(count) \(bar) \(timeEstimate)"
+            
+            #if os(Windows)
+            // Pad with spaces to clear any remnants of the previous line
+            let padding = String(repeating: " ", count: max(0, lastLineLength - lineContents.count))
+            queuedPrintError("\(lineReset)\(lineContents)\(padding)")
+            lastLineLength = lineContents.count
+            #else
             queuedPrintError("\(lineReset)\(lineContents)")
+            #endif
+            
             lastPrintedTime = currentTime
         }
 
@@ -58,5 +75,5 @@ private let NSEC_PER_SEC = 1_000_000_000
 #endif
 
 private func uptime() -> TimeInterval {
-    Double(DispatchTime.now().uptimeNanoseconds) / Double(NSEC_PER_SEC)
+    Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000_000
 }

@@ -1,9 +1,20 @@
 import SwiftSyntax
 import SwiftLintCore
 
+// MARK: - Configuration
+@AutoConfigParser
+struct RedundantOptionalInitializationConfiguration: SeverityBasedRuleConfiguration {
+    typealias Parent = RedundantOptionalInitializationRule
+
+    @ConfigurationElement(key: "severity")
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "excluded_attribute_names")
+    private(set) var excludedAttributeNames: Set<String> = ["Parameter"]
+}
+
 @SwiftSyntaxRule(explicitRewriter: true)
 struct RedundantOptionalInitializationRule: Rule {
-    var configuration = Configuration()
+    var configuration = RedundantOptionalInitializationConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_optional_initialization",
@@ -32,105 +43,38 @@ struct RedundantOptionalInitializationRule: Rule {
             Example("let myVar: Optional<Int> = nil"),
             Example("var myVar: Optional<Int> = 0"),
             Example("@Parameter static var someParameter: Bool? = nil"),
-            Example("""
-            var foo: Int? {
-              if bar != nil { }
-              return 0
-            }
-            """),
-            Example("""
-            var foo: Int? = {
-              if bar != nil { }
-              return 0
-            }()
-            """),
+            Example("var foo: Int? {\n  if bar != nil { }\n  return 0\n}"),
+            Example("var foo: Int? = {\n  if bar != nil { }\n  return 0\n}()"),
             Example("lazy var test: Int? = nil"),
-            Example("""
-            func funcName() {
-              var myVar: String?
-            }
-            """),
-            Example("""
-            func funcName() {
-              let myVar: String? = nil
-            }
-            """),
+            Example("func funcName() {\n  var myVar: String?\n}"),
+            Example("func funcName() {\n  let myVar: String? = nil\n}")
         ],
-        triggeringExamples: triggeringExamples,
-        corrections: corrections
+        triggeringExamples: [
+            Example("var myVar: Int?↓ = nil"),
+            Example("var myVar: Optional<Int>↓ = nil"),
+            Example("var myVar: Int?↓=nil"),
+            Example("var myVar: Optional<Int>↓=nil\n)"),
+            Example("var myVar: String?↓ = nil {\n  didSet { print(\"didSet\") }\n}"),
+            Example("func funcName() {\n    var myVar: String?↓ = nil\n}")
+        ],
+        corrections: [
+            Example("var myVar: Int?↓ = nil"): Example("var myVar: Int?"),
+            Example("var myVar: Optional<Int>↓ = nil"): Example("var myVar: Optional<Int>"),
+            Example("var myVar: Int?↓=nil"): Example("var myVar: Int?"),
+            Example("var myVar: Optional<Int>↓=nil"): Example("var myVar: Optional<Int>"),
+            Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
+                Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
+            Example("var myVar: Int?↓ = nil {\n    didSet { }\n}"):
+                Example("var myVar: Int? {\n    didSet { }\n}"),
+            Example("var myVar: Int?↓=nil{\n    didSet { }\n}"):
+                Example("var myVar: Int?{\n    didSet { }\n}"),
+            Example("func foo() {\n    var myVar: String?↓ = nil, b: Int\n}"):
+                Example("func foo() {\n    var myVar: String?, b: Int\n}")
+        ]
     )
-
-    private static let triggeringExamples: [Example] = [
-        Example("var myVar: Int?↓ = nil"),
-        Example("var myVar: Optional<Int>↓ = nil"),
-        Example("var myVar: Int?↓=nil"),
-        Example("var myVar: Optional<Int>↓=nil\n)"),
-        Example("""
-              var myVar: String?↓ = nil {
-                didSet { print("didSet") }
-              }
-              """),
-        Example("""
-            func funcName() {
-                var myVar: String?↓ = nil
-            }
-            """),
-    ]
-
-    private static let corrections: [Example: Example] = [
-        Example("var myVar: Int?↓ = nil"): Example("var myVar: Int?"),
-        Example("var myVar: Optional<Int>↓ = nil"): Example("var myVar: Optional<Int>"),
-        Example("var myVar: Int?↓=nil"): Example("var myVar: Int?"),
-        Example("var myVar: Optional<Int>↓=nil"): Example("var myVar: Optional<Int>"),
-        Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
-            Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
-        Example("""
-            var myVar: Int?↓ = nil {
-                didSet { }
-            }
-            """):
-            Example("""
-                var myVar: Int? {
-                    didSet { }
-                }
-                """),
-        Example("""
-            var myVar: Int?↓=nil{
-                didSet { }
-            }
-            """):
-            Example("""
-                var myVar: Int?{
-                    didSet { }
-                }
-                """),
-        Example("""
-        func foo() {
-            var myVar: String?↓ = nil, b: Int
-        }
-        """):
-            Example("""
-            func foo() {
-                var myVar: String?, b: Int
-            }
-            """),
-    ]
-}
-
-// MARK: - Configuration
-@AutoConfigParser
-struct RedundantOptionalInitializationConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = RedundantOptionalInitializationRule
-
-    @ConfigurationElement(key: "severity")
-    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "excluded_attribute_names")
-    private(set) var excludedAttributeNames: Set<String> = ["Parameter"]
 }
 
 private extension RedundantOptionalInitializationRule {
-    typealias Configuration = RedundantOptionalInitializationConfiguration
-
     // Helper function to check for excluded attributes
     static func hasExcludedAttribute(_ node: VariableDeclSyntax, excludedNames: Set<String>) -> Bool {
         guard !excludedNames.isEmpty else { return false }
@@ -145,7 +89,7 @@ private extension RedundantOptionalInitializationRule {
         }
     }
 
-    final class Visitor: ViolationsSyntaxVisitor<Configuration> {
+    final class Visitor: ViolationsSyntaxVisitor<RedundantOptionalInitializationConfiguration> {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard node.bindingSpecifier.tokenKind == .keyword(.var),
                 !node.modifiers.contains(keyword: .lazy),
@@ -160,7 +104,7 @@ private extension RedundantOptionalInitializationRule {
         }
     }
 
-    final class Rewriter: ViolationsSyntaxRewriter<Configuration> {
+    final class Rewriter: ViolationsSyntaxRewriter<RedundantOptionalInitializationConfiguration> {
         override func visitAny(_: Syntax) -> Syntax? { nil }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {

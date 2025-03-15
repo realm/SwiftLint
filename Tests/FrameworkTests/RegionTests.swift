@@ -73,12 +73,15 @@ final class RegionTests: SwiftLintTestCase {
     }
 
     func testSeveralRegionsFromSeveralCommands() {
-        let file = SwiftLintFile(contents: "// swiftlint:disable 1\n" +
-                                  "// swiftlint:disable 2\n" +
-                                  "// swiftlint:disable 3\n" +
-                                  "// swiftlint:enable 1\n" +
-                                  "// swiftlint:enable 2\n" +
-                                  "// swiftlint:enable 3\n")
+        let file = SwiftLintFile(contents: """
+            // swiftlint:disable 1
+            // swiftlint:disable 2
+            // swiftlint:disable 3
+            // swiftlint:enable 1
+            // swiftlint:enable 2
+            // swiftlint:enable 3
+            """
+        )
         XCTAssertEqual(file.regions(), [
             Region(start: Location(file: nil, line: 1, character: 23),
                    end: Location(file: nil, line: 2, character: 22),

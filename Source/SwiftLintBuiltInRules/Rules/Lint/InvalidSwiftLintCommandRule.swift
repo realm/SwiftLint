@@ -1,3 +1,5 @@
+import Foundation
+
 struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -13,6 +15,8 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             Example("// swiftlint:disable:previous unused_import"),
             Example("// swiftlint:disable:this unused_import"),
             Example("//swiftlint:disable:this unused_import"),
+            Example("_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import", excludeFromDocumentation: true),
+            Example("_ = \"🤵🏼‍♀️ 🤵🏼‍♀️\" // swiftlint:disable:this unused_import", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("// ↓swiftlint:"),
@@ -30,6 +34,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             Example("// ↓swiftlint:enable: "),
             Example("// ↓swiftlint:disable: unused_import"),
             Example("// s↓swiftlint:disable unused_import"),
+            Example("// 🤵🏼‍♀️swiftlint:disable unused_import", excludeFromDocumentation: true),
         ].skipWrappingInCommentTests()
     )
 
@@ -39,16 +44,13 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
 
     private func badPrefixViolations(in file: SwiftLintFile) -> [StyleViolation] {
         (file.commands + file.invalidCommands).compactMap { command in
-            if let precedingCharacter = command.precedingCharacter(in: file)?.trimmingCharacters(in: .whitespaces) {
-                if !precedingCharacter.isEmpty, precedingCharacter != "/" {
-                    return styleViolation(
-                        for: command,
-                        in: file,
-                        reason: "swiftlint command should be preceded by whitespace or a comment character"
-                    )
-                }
-            }
-            return nil
+            command.isPrecededByInvalidCharacter(in: file)
+                ? styleViolation(
+                    for: command,
+                    in: file,
+                    reason: "swiftlint command should be preceded by whitespace or a comment character"
+                )
+                : nil
         }
     }
 
@@ -59,34 +61,26 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
     }
 
     private func styleViolation(for command: Command, in file: SwiftLintFile, reason: String) -> StyleViolation {
-        let character = command.startingCharacterPosition(in: file)
-        return StyleViolation(
+        StyleViolation(
             ruleDescription: Self.description,
             severity: configuration.severity,
-            location: Location(file: file.path, line: command.line, character: character),
+            location: Location(file: file.path, line: command.line, character: command.range?.lowerBound),
             reason: reason
         )
     }
 }
 
 private extension Command {
-    func startingCharacterPosition(in file: SwiftLintFile) -> Int? {
-        var position = character
-        if line > 0, line <= file.lines.count {
-            let line = file.lines[line - 1].content
-            if let commandIndex = line.range(of: "swiftlint:")?.lowerBound {
-                position = line.distance(from: line.startIndex, to: commandIndex) + 1
-            }
+    func isPrecededByInvalidCharacter(in file: SwiftLintFile) -> Bool {
+        guard line > 0, let character = range?.lowerBound, character > 1, line <= file.lines.count else {
+            return false
         }
-        return position
-    }
-
-    func precedingCharacter(in file: SwiftLintFile) -> String? {
-        if let startingCharacterPosition = startingCharacterPosition(in: file), startingCharacterPosition > 2 {
-            let line = file.lines[line - 1].content
-            return line.substring(from: startingCharacterPosition - 2, length: 1)
+        let line = file.lines[line - 1].content
+        guard line.count > character,
+              let char = line[line.index(line.startIndex, offsetBy: character - 2)].unicodeScalars.first else {
+            return false
         }
-        return nil
+        return !CharacterSet.whitespaces.union(CharacterSet(charactersIn: "/")).contains(char)
     }
 
     func invalidReason() -> String? {

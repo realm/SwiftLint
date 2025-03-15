@@ -128,4 +128,17 @@ public extension String {
     func linesPrefixed(with prefix: Self) -> Self {
         split(separator: "\n").joined(separator: "\n\(prefix)")
     }
+
+    func characterPosition(of utf8Offset: Int) -> Int? {
+        guard utf8Offset != 0 else {
+            return 0
+        }
+        guard utf8Offset > 0, utf8Offset < lengthOfBytes(using: .utf8) else {
+            return nil
+        }
+        for (offset, index) in indices.enumerated() where self[...index].lengthOfBytes(using: .utf8) == utf8Offset {
+            return offset + 1
+        }
+        return nil
+    }
 }

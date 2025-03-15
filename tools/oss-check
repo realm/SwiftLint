@@ -4,10 +4,12 @@
 # Requires
 ################################
 
+require 'erb'
 require 'fileutils'
+require 'json'
 require 'open3'
 require 'optparse'
-require 'erb'
+require 'stringio'
 
 ################################
 # Options
@@ -86,6 +88,62 @@ class Repo
   end
 end
 
+class ReportEntry < Struct.new(:file, :line, :column, :severity, :message, :rule_id)
+  def self.from_xcode(line)
+    # /path/to/file.swift:line:column: (warning|error): message (rule_id)
+    match = line.match(/^(.*):(\d+):(\d+): (warning|error): (.+) \((\w+)\)$/)
+    if match.nil?
+      error "Could not parse line '#{line}'"
+      return nil
+    end
+    ReportEntry.new(*match.captures)
+  end
+
+  def self.from_json(json)
+    ReportEntry.new(json['file'], json['line'], json['character'], json['severity'], json['reason'], json['rule_id'])
+  end
+
+  def to_full_message(repo, escape = false)
+    escaped_message = escape ? ERB::Util.html_escape(message) : message
+    "#{file_as_relative_path(repo)}:#{line}:#{column}: #{severity}: #{escaped_message} (#{rule_id})"
+  end
+
+  def to_full_message_with_linked_path(repo)
+    "#{to_linked_relative_path(repo)}: #{severity}: #{message} (#{rule_id})"
+  end
+
+  def to_link(repo)
+    "#{repo.git_url}/blob/#{repo.commit_hash}#{ERB::Util.html_escape(file_as_relative_path(repo))}#L#{line}"
+  end
+
+  def to_linked_relative_path(repo)
+    "[#{file_as_relative_path(repo)}:#{line}:#{column}](#{to_link(repo)})"
+  end
+
+  def to_linked_full_message(repo, escape = false)
+    "[#{to_full_message(repo, escape)}](#{to_link(repo)})"
+  end
+
+  def file_as_relative_path(repo)
+    file.sub("#{Dir.pwd}/#{$working_dir}/#{repo.name}", '')
+  end
+
+  def equal_to?(other, except = [])
+    (members - except).all? { |member| send(member) == other.send(member) }
+  end
+end
+
+class Change < Struct.new(:category, :new, :old)
+  def print_as_diff(repo, into)
+    into.puts "- #{new.to_linked_relative_path(repo)}  "
+    into.puts "  ```diff"
+    into.puts "  - #{old.send(category)}"
+    into.puts "  + #{new.send(category)}"
+    into.puts "  ```"
+    into.puts
+  end
+end
+
 ################################
 # Methods
 ################################
@@ -121,28 +179,13 @@ end
 
 def make_directory_structure
   ['branch_reports', 'main_reports'].each do |dir|
-    FileUtils.mkdir_p("#{@working_dir}/#{dir}")
+    FileUtils.mkdir_p("#{$working_dir}/#{dir}")
   end
-end
-
-def convert_to_link(repo, string)
-  string = remove_base_path(repo, string)
-  string.sub!('.swift:', '.swift#L')
-  string = string.partition(': warning:').first.partition(': error:').first
-  "#{repo.git_url}/blob/#{repo.commit_hash}#{string}"
-end
-
-def remove_base_path(repo, string)
-  string.sub("#{Dir.pwd}/#{@working_dir}/#{repo.name}", '')
-end
-
-def non_empty_lines(path)
-  File.read(path).split(/\n+/).reject(&:empty?)
 end
 
 def setup_repos
   @repos.each do |repo|
-    dir = "#{@working_dir}/#{repo.name}"
+    dir = "#{$working_dir}/#{repo.name}"
     puts "Cloning #{repo}"
     perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
     swiftlint_config = "#{dir}/.swiftlint.yml"
@@ -168,14 +211,14 @@ end
 
 def generate_reports(branch)
   @repos.each do |repo|
-    Dir.chdir("#{@working_dir}/#{repo.name}") do
+    Dir.chdir("#{$working_dir}/#{repo.name}") do
       perform("git checkout #{repo.commit_hash}")
       iterations = @options[:iterations]
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = "../builds/swiftlint-#{branch} lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter xcode"
-      File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
+      command = "../builds/swiftlint-#{branch} lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter json"
+      File.open("../#{branch}_reports/#{repo}.json", 'w') do |file|
         puts "\n#{command}" if @options[:verbose]
         Open3.popen2(command) do |_, stdout, wait_thr|
           while line = stdout.gets
@@ -210,7 +253,7 @@ end
 def build(branch)
   puts "Building #{branch}"
 
-  dir = "#{@working_dir}/builds"
+  dir = "#{$working_dir}/builds"
   target = branch == 'main' ? @effective_main_commitish : @options[:branch]
   if File.directory?(dir)
     perform("git checkout #{target}", dir: dir)
@@ -236,7 +279,7 @@ end
 def diff_and_report_changes_to_danger
   @repos.each { |repo| message repo.duration_report }
 
-  @repos.each do |repo|
+  summaries = @repos.map do |repo|
     if repo.main_exit_value != repo.branch_exit_value
       warn "This PR changed the exit value from #{repo.main_exit_value} to #{repo.branch_exit_value} when " \
            "running in #{repo.name}."
@@ -245,17 +288,85 @@ def diff_and_report_changes_to_danger
       next
     end
 
-    branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt").sort
-    main = non_empty_lines("#{@working_dir}/main_reports/#{repo.name}.txt").sort
+    branch = JSON.parse(File.read("#{$working_dir}/branch_reports/#{repo.name}.json")).map {
+      |json| ReportEntry.from_json(json)
+    }
+    main = JSON.parse(File.read("#{$working_dir}/main_reports/#{repo.name}.json")).map {
+      |json| ReportEntry.from_json(json)
+    }
 
-    (main - branch).each do |fixed|
-      escaped_message = ERB::Util.html_escape remove_base_path(repo, fixed)
-      message "This PR fixed a violation in #{repo.name}: [#{escaped_message}](#{convert_to_link(repo, fixed)})"
+    new_violations = branch - main
+    fixed_violations = main - branch
+
+    message_changed = []
+    severity_changed = []
+    rule_id_changed = []
+    column_changed = []
+
+    new_violations.each do |line|
+      fixed = fixed_violations.find { |other| line.equal_to?(other, [:message]) }
+      if fixed
+        next message_changed << Change.new(:message, line, fixed)
+      end
+      fixed = fixed_violations.find { |other| line.equal_to?(other, [:severity]) }
+      if fixed
+        next severity_changed << Change.new(:severity, line, fixed)
+      end
+      fixed = fixed_violations.find { |other| line.equal_to?(other, [:rule_id]) }
+      if fixed
+        next rule_id_changed << Change.new(:rule_id, line, fixed)
+      end
+      fixed = fixed_violations.find { |other| line.equal_to?(other, [:column]) }
+      if fixed
+        next column_changed << Change.new(:column, line, fixed)
+      end
     end
-    (branch - main).each do |violation|
-      escaped_message = ERB::Util.html_escape remove_base_path(repo, violation)
-      warn "This PR introduced a violation in #{repo.name}: [#{escaped_message}](#{convert_to_link(repo, violation)})"
-    end
+
+    # Print new and fixed violations to be processed by Danger.
+    new_violations.each { |line|
+      warn "This PR introduced a violation in #{repo.name}: #{line.to_linked_full_message(repo, true)}"
+    }
+    fixed_violations.each { |line|
+      message "This PR fixed a violation in #{repo.name}: #{line.to_linked_full_message(repo, true)}"
+    }
+
+    # Print report in Markdown format that lists all changes by category.
+    summary = StringIO.new
+
+    summary.puts "## #{repo.name}"
+    summary.puts
+    summary.puts "### Message changed (#{message_changed.count})"
+    summary.puts
+    message_changed.each { |change| change.print_as_diff(repo, summary) }
+    summary.puts
+    summary.puts "### Severity changed (#{severity_changed.count})"
+    summary.puts
+    severity_changed.each { |change| change.print_as_diff(repo, summary) }
+    summary.puts
+    summary.puts "### Rule ID changed (#{rule_id_changed.count})"
+    summary.puts
+    rule_id_changed.each { |change| change.print_as_diff(repo, summary) }
+    summary.puts
+    summary.puts "### Column changed (#{column_changed.count})"
+    summary.puts
+    column_changed.each { |change| change.print_as_diff(repo, summary) }
+    summary.puts
+    summary.puts "### Fixed violations (#{fixed_violations.count})"
+    summary.puts
+    fixed_violations.each { |violation| summary.puts "- #{violation.to_full_message_with_linked_path(repo)}" }
+    summary.puts
+    summary.puts "### New violations (#{new_violations.count})"
+    summary.puts
+    new_violations.each { |violation| summary.puts "- #{violation.to_full_message_with_linked_path(repo)}" }
+    summary.puts
+
+    summary.string
+  end
+
+  File.open("oss-check-summary.md", 'w') do |file|
+    file.puts "# Summary"
+    file.puts
+    file.puts summaries.compact.join("\n")
   end
 end
 
@@ -264,7 +375,7 @@ def fetch_origin
 end
 
 def clean_up
-  FileUtils.rm_rf(@working_dir)
+  FileUtils.rm_rf($working_dir)
   perform('git worktree prune')
 end
 
@@ -292,8 +403,8 @@ def print_rules_changed
 end
 
 def report_binary_size
-  size_branch = File.size("#{@working_dir}/builds/swiftlint-branch")
-  size_main = File.size("#{@working_dir}/builds/swiftlint-main")
+  size_branch = File.size("#{$working_dir}/builds/swiftlint-branch")
+  size_main = File.size("#{$working_dir}/builds/swiftlint-main")
   if size_branch == size_main
     message "Building this branch resulted in the same binary size as when built on `main`."
   else
@@ -315,7 +426,7 @@ end
 ################################
 
 # Constants
-@working_dir = 'osscheck'
+$working_dir = 'osscheck'
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
@@ -356,8 +467,8 @@ end
 report_binary_size
 
 unless @options[:force]
-  full_version_branch = `#{@working_dir}/builds/swiftlint-branch version --verbose`
-  full_version_main = `#{@working_dir}/builds/swiftlint-main version --verbose`
+  full_version_branch = `#{$working_dir}/builds/swiftlint-branch version --verbose`
+  full_version_main = `#{$working_dir}/builds/swiftlint-main version --verbose`
 
   if full_version_branch == full_version_main
     message "Skipping OSS check because SwiftLint hasn't changed compared to `main`."

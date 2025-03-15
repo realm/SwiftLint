@@ -17,6 +17,7 @@ steps:
       - gem install bundler -v 2.4.22
       - echo "+++ Run OSS Scan"
       - make oss_scan
+    artifact_paths: "oss-check-summary.md"
     priority: 10
   - label: "TSan Tests"
     commands:

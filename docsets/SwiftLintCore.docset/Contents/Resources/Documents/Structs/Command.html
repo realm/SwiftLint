@@ -338,7 +338,7 @@
             <p>A SwiftLint-interpretable command to modify SwiftLint&rsquo;s behavior embedded as comments in source code.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Command.swift#L4-L174">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Command.swift#L4-L172">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -502,9 +502,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore7CommandV9characterSiSgvp"></a>
-                    <a name="//apple_ref/swift/Property/character" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore7CommandV9characterSiSgvp">character</a>
+                    <a name="/s:13SwiftLintCore7CommandV5rangeSnySiGSgvp"></a>
+                    <a name="//apple_ref/swift/Property/range" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore7CommandV5rangeSnySiGSgvp">range</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -512,14 +512,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The character offset within the line in the source file where this command is defined.</p>
+                        <p>The range of the command in the line (0-based).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">range</span><span class="p">:</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -562,9 +562,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore7CommandV6action15ruleIdentifiers4line9character8modifier15trailingCommentA2C6ActionO_ShyAA14RuleIdentifierOGS2iSgAC8ModifierOSgSSSgtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(action:ruleIdentifiers:line:character:modifier:trailingComment:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore7CommandV6action15ruleIdentifiers4line9character8modifier15trailingCommentA2C6ActionO_ShyAA14RuleIdentifierOGS2iSgAC8ModifierOSgSSSgtcfc">init(action:<wbr>ruleIdentifiers:<wbr>line:<wbr>character:<wbr>modifier:<wbr>trailingComment:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore7CommandV6action15ruleIdentifiers4line5range8modifier15trailingCommentA2C6ActionO_ShyAA14RuleIdentifierOGSiSnySiGSgAC8ModifierOSgSSSgtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(action:ruleIdentifiers:line:range:modifier:trailingComment:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore7CommandV6action15ruleIdentifiers4line5range8modifier15trailingCommentA2C6ActionO_ShyAA14RuleIdentifierOGSiSnySiGSgAC8ModifierOSgSSSgtcfc">init(action:<wbr>ruleIdentifiers:<wbr>line:<wbr>range:<wbr>modifier:<wbr>trailingComment:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -582,7 +582,7 @@
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="kt"><a href="../Structs/Command/Action.html">Action</a></span><span class="p">,</span>
             <span class="nv">ruleIdentifiers</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Enums/RuleIdentifier.html">RuleIdentifier</a></span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">[],</span>
             <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="nv">character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+            <span class="nv">range</span><span class="p">:</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
             <span class="nv">modifier</span><span class="p">:</span> <span class="kt"><a href="../Structs/Command/Modifier.html">Modifier</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
             <span class="nv">trailingComment</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
@@ -631,13 +631,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>character</em>
+                                <em>range</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The character offset within the line in the source file where this command is
-                         defined.</p>
+                                  <p>The range of the command in the line (0-based).</p>
                                 </div>
                               </td>
                             </tr>
@@ -669,7 +668,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Command.swift#L70-L82">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Command.swift#L69-L81">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -677,9 +676,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore7CommandV12actionString4line9characterACSS_S2itcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(actionString:line:character:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore7CommandV12actionString4line9characterACSS_S2itcfc">init(actionString:<wbr>line:<wbr>character:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore7CommandV13commandString4line5rangeACSS_SiSnySiGtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(commandString:line:range:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore7CommandV13commandString4line5rangeACSS_SiSnySiGtcfc">init(commandString:<wbr>line:<wbr>range:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -694,7 +693,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">actionString</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">character</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">commandString</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">range</span><span class="p">:</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -705,12 +704,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>actionString</em>
+                                <em>commandString</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The string in the command&rsquo;s definition describing its action.</p>
+                                  <p>The whole command string as found in the code.</p>
                                 </div>
                               </td>
                             </tr>
@@ -729,13 +728,12 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>character</em>
+                                <em>range</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The character offset within the line in the source file where this command is
-                      defined.</p>
+                                  <p>The range of the command in the line (0-based).</p>
                                 </div>
                               </td>
                             </tr>
@@ -743,7 +741,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Command.swift#L90-L144">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Command.swift#L88-L142">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

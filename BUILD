@@ -55,7 +55,7 @@ swift_library(
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
     copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintCoreMacros",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
@@ -110,7 +110,7 @@ swift_library(
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
     copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintBuiltInRules",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
         ":SwiftLintCore",
     ],
@@ -139,7 +139,7 @@ swift_library(
     ),
     copts = copts + targeted_concurrency_copts,
     module_name = "SwiftLintFramework",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
         ":SwiftLintBuiltInRules",
         ":SwiftLintCore",

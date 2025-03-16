@@ -287,5 +287,25 @@ internal struct TypeContentsOrderRuleExamples {
             }
         }
         """),
+        Example("""
+        final class C {
+            ↓var i = 1
+            #if os(macOS)
+            static var I = 2
+            #endif
+        }
+        """),
+        Example("""
+        struct S {
+            ↓var i = 1
+            #if os(macOS)
+                #if swift(>=5.3)
+                ↓func f() {}
+                #endif
+            #else
+                static var i = 3
+            #endif
+        }
+        """),
     ]
 }

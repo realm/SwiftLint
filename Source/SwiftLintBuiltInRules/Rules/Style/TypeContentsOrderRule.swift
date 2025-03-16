@@ -58,7 +58,9 @@ private extension TypeContentsOrderRule {
         }
 
         private func collectViolations(for typeDecl: some DeclGroupSyntax) {
-            let categories = typeDecl.memberBlock.members.compactMap(categorize)
+            let categories = typeDecl.memberBlock.members
+                .flatMap(\.unwrapIfConfig)
+                .compactMap(categorize)
             let sortedCategories = categories.sorted { $0.position < $1.position }
 
             var lastMatchingIndex = -1
@@ -145,6 +147,17 @@ private extension TypeContentsOrderRule {
                 return (decl.subscriptKeyword.positionAfterSkippingLeadingTrivia, .subscript)
             }
             return nil
+        }
+    }
+}
+
+private extension MemberBlockItemSyntax {
+    var unwrapIfConfig: [MemberBlockItemSyntax] {
+        guard let ifConfig = decl.as(IfConfigDeclSyntax.self) else {
+            return [self]
+        }
+        return ifConfig.clauses.flatMap {
+            $0.elements?.as(MemberBlockItemListSyntax.self)?.flatMap(\.unwrapIfConfig) ?? []
         }
     }
 }

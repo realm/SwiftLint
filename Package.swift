@@ -27,7 +27,7 @@ let package = Package(
     platforms: [.macOS(.v12)],
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
-        .library(name: "SwiftLintCore", targets: ["SwiftLintCore"]),
+        .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),
         .plugin(name: "SwiftLintBuildToolPlugin", targets: ["SwiftLintBuildToolPlugin"]),
         .plugin(name: "SwiftLintCommandPlugin", targets: ["SwiftLintCommandPlugin"]),
     ],

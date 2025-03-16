@@ -41,6 +41,7 @@ swift_library(
 
 swift_test(
     name = "CLITests",
+    visibility = ["//visibility:public"],
     deps = [":CLITests.library"],
 )
 
@@ -60,6 +61,7 @@ swift_library(
 
 swift_test(
     name = "MacroTests",
+    visibility = ["//visibility:public"],
     deps = [":MacroTests.library"],
 )
 
@@ -106,6 +108,7 @@ swift_test(
         # Bazel doesn't support paths with spaces in them
         exclude = ["BuiltInRulesTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),
+    visibility = ["//visibility:public"],
     deps = [":BuiltInRulesTests.library"],
 )
 
@@ -133,6 +136,7 @@ swift_test(
     data = glob(
         ["FrameworkTests/Resources/**"],
     ),
+    visibility = ["//visibility:public"],
     deps = [":FrameworkTests.library"],
 )
 
@@ -152,6 +156,7 @@ swift_library(
 
 swift_test(
     name = "GeneratedTests",
+    visibility = ["//visibility:public"],
     deps = [":GeneratedTests.library"],
 )
 
@@ -163,7 +168,7 @@ filegroup(
         ["**/*.swift"],
         exclude = ["**/Resources/**"],
     ),
-    visibility = ["//:__pkg__"],
+    visibility = ["//visibility:public"],
 )
 
 swift_library(
@@ -184,6 +189,7 @@ swift_test(
         "//:LintInputs",
         "IntegrationTests/default_rule_configurations.yml"
     ],
+    visibility = ["//visibility:public"],
     deps = [":IntegrationTests.library"],
 )
 

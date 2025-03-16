@@ -17,7 +17,8 @@ require 'erb'
   branch: 'HEAD',
   iterations: 5,
   skip_clean: false,
-  verbose: false
+  verbose: false,
+  only_repos: []
 }
 
 OptionParser.new do |opts|
@@ -35,6 +36,9 @@ OptionParser.new do |opts|
   end
   opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
     @options[:verbose] = v
+  end
+  opts.on('--only-repos REPO1,REPO2', Array, 'Run oss-check only on the specified repositories') do |only_repos|
+    @options[:only_repos] = only_repos
   end
 end.parse!
 
@@ -330,7 +334,7 @@ end
   Repo.new('VLC', 'videolan/vlc-ios'),
   Repo.new('Wire', 'wireapp/wire-ios', false, 'excluded: wire-ios/Templates/Viper'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
-]
+].select { |repo| @options[:only_repos].empty? || @options[:only_repos].include?(repo.name) }
 
 # Clean up
 clean_up unless @options[:skip_clean]

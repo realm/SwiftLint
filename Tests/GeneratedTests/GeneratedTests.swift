@@ -787,6 +787,12 @@ final class NoSpaceInMethodCallRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class NonFinalClassRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NonFinalClassRule.description)
+    }
+}
+
 final class NonOptionalStringDataConversionRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NonOptionalStringDataConversionRule.description)

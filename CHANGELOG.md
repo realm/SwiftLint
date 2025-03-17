@@ -30,6 +30,9 @@
   [kapitoshka438](https://github.com/kapitoshka438)
   [#3723](https://github.com/realm/SwiftLint/issues/3723)
 
+* Add new `non_final_class` opt-in rule that triggers when a class isn't `final`.
+  [JaviSoto](https://github.com/JaviSoto)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  

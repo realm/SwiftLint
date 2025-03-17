@@ -32,8 +32,8 @@ struct NonFinalClassRule: Rule {
     private final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
             let modifiers = node.modifiers
-            if !modifiers.contains(where: { $0.name.text == "final" })
-            && !modifiers.contains(where: { $0.name.text == "open" }) {
+            if !modifiers.contains(keyword: .final),
+               !modifiers.contains(keyword: .open) {
                 let classToken = node.classKeyword
                 violations.append(.init(
                     position: classToken.positionAfterSkippingLeadingTrivia,

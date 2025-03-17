@@ -605,6 +605,10 @@ no_space_in_method_call:
   severity: warning
   meta:
     opt-in: false
+non_final_class:
+  severity: warning
+  meta:
+    opt-in: true
 non_optional_string_data_conversion:
   severity: warning
   meta:

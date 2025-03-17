@@ -474,6 +474,12 @@ order
 <span class="p">},</span>
 <span class="p">}</span>
 </code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@available</span><span class="p">(</span><span class="kt">SwiftUI_v5</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="c1">// Availability macro syntax: https://github.com/swiftlang/swift/pull/65218</span>
+    <span class="k">var</span> <span class="nv">v5Body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span> <span class="kt">EmptyView</span><span class="p">()</span> <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span> <span class="kt">EmptyView</span><span class="p">()</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">TestViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
     <span class="c1">// Subtypes</span>
@@ -588,6 +594,33 @@ order
 
     <span class="c1">// MARK: Other Methods</span>
     <span class="kd">func</span> <span class="nf">goToNextVc</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* TODO */</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">I</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="kd">class</span> <span class="k">var</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="kd">struct</span> <span class="kt">S</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="mi">3</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">C</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="cp">#if os(macOS)</span>
+    <span class="kd">static</span> <span class="k">var</span> <span class="nv">I</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="cp">#endif</span>
+<span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">S</span> <span class="p">{</span>
+    <span class="err">↓</span><span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="cp">#if os(macOS)</span>
+        <span class="cp">#if swift(&gt;=5.3)</span>
+        <span class="err">↓</span><span class="kd">func</span> <span class="nf">f</span><span class="p">()</span> <span class="p">{}</span>
+        <span class="cp">#endif</span>
+    <span class="cp">#else</span>
+        <span class="kd">static</span> <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="cp">#endif</span>
 <span class="p">}</span>
 </code></pre>
 

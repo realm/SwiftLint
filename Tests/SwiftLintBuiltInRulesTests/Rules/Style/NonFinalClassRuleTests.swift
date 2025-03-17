@@ -21,7 +21,8 @@ final class NonFinalClassRuleTests: XCTestCase {
         examples.forEach { example in
             let violations = violationsForRule(NonFinalClassRule.description, string: example)
             XCTAssertEqual(violations.count, 1, "Expected one violation in: \(example)")
-            XCTAssertEqual(violations.first?.reason,
+            XCTAssertEqual(
+                violations.first?.reason,
                 "Classes should be marked as `final` unless they are explicitly `open`")
         }
     }

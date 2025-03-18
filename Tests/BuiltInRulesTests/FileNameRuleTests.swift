@@ -52,6 +52,10 @@ final class FileNameRuleTests: SwiftLintTestCase {
         XCTAssert(try validate(fileName: "MyStruct.swift").isEmpty)
     }
 
+    func testMacroNameDoesntTrigger() {
+        XCTAssert(try validate(fileName: "MyMacro.swift").isEmpty)
+    }
+
     func testExtensionNameDoesntTrigger() {
         XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
     }

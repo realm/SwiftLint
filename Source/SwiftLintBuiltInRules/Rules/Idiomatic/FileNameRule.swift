@@ -143,6 +143,14 @@ private class TypeNameCollectingVisitor: SyntaxVisitor {
         ancestorNames.pop()
     }
 
+    override func visit(_ node: MacroDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: MacroDeclSyntax) {
+        ancestorNames.pop()
+    }
+
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         visit(name: node.extendedType.trimmedDescription)
     }

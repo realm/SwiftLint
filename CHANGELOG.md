@@ -55,6 +55,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5999](https://github.com/realm/SwiftLint/issues/5999)
 
+* Update `file_name` rule to consider `macro` types.
+  [fraioli](https://github.com/fraioli)
+  [#6026](https://github.com/realm/SwiftLint/issues/6026)
+
 ## 0.58.2: New Year’s Fresh Fold
 
 ### Breaking

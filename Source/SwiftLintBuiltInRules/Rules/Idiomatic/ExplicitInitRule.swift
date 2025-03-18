@@ -204,11 +204,11 @@ private extension ExplicitInitRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                  let violationPosition = calledExpression.explicitInitPosition,
+                  calledExpression.explicitInitPosition != nil,
                   let calledBase = calledExpression.base else {
                 return super.visit(node)
             }
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             let newNode = node.with(\.calledExpression, calledBase)
             return super.visit(newNode)
         }

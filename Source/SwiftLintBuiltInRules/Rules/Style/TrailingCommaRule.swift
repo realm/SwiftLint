@@ -97,7 +97,7 @@ private extension TrailingCommaRule {
 
             switch (lastElement.trailingComma, configuration.mandatoryComma) {
             case (let commaToken?, false):
-                correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 let newTrailingTrivia = (lastElement.value.trailingTrivia)
                     .appending(trivia: commaToken.leadingTrivia)
                     .appending(trivia: commaToken.trailingTrivia)
@@ -110,7 +110,7 @@ private extension TrailingCommaRule {
                     )
                 return super.visit(newNode)
             case (nil, true) where !locationConverter.isSingleLine(node: node):
-                correctionPositions.append(lastElement.endPositionBeforeTrailingTrivia)
+                numberOfCorrections += 1
                 let newNode = node
                     .with(
                         \.[index],
@@ -132,7 +132,7 @@ private extension TrailingCommaRule {
 
             switch (lastElement.trailingComma, configuration.mandatoryComma) {
             case (let commaToken?, false):
-                correctionPositions.append(commaToken.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 let newNode = node
                     .with(
                         \.[index],
@@ -146,7 +146,7 @@ private extension TrailingCommaRule {
                     )
                 return super.visit(newNode)
             case (nil, true) where !locationConverter.isSingleLine(node: node):
-                correctionPositions.append(lastElement.endPositionBeforeTrailingTrivia)
+                numberOfCorrections += 1
                 let newNode = node
                     .with(
                         \.[index],

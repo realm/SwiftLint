@@ -4,7 +4,8 @@
 
 ### Breaking
 
-* None.
+* Remove tracking of correction positions. Print the number of corrections made instead.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 

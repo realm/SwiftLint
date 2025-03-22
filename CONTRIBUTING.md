@@ -82,7 +82,10 @@ open a pull request and watch the CI results carefully. They include all the nec
 
 ## Rules
 
-New rules should be added in the `Source/SwiftLintBuiltInRules/Rules` directory.
+New rules should be added in the `Source/SwiftLintBuiltInRules/Rules` directory. We recommend to use the `swiftlint-dev`
+command line tool to generate scaffolds for new rules and their configurations. After having the repository cloned, run
+`swift run swiftlint-dev rule-template <RuleName>` to create the new rule at the correct location. Refer to the command's
+help `-h/--help` for customization options. Run `make sourcery` afterwards to register the new rule and its tests.
 
 Prefer implementing new rules with the help of SwiftSyntax. Look for the `@SwiftSyntaxRule` attribute for examples and
 use the same on your own rule.

@@ -1033,7 +1033,7 @@ unneeded_break_in_switch:
 unneeded_override:
   severity: warning
   affect_initializers: false
-  excluded: []
+  excluded_methods: []
   meta:
     opt-in: false
 unneeded_parentheses_in_closure_argument:

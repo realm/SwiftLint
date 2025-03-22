@@ -138,12 +138,12 @@ struct UnneededOverrideRuleExamples {
         }
         """),
         Example("""
-        class Foo {
+        class FooTestCase: XCTestCase {
             override func setUp() {
                 super.setUp()
             }
         }
-        """, configuration: ["excluded": ["setUp"]]),
+        """, configuration: ["excluded_methods": ["setUp"]]),
     ]
 
     static let triggeringExamples = [

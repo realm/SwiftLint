@@ -360,6 +360,14 @@ affect_initializers
 false
 </td>
 </tr>
+<tr>
+<td>
+excluded_methods
+</td>
+<td>
+[]
+</td>
+</tr>
 </tbody>
 </table></li>
 </ul>
@@ -484,6 +492,17 @@ false
         <span class="k">super</span><span class="o">.</span><span class="nf">qux</span><span class="p">(</span><span class="nv">c</span><span class="p">:</span> <span class="p">{})</span>
     <span class="p">}</span>
 <span class="p">}</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// excluded_methods: ["setUp"]</span>
+<span class="c1">//</span>
+
+<span class="kd">class</span> <span class="kt">FooTestCase</span><span class="p">:</span> <span class="kt">XCTestCase</span> <span class="p">{</span>
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">setUp</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">setUp</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
 <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">Foo</span> <span class="p">{</span>

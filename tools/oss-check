@@ -107,11 +107,6 @@ class ReportEntry < Struct.new(:file, :line, :column, :severity, :message, :rule
     "/#{ERB::Util.url_encode(str.gsub(%r{^/}, ''))}"
   end
 
-  def to_full_message(repo, escape = false)
-    escaped_message = escape ? ReportEntry.html_escape(message) : message
-    "#{file_as_relative_path(repo)}:#{line}:#{column}: #{severity}: #{escaped_message} (#{rule_id})"
-  end
-
   def to_full_message_with_linked_path(repo)
     "#{to_linked_relative_path(repo)}: #{severity}: #{message} (#{rule_id})"
   end
@@ -122,10 +117,6 @@ class ReportEntry < Struct.new(:file, :line, :column, :severity, :message, :rule
 
   def to_linked_relative_path(repo)
     "[#{file_as_relative_path(repo)}:#{line}:#{column}](#{to_link(repo)})"
-  end
-
-  def to_linked_full_message(repo, escape = false)
-    "[#{to_full_message(repo, escape)}](#{to_link(repo)})"
   end
 
   def file_as_relative_path(repo)
@@ -328,10 +319,10 @@ def diff_and_report_changes_to_danger
 
     # Print new and fixed violations to be processed by Danger.
     new_violations.each { |line|
-      warn "This PR introduced a violation in #{repo.name}: #{line.to_linked_full_message(repo, true)}"
+      warn "This PR introduced a violation in #{repo.name}: #{line.to_full_message_with_linked_path(repo)}"
     }
     fixed_violations.each { |line|
-      message "This PR fixed a violation in #{repo.name}: #{line.to_linked_full_message(repo, true)}"
+      message "This PR fixed a violation in #{repo.name}: #{line.to_full_message_with_linked_path(repo)}"
     }
 
     # Print report in Markdown format that lists all changes by category.

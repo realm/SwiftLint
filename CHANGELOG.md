@@ -30,6 +30,11 @@
   [kapitoshka438](https://github.com/kapitoshka438)
   [#3723](https://github.com/realm/SwiftLint/issues/3723)
 
+* Add `excluded_methods` configuration option to `unneeded_override` to opt out checking methods with a given name.
+  For example, this helps avoid a conflict with `balanced_xctest_lifecycle` where one of `setUp/tearDown`
+  is empty but the other is not.  
+  [jaredgrubb](https://github.com/jaredgrubb)
+
 ### Bug Fixes
 
 * Fix issue referencing the Tests package from another Bazel workspace.  

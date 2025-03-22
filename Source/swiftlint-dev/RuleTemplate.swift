@@ -44,7 +44,7 @@ extension SwiftLintDev {
             guard FileManager.default.fileExists(atPath: ruleLocation) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
             }
-            print("Creating rule template for new rule \"\(ruleName)\" identified by '\(ruleId)' ...")
+            print("Creating template(s) for new rule \"\(ruleName)\" identified by '\(ruleId)' ...")
             let rulePath = "\(ruleLocation)/\(name)Rule.swift"
             guard overwrite || !FileManager.default.fileExists(atPath: rulePath) else {
                 throw ValidationError("Rule file already exists at \(rulePath).")

@@ -39,40 +39,48 @@ extension SwiftLintDev {
         var overwrite = false
 
         func run() async throws {
-            let ruleDirectory = "Source/SwiftLintBuiltInRules/Rules"
-            let ruleLocation = "\(ruleDirectory)/\(kind.rawValue.capitalized)"
-            guard FileManager.default.fileExists(atPath: ruleLocation) else {
+            let rootDirectory = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+            let ruleDirectory = rootDirectory
+                .appendingPathComponent("Source", isDirectory: true)
+                .appendingPathComponent("SwiftLintBuiltInRules", isDirectory: true)
+                .appendingPathComponent("Rules", isDirectory: true)
+            let ruleLocation = ruleDirectory.appendingPathComponent(kind.rawValue.capitalized, isDirectory: true)
+            guard FileManager.default.fileExists(atPath: ruleLocation.path) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
             }
             print("Creating template(s) for new rule \"\(ruleName)\" identified by '\(ruleId)' ...")
-            let rulePath = "\(ruleLocation)/\(name)Rule.swift"
-            guard overwrite || !FileManager.default.fileExists(atPath: rulePath) else {
-                throw ValidationError("Rule file already exists at \(rulePath).")
+            let rulePath = ruleLocation.appendingPathComponent("\(name)Rule.swift", isDirectory: false)
+            guard overwrite || !FileManager.default.fileExists(atPath: rulePath.path) else {
+                throw ValidationError("Rule file already exists at \(rulePath.relativeToCurrentDirectory).")
             }
-            try ruleTemplate.write(toFile: rulePath, atomically: true, encoding: .utf8)
-            print("Rule file created at \(rulePath).")
+            try ruleTemplate.write(toFile: rulePath.path, atomically: true, encoding: .utf8)
+            print("Rule file created at \(rulePath.relativeToCurrentDirectory).")
             guard config else {
                 return
             }
-            let configPath = "\(ruleDirectory)/RuleConfigurations/\(name)Configuration.swift"
-            guard overwrite || !FileManager.default.fileExists(atPath: configPath) else {
-                throw ValidationError("Configuration file already exists at \(configPath).")
+            let configPath = ruleDirectory
+                .appendingPathComponent("RuleConfigurations", isDirectory: true)
+                .appendingPathComponent("\(name)Configuration.swift", isDirectory: false)
+            guard overwrite || !FileManager.default.fileExists(atPath: configPath.path) else {
+                throw ValidationError("Configuration file already exists at \(configPath.relativeToCurrentDirectory).")
             }
-            try configTemplate.write(toFile: configPath, atomically: true, encoding: .utf8)
-            print("Configuration file created at \(configPath).")
+            try configTemplate.write(toFile: configPath.path, atomically: true, encoding: .utf8)
+            print("Configuration file created at \(configPath.relativeToCurrentDirectory).")
             guard test else {
                 return
             }
-            let testDirectory = "Tests/BuiltInRulesTests"
-            let testPath = "\(testDirectory)/\(name)RuleTests.swift"
-            guard FileManager.default.fileExists(atPath: testDirectory) else {
+            let testDirectory = rootDirectory
+                .appendingPathComponent("Tests", isDirectory: true)
+                .appendingPathComponent("BuiltInRulesTests", isDirectory: true)
+            let testPath = testDirectory.appendingPathComponent("\(name)RuleTests.swift", isDirectory: false)
+            guard FileManager.default.fileExists(atPath: testDirectory.path) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
             }
-            guard overwrite || !FileManager.default.fileExists(atPath: testPath) else {
-                throw ValidationError("Test file already exists at \(testPath).")
+            guard overwrite || !FileManager.default.fileExists(atPath: testPath.path) else {
+                throw ValidationError("Test file already exists at \(testPath.relativeToCurrentDirectory).")
             }
-            try testTemplate.write(toFile: testPath, atomically: true, encoding: .utf8)
-            print("Test file created at \(testPath).")
+            try testTemplate.write(toFile: testPath.path, atomically: true, encoding: .utf8)
+            print("Test file created at \(testPath.relativeToCurrentDirectory).")
         }
     }
 }
@@ -192,6 +200,12 @@ private extension SwiftLintDev.RuleTemplate {
         }
 
         """
+    }
+}
+
+private extension URL {
+    var relativeToCurrentDirectory: String {
+        String(path.replacingOccurrences(of: FileManager.default.currentDirectoryPath, with: "").dropFirst())
     }
 }
 

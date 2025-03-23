@@ -42,7 +42,7 @@ def created_by_maintainer?(comment)
     comment && (comment['author']['login'] == 'github-actions' || comment['authorAssociation'] == 'COLLABORATOR')
 end
 
-issues_query = "repo:#{$repository} is:issue is:open label:stale,help,repro-needed"
+issues_query = "repo:#{$repository} is:issue is:open label:stale,help,repro-needed,resolved"
 issues = JSON.parse(`gh issue list --json number,comments,labels,updatedAt --search '#{issues_query}'`)
 
 for issue in issues do
@@ -59,7 +59,7 @@ for issue in issues do
             run(number) { || ["gh issue close #{number} --comment '#{closing_comment}'"] }
         end
     elsif created_by_maintainer?(comments.last) && comments.last['createdAt'] < four_months_ago
-        if !issue['labels'].filter { |label| !%w(help repro-needed).include?(label['name']) }.empty?
+        if !issue['labels'].filter { |label| !%w(help repro-needed resolved).include?(label['name']) }.empty?
             next
         end
         puts "Adding 'stale' label to issue ##{number} ..."

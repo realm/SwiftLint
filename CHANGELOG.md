@@ -8,7 +8,11 @@
 
 ### Experimental
 
-* None.
+* Introduce `swiftlint-dev` command line tool that's intended to help to develop SwiftLint by encapsulating repetitive
+  tasks. It can already be used to generate templates for new rules including optional configurations and tests. Run
+  `swift run swiftlint-dev rule-template -h` to get an overview of the command's usage and the available customization
+  options.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Enhancements
 

@@ -1,4 +1,5 @@
-// swiftlint:disable:this file_name
+// swiftlint:disable file_name
+
 /// Macro to be attached to rule configurations. It generates the configuration parsing logic
 /// automatically based on the defined `@ConfigurationElement`s.
 @attached(

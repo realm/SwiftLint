@@ -191,31 +191,22 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
 }
 
 extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
         let patternRegex = regex(pattern)
-        let replacementTemplate = "$1\n$2"
-        let description = Self.description
-
-        var corrections = [Correction]()
         var fileContents = file.contents
-
         for violationRange in violatingRanges.reversed() {
             fileContents = patternRegex.stringByReplacingMatches(
                 in: fileContents,
                 options: [],
                 range: violationRange,
-                withTemplate: replacementTemplate
+                withTemplate: "$1\n$2"
             )
-
-            let location = Location(file: file, characterOffset: violationRange.location)
-            let correction = Correction(ruleDescription: description, location: location)
-            corrections.append(correction)
         }
-
         file.write(fileContents)
-        return corrections
+        return violatingRanges.count
     }
 }

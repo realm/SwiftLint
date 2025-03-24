@@ -110,7 +110,7 @@ private extension PreferKeyPathRule {
                   let calleeName = node.calleeName else {
                 return super.visit(node)
             }
-            correctionPositions.append(closure.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             var node = node.with(\.calledExpression, node.calledExpression.with(\.trailingTrivia, []))
             if node.leftParen == nil {
                 node = node.with(\.leftParen, .leftParenToken())
@@ -137,7 +137,7 @@ private extension PreferKeyPathRule {
             if let expr = node.onlyExprStmt,
                expr.accesses(identifier: node.onlyParameter) == true,
                let replacement = expr.asKeyPath {
-                correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
                 let node = replacement
                     .with(\.leadingTrivia, node.leadingTrivia)
                     .with(\.trailingTrivia, node.trailingTrivia)

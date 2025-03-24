@@ -36,13 +36,13 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         ]
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,
             let firstLineRange = file.lines.first?.range,
             file.ruleEnabled(violatingRanges: [firstLineRange], for: self).isNotEmpty else {
-                return []
+                return 0
         }
 
         let indexEnd = file.contents.index(
@@ -50,7 +50,6 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
             offsetBy: spaceCount,
             limitedBy: file.contents.endIndex) ?? file.contents.endIndex
         file.write(String(file.contents[indexEnd...]))
-        let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: Self.description, location: location)]
+        return 1
     }
 }

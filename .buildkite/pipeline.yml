@@ -8,7 +8,7 @@ steps:
   - label: "SwiftPM"
     commands:
       - echo "+++ Generate Template Rule"
-      - swift run swiftlint-dev rule-template FooBarBaz --rewriter --id foo_bar --config --kind metrics --severity error
+      - swift run swiftlint-dev rules template FooBarBaz --rewriter --id foo_bar --config --kind metrics --severity error
       - echo "+++ Test"
       - make spm_test
     env:
@@ -25,9 +25,9 @@ steps:
     commands:
       - echo "+++ Test"
       - make bazel_test_tsan
-  - label: "Sourcery"
+  - label: "Registration"
     commands:
-      - echo "+++ Run Sourcery"
-      - make --always-make sourcery
+      - echo "+++ Register Rules and Reporters"
+      - make --always-make register
       - echo "+++ Diff Files"
       - git diff --quiet HEAD

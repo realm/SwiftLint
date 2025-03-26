@@ -245,6 +245,11 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
+            
+            if node.isPartOfUIColorInitializer() {
+                return
+            }
+            
             let violation = node.positionAfterSkippingLeadingTrivia
             if let extendedTypeName = node.extendedTypeName() {
                 if !testClasses.contains(extendedTypeName) {
@@ -342,6 +347,26 @@ private extension ExprSyntaxProtocol {
            let operatorSymbol = operation.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind,
            [.binaryOperator("<<"), .binaryOperator(">>")].contains(operatorSymbol) {
             return operation.parent?.isProtocol((any ExprSyntaxProtocol).self) != true
+        }
+        return false
+    }
+    
+    func isPartOfUIColorInitializer() -> Bool {
+        var parent = parent
+        while let currentParent = parent, !currentParent.is(FunctionCallExprSyntax.self) {
+            parent = currentParent.parent
+        }
+        guard let functionCall = parent?.as(FunctionCallExprSyntax.self) else {
+            return false
+        }
+        if let memberAccess = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
+           let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
+           baseExpr.baseName.text == "UIColor" {
+            return true
+        }
+        if let identifierExpr = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
+           identifierExpr.baseName.text == "colorLiteral" {
+            return true
         }
         return false
     }

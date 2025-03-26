@@ -110,6 +110,25 @@ struct NoMagicNumbersRule: Rule {
             let a = 2
             #endif
             """),
+            Example("""
+            let myColor: UIColor = UIColor(red: 0.6, green: 1.0, blue: 0.2, alpha: 0.52)
+            """),
+            
+            Example("""
+            let colorLiteral = #colorLiteral(red: 0.7019607843, green: 0.7019607843, blue: 0.7019607843, alpha: 1)
+            """),
+
+            Example("""
+            let yourColor: UIColor = UIColor(hue: 0.9, saturation: 0.6, brightness: 0.333334, alpha: 1.0)
+            """),
+            Example("""
+            let systemColor = UIColor(displayP3Red: 0.3, green: 0.8, blue: 0.5, alpha: 0.75)
+            """),
+            Example("""
+            func createColor() -> UIColor {
+                return UIColor(white: 0.5, alpha: 0.8)
+            }
+            """),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),

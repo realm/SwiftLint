@@ -57,32 +57,32 @@ extension SwiftLintDev.Rules {
             }
             try ruleTemplate.write(toFile: rulePath.path, atomically: true, encoding: .utf8)
             print("Rule file created at \(rulePath.relativeToCurrentDirectory).")
-            guard config else {
-                return
+            if config {
+                let configPath = ruleDirectory
+                    .appendingPathComponent("RuleConfigurations", isDirectory: true)
+                    .appendingPathComponent("\(name)Configuration.swift", isDirectory: false)
+                guard overwrite || !FileManager.default.fileExists(atPath: configPath.path) else {
+                    throw ValidationError(
+                        "Configuration file already exists at \(configPath.relativeToCurrentDirectory)."
+                    )
+                }
+                try configTemplate.write(toFile: configPath.path, atomically: true, encoding: .utf8)
+                print("Configuration file created at \(configPath.relativeToCurrentDirectory).")
             }
-            let configPath = ruleDirectory
-                .appendingPathComponent("RuleConfigurations", isDirectory: true)
-                .appendingPathComponent("\(name)Configuration.swift", isDirectory: false)
-            guard overwrite || !FileManager.default.fileExists(atPath: configPath.path) else {
-                throw ValidationError("Configuration file already exists at \(configPath.relativeToCurrentDirectory).")
+            if test {
+                let testDirectory = rootDirectory
+                    .appendingPathComponent("Tests", isDirectory: true)
+                    .appendingPathComponent("BuiltInRulesTests", isDirectory: true)
+                let testPath = testDirectory.appendingPathComponent("\(name)RuleTests.swift", isDirectory: false)
+                guard FileManager.default.fileExists(atPath: testDirectory.path) else {
+                    throw ValidationError("Command must be run from the root of the SwiftLint repository.")
+                }
+                guard overwrite || !FileManager.default.fileExists(atPath: testPath.path) else {
+                    throw ValidationError("Test file already exists at \(testPath.relativeToCurrentDirectory).")
+                }
+                try testTemplate.write(toFile: testPath.path, atomically: true, encoding: .utf8)
+                print("Test file created at \(testPath.relativeToCurrentDirectory).")
             }
-            try configTemplate.write(toFile: configPath.path, atomically: true, encoding: .utf8)
-            print("Configuration file created at \(configPath.relativeToCurrentDirectory).")
-            guard test else {
-                return
-            }
-            let testDirectory = rootDirectory
-                .appendingPathComponent("Tests", isDirectory: true)
-                .appendingPathComponent("BuiltInRulesTests", isDirectory: true)
-            let testPath = testDirectory.appendingPathComponent("\(name)RuleTests.swift", isDirectory: false)
-            guard FileManager.default.fileExists(atPath: testDirectory.path) else {
-                throw ValidationError("Command must be run from the root of the SwiftLint repository.")
-            }
-            guard overwrite || !FileManager.default.fileExists(atPath: testPath.path) else {
-                throw ValidationError("Test file already exists at \(testPath.relativeToCurrentDirectory).")
-            }
-            try testTemplate.write(toFile: testPath.path, atomically: true, encoding: .utf8)
-            print("Test file created at \(testPath.relativeToCurrentDirectory).")
             if !skipRegistration {
                 try await Register().run()
             }
@@ -115,7 +115,7 @@ private extension SwiftLintDev.Rules.Template {
         if correctable, !rewriter {
             attributeArguments.append("correctable: true")
         }
-        attributeArguments.append("optIn: \(`default`)")
+        attributeArguments.append("optIn: \(!`default`)")
         var ruleDescriptionArguments = [
             "identifier: \"\(ruleId)\"",
             "name: \"\(ruleName)\"",
@@ -187,7 +187,7 @@ private extension SwiftLintDev.Rules.Template {
             typealias Parent = \(name)Rule
 
             @ConfigurationElement(key: "severity")
-            private(set) var severityConfiguration = SeverityConfiguration<Parent>(.error)
+            private(set) var severityConfiguration = SeverityConfiguration<Parent>(.\(severity))
         }
 
         """

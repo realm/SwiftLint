@@ -161,6 +161,18 @@ swift_binary(
     ],
 )
 
+swift_binary(
+    name = "swiftlint-dev",
+    package_name = "SwiftLint",
+    srcs = glob(["Source/swiftlint-dev/*.swift"]),
+    copts = copts + strict_concurrency_copts,
+    visibility = ["//visibility:public"],
+    deps = [
+        ":SwiftLintCore",
+        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
+    ],
+)
+
 apple_universal_binary(
     name = "universal_swiftlint",
     binary = ":swiftlint",

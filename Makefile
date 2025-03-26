@@ -28,23 +28,13 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 
 VERSION_STRING=$(shell ./tools/get-version)
 
-.PHONY: all clean install package test uninstall docs
+.PHONY: all clean install package test uninstall docs register
 
 all: $(SWIFTLINT_EXECUTABLE)
 
-sourcery: Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift Source/SwiftLintFramework/Models/ReportersList.swift Tests/GeneratedTests/GeneratedTests.swift
-
-Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift: Source/SwiftLintBuiltInRules/Rules/**/*.swift .sourcery/BuiltInRules.stencil
-	./tools/sourcery --sources Source/SwiftLintBuiltInRules/Rules --templates .sourcery/BuiltInRules.stencil --output .sourcery
-	mv .sourcery/BuiltInRules.generated.swift Source/SwiftLintBuiltInRules/Models/BuiltInRules.swift
-
-Source/SwiftLintFramework/Models/ReportersList.swift: Source/SwiftLintFramework/Reporters/*.swift .sourcery/ReportersList.stencil
-	./tools/sourcery --sources Source/SwiftLintFramework/Reporters --templates .sourcery/ReportersList.stencil --output .sourcery
-	mv .sourcery/ReportersList.generated.swift Source/SwiftLintFramework/Models/ReportersList.swift
-
-Tests/GeneratedTests/GeneratedTests.swift: Source/SwiftLint*/Rules/**/*.swift .sourcery/GeneratedTests.stencil
-	./tools/sourcery --sources Source/SwiftLintBuiltInRules/Rules --templates .sourcery/GeneratedTests.stencil --output .sourcery
-	mv .sourcery/GeneratedTests.generated.swift Tests/GeneratedTests/GeneratedTests.swift
+register:
+	swift run swiftlint-dev rules register
+	swift run swiftlint-dev reporters register
 
 test: clean_xcode
 	$(BUILD_TOOL) $(XCODEFLAGS) test

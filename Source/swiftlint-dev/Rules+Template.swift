@@ -2,13 +2,13 @@ import ArgumentParser
 import Foundation
 import SwiftLintCore
 
-extension SwiftLintDev {
-    struct RuleTemplate: AsyncParsableCommand {
+extension SwiftLintDev.Rules {
+    struct Template: AsyncParsableCommand {
         // swiftlint:disable:next force_try
         private static let camelCaseRegex = try! NSRegularExpression(pattern: "(?<!^)(?=[A-Z])")
 
         static let configuration = CommandConfiguration(
-            commandName: "rule-template",
+            commandName: "template",
             abstract: "Generate a template for a new SwiftLint rule.",
             discussion: """
                 This command generates a template for a SwiftLint rule. It creates a new file with the
@@ -24,7 +24,7 @@ extension SwiftLintDev {
         @Option(name: .long, help: "Type of the rule.")
         var kind: RuleKind = .lint
         @Option(name: .long, help: "The rule's default severity.")
-        var severity: ViolationSeverity = .warning
+        var severity = ViolationSeverity.warning
         @Flag(name: .long, help: "Indicates whether the rule shall be enabled by default.")
         var `default` = false
         @Flag(name: .long, help: "Indicates whether the rule is correctable.")
@@ -37,6 +37,8 @@ extension SwiftLintDev {
         var test = false
         @Flag(name: .long, help: "Indicates whether to overwrite existing files. Use with caution!")
         var overwrite = false
+        @Flag(name: .long, help: "Skip registration.")
+        var skipRegistration = false
 
         func run() async throws {
             let rootDirectory = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
@@ -81,11 +83,14 @@ extension SwiftLintDev {
             }
             try testTemplate.write(toFile: testPath.path, atomically: true, encoding: .utf8)
             print("Test file created at \(testPath.relativeToCurrentDirectory).")
+            if !skipRegistration {
+                try await Register().run()
+            }
         }
     }
 }
 
-private extension SwiftLintDev.RuleTemplate {
+private extension SwiftLintDev.Rules.Template {
     var ruleId: String {
         id ?? Self.camelCaseRegex.stringByReplacingMatches(
             in: name,
@@ -200,12 +205,6 @@ private extension SwiftLintDev.RuleTemplate {
         }
 
         """
-    }
-}
-
-private extension URL {
-    var relativeToCurrentDirectory: String {
-        String(path.replacingOccurrences(of: FileManager.default.currentDirectoryPath, with: "").dropFirst())
     }
 }
 

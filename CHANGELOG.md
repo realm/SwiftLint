@@ -16,6 +16,10 @@
 
 ### Enhancements
 
+* Add `multiple_statements_declaration` opt-in rule 
+  that triggers when the there's multiple statements at the same line.  
+  [Ahmad Zaghloul](https://github.com/AhmedZaghloul19)
+
 * Exclude types with a `@Suite` attribute and functions annotated with `@Test` from `no_magic_numbers` rule.
   Also treat a type as a `@Suite` if it contains `@Test` functions.  
   [SimplyDanny](https://github.com/SimplyDanny)

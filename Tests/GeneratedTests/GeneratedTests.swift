@@ -715,6 +715,12 @@ final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTest
     }
 }
 
+final class MultipleStatementsDeclarationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultipleStatementsDeclarationRule.description)
+    }
+}
+
 final class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringKeyRule.description)

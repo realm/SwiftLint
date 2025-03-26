@@ -86,7 +86,10 @@ internal extension Configuration.FileGraph.FilePath {
             // Block main thread until timeout is reached / task is done
             while true {
                 if taskDone { break }
-                if Date().timeIntervalSince(startDate) > timeout { task.cancel(); break }
+                if Date().timeIntervalSince(startDate) > timeout {
+                    task.cancel()
+                    break
+                }
                 usleep(50_000) // Sleep for 50 ms
             }
 

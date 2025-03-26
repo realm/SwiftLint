@@ -2,26 +2,32 @@ accessibility_label_for_image:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 accessibility_trait_for_button:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 anonymous_argument_in_multiline_closure:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 array_init:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 async_without_await:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 attribute_name_spacing:
   severity: error
   meta:
     opt-in: false
+    correctable: true
 attributes:
   severity: warning
   attributes_with_arguments_always_on_line_above: true
@@ -29,121 +35,148 @@ attributes:
   always_on_line_above: []
   meta:
     opt-in: true
+    correctable: false
 balanced_xctest_lifecycle:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: true
+    correctable: false
 blanket_disable_command:
   severity: warning
   allowed_rules: ["file_header", "file_length", "file_name", "file_name_no_space", "single_test_class"]
   always_blanket_disable: []
   meta:
     opt-in: false
+    correctable: false
 block_based_kvo:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 capture_variable:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 class_delegate_protocol:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 closing_brace:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 closure_body_length:
   warning: 30
   error: 100
   meta:
     opt-in: true
+    correctable: false
 closure_end_indentation:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 closure_parameter_position:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 closure_spacing:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 collection_alignment:
   severity: warning
   align_colons: false
   meta:
     opt-in: true
+    correctable: false
 colon:
   severity: warning
   flexible_right_spacing: false
   apply_to_dictionaries: true
   meta:
     opt-in: false
+    correctable: true
 comma:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 comma_inheritance:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 comment_spacing:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 compiler_protocol_init:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 computed_accessors_order:
   severity: warning
   order: get_set
   meta:
     opt-in: false
+    correctable: false
 conditional_returns_on_newline:
   severity: warning
   if_only: false
   meta:
     opt-in: true
+    correctable: false
 contains_over_filter_count:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 contains_over_filter_is_empty:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 contains_over_first_not_nil:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 contains_over_range_nil_comparison:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 contrasted_opening_brace:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 control_statement:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 convenience_type:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 cyclomatic_complexity:
   warning: 10
   error: 20
   ignores_case_statements: false
   meta:
     opt-in: false
+    correctable: false
 deployment_target:
   severity: warning
   iOSApplicationExtension_deployment_target: 7.0
@@ -156,96 +189,118 @@ deployment_target:
   watchOS_deployment_target: 1.0
   meta:
     opt-in: false
+    correctable: false
 direct_return:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 discarded_notification_center_observer:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 discouraged_assert:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 discouraged_direct_init:
   severity: warning
   types: ["Bundle", "Bundle.init", "NSError", "NSError.init", "UIDevice", "UIDevice.init"]
   meta:
     opt-in: false
+    correctable: false
 discouraged_none_name:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 discouraged_object_literal:
   severity: warning
   image_literal: true
   color_literal: true
   meta:
     opt-in: true
+    correctable: false
 discouraged_optional_boolean:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 discouraged_optional_collection:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 duplicate_conditions:
   severity: error
   meta:
     opt-in: false
+    correctable: false
 duplicate_enum_cases:
   severity: error
   meta:
     opt-in: false
+    correctable: false
 duplicate_imports:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 duplicated_key_in_dictionary_literal:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 dynamic_inline:
   severity: error
   meta:
     opt-in: false
+    correctable: false
 empty_collection_literal:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 empty_count:
   severity: error
   only_after_dot: false
   meta:
     opt-in: true
+    correctable: true
 empty_enum_arguments:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 empty_parameters:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 empty_parentheses_with_trailing_closure:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 empty_string:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 empty_xctest_method:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: true
+    correctable: false
 enum_case_associated_values_count:
   warning: 5
   error: 6
   meta:
     opt-in: true
+    correctable: false
 expiring_todo:
   approaching_expiry_severity: warning
   expired_severity: error
@@ -258,55 +313,67 @@ expiring_todo:
   date_separator: "/"
   meta:
     opt-in: true
+    correctable: false
 explicit_acl:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 explicit_enum_raw_value:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 explicit_init:
   severity: warning
   include_bare_init: false
   meta:
     opt-in: true
+    correctable: true
 explicit_self:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 explicit_top_level_acl:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 explicit_type_interface:
   severity: warning
   excluded: []
   allow_redundancy: false
   meta:
     opt-in: true
+    correctable: false
 extension_access_modifier:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 fallthrough:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 fatal_error_message:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 file_header:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 file_length:
   warning: 400
   error: 1000
   ignore_comment_only_lines: false
   meta:
     opt-in: false
+    correctable: false
 file_name:
   severity: warning
   excluded: ["LinuxMain.swift", "main.swift"]
@@ -316,62 +383,75 @@ file_name:
   require_fully_qualified_names: false
   meta:
     opt-in: true
+    correctable: false
 file_name_no_space:
   severity: warning
   excluded: []
   meta:
     opt-in: true
+    correctable: false
 file_types_order:
   severity: warning
   order: [[supporting_type], [main_type], [extension], [preview_provider], [library_content_provider]]
   meta:
     opt-in: true
+    correctable: false
 final_test_case:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: true
+    correctable: true
 first_where:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 flatmap_over_map_reduce:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 for_where:
   severity: warning
   allow_for_as_filter: false
   meta:
     opt-in: false
+    correctable: false
 force_cast:
   severity: error
   meta:
     opt-in: false
+    correctable: false
 force_try:
   severity: error
   meta:
     opt-in: false
+    correctable: false
 force_unwrapping:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 function_body_length:
   warning: 50
   error: 100
   meta:
     opt-in: false
+    correctable: false
 function_default_parameter_at_end:
   severity: warning
   ignore_first_isolation_inheritance_parameter: true
   meta:
     opt-in: true
+    correctable: false
 function_parameter_count:
   warning: 5
   error: 8
   ignores_default_parameters: true
   meta:
     opt-in: false
+    correctable: false
 generic_type_name:
   min_length:
     warning: 1
@@ -385,14 +465,17 @@ generic_type_name:
   validates_start_with_lowercase: error
   meta:
     opt-in: false
+    correctable: false
 ibinspectable_in_extension:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 identical_operands:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 identifier_name:
   min_length:
     warning: 3
@@ -407,24 +490,29 @@ identifier_name:
   additional_operators: ["!", "%", "&", "*", "+", "-", ".", "/", "<", "=", ">", "?", "^", "|", "~"]
   meta:
     opt-in: false
+    correctable: false
 implicit_getter:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 implicit_return:
   severity: warning
   included: [closure, function, getter, initializer, subscript]
   meta:
     opt-in: true
+    correctable: true
 implicitly_unwrapped_optional:
   severity: warning
   mode: all_except_iboutlets
   meta:
     opt-in: true
+    correctable: false
 inclusive_language:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 indentation_width:
   severity: warning
   indentation_width: 4
@@ -433,68 +521,84 @@ indentation_width:
   include_multiline_strings: true
   meta:
     opt-in: true
+    correctable: false
 invalid_swiftlint_command:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 is_disjoint:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 joined_default_parameter:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 large_tuple:
   warning: 2
   error: 3
   meta:
     opt-in: false
+    correctable: false
 last_where:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 leading_whitespace:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 legacy_cggeometry_functions:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 legacy_constant:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 legacy_constructor:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 legacy_hashing:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 legacy_multiple:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 legacy_nsgeometry_functions:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 legacy_objc_type:
   severity: warning
   allowed_types: []
   meta:
     opt-in: true
+    correctable: false
 legacy_random:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 let_var_whitespace:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 line_length:
   warning: 120
   error: 200
@@ -505,22 +609,27 @@ line_length:
   excluded_lines_patterns: []
   meta:
     opt-in: false
+    correctable: false
 literal_expression_end_indentation:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 local_doc_comment:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 lower_acl_than_parent:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 mark:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 missing_docs:
   warning: [open, public]
   excludes_extensions: true
@@ -529,42 +638,51 @@ missing_docs:
   evaluate_effective_access_control_level: false
   meta:
     opt-in: true
+    correctable: false
 modifier_order:
   severity: warning
   preferred_modifier_order: [override, acl, setterACL, dynamic, mutators, lazy, final, required, convenience, typeMethods, owned]
   meta:
     opt-in: true
+    correctable: true
 multiline_arguments:
   severity: warning
   first_argument_location: any_line
   only_enforce_after_first_closure_on_first_line: false
   meta:
     opt-in: true
+    correctable: false
 multiline_arguments_brackets:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 multiline_function_chains:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 multiline_literal_brackets:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 multiline_parameters:
   severity: warning
   allows_single_line: true
   meta:
     opt-in: true
+    correctable: false
 multiline_parameters_brackets:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 multiple_closures_with_trailing_closure:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 nesting:
   type_level:
     warning: 1
@@ -575,85 +693,104 @@ nesting:
   ignore_typealiases_and_associatedtypes: false
   meta:
     opt-in: false
+    correctable: false
 nimble_operator:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 no_empty_block:
   severity: warning
   disabled_block_types: []
   meta:
     opt-in: true
+    correctable: false
 no_extension_access_modifier:
   severity: error
   meta:
     opt-in: true
+    correctable: false
 no_fallthrough_only:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 no_grouping_extension:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 no_magic_numbers:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: true
+    correctable: false
 no_space_in_method_call:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 non_optional_string_data_conversion:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 non_overridable_class_declaration:
   severity: warning
   final_class_modifier: final class
   meta:
     opt-in: true
+    correctable: true
 notification_center_detachment:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 ns_number_init_as_function_reference:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 nslocalizedstring_key:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 nslocalizedstring_require_bundle:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 nsobject_prefer_isequal:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 number_separator:
   severity: warning
   minimum_length: 0
   exclude_ranges: []
   meta:
     opt-in: true
+    correctable: true
 object_literal:
   severity: warning
   image_literal: true
   color_literal: true
   meta:
     opt-in: true
+    correctable: false
 one_declaration_per_file:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 opaque_over_existential:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 opening_brace:
   severity: warning
   ignore_multiline_type_headers: false
@@ -662,6 +799,7 @@ opening_brace:
   allow_multiline_func: false
   meta:
     opt-in: false
+    correctable: true
 operator_usage_whitespace:
   severity: warning
   lines_look_around: 2
@@ -669,169 +807,208 @@ operator_usage_whitespace:
   allowed_no_space_operators: ["...", "..<"]
   meta:
     opt-in: true
+    correctable: true
 operator_whitespace:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 optional_data_string_conversion:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 optional_enum_case_matching:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 orphaned_doc_comment:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 overridden_super_call:
   severity: warning
   excluded: []
   included: ["*"]
   meta:
     opt-in: true
+    correctable: false
 override_in_extension:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 pattern_matching_keywords:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 period_spacing:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 prefer_key_path:
   severity: warning
   restrict_to_standard_functions: true
   meta:
     opt-in: true
+    correctable: true
 prefer_nimble:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 prefer_self_in_static_references:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 prefer_self_type_over_type_of_self:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 prefer_type_checking:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 prefer_zero_over_explicit_init:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 prefixed_toplevel_constant:
   severity: warning
   only_private: false
   meta:
     opt-in: true
+    correctable: false
 private_action:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 private_outlet:
   severity: warning
   allow_private_set: false
   meta:
     opt-in: true
+    correctable: false
 private_over_fileprivate:
   severity: warning
   validate_extensions: false
   meta:
     opt-in: false
+    correctable: true
 private_subject:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 private_swiftui_state:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 private_unit_test:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: false
+    correctable: true
 prohibited_interface_builder:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 prohibited_super_call:
   severity: warning
   excluded: []
   included: ["*"]
   meta:
     opt-in: true
+    correctable: false
 protocol_property_accessors_order:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 quick_discouraged_call:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 quick_discouraged_focused_test:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 quick_discouraged_pending_test:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 raw_value_for_camel_cased_codable_enum:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 reduce_boolean:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 reduce_into:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 redundant_discardable_let:
   severity: warning
   ignore_swiftui_view_bodies: false
   meta:
     opt-in: false
+    correctable: true
 redundant_nil_coalescing:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 redundant_objc_attribute:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 redundant_optional_initialization:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 redundant_self_in_closure:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 redundant_sendable:
   severity: warning
   global_actors: []
   meta:
     opt-in: false
+    correctable: true
 redundant_set_access_control:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 redundant_string_enum_value:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 redundant_type_annotation:
   severity: warning
   ignore_attributes: ["IBInspectable"]
@@ -839,38 +1016,46 @@ redundant_type_annotation:
   consider_default_literal_types_redundant: false
   meta:
     opt-in: true
+    correctable: true
 redundant_void_return:
   severity: warning
   include_closures: true
   meta:
     opt-in: false
+    correctable: true
 required_deinit:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 required_enum_case:
   {Protocol Name}:
     {Case Name 1}: {warning|error}
     {Case Name 2}: {warning|error}
   meta:
     opt-in: true
+    correctable: false
 return_arrow_whitespace:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 return_value_from_void_function:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 self_binding:
   severity: warning
   bind_identifier: "self"
   meta:
     opt-in: true
+    correctable: true
 self_in_property_initialization:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 shorthand_argument:
   severity: warning
   allow_until_line_after_opening_brace: 4
@@ -878,124 +1063,151 @@ shorthand_argument:
   always_disallow_member_access: false
   meta:
     opt-in: true
+    correctable: false
 shorthand_operator:
   severity: error
   meta:
     opt-in: false
+    correctable: false
 shorthand_optional_binding:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 single_test_class:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: true
+    correctable: false
 sorted_enum_cases:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 sorted_first_last:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 sorted_imports:
   severity: warning
   grouping: names
   meta:
     opt-in: true
+    correctable: true
 statement_position:
   severity: warning
   statement_mode: default
   meta:
     opt-in: false
+    correctable: true
 static_operator:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 static_over_final_class:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 strict_fileprivate:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 strong_iboutlet:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 superfluous_disable_command:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 superfluous_else:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 switch_case_alignment:
   severity: warning
   indented_cases: false
   ignore_one_liners: false
   meta:
     opt-in: false
+    correctable: false
 switch_case_on_newline:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 syntactic_sugar:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 test_case_accessibility:
   severity: warning
   allowed_prefixes: []
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   meta:
     opt-in: true
+    correctable: true
 todo:
   severity: warning
   only: [TODO, FIXME]
   meta:
     opt-in: false
+    correctable: false
 toggle_bool:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 trailing_closure:
   severity: warning
   only_single_muted_parameter: false
   meta:
     opt-in: true
+    correctable: true
 trailing_comma:
   severity: warning
   mandatory_comma: false
   meta:
     opt-in: false
+    correctable: true
 trailing_newline:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 trailing_semicolon:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 trailing_whitespace:
   severity: warning
   ignores_empty_lines: false
   ignores_comments: true
   meta:
     opt-in: false
+    correctable: true
 type_body_length:
   warning: 250
   error: 350
   meta:
     opt-in: false
+    correctable: false
 type_contents_order:
   severity: warning
   order: [[case], [type_alias, associated_type], [subtype], [type_property], [instance_property], [ib_inspectable], [ib_outlet], [initializer], [type_method], [view_life_cycle_method], [ib_action, ib_segue_action], [other_method], [subscript], [deinitializer]]
   meta:
     opt-in: true
+    correctable: false
 type_name:
   min_length:
     warning: 3
@@ -1010,66 +1222,81 @@ type_name:
   validate_protocols: true
   meta:
     opt-in: false
+    correctable: false
 typesafe_array_init:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 unavailable_condition:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 unavailable_function:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 unhandled_throwing_task:
   severity: error
   meta:
     opt-in: true
+    correctable: false
 unneeded_break_in_switch:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 unneeded_override:
   severity: warning
   affect_initializers: false
   excluded_methods: []
   meta:
     opt-in: false
+    correctable: true
 unneeded_parentheses_in_closure_argument:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 unneeded_synthesized_initializer:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 unowned_variable_capture:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 untyped_error_in_catch:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 unused_closure_parameter:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 unused_control_flow_label:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 unused_declaration:
   severity: error
   include_public_and_open: false
   related_usrs_to_skip: ["s:7SwiftUI15PreviewProviderP"]
   meta:
     opt-in: true
+    correctable: false
 unused_enumerated:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 unused_import:
   severity: warning
   require_explicit_imports: false
@@ -1077,71 +1304,88 @@ unused_import:
   always_keep_imports: []
   meta:
     opt-in: true
+    correctable: true
 unused_optional_binding:
   severity: warning
   ignore_optional_try: false
   meta:
     opt-in: false
+    correctable: false
 unused_parameter:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 unused_setter_value:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 valid_ibinspectable:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 vertical_parameter_alignment:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 vertical_parameter_alignment_on_call:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 vertical_whitespace:
   severity: warning
   max_empty_lines: 1
   meta:
     opt-in: false
+    correctable: true
 vertical_whitespace_between_cases:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 vertical_whitespace_closing_braces:
   severity: warning
   only_enforce_before_trivial_lines: false
   meta:
     opt-in: true
+    correctable: true
 vertical_whitespace_opening_braces:
   severity: warning
   meta:
     opt-in: true
+    correctable: true
 void_function_in_ternary:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 void_return:
   severity: warning
   meta:
     opt-in: false
+    correctable: true
 weak_delegate:
   severity: warning
   meta:
     opt-in: true
+    correctable: false
 xct_specific_matcher:
   severity: warning
   matchers: [one-argument-asserts, two-argument-asserts]
   meta:
     opt-in: true
+    correctable: false
 xctfail_message:
   severity: warning
   meta:
     opt-in: false
+    correctable: false
 yoda_condition:
   severity: warning
   meta:
     opt-in: true
+    correctable: false

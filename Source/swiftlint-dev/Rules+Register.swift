@@ -27,6 +27,10 @@ extension SwiftLintDev.Rules {
         }
 
         func run() async throws {
+            try runFor(newRule: nil)
+        }
+
+        func runFor(newRule: NewRuleDetails?) throws {
             guard FileManager.default.fileExists(atPath: rulesDirectory.path),
                   FileManager.default.fileExists(atPath: testsDirectory.path) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
@@ -43,9 +47,30 @@ extension SwiftLintDev.Rules {
                 .sorted()
             try registerInRulesList(rules)
             try registerInTests(rules)
-            try registerInTestReference()
+            try registerInTestReference(adding: newRule)
             print("(Re-)Registered \(rules.count) rules.")
         }
+    }
+}
+
+struct NewRuleDetails: Equatable {
+    let identifier: String
+    let yamlConfig: String
+    let optIn: Bool
+    let correctable: Bool
+
+    var yaml: String {
+        """
+        \(identifier):
+        \(yamlConfig.indent(by: 2))
+          meta:
+            opt-in: \(optIn)
+            correctable: \(correctable)
+        """
+    }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.identifier == rhs.identifier
     }
 }
 
@@ -98,21 +123,27 @@ private extension SwiftLintDev.Rules.Register {
             """.write(to: testFile, atomically: true, encoding: .utf8)
     }
 
-    func registerInTestReference() throws {
+    func registerInTestReference(adding newRule: NewRuleDetails?) throws {
         RuleRegistry.registerAllRulesOnce()
-        try Configuration(rulesMode: .allCommandLine).rules
+        var ruleDetails = Configuration(rulesMode: .allCommandLine).rules
             .map { type(of: $0) }
             .filter { $0.identifier != "custom_rules" }
             .map { ruleType in
                 let rule = ruleType.init()
-                return """
-                    \(ruleType.identifier):
-                    \(rule.createConfigurationDescription().yaml().indent(by: 2))
-                      meta:
-                        opt-in: \(rule is any OptInRule)
-                        correctable: \(rule is any CorrectableRule)
-                    """
+                return NewRuleDetails(
+                    identifier: ruleType.identifier,
+                    yamlConfig: rule.createConfigurationDescription().yaml(),
+                    optIn: rule is any OptInRule,
+                    correctable: rule is any CorrectableRule
+                )
             }
+        if let newRule {
+            ruleDetails.append(newRule)
+        }
+        try ruleDetails
+            .sorted { $0.identifier < $1.identifier }
+            .unique
+            .map(\.yaml)
             .joined(separator: "\n")
             .appending("\n")
             .write(

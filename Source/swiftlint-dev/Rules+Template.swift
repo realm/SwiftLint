@@ -84,7 +84,14 @@ extension SwiftLintDev.Rules {
                 print("Test file created at \(testPath.relativeToCurrentDirectory).")
             }
             if !skipRegistration {
-                try await Register().run()
+                try Register().runFor(newRule: .init(
+                    identifier: ruleId,
+                    yamlConfig: """
+                        severity: \(severity)
+                        """,
+                    optIn: !`default`,
+                    correctable: correctable || rewriter
+                ))
             }
         }
     }

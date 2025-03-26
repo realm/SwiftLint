@@ -110,6 +110,7 @@ private extension SwiftLintDev.Rules.Register {
                     \(rule.createConfigurationDescription().yaml().indent(by: 2))
                       meta:
                         opt-in: \(rule is any OptInRule)
+                        correctable: \(rule is any CorrectableRule)
                     """
             }
             .joined(separator: "\n")

@@ -168,7 +168,7 @@ swift_binary(
     copts = copts + strict_concurrency_copts,
     visibility = ["//visibility:public"],
     deps = [
-        ":SwiftLintCore",
+        ":SwiftLintFramework",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
     ],
 )

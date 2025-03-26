@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import SwiftLintFramework
 
 extension SwiftLintDev.Rules {
     struct Register: AsyncParsableCommand {
@@ -19,8 +20,15 @@ extension SwiftLintDev.Rules {
                 .appendingPathComponent("Rules", isDirectory: true)
         }
 
+        private var testsDirectory: URL {
+            URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+                .appendingPathComponent("Tests", isDirectory: true)
+                .appendingPathComponent("GeneratedTests", isDirectory: true)
+        }
+
         func run() async throws {
-            guard FileManager.default.fileExists(atPath: rulesDirectory.path) else {
+            guard FileManager.default.fileExists(atPath: rulesDirectory.path),
+                  FileManager.default.fileExists(atPath: testsDirectory.path) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
             }
             let enumerator = FileManager.default.enumerator(at: rulesDirectory, includingPropertiesForKeys: nil)
@@ -35,6 +43,7 @@ extension SwiftLintDev.Rules {
                 .sorted()
             try registerInRulesList(rules)
             try registerInTests(rules)
+            try registerInTestReference()
             print("(Re-)Registered \(rules.count) rules.")
         }
     }
@@ -60,13 +69,8 @@ private extension SwiftLintDev.Rules.Register {
     }
 
     func registerInTests(_ ruleFiles: [String]) throws {
-        let testsDirectory = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-            .appendingPathComponent("Tests", isDirectory: true)
-            .appendingPathComponent("GeneratedTests", isDirectory: true)
-        guard FileManager.default.fileExists(atPath: testsDirectory.path) else {
-            throw ValidationError("Command must be run from the root of the SwiftLint repository.")
-        }
-        let testFile = testsDirectory.appendingPathComponent("GeneratedTests.swift", isDirectory: false)
+        let testFile = testsDirectory
+            .appendingPathComponent("GeneratedTests.swift", isDirectory: false)
         let rules = ruleFiles
             .map { $0.replacingOccurrences(of: ".swift", with: "") }
             .map { testName in """
@@ -92,5 +96,30 @@ private extension SwiftLintDev.Rules.Register {
             \(rules)
 
             """.write(to: testFile, atomically: true, encoding: .utf8)
+    }
+
+    func registerInTestReference() throws {
+        RuleRegistry.registerAllRulesOnce()
+        try Configuration(rulesMode: .allCommandLine).rules
+            .map { type(of: $0) }
+            .filter { $0.identifier != "custom_rules" }
+            .map { ruleType in
+                let rule = ruleType.init()
+                return """
+                    \(ruleType.identifier):
+                    \(rule.createConfigurationDescription().yaml().indent(by: 2))
+                      meta:
+                        opt-in: \(rule is any OptInRule)
+                    """
+            }
+            .joined(separator: "\n")
+            .appending("\n")
+            .write(
+                to: testsDirectory.deletingLastPathComponent()
+                    .appendingPathComponent("IntegrationTests", isDirectory: true)
+                    .appendingPathComponent("default_rule_configurations.yml", isDirectory: false),
+                atomically: true,
+                encoding: .utf8
+            )
     }
 }

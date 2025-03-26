@@ -60,26 +60,6 @@ final class IntegrationTests: SwiftLintTestCase {
             }
         }
     }
-
-    func testDefaultConfigurations() {
-        let defaultConfig = Configuration(rulesMode: .allCommandLine).rules
-            .map { type(of: $0) }
-            .filter { $0.identifier != "custom_rules" }
-            .map { ruleType in
-                let rule = ruleType.init()
-                return """
-                    \(ruleType.identifier):
-                    \(rule.createConfigurationDescription().yaml().indent(by: 2))
-                      meta:
-                        opt-in: \(rule is any OptInRule)
-                    """
-            }
-            .joined(separator: "\n")
-        let referenceFile = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .appendingPathComponent("default_rule_configurations.yml")
-        XCTAssertEqual(defaultConfig + "\n", try String(contentsOf: referenceFile))
-    }
 }
 
 private struct StaticStringImitator {

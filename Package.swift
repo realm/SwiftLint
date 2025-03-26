@@ -55,7 +55,7 @@ let package = Package(
             name: "swiftlint-dev",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "SwiftLintCore",
+                "SwiftLintFramework",
             ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),

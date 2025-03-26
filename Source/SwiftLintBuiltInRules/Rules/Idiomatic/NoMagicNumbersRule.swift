@@ -113,11 +113,9 @@ struct NoMagicNumbersRule: Rule {
             Example("""
             let myColor: UIColor = UIColor(red: 0.6, green: 1.0, blue: 0.2, alpha: 0.52)
             """),
-            
             Example("""
             let colorLiteral = #colorLiteral(red: 0.7019607843, green: 0.7019607843, blue: 0.7019607843, alpha: 1)
             """),
-
             Example("""
             let yourColor: UIColor = UIColor(hue: 0.9, saturation: 0.6, brightness: 0.333334, alpha: 1.0)
             """),
@@ -245,11 +243,9 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
-            
             if node.isPartOfUIColorInitializer() {
                 return
             }
-            
             let violation = node.positionAfterSkippingLeadingTrivia
             if let extendedTypeName = node.extendedTypeName() {
                 if !testClasses.contains(extendedTypeName) {
@@ -350,7 +346,6 @@ private extension ExprSyntaxProtocol {
         }
         return false
     }
-    
     func isPartOfUIColorInitializer() -> Bool {
         var parent = parent
         while let currentParent = parent, !currentParent.is(FunctionCallExprSyntax.self) {

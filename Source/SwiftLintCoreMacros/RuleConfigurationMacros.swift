@@ -48,7 +48,7 @@ enum AutoConfigParser: MemberMacro {
             }
         }
         return [
-            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws") {
+            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws(Issue)") {
                 for option in nonInlinedOptions {
                     """
                     if $\(raw: option).key.isEmpty {
@@ -60,7 +60,7 @@ enum AutoConfigParser: MemberMacro {
                     """
                     do {
                         try \(raw: option).apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     """
@@ -68,7 +68,7 @@ enum AutoConfigParser: MemberMacro {
                 """
                 guard let configuration = configuration as? [String: Any] else {
                     \(raw: inlinedOptions.isEmpty
-                        ? "throw Issue.invalidConfiguration(ruleID: Parent.identifier)"
+                        ? "throw .invalidConfiguration(ruleID: Parent.identifier)"
                         : "return")
                 }
                 """
@@ -114,11 +114,11 @@ enum AcceptableByConfigurationElement: ExtensionMacro {
             try ExtensionDeclSyntax("""
                 extension \(type): AcceptableByConfigurationElement {
                     \(raw: accessLevel)func asOption() -> OptionType { .symbol(rawValue) }
-                    \(raw: accessLevel)init(fromAny value: Any, context ruleID: String) throws {
+                    \(raw: accessLevel)init(fromAny value: Any, context ruleID: String) throws(Issue) {
                         if let value = value as? String, let newSelf = Self(rawValue: value) {
                             self = newSelf
                         } else {
-                            throw Issue.invalidConfiguration(ruleID: ruleID)
+                            throw .invalidConfiguration(ruleID: ruleID)
                         }
                     }
                 }

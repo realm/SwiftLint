@@ -104,7 +104,7 @@ struct LineLengthRule: Rule {
         // contents of multiline strings only include one string element per line
         guard syntaxKindsByLine[line.index] == [.string] else { return false }
 
-        // find the trailing delimiter `"""` in to make sure we're not in a list of concatinated strings
+        // find the trailing delimiter `"""` in order to make sure we're not in a list of concatenated strings
         let lastStringLineIndex = syntaxKindsByLine.dropFirst(line.index + 1).firstIndex(where: { $0 != [.string] })
         guard let lastStringLineIndex else {
             return file.lines.last?.content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") == true

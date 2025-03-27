@@ -37,6 +37,8 @@ extension SwiftLintDev.Rules {
         var test = false
         @Flag(name: .long, help: "Indicates whether to overwrite existing files. Use with caution!")
         var overwrite = false
+        @Flag(name: .long, help: "Do not add example code.")
+        var noExamples = false
         @Flag(name: .long, help: "Skip registration.")
         var skipRegistration = false
 
@@ -130,20 +132,20 @@ private extension SwiftLintDev.Rules.Template {
             "kind: .\(kind.rawValue)",
             """
             nonTriggeringExamples: [
-                Example(""),
+                Example("\(noExamples ? "" : "let x = 1")"),
             ]
             """,
             """
             triggeringExamples: [
-                Example(""),
+                Example("\(noExamples ? "" : "var ↓foo = 1")"),
             ]
             """,
         ]
         if correctable || rewriter {
             ruleDescriptionArguments.append("""
                 corrections: [
-                    Example(""):
-                        Example(""),
+                    Example("\(noExamples ? "" : "let foo = 1")"):
+                        Example("\(noExamples ? "" : "let bar = 1")"),
                 ]
                 """)
         }
@@ -155,6 +157,20 @@ private extension SwiftLintDev.Rules.Template {
         var extensionContent = [
             """
             final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+                \(noExamples ? "" : """
+                    override func visitPost(_ node: VariableDeclSyntax) {
+                        node.bindings.forEach { binding in
+                            if let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
+                               pattern.identifier.text == "foo" {
+                                violations.append(.init(
+                                    position: pattern.positionAfterSkippingLeadingTrivia,
+                                    reason: "Variable named 'foo' should be named 'bar' instead"
+                                ))
+                            }
+                        }
+                    }
+                    """.indent(by: 4, skipFirst: true)
+                )
             }
             """,
         ]
@@ -162,6 +178,24 @@ private extension SwiftLintDev.Rules.Template {
             extensionContent.append("""
 
                 final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+                    \(noExamples ? "" : """
+                        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+                            let bindings = node.bindings.map { binding in
+                                if let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
+                                pattern.identifier.text == "foo" {
+                                    correctionPositions.append(pattern.positionAfterSkippingLeadingTrivia)
+                                    return binding.with(
+                                        \\.pattern,
+                                        PatternSyntax(pattern.with(\\.identifier, .identifier("bar")))
+                                            .with(\\.trailingTrivia, pattern.trailingTrivia)
+                                    )
+                                }
+                                return binding
+                            }
+                            return super.visit(node.with(\\.bindings, PatternBindingListSyntax(bindings)))
+                        }
+                        """.indent(by: 4, skipFirst: true)
+                    )
                 }
                 """)
         }

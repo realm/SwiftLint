@@ -606,6 +606,7 @@ line_length:
   ignores_function_declarations: false
   ignores_comments: false
   ignores_interpolated_strings: false
+  ignores_multiline_strings: false
   excluded_lines_patterns: []
   meta:
     opt-in: false

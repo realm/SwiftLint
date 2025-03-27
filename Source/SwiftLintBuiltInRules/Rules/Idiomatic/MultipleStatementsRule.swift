@@ -47,23 +47,23 @@ struct MultipleStatementsRule: Rule {
             Example("let a = 0↓; let b = 0"):
                 Example(
                     """
-                       let a = 0
-                       let b = 0
+                    let a = 0
+                    let b = 0
                     """
                 ),
             Example("let a = 0↓; let b = 0↓; let c = 0"):
                 Example(
                     """
-                        let a = 0
-                        let b = 0
-                        let c = 0
+                    let a = 0
+                    let b = 0
+                    let c = 0
                     """
                 ),
             Example("let a = 0↓; print(\"Hello\")"):
                 Example(
                     """
-                        let a = 0
-                        print(\"Hello\")
+                    let a = 0
+                    print(\"Hello\")
                     """
                 ),
         ]

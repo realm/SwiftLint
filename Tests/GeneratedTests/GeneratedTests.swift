@@ -715,9 +715,9 @@ final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTest
     }
 }
 
-final class MultipleStatementsDeclarationRuleGeneratedTests: SwiftLintTestCase {
+final class MultipleStatementsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(MultipleStatementsDeclarationRule.description)
+        verifyRule(MultipleStatementsRule.description)
     }
 }
 

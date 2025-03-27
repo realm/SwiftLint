@@ -10,10 +10,30 @@ struct MultipleStatementsRule: Rule {
         description: "Every statement should be on its own line",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("let a = 1;\nlet b = 2;"),
-            Example("var x = 10\nvar y = 20;"),
-            Example("let a = 1;\nreturn a"),
-            Example("if b { return };  \nlet a = 1"),
+            Example(
+                """
+                    let a = 1;
+                    let b = 2;
+                """
+            ),
+            Example(
+                """
+                    var x = 10
+                    var y = 20;
+                """
+            ),
+            Example(
+                """
+                    let a = 1;
+                    return a
+                """
+            ),
+            Example(
+                """
+                    if b { return };  
+                    let a = 1
+                """
+            ),
         ],
         triggeringExamples: [
             Example("let a = 1; return a"),
@@ -24,15 +44,33 @@ struct MultipleStatementsRule: Rule {
             Example("let x = 10; var y = 20"),
         ],
         corrections: [
-            Example("let a = 0↓; let b = 0"): Example("let a = 0\nlet b = 0"),
+            Example("let a = 0↓; let b = 0"):
+                Example(
+                    """
+                       let a = 0
+                       let b = 0
+                    """
+                ),
             Example("let a = 0↓; let b = 0↓; let c = 0"):
-                Example("let a = 0\nlet b = 0\nlet c = 0"),
-            Example("let a = 0↓; print(\"Hello\")"): Example("let a = 0\nprint(\"Hello\")"),
+                Example(
+                    """
+                        let a = 0
+                        let b = 0
+                        let c = 0
+                    """
+                ),
+            Example("let a = 0↓; print(\"Hello\")"):
+                Example(
+                    """
+                        let a = 0
+                        print(\"Hello\")
+                    """
+                ),
         ]
     )
 }
 
-private extension MultipleStatementsDeclarationRule {
+private extension MultipleStatementsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             if node.isThereStatementAfterSemicolon {

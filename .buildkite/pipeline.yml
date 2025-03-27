@@ -8,7 +8,7 @@ steps:
   - label: "SwiftPM"
     commands:
       - echo "+++ Generate Template Rule"
-      - swift run swiftlint-dev rules template FooBarBaz --rewriter --id foo_bar --config --kind metrics --severity error
+      - swift run swiftlint-dev rules template FooBarBaz --rewriter --id foo_bar --config --kind metrics --severity error --test
       - echo "+++ Test"
       - make spm_test
     env:

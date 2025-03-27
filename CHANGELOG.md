@@ -12,7 +12,7 @@
 
 ### Enhancements
 
-* Fix Ignore UIColor initializers in no_magic_numbers rule issue.
+* Ignore `UIColor` initializers in `no_magic_numbers` rule.  
   [suojae](https://github.com/suojae)
   [#5183](https://github.com/realm/SwiftLint/issues/5183)
 

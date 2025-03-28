@@ -347,20 +347,30 @@ private extension ExprSyntaxProtocol {
         return false
     }
     func isPartOfUIColorInitializer() -> Bool {
-        var parent = parent
-        while let currentParent = parent, !currentParent.is(FunctionCallExprSyntax.self) {
-            parent = currentParent.parent
-        }
-        guard let functionCall = parent?.as(FunctionCallExprSyntax.self) else {
+        let uiColorInitializerLabels: Set<String> = [
+            "white", "alpha", "red", "displayP3Red", "green", "blue", "hue", "saturation", "brightness",
+            "cgColor", "ciColor", "resource", "patternImage"
+        ]
+        let colorLiteralLabels: Set<String> = ["red", "green", "blue", "alpha"]
+        guard let param = parent?.as(LabeledExprSyntax.self),
+              let label = param.label?.text else {
             return false
         }
-        if let memberAccess = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
-           let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
-           baseExpr.baseName.text == "UIColor" {
-            return true
+        if uiColorInitializerLabels.contains(label),
+           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(FunctionCallExprSyntax.self) {
+            if let calledExpr = call.calledExpression.as(DeclReferenceExprSyntax.self),
+               calledExpr.baseName.text == "UIColor" {
+                return true
+            }
+            if let memberAccess = call.calledExpression.as(MemberAccessExprSyntax.self),
+               let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
+               baseExpr.baseName.text == "UIColor" {
+                return true
+            }
         }
-        if let identifierExpr = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
-           identifierExpr.baseName.text == "colorLiteral" {
+        if colorLiteralLabels.contains(label),
+           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(MacroExpansionExprSyntax.self),
+           call.macroName.text == "colorLiteral" {
             return true
         }
         return false

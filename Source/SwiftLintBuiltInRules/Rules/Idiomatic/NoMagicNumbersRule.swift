@@ -252,7 +252,6 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
-            
             if node.isPartOfUIColorInitializer() {
                 return
             }
@@ -356,6 +355,7 @@ private extension ExprSyntaxProtocol {
         }
         return false
     }
+    
     func isPartOfUIColorInitializer() -> Bool {
         guard let param = parent?.as(LabeledExprSyntax.self),
               let label = param.label?.text else {

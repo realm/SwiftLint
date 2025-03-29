@@ -252,6 +252,7 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
+            
             if node.isPartOfUIColorInitializer() {
                 return
             }

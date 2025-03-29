@@ -110,6 +110,32 @@ struct NoMagicNumbersRule: Rule {
             let a = 2
             #endif
             """),
+            Example("""
+            let myColor: UIColor = UIColor(red: 0.6, green: 1.0, blue: 0.2, alpha: 0.52)
+            """),
+            Example("""
+            let colorLiteral = #colorLiteral(red: 0.7019607843, green: 0.7019607843, blue: 0.7019607843, alpha: 1)
+            """),
+            Example("""
+            let yourColor: UIColor = UIColor(hue: 0.9, saturation: 0.6, brightness: 0.333334, alpha: 1.0)
+            """),
+            Example("""
+            let systemColor = UIColor(displayP3Red: 0.3, green: 0.8, blue: 0.5, alpha: 0.75)
+            """),
+            Example("""
+            func createColor() -> UIColor {
+                return UIColor(white: 0.5, alpha: 0.8)
+            }
+            """),
+            Example("""
+            let memberColor = UIColor.init(red: 0.5, green: 0.3, blue: 0.9, alpha: 1.0)
+            """),
+
+            Example("""
+            func createMemberColor() -> UIColor {
+                return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
+            }
+            """),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -226,6 +252,9 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
+            if node.isPartOfUIColorInitializer() {
+                return
+            }
             let violation = node.positionAfterSkippingLeadingTrivia
             if let extendedTypeName = node.extendedTypeName() {
                 if !testClasses.contains(extendedTypeName) {
@@ -323,6 +352,31 @@ private extension ExprSyntaxProtocol {
            let operatorSymbol = operation.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind,
            [.binaryOperator("<<"), .binaryOperator(">>")].contains(operatorSymbol) {
             return operation.parent?.isProtocol((any ExprSyntaxProtocol).self) != true
+        }
+        return false
+    }
+    
+    func isPartOfUIColorInitializer() -> Bool {
+        guard let param = parent?.as(LabeledExprSyntax.self),
+              let label = param.label?.text else {
+            return false
+        }
+        if ["white", "alpha", "red", "displayP3Red", "green", "blue", "hue", "saturation", "brightness","cgColor", "ciColor", "resource", "patternImage"].contains(label),
+           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(FunctionCallExprSyntax.self) {
+            if let calledExpr = call.calledExpression.as(DeclReferenceExprSyntax.self),
+               calledExpr.baseName.text == "UIColor" {
+                return true
+            }
+            if let memberAccess = call.calledExpression.as(MemberAccessExprSyntax.self),
+               let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
+               baseExpr.baseName.text == "UIColor" {
+                return true
+            }
+        }
+        if ["red", "green", "blue", "alpha"].contains(label),
+           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(MacroExpansionExprSyntax.self),
+           call.macroName.text == "colorLiteral" {
+            return true
         }
         return false
     }

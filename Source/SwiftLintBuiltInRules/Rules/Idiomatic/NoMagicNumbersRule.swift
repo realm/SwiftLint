@@ -127,6 +127,15 @@ struct NoMagicNumbersRule: Rule {
                 return UIColor(white: 0.5, alpha: 0.8)
             }
             """),
+            Example("""
+            let memberColor = UIColor.init(red: 0.5, green: 0.3, blue: 0.9, alpha: 1.0)
+            """),
+
+            Example("""
+            func createMemberColor() -> UIColor {
+                return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
+            }
+            """),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),

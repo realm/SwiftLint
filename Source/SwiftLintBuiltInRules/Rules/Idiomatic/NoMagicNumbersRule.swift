@@ -354,6 +354,7 @@ private extension ExprSyntaxProtocol {
         }
         return false
     }
+
     func isPartOfUIColorInitializer() -> Bool {
         guard let param = parent?.as(LabeledExprSyntax.self),
               let label = param.label?.text else {
@@ -371,12 +372,12 @@ private extension ExprSyntaxProtocol {
             }
             if let memberAccess = call.calledExpression.as(MemberAccessExprSyntax.self),
                let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
-               baseExpr.baseName.text == "UIColor" && memberAccess.declName.baseName.text == "init" {
+               baseExpr.baseName.text == "UIColor",
+               memberAccess.declName.baseName.text == "init" {
                 return true
             }
         }
-        let colorLiteralLabels = ["red", "green", "blue", "alpha"]
-        if colorLiteralLabels.contains(label),
+        if ["red", "green", "blue", "alpha"].contains(label),
            let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(MacroExpansionExprSyntax.self),
            call.macroName.text == "colorLiteral" {
             return true

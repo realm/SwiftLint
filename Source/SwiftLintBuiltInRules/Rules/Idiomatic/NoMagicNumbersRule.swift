@@ -118,24 +118,23 @@ struct NoMagicNumbersRule: Rule {
             """),
             Example("""
             let yourColor: UIColor = UIColor(hue: 0.9, saturation: 0.6, brightness: 0.333334, alpha: 1.0)
-            """),
+            """, excludeFromDocumentation: true),
             Example("""
             let systemColor = UIColor(displayP3Red: 0.3, green: 0.8, blue: 0.5, alpha: 0.75)
-            """),
+            """, excludeFromDocumentation: true),
             Example("""
             func createColor() -> UIColor {
                 return UIColor(white: 0.5, alpha: 0.8)
             }
-            """),
+            """, excludeFromDocumentation: true),
             Example("""
             let memberColor = UIColor.init(red: 0.5, green: 0.3, blue: 0.9, alpha: 1.0)
-            """),
-
+            """, excludeFromDocumentation: true),
             Example("""
             func createMemberColor() -> UIColor {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
-            """),
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),

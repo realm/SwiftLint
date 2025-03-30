@@ -16,6 +16,11 @@
 
 ### Enhancements
 
+* Ignore `UIColor` initializers in `no_magic_numbers` rule.  
+  [suojae](https://github.com/suojae)
+  [hyeffie](https://github.com/hyeffie)
+  [#5183](https://github.com/realm/SwiftLint/issues/5183)
+
 * Exclude types with a `@Suite` attribute and functions annotated with `@Test` from `no_magic_numbers` rule.
   Also treat a type as a `@Suite` if it contains `@Test` functions.  
   [SimplyDanny](https://github.com/SimplyDanny)

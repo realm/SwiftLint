@@ -361,7 +361,8 @@ private extension ExprSyntaxProtocol {
               let label = param.label?.text else {
             return false
         }
-        if ["white", "alpha", "red", "displayP3Red", "green", "blue", "hue", "saturation", "brightness","cgColor", "ciColor", "resource", "patternImage"].contains(label),
+        let uiColorInitializerLabels = ["white", "alpha", "red", "displayP3Red", "green", "blue", "hue", "saturation", "brightness","cgColor", "ciColor", "resource", "patternImage"]
+        if uiColorInitializerLabels.contains(label),
            let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(FunctionCallExprSyntax.self) {
             if let calledExpr = call.calledExpression.as(DeclReferenceExprSyntax.self),
                calledExpr.baseName.text == "UIColor" {
@@ -373,7 +374,8 @@ private extension ExprSyntaxProtocol {
                 return true
             }
         }
-        if ["red", "green", "blue", "alpha"].contains(label),
+        let colorLiteralLabels = ["red", "green", "blue", "alpha"]
+        if colorLiteralLabels.contains(label),
            let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(MacroExpansionExprSyntax.self),
            call.macroName.text == "colorLiteral" {
             return true

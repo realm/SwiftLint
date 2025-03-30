@@ -369,6 +369,7 @@ private extension ExprSyntaxProtocol {
                 return true
             }
             if let memberAccess = call.calledExpression.as(MemberAccessExprSyntax.self),
+               memberAccess.declName.baseName.text == "init",
                let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
                baseExpr.baseName.text == "UIColor" {
                 return true

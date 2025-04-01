@@ -16,6 +16,10 @@
 
 ### Enhancements
 
+* Add new option `ignores_multiline_strings` to `line_length` rule. It allows to ignore too long
+  lines inside of multiline strings.  
+  [thisIsTheFoxe](https://github.com/thisisthefoxe)
+  [#2689](https://github.com/realm/SwiftLint/issues/2689)
 * Ignore `UIColor` initializers in `no_magic_numbers` rule.  
   [suojae](https://github.com/suojae)
   [hyeffie](https://github.com/hyeffie)

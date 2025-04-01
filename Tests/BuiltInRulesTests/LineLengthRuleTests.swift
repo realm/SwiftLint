@@ -30,6 +30,9 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         String(repeating: "A", count: 121) + "\n\n\"\"\"\n; let a = 1")
     private let multilineStringFail = Example("let multilineString = \"A\" + \n\"" +
         String(repeating: "A", count: 121) + "\"\n")
+    private let multilineStringWithFunction = Example("let multilineString = \"\"\"\n" +
+        String(repeating: "A", count: 121) + "\n" +
+        "\"\"\".functionCall()")
 
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
@@ -92,7 +95,10 @@ final class LineLengthRuleTests: SwiftLintTestCase {
 
     func testLineLengthWithIgnoreMultilineStringsTrue() {
         let triggeringLines = [multilineStringFail]
-        let nonTriggeringLines = [multilineString, multilineStringWithExpression, multilineStringWithNewlineExpression]
+        let nonTriggeringLines = [multilineString,
+                                  multilineStringWithExpression,
+                                  multilineStringWithNewlineExpression,
+                                  multilineStringWithFunction]
 
         let baseDescription = LineLengthRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines

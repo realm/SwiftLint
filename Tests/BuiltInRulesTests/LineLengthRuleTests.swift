@@ -95,10 +95,12 @@ final class LineLengthRuleTests: SwiftLintTestCase {
 
     func testLineLengthWithIgnoreMultilineStringsTrue() {
         let triggeringLines = [multilineStringFail]
-        let nonTriggeringLines = [multilineString,
-                                  multilineStringWithExpression,
-                                  multilineStringWithNewlineExpression,
-                                  multilineStringWithFunction]
+        let nonTriggeringLines = [
+            multilineString,
+            multilineStringWithExpression,
+            multilineStringWithNewlineExpression,
+            multilineStringWithFunction
+        ]
 
         let baseDescription = LineLengthRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines

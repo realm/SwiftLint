@@ -99,7 +99,7 @@ final class LineLengthRuleTests: SwiftLintTestCase {
             multilineString,
             multilineStringWithExpression,
             multilineStringWithNewlineExpression,
-            multilineStringWithFunction
+            multilineStringWithFunction,
         ]
 
         let baseDescription = LineLengthRule.description

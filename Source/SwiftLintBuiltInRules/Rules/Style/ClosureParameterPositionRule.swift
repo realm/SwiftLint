@@ -132,7 +132,7 @@ private extension ClosureSignatureSyntax {
     var positionsToCheck: [AbsolutePosition] {
         var positions: [AbsolutePosition] = []
         if let captureItems = capture?.items {
-            positions.append(contentsOf: captureItems.map(\.expression.positionAfterSkippingLeadingTrivia))
+            positions.append(contentsOf: captureItems.map(\.name.positionAfterSkippingLeadingTrivia))
         }
 
         if let input = parameterClause?.as(ClosureShorthandParameterListSyntax.self) {

@@ -66,11 +66,13 @@ private final class ImportPathVisitor: SyntaxVisitor {
     }
 }
 
+private typealias ByteSourceRange = Range<AbsolutePosition>
+
 private final class IfConfigClauseVisitor: SyntaxVisitor {
     var ifConfigRanges = [ByteSourceRange]()
 
     override func visitPost(_ node: IfConfigClauseSyntax) {
-        ifConfigRanges.append(node.totalByteRange)
+        ifConfigRanges.append(node.range)
     }
 }
 
@@ -79,8 +81,8 @@ private struct ImportPathUsage: Hashable {
         let value: ByteSourceRange
 
         func hash(into hasher: inout Hasher) {
-            hasher.combine(value.offset)
-            hasher.combine(value.length)
+            hasher.combine(value.lowerBound.utf8Offset)
+            hasher.combine(value.length.utf8Length)
         }
     }
 
@@ -103,8 +105,8 @@ private extension SwiftLintFile {
             .walk(file: self, handler: \.ifConfigRanges)
 
         func ranges(for position: AbsolutePosition) -> [ByteSourceRange] {
-            let positionRange = ByteSourceRange(offset: position.utf8Offset, length: 0)
-            return ifConfigRanges.filter { $0.intersectsOrTouches(positionRange) }
+            let positionRange = position..<(position + SourceLength(utf8Length: 1))
+            return ifConfigRanges.filter { $0.overlapsOrTouches(positionRange) }
         }
 
         var violationPositions = Set<AbsolutePosition>()

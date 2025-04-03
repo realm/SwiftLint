@@ -51,7 +51,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
 
 private extension LocalDocCommentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private let docCommentRanges: [ByteSourceRange]
+        private let docCommentRanges: [Range<AbsolutePosition>]
 
         init(configuration: ConfigurationType,
              file: SwiftLintFile,
@@ -67,9 +67,9 @@ private extension LocalDocCommentRule {
                 return
             }
 
-            let violatingRange = docCommentRanges.first { $0.intersects(body.totalByteRange) }
+            let violatingRange = docCommentRanges.first { $0.overlaps(body.range) }
             if let violatingRange {
-                violations.append(AbsolutePosition(utf8Offset: violatingRange.offset))
+                violations.append(AbsolutePosition(utf8Offset: violatingRange.lowerBound.utf8Offset))
             }
         }
     }

@@ -426,7 +426,7 @@ $working_dir = 'osscheck'
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
   Repo.new('Brave', 'brave/brave-core', false, 'included: ios/brave-ios'),
-  Repo.new('DuckDuckGo', 'duckduckgo/iOS'),
+  Repo.new('DuckDuckGo', 'duckduckgo/apple-browsers'),
   Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),
   Repo.new('Moya', 'Moya/Moya'),

@@ -21,6 +21,19 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     private let interpolatedString = Example("print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
     private let plainString = Example("print(\"" + String(repeating: "A", count: 121) + ")\"\n")
 
+    private let multilineString = Example("let multilineString = \"\"\"\n" +
+        String(repeating: "A", count: 121) + "\n" +
+        "\"\"\"\n")
+    private let multilineStringWithExpression = Example("let multilineString = \"\"\"\n" +
+        String(repeating: "A", count: 121) + "\n\n\"\"\"; let a = 1")
+    private let multilineStringWithNewlineExpression = Example("let multilineString = \"\"\"\n" +
+        String(repeating: "A", count: 121) + "\n\n\"\"\"\n; let a = 1")
+    private let multilineStringFail = Example("let multilineString = \"A\" + \n\"" +
+        String(repeating: "A", count: 121) + "\"\n")
+    private let multilineStringWithFunction = Example("let multilineString = \"\"\"\n" +
+        String(repeating: "A", count: 121) + "\n" +
+        "\"\"\".functionCall()")
+
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
     }
@@ -79,6 +92,27 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
+
+    func testLineLengthWithIgnoreMultilineStringsTrue() {
+        let triggeringLines = [multilineStringFail]
+        let nonTriggeringLines = [
+            multilineString,
+            multilineStringWithExpression,
+            multilineStringWithNewlineExpression,
+            multilineStringWithFunction,
+        ]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines
+        let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignores_multiline_strings": true],
+                   commentDoesntViolate: false, stringDoesntViolate: false)
+    }
+
     func testLineLengthWithIgnoreInterpolatedStringsFalse() {
         let triggeringLines = [plainString, interpolatedString]
 

@@ -5,34 +5,41 @@ on:
     types: published
 
 jobs:
+  setup-credentials:
+    name: Setup Actor Credentials
+    uses: ./.github/workflows/actor-credentials.yml
+    with:
+      actor: ${{ github.event.release.author.login }}
+    permissions:
+      contents: write
+
   merge-into-main:
     name: Merge into main
+    needs: setup-credentials
     runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
-      - name: Retrieve author in uppercase
-        id: retrieve_author
-        run: |
-          AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
           ref: main
-          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Configure Git author
         uses: Homebrew/actions/git-user-config@master
         with:
-          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Merge release branch
         run: |
           git fetch origin release/${{ github.event.release.tag_name }}
           git merge --ff-only origin/release/${{ github.event.release.tag_name }}
           git push origin main
           git push origin --delete release/${{ github.event.release.tag_name }}
+
   publish-pod:
     name: Publish Pod
-    needs: merge-into-main
+    needs:
+      - merge-into-main
+      - setup-credentials
     runs-on: macOS-14
     permissions:
       contents: read
@@ -40,16 +47,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}
-      - name: Retrieve author in uppercase
-        id: retrieve_author
-        run: |
-          AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - name: Deploy to CocoaPods
         run: make pod_publish
         env:
           DEVELOPER_DIR: /Applications/Xcode_15.0.1.app
-          COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+
   dispatch-plugins:
     name: Dispatch Plugins Repository
     needs: merge-into-main
@@ -76,19 +79,17 @@ jobs:
               "tag": "${{ github.event.release.tag_name }}",
               "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
             }
+
   bump-homebrew:
     name: Bump Homebrew Formula
-    needs: merge-into-main
+    needs:
+      - merge-into-main
+      - setup-credentials
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/homebrew/ubuntu24.04:latest
     permissions: {}
     steps:
-      - name: Retrieve author in uppercase
-        id: retrieve_author
-        run: |
-          AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
@@ -97,9 +98,9 @@ jobs:
       - name: Configure Git author
         uses: Homebrew/actions/git-user-config@master
         with:
-          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Update Homebrew formula
         uses: Homebrew/actions/bump-packages@master
         with:
-          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
           formulae: swiftlint

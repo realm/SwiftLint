@@ -19,13 +19,18 @@ env:
   RELEASE_BRANCH: release/${{ inputs.version }}
 
 jobs:
+  setup-credentials:
+    name: Setup Actor Credentials
+    uses: ./.github/workflows/actor-credentials.yml
+    with:
+      actor: ${{ github.actor }}
+    permissions:
+      contents: write
+
   prepare-release:
     name: Prepare Release
     runs-on: ubuntu-24.04
-    outputs:
-      author_name: ${{ steps.configure_git_author.outputs.name }}
-      author_uppercase: ${{ steps.retrieve_author.outputs.name }}
-      author_email: ${{ steps.configure_git_author.outputs.email }}
+    needs: setup-credentials
     permissions:
       contents: write
     steps:
@@ -45,25 +50,16 @@ jobs:
         run: |
           sed 's/__VERSION__/${{ inputs.version }}/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
           sed -i -e '3s/.*/    version = "${{ inputs.version }}",/' MODULE.bazel
-      - name: Retrieve author in uppercase
-        id: retrieve_author
-        run: |
-          AUTHOR=$(echo ${{ github.actor }} | tr '[:lower:]' '[:upper:]')
-          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - name: Configure Git author
-        id: configure_git_author
         uses: Homebrew/actions/git-user-config@master
         with:
-          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
-      - name: Configure author
-        run: |
-          git config --local user.name "${{ steps.configure_git_author.outputs.name }}"
-          git config --local user.email "${{ steps.configure_git_author.outputs.email }}"
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Commit changes
         id: pre_release
         run: |
           git commit -a -m "Prepare ${{ inputs.version }} release"
           git push origin HEAD
+
   verify-podspec:
     name: Verify Podspec
     runs-on: macOS-14
@@ -85,6 +81,7 @@ jobs:
           make pod_lint
         env:
           DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
+
   build-docker:
     name: Build Linux Binaries
     needs: prepare-release
@@ -96,6 +93,7 @@ jobs:
     with:
       ref: release/${{ inputs.version }}
       tag: ${{ inputs.version }}
+
   build-macos:
     name: Build macOS Binaries
     needs: prepare-release
@@ -118,9 +116,11 @@ jobs:
             bazel.tar.gz.sha256
           retention-days: 2
           if-no-files-found: error
+
   create-release:
     name: Create Release
     needs:
+      - setup-credentials
       - prepare-release
       - build-docker
       - build-macos
@@ -133,9 +133,9 @@ jobs:
         with:
           ref: ${{ env.RELEASE_BRANCH }}
       - name: Configure author
-        run: |
-          git config --local user.name "${{ needs.prepare-release.outputs.author_name }}"
-          git config --local user.email "${{ needs.prepare-release.outputs.author_email }}"
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Create build folders
         run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
       - name: Download binary artifact for macOS
@@ -169,7 +169,7 @@ jobs:
       - name: Create release
         run: ./tools/create-github-release.sh "${{ inputs.version }}"
         env:
-          GITHUB_TOKEN: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.prepare-release.outputs.author_uppercase)] }}
+          GITHUB_TOKEN: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Add new changelog section
         run: |
           ./tools/add-new-changelog-section.sh

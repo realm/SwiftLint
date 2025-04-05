@@ -1,5 +1,23 @@
 # Changelog
 
+## Main
+
+### Breaking
+
+* None.
+
+### Experimental
+
+* None.
+
+### Enhancements
+
+* None.
+
+### Bug Fixes
+
+* None.
+
 ## 0.59.0: Crisp Spring Clean
 
 ### Breaking

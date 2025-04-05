@@ -11,9 +11,19 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Retrieve author in uppercase
+        id: retrieve_author
+        run: |
+          AUTHOR=$(echo ${{ github.event.release.author.login }} | tr '[:lower:]' '[:upper:]')
+          echo "name=${AUTHOR}" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
           ref: main
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
+      - name: Configure Git author
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', steps.retrieve_author.outputs.name)] }}
       - name: Merge release branch
         run: |
           git fetch origin release/${{ github.event.release.tag_name }}

@@ -1,6 +1,6 @@
 --- BUILD
 +++ BUILD
-@@ -21,7 +21,6 @@ config_setting(
+@@ -23,7 +23,6 @@ config_setting(
  )
 
  copts = [

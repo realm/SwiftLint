@@ -49,9 +49,9 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
 
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let configurationDict = configuration as? [String: Any] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         if let minLengthConfiguration = configurationDict[$minLength.key] {

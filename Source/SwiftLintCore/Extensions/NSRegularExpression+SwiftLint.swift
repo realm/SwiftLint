@@ -33,11 +33,11 @@ public struct RegularExpression: Hashable, Comparable, ExpressibleByStringLitera
     /// - Returns: A `RegularExpression` instance.
     public static func from(pattern: String,
                             options: NSRegularExpression.Options? = nil,
-                            for ruleID: String) throws -> Self {
+                            for ruleID: String) throws(Issue) -> Self {
         do {
             return try Self(pattern: pattern, options: options)
         } catch {
-            throw Issue.invalidRegexPattern(ruleID: ruleID, pattern: pattern)
+            throw .invalidRegexPattern(ruleID: ruleID, pattern: pattern)
         }
     }
 }

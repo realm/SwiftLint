@@ -26,9 +26,9 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
-    mutating func apply(configuration: Any) throws {
+    mutating func apply(configuration: Any) throws(Issue) {
         guard let configuration = configuration as? [String: String] else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         // Cache the created regexes if possible.

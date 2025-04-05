@@ -338,7 +338,7 @@
             <p>A value describing a SwiftLint violation that was corrected.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L2-L21">Show on GitHub</a>
+                <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L2-L26">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -350,9 +350,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore10CorrectionV15ruleDescriptionAA04RuleF0Vvp"></a>
-                    <a name="//apple_ref/swift/Property/ruleDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV15ruleDescriptionAA04RuleF0Vvp">ruleDescription</a>
+                    <a name="/s:13SwiftLintCore10CorrectionV8ruleNameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/ruleName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV8ruleNameSSvp">ruleName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -360,14 +360,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The description of the rule for which this correction was applied.</p>
+                        <p>The name of the rule that was corrected.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">ruleDescription</span><span class="p">:</span> <span class="kt"><a href="../Structs/RuleDescription.html">RuleDescription</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">ruleName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -380,9 +380,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore10CorrectionV8locationAA8LocationVvp"></a>
-                    <a name="//apple_ref/swift/Property/location" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV8locationAA8LocationVvp">location</a>
+                    <a name="/s:13SwiftLintCore10CorrectionV8filePathSSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/filePath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV8filePathSSSgvp">filePath</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -390,19 +390,49 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The location of the original violation that was corrected.</p>
+                        <p>The path to the file that was corrected.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">location</span><span class="p">:</span> <span class="kt"><a href="../Structs/Location.html">Location</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">filePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L6">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13SwiftLintCore10CorrectionV19numberOfCorrectionsSivp"></a>
+                    <a name="//apple_ref/swift/Property/numberOfCorrections" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV19numberOfCorrectionsSivp">numberOfCorrections</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The number of corrections that were made.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">numberOfCorrections</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L8">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -432,7 +462,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L9-L11">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L11-L14">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -440,9 +470,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore10CorrectionV15ruleDescription8locationAcA04RuleF0V_AA8LocationVtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(ruleDescription:location:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV15ruleDescription8locationAcA04RuleF0V_AA8LocationVtcfc">init(ruleDescription:<wbr>location:<wbr>)</a>
+                    <a name="/s:13SwiftLintCore10CorrectionV8ruleName8filePath19numberOfCorrectionsACSS_SSSgSitcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(ruleName:filePath:numberOfCorrections:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore10CorrectionV8ruleName8filePath19numberOfCorrectionsACSS_SSSgSitcfc">init(ruleName:<wbr>filePath:<wbr>numberOfCorrections:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -457,7 +487,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">ruleDescription</span><span class="p">:</span> <span class="kt"><a href="../Structs/RuleDescription.html">RuleDescription</a></span><span class="p">,</span> <span class="nv">location</span><span class="p">:</span> <span class="kt"><a href="../Structs/Location.html">Location</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">ruleName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">filePath</span><span class="p">:</span> <span class="kt">String</span><span class="p">?,</span> <span class="nv">numberOfCorrections</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -468,24 +498,36 @@
                             <tr>
                               <td>
                                 <code>
-                                <em>ruleDescription</em>
+                                <em>ruleName</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The description of the rule for which this correction was applied.</p>
+                                  <p>The name of the rule that was corrected.</p>
                                 </div>
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 <code>
-                                <em>location</em>
+                                <em>filePath</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The location of the original violation that was corrected.</p>
+                                  <p>The path to the file that was corrected.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>numberOfCorrections</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The number of corrections that were made.</p>
                                 </div>
                               </td>
                             </tr>
@@ -493,7 +535,7 @@
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L17-L20">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Models/Correction.swift#L21-L25">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

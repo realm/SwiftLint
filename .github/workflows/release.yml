@@ -39,9 +39,12 @@ jobs:
           else
             git checkout -b ${{ env.RELEASE_BRANCH }}
           fi
+      - name: Set up Ruby and Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
         run: |
-          gem install bundler
           make pod_lint
           grep -q 'DEVELOPER_DIR: ${{ env.DEVELOPER_DIR }}' .github/workflows/post-release.yml || echo "Xcode version not in sync with post-release workflow"
         env:

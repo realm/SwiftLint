@@ -17,7 +17,7 @@ jobs:
       - name: Merge release branch
         run: |
           git fetch origin release/${{ github.event.release.tag_name }}
-          git merge --ff-only release/${{ github.event.release.tag_name }}
+          git merge --ff-only origin/release/${{ github.event.release.tag_name }}
           git push origin main
           git push origin --delete release/${{ github.event.release.tag_name }}
   publish-pod:

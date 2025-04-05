@@ -173,7 +173,7 @@ private struct CorrectableRuleMock: CorrectableRule {
         []
     }
 
-    func correct(file _: SwiftLintFile) -> [Correction] {
-        []
+    func correct(file _: SwiftLintFile) -> Int {
+        0
     }
 }

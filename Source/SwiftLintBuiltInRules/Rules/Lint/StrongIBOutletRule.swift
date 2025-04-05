@@ -40,15 +40,14 @@ private extension StrongIBOutletRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard let violationPosition = node.violationPosition,
+            guard node.violationPosition != nil,
                   let weakOrUnownedModifier = node.weakOrUnownedModifier,
                   case let modifiers = node.modifiers else {
                 return super.visit(node)
             }
-
             let newModifiers = modifiers.filter { $0 != weakOrUnownedModifier }
             let newNode = node.with(\.modifiers, newModifiers)
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             return super.visit(newNode)
         }
     }

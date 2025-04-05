@@ -146,9 +146,7 @@ private extension LegacyConstructorRule {
                   let args = constructorsToArguments[identifier] else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let arguments = LabeledExprListSyntax(node.arguments.enumerated().map { index, elem in
                 elem
                     .with(\.label, .identifier(args[index]))

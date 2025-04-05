@@ -88,25 +88,23 @@ private extension RedundantVoidReturnRule {
         override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
             guard configuration.includeClosures,
                   let output = node.returnClause,
-                  let tokenBeforeOutput = output.previousToken(viewMode: .sourceAccurate),
+                  output.previousToken(viewMode: .sourceAccurate) != nil,
                   output.containsRedundantVoidViolation
             else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            numberOfCorrections += 1
             return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
         }
 
         override func visit(_ node: FunctionSignatureSyntax) -> FunctionSignatureSyntax {
             guard let output = node.returnClause,
-                  let tokenBeforeOutput = output.previousToken(viewMode: .sourceAccurate),
+                  output.previousToken(viewMode: .sourceAccurate) != nil,
                   output.containsRedundantVoidViolation
             else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            numberOfCorrections += 1
             return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
         }
     }

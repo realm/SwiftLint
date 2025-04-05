@@ -79,9 +79,8 @@ private extension ClosureSpacingRule {
                 node.rightBrace = node.rightBrace.with(\.trailingTrivia, .spaces(1))
             }
             if violations.hasViolations {
-                correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+                numberOfCorrections += 1
             }
-
             return super.visit(node)
         }
     }

@@ -69,12 +69,12 @@ struct StatementPositionRule: CorrectableRule {
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         switch configuration.statementMode {
         case .default:
-            return defaultCorrect(file: file)
+            defaultCorrect(file: file)
         case .uncuddledElse:
-            return uncuddledCorrect(file: file)
+            uncuddledCorrect(file: file)
         }
     }
 }
@@ -100,22 +100,20 @@ private extension StatementPositionRule {
         }.compactMap { $0.0 }
     }
 
-    func defaultCorrect(file: SwiftLintFile) -> [Correction] {
+    func defaultCorrect(file: SwiftLintFile) -> Int {
         let violations = defaultViolationRanges(in: file, matching: Self.defaultPattern)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
+        if matches.isEmpty {
+            return 0
+        }
         let regularExpression = regex(Self.defaultPattern)
-        let description = Self.description
-        var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reversed() {
             contents = regularExpression.stringByReplacingMatches(in: contents, options: [], range: range,
                                                                   withTemplate: "} $1")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)
-        return corrections
+        return matches.count
     }
 }
 
@@ -179,19 +177,17 @@ private extension StatementPositionRule {
         return matches.compactMap(validator).filter(filterMatches).map(\.range)
     }
 
-    func uncuddledCorrect(file: SwiftLintFile) -> [Correction] {
+    func uncuddledCorrect(file: SwiftLintFile) -> Int {
         var contents = file.contents
         let syntaxMap = file.syntaxMap
         let matches = Self.uncuddledRegex.matches(in: file)
         let validator = Self.uncuddledMatchValidator(contents: file.stringView)
         let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
-
         let validMatches = matches.compactMap(validator).filter(filterRanges)
                   .filter { file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty }
-        if validMatches.isEmpty { return [] }
-        let description = Self.uncuddledDescription
-        var corrections = [Correction]()
-
+        if validMatches.isEmpty {
+            return 0
+        }
         for match in validMatches.reversed() {
             let range1 = match.range(at: 1)
             let range2 = match.range(at: 3)
@@ -207,11 +203,8 @@ private extension StatementPositionRule {
                 whitespace.insert("\n", at: whitespace.startIndex)
             }
             contents = contents.bridge().replacingCharacters(in: range2, with: whitespace)
-            let location = Location(file: file, characterOffset: match.range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
-
         file.write(contents)
-        return corrections
+        return validMatches.count
     }
 }

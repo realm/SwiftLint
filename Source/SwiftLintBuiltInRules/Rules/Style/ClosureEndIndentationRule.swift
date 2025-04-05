@@ -35,7 +35,7 @@ struct ClosureEndIndentationRule: Rule, OptInRule {
 }
 
 extension ClosureEndIndentationRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let allViolations = violations(in: file).reversed().filter { violation in
             guard let nsRange = file.stringView.byteRangeToNSRange(violation.range) else {
                 return false
@@ -45,7 +45,7 @@ extension ClosureEndIndentationRule: CorrectableRule {
         }
 
         guard allViolations.isNotEmpty else {
-            return []
+            return 0
         }
 
         var correctedContents = file.contents
@@ -61,16 +61,13 @@ extension ClosureEndIndentationRule: CorrectableRule {
             }
         }
 
-        var corrections = correctedLocations.map {
-            Correction(ruleDescription: Self.description, location: Location(file: file, characterOffset: $0))
-        }
-
+        var numberOfCorrections = correctedLocations.count
         file.write(correctedContents)
 
         // Re-correct to catch cascading indentation from the first round.
-        corrections += correct(file: file)
+        numberOfCorrections += correct(file: file)
 
-        return corrections
+        return numberOfCorrections
     }
 
     private func correct(contents: inout String, expected: NSRange, actual: NSRange) -> Bool {

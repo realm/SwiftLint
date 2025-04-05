@@ -125,18 +125,12 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
         return lhs.importModule().lowercased() <= rhs.importModule().lowercased()
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let groups = importGroups(in: file, filterEnabled: true)
-
-        let corrections = violatingOffsets(inGroups: groups).map { characterOffset -> Correction in
-            let location = Location(file: file, characterOffset: characterOffset)
-            return Correction(ruleDescription: Self.description, location: location)
+        let offsets = violatingOffsets(inGroups: groups)
+        guard offsets.isNotEmpty else {
+            return 0
         }
-
-        guard corrections.isNotEmpty else {
-            return []
-        }
-
         let correctedContents = NSMutableString(string: file.contents)
         for group in groups.map({ $0.sorted(by: should(_:comeBefore:)) }) {
             guard let first = group.first?.contentRange else {
@@ -149,7 +143,6 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
             correctedContents.replaceCharacters(in: union, with: result)
         }
         file.write(correctedContents.bridge())
-
-        return corrections
+        return offsets.count
     }
 }

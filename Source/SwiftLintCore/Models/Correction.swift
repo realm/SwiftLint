@@ -1,21 +1,26 @@
 /// A value describing a SwiftLint violation that was corrected.
 public struct Correction: Equatable, Sendable {
-    /// The description of the rule for which this correction was applied.
-    public let ruleDescription: RuleDescription
-    /// The location of the original violation that was corrected.
-    public let location: Location
+    /// The name of the rule that was corrected.
+    public let ruleName: String
+    /// The path to the file that was corrected.
+    public let filePath: String?
+    /// The number of corrections that were made.
+    public let numberOfCorrections: Int
 
     /// The console-printable description for this correction.
     public var consoleDescription: String {
-        "\(location.file ?? "<nopath>"): Corrected \(ruleDescription.name)"
+        let times = numberOfCorrections == 1 ? "time" : "times"
+        return "\(filePath ?? "<nopath>"): Corrected \(ruleName) \(numberOfCorrections) \(times)"
     }
 
     /// Memberwise initializer.
     ///
-    /// - parameter ruleDescription: The description of the rule for which this correction was applied.
-    /// - parameter location:        The location of the original violation that was corrected.
-    public init(ruleDescription: RuleDescription, location: Location) {
-        self.ruleDescription = ruleDescription
-        self.location = location
+    /// - parameter ruleName: The name of the rule that was corrected.
+    /// - parameter filePath: The path to the file that was corrected.
+    /// - parameter numberOfCorrections: The number of corrections that were made.
+    public init(ruleName: String, filePath: String?, numberOfCorrections: Int) {
+        self.ruleName = ruleName
+        self.filePath = filePath
+        self.numberOfCorrections = numberOfCorrections
     }
 }

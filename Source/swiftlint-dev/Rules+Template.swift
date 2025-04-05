@@ -183,7 +183,7 @@ private extension SwiftLintDev.Rules.Template {
                             let bindings = node.bindings.map { binding in
                                 if let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
                                 pattern.identifier.text == "foo" {
-                                    correctionPositions.append(pattern.positionAfterSkippingLeadingTrivia)
+                                    numberOfCorrections += 1
                                     return binding.with(
                                         \\.pattern,
                                         PatternSyntax(pattern.with(\\.identifier, .identifier("bar")))

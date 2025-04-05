@@ -49,7 +49,7 @@ private extension UnneededOverrideRule {
         }
 
         private func visitUnneededOverride(_ node: some DeclSyntaxProtocol) -> DeclSyntax {
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let expr: DeclSyntax = ""
             return expr
                 .with(\.leadingTrivia, node.leadingTrivia)

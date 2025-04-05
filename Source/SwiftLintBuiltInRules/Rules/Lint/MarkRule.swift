@@ -29,9 +29,7 @@ private extension MarkRule {
         override func visit(_ token: TokenSyntax) -> TokenSyntax {
             var pieces = token.leadingTrivia.pieces
             for result in token.violationResults() {
-                // caution: `correctionPositions` records the positions before the mutations.
-                // https://github.com/realm/SwiftLint/pull/4297
-                correctionPositions.append(result.position)
+                numberOfCorrections += 1
                 result.correct(&pieces)
             }
             return super.visit(token.with(\.leadingTrivia, Trivia(pieces: pieces)))

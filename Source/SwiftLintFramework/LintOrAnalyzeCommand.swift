@@ -330,6 +330,13 @@ package struct LintOrAnalyzeCommand {
                     if options.useSTDIN {
                         queuedPrint(linter.file.contents)
                     } else {
+                        let corrections = corrections.map {
+                            Correction(
+                                ruleName: $0.0,
+                                filePath: linter.file.path,
+                                numberOfCorrections: $0.1
+                            )
+                        }
                         if options.progress {
                             await correctionsBuilder.append(corrections)
                         } else {

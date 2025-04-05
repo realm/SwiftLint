@@ -88,9 +88,7 @@ private extension NimbleOperatorRule {
                   let expectedValueExpr = expectation.expectedValueExpr(for: predicate) else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let elements = ExprListSyntax([
                 expectation.baseExpr.with(\.trailingTrivia, .space),
                 operatorExpr.with(\.trailingTrivia, .space),

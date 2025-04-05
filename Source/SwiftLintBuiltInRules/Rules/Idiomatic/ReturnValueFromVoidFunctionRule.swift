@@ -33,7 +33,7 @@ private extension ReturnValueFromVoidFunctionRule {
                   Syntax(statements).enclosingFunction()?.returnsVoid == true else {
                 return super.visit(statements)
             }
-            correctionPositions.append(returnStmt.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             let newStmtList = Array(statements.dropLast()) + [
                 CodeBlockItemSyntax(item: .expr(expr))
                     .with(\.leadingTrivia, returnStmt.leadingTrivia),

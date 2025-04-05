@@ -49,10 +49,10 @@ private extension JoinedDefaultParameterRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard let violationPosition = node.violationPosition else {
+            guard node.violationPosition != nil else {
                 return super.visit(node)
             }
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             let newNode = node.with(\.arguments, [])
             return super.visit(newNode)
         }

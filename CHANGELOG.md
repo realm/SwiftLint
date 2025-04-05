@@ -1,6 +1,6 @@
 # Changelog
 
-## Main
+## 0.59.0: Crisp Spring Clean
 
 ### Breaking
 

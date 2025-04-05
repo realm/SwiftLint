@@ -12,6 +12,7 @@ jobs:
       actor: ${{ github.event.release.author.login }}
     permissions:
       contents: write
+    secrets: inherit
 
   merge-into-main:
     name: Merge into main

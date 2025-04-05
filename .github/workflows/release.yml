@@ -26,6 +26,7 @@ jobs:
       actor: ${{ github.actor }}
     permissions:
       contents: write
+    secrets: inherit
 
   prepare-release:
     name: Prepare Release

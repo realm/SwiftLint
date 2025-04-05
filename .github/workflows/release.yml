@@ -39,16 +39,6 @@ jobs:
           else
             git checkout -b ${{ env.RELEASE_BRANCH }}
           fi
-      - name: Set up Ruby and Bundler
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
-        run: |
-          make pod_lint
-          grep -q 'DEVELOPER_DIR: ${{ env.DEVELOPER_DIR }}' .github/workflows/post-release.yml || echo "Xcode version not in sync with post-release workflow"
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
       - name: Update changelog
         run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
       - name: Update built-in versions
@@ -74,6 +64,27 @@ jobs:
         run: |
           git commit -a -m "Prepare ${{ inputs.version }} release"
           git push origin HEAD
+  verify-podspec:
+    name: Verify Podspec
+    runs-on: macOS-14
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Ruby and Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
+        run: |
+          if ! grep -q 'DEVELOPER_DIR: ${{ env.DEVELOPER_DIR }}' .github/workflows/post-release.yml; then
+            echo "ERROR: Xcode version not in sync with post-release workflow"
+            exit 1
+          fi
+          make pod_lint
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
   build-docker:
     name: Build Linux Binaries
     needs: prepare-release

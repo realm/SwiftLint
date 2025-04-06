@@ -6,17 +6,17 @@ variables:
 
 jobs:
 - job: spm_linux
-  displayName: 'SPM, Linux : Swift 6'
+  displayName: 'SPM, Linux : Swift 6.1'
   pool:
     vmImage: 'ubuntu-24.04' # "Noble Numbat"
-  container: swift:6.0-noble
+  container: swift:6.1-noble
   steps:
     - template: .azure/templates/run-make.yml
       parameters:
         rule: spm_test
 
 - job: bazel_linux
-  displayName: 'Bazel, Linux : Swift 6'
+  displayName: 'Bazel, Linux : Swift 6.0'
   pool:
     vmImage: 'ubuntu-24.04'
   steps:
@@ -36,7 +36,7 @@ jobs:
       '14 : Xcode 15.4':
         image: 'macOS-14'
         xcode: '15.4'
-      # '14 : Xcode 16.2': Runs on Buildkite.
+      # '14 : Xcode 16.3': Runs on Buildkite.
       '15 : Xcode 15.4':
         image: 'macOS-15'
         xcode: '15.4'
@@ -62,8 +62,10 @@ jobs:
         image: swift:5.9-focal
       ': Swift 5.10':
         image: swift:5.10-noble
-      ': Swift 6':
+      ': Swift 6.0':
         image: swift:6.0-noble
+      ': Swift 6.1':
+        image: swift:6.1-noble
   container: $[ variables['image'] ]
   steps:
     - template: .azure/templates/run-make.yml

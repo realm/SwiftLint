@@ -13,7 +13,7 @@ jobs:
   lint-swift:
     name: Lint Swift
     runs-on: ubuntu-24.04 # "Noble Numbat"
-    container: swift:6.0-noble
+    container: swift:6.1-noble
     steps:
       - uses: actions/checkout@v4
       - name: Lint

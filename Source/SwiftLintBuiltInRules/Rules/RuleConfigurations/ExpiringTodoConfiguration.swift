@@ -11,11 +11,11 @@ struct ExpiringTodoConfiguration: RuleConfiguration {
         fileprivate(set) var opening: String
         fileprivate(set) var closing: String
 
-        init(fromAny value: Any, context ruleID: String) throws {
+        init(fromAny value: Any, context ruleID: String) throws(Issue) {
             guard let dateDelimiters = value as? [String: String],
                   let openingDelimiter = dateDelimiters["opening"],
                   let closingDelimiter = dateDelimiters["closing"] else {
-                throw Issue.invalidConfiguration(ruleID: ruleID)
+                throw .invalidConfiguration(ruleID: ruleID)
             }
             self.init(opening: openingDelimiter, closing: closingDelimiter)
         }

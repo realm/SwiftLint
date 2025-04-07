@@ -57,10 +57,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         self.identifier = identifier
     }
 
-    public mutating func apply(configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws(Issue) {
         guard let configurationDict = configuration as? [String: Any],
               let regexString = configurationDict[$regex.key] as? String else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
 
         regex = try .from(pattern: regexString, for: Parent.identifier)
@@ -68,7 +68,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         if let includedString = configurationDict["included"] as? String {
             included = [try .from(pattern: includedString, for: Parent.identifier)]
         } else if let includedArray = configurationDict["included"] as? [String] {
-            included = try includedArray.map { pattern in
+            included = try includedArray.map { pattern throws(Issue) in
                 try .from(pattern: pattern, for: Parent.identifier)
             }
         }
@@ -76,7 +76,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         if let excludedString = configurationDict["excluded"] as? String {
             excluded = [try .from(pattern: excludedString, for: Parent.identifier)]
         } else if let excludedArray = configurationDict["excluded"] as? [String] {
-            excluded = try excludedArray.map { pattern in
+            excluded = try excludedArray.map { pattern throws(Issue) in
                 try .from(pattern: pattern, for: Parent.identifier)
             }
         }
@@ -92,7 +92,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {
             guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
-                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                throw .invalidConfiguration(ruleID: Parent.identifier)
             }
             self.captureGroup = captureGroup
         }
@@ -119,7 +119,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         }
     }
 
-    private func excludedMatchKinds(from configurationDict: [String: Any]) throws -> Set<SyntaxKind> {
+    private func excludedMatchKinds(from configurationDict: [String: Any]) throws(Issue) -> Set<SyntaxKind> {
         let matchKinds = [String].array(of: configurationDict["match_kinds"])
         let excludedMatchKinds = [String].array(of: configurationDict["excluded_match_kinds"])
 
@@ -131,18 +131,18 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         case (nil, nil):
             return .init()
         case (.some, .some):
-            throw Issue.genericWarning(
+            throw .genericWarning(
                 "The configuration keys 'match_kinds' and 'excluded_match_kinds' cannot appear at the same time."
             )
         }
     }
 
-    private func toSyntaxKinds(_ names: [String]) throws -> Set<SyntaxKind> {
-        let kinds = try names.map {
-            if let kind = SyntaxKind(shortName: $0) {
+    private func toSyntaxKinds(_ names: [String]) throws(Issue) -> Set<SyntaxKind> {
+        let kinds = try names.map { name throws(Issue) in
+            if let kind = SyntaxKind(shortName: name) {
                 return kind
             }
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
         return Set(kinds)
     }

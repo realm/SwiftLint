@@ -1,4 +1,3 @@
-
 @AutoConfigParser
 struct NoMagicNumbersConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = NoMagicNumbersRule

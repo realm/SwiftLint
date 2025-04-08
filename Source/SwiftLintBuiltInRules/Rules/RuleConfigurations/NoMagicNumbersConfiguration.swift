@@ -14,5 +14,5 @@ struct NoMagicNumbersConfiguration: SeverityBasedRuleConfiguration {
         key: "allowed_numbers",
         postprocessor: { $0.formUnion([0, 1, 100]) }
     )
-    private(set) var allowedNumbers = Set<Int>()
+    private(set) var allowedNumbers = Set<Double>()
 }

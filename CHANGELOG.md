@@ -4,7 +4,11 @@
 
 ### Breaking
 
-* None.
+* Remove `opaque_over_existential` opt-in rule as it causes too many false positives
+  that can even lead to wrong-compilable code when `any` is required by a protocol the
+  type conforms to. In this case, using `some` can be totally valid even though the
+  protocol requirement is not reimplemented for the type causing behavioral changes.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 

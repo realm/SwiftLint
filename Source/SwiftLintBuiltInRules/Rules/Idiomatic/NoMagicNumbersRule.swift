@@ -208,7 +208,7 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
-            guard node.literal.isMagicNumber else {
+            guard node.literal.isMagicNumber(configuration.allowedNumbers) else {
                 return
             }
             collectViolation(forNode: node)
@@ -226,7 +226,7 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            guard node.literal.isMagicNumber else {
+            guard node.literal.isMagicNumber(configuration.allowedNumbers) else {
                 return
             }
             collectViolation(forNode: node)
@@ -290,7 +290,7 @@ private extension DeclGroupSyntax {
 }
 
 private extension TokenSyntax {
-    var isMagicNumber: Bool {
+    func isMagicNumber(_ allowedNumbers: Set<Int>) -> Bool {
         guard let number = Double(text.replacingOccurrences(of: "_", with: "")) else {
             return false
         }

@@ -135,6 +135,7 @@ struct NoMagicNumbersRule: Rule {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
             """, excludeFromDocumentation: true),
+            Example("let a = b + 2", configuration: ["allowed_numbers": [2.0]]).focused(),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -290,11 +291,11 @@ private extension DeclGroupSyntax {
 }
 
 private extension TokenSyntax {
-    func isMagicNumber(_ allowedNumbers: Set<Int>) -> Bool {
+    func isMagicNumber(_ allowedNumbers: Set<Double>) -> Bool {
         guard let number = Double(text.replacingOccurrences(of: "_", with: "")) else {
             return false
         }
-        if [0, 1, 100].contains(number) {
+        if allowedNumbers.contains(number) {
             return false
         }
         guard let grandparent = parent?.parent else {

@@ -787,11 +787,6 @@ one_declaration_per_file:
   meta:
     opt-in: true
     correctable: false
-opaque_over_existential:
-  severity: warning
-  meta:
-    opt-in: true
-    correctable: true
 opening_brace:
   severity: warning
   ignore_multiline_type_headers: false

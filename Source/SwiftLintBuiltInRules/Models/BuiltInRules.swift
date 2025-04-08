@@ -138,7 +138,6 @@ public let builtInRules: [any Rule.Type] = [
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,
     OneDeclarationPerFileRule.self,
-    OpaqueOverExistentialParameterRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,

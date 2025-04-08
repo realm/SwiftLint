@@ -135,7 +135,9 @@ struct NoMagicNumbersRule: Rule {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
             """, excludeFromDocumentation: true),
-            Example("let a = b + 2", configuration: ["allowed_numbers": [2]]).focused(),
+            Example("let a = b + 2", configuration: ["allowed_numbers": [2]], excludeFromDocumentation: true),
+            Example("let a = b + 2", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            Example("let a = b + 1", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -176,6 +178,7 @@ struct NoMagicNumbersRule: Rule {
             f(↓4.0)
             #endif
             """),
+            Example("let a = b + ↓3", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
         ]
     )
 }

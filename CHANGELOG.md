@@ -16,7 +16,9 @@
 
 ### Enhancements
 
-* None.
+* Add new `allowed_numbers` option to the `no_magic_numbers` rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#6051](https://github.com/realm/SwiftLint/issues/6051)
 
 ### Bug Fixes
 

@@ -26,6 +26,10 @@ public protocol Rule {
     init(configuration: Any) throws
 
     /// Create a description of how this rule has been configured to run.
+    ///
+    /// - parameter exclusiveOptions: A set of options that should be excluded from the description.
+    /// 
+    /// - returns: A description of the rule's configuration.
     func createConfigurationDescription(exclusiveOptions: Set<String>) -> RuleConfigurationDescription
 
     /// Executes the rule on a file and returns any violations to the rule's expectations.

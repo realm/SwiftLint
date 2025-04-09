@@ -135,6 +135,7 @@ swift_test(
     name = "FrameworkTests",
     data = glob(
         ["FrameworkTests/Resources/**"],
+        allow_empty = True,
     ),
     visibility = ["//visibility:public"],
     deps = [":FrameworkTests.library"],

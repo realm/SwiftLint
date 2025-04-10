@@ -555,4 +555,46 @@ final class NestingRuleTests: SwiftLintTestCase {
 
         verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
     }
+
+    func testNestingWithoutCodingKeys() {
+        var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
+        nonTriggeringExamples.append(contentsOf: [
+            .init("""
+                struct Outer {
+                    struct Inner {
+                        enum CodingKeys: String, CodingKey {
+                            case id
+                        }
+                    }
+                }
+                """
+             ),
+        ])
+
+        var triggeringExamples = NestingRule.description.triggeringExamples
+        triggeringExamples.append(contentsOf: [
+            .init("""
+                struct Outer {
+                    struct Inner {
+                        ↓enum Example: String, CodingKey {
+                            case id
+                        }
+                    }
+                }
+            """),
+            .init("""
+                struct Outer {
+                  enum CodingKeys: String, CodingKey {
+                    case id
+                    
+                    ↓struct S {}
+                  }
+                }
+            """)
+        ])
+
+        let description = NestingRule.description.with(nonTriggeringExamples: nonTriggeringExamples, triggeringExamples: triggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignore_coding_keys": true ])
+    }
 }

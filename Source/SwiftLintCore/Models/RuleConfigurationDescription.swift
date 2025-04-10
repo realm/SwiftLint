@@ -623,10 +623,13 @@ extension Double: AcceptableByConfigurationElement {
     }
 
     public init(fromAny value: Any, context ruleID: String) throws {
-        guard let value = value as? Self else {
+        if let value = value as? Self {
+            self = value
+        } else if let value = value as? Int {
+            self = Double(value)
+        } else {
             throw Issue.invalidConfiguration(ruleID: ruleID)
         }
-        self = value
     }
 }
 

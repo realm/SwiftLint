@@ -60,7 +60,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             severity: warning; \
             list: ["STRING1", "STRING2"]; \
             set: [1, 2, 3]; \
-            set_of_doubles: [1.0, 2.0, 3.0]; \
+            set_of_doubles: [1.0, 2.0, 3.0, 4.7]; \
             severity: error; \
             SEVERITY: warning; \
             warning: 1; \
@@ -142,7 +142,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             set_of_doubles
             </td>
             <td>
-            [1.0, 2.0, 3.0]
+            [1.0, 2.0, 3.0, 4.7]
             </td>
             </tr>
             <tr>
@@ -212,7 +212,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             severity: warning
             list: ["STRING1", "STRING2"]
             set: [1, 2, 3]
-            set_of_doubles: [1.0, 2.0, 3.0]
+            set_of_doubles: [1.0, 2.0, 3.0, 4.7]
             severity: error
             SEVERITY: warning
             warning: 1

@@ -16,7 +16,8 @@
 
 ### Enhancements
 
-* None.
+* Add new `allowed_numbers` option to the `no_magic_numbers` rule.  
+  [Martin Redington](https://github.com/mildm8nnered)
 
 ### Bug Fixes
 

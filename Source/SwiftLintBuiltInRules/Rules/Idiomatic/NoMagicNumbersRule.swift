@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true, optIn: true)
@@ -135,6 +137,10 @@ struct NoMagicNumbersRule: Rule {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
             """, excludeFromDocumentation: true),
+            Example("let a = b + 2", configuration: ["allowed_numbers": [2]], excludeFromDocumentation: true),
+            Example("let a = b + 2", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            Example("let a = b + 1", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            Example("let a = b + 2.5", configuration: ["allowed_numbers": [2.5]], excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),
@@ -175,6 +181,7 @@ struct NoMagicNumbersRule: Rule {
             f(↓4.0)
             #endif
             """),
+            Example("let a = b + ↓3", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
         ]
     )
 }
@@ -208,7 +215,7 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: FloatLiteralExprSyntax) {
-            guard node.literal.isMagicNumber else {
+            guard node.literal.isMagicNumber(configuration.allowedNumbers) else {
                 return
             }
             collectViolation(forNode: node)
@@ -226,7 +233,7 @@ private extension NoMagicNumbersRule {
         }
 
         override func visitPost(_ node: IntegerLiteralExprSyntax) {
-            guard node.literal.isMagicNumber else {
+            guard node.literal.isMagicNumber(configuration.allowedNumbers) else {
                 return
             }
             collectViolation(forNode: node)
@@ -290,11 +297,11 @@ private extension DeclGroupSyntax {
 }
 
 private extension TokenSyntax {
-    var isMagicNumber: Bool {
+    func isMagicNumber(_ allowedNumbers: Set<Double>) -> Bool {
         guard let number = Double(text.replacingOccurrences(of: "_", with: "")) else {
             return false
         }
-        if [0, 1, 100].contains(number) {
+        if allowedNumbers.contains(number) {
             return false
         }
         guard let grandparent = parent?.parent else {

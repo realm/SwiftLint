@@ -31,6 +31,8 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
         var list = ["string1", "string2"]
         @ConfigurationElement(key: "set", deprecationNotice: .suggestAlternative(ruleID: "my_rule", name: "other_opt"))
         var set: Set<Int> = [1, 2, 3]
+        @ConfigurationElement(key: "set_of_doubles")
+        var setOfDoubles: Set<Double> = [1, 2, 3, 4.7]
         @ConfigurationElement(inline: true)
         var severityConfig = SeverityConfiguration<Parent>(.error)
         @ConfigurationElement(key: "SEVERITY")
@@ -58,6 +60,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             severity: warning; \
             list: ["STRING1", "STRING2"]; \
             set: [1, 2, 3]; \
+            set_of_doubles: [1.0, 2.0, 3.0, 4.7]; \
             severity: error; \
             SEVERITY: warning; \
             warning: 1; \
@@ -136,6 +139,14 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             </tr>
             <tr>
             <td>
+            set_of_doubles
+            </td>
+            <td>
+            [1.0, 2.0, 3.0, 4.7]
+            </td>
+            </tr>
+            <tr>
+            <td>
             severity
             </td>
             <td>
@@ -201,6 +212,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             severity: warning
             list: ["STRING1", "STRING2"]
             set: [1, 2, 3]
+            set_of_doubles: [1.0, 2.0, 3.0, 4.7]
             severity: error
             SEVERITY: warning
             warning: 1

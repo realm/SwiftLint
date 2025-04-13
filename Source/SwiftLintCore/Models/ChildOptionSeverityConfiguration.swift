@@ -22,10 +22,10 @@ public struct ChildOptionSeverityConfiguration<Parent: Rule>: RuleConfiguration,
         ViolationSeverity(rawValue: optionSeverity.rawValue)
     }
 
-    public mutating func apply(configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws(Issue) {
         guard let configString = configuration as? String,
             let optionSeverity = ChildOptionSeverity(rawValue: configString.lowercased()) else {
-            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            throw .invalidConfiguration(ruleID: Parent.identifier)
         }
         self.optionSeverity = optionSeverity
     }

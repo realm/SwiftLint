@@ -140,6 +140,7 @@ struct NoMagicNumbersRule: Rule {
             Example("let a = b + 2", configuration: ["allowed_numbers": [2]], excludeFromDocumentation: true),
             Example("let a = b + 2", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
             Example("let a = b + 1", configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            Example("let a = b + 2.5", configuration: ["allowed_numbers": [2.5]], excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("foo(↓321)"),

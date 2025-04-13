@@ -32,7 +32,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
         @ConfigurationElement(key: "set", deprecationNotice: .suggestAlternative(ruleID: "my_rule", name: "other_opt"))
         var set: Set<Int> = [1, 2, 3]
         @ConfigurationElement(key: "set_of_doubles")
-        var setOfDoubles: Set<Double> = [1, 2, 3]
+        var setOfDoubles: Set<Double> = [1, 2, 3, 4.7]
         @ConfigurationElement(inline: true)
         var severityConfig = SeverityConfiguration<Parent>(.error)
         @ConfigurationElement(key: "SEVERITY")

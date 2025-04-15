@@ -12,8 +12,10 @@
 
 ### Enhancements
 
-* None.
-
+* Add `ignore_coding_keys` parameter to `nesting` rule.  
+  [braker1nine](https://github.com/braker1nine)
+  [#5641](https://github.com/realm/SwiftLint/issues/5641)
+  
 ### Bug Fixes
 
 * None.

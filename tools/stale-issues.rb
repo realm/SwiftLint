@@ -48,22 +48,22 @@ issues = JSON.parse(`gh issue list --json number,comments,labels,updatedAt --sea
 for issue in issues do
     number = issue['number']
     comments = issue['comments']
-    last_comment_by_user = comments.filter { |comment| !created_by_maintainer?(comment) }.last
+    last_comment_by_user = comments.select { |comment| !created_by_maintainer?(comment) }.last
     last_comment_by_user_date = last_comment_by_user['createdAt'] if last_comment_by_user
-    if !issue['labels'].filter { |label| label['name'] == 'stale' }.empty?
+    if !issue['labels'].select { |label| label['name'] == 'stale' }.empty?
         if last_comment_by_user_date && last_comment_by_user_date > one_month_ago
             puts "Removing 'stale' label from issue ##{number} ..."
-            run(number) { || ["gh issue edit #{number} --remove-label stale"] }
-        elseif issue['updatedAt'] < one_month_ago
+            run(number) { ["gh issue edit #{number} --remove-label stale"] }
+        elsif issue['updatedAt'] < one_month_ago
             puts "Closing issue ##{number} ..."
-            run(number) { || ["gh issue close #{number} --comment '#{closing_comment}'"] }
+            run(number) { ["gh issue close #{number} --comment '#{closing_comment}'"] }
         end
     elsif created_by_maintainer?(comments.last) && comments.last['createdAt'] < four_months_ago
-        if !issue['labels'].filter { |label| !%w(help repro-needed resolved).include?(label['name']) }.empty?
+        if !issue['labels'].select { |label| !%w(help repro-needed resolved).include?(label['name']) }.empty?
             next
         end
         puts "Adding 'stale' label to issue ##{number} ..."
-        run(number) { || [
+        run(number) { [
             "gh issue edit #{number} --add-label stale",
             "gh issue comment #{number} --body '#{stale_comment}'"
         ] }

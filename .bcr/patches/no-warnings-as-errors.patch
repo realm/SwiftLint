@@ -1,5 +1,7 @@
---- BUILD
-+++ BUILD
+diff --git a/BUILD b/BUILD
+index e862723d1..40aba4d51 100644
+--- a/BUILD
++++ b/BUILD
 @@ -23,7 +23,6 @@ config_setting(
  )
 

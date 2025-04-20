@@ -11,11 +11,12 @@ internal extension Configuration {
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
+        private var customRulesIdentifiers: Set<String> {
+            Set((allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? [])
+        }
         private var validRuleIdentifiers: Set<String> {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
-            let configurationCustomRulesIdentifiers =
-                (allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? []
-            return Set(regularRuleIdentifiers + configurationCustomRulesIdentifiers)
+            return Set(regularRuleIdentifiers + customRulesIdentifiers)
         }
 
         private var cachedResultingRules: [any Rule]?
@@ -45,6 +46,11 @@ internal extension Configuration {
                 resultingRules = allRulesWrapped.filter { tuple in
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).identifier)
                 }.map(\.rule)
+                if !resultingRules.contains(where: { $0 is CustomRules }) {
+                    if customRulesIdentifiers.intersection(onlyRulesRuleIdentifiers).isNotEmpty {
+                        resultingRules.append((allRulesWrapped.first { $0.rule is CustomRules }?.rule)!)
+                    }
+                }
 
             case var .defaultConfiguration(disabledRuleIdentifiers, optInRuleIdentifiers):
                 customRulesFilter = { !disabledRuleIdentifiers.contains($0.identifier) }

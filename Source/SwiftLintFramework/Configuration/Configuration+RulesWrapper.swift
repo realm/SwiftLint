@@ -11,13 +11,16 @@ internal extension Configuration {
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
-        private var customRulesIdentifiers: Set<String> {
-            Set((allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules)?.customRuleIdentifiers ?? [])
-        }
-        private var validRuleIdentifiers: Set<String> {
+        private lazy var customRules: CustomRules? = {
+            allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules
+        }()
+        private lazy var customRulesIdentifiers: Set<String> = {
+            Set(customRules?.customRuleIdentifiers ?? [])
+        }()
+        private lazy var validRuleIdentifiers: Set<String> = {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
             return Set(regularRuleIdentifiers + customRulesIdentifiers)
-        }
+        }()
 
         private var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()
@@ -47,8 +50,8 @@ internal extension Configuration {
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).identifier)
                 }.map(\.rule)
                 if !resultingRules.contains(where: { $0 is CustomRules }) {
-                    if customRulesIdentifiers.intersection(onlyRulesRuleIdentifiers).isNotEmpty {
-                        resultingRules.append((allRulesWrapped.first { $0.rule is CustomRules }?.rule)!)
+                    if customRulesIdentifiers.intersection(onlyRulesRuleIdentifiers).isNotEmpty, let customRules {
+                        resultingRules.append(customRules)
                     }
                 }
 

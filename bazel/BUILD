@@ -26,7 +26,7 @@ xcodeproj(
                 "//Tests:FrameworkTests",
                 "//Tests:GeneratedTests",
                 "//Tests:IntegrationTests",
-                "//Tests:MacrosTests",
+                "//Tests:MacroTests",
             ]),
         ),
     ],
@@ -38,7 +38,7 @@ xcodeproj(
         "//Tests:FrameworkTests",
         "//Tests:GeneratedTests",
         "//Tests:IntegrationTests",
-        "//Tests:MacrosTests",
+        "//Tests:MacroTests",
     ],
 )
 

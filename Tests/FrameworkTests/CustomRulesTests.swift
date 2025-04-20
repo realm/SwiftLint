@@ -875,6 +875,33 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertFalse(regexConfig.shouldValidate(filePath: "/path/to/Tests/file.swift"))
     }
 
+    // MARK: - only_rules support
+
+    func testOnlyRulesWithCustomRules() throws {
+        let ruleIdentifierToEnable = "aaa"
+        let customRules: [String: Any] = [
+            ruleIdentifierToEnable: [
+                "regex": "aaa"
+            ],
+            "bbb": [
+                "regex": "bbb"
+            ],
+        ]
+        let example = Example("""
+                              let a = "aaa"
+                              let b = "bbb"
+                              """)
+
+        let configDict: [String: Any] = [
+            "only_rules": [ruleIdentifierToEnable],
+            "custom_rules": customRules,
+        ]
+        let configuration = try SwiftLintFramework.Configuration(dict: configDict)
+        let violations = TestHelpers.violations(example.skipWrappingInCommentTest(), config: configuration)
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations[0].ruleIdentifier, ruleIdentifierToEnable)
+    }
+
     // MARK: - Private
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {

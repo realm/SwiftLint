@@ -241,7 +241,7 @@ extension Configuration {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
             if ruleType is CustomRules.Type,
                let customRules = allRulesWrapped.customRules,
-               !Set(customRules.customRuleIdentifiers).intersection(onlyRules).isEmpty {
+               !Set(customRules.customRuleIdentifiers).isDisjoint(with: onlyRules) {
                 return nil
             }
             return Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)

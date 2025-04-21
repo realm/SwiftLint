@@ -50,7 +50,7 @@ internal extension Configuration {
                     onlyRulesRuleIdentifiers.contains(type(of: tuple.rule).identifier)
                 }.map(\.rule)
                 if !resultingRules.contains(where: { $0 is CustomRules }) {
-                    if customRulesIdentifiers.intersection(onlyRulesRuleIdentifiers).isNotEmpty, let customRules {
+                    if !customRulesIdentifiers.isDisjoint(with: onlyRulesRuleIdentifiers), let customRules {
                         resultingRules.append(customRules)
                     }
                 }

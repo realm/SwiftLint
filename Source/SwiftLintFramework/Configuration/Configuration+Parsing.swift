@@ -236,7 +236,7 @@ extension Configuration {
     static func validateConfiguredRuleIsEnabled(
         onlyRules: Set<String>,
         ruleType: any Rule.Type,
-        allRulesWrapped: [ConfigurationRuleWrapper]
+        allRulesWrapped: [ConfigurationRuleWrapper] = []
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
             if ruleType is CustomRules.Type,

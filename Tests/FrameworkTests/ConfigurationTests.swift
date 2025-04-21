@@ -7,6 +7,7 @@ import XCTest
 
 private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map(\.0)
 
+// swiftlint:disable:next type_body_length
 final class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown
     private var previousWorkingDir: String! // swiftlint:disable:this implicitly_unwrapped_optional
@@ -155,7 +156,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         let config = try Configuration(
             dict: [
                 "only_rules": only,
-                "custom_rules": customRules
+                "custom_rules": customRules,
             ],
             onlyRule: [customRuleIdentifier]
         )

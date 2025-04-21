@@ -87,7 +87,8 @@ extension Configuration {
                 parentConfiguration: parentConfiguration,
                 configurationDictionary: dict,
                 ruleList: ruleList,
-                rulesMode: rulesMode
+                rulesMode: rulesMode,
+                allRulesWrapped: allRulesWrapped
             )
         }
 
@@ -167,7 +168,8 @@ extension Configuration {
         parentConfiguration: Configuration?,
         configurationDictionary dict: [String: Any],
         ruleList: RuleList,
-        rulesMode: RulesMode
+        rulesMode: RulesMode,
+        allRulesWrapped: [ConfigurationRuleWrapper]
     ) {
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),
@@ -179,7 +181,11 @@ extension Configuration {
             case .allCommandLine, .onlyCommandLine:
                 return
             case .onlyConfiguration(let onlyRules):
-                let issue = validateConfiguredRuleIsEnabled(onlyRules: onlyRules, ruleType: ruleType)
+                let issue = validateConfiguredRuleIsEnabled(
+                    onlyRules: onlyRules,
+                    ruleType: ruleType,
+                    allRulesWrapped: allRulesWrapped
+                )
                 issue?.print()
             case let .defaultConfiguration(disabled: disabledRules, optIn: optInRules):
                 let issue = validateConfiguredRuleIsEnabled(
@@ -229,9 +235,15 @@ extension Configuration {
 
     static func validateConfiguredRuleIsEnabled(
         onlyRules: Set<String>,
-        ruleType: any Rule.Type
+        ruleType: any Rule.Type,
+        allRulesWrapped: [ConfigurationRuleWrapper]
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
+            if ruleType is CustomRules.Type,
+               let customRules = (allRulesWrapped.first { $0.rule is CustomRules })?.rule as? CustomRules,
+               !Set(customRules.customRuleIdentifiers).intersection(onlyRules).isEmpty {
+                return nil
+            }
             return Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)
         }
         return nil

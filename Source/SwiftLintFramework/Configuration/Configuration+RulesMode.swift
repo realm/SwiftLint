@@ -122,7 +122,7 @@ public extension Configuration {
             case let .onlyConfiguration(onlyRules) where onlyRules.contains {
                 $0 == CustomRules.identifier
             }:
-                let customRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule as? CustomRules
+                let customRulesRule = allRulesWrapped.customRules
                 return .onlyConfiguration(onlyRules.union(Set(customRulesRule?.customRuleIdentifiers ?? [])))
 
             default:

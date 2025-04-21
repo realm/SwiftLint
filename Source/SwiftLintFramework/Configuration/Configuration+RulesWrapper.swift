@@ -12,7 +12,7 @@ internal extension Configuration {
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private lazy var customRules: CustomRules? = {
-            allRulesWrapped.first { $0.rule is CustomRules }?.rule as? CustomRules
+            allRulesWrapped.customRules
         }()
         private lazy var customRulesIdentifiers: Set<String> = {
             Set(customRules?.customRuleIdentifiers ?? [])
@@ -209,10 +209,8 @@ internal extension Configuration {
             newAllRulesWrapped: [ConfigurationRuleWrapper], with child: RulesWrapper
         ) -> [ConfigurationRuleWrapper] {
             guard
-                let parentCustomRulesRule = (allRulesWrapped.first { $0.rule is CustomRules })?.rule
-                    as? CustomRules,
-                let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
-                    as? CustomRules
+                let parentCustomRulesRule = customRules,
+                let childCustomRulesRule = child.allRulesWrapped.customRules
             else {
                 // Merging is only needed if both parent & child have a custom rules rule
                 return newAllRulesWrapped
@@ -260,8 +258,7 @@ internal extension Configuration {
                 // Also add identifiers of child custom rules iff the custom_rules rule is enabled
                 // (parent custom rules are already added)
                 if (onlyRules.contains { $0 == CustomRules.identifier }) {
-                    if let childCustomRulesRule = (child.allRulesWrapped.first { $0.rule is CustomRules })?.rule
-                        as? CustomRules {
+                    if let childCustomRulesRule = child.allRulesWrapped.customRules {
                         onlyRules = onlyRules.union(
                             Set(
                                 childCustomRulesRule.customRuleIdentifiers
@@ -317,5 +314,11 @@ internal extension Configuration {
             }
             return isOptInRule
         }
+    }
+}
+
+extension [ConfigurationRuleWrapper] {
+    var customRules: CustomRules? {
+        first { $0.rule is CustomRules }?.rule as? CustomRules
     }
 }

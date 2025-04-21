@@ -240,7 +240,7 @@ extension Configuration {
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
             if ruleType is CustomRules.Type,
-               let customRules = (allRulesWrapped.first { $0.rule is CustomRules })?.rule as? CustomRules,
+               let customRules = allRulesWrapped.customRules,
                !Set(customRules.customRuleIdentifiers).intersection(onlyRules).isEmpty {
                 return nil
             }

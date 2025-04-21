@@ -88,7 +88,7 @@ extension Configuration {
                 configurationDictionary: dict,
                 ruleList: ruleList,
                 rulesMode: rulesMode,
-                allRulesWrapped: allRulesWrapped
+                customRuleIdentifiers: Set(allRulesWrapped.customRules?.customRuleIdentifiers ?? [])
             )
         }
 
@@ -169,7 +169,7 @@ extension Configuration {
         configurationDictionary dict: [String: Any],
         ruleList: RuleList,
         rulesMode: RulesMode,
-        allRulesWrapped: [ConfigurationRuleWrapper]
+        customRuleIdentifiers: Set<String>
     ) {
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),
@@ -184,7 +184,7 @@ extension Configuration {
                 let issue = validateConfiguredRuleIsEnabled(
                     onlyRules: onlyRules,
                     ruleType: ruleType,
-                    allRulesWrapped: allRulesWrapped
+                    customRuleIdentifiers: customRuleIdentifiers
                 )
                 issue?.print()
             case let .defaultConfiguration(disabled: disabledRules, optIn: optInRules):
@@ -236,12 +236,10 @@ extension Configuration {
     static func validateConfiguredRuleIsEnabled(
         onlyRules: Set<String>,
         ruleType: any Rule.Type,
-        allRulesWrapped: [ConfigurationRuleWrapper] = []
+        customRuleIdentifiers: Set<String>
     ) -> Issue? {
         if onlyRules.isDisjoint(with: ruleType.description.allIdentifiers) {
-            if ruleType is CustomRules.Type,
-               let customRules = allRulesWrapped.customRules,
-               !Set(customRules.customRuleIdentifiers).isDisjoint(with: onlyRules) {
+            if ruleType is CustomRules.Type, !customRuleIdentifiers.isDisjoint(with: onlyRules) {
                 return nil
             }
             return Issue.ruleNotPresentInOnlyRules(ruleID: ruleType.identifier)

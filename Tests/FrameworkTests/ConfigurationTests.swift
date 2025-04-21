@@ -143,6 +143,35 @@ final class ConfigurationTests: SwiftLintTestCase {
         )
     }
 
+    func testOnlyRulesWithSpecificCustomRules() throws {
+        // Individual custom rules can be specified on the command line without specifying `custom_rules` as well.
+        let customRuleIdentifier = "my_custom_rule"
+        let customRuleIdentifier2 = "my_custom_rule2"
+        let only = ["custom_rules"]
+        let customRules = [
+            customRuleIdentifier: ["name": "A custom rule", "regex": "this is illegal"],
+            customRuleIdentifier2: ["name": "Another custom rule", "regex": "this is also illegal"],
+        ]
+
+        let config = try Configuration(
+            dict: [
+                "only_rules": only,
+                "custom_rules": customRules
+            ],
+            onlyRule: [customRuleIdentifier]
+        )
+        guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        else {
+            XCTFail("Custom rules are expected to be present")
+            return
+        }
+        let enabledCustomRuleIdentifiers =
+            resultingCustomRules.configuration.customRuleConfigurations.map { rule in
+                rule.identifier
+            }
+        XCTAssertEqual(enabledCustomRuleIdentifiers, [customRuleIdentifier])
+    }
+
     func testWarningThreshold_value() throws {
         let config = try Configuration(dict: ["warning_threshold": 5])
         XCTAssertEqual(config.warningThreshold, 5)

@@ -31,9 +31,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 
             customRuleConfigurations.append(ruleConfiguration)
         }
-        customRuleConfigurations.sort { first, second in
-            first.identifier < second.identifier
-        }
+        customRuleConfigurations.sort { $0.identifier < $1.identifier }
     }
 }
 

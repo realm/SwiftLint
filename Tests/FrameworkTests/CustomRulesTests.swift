@@ -520,14 +520,11 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violationsWithIndividualRuleIdentifiers = try testOnlyRulesWithCustomRules(customRuleIdentifiers)
         XCTAssertEqual(violationsWithIndividualRuleIdentifiers.count, 2)
         XCTAssertEqual(
-            violationsWithIndividualRuleIdentifiers.map { $0.ruleIdentifier }.sorted(),
+            violationsWithIndividualRuleIdentifiers.map { $0.ruleIdentifier },
             customRuleIdentifiers
         )
         let violationsWithCustomRulesIdentifier = try testOnlyRulesWithCustomRules(["custom_rules"])
-        XCTAssertEqual(
-            violationsWithCustomRulesIdentifier.map { $0.ruleIdentifier }.sorted(),
-            customRuleIdentifiers
-        )
+        XCTAssertEqual(violationsWithIndividualRuleIdentifiers, violationsWithCustomRulesIdentifier)
     }
 
     // MARK: - Private

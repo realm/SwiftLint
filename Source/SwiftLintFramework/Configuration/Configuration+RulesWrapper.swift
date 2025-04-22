@@ -11,13 +11,13 @@ internal extension Configuration {
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
-        private lazy var customRulesIdentifiers: Set<String> = {
+        private var customRulesIdentifiers: Set<String> {
             Set(allRulesWrapped.customRules?.customRuleIdentifiers ?? [])
-        }()
-        private lazy var validRuleIdentifiers: Set<String> = {
+        }
+        private var validRuleIdentifiers: Set<String> {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
             return Set(regularRuleIdentifiers + customRulesIdentifiers)
-        }()
+        }
 
         private var cachedResultingRules: [any Rule]?
         private let resultingRulesLock = NSLock()

@@ -19,14 +19,14 @@ internal extension Configuration {
         }
 
         private var cachedResultingRules: [any Rule]?
-        private let resultingRulesLock = NSLock()
+//        private let resultingRulesLock = NSLock()
 
         /// All rules enabled in this configuration,
         /// derived from rule mode (only / optIn - disabled) & existing rules
         var resultingRules: [any Rule] {
             // Lock for thread-safety (that's also why this is not a lazy var)
-            resultingRulesLock.lock()
-            defer { resultingRulesLock.unlock() }
+//            resultingRulesLock.lock()
+//            defer { resultingRulesLock.unlock() }
 
             // Return existing value if it's available
             if let cachedResultingRules { return cachedResultingRules }
@@ -110,6 +110,7 @@ internal extension Configuration {
             self.mode = originatesFromMergingProcess
                 ? mode
                 : mode.activateCustomRuleIdentifiers(allRulesWrapped: allRulesWrapped)
+            _ = resultingRules
         }
 
         // MARK: - Methods: Validation

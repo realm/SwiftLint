@@ -520,7 +520,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         let violationsWithIndividualRuleIdentifiers = try testOnlyRulesWithCustomRules(customRuleIdentifiers)
         XCTAssertEqual(violationsWithIndividualRuleIdentifiers.count, 2)
         XCTAssertEqual(
-            // Order of custom rule violations is not deterministic :-(
             violationsWithIndividualRuleIdentifiers.map { $0.ruleIdentifier }.sorted(),
             customRuleIdentifiers
         )

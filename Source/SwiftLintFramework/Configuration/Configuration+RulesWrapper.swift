@@ -11,11 +11,8 @@ internal extension Configuration {
         private let aliasResolver: (String) -> String
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
-        private lazy var customRules: CustomRules? = {
-            allRulesWrapped.customRules
-        }()
         private lazy var customRulesIdentifiers: Set<String> = {
-            Set(customRules?.customRuleIdentifiers ?? [])
+            Set(allRulesWrapped.customRules?.customRuleIdentifiers ?? [])
         }()
         private lazy var validRuleIdentifiers: Set<String> = {
             let regularRuleIdentifiers = allRulesWrapped.map { type(of: $0.rule).identifier }
@@ -51,7 +48,7 @@ internal extension Configuration {
                 }.map(\.rule)
                 if !resultingRules.contains(where: { $0 is CustomRules }),
                    !customRulesIdentifiers.isDisjoint(with: onlyRulesRuleIdentifiers),
-                   let customRules {
+                   let customRules = allRulesWrapped.customRules {
                     resultingRules.append(customRules)
                 }
 
@@ -209,7 +206,7 @@ internal extension Configuration {
             newAllRulesWrapped: [ConfigurationRuleWrapper], with child: RulesWrapper
         ) -> [ConfigurationRuleWrapper] {
             guard
-                let parentCustomRulesRule = customRules,
+                let parentCustomRulesRule = allRulesWrapped.customRules,
                 let childCustomRulesRule = child.allRulesWrapped.customRules
             else {
                 // Merging is only needed if both parent & child have a custom rules rule

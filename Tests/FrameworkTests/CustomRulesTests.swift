@@ -506,6 +506,27 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertTrue(violations[3].isSuperfluousDisableCommandViolation(for: "rule2"))
     }
 
+    // MARK: - only_rules support
+
+    func testOnlyRulesWithCustomRules() throws {
+        let ruleIdentifierToEnable = "aaa"
+        let violations = try testOnlyRulesWithCustomRules([ruleIdentifierToEnable])
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations[0].ruleIdentifier, ruleIdentifierToEnable)
+    }
+
+    func testOnlyRulesWithIndividualIdentifiers() throws {
+        let customRuleIdentifiers = ["aaa", "bbb"]
+        let violationsWithIndividualRuleIdentifiers = try testOnlyRulesWithCustomRules(customRuleIdentifiers)
+        XCTAssertEqual(violationsWithIndividualRuleIdentifiers.count, 2)
+        XCTAssertEqual(
+            violationsWithIndividualRuleIdentifiers.map { $0.ruleIdentifier },
+            customRuleIdentifiers
+        )
+        let violationsWithCustomRulesIdentifier = try testOnlyRulesWithCustomRules(["custom_rules"])
+        XCTAssertEqual(violationsWithIndividualRuleIdentifiers, violationsWithCustomRulesIdentifier)
+    }
+
     // MARK: - Private
 
     private func getCustomRules(_ extraConfig: [String: Any] = [:]) -> (Configuration, CustomRules) {
@@ -567,6 +588,27 @@ final class CustomRulesTests: SwiftLintTestCase {
         var customRules = CustomRules()
         customRules.configuration = customRuleConfiguration
         return customRules
+    }
+
+    private func testOnlyRulesWithCustomRules(_ onlyRulesIdentifiers: [String]) throws -> [StyleViolation] {
+        let customRules: [String: Any] = [
+            "aaa": [
+                "regex": "aaa"
+            ],
+            "bbb": [
+                "regex": "bbb"
+            ],
+        ]
+        let example = Example("""
+                              let a = "aaa"
+                              let b = "bbb"
+                              """)
+        let configDict: [String: Any] = [
+            "only_rules": onlyRulesIdentifiers,
+            "custom_rules": customRules,
+        ]
+        let configuration = try SwiftLintFramework.Configuration(dict: configDict)
+        return TestHelpers.violations(example.skipWrappingInCommentTest(), config: configuration)
     }
 }
 

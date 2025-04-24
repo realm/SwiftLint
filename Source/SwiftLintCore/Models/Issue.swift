@@ -116,7 +116,7 @@ public enum Issue: LocalizedError, Equatable {
     }
 
     /// The issues description which is ready to be printed to the console.
-    package var errorDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .genericError:
             return "error: \(message)"
@@ -132,8 +132,8 @@ public enum Issue: LocalizedError, Equatable {
         if case .ruleDeprecated = self, !Self.printDeprecationWarnings {
             return
         }
-        Self.printQueueContinuation?.yield(errorDescription)
-        queuedPrintError(errorDescription)
+        Self.printQueueContinuation?.yield(localizedDescription)
+        queuedPrintError(localizedDescription)
     }
 
     private var message: String {

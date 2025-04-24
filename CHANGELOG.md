@@ -82,6 +82,9 @@
   
 * Support deinitializers and subscripts in `function_body_length` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Add opt-in `unneeded_throws_rethrows` rules that triggers when declarations
+  marked `throws`/`rethrows` never actually throw or call any throwing code.
+  [Tony Ngo](https://github.com/tonyskansf)
 
 ### Bug Fixes
 

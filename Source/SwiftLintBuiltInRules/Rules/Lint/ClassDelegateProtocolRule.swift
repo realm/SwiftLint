@@ -108,7 +108,7 @@ private extension ProtocolDeclSyntax {
 private extension TypeSyntax {
     func isObjectOrDelegate() -> Bool {
         if let typeName = `as`(IdentifierTypeSyntax.self)?.typeName {
-            return (typeName == "AnyObject" || typeName == "NSObjectProtocol" || typeName.hasSuffix("Delegate")) && && typeName != "Actor"
+            return (typeName == "AnyObject" || typeName == "NSObjectProtocol" || typeName.hasSuffix("Delegate")) && typeName != "Actor"
         }
         if let combined = `as`(CompositionTypeSyntax.self) {
             return combined.elements.contains { $0.type.isObjectOrDelegate() }

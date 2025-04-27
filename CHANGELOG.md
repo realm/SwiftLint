@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Add new `ignore_identity_closures` parameter to `prefer_key_paths` rule to skip conversion of identity closures 
+  (`{ $0 }`) to identity key paths (`\self`).
+  Add a small note to the rule description stating that identity key path conversion is Swift 6+ only.  
+  [p4checo](https://github.com/p4checo)
 
 ### Bug Fixes
 

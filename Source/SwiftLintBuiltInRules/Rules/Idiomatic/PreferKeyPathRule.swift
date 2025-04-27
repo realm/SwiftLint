@@ -9,7 +9,7 @@ struct PreferKeyPathRule: Rule {
     private static let ignoreIdentity = ["ignore_identity_closures": true]
     private static let extendedModeAndIgnoreIdentity = [
         "restrict_to_standard_functions": false,
-        "ignore_identity_closures": true
+        "ignore_identity_closures": true,
     ]
 
     static let description = RuleDescription(
@@ -17,8 +17,8 @@ struct PreferKeyPathRule: Rule {
         name: "Prefer Key Path",
         description: """
             Use a key path argument instead of a closure with property access
-            
-            Note: Swift 5 doesn't support identity key path conversion (`{ $0 }` -> `(\\.self)`) independently of  
+
+            Note: Swift 5 doesn't support identity key path conversion (`{ $0 }` -> `(\\.self)`), regardless of
             `ignore_identity_closures` parameter value
         """,
         kind: .idiomatic,
@@ -48,8 +48,6 @@ struct PreferKeyPathRule: Rule {
             Example("f.first ↓{ $0.a }"),
             Example("f.contains ↓{ $0.a }"),
             Example("f.contains(where: ↓{ $0.a })"),
-            Example("f.flatMap ↓{ $0 }"),
-            Example("f ↓{ $0 }", configuration: extendedMode),
             Example("f(↓{ $0.a })", configuration: extendedMode),
             Example("f(a: ↓{ $0.b })", configuration: extendedMode),
             Example("f(a: ↓{ a in a.b }, x)", configuration: extendedMode),
@@ -89,10 +87,6 @@ struct PreferKeyPathRule: Rule {
                 Example("f.partition(by: \\.a.b)"),
             Example("f.contains ↓{ $0.a.b }"):
                 Example("f.contains(where: \\.a.b)"),
-            Example("f.flatMap ↓{ $0 }"):
-                Example("f.flatMap(\\.self)"),
-            Example("f ↓{ $0 }", configuration: extendedMode):
-                Example("f(\\.self)"),
             Example("f.first ↓{ element in element.a }"):
                 Example("f.first(where: \\.a)"),
             Example("f.drop ↓{ element in element.a }"):

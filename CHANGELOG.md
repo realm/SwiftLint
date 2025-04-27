@@ -112,6 +112,10 @@
   `style: always` option which is the default.  
   [leo-lem](https://github.com/leo-lem)  
   [#1940](https://github.com/realm/SwiftLint/issues/1940)
+* Add new `ignore_identity_closures` parameter to `prefer_key_paths` rule to skip conversion of identity closures 
+  (`{ $0 }`) to identity key paths (`\self`).
+  Add a small note to the rule description stating that identity key path conversion is Swift 6+ only.  
+  [p4checo](https://github.com/p4checo)
 
 ### Bug Fixes
 

@@ -37,7 +37,7 @@ internal struct UnneededThrowsRuleExamples {
             """),
         Example("""
             func foo() throws {
-                do { try bar() } 
+                do { try bar() }
                 catch {
                     throw Example.failure
                 }
@@ -45,7 +45,7 @@ internal struct UnneededThrowsRuleExamples {
             """),
         Example("""
             func foo() throws {
-                do { try bar() } 
+                do { try bar() }
                 catch {
                     try baz()
                 }
@@ -123,13 +123,13 @@ internal struct UnneededThrowsRuleExamples {
             """),
         Example("""
             func foo() ↓throws {
-                do { try bar() } 
+                do { try bar() }
                 catch {}
             }
             """),
         Example("""
             func foo() ↓throws {
-                do {} 
+                do {}
                 catch {}
             }
             """),

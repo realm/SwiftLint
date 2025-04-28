@@ -80,8 +80,10 @@ private extension UnneededThrowsRule {
             }
         }
 
-        override func visit(_ node: FunctionTypeSyntax) -> SyntaxVisitorContinueKind {
-            scopes.openScope(with: node.effectSpecifiers?.throwsClause)
+        override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
+            if node.containsInitializerClause, let functionTypeSyntax = node.functionTypeSyntax {
+                scopes.openScope(with: functionTypeSyntax.effectSpecifiers?.throwsClause)
+            }
             return .visitChildren
         }
 
@@ -180,5 +182,28 @@ private extension FunctionCallExprSyntax {
         children(viewMode: .sourceAccurate).contains { child in
             child.as(DeclReferenceExprSyntax.self)?.baseName.tokenKind == .identifier("Task")
         }
+    }
+}
+
+private extension PatternBindingSyntax {
+    var containsInitializerClause: Bool {
+        children(viewMode: .sourceAccurate).contains { child in
+            child.is(InitializerClauseSyntax.self)
+        }
+    }
+
+    var functionTypeSyntax: FunctionTypeSyntax? {
+        guard let typeAnnotation else { return nil }
+
+        var children = Set(typeAnnotation.children(viewMode: .sourceAccurate))
+
+        while let child = children.popFirst() {
+            if let functionType = child.as(FunctionTypeSyntax.self) {
+                return functionType
+            }
+            children.formUnion(child.children(viewMode: .sourceAccurate))
+        }
+
+        return nil
     }
 }

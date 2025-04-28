@@ -107,6 +107,18 @@ internal struct UnneededThrowsRuleExamples {
             for try await item in items {}
         }
         """),
+        Example("""
+        let foo: () throws -> Void
+        """),
+        Example("""
+        let foo: @Sendable () throws -> Void
+        """),
+        Example("""
+        let foo: (() throws -> Void)?
+        """),
+        Example("""
+        func foo(_ bar: () throws -> Void = {}) {}
+        """),
     ]
 
     static let triggeringExamples = [

@@ -82,7 +82,7 @@ internal struct UnneededThrowsRuleExamples {
         Example("""
         func foo() throws{
             let bar = Bar()
-            
+
             if bar.boolean {
                 throw Example.failure
             }

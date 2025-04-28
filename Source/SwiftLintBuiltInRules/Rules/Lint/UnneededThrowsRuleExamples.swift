@@ -79,6 +79,34 @@ internal struct UnneededThrowsRuleExamples {
                 }
             }
             """),
+        Example("""
+        func foo() throws{
+            let bar = Bar()
+            
+            if bar.boolean {
+                throw Example.failure
+            }
+        }
+        """),
+        Example("""
+        func foo() throws -> Bar? {
+            Bar(try baz())
+        }
+        """),
+        Example("""
+        typealias Foo = () throws -> Void
+        """),
+        Example("""
+        enum Foo {
+            case foo
+            case bar(() throws -> Void)
+        }
+        """),
+        Example("""
+        func foo() async rethrows {
+            for try await item in items {}
+        }
+        """),
     ]
 
     static let triggeringExamples = [

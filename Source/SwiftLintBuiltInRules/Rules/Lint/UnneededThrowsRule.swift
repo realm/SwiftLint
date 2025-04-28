@@ -22,9 +22,17 @@ private extension UnneededThrowsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var scopes = Stack<Scope>()
 
-        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [
-            ProtocolDeclSyntax.self,
-        ] }
+        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
+
+        override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
+            .skipChildren
+        }
 
         override func visit(_: FunctionParameterClauseSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
@@ -58,15 +66,6 @@ private extension UnneededThrowsRule {
             }
         }
 
-        override func visitPost(_: VariableDeclSyntax) {
-            if let closedScope = scopes.closeScope() {
-                validateScope(
-                    closedScope,
-                    reason: "The variable does not throw any error"
-                )
-            }
-        }
-
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             scopes.openScope(with: node.signature.effectSpecifiers?.throwsClause)
             return .visitChildren
@@ -95,13 +94,17 @@ private extension UnneededThrowsRule {
             }
         }
 
-        override func visit(_: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
-            scopes.openScope()
+        override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+            if node.containsTaskDeclaration {
+                scopes.openScope()
+            }
             return .visitChildren
         }
 
-        override func visitPost(_: FunctionCallExprSyntax) {
-            scopes.closeScope()
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if node.containsTaskDeclaration {
+                scopes.closeScope()
+            }
         }
 
         override func visit(_: DoStmtSyntax) -> SyntaxVisitorContinueKind {
@@ -113,6 +116,13 @@ private extension UnneededThrowsRule {
             if node.parent?.is(DoStmtSyntax.self) == true {
                 scopes.closeScope()
             }
+        }
+
+        override func visit(_ node: ForStmtSyntax) -> SyntaxVisitorContinueKind {
+            if node.tryKeyword != nil {
+                scopes.markCurrentScopeAsThrowing()
+            }
+            return .visitChildren
         }
 
         override func visitPost(_ node: TryExprSyntax) {
@@ -162,5 +172,13 @@ private extension Stack where Element == UnneededThrowsRule.Scope {
     @discardableResult
     mutating func closeScope() -> [ThrowsClauseSyntax]? {
         pop()
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var containsTaskDeclaration: Bool {
+        children(viewMode: .sourceAccurate).contains { child in
+            child.as(DeclReferenceExprSyntax.self)?.baseName.tokenKind == .identifier("Task")
+        }
     }
 }

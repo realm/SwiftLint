@@ -22,15 +22,15 @@ private extension UnneededThrowsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var scopes = Stack<Scope>()
 
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 

@@ -18,6 +18,7 @@ struct UnneededThrowsRule: Rule {
 
 private extension UnneededThrowsRule {
     typealias Scope = [ThrowsClauseSyntax]
+
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var scopes = Stack<Scope>()
 

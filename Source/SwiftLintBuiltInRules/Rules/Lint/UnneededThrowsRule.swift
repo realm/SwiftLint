@@ -122,6 +122,15 @@ private extension UnneededThrowsRule {
             }
         }
 
+        override func visitPost(_ node: DoStmtSyntax) {
+            let doesNotContainCatchClauseWithoutPattern = !node.catchClauses.contains { catchClause in
+                catchClause.catchItems.isEmpty
+            }
+            if doesNotContainCatchClauseWithoutPattern {
+                scopes.markCurrentScopeAsThrowing()
+            }
+        }
+
         override func visit(_ node: ForStmtSyntax) -> SyntaxVisitorContinueKind {
             if node.tryKeyword != nil {
                 scopes.markCurrentScopeAsThrowing()

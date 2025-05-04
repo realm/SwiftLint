@@ -119,6 +119,15 @@ internal struct UnneededThrowsRuleExamples {
         Example("""
         func foo(_ bar: () throws -> Void = {}) {}
         """),
+        Example("""
+        func foo() async throws {
+            func foo() {}
+            for _ in 0..<count {
+                foo()
+                try await bar()
+            }
+        }
+        """),
     ]
 
     static let triggeringExamples = [

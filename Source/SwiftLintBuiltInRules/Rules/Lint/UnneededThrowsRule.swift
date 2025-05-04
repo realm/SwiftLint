@@ -17,7 +17,9 @@ struct UnneededThrowsRule: Rule {
 }
 
 private extension UnneededThrowsRule {
-    typealias Scope = [ThrowsClauseSyntax]
+    struct Scope {
+        var throwsClause: ThrowsClauseSyntax?
+    }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var scopes = Stack<Scope>()
@@ -138,7 +140,7 @@ private extension UnneededThrowsRule {
         }
 
         private func validateScope(_ scope: Scope, reason: String) {
-            guard let throwsToken = scope.last?.throwsSpecifier else { return }
+            guard let throwsToken = scope.throwsClause?.throwsSpecifier else { return }
             violations.append(
                 ReasonedRuleViolation(
                     position: throwsToken.positionAfterSkippingLeadingTrivia,
@@ -157,22 +159,16 @@ private extension UnneededThrowsRule {
 private extension Stack where Element == UnneededThrowsRule.Scope {
     mutating func markCurrentScopeAsThrowing() {
         modifyLast { currentScope in
-            _ = currentScope.popLast()
+            currentScope.throwsClause = nil
         }
     }
 
-    mutating func openScope() {
-        push([])
-    }
-
-    mutating func openScope(with throwsClause: ThrowsClauseSyntax?) {
-        if let throwsClause {
-            push([throwsClause])
-        }
+    mutating func openScope(with throwsClause: ThrowsClauseSyntax? = nil) {
+        push(UnneededThrowsRule.Scope(throwsClause: throwsClause))
     }
 
     @discardableResult
-    mutating func closeScope() -> [ThrowsClauseSyntax]? {
+    mutating func closeScope() -> Element? {
         pop()
     }
 }

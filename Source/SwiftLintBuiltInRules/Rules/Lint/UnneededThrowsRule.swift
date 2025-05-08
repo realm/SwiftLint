@@ -8,7 +8,7 @@ struct UnneededThrowsRule: Rule {
     static let description = RuleDescription(
         identifier: "unneeded_throws_rethrows",
         name: "Unneeded (re)throws keyword",
-        description: "Non-throwing functions/variables should not me marked as `throws` or `rethrows`",
+        description: "Non-throwing functions/variables should not be marked as `throws` or `rethrows`",
         kind: .lint,
         nonTriggeringExamples: UnneededThrowsRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnneededThrowsRuleExamples.triggeringExamples,

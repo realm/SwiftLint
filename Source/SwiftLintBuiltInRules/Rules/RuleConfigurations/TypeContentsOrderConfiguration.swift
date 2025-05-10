@@ -1,3 +1,6 @@
+import SwiftLintCore
+
+@AcceptableByConfigurationElement
 enum TypeContent: String {
     case `case` = "case"
     case typeAlias = "type_alias"
@@ -14,12 +17,16 @@ enum TypeContent: String {
     case otherMethod = "other_method"
     case `subscript` = "subscript"
     case deinitializer = "deinitializer"
+    case ibSegueAction = "ib_segue_action"
 }
 
-struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable {
+@AutoConfigParser
+struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = TypeContentsOrderRule
 
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "order")
     private(set) var order: [[TypeContent]] = [
         [.case],
         [.typeAlias, .associatedType],
@@ -31,38 +38,9 @@ struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration, Equatable
         [.initializer],
         [.typeMethod],
         [.viewLifeCycleMethod],
-        [.ibAction],
+        [.ibAction, .ibSegueAction],
         [.otherMethod],
         [.subscript],
-        [.deinitializer]
+        [.deinitializer],
     ]
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", order: \(String(describing: order))"
-    }
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        var customOrder = [[TypeContent]]()
-        if let custom = configuration["order"] as? [Any] {
-            for entry in custom {
-                if let singleEntry = entry as? String {
-                    if let typeContent = TypeContent(rawValue: singleEntry) {
-                        customOrder.append([typeContent])
-                    }
-                } else if let arrayEntry = entry as? [String] {
-                    let typeContents = arrayEntry.compactMap { TypeContent(rawValue: $0) }
-                    customOrder.append(typeContents)
-                }
-            }
-        }
-
-        if customOrder.isNotEmpty {
-            self.order = customOrder
-        }
-    }
 }

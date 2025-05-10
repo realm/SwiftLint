@@ -1,0 +1,178 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        type: string
+      title:
+        description: 'Release title'
+        required: true
+        type: string
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_16.2.app
+  MACOS_BUILD_DIR: .build/universal
+  LINUX_BUILD_DIR: .build/linux
+  RELEASE_BRANCH: release/${{ inputs.version }}
+
+jobs:
+  setup-credentials:
+    name: Setup Actor Credentials
+    uses: ./.github/workflows/actor-credentials.yml
+    with:
+      actor: ${{ github.actor }}
+    permissions:
+      contents: write
+    secrets: inherit
+
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-24.04
+    needs: setup-credentials
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout or create release branch
+        run: |
+          if git ls-remote --exit-code --heads origin ${{ env.RELEASE_BRANCH }}; then
+            git fetch origin ${{ env.RELEASE_BRANCH }}:${{ env.RELEASE_BRANCH }}
+            git checkout ${{ env.RELEASE_BRANCH }}
+          else
+            git checkout -b ${{ env.RELEASE_BRANCH }}
+          fi
+      - name: Update changelog
+        run: "sed -i 's/## Main/## ${{ inputs.version }}: ${{ inputs.title }}/g' CHANGELOG.md"
+      - name: Update built-in versions
+        run: |
+          sed 's/__VERSION__/${{ inputs.version }}/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
+          sed -i -e '3s/.*/    version = "${{ inputs.version }}",/' MODULE.bazel
+      - name: Configure Git author
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+      - name: Commit changes
+        id: pre_release
+        run: |
+          git commit -a -m "Prepare ${{ inputs.version }} release"
+          git push origin HEAD
+
+  verify-podspec:
+    name: Verify Podspec
+    runs-on: macOS-14
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Ruby and Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
+        run: |
+          if ! grep -q 'DEVELOPER_DIR: ${{ env.DEVELOPER_DIR }}' .github/workflows/post-release.yml; then
+            echo "ERROR: Xcode version not in sync with post-release workflow"
+            exit 1
+          fi
+          make pod_lint
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
+
+  build-docker:
+    name: Build Linux Binaries
+    needs: prepare-release
+    uses: ./.github/workflows/docker.yml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+    with:
+      ref: release/${{ inputs.version }}
+      tag: ${{ inputs.version }}
+
+  build-macos:
+    name: Build macOS Binaries
+    needs: prepare-release
+    runs-on: macOS-14
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - name: Build SwiftLint for macOS
+        run: make --debug bazel_release
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint
+          path: |
+            swiftlint
+            bazel.tar.gz
+            bazel.tar.gz.sha256
+          retention-days: 2
+          if-no-files-found: error
+
+  create-release:
+    name: Create Release
+    needs:
+      - setup-credentials
+      - prepare-release
+      - build-docker
+      - build-macos
+    runs-on: macOS-14
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - name: Configure author
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+      - name: Create build folders
+        run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
+      - name: Download binary artifact for macOS
+        uses: actions/download-artifact@v4
+        with:
+          name: swiftlint
+          path: ${{ env.MACOS_BUILD_DIR }}
+      - name: Download binary artifact for Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: swiftlint_linux_amd64
+          path: ${{ env.LINUX_BUILD_DIR }}
+      - name: Move Bazel release
+        run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
+      - name: Make binaries executable
+        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
+      - name: Create artifacts
+        run: |
+          make --debug spm_artifactbundle
+          make --debug package
+          make --debug portable_zip
+          make --debug zip_linux_release
+      - name: Update binary target in Swift package
+        run: ./tools/update-artifact-bundle.sh "${{ inputs.version }}"
+      - name: Create tag and release commit
+        run: |
+          git commit -a -m "Release ${{ inputs.version }}"
+          git tag -a "${{ inputs.version }}" -m "${{ inputs.title }}"
+          git push origin HEAD
+          git push origin "${{ inputs.version }}"
+      - name: Create release
+        run: ./tools/create-github-release.sh "${{ inputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+      - name: Add new changelog section
+        run: |
+          ./tools/add-new-changelog-section.sh
+          git commit -a -m "Add new changelog section"
+          git push origin HEAD

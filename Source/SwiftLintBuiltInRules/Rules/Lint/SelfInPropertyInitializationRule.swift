@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct SelfInPropertyInitializationRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -66,7 +67,13 @@ struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxR
                 func calculateA() -> String { "A" }
                 func calculateB() -> String { "B" }
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
+            Example("""
+            final class NotActuallyReferencingSelf {
+                let keyPath: Any = \\String.self
+                let someType: Any = String.self
+            }
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -86,50 +93,42 @@ struct SelfInPropertyInitializationRule: ConfigurationProviderRule, SwiftSyntaxR
                     return button
                 }()
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension SelfInPropertyInitializationRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard !node.modifiers.containsLazy,
+            guard !node.modifiers.contains(keyword: .lazy),
                   !node.modifiers.containsStaticOrClass,
                   let closestDecl = node.closestDecl(),
                   closestDecl.is(ClassDeclSyntax.self) else {
                 return
             }
 
-            let visitor = IdentifierUsageVisitor(identifier: .keyword(.self))
+            let visitor = IdentifierUsageVisitor(viewMode: .sourceAccurate)
             for binding in node.bindings {
                 guard let initializer = binding.initializer,
                       visitor.walk(tree: initializer.value, handler: \.isTokenUsed) else {
                     continue
                 }
 
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }
+}
 
-    final class IdentifierUsageVisitor: SyntaxVisitor {
-        let identifier: TokenKind
-        private(set) var isTokenUsed = false
+private final class IdentifierUsageVisitor: SyntaxVisitor {
+    private(set) var isTokenUsed = false
 
-        init(identifier: TokenKind) {
-            self.identifier = identifier
-            super.init(viewMode: .sourceAccurate)
-        }
-
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if node.identifier.tokenKind == identifier {
-                isTokenUsed = true
-            }
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        if node.baseName.tokenKind == .keyword(.self),
+           node.keyPathInParent != \MemberAccessExprSyntax.declName,
+           node.keyPathInParent != \KeyPathPropertyComponentSyntax.declName {
+            isTokenUsed = true
         }
     }
 }

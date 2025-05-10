@@ -3,11 +3,17 @@ import SourceKittenFramework
 
 /// An executable value that can identify issues (violations) in Swift source code.
 public protocol Rule {
+    /// The type of the configuration used to configure this rule.
+    associatedtype ConfigurationType: RuleConfiguration
+
     /// A verbose description of many of this rule's properties.
     static var description: RuleDescription { get }
 
-    /// A description of how this rule has been configured to run.
-    var configurationDescription: String { get }
+    /// This rule's configuration.
+    var configuration: ConfigurationType { get set }
+
+    /// Whether this rule should be used on empty files. Defaults to `false`.
+    var shouldLintEmptyFiles: Bool { get }
 
     /// A default initializer for rules. All rules need to be trivially initializable.
     init()
@@ -18,6 +24,13 @@ public protocol Rule {
     ///
     /// - throws: Throws if the configuration didn't match the expected format.
     init(configuration: Any) throws
+
+    /// Create a description of how this rule has been configured to run.
+    ///
+    /// - parameter exclusiveOptions: A set of options that should be excluded from the description.
+    /// 
+    /// - returns: A description of the rule's configuration.
+    func createConfigurationDescription(exclusiveOptions: Set<String>) -> RuleConfigurationDescription
 
     /// Executes the rule on a file and returns any violations to the rule's expectations.
     ///
@@ -39,7 +52,7 @@ public protocol Rule {
     /// - parameter rule: The `rule` value to compare against.
     ///
     /// - returns: Whether or not the specified rule is equivalent to the current rule.
-    func isEqualTo(_ rule: Rule) -> Bool
+    func isEqualTo(_ rule: some Rule) -> Bool
 
     /// Collects information for the specified file in a storage object, to be analyzed by a `CollectedLinter`.
     ///
@@ -61,30 +74,79 @@ public protocol Rule {
     ///
     /// - returns: All style violations to the rule's expectations.
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation]
+
+    /// Checks if a style violation can be disabled by a command specifying a rule ID. Only the rule can claim that for
+    /// sure since it knows all the possible identifiers.
+    ///
+    /// - Parameters:
+    ///   - violation: A style violation.
+    ///   - ruleID: The name of a rule as used in a disable command.
+    ///
+    /// - Returns: A boolean value indicating whether the violation can be disabled by the given ID.
+   func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool
+
+   /// Checks if a the rule is enabled in a given region. A specific rule ID can be provided in case a rule supports
+   /// more than one identifier.
+   ///
+   /// - Parameters:
+   ///   - region: The region to check.
+   ///   - ruleID: Rule identifier deviating from the default rule's name.
+   ///
+   /// - Returns: A boolean value indicating whether the rule is enabled in the given region.
+   func isEnabled(in region: Region, for ruleID: String) -> Bool
 }
 
 public extension Rule {
-    func validate(file: SwiftLintFile, using storage: RuleStorage,
-                  compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, compilerArguments: compilerArguments)
+    var shouldLintEmptyFiles: Bool {
+        false
     }
 
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file)
+    init(configuration: Any) throws {
+        self.init()
+        try self.configuration.apply(configuration: configuration)
     }
 
-    func isEqualTo(_ rule: Rule) -> Bool {
-        return Self.description == type(of: rule).description
+    func validate(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
+        validate(file: file, compilerArguments: compilerArguments)
     }
 
-    func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
+    func validate(file: SwiftLintFile, compilerArguments _: [String]) -> [StyleViolation] {
+        validate(file: file)
+    }
+
+    func isEqualTo(_ rule: some Rule) -> Bool {
+        if let rule = rule as? Self {
+            return configuration == rule.configuration
+        }
+        return false
+    }
+
+    func collectInfo(for _: SwiftLintFile, into _: RuleStorage, compilerArguments _: [String]) {
         // no-op: only CollectingRules mutate their storage
     }
 
     /// The cache description which will be used to determine if a previous
     /// cached value is still valid given the new cache value.
     var cacheDescription: String {
-        return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
+        (self as? any CacheDescriptionProvider)?.cacheDescription ?? createConfigurationDescription().oneLiner()
+    }
+
+    func createConfigurationDescription(exclusiveOptions: Set<String> = []) -> RuleConfigurationDescription {
+        RuleConfigurationDescription.from(configuration: configuration, exclusiveOptions: exclusiveOptions)
+    }
+
+    func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool {
+        switch ruleID {
+        case .all:
+            true
+        case let .single(identifier: id):
+               Self.description.allIdentifiers.contains(id)
+            && Self.description.allIdentifiers.contains(violation.ruleIdentifier)
+        }
+    }
+
+    func isEnabled(in region: Region, for ruleID: String) -> Bool {
+        !Self.description.allIdentifiers.contains(ruleID) || region.isRuleEnabled(self)
     }
 }
 
@@ -96,15 +158,6 @@ public extension Rule {
 /// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
 
-/// A rule that is user-configurable.
-public protocol ConfigurationProviderRule: Rule {
-    /// The type of configuration used to configure this rule.
-    associatedtype ConfigurationType: RuleConfiguration
-
-    /// This rule's configuration.
-    var configuration: ConfigurationType { get set }
-}
-
 /// A rule that can correct violations.
 public protocol CorrectableRule: Rule {
     /// Attempts to correct the violations to this rule in the specified file.
@@ -112,15 +165,15 @@ public protocol CorrectableRule: Rule {
     /// - parameter file:              The file for which to correct violations.
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction]
+    /// - returns: Number of corrections that were applied.
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> Int
 
     /// Attempts to correct the violations to this rule in the specified file.
     ///
     /// - parameter file: The file for which to correct violations.
     ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile) -> [Correction]
+    /// - returns: Number of corrections that were applied.
+    func correct(file: SwiftLintFile) -> Int
 
     /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
     /// and returns all corrections that were applied.
@@ -132,15 +185,15 @@ public protocol CorrectableRule: Rule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction]
+    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> Int
 }
 
 public extension CorrectableRule {
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file)
+    func correct(file: SwiftLintFile, compilerArguments _: [String]) -> Int {
+        correct(file: file)
     }
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
-        return correct(file: file, compilerArguments: compilerArguments)
+    func correct(file: SwiftLintFile, using _: RuleStorage, compilerArguments: [String]) -> Int {
+        correct(file: file, compilerArguments: compilerArguments)
     }
 }
 
@@ -164,46 +217,23 @@ public protocol SubstitutionCorrectableRule: CorrectableRule {
 }
 
 public extension SubstitutionCorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
-        let description = Self.description
-        var corrections = [Correction]()
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
+        var numberOfCorrections = 0
         var contents = file.contents
         for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
             let contentsNSString = contents.bridge()
             if let (rangeToRemove, substitution) = self.substitution(for: range, in: file) {
                 contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: substitution)
-                let location = Location(file: file, characterOffset: range.location)
-                corrections.append(Correction(ruleDescription: description, location: location))
+                numberOfCorrections += 1
             }
         }
 
         file.write(contents)
-        return corrections
-    }
-}
-
-/// A `SubstitutionCorrectableRule` that is also an `ASTRule`.
-public protocol SubstitutionCorrectableASTRule: SubstitutionCorrectableRule, ASTRule {
-    /// Returns the NSString-based `NSRange`s to be replaced in the specified file.
-    ///
-    /// - parameter file:       The file in which to find ranges of violations for this rule.
-    /// - parameter kind:       The kind of token being recursed over.
-    /// - parameter dictionary: The dictionary for an AST subset to validate.
-    ///
-    /// - returns: The NSString-based `NSRange`s to be replaced in the specified file.
-    func violationRanges(in file: SwiftLintFile, kind: KindType,
-                         dictionary: SourceKittenDictionary) -> [NSRange]
-}
-
-public extension SubstitutionCorrectableASTRule {
-    func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = self.kind(from: subDict) else { return nil }
-            return violationRanges(in: file, kind: kind, dictionary: subDict)
-        }
+        return numberOfCorrections
     }
 }
 
@@ -215,14 +245,14 @@ public protocol SourceKitFreeRule: Rule {}
 public protocol AnalyzerRule: OptInRule {}
 
 public extension AnalyzerRule {
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:compilerArguments:)` for AnalyzerRule")
     }
 }
 
 /// :nodoc:
 public extension AnalyzerRule where Self: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file _: SwiftLintFile) -> Int {
         queuedFatalError("Must call `correct(file:compilerArguments:)` for AnalyzerRule")
     }
 }

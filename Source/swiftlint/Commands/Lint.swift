@@ -7,12 +7,12 @@ extension SwiftLint {
 
         @OptionGroup
         var common: LintOrAnalyzeArguments
-        @Option(help: pathOptionDescription(for: .lint))
-        var path: String?
         @Flag(help: "Lint standard input.")
         var useSTDIN = false
         @Flag(help: quietOptionDescription(for: .lint))
         var quiet = false
+        @Flag(help: "Don't print deprecation warnings.")
+        var silenceDeprecationWarnings = false
         @Option(help: "The directory of the cache used when linting.")
         var cachePath: String?
         @Flag(help: "Ignore cache when linting.")
@@ -23,18 +23,14 @@ extension SwiftLint {
         var paths = [String]()
 
         func run() async throws {
-            let allPaths: [String]
-            if let path {
-                // TODO: [06/14/2024] Remove deprecation warning after ~2 years.
-                Issue.genericWarning(
-                    "The --path option is deprecated. Pass the path(s) to lint last to the swiftlint command."
-                ).print()
-                allPaths = [path] + paths
-            } else if !paths.isEmpty {
-                allPaths = paths
-            } else {
-                allPaths = [""] // Lint files in current working directory if no paths were specified.
+            Issue.printDeprecationWarnings = !silenceDeprecationWarnings
+
+            if common.fix, let leniency = common.leniency {
+                Issue.genericWarning("The option --\(leniency) has no effect together with --fix.").print()
             }
+
+            // Lint files in current working directory if no paths were specified.
+            let allPaths = paths.isNotEmpty ? paths : [""]
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
                 paths: allPaths,
@@ -45,19 +41,24 @@ extension SwiftLint {
                 forceExclude: common.forceExclude,
                 useExcludingByPrefix: common.useAlternativeExcluding,
                 useScriptInputFiles: common.useScriptInputFiles,
+                useScriptInputFileLists: common.useScriptInputFileLists,
                 benchmark: common.benchmark,
                 reporter: common.reporter,
+                baseline: common.baseline,
+                writeBaseline: common.writeBaseline,
+                workingDirectory: common.workingDirectory,
                 quiet: quiet,
                 output: common.output,
                 progress: common.progress,
                 cachePath: cachePath,
                 ignoreCache: noCache,
                 enableAllRules: enableAllRules,
+                onlyRule: common.onlyRule,
                 autocorrect: common.fix,
                 format: common.format,
                 compilerLogPath: nil,
                 compileCommands: nil,
-                inProcessSourcekit: common.inProcessSourcekit
+                checkForUpdates: common.checkForUpdates
             )
             try await LintOrAnalyzeCommand.run(options)
         }

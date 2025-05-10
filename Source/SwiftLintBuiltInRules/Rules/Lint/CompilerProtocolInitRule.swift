@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct CompilerProtocolInitRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -10,30 +11,26 @@ struct CompilerProtocolInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
                      "shouldn't be called directly.",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("let set: Set<Int> = [1, 2]\n"),
-            Example("let set = Set(array)\n")
+            Example("let set: Set<Int> = [1, 2]"),
+            Example("let set = Set(array)"),
         ],
         triggeringExamples: [
-            Example("let set = ↓Set(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set (arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral: 1, 2)\n"),
-            Example("let set = ↓Set.init(arrayLiteral : 1, 2)\n")
+            Example("let set = ↓Set(arrayLiteral: 1, 2)"),
+            Example("let set = ↓Set (arrayLiteral: 1, 2)"),
+            Example("let set = ↓Set.init(arrayLiteral: 1, 2)"),
+            Example("let set = ↓Set.init(arrayLiteral : 1, 2)"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension CompilerProtocolInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.trailingClosure == nil else {
                 return
             }
 
-            let arguments = node.argumentList.compactMap(\.label)
+            let arguments = node.arguments.compactMap(\.label)
             guard ExpressibleByCompiler.possibleNumberOfArguments.contains(arguments.count) else {
                 return
             }
@@ -63,11 +60,12 @@ private extension CompilerProtocolInitRule {
 private extension FunctionCallExprSyntax {
     // doing this instead of calling `.description` as it's faster
     var functionName: String? {
-        if let expr = calledExpression.as(IdentifierExprSyntax.self) {
-            return expr.identifier.text
-        } else if let expr = calledExpression.as(MemberAccessExprSyntax.self),
-                  let base = expr.base?.as(IdentifierExprSyntax.self) {
-            return base.identifier.text + "." + expr.name.text
+        if let expr = calledExpression.as(DeclReferenceExprSyntax.self) {
+            return expr.baseName.text
+        }
+        if let expr = calledExpression.as(MemberAccessExprSyntax.self),
+           let base = expr.base?.as(DeclReferenceExprSyntax.self) {
+            return base.baseName.text + "." + expr.declName.baseName.text
         }
 
         // we don't care about other possible expressions as they wouldn't match the calls we're interested in
@@ -87,10 +85,12 @@ private struct ExpressibleByCompiler {
         initCallNames = Set(types.flatMap { [$0, "\($0).init"] })
     }
 
-    static let allProtocols = [byArrayLiteral, byNilLiteral, byBooleanLiteral,
-                               byFloatLiteral, byIntegerLiteral, byUnicodeScalarLiteral,
-                               byExtendedGraphemeClusterLiteral, byStringLiteral,
-                               byStringInterpolation, byDictionaryLiteral]
+    static let allProtocols = [
+        byArrayLiteral, byNilLiteral, byBooleanLiteral,
+        byFloatLiteral, byIntegerLiteral, byUnicodeScalarLiteral,
+        byExtendedGraphemeClusterLiteral, byStringLiteral,
+        byStringInterpolation, byDictionaryLiteral,
+    ]
 
     static let possibleNumberOfArguments: Set<Int> = {
         allProtocols.reduce(into: Set<Int>()) { partialResult, entry in
@@ -105,7 +105,7 @@ private struct ExpressibleByCompiler {
     }()
 
     func match(arguments: [String]) -> Bool {
-        return self.arguments.contains(arguments)
+        self.arguments.contains(arguments)
     }
 
     private static let byArrayLiteral: ExpressibleByCompiler = {
@@ -123,7 +123,7 @@ private struct ExpressibleByCompiler {
             "NSSet",
             "SBElementArray",
             "Set",
-            "IndexSet"
+            "IndexSet",
         ]
         return Self(protocolName: "ExpressibleByArrayLiteral", types: types, arguments: [["arrayLiteral"]])
     }()

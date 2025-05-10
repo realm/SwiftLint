@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct UnavailableFunctionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -35,7 +36,7 @@ struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
                 // Crash the app to re-start the onboarding flow.
                 fatalError("Onboarding re-start crash.")
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -66,17 +67,13 @@ struct UnavailableFunctionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
                 // Crash the app to re-start the onboarding flow.
                 fatalError("Onboarding re-start crash.")
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnavailableFunctionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard !node.returnsNever,
                   !node.attributes.hasUnavailableAttribute,
@@ -102,28 +99,24 @@ private extension UnavailableFunctionRule {
 
 private extension FunctionDeclSyntax {
     var returnsNever: Bool {
-        if let expr = signature.output?.returnType.as(SimpleTypeIdentifierSyntax.self) {
+        if let expr = signature.returnClause?.type.as(IdentifierTypeSyntax.self) {
             return expr.name.text == "Never"
         }
         return false
     }
 }
 
-private extension AttributeListSyntax? {
+private extension AttributeListSyntax {
     var hasUnavailableAttribute: Bool {
-        guard let attrs = self else {
-            return false
-        }
-
-        return attrs.contains { elem in
+        contains { elem in
             guard let attr = elem.as(AttributeSyntax.self),
-                    let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
+                  let arguments = attr.arguments?.as(AvailabilityArgumentListSyntax.self) else {
                 return false
             }
 
             let attributeName = attr.attributeNameText
             return attributeName == "available" && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
+                arg.argument.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
             }
         }
     }
@@ -138,16 +131,16 @@ private extension CodeBlockSyntax? {
         let terminatingFunctions: Set = [
             "abort",
             "fatalError",
-            "preconditionFailure"
+            "preconditionFailure",
         ]
 
         return statements.contains { item in
             guard let function = item.item.as(FunctionCallExprSyntax.self),
-                  let identifierExpr = function.calledExpression.as(IdentifierExprSyntax.self) else {
+                  let identifierExpr = function.calledExpression.as(DeclReferenceExprSyntax.self) else {
                 return false
             }
 
-            return terminatingFunctions.contains(identifierExpr.identifier.text)
+            return terminatingFunctions.contains(identifierExpr.baseName.text)
         }
     }
 
@@ -164,15 +157,15 @@ private extension CodeBlockSyntax? {
 private final class ReturnFinderVisitor: SyntaxVisitor {
     private(set) var containsReturn = false
 
-    override func visitPost(_ node: ReturnStmtSyntax) {
+    override func visitPost(_: ReturnStmtSyntax) {
         containsReturn = true
     }
 
-    override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
         .skipChildren
     }
 
-    override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
         .skipChildren
     }
 }

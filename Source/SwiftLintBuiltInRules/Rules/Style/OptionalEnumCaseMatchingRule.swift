@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct OptionalEnumCaseMatchingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -45,7 +46,7 @@ struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationPr
             case .none:
               break
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -82,7 +83,7 @@ struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationPr
              case (_, .bar↓?): break
              default: break
             }
-            """)
+            """),
         ],
         corrections: [
             Example("""
@@ -149,25 +150,14 @@ struct OptionalEnumCaseMatchingRule: SwiftSyntaxCorrectableRule, ConfigurationPr
              case (_, .bar): break
              default: break
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension OptionalEnumCaseMatchingRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: CaseItemSyntax) {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: SwitchCaseItemSyntax) {
             guard let pattern = node.pattern.as(ExpressionPatternSyntax.self) else {
                 return
             }
@@ -184,51 +174,39 @@ private extension OptionalEnumCaseMatchingRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
-        override func visit(_ node: CaseItemSyntax) -> CaseItemSyntax {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
             guard
                 let pattern = node.pattern.as(ExpressionPatternSyntax.self),
-                pattern.expression.is(OptionalChainingExprSyntax.self) || pattern.expression.is(TupleExprSyntax.self),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+                pattern.expression.is(OptionalChainingExprSyntax.self) || pattern.expression.is(TupleExprSyntax.self)
             else {
                 return super.visit(node)
             }
 
             if let expression = pattern.expression.as(OptionalChainingExprSyntax.self),
                !expression.expression.isDiscardAssignmentOrBoolLiteral {
-                let violationPosition = expression.questionMark.positionAfterSkippingLeadingTrivia
-                correctionPositions.append(violationPosition)
+                numberOfCorrections += 1
                 let newPattern = PatternSyntax(pattern.with(\.expression, expression.expression))
                 let newNode = node
                     .with(\.pattern, newPattern)
                     .with(\.whereClause,
                           node.whereClause?.with(\.leadingTrivia, expression.questionMark.trailingTrivia))
                 return super.visit(newNode)
-            } else if let expression = pattern.expression.as(TupleExprSyntax.self) {
+            }
+            if let expression = pattern.expression.as(TupleExprSyntax.self) {
                 var newExpression = expression
-                for (index, element) in expression.elementList.enumerated() {
+                for element in expression.elements {
                     guard
                         let optionalChainingExpression = element.expression.as(OptionalChainingExprSyntax.self),
                         !optionalChainingExpression.expression.is(DiscardAssignmentExprSyntax.self)
                     else {
                         continue
                     }
-
-                    let violationPosition = optionalChainingExpression.questionMark.positionAfterSkippingLeadingTrivia
-                    correctionPositions.append(violationPosition)
-
+                    numberOfCorrections += 1
                     let newElement = element.with(\.expression, optionalChainingExpression.expression)
-                    newExpression.elementList = newExpression.elementList
-                        .replacing(childAt: index, with: newElement)
+                    if let index = expression.elements.index(of: element) {
+                        newExpression.elements = newExpression.elements.with(\.[index], newElement)
+                    }
                 }
 
                 let newPattern = PatternSyntax(pattern.with(\.expression, ExprSyntax(newExpression)))
@@ -243,7 +221,7 @@ private extension OptionalEnumCaseMatchingRule {
 
 private extension TupleExprSyntax {
     func optionalChainingExpressions() -> [OptionalChainingExprSyntax] {
-        elementList
+        elements
             .compactMap { $0.expression.as(OptionalChainingExprSyntax.self) }
             .filter { !$0.expression.isDiscardAssignmentOrBoolLiteral }
     }

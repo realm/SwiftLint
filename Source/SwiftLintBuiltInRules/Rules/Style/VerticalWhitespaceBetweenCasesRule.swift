@@ -3,47 +3,50 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentKinds)
     }
 }
 
-struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
+struct VerticalWhitespaceBetweenCasesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let nonTriggeringExamples: [Example] = [
         Example("""
-        switch x {
+            switch x {
 
-        case 0..<5:
-            print("x is low")
+            case 0..<5:
+                print("x is low")
 
-        case 5..<10:
-            print("x is high")
+            case 5..<10:
+                print("x is high")
 
-        default:
-            print("x is invalid")
+            default:
+                print("x is invalid")
 
-        }
-        """),
+            @unknown default:
+                print("x is out of this world")
+            }
+            """),
         Example("""
-        switch x {
-        case 0..<5:
-            print("x is low")
+            switch x {
+            case 0..<5:
+                print("x is low")
 
-        case 5..<10:
-            print("x is high")
+            case 5..<10:
+                print("x is high")
 
-        default:
-            print("x is invalid")
-        }
-        """),
+            default:
+                print("x is invalid")
+            }
+            """),
         Example("""
-        switch x {
-        case 0..<5: print("x is low")
-        case 5..<10: print("x is high")
-        default: print("x is invalid")
-        }
-        """),
+            switch x {
+            case 0..<5: print("x is low")
+            case 5..<10: print("x is high")
+            default: print("x is invalid")
+            @unknown default: print("x is out of this world")
+            }
+            """),
         // Testing handling of trailing spaces: do not convert to """ style
         Example([
             "switch x {    \n",
@@ -52,69 +55,90 @@ struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
             "    \n",
             "default:    \n",
             "    print(\"not one\")    \n",
-            "}    "
-        ].joined())
+            "}    ",
+        ].joined()),
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
         Example("""
             switch x {
             case 0..<5:
-                print("x is valid")
-        ↓    default:
-                print("x is invalid")
+                return "x is valid"
+            ↓default:
+                return "x is invalid"
+            ↓@unknown default:
+                print("x is out of this world")
             }
-        """): Example("""
+            """): Example("""
+                switch x {
+                case 0..<5:
+                    return "x is valid"
+
+                default:
+                    return "x is invalid"
+
+                @unknown default:
+                    print("x is out of this world")
+                }
+                """),
+        Example("""
             switch x {
             case 0..<5:
                 print("x is valid")
-
-            default:
+            ↓default:
                 print("x is invalid")
             }
-        """),
+            """): Example("""
+                switch x {
+                case 0..<5:
+                    print("x is valid")
+
+                default:
+                    print("x is invalid")
+                }
+                """),
         Example("""
             switch x {
             case .valid:
                 print("x is valid")
-        ↓    case .invalid:
+            ↓case .invalid:
                 print("x is invalid")
             }
-        """): Example("""
-            switch x {
-            case .valid:
-                print("x is valid")
+            """): Example("""
+                switch x {
+                case .valid:
+                    print("x is valid")
 
-            case .invalid:
-                print("x is invalid")
-            }
-        """),
+                case .invalid:
+                    print("x is invalid")
+                }
+                """),
         Example("""
             switch x {
             case .valid:
                 print("multiple ...")
                 print("... lines")
-        ↓    case .invalid:
+            ↓case .invalid:
                 print("multiple ...")
                 print("... lines")
             }
-        """): Example("""
-            switch x {
-            case .valid:
-                print("multiple ...")
-                print("... lines")
+            """): Example("""
+                switch x {
+                case .valid:
+                    print("multiple ...")
+                    print("... lines")
 
-            case .invalid:
-                print("multiple ...")
-                print("... lines")
-            }
-        """)
+                case .invalid:
+                    print("multiple ...")
+                    print("... lines")
+                }
+                """),
     ]
 
-    private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
+    private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default|@unknown default):[ \\t]*\\n)"
 
     private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        return file.violatingRanges(for: pattern).filter {
+        file.violatingRanges(for: pattern).filter {
             !isFalsePositive(in: file, range: $0)
         }
     }
@@ -137,7 +161,7 @@ struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 extension VerticalWhitespaceBetweenCasesRule: OptInRule {
     static let description = RuleDescription(
         identifier: "vertical_whitespace_between_cases",
-        name: "Vertical Whitespace between Cases",
+        name: "Vertical Whitespace Between Cases",
         description: "Include a single empty line between switch cases",
         kind: .style,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
@@ -167,31 +191,22 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
 }
 
 extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
         let patternRegex = regex(pattern)
-        let replacementTemplate = "$1\n$2"
-        let description = Self.description
-
-        var corrections = [Correction]()
         var fileContents = file.contents
-
         for violationRange in violatingRanges.reversed() {
             fileContents = patternRegex.stringByReplacingMatches(
                 in: fileContents,
                 options: [],
                 range: violationRange,
-                withTemplate: replacementTemplate
+                withTemplate: "$1\n$2"
             )
-
-            let location = Location(file: file, characterOffset: violationRange.location)
-            let correction = Correction(ruleDescription: description, location: location)
-            corrections.append(correction)
         }
-
         file.write(fileContents)
-        return corrections
+        return violatingRanges.count
     }
 }

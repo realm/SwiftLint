@@ -1,6 +1,10 @@
-struct SortedImportsConfiguration: RuleConfiguration, Equatable {
+import SwiftLintCore
+
+@AutoConfigParser
+struct SortedImportsConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = SortedImportsRule
 
+    @AcceptableByConfigurationElement
     enum SortedImportsGroupingConfiguration: String {
         /// Sorts import lines based on any import attributes (e.g. `@testable`, `@_exported`, etc.), followed by a case
         /// insensitive comparison of the imported module name.
@@ -9,29 +13,8 @@ struct SortedImportsConfiguration: RuleConfiguration, Equatable {
         case names
     }
 
-    private(set) var severity = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "severity")
+    private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "grouping")
     private(set) var grouping = SortedImportsGroupingConfiguration.names
-
-    var consoleDescription: String {
-        return "severity: \(severity.consoleDescription)"
-            + ", grouping: \(grouping)"
-    }
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let rawGrouping = configuration["grouping"] {
-            guard let rawGrouping = rawGrouping as? String,
-                  let grouping = SortedImportsGroupingConfiguration(rawValue: rawGrouping) else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-            }
-            self.grouping = grouping
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severity.apply(configuration: severityString)
-        }
-    }
 }

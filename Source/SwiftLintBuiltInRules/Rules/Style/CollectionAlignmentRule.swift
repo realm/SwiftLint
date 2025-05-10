@@ -1,9 +1,10 @@
 import SwiftSyntax
 
-struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct CollectionAlignmentRule: Rule {
     var configuration = CollectionAlignmentConfiguration()
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "collection_alignment",
         name: "Collection Element Alignment",
         description: "All elements in a collection literal should be vertically aligned",
@@ -11,23 +12,10 @@ struct CollectionAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
         nonTriggeringExamples: Examples(alignColons: false).nonTriggeringExamples,
         triggeringExamples: Examples(alignColons: false).triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(alignColons: configuration.alignColons, locationConverter: file.locationConverter)
-    }
 }
 
 private extension CollectionAlignmentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let alignColons: Bool
-        private let locationConverter: SourceLocationConverter
-
-        init(alignColons: Bool, locationConverter: SourceLocationConverter) {
-            self.alignColons = alignColons
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ArrayExprSyntax) {
             let locations = node.elements.map { element in
                 locationConverter.location(for: element.positionAfterSkippingLeadingTrivia)
@@ -37,9 +25,26 @@ private extension CollectionAlignmentRule {
 
         override func visitPost(_ node: DictionaryElementListSyntax) {
             let locations = node.map { element in
-                let position = alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
-                                             element.keyExpression.positionAfterSkippingLeadingTrivia
-                return locationConverter.location(for: position)
+                let position = configuration.alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
+                element.key.positionAfterSkippingLeadingTrivia
+                let location = locationConverter.location(for: position)
+
+                let graphemeColumn: Int
+                let graphemeClusters = String(
+                    locationConverter.sourceLines[location.line - 1].utf8.prefix(location.column - 1)
+                )
+                if let graphemeClusters {
+                    graphemeColumn = graphemeClusters.count + 1
+                } else {
+                    graphemeColumn = location.column
+                }
+
+                return SourceLocation(
+                    line: location.line,
+                    column: graphemeColumn,
+                    offset: location.offset,
+                    file: location.file
+                )
             }
             violations.append(contentsOf: validate(keyLocations: locations))
         }
@@ -55,12 +60,11 @@ private extension CollectionAlignmentRule {
             return zip(remainingKeyLocations.indices, remainingKeyLocations)
                 .compactMap { index, location -> AbsolutePosition? in
                     let previousLocation = keyLocations[index - 1]
-                    guard let previousLine = previousLocation.line,
-                          let locationLine = location.line,
-                          let firstKeyColumn = firstKeyLocation.column,
-                          let locationColumn = location.column,
-                          previousLine < locationLine,
-                          firstKeyColumn != locationColumn else {
+                    let previousLine = previousLocation.line
+                    let locationLine = location.line
+                    let firstKeyColumn = firstKeyLocation.column
+                    let locationColumn = location.column
+                    guard previousLine < locationLine, firstKeyColumn != locationColumn else {
                         return nil
                     }
 
@@ -89,7 +93,7 @@ extension CollectionAlignmentRule {
         }
 
         private var alignColonsTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -113,12 +117,12 @@ extension CollectionAlignmentRule {
                     "b"  ↓:2,
                     "c"    :      3
                 ]
-                """)
+                """),
             ]
         }
 
         private var alignColonsNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -142,12 +146,16 @@ extension CollectionAlignmentRule {
                       "b"  :2,
                        "c" :      3
                 ]
-                """)
+                """),
+                Example("""
+                NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
+                                                  .foregroundColor: UIColor(white: 0, alpha: 0.2)])
+                """),
             ]
         }
 
         private var alignLeftTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -171,12 +179,12 @@ extension CollectionAlignmentRule {
                                 "lunch": "sandwich",
                     ↓"dinner": "burger"
                 ]
-                """)
+                """),
             ]
         }
 
         private var alignLeftNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 doThings(arg: [
                     "foo": 1,
@@ -200,12 +208,16 @@ extension CollectionAlignmentRule {
                                 "lunch": "sandwich",
                                 "dinner": "burger"
                 ]
-                """)
+                """),
+                Example("""
+                NSAttributedString(string: "…", attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .regular),
+                                                             .foregroundColor: UIColor(white: 0, alpha: 0.2)])
+                """),
             ]
         }
 
         private var sharedTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
@@ -219,12 +231,12 @@ extension CollectionAlignmentRule {
                   ↓4,
                     6
                 ]
-                """)
+                """),
             ]
         }
 
         private var sharedNonTriggeringExamples: [Example] {
-            return [
+            [
                 Example("""
                 let coordinates = [
                     CLLocationCoordinate2D(latitude: 0, longitude: 33),
@@ -251,7 +263,7 @@ extension CollectionAlignmentRule {
                 let abc = [
                     "foo": "bar", "fizz": "buzz"
                 ]
-                """)
+                """),
             ]
         }
     }

@@ -15,11 +15,11 @@ public extension String {
     }
 
     func isUppercase() -> Bool {
-        return self == uppercased()
+        self == uppercased()
     }
 
     func isLowercase() -> Bool {
-        return self == lowercased()
+        self == lowercased()
     }
 
     private subscript (range: Range<Int>) -> String {
@@ -63,14 +63,14 @@ public extension String {
     }
 
     var fullNSRange: NSRange {
-        return NSRange(location: 0, length: utf16.count)
+        NSRange(location: 0, length: utf16.count)
     }
 
     /// Returns a new string, converting the path to a canonical absolute path.
     ///
     /// - returns: A new `String`.
     func absolutePathStandardized() -> String {
-        return bridge().absolutePathRepresentation().bridge().standardizingPath
+        bridge().absolutePathRepresentation().bridge().standardizingPath
     }
 
     var isFile: Bool {
@@ -88,7 +88,7 @@ public extension String {
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`
     func countOccurrences(of character: Character) -> Int {
-        return self.reduce(0, {
+        self.reduce(0, {
             $1 == character ? $0 + 1 : $0
         })
     }
@@ -109,14 +109,50 @@ public extension String {
                 let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap { $0 }
                     + String(normalizedSelf.dropFirst(sharedRootDir.count))
                 return String(path.dropFirst()) // Remove leading '/'
-            } else {
-                rootDirComps = rootDirComps.dropLast()
             }
+            rootDirComps = rootDirComps.dropLast()
         }
     }
 
     func deletingPrefix(_ prefix: String) -> String {
         guard hasPrefix(prefix) else { return self }
         return String(dropFirst(prefix.count))
+    }
+
+    func indent(by spaces: Int, skipFirst: Bool = false, skipEmptyLines: Bool = true) -> String {
+        let lines = components(separatedBy: "\n")
+        if skipFirst, let firstLine = lines.first {
+            return firstLine + "\n" + lines.dropFirst().indent(by: spaces, skipEmptyLines: skipEmptyLines)
+        }
+        return lines.indent(by: spaces, skipEmptyLines: skipEmptyLines)
+    }
+
+    func linesPrefixed(with prefix: Self) -> Self {
+        split(separator: "\n").joined(separator: "\n\(prefix)")
+    }
+
+    func characterPosition(of utf8Offset: Int) -> Int? {
+        guard utf8Offset != 0 else {
+            return 0
+        }
+        guard utf8Offset > 0, utf8Offset < lengthOfBytes(using: .utf8) else {
+            return nil
+        }
+        for (offset, index) in indices.enumerated() where self[...index].lengthOfBytes(using: .utf8) == utf8Offset {
+            return offset + 1
+        }
+        return nil
+    }
+}
+
+private extension Sequence where Element == String {
+    func indent(by spaces: Int, skipEmptyLines: Bool = true) -> String {
+        map { line in
+            if skipEmptyLines, line.isEmpty {
+                return line
+            }
+            return String(repeating: " ", count: spaces) + line
+        }
+        .joined(separator: "\n")
     }
 }

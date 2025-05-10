@@ -32,6 +32,24 @@ struct ImplicitGetterRuleExamples {
             """),
         Example("""
             class Foo {
+                var foo: Int {
+                    get { _foo }
+                    _modify { yield &_foo }
+                }
+            }
+            """),
+        Example("""
+            class Foo {
+                var _foo: Int
+                var foo: Int {
+                    @storageRestrictions(initializes: _foo)
+                    init { _foo = newValue }
+                    get { _foo }
+                }
+            }
+            """),
+        Example("""
+            class Foo {
                 var foo: Int
             }
             """),
@@ -184,7 +202,7 @@ struct ImplicitGetterRuleExamples {
                     }
                 }
             }
-            """)
+            """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -243,6 +261,6 @@ struct ImplicitGetterRuleExamples {
                     }
                 }
             }
-            """)
+            """),
     ]
 }

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct LineLengthRule: ConfigurationProviderRule {
+struct LineLengthRule: Rule {
     var configuration = LineLengthConfiguration()
 
     private let commentKinds = SyntaxKind.commentKinds
@@ -14,19 +14,19 @@ struct LineLengthRule: ConfigurationProviderRule {
         description: "Lines should not span too many characters.",
         kind: .metrics,
         nonTriggeringExamples: [
-            Example(String(repeating: "/", count: 120) + "\n"),
-            Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n"),
-            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "\n")
+            Example(String(repeating: "/", count: 120) + ""),
+            Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + ""),
+            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + ""),
         ],
         triggeringExamples: [
-            Example(String(repeating: "/", count: 121) + "\n"),
-            Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + "\n"),
-            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n")
+            Example(String(repeating: "/", count: 121) + ""),
+            Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + ""),
+            Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + ""),
         ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min() ?? .max
+        let minValue = configuration.params.map(\.value).min() ?? .max
         let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
         let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])
 
@@ -62,6 +62,15 @@ struct LineLengthRule: ConfigurationProviderRule {
                 return nil
             }
 
+            if configuration.ignoresMultilineStrings &&
+               lineIsMultilineString(line, file: file, syntaxKindsByLine: syntaxKindsByLine.value) {
+                return nil
+            }
+
+            for pattern in configuration.excludedLinesPatterns where line.containsMatchingPattern(pattern) {
+                return nil
+            }
+
             var strippedString = line.content
             if configuration.ignoresURLs {
                 strippedString = strippedString.strippingURLs
@@ -82,6 +91,30 @@ struct LineLengthRule: ConfigurationProviderRule {
             }
             return nil
         }
+    }
+
+    /// Checks if the given line is part of a multiline string
+    /// - Example:
+    /// ```
+    /// let a = """
+    /// <line is somewhere in here>
+    /// """
+    /// ```
+    private func lineIsMultilineString(_ line: Line, file: SwiftLintFile, syntaxKindsByLine: [[SyntaxKind]]) -> Bool {
+        // contents of multiline strings only include one string element per line
+        guard syntaxKindsByLine[line.index] == [.string] else { return false }
+
+        // find the trailing delimiter `"""` in order to make sure we're not in a list of concatenated strings
+        let lastStringLineIndex = syntaxKindsByLine.dropFirst(line.index + 1).firstIndex(where: { $0 != [.string] })
+        guard let lastStringLineIndex else {
+            return file.lines.last?.content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") == true
+        }
+
+        // lines include leading empty element
+        // check last string line for single `"""`
+        // and if it fails, check the next line contains more than just a string for `"""; let a = 1`
+        return file.lines[lastStringLineIndex - 1].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") ||
+        file.lines[lastStringLineIndex - 2].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"")
     }
 
     /// Takes a string and replaces any literals specified by the `delimiter` parameter with `#`
@@ -118,6 +151,12 @@ struct LineLengthRule: ConfigurationProviderRule {
             return false
         }
         return !kinds.isDisjoint(with: kindsByLine[index])
+    }
+}
+
+private extension Line {
+    func containsMatchingPattern(_ pattern: String) -> Bool {
+        regex(pattern).firstMatch(in: content, range: content.fullNSRange) != nil
     }
 }
 

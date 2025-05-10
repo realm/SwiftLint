@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct SortedEnumCasesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -13,6 +14,19 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRul
             enum foo {
                 case a
                 case b
+                case c
+            }
+            """),
+            Example("""
+            enum foo {
+                case example
+                case exBoyfriend
+            }
+            """),
+            Example("""
+            enum foo {
+                case a
+                case B
                 case c
             }
             """),
@@ -34,13 +48,19 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRul
             }
             """),
             Example("""
+            enum foo {
+                case a
+                case b, C, d
+            }
+            """),
+            Example("""
             @frozen
             enum foo {
                 case b
                 case a
                 case c, f, d
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -52,7 +72,19 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRul
             """),
             Example("""
             enum foo {
+                ↓case B
+                ↓case a
+                case c
+            }
+            """),
+            Example("""
+            enum foo {
                 case ↓b, ↓a, c
+            }
+            """),
+            Example("""
+            enum foo {
+                case ↓B, ↓a, c
             }
             """),
             Example("""
@@ -72,19 +104,15 @@ struct SortedEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRul
                 case a(foo: Foo)
                 case ↓c, ↓b(String)
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension SortedEnumCasesRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
-            return .allExcept(EnumDeclSyntax.self)
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
+            .allExcept(EnumDeclSyntax.self)
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -94,10 +122,14 @@ private extension SortedEnumCasesRule {
 
             let cases = node.memberBlock.members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
             let sortedCases = cases
-                .sorted(by: { $0.elements.first!.identifier.text < $1.elements.first!.identifier.text })
+                .sorted(by: {
+                    let lhs = $0.elements.first!.name.text
+                    let rhs = $1.elements.first!.name.text
+                    return lhs.caseInsensitiveCompare(rhs) == .orderedAscending
+                })
 
             zip(sortedCases, cases).forEach { sortedCase, currentCase in
-                if sortedCase.elements.first?.identifier.text != currentCase.elements.first?.identifier.text {
+                if sortedCase.elements.first?.name.text != currentCase.elements.first?.name.text {
                     violations.append(currentCase.positionAfterSkippingLeadingTrivia)
                 }
             }
@@ -106,10 +138,12 @@ private extension SortedEnumCasesRule {
         }
 
         override func visitPost(_ node: EnumCaseDeclSyntax) {
-            let sortedElements = node.elements.sorted(by: { $0.identifier.text < $1.identifier.text })
+            let sortedElements = node.elements.sorted(by: {
+                $0.name.text.caseInsensitiveCompare($1.name.text) == .orderedAscending
+            })
 
             zip(sortedElements, node.elements).forEach { sortedElement, currentElement in
-                if sortedElement.identifier.text != currentElement.identifier.text {
+                if sortedElement.name.text != currentElement.name.text {
                     violations.append(currentElement.positionAfterSkippingLeadingTrivia)
                 }
             }

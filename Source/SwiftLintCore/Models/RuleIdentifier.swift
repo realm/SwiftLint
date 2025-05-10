@@ -1,5 +1,5 @@
 /// An identifier representing a SwiftLint rule, or all rules.
-public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
+public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral, Comparable, Sendable {
     // MARK: - Values
 
     /// Special identifier that should be treated as referring to 'all' SwiftLint rules. One helpful usecase is in
@@ -14,7 +14,7 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
 
     private static let allStringRepresentation = "all"
 
-    /// The spelling of the string for this idenfitier.
+    /// The spelling of the string for this identifier.
     public var stringRepresentation: String {
         switch self {
         case .all:
@@ -38,5 +38,11 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
 
     public init(stringLiteral value: String) {
         self = Self(value)
+    }
+
+    // MARK: - Comparable Conformance
+
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.stringRepresentation < rhs.stringRepresentation
     }
 }

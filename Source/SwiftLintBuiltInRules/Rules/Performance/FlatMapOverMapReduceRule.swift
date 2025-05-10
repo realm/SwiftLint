@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct FlatMapOverMapReduceRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -10,29 +11,25 @@ struct FlatMapOverMapReduceRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
         kind: .performance,
         nonTriggeringExamples: [
             Example("let foo = bar.map { $0.count }.reduce(0, +)"),
-            Example("let foo = bar.flatMap { $0.array }")
+            Example("let foo = bar.flatMap { $0.array }"),
         ],
         triggeringExamples: [
             Example("let foo = ↓bar.map { $0.array }.reduce([], +)")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FlatMapOverMapReduceRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
-                memberAccess.name.text == "reduce",
-                node.argumentList.count == 2,
-                let firstArgument = node.argumentList.first?.expression.as(ArrayExprSyntax.self),
+                memberAccess.declName.baseName.text == "reduce",
+                node.arguments.count == 2,
+                let firstArgument = node.arguments.first?.expression.as(ArrayExprSyntax.self),
                 firstArgument.elements.isEmpty,
-                let secondArgument = node.argumentList.last?.expression.as(IdentifierExprSyntax.self),
-                secondArgument.identifier.text == "+"
+                let secondArgument = node.arguments.last?.expression.as(DeclReferenceExprSyntax.self),
+                secondArgument.baseName.text == "+"
             else {
                 return
             }

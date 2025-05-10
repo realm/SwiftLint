@@ -5,7 +5,7 @@ private let attributeNamesImplyingObjc: Set<String> = [
     "IBAction", "IBOutlet", "IBInspectable", "GKInspectable", "IBDesignable", "NSManaged"
 ]
 
-struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule, ConfigurationProviderRule {
+struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -18,15 +18,15 @@ struct RedundantObjcAttributeRule: SwiftSyntaxRule, SubstitutionCorrectableRule,
         corrections: RedundantObjcAttributeRuleExamples.corrections
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        final class Visitor: ViolationsSyntaxVisitor {
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
             override func visitPost(_ node: AttributeListSyntax) {
                 if let objcAttribute = node.violatingObjCAttribute {
                     violations.append(objcAttribute.positionAfterSkippingLeadingTrivia)
                 }
             }
         }
-        return Visitor(viewMode: .sourceAccurate)
+        return Visitor(configuration: configuration, file: file)
     }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
@@ -43,7 +43,7 @@ private extension AttributeListSyntax {
     var objCAttribute: AttributeSyntax? {
         lazy
             .compactMap { $0.as(AttributeSyntax.self) }
-            .first { $0.attributeNameText == "objc" && $0.argument == nil }
+            .first { $0.attributeNameText == "objc" && $0.arguments == nil }
     }
 
     var hasAttributeImplyingObjC: Bool {
@@ -61,18 +61,19 @@ private extension Syntax {
     var isFunctionOrStoredProperty: Bool {
         if self.is(FunctionDeclSyntax.self) {
             return true
-        } else if let variableDecl = self.as(VariableDeclSyntax.self),
-                  variableDecl.bindings.allSatisfy({ $0.accessor == nil }) {
-            return true
-        } else {
-            return false
         }
+        if let variableDecl = self.as(VariableDeclSyntax.self),
+                  variableDecl.bindings.allSatisfy({ $0.accessorBlock == nil }) {
+            return true
+        }
+        return false
     }
 
-    var functionOrVariableModifiers: ModifierListSyntax? {
+    var functionOrVariableModifiers: DeclModifierListSyntax? {
         if let functionDecl = self.as(FunctionDeclSyntax.self) {
             return functionDecl.modifiers
-        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+        }
+        if let variableDecl = self.as(VariableDeclSyntax.self) {
             return variableDecl.modifiers
         }
         return nil
@@ -87,18 +88,20 @@ private extension AttributeListSyntax {
 
         if hasAttributeImplyingObjC, parent?.is(ExtensionDeclSyntax.self) != true {
             return objcAttribute
-        } else if parent?.is(EnumDeclSyntax.self) == true {
-            return nil
-        } else if parent?.isFunctionOrStoredProperty == true,
-                  let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-                  parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
-            return parent?.functionOrVariableModifiers.isPrivateOrFileprivate == true ? nil : objcAttribute
-        } else if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
-                  parentExtensionDecl.attributes?.objCAttribute != nil {
-            return objcAttribute
-        } else {
+        }
+        if parent?.is(EnumDeclSyntax.self) == true {
             return nil
         }
+        if parent?.isFunctionOrStoredProperty == true,
+                  let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
+                  parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
+            return parent?.functionOrVariableModifiers?.containsPrivateOrFileprivate() == true ? nil : objcAttribute
+        }
+        if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
+                  parentExtensionDecl.attributes.objCAttribute != nil {
+            return objcAttribute
+        }
+        return nil
     }
 }
 

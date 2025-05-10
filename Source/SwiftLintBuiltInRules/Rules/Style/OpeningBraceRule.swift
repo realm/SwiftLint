@@ -1,241 +1,209 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
-
-private extension SwiftLintFile {
-    func violatingOpeningBraceRanges(allowMultilineFunc: Bool) -> [(range: NSRange, location: Int)] {
-        let excludingPattern: String
-        if allowMultilineFunc {
-            excludingPattern = #"(?:func[^\{\n]*\n[^\{\n]*\n[^\{]*|(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*))\{"#
-        } else {
-            excludingPattern = #"(?:\b(?:if|guard|while)\n[^\{]+?\s|\{\s*)\{"#
-        }
-
-        return match(pattern: #"(?:[^( ]|[\s(][\s]+)\{"#,
-                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                     excludingPattern: excludingPattern).compactMap {
-            if isAnonymousClosure(range: $0) {
-                return nil
-            }
-            let braceRange = contents.bridge().range(of: "{", options: .literal, range: $0)
-            return ($0, braceRange.location)
-        }
-    }
-
-    func isAnonymousClosure(range: NSRange) -> Bool {
-        let contentsBridge = contents.bridge()
-        guard range.location != NSNotFound else {
-            return false
-        }
-        let closureCode = contentsBridge.substring(from: range.location)
-        guard let closingBracketPosition = closingBracket(closureCode) else {
-            return false
-        }
-        let lengthAfterClosingBracket = closureCode.count - closingBracketPosition - 1
-        if lengthAfterClosingBracket <= 0 {
-            return false
-        }
-
-        // First non-whitespace character should be "(" - otherwise it is not an anonymous closure
-        let afterBracketCode = closureCode.substring(from: closingBracketPosition + 1)
-                                            .trimmingCharacters(in: .whitespaces)
-        return afterBracketCode.first == "("
-    }
-
-    func closingBracket(_ closureCode: String) -> Int? {
-        var bracketCount = 0
-
-        for (index, letter) in closureCode.enumerated() {
-            if letter == "{" {
-                bracketCount += 1
-            } else if letter == "}" {
-                if bracketCount == 1 {
-                    // The closing bracket found
-                    return index
-                }
-                bracketCount -= 1
-            }
-        }
-        return nil
-    }
-}
-
-struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(correctable: true)
+struct OpeningBraceRule: Rule {
     var configuration = OpeningBraceConfiguration()
 
     static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",
-        description: "Opening braces should be preceded by a single space and on the same line " +
-                     "as the declaration",
+        description: """
+            The correct positioning of braces that introduce a block of code or member list is highly controversial. \
+            No matter which style is preferred, consistency is key. Apart from different tastes, \
+            the positioning of braces can also have a significant impact on the readability of the code, \
+            especially for visually impaired developers. This rule ensures that braces are preceded \
+            by a single space and on the same line as the declaration. Comments between the declaration and the \
+            opening brace are respected. Check out the `contrasted_opening_brace` rule for a different style.
+            """,
         kind: .style,
-        nonTriggeringExamples: [
-            Example("func abc() {\n}"),
-            Example("[].map() { $0 }"),
-            Example("[].map({ })"),
-            Example("if let a = b { }"),
-            Example("while a == b { }"),
-            Example("guard let a = b else { }"),
-            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
-            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }"),
-            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"),
-            Example("struct Rule {}\n"),
-            Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
-            Example("""
-                    func f(rect: CGRect) {
-                        {
-                            let centre = CGPoint(x: rect.midX, y: rect.midY)
-                            print(centre)
-                        }()
-                    }
-                    """),
-            Example("""
-                    func f(rect: CGRect) -> () -> Void {
-                        {
-                            let centre = CGPoint(x: rect.midX, y: rect.midY)
-                            print(centre)
-                        }
-                    }
-                    """),
-            Example("""
-                    func f() -> () -> Void {
-                        {}
-                    }
-                    """)
-        ],
-        triggeringExamples: [
-            Example("func abc()↓{\n}"),
-            Example("func abc()\n\t↓{ }"),
-            Example("func abc(a: A\n\tb: B)\n↓{"),
-            Example("[].map()↓{ $0 }"),
-            Example("[].map( ↓{ } )"),
-            Example("if let a = b↓{ }"),
-            Example("while a == b↓{ }"),
-            Example("guard let a = b else↓{ }"),
-            Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-            Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-            Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }"),
-            Example("struct Rule↓{}\n"),
-            Example("struct Rule\n↓{\n}\n"),
-            Example("struct Rule\n\n\t↓{\n}\n"),
-            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"),
-            Example("""
-            // Get the current thread's TLS pointer. On first call for a given thread,
-            // creates and initializes a new one.
-            internal static func getPointer()
-              -> UnsafeMutablePointer<_ThreadLocalStorage>
-            { // <- here
-              return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
-                to: _ThreadLocalStorage.self)
-            }
-            """),
-            Example("""
-            func run_Array_method1x(_ N: Int) {
-              let existentialArray = array!
-              for _ in 0 ..< N * 100 {
-                for elt in existentialArray {
-                  if !elt.doIt()  {
-                    fatalError("expected true")
-                  }
-                }
-              }
-            }
-
-            func run_Array_method2x(_ N: Int) {
-
-            }
-            """),
-            Example("""
-               class TestFile {
-                   func problemFunction() {
-                       #if DEBUG
-                       #endif
-                   }
-
-                   func openingBraceViolation()
-                  ↓{
-                       print("Brackets")
-                   }
-               }
-            """)
-        ],
-        corrections: [
-            Example("struct Rule↓{}\n"): Example("struct Rule {}\n"),
-            Example("struct Rule\n↓{\n}\n"): Example("struct Rule {\n}\n"),
-            Example("struct Rule\n\n\t↓{\n}\n"): Example("struct Rule {\n}\n"),
-            Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}\n"):
-                Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n"),
-            Example("[].map()↓{ $0 }\n"): Example("[].map() { $0 }\n"),
-            Example("[].map( ↓{ })\n"): Example("[].map({ })\n"),
-            Example("if a == b↓{ }\n"): Example("if a == b { }\n"),
-            Example("if\n\tlet a = b,\n\tlet c = d↓{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n")
-        ]
+        nonTriggeringExamples: OpeningBraceRuleExamples.nonTriggeringExamples,
+        triggeringExamples: OpeningBraceRuleExamples.triggeringExamples,
+        corrections: OpeningBraceRuleExamples.corrections
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
-    }
+private extension OpeningBraceRule {
+    final class Visitor: CodeBlockVisitor<ConfigurationType> {
+        // MARK: - Type Declarations
 
-    func correct(file: SwiftLintFile) -> [Correction] {
-        let violatingRanges = file.violatingOpeningBraceRanges(allowMultilineFunc: configuration.allowMultilineFunc)
-            .filter {
-                file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty
+        override func visitPost(_ node: ActorDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword) {
+                return
             }
-        var correctedContents = file.contents
-        var adjustedLocations = [Location]()
 
-        for (violatingRange, location) in violatingRanges.reversed() {
-            correctedContents = correct(contents: correctedContents, violatingRange: violatingRange)
-            adjustedLocations.insert(Location(file: file, characterOffset: location), at: 0)
+            super.visitPost(node)
         }
 
-        file.write(correctedContents)
+        override func visitPost(_ node: ClassDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword) {
+                return
+            }
 
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: $0)
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: ProtocolDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            if configuration.ignoreMultilineTypeHeaders,
+                hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        // MARK: - Conditional Statements
+
+        override func visitPost(_ node: ForStmtSyntax) {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.forKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: IfExprSyntax) {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.ifKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: WhileStmtSyntax) {
+            if configuration.ignoreMultilineStatementConditions,
+                hasMultilinePredecessors(node.body, keyword: node.whileKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        // MARK: - Functions and Initializers
+
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if let body = node.body,
+                configuration.shouldIgnoreMultilineFunctionSignatures,
+                hasMultilinePredecessors(body, keyword: node.funcKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if let body = node.body,
+                configuration.shouldIgnoreMultilineFunctionSignatures,
+                hasMultilinePredecessors(body, keyword: node.initKeyword) {
+                return
+            }
+
+            super.visitPost(node)
+        }
+
+        // MARK: - Other Methods
+
+        /// Checks if a `BracedSyntax` has a multiline predecessor.
+        /// For type declarations, the predecessor is the header. For conditional statements,
+        /// it is the condition list, and for functions, it is the signature.
+        private func hasMultilinePredecessors(_ body: some BracedSyntax, keyword: TokenSyntax) -> Bool {
+            guard let endToken = body.previousToken(viewMode: .sourceAccurate) else {
+                return false
+            }
+            let startLocation = keyword.endLocation(converter: locationConverter)
+            let endLocation = endToken.endLocation(converter: locationConverter)
+            let braceLocation = body.leftBrace.endLocation(converter: locationConverter)
+            return startLocation.line != endLocation.line && endLocation.line != braceLocation.line
+        }
+
+        override func collectViolations(for bracedItem: (some BracedSyntax)?) {
+            if let bracedItem, let correction = violationCorrection(bracedItem) {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: bracedItem.openingPosition,
+                        reason: """
+                              Opening braces should be preceded by a single space and on the same line \
+                              as the declaration
+                              """,
+                        correction: correction
+                    )
+                )
+            }
+        }
+
+        private func violationCorrection(_ node: some BracedSyntax) -> ReasonedRuleViolation.ViolationCorrection? {
+            let leftBrace = node.leftBrace
+            guard let previousToken = leftBrace.previousToken(viewMode: .sourceAccurate) else {
+                return nil
+            }
+            let openingPosition = node.openingPosition
+            let triviaBetween = previousToken.trailingTrivia + leftBrace.leadingTrivia
+            let previousLocation = previousToken.endLocation(converter: locationConverter)
+            let leftBraceLocation = leftBrace.startLocation(converter: locationConverter)
+            if previousLocation.line != leftBraceLocation.line {
+                let trailingCommentText = previousToken.trailingTrivia.description.trimmingCharacters(in: .whitespaces)
+                return .init(
+                    start: previousToken.endPositionBeforeTrailingTrivia,
+                    end: openingPosition.advanced(by: trailingCommentText.isNotEmpty ? 1 : 0),
+                    replacement: trailingCommentText.isNotEmpty ? " { \(trailingCommentText)" : " "
+                )
+            }
+            if previousLocation.column + 1 == leftBraceLocation.column {
+                return nil
+            }
+            if triviaBetween.containsComments {
+                if triviaBetween.pieces.last == .spaces(1) {
+                    return nil
+                }
+                let comment = triviaBetween.description.trimmingTrailingCharacters(in: .whitespaces)
+                return .init(
+                    start: previousToken.endPositionBeforeTrailingTrivia + SourceLength(of: comment),
+                    end: openingPosition,
+                    replacement: " "
+                )
+            }
+            return .init(
+                start: previousToken.endPositionBeforeTrailingTrivia,
+                end: openingPosition,
+                replacement: " "
+            )
         }
     }
+}
 
-    private func correct(contents: String,
-                         violatingRange: NSRange) -> String {
-        guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
-            return contents
-        }
-
-        let capturedString = String(contents[indexRange])
-        var adjustedRange = violatingRange
-        var correctString = " {"
-
-        // "struct Command{" has violating string = "d{", so ignore first "d"
-        if capturedString.count == 2 &&
-            capturedString.rangeOfCharacter(from: whitespaceAndNewlineCharacterSet) == nil {
-            adjustedRange = NSRange(
-                location: violatingRange.location + 1,
-                length: violatingRange.length - 1
-            )
-        }
-
-        // "[].map( { } )" has violating string = "( {",
-        // so ignore first "(" and use "{" as correction string instead
-        if capturedString.hasPrefix("(") {
-            adjustedRange = NSRange(
-                location: violatingRange.location + 1,
-                length: violatingRange.length - 1
-            )
-            correctString = "{"
-        }
-
-        if let indexRange = contents.nsrangeToIndexRange(adjustedRange) {
-            return contents
-                .replacingCharacters(in: indexRange, with: correctString)
-        } else {
-            return contents
-        }
+private extension BracedSyntax {
+    var openingPosition: AbsolutePosition {
+        leftBrace.positionAfterSkippingLeadingTrivia
     }
 }

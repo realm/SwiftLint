@@ -11,5 +11,6 @@ OBJC_DUPCLASS(_TtC11SwiftSyntax18ParsingSyntaxArena);
 OBJC_DUPCLASS(_TtC11SwiftSyntax23SourceLocationConverter);
 OBJC_DUPCLASS(_TtC11SwiftSyntax26IncrementalParseTransition);
 OBJC_DUPCLASS(_TtC11SwiftSyntax35IncrementalParseReusedNodeCollector);
+OBJC_DUPCLASS(_TtC11SwiftParserP33_78149DB072C20084E7D780D86E26C3AF41StringLiteralExpressionIndentationChecker);
 
 #endif // __APPLE__

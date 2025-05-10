@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule, ConfigurationProviderRule {
+struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
     var configuration = VerticalWhitespaceClosingBracesConfiguration()
 
     static let description = RuleDescription(
@@ -9,9 +9,9 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule, Configur
         name: "Vertical Whitespace before Closing Braces",
         description: "Don't include vertical whitespace (empty line) before closing braces",
         kind: .style,
-        nonTriggeringExamples: VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.values +
+        nonTriggeringExamples: VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.values.sorted() +
                                VerticalWhitespaceClosingBracesRuleExamples.nonTriggeringExamples,
-        triggeringExamples: Array(VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.keys),
+        triggeringExamples: Array(VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.keys.sorted()),
         corrections: VerticalWhitespaceClosingBracesRuleExamples.violatingToValidExamples.removingViolationMarkers()
     )
 
@@ -37,39 +37,29 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule, Configur
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let pattern = configuration.onlyEnforceBeforeTrivialLines ? self.trivialLinePattern : self.pattern
-
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
-        let patternRegex: NSRegularExpression = regex(pattern)
-        let replacementTemplate = "$2"
-        let description = Self.description
-
-        var corrections = [Correction]()
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
+        let patternRegex = regex(pattern)
         var fileContents = file.contents
-
         for violationRange in violatingRanges.reversed() {
             fileContents = patternRegex.stringByReplacingMatches(
                 in: fileContents,
                 options: [],
                 range: violationRange,
-                withTemplate: replacementTemplate
+                withTemplate: "$2"
             )
-
-            let location = Location(file: file, characterOffset: violationRange.location)
-            let correction = Correction(ruleDescription: description, location: location)
-            corrections.append(correction)
         }
-
         file.write(fileContents)
-        return corrections
+        return violatingRanges.count
     }
 }
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 }

@@ -1,13 +1,13 @@
 /// All possible rule list configuration errors.
 public enum RuleListError: Error {
     /// The rule list contains more than one configuration for the specified rule.
-    case duplicatedConfigurations(rule: Rule.Type)
+    case duplicatedConfigurations(rule: any Rule.Type)
 }
 
 /// A list of available SwiftLint rules.
 public struct RuleList {
     /// The rules contained in this list.
-    public let list: [String: Rule.Type]
+    public let list: [String: any Rule.Type]
     private let aliases: [String: String]
 
     // MARK: - Initializers
@@ -15,19 +15,19 @@ public struct RuleList {
     /// Creates a `RuleList` by specifying all its rules.
     ///
     /// - parameter rules: The rules to be contained in this list.
-    public init(rules: Rule.Type...) {
+    public init(rules: any Rule.Type...) {
         self.init(rules: rules)
     }
 
     /// Creates a `RuleList` by specifying all its rules.
     ///
     /// - parameter rules: The rules to be contained in this list.
-    public init(rules: [Rule.Type]) {
-        var tmpList = [String: Rule.Type]()
+    public init(rules: [any Rule.Type]) {
+        var tmpList = [String: any Rule.Type]()
         var tmpAliases = [String: String]()
 
         for rule in rules {
-            let identifier = rule.description.identifier
+            let identifier = rule.identifier
             tmpList[identifier] = rule
             for alias in rule.description.deprecatedAliases {
                 tmpAliases[alias] = identifier
@@ -40,7 +40,7 @@ public struct RuleList {
 
     // MARK: - Internal
 
-    internal func allRulesWrapped(configurationDict: [String: Any] = [:]) throws -> [ConfigurationRuleWrapper] {
+    package func allRulesWrapped(configurationDict: [String: Any] = [:]) throws -> [ConfigurationRuleWrapper] {
         var rules = [String: ConfigurationRuleWrapper]()
 
         // Add rules where configuration exists
@@ -55,10 +55,13 @@ public struct RuleList {
                     rule: configuredRule,
                     initializedWithNonEmptyConfiguration: isConfigured
                 )
+                continue
+            } catch let issue as Issue {
+                issue.print()
             } catch {
                 Issue.invalidConfiguration(ruleID: identifier).print()
-                rules[identifier] = (ruleType.init(), false)
             }
+            rules[identifier] = (ruleType.init(), false)
         }
 
         // Add remaining rules without configuring them
@@ -69,12 +72,12 @@ public struct RuleList {
         return Array(rules.values)
     }
 
-    internal func identifier(for alias: String) -> String? {
-        return aliases[alias]
+    package func identifier(for alias: String) -> String? {
+        aliases[alias]
     }
 
-    internal func allValidIdentifiers() -> [String] {
-        return list.flatMap { _, rule -> [String] in
+    package func allValidIdentifiers() -> [String] {
+        list.flatMap { _, rule -> [String] in
             rule.description.allIdentifiers
         }
     }
@@ -82,7 +85,8 @@ public struct RuleList {
 
 extension RuleList: Equatable {
     public static func == (lhs: RuleList, rhs: RuleList) -> Bool {
-        return lhs.list.map { $0.0 } == rhs.list.map { $0.0 }
+        lhs.list.map(\.0) == rhs.list.map(\.0)
+            // swiftlint:disable:next prefer_key_path
             && lhs.list.map { $0.1.description } == rhs.list.map { $0.1.description }
             && lhs.aliases == rhs.aliases
     }

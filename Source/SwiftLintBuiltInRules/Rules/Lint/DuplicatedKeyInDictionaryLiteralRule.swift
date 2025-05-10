@@ -1,9 +1,10 @@
 import SwiftSyntax
 
-struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct DuplicatedKeyInDictionaryLiteralRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "duplicated_key_in_dictionary_literal",
         name: "Duplicated Key in Dictionary Literal",
         description: "Dictionary literals with duplicated keys will crash at runtime",
@@ -14,31 +15,31 @@ struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProvi
                     1: "1",
                     2: "2"
                 ]
-            """),
+                """),
             Example("""
                 [
                     "1": 1,
                     "2": 2
                 ]
-            """),
+                """),
             Example("""
                 [
                     foo: "1",
                     bar: "2"
                 ]
-            """),
+                """),
             Example("""
                 [
                     UUID(): "1",
                     UUID(): "2"
                 ]
-            """),
+                """),
             Example("""
                 [
                     #line: "1",
                     #line: "2"
                 ]
-            """)
+                """),
         ],
         triggeringExamples: [
             Example("""
@@ -47,14 +48,14 @@ struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProvi
                     2: "2",
                     ↓1: "one"
                 ]
-            """),
+                """),
             Example("""
                 [
                     "1": 1,
                     "2": 2,
                     ↓"2": 2
                 ]
-            """),
+                """),
             Example("""
                 [
                     foo: "1",
@@ -63,7 +64,7 @@ struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProvi
                     ↓foo: "4",
                     zaz: "5"
                 ]
-            """),
+                """),
             Example("""
                 [
                     .one: "1",
@@ -73,19 +74,15 @@ struct DuplicatedKeyInDictionaryLiteralRule: SwiftSyntaxRule, ConfigurationProvi
                     .four: "4",
                     .five: "5"
                 ]
-            """)
+                """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DuplicatedKeyInDictionaryLiteralRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ list: DictionaryElementListSyntax) {
-            let keys = list.map(\.keyExpression).compactMap { expr -> DictionaryKey? in
+            let keys = list.map(\.key).compactMap { expr -> DictionaryKey? in
                 expr.stringContent.map {
                     DictionaryKey(position: expr.positionAfterSkippingLeadingTrivia, content: $0)
                 }
@@ -121,14 +118,18 @@ private extension ExprSyntax {
     var stringContent: String? {
         if let string = self.as(StringLiteralExprSyntax.self) {
             return string.description
-        } else if let int = self.as(IntegerLiteralExprSyntax.self) {
+        }
+        if let int = self.as(IntegerLiteralExprSyntax.self) {
             return int.description
-        } else if let float = self.as(FloatLiteralExprSyntax.self) {
+        }
+        if let float = self.as(FloatLiteralExprSyntax.self) {
             return float.description
-        } else if let memberAccess = self.as(MemberAccessExprSyntax.self) {
+        }
+        if let memberAccess = self.as(MemberAccessExprSyntax.self) {
             return memberAccess.description
-        } else if let identifier = self.as(IdentifierExprSyntax.self) {
-            return identifier.identifier.text
+        }
+        if let identifier = self.as(DeclReferenceExprSyntax.self) {
+            return identifier.baseName.text
         }
 
         return nil

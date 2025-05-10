@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineArgumentsBracketsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -98,7 +99,7 @@ struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, Configuration
             SomeType(
               a: 1
             ) {} onError: {}
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -152,26 +153,22 @@ struct MultilineArgumentsBracketsRule: SwiftSyntaxRule, OptInRule, Configuration
                 title: "MacBook", subtitle: "M1", action: { [weak self] in
                 print("action tapped")
             }↓))
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension MultilineArgumentsBracketsRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard let firstArgument = node.argumentList.first,
+            guard let firstArgument = node.arguments.first,
                   let leftParen = node.leftParen,
                   let rightParen = node.rightParen else {
                 return
             }
 
             let hasMultilineFirstArgument = hasLeadingNewline(firstArgument)
-            let hasMultilineArgument = node.argumentList
+            let hasMultilineArgument = node.arguments
                 .contains { argument in
                     hasLeadingNewline(argument)
                 }
@@ -191,7 +188,7 @@ private extension MultilineArgumentsBracketsRule {
             }
         }
 
-        private func hasLeadingNewline(_ syntax: SyntaxProtocol) -> Bool {
+        private func hasLeadingNewline(_ syntax: some SyntaxProtocol) -> Bool {
             syntax.leadingTrivia.contains(where: \.isNewline)
         }
     }

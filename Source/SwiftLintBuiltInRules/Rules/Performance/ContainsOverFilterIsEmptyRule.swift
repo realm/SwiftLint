@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct ContainsOverFilterIsEmptyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,36 +10,32 @@ struct ContainsOverFilterIsEmptyRule: SwiftSyntaxRule, OptInRule, ConfigurationP
         description: "Prefer `contains` over using `filter(where:).isEmpty`",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
-            return [
-                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n"),
-                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n")
+            [
+                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1"),
+                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1"),
             ]
         } + [
-            Example("let result = myList.contains(where: { $0 % 2 == 0 })\n"),
-            Example("let result = !myList.contains(where: { $0 % 2 == 0 })\n"),
-            Example("let result = myList.contains(10)\n")
+            Example("let result = myList.contains(where: { $0 % 2 == 0 })"),
+            Example("let result = !myList.contains(where: { $0 % 2 == 0 })"),
+            Example("let result = myList.contains(10)"),
         ],
         triggeringExamples: [
-            Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty\n"),
-            Example("let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty\n"),
-            Example("let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty\n"),
-            Example("let result = ↓myList.filter(where: someFunction).isEmpty\n")
+            Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty"),
+            Example("let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty"),
+            Example("let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty"),
+            Example("let result = ↓myList.filter(where: someFunction).isEmpty"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ContainsOverFilterIsEmptyRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
             guard
-                node.name.text == "isEmpty",
+                node.declName.baseName.text == "isEmpty",
                 let firstBase = node.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
-                firstBaseCalledExpression.name.text == "filter"
+                firstBaseCalledExpression.declName.baseName.text == "filter"
             else {
                 return
             }

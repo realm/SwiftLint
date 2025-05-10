@@ -1,7 +1,7 @@
 import SwiftIDEUtils
 import SwiftSyntax
 
-struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -28,7 +28,7 @@ struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -36,24 +36,30 @@ struct LocalDocCommentRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRul
               ↓/// Docstring inside a function declaration
               print("foo")
             }
-            """)
+            """),
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(classifications: file.syntaxClassifications.filter { $0.kind != .none })
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        Visitor(
+            configuration: configuration,
+            file: file,
+            classifications: file.syntaxClassifications.filter { $0.kind != .none }
+        )
     }
 }
 
 private extension LocalDocCommentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let docCommentRanges: [ByteSourceRange]
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private let docCommentRanges: [Range<AbsolutePosition>]
 
-        init(classifications: [SyntaxClassifiedRange]) {
+        init(configuration: ConfigurationType,
+             file: SwiftLintFile,
+             classifications: [SyntaxClassifiedRange]) {
             self.docCommentRanges = classifications
                 .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }
                 .map(\.range)
-            super.init(viewMode: .sourceAccurate)
+            super.init(configuration: configuration, file: file)
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
@@ -61,9 +67,9 @@ private extension LocalDocCommentRule {
                 return
             }
 
-            let violatingRange = docCommentRanges.first { $0.intersects(body.byteRange) }
+            let violatingRange = docCommentRanges.first { $0.overlaps(body.range) }
             if let violatingRange {
-                violations.append(AbsolutePosition(utf8Offset: violatingRange.offset))
+                violations.append(AbsolutePosition(utf8Offset: violatingRange.lowerBound.utf8Offset))
             }
         }
     }

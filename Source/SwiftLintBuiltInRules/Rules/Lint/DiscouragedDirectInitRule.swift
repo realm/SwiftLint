@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct DiscouragedDirectInitRule: Rule {
     var configuration = DiscouragedDirectInitConfiguration()
 
     static let description = RuleDescription(
@@ -17,7 +18,7 @@ struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("let foo = Bundle.init(identifier: \"bar\")"),
             Example("let foo = NSError(domain: \"bar\", code: 0)"),
             Example("let foo = NSError.init(domain: \"bar\", code: 0)"),
-            Example("func testNSError()")
+            Example("func testNSError()"),
         ],
         triggeringExamples: [
             Example("↓UIDevice()"),
@@ -31,27 +32,16 @@ struct DiscouragedDirectInitRule: SwiftSyntaxRule, ConfigurationProviderRule {
             Example("↓NSError.init()"),
             Example("let foo = ↓UIDevice.init()"),
             Example("let foo = ↓Bundle.init()"),
-            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init(), error: ↓NSError.init())")
+            Example("let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init(), error: ↓NSError.init())"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(discouragedInits: configuration.discouragedInits)
-    }
 }
 
 private extension DiscouragedDirectInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let discouragedInits: Set<String>
-
-        init(discouragedInits: Set<String>) {
-            self.discouragedInits = discouragedInits
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.argumentList.isEmpty, node.trailingClosure == nil,
-                discouragedInits.contains(node.calledExpression.trimmedDescription) else {
+            guard node.arguments.isEmpty, node.trailingClosure == nil,
+                  configuration.discouragedInits.contains(node.calledExpression.trimmedDescription) else {
                 return
             }
 

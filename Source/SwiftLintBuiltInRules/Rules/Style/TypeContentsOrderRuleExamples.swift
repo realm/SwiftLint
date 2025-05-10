@@ -1,10 +1,10 @@
 internal struct TypeContentsOrderRuleExamples {
     static let defaultOrderParts = [
-        """
+            """
             // Type Aliases
             typealias CompletionHandler = ((TestEnum) -> Void)
-        """,
-        """
+            """,
+            """
             // Subtypes
             class TestClass {
                 // 10 lines
@@ -17,12 +17,12 @@ internal struct TypeContentsOrderRuleExamples {
             enum TestEnum {
                 // 5 lines
             }
-        """,
-        """
+            """,
+            """
             // Type Properties
             static let cellIdentifier: String = "AmazingCell"
-        """,
-        """
+            """,
+            """
             // Instance Properties
             var shouldLayoutView1: Bool!
             weak var delegate: TestViewControllerDelegate?
@@ -32,13 +32,13 @@ internal struct TypeContentsOrderRuleExamples {
             private var hasAnyLayoutedView: Bool {
                  return hasLayoutedView1 || hasLayoutedView2
             }
-        """,
-        """
+            """,
+            """
             // IBOutlets
             @IBOutlet private var view1: UIView!
             @IBOutlet private var view2: UIView!
-        """,
-        """
+            """,
+            """
             // Initializers
             override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                 super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -47,14 +47,14 @@ internal struct TypeContentsOrderRuleExamples {
             required init?(coder aDecoder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
             }
-        """,
-        """
+            """,
+            """
             // Type Methods
             static func makeViewController() -> TestViewController {
                 // some code
             }
-        """,
-        """
+            """,
+            """
             // View Life-Cycle Methods
             override func viewDidLoad() {
                 super.viewDidLoad()
@@ -78,15 +78,19 @@ internal struct TypeContentsOrderRuleExamples {
                 view2.layoutIfNeeded()
                 hasLayoutedView2 = true
             }
-        """,
-        """
+
+            override func viewIsAppearing(_ animated: Bool) {
+                super.viewIsAppearing(animated)
+            }
+            """,
+            """
             // IBActions
             @IBAction func goNextButtonPressed() {
                 goToNextVc()
                 delegate?.didPressTrackedButton()
             }
-        """,
-        """
+            """,
+            """
             // Other Methods
             func goToNextVc() { /* TODO */ }
 
@@ -98,8 +102,8 @@ internal struct TypeContentsOrderRuleExamples {
             }
 
             private func getRandomVc() -> UIViewController { return UIViewController() }
-        """,
-        """
+            """,
+            """
             // Subscripts
             subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
                 get {
@@ -110,12 +114,12 @@ internal struct TypeContentsOrderRuleExamples {
                     log.warning("Just a test", newValue)
                 }
             }
-        """,
-        """
+            """,
+            """
             deinit {
                 log.debug("deinit")
             }
-        """
+            """,
     ]
 
     static let nonTriggeringExamples = [
@@ -123,7 +127,14 @@ internal struct TypeContentsOrderRuleExamples {
         class TestViewController: UIViewController {
         \(Self.defaultOrderParts.joined(separator: "\n\n")),
         }
-        """)
+        """),
+        Example("""
+        struct ContentView: View {
+            @available(SwiftUI_v5, *) // Availability macro syntax: https://github.com/swiftlang/swift/pull/65218
+            var v5Body: some View { EmptyView() }
+            var body: some View { EmptyView() }
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -250,6 +261,51 @@ internal struct TypeContentsOrderRuleExamples {
             // MARK: Other Methods
             func goToNextVc() { /* TODO */ }
         }
-        """)
+        """),
+        Example("""
+        protocol P {
+            ↓var x: U { get }
+            @available(*, unavailable)
+            ↓associatedtype T
+            typealias U = Int
+        }
+        """, configuration: ["order": [["type_alias"], ["associated_type"]]], excludeFromDocumentation: true),
+        Example("""
+        enum E {
+            @available(*, unavailable)
+            ↓case a
+            func f() {}
+        }
+        """, configuration: ["order": [["other_method"], ["case"]]], excludeFromDocumentation: true),
+        Example("""
+        final class C {
+            ↓var i = 1
+            static var I = 2
+            class var s: Int {
+                struct S {}
+                return 3
+            }
+        }
+        """),
+        Example("""
+        final class C {
+            ↓var i = 1
+            #if os(macOS)
+            static var I = 2
+            #endif
+        }
+        """),
+        Example("""
+        struct S {
+            ↓var i = 1
+            #if os(macOS)
+                #if swift(>=5.3)
+                ↓func f() {}
+                #endif
+            #else
+                static var i = 3
+            #endif
+        }
+        """),
     ]
 }

@@ -1,63 +1,85 @@
 trigger:
 - main
 
+variables:
+  SKIP_INTEGRATION_TESTS: 'true'
+
 jobs:
-- job: Linux
+- job: spm_linux
+  displayName: 'SPM, Linux : Swift 6.1'
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+  container: swift:6.1-noble
+  steps:
+    - template: .azure/templates/run-make.yml
+      parameters:
+        rule: spm_test
+
+- job: bazel_linux
+  displayName: 'Bazel, Linux : Swift 6.0'
+  pool:
+    vmImage: 'ubuntu-24.04'
+  steps:
+    - script: |
+        export PATH="/usr/share/swift/usr/bin:$PATH"
+        git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
+        bazel build :swiftlint
+      displayName: Build SwiftLint with Bazel
+      env:
+        CC: "clang"
+
+- job: tests_macos
+  displayName: 'Tests, macOS'
   strategy:
-    maxParallel: 10
+    maxParallel: '10'
     matrix:
-      swift57:
-        containerImage: swift:5.7
-      swift58:
-        containerImage: swift:5.8
-  container: $[ variables['containerImage'] ]
-  steps:
-    - script: swift test --parallel -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
-      displayName: swift test
-
-# TODO: Re-enable when FB11648454 is fixed
-# - job: Xcode
-#   pool:
-#     vmImage: 'macOS-12'
-#   strategy:
-#     maxParallel: 10
-#     matrix:
-#       xcode14:
-#         DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
-#   steps:
-#     - script: |
-#         sw_vers
-#         xcodebuild -version
-#       displayName: Version Informations
-#     - script: xcodebuild -scheme swiftlint test -destination "platform=macOS" OTHER_SWIFT_FLAGS="\$(inherited) -D DISABLE_FOCUSED_EXAMPLES"
-#       displayName: xcodebuild test
-- job: CocoaPods
+      '14 : Xcode 15.4':
+        image: 'macOS-14'
+        xcode: '15.4'
+      # '14 : Xcode 16.3': Runs on Buildkite.
+      '15 : Xcode 15.4':
+        image: 'macOS-15'
+        xcode: '15.4'
+      '15 : Xcode 16.2':
+        image: 'macOS-15'
+        xcode: '16.2'
   pool:
-    vmImage: 'macOS-12'
+    vmImage: $(image)
   variables:
-    DEVELOPER_DIR: /Applications/Xcode_13.4.1.app
+    DEVELOPER_DIR: /Applications/Xcode_$(xcode).app
   steps:
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec pod repo update
-      displayName: pod repo update
-    - script: bundle exec pod lib lint --verbose
-      displayName: pod lib lint
+    - script: make spm_test
+      displayName: Run tests
 
-- job: jazzy
+- job: plugins_linux # Plugins shall be able to run on older Swift versions.
+  displayName: 'Plugins, Linux'
   pool:
-    vmImage: 'macOS-12'
-  variables:
-    DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+    vmImage: 'ubuntu-24.04' # "Noble Numbat"
+  strategy:
+    maxParallel: '10'
+    matrix:
+      ': Swift 5.9':
+        image: swift:5.9-focal
+      ': Swift 5.10':
+        image: swift:5.10-noble
+      ': Swift 6.0':
+        image: swift:6.0-noble
+      ': Swift 6.1':
+        image: swift:6.1-noble
+  container: $[ variables['image'] ]
   steps:
-    - script: swift run swiftlint generate-docs
-      displayName: Run swiftlint generate-docs
-    - script: bundle install --path vendor/bundle
-      displayName: bundle install
-    - script: bundle exec jazzy
-      displayName: Run jazzy
+    - template: .azure/templates/run-make.yml
+      parameters:
+        rule: spm_build_plugins
+
+- job: Jazzy
+  pool:
+    vmImage: 'macOS-14'
+  variables:
+    DEVELOPER_DIR: /Applications/Xcode_15.4.app
+  steps:
+    - script: make docs
+      displayName: Run Jazzy
     - script: >
         if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
           echo "Undocumented declarations:"
@@ -69,10 +91,12 @@ jobs:
       inputs:
         artifactName: 'API Docs'
         targetPath: 'docs'
+      displayName: Publish API docs
     - task: DownloadSecureFile@1
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
       inputs:
         secureFile: doc_deploy_key
+      displayName: Download deploy key
     - script: ./tools/push-docs
-      displayName: Publish
+      displayName: Push documentation to GitHub Pages
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')

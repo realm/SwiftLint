@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct ContainsOverFirstNotNilRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,51 +10,41 @@ struct ContainsOverFirstNotNilRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in
-            return [
-                Example("let \(method) = myList.\(method)(where: { $0 % 2 == 0 })\n"),
-                Example("let \(method) = myList.\(method) { $0 % 2 == 0 }\n")
+            [
+                Example("let \(method) = myList.\(method)(where: { $0 % 2 == 0 })"),
+                Example("let \(method) = myList.\(method) { $0 % 2 == 0 }"),
             ]
         },
         triggeringExamples: ["first", "firstIndex"].flatMap { method in
-            return ["!=", "=="].flatMap { comparison in
-                return [
-                    Example("↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil\n"),
-                    Example("↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n"),
-                    Example("↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil\n"),
-                    Example("↓myList.\(method)(where: someFunction) \(comparison) nil\n"),
-                    Example("↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil\n"),
-                    Example("(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil\n")
+            ["!=", "=="].flatMap { comparison in
+                [
+                    Example("↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil"),
+                    Example("↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil"),
+                    Example("↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil"),
+                    Example("↓myList.\(method)(where: someFunction) \(comparison) nil"),
+                    Example("↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil"),
+                    Example("(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil"),
                 ]
             }
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
 }
 
 private extension ContainsOverFirstNotNilRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard
-                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                operatorNode.operatorToken.tokenKind.isEqualityComparison,
-                node.rightOperand.is(NilLiteralExprSyntax.self),
-                let first = node.leftOperand.asFunctionCall,
-                let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
-                calledExpression.name.text == "first" || calledExpression.name.text == "firstIndex"
-            else {
+            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                  operatorNode.operator.tokenKind.isEqualityComparison,
+                  node.rightOperand.is(NilLiteralExprSyntax.self),
+                  let first = node.leftOperand.asFunctionCall,
+                  let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
+                  ["first", "firstIndex"].contains(calledExpression.declName.baseName.text) else {
                 return
             }
 
             let violation = ReasonedRuleViolation(
                 position: first.positionAfterSkippingLeadingTrivia,
-                reason: "Prefer `contains` over `\(calledExpression.name.text)(where:) != nil`"
+                reason: "Prefer `contains` over `\(calledExpression.declName.baseName.text)(where:) != nil`"
             )
             violations.append(violation)
         }

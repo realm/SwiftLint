@@ -1,0 +1,38 @@
+[
+  {
+    "character" : 1,
+    "file" : "filename",
+    "line" : 1,
+    "reason" : "Violation Reason 1",
+    "rule_id" : "line_length",
+    "severity" : "Warning",
+    "type" : "Line Length"
+  },
+  {
+    "character" : null,
+    "file" : "filename",
+    "line" : 1,
+    "reason" : "Violation Reason 2",
+    "rule_id" : "line_length",
+    "severity" : "Error",
+    "type" : "Line Length"
+  },
+  {
+    "character" : 2,
+    "file" : "${CURRENT_WORKING_DIRECTORY}/path/file.swift",
+    "line" : 1,
+    "reason" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
+    "rule_id" : "syntactic_sugar",
+    "severity" : "Error",
+    "type" : "Syntactic Sugar"
+  },
+  {
+    "character" : null,
+    "file" : null,
+    "line" : null,
+    "reason" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals",
+    "rule_id" : "colon",
+    "severity" : "Error",
+    "type" : "Colon Spacing"
+  }
+]

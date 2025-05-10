@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct NoSpaceInMethodCallRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -22,7 +23,7 @@ struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
             } label: {
                 Text("Button")
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("foo↓ ()"),
@@ -31,7 +32,7 @@ struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
             Example("object.foo↓ (value: 1)"),
             Example("object.foo↓ () {}"),
             Example("object.foo↓     ()"),
-            Example("object.foo↓     (value: 1) { x in print(x) }")
+            Example("object.foo↓     (value: 1) { x in print(x) }"),
         ],
         corrections: [
             Example("foo↓ ()"): Example("foo()"),
@@ -39,24 +40,13 @@ struct NoSpaceInMethodCallRule: SwiftSyntaxCorrectableRule, ConfigurationProvide
             Example("object.foo↓ (1)"): Example("object.foo(1)"),
             Example("object.foo↓ (value: 1)"): Example("object.foo(value: 1)"),
             Example("object.foo↓ () {}"): Example("object.foo() {}"),
-            Example("object.foo↓     ()"): Example("object.foo()")
+            Example("object.foo↓     ()"): Example("object.foo()"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension NoSpaceInMethodCallRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard node.hasNoSpaceInMethodCallViolation else {
                 return
@@ -66,29 +56,14 @@ private extension NoSpaceInMethodCallRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard
-                node.hasNoSpaceInMethodCallViolation,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.hasNoSpaceInMethodCallViolation else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.calledExpression.endPositionBeforeTrailingTrivia)
-
+            numberOfCorrections += 1
             let newNode = node
                 .with(\.calledExpression, node.calledExpression.with(\.trailingTrivia, []))
-
             return super.visit(newNode)
         }
     }

@@ -1,6 +1,6 @@
 /// Captures code and context information for an example of a triggering or
 /// non-triggering style
-public struct Example {
+public struct Example: Sendable {
     /// The contents of the example
     public private(set) var code: String
     /// The untyped configuration to apply to the rule, if deviating from the default configuration.
@@ -13,20 +13,17 @@ public struct Example {
     /// ```
     ///
     /// Then the equivalent configuration value would be `["severity": "warning"]`.
-    public private(set) var configuration: Any?
+    public private(set) var configuration: [String: any Sendable]?
     /// Whether the example should be tested by prepending multibyte grapheme clusters
     ///
     /// - SeeAlso: addEmoji(_:)
     public private(set) var testMultiByteOffsets: Bool
     /// Whether tests shall verify that the example wrapped in a comment doesn't trigger
-    @_spi(TestHelper)
-    public private(set) var testWrappingInComment: Bool
+    package private(set) var testWrappingInComment: Bool
     /// Whether tests shall verify that the example wrapped into a string doesn't trigger
-    @_spi(TestHelper)
-    public private(set) var testWrappingInString: Bool
+    package private(set) var testWrappingInString: Bool
     /// Whether tests shall verify that the disabled rule (comment in the example) doesn't trigger
-    @_spi(TestHelper)
-    public private(set) var testDisableCommand: Bool
+    package private(set) var testDisableCommand: Bool
     /// Whether the example should be tested on Linux
     public private(set) var testOnLinux: Bool
     /// The path to the file where the example was created
@@ -40,11 +37,10 @@ public struct Example {
     /// why a rule is applied and where not. Complex examples with rarely used language constructs or
     /// pathological use cases which are indeed important to test but not helpful for understanding can be
     /// hidden from the documentation with this option.
-    let excludeFromDocumentation: Bool
+    package let excludeFromDocumentation: Bool
 
     /// Specifies whether the test example should be the only example run during the current test case execution.
-    @_spi(TestHelper)
-    public var isFocused: Bool
+    package var isFocused: Bool
 }
 
 public extension Example {
@@ -63,9 +59,15 @@ public extension Example {
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
-    init(_ code: String, configuration: Any? = nil, testMultiByteOffsets: Bool = true,
-         testWrappingInComment: Bool = true, testWrappingInString: Bool = true, testDisableCommand: Bool = true,
-         testOnLinux: Bool = true, file: StaticString = #file, line: UInt = #line,
+    init(_ code: String,
+         configuration: [String: any Sendable]? = nil,
+         testMultiByteOffsets: Bool = true,
+         testWrappingInComment: Bool = true,
+         testWrappingInString: Bool = true,
+         testDisableCommand: Bool = true,
+         testOnLinux: Bool = true,
+         file: StaticString = #filePath,
+         line: UInt = #line,
          excludeFromDocumentation: Bool = false) {
         self.code = code
         self.configuration = configuration
@@ -90,7 +92,7 @@ public extension Example {
 
     /// Returns a copy of the Example with all instances of the "↓" character removed.
     func removingViolationMarkers() -> Example {
-        return with(code: code.replacingOccurrences(of: "↓", with: ""))
+        with(code: code.replacingOccurrences(of: "↓", with: ""))
     }
 }
 
@@ -131,7 +133,7 @@ extension Example: Hashable {
     public static func == (lhs: Example, rhs: Example) -> Bool {
         // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
-        return lhs.code == rhs.code
+        lhs.code == rhs.code
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -143,7 +145,7 @@ extension Example: Hashable {
 
 extension Example: Comparable {
     public static func < (lhs: Example, rhs: Example) -> Bool {
-        return lhs.code < rhs.code
+        lhs.code < rhs.code
     }
 }
 
@@ -166,5 +168,10 @@ public extension Array where Element == Example {
     /// Make these examples skip disable command tests.
     func skipDisableCommandTests() -> Self {
         map { $0.skipDisableCommandTest() }
+    }
+
+    /// Remove all violation markers from the examples.
+    func removingViolationMarker() -> Self {
+        map { $0.removingViolationMarkers() }
     }
 }

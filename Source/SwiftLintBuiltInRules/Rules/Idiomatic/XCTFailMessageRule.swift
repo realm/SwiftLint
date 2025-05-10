@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct XCTFailMessageRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -18,7 +19,7 @@ struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
             func testFoo() {
               XCTFail(bar)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -30,22 +31,18 @@ struct XCTFailMessageRule: SwiftSyntaxRule, ConfigurationProviderRule {
             func testFoo() {
               ↓XCTFail("")
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension XCTFailMessageRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
-                let expression = node.calledExpression.as(IdentifierExprSyntax.self),
-                expression.identifier.text == "XCTFail",
-                node.argumentList.isEmptyOrEmptyString
+                let expression = node.calledExpression.as(DeclReferenceExprSyntax.self),
+                expression.baseName.text == "XCTFail",
+                node.arguments.isEmptyOrEmptyString
             else {
                 return
             }
@@ -55,7 +52,7 @@ private extension XCTFailMessageRule {
     }
 }
 
-private extension TupleExprElementListSyntax {
+private extension LabeledExprListSyntax {
     var isEmptyOrEmptyString: Bool {
         if isEmpty {
             return true

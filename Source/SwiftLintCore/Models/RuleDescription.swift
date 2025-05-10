@@ -1,5 +1,5 @@
 /// A detailed description for a SwiftLint rule. Used for both documentation and testing purposes.
-public struct RuleDescription: Equatable {
+public struct RuleDescription: Equatable, Sendable {
     /// The rule's unique identifier, to be used in configuration files and SwiftLint commands.
     /// Should be short and only comprised of lowercase latin alphabet letters and underscores formatted in snake case.
     public let identifier: String
@@ -10,6 +10,12 @@ public struct RuleDescription: Equatable {
     /// The rule's verbose description. Should read as a sentence or short paragraph. Good things to include are an
     /// explanation of the rule's purpose and rationale.
     public let description: String
+
+    /// A longer explanation of the rule's purpose and rationale. Typically defined as a multiline string, long text 
+    /// lines should be wrapped. Markdown formatting is supported. Multiline code blocks will be formatted as
+    /// `swift` code unless otherwise specified, and will automatically be indented by four spaces when printed
+    /// to the console.
+    public let rationale: String?
 
     /// The `RuleKind` that best categorizes this rule.
     public let kind: RuleKind
@@ -52,11 +58,21 @@ public struct RuleDescription: Equatable {
     public let requiresFileOnDisk: Bool
 
     /// The console-printable string for this description.
-    public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
+    public var consoleDescription: String { "\(name) (\(identifier)): \(description)" }
+
+    /// The console-printable rationale for this description.
+    public var consoleRationale: String? {
+        rationale?.consoleRationale
+    }
+
+    /// The rationale for this description, with Markdown formatting.
+    public var formattedRationale: String? {
+        rationale?.formattedRationale
+    }
 
     /// All identifiers that have been used to uniquely identify this rule in past and current SwiftLint versions.
     public var allIdentifiers: [String] {
-        return Array(deprecatedAliases) + [identifier]
+        Array(deprecatedAliases) + [identifier]
     }
 
     /// Creates a `RuleDescription` by specifying all its properties directly.
@@ -71,15 +87,21 @@ public struct RuleDescription: Equatable {
     /// - parameter corrections:           Sets the description's `corrections` property.
     /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
     /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.
-    public init(identifier: String, name: String, description: String, kind: RuleKind,
+    public init(identifier: String,
+                name: String,
+                description: String,
+                rationale: String? = nil,
+                kind: RuleKind,
                 minSwiftVersion: SwiftVersion = .five,
-                nonTriggeringExamples: [Example] = [], triggeringExamples: [Example] = [],
+                nonTriggeringExamples: [Example] = [],
+                triggeringExamples: [Example] = [],
                 corrections: [Example: Example] = [:],
                 deprecatedAliases: Set<String> = [],
                 requiresFileOnDisk: Bool = false) {
         self.identifier = identifier
         self.name = name
         self.description = description
+        self.rationale = rationale
         self.kind = kind
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples
@@ -91,7 +113,34 @@ public struct RuleDescription: Equatable {
 
     // MARK: Equatable
 
-    public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
-        return lhs.identifier == rhs.identifier
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+}
+
+private extension String {
+    var formattedRationale: String {
+        formattedRationale(forConsole: false)
+    }
+
+    var consoleRationale: String {
+        formattedRationale(forConsole: true)
+    }
+
+    private func formattedRationale(forConsole: Bool) -> String {
+        var insideMultilineString = false
+        return components(separatedBy: "\n").compactMap { line -> String? in
+            if line.contains("```") {
+                if insideMultilineString {
+                    insideMultilineString = false
+                    return forConsole ? nil : line
+                }
+                insideMultilineString = true
+                if line.hasSuffix("```") {
+                    return forConsole ? nil : (line + "swift")
+                }
+            }
+            return line.indent(by: (insideMultilineString && forConsole) ? 4 : 0)
+        }.joined(separator: "\n")
     }
 }

@@ -129,7 +129,7 @@ struct RedundantObjcAttributeRuleExamples {
                case bar
             }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -195,7 +195,7 @@ struct RedundantObjcAttributeRuleExamples {
                 return 0
             }
         }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -335,6 +335,6 @@ struct RedundantObjcAttributeRuleExamples {
                 return 0
             }
         }
-        """)
+        """),
     ]
 }

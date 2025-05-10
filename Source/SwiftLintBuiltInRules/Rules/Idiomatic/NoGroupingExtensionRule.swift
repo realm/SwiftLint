@@ -1,6 +1,7 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct NoGroupingExtensionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,51 +10,113 @@ struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
         description: "Extensions shouldn't be used to group code within the same source file",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("protocol Food {}\nextension Food {}\n"),
-            Example("class Apples {}\nextension Oranges {}\n"),
-            Example("class Box<T> {}\nextension Box where T: Vegetable {}\n")
+            Example("protocol Food {}\nextension Food {}"),
+            Example("class Apples {}\nextension Oranges {}"),
+            Example("class Box<T> {}\nextension Box where T: Vegetable {}"),
         ],
         triggeringExamples: [
-            Example("enum Fruit {}\n↓extension Fruit {}\n"),
-            Example("↓extension Tea: Error {}\nstruct Tea {}\n"),
-            Example("class Ham { class Spam {}}\n↓extension Ham.Spam {}\n"),
-            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}\n")
+            Example("enum Fruit {}\n↓extension Fruit {}"),
+            Example("↓extension Tea: Error {}\nstruct Tea {}"),
+            Example("class Ham { class Spam {}}\n↓extension Ham.Spam {}"),
+            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}"),
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let collector = NamespaceCollector(dictionary: file.structureDictionary)
-        let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
+        Visitor(configuration: configuration, file: file)
+            .walk(tree: file.syntaxTree) { visitor in
+                visitor.extensionDeclarations.compactMap { decl in
+                    guard visitor.typeDeclarations.contains(decl.name) else {
+                        return nil
+                    }
 
-        let susceptibleNames = Set(elements.compactMap { $0.kind != .extension ? $0.name : nil })
-
-        return elements.compactMap { element in
-            guard element.kind == .extension, susceptibleNames.contains(element.name) else {
-                return nil
+                    return ReasonedRuleViolation(position: decl.position)
+                }
             }
+            .sorted()
+            .map { makeViolation(file: file, violation: $0) }
+    }
+}
 
-            guard !hasWhereClause(dictionary: element.dictionary, file: file) else {
-                return nil
-            }
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: element.offset))
-        }
+private extension NoGroupingExtensionRule {
+    struct ExtensionDeclaration: Hashable {
+        let name: String
+        let position: AbsolutePosition
     }
 
-    private func hasWhereClause(dictionary: SourceKittenDictionary, file: SwiftLintFile) -> Bool {
-        guard let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let bodyOffset = dictionary.bodyOffset,
-            case let contents = file.stringView,
-            case let rangeStart = nameOffset + nameLength,
-            case let rangeLength = bodyOffset - rangeStart,
-            let range = contents.byteRangeToNSRange(ByteRange(location: rangeStart, length: rangeLength))
-        else {
-            return false
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private(set) var typeDeclarations = Set<String>()
+        private var typeScope: [String] = []
+        private(set) var extensionDeclarations = Set<ExtensionDeclaration>()
+
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
+            [
+                ProtocolDeclSyntax.self,
+                FunctionDeclSyntax.self,
+                VariableDeclSyntax.self,
+                InitializerDeclSyntax.self,
+                SubscriptDeclSyntax.self,
+            ]
         }
 
-        return file.match(pattern: "\\bwhere\\b", with: [.keyword], range: range).isNotEmpty
+        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            pushType(named: node.name.text)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ActorDeclSyntax) {
+            typeScope.removeLast()
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            pushType(named: node.name.text)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ClassDeclSyntax) {
+            typeScope.removeLast()
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            pushType(named: node.name.text)
+            return .visitChildren
+        }
+
+        override func visitPost(_: EnumDeclSyntax) {
+            typeScope.removeLast()
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            pushType(named: node.name.text)
+            return .visitChildren
+        }
+
+        override func visitPost(_: StructDeclSyntax) {
+            typeScope.removeLast()
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            typeScope.append(node.extendedType.trimmedDescription)
+
+            guard node.genericWhereClause == nil else {
+                return .skipChildren
+            }
+
+            let decl = ExtensionDeclaration(
+                name: node.extendedType.trimmedDescription,
+                position: node.extensionKeyword.positionAfterSkippingLeadingTrivia
+            )
+            extensionDeclarations.insert(decl)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ExtensionDeclSyntax) {
+            typeScope.removeLast()
+        }
+
+        private func pushType(named name: String) {
+            typeScope.append(name)
+            typeDeclarations.insert(typeScope.joined(separator: "."))
+        }
     }
 }

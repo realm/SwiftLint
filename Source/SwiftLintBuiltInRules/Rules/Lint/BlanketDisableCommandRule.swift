@@ -1,10 +1,35 @@
-struct BlanketDisableCommandRule: ConfigurationProviderRule {
+struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
     var configuration = BlanketDisableCommandConfiguration()
 
     static let description = RuleDescription(
         identifier: "blanket_disable_command",
         name: "Blanket Disable Command",
-        description: "swiftlint:disable commands should be re-enabled before the end of the file",
+        description: """
+                     `swiftlint:disable` commands should use `next`, `this` or `previous` to disable rules for a \
+                     single line, or `swiftlint:enable` to re-enable the rules immediately after the violations \
+                     to be ignored, instead of disabling the rule for the rest of the file.
+                     """,
+        rationale: """
+        The intent of this rule is to prevent code like
+
+        ```
+        // swiftlint:disable force_unwrapping
+        let foo = bar!
+        ```
+
+        which disables the `force_unwrapping` rule for the remainder of the file, instead of just for the specific \
+        violation.
+
+        `next`, `this`, or `previous` can be used to restrict the disable command's scope to a single line, or it \
+        can be re-enabled after the violations.
+
+        To disable this rule in code you will need to do something like
+
+        ```
+        // swiftlint:disable:next blanket_disable_command
+        // swiftlint:disable force_unwrapping
+        ```
+        """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("""
@@ -18,7 +43,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             """),
             Example("// swiftlint:disable:this unused_import"),
             Example("// swiftlint:disable:next unused_import"),
-            Example("// swiftlint:disable:previous unused_import")
+            Example("// swiftlint:disable:previous unused_import"),
         ],
         triggeringExamples: [
             Example("// swiftlint:disable ↓unused_import"),
@@ -33,7 +58,8 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             """),
             Example("""
             // swiftlint:enable ↓unused_import
-            """)
+            """),
+            Example("// swiftlint:disable all"),
         ].skipWrappingInCommentTests().skipDisableCommandTests()
      )
 
@@ -144,8 +170,11 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
             }
 
             if let command = ruleIdentifierToCommandMap[disabledRuleIdentifier] {
-                let reason = "The disabled '\(disabledRuleIdentifier.stringRepresentation)' rule " +
-                             "should be re-enabled before the end of the file"
+                let reason = """
+                             Use 'next', 'this' or 'previous' instead to disable the \
+                             '\(disabledRuleIdentifier.stringRepresentation)' rule once, \
+                             or re-enable it as soon as possible`
+                             """
                 return violation(for: command, ruleIdentifier: disabledRuleIdentifier, in: file, reason: reason)
             }
             return nil
@@ -160,7 +189,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
         }
 
         for command in file.commands {
-            let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map { $0.stringRepresentation })
+            let ruleIdentifiers: Set<String> = Set(command.ruleIdentifiers.map(\.stringRepresentation))
             let intersection = ruleIdentifiers.intersection(configuration.alwaysBlanketDisableRuleIdentifiers)
             if command.action == .enable {
                 violations.append(contentsOf: intersection.map {
@@ -182,7 +211,7 @@ struct BlanketDisableCommandRule: ConfigurationProviderRule {
 
 private extension Command {
     func location(of ruleIdentifier: String, in file: SwiftLintFile) -> Location {
-        var location = character
+        var location = range?.upperBound
         if line > 0, line <= file.lines.count {
             let line = file.lines[line - 1].content
             if let ruleIdentifierIndex = line.range(of: ruleIdentifier)?.lowerBound {

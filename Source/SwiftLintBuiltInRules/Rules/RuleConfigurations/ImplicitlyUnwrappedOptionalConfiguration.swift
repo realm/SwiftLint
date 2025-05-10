@@ -1,40 +1,18 @@
-struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration, Equatable {
+import SwiftLintCore
+
+@AutoConfigParser
+struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ImplicitlyUnwrappedOptionalRule
 
-    // swiftlint:disable:next type_name
-    enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
+    @AcceptableByConfigurationElement
+    enum ImplicitlyUnwrappedOptionalModeConfiguration: String { // swiftlint:disable:this type_name
         case all = "all"
         case allExceptIBOutlets = "all_except_iboutlets"
-
-        init(value: Any) throws {
-            if let string = (value as? String)?.lowercased(),
-               let value = Self(rawValue: string) {
-                self = value
-            } else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-            }
-        }
+        case weakExceptIBOutlets = "weak_except_iboutlets"
     }
 
-    private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", mode: \(mode.rawValue)"
-    }
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let modeString = configuration["mode"] {
-            try mode = ImplicitlyUnwrappedOptionalModeConfiguration(value: modeString)
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-    }
+    @ConfigurationElement(key: "mode")
+    private(set) var mode = ImplicitlyUnwrappedOptionalModeConfiguration.allExceptIBOutlets
 }

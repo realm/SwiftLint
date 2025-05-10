@@ -41,7 +41,6 @@ SwiftLint.xcodeproj
 SwiftLint.pkg
 *.zip
 benchmark_*
-osscheck/
 docs/
 rule_docs/
 bazel.tar.gz
@@ -65,3 +64,8 @@ bundle/
 
 # Bazel
 bazel-*
+/MODULE.bazel.lock
+
+# Danger
+osscheck/
+oss-check-summary.md

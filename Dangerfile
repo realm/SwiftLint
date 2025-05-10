@@ -52,10 +52,23 @@ end
 file = Tempfile.new('violations')
 
 force_flag = has_danger_changes ? "--force" : ""
-Open3.popen3("tools/oss-check -v #{force_flag} 2> #{file.path}") do |_, stdout, _, _|
-  while char = stdout.getc
-    print char
+
+begin
+  Open3.popen3("tools/oss-check -v #{force_flag} 2> #{file.path}") do |_, stdout, _, _|
+    while char = stdout.getc
+      print char
+    end
   end
+rescue SignalException => e
+  if e.signo == Signal.list["TERM"]
+    # Post a nicer message here
+    fail "OSSCheck was cancelled"
+  else
+    raise e
+  end
+rescue => e
+  # Handle other exceptions
+  fail "OSSCheck error: #{e.message}"
 end
 
 lines = file.read.chomp

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,9 +9,9 @@ struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSynta
         description: "Extensions shouldn't override declarations",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("extension Person {\n  var age: Int { return 42 }\n}\n"),
-            Example("extension Person {\n  func celebrateBirthday() {}\n}\n"),
-            Example("class Employee: Person {\n  override func celebrateBirthday() {}\n}\n"),
+            Example("extension Person {\n  var age: Int { return 42 }\n}"),
+            Example("extension Person {\n  func celebrateBirthday() {}\n}"),
+            Example("class Employee: Person {\n  override func celebrateBirthday() {}\n}"),
             Example("""
             class Foo: NSObject {}
             extension Foo {
@@ -25,46 +25,54 @@ struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule, SwiftSynta
             extension Foo.Bar {
                 override var description: String { return "" }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
-            Example("extension Person {\n  override ↓var age: Int { return 42 }\n}\n"),
-            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}\n")
+            Example("extension Person {\n  override ↓var age: Int { return 42 }\n}"),
+            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}"),
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        let allowedExtensions = ClassNameCollectingVisitor(viewMode: .sourceAccurate)
-            .walk(tree: file.syntaxTree, handler: \.classNames)
-        return Visitor(allowedExtensions: allowedExtensions)
+    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        let allowedExtensions = ClassNameCollectingVisitor(
+            configuration: configuration,
+            file: file
+        ).walk(tree: file.syntaxTree, handler: \.classNames)
+        return Visitor(
+            configuration: configuration,
+            file: file,
+            allowedExtensions: allowedExtensions
+        )
     }
 }
 
 private extension OverrideInExtensionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private let allowedExtensions: Set<String>
 
-        init(allowedExtensions: Set<String>) {
+        init(configuration: ConfigurationType,
+             file: SwiftLintFile,
+             allowedExtensions: Set<String>) {
             self.allowedExtensions = allowedExtensions
-            super.init(viewMode: .sourceAccurate)
+            super.init(configuration: configuration, file: file)
         }
 
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ExtensionDeclSyntax.self) }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if node.modifiers.containsOverride {
+            if node.modifiers.contains(keyword: .override) {
                 violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            if node.modifiers.containsOverride {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+            if node.modifiers.contains(keyword: .override) {
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard let type = node.extendedType.as(SimpleTypeIdentifierSyntax.self),
+            guard let type = node.extendedType.as(IdentifierTypeSyntax.self),
                   !allowedExtensions.contains(type.name.text) else {
                 return .skipChildren
             }
@@ -72,14 +80,14 @@ private extension OverrideInExtensionRule {
             return .visitChildren
         }
     }
-}
 
-private class ClassNameCollectingVisitor: ViolationsSyntaxVisitor {
-    private(set) var classNames: Set<String> = []
+    final class ClassNameCollectingVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private(set) var classNames: Set<String> = []
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    override func visitPost(_ node: ClassDeclSyntax) {
-        classNames.insert(node.identifier.text)
+        override func visitPost(_ node: ClassDeclSyntax) {
+            classNames.insert(node.name.text)
+        }
     }
 }

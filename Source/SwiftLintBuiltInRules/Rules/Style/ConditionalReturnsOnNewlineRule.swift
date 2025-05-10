@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(optIn: true)
+struct ConditionalReturnsOnNewlineRule: Rule {
     var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     static let description = RuleDescription(
@@ -18,7 +19,7 @@ struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, Sw
             Example("""
             guard something
             else { return }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓guard true else { return }"),
@@ -28,29 +29,13 @@ struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, OptInRule, Sw
             Example("↓if true { return \"YES\" } else { return \"NO\" }"),
             Example("""
             ↓guard condition else { XCTFail(); return }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            ifOnly: configuration.ifOnly,
-            locationConverter: file.locationConverter
-        )
-    }
 }
 
 private extension ConditionalReturnsOnNewlineRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let ifOnly: Bool
-        private let locationConverter: SourceLocationConverter
-
-        init(ifOnly: Bool, locationConverter: SourceLocationConverter) {
-            self.ifOnly = ifOnly
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IfExprSyntax) {
             if isReturn(node.body.statements.lastReturn, onTheSameLineAs: node.ifKeyword) {
                 violations.append(node.ifKeyword.positionAfterSkippingLeadingTrivia)
@@ -64,7 +49,7 @@ private extension ConditionalReturnsOnNewlineRule {
         }
 
         override func visitPost(_ node: GuardStmtSyntax) {
-            if ifOnly {
+            if configuration.ifOnly {
                 return
             }
 

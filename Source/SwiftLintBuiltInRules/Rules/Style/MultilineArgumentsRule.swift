@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineArgumentsRule: Rule {
     var configuration = MultilineArgumentsConfiguration()
 
     static let description = RuleDescription(
@@ -11,39 +12,18 @@ struct MultilineArgumentsRule: SwiftSyntaxRule, OptInRule, ConfigurationProvider
         nonTriggeringExamples: MultilineArgumentsRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineArgumentsRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            onlyEnforceAfterFirstClosureOnFirstLine: configuration.onlyEnforceAfterFirstClosureOnFirstLine,
-            firstArgumentLocation: configuration.firstArgumentLocation,
-            locationConverter: file.locationConverter
-        )
-    }
 }
 
 private extension MultilineArgumentsRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        let onlyEnforceAfterFirstClosureOnFirstLine: Bool
-        let firstArgumentLocation: MultilineArgumentsConfiguration.FirstArgumentLocation
-        let locationConverter: SourceLocationConverter
-
-        init(onlyEnforceAfterFirstClosureOnFirstLine: Bool,
-             firstArgumentLocation: MultilineArgumentsConfiguration.FirstArgumentLocation,
-             locationConverter: SourceLocationConverter) {
-            self.onlyEnforceAfterFirstClosureOnFirstLine = onlyEnforceAfterFirstClosureOnFirstLine
-            self.firstArgumentLocation = firstArgumentLocation
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.argumentList.count > 1,
-                  case let functionCallPosition = node.calledExpression.positionAfterSkippingLeadingTrivia,
-                  let functionCallLine = locationConverter.location(for: functionCallPosition).line else {
+            guard node.arguments.count > 1 else {
                 return
             }
 
-            let wrappedArguments: [Argument] = node.argumentList
+            let functionCallPosition = node.calledExpression.positionAfterSkippingLeadingTrivia
+            let functionCallLine = locationConverter.location(for: functionCallPosition).line
+            let wrappedArguments: [Argument] = node.arguments
                 .enumerated()
                 .compactMap { idx, argument in
                     Argument(element: argument, locationConverter: locationConverter, index: idx)
@@ -51,7 +31,7 @@ private extension MultilineArgumentsRule {
 
             var violatingArguments = findViolations(in: wrappedArguments, functionCallLine: functionCallLine)
 
-            if onlyEnforceAfterFirstClosureOnFirstLine {
+            if configuration.onlyEnforceAfterFirstClosureOnFirstLine {
                 violatingArguments = removeViolationsBeforeFirstClosure(arguments: wrappedArguments,
                                                                         violations: violatingArguments)
             }
@@ -65,7 +45,7 @@ private extension MultilineArgumentsRule {
                                     functionCallLine: Int) -> [Argument] {
             var visitedLines = Set<Int>()
 
-            if firstArgumentLocation == .sameLine {
+            if configuration.firstArgumentLocation == .sameLine {
                 visitedLines.insert(functionCallLine)
             }
 
@@ -73,8 +53,8 @@ private extension MultilineArgumentsRule {
                 let (line, idx) = (argument.line, argument.index)
                 let (firstVisit, _) = visitedLines.insert(line)
 
-               if idx == 0 {
-                    switch firstArgumentLocation {
+                if idx == 0 {
+                    switch configuration.firstArgumentLocation {
                     case .anyLine: return nil
                     case .nextLine: return line > functionCallLine ? nil : argument
                     case .sameLine: return line > functionCallLine ? argument : nil
@@ -90,7 +70,7 @@ private extension MultilineArgumentsRule {
 
         private func removeViolationsBeforeFirstClosure(arguments: [Argument],
                                                         violations: [Argument]) -> [Argument] {
-            guard let firstClosure = arguments.first(where: { $0.isClosure }),
+            guard let firstClosure = arguments.first(where: \.isClosure),
                   let firstArgument = arguments.first else {
                 return violations
             }
@@ -115,14 +95,9 @@ private struct Argument {
     let index: Int
     let expression: ExprSyntax
 
-    init?(element: TupleExprElementSyntax, locationConverter: SourceLocationConverter, index: Int) {
-        let offset = element.positionAfterSkippingLeadingTrivia
-        guard let line = locationConverter.location(for: offset).line else {
-            return nil
-        }
-
-        self.offset = offset
-        self.line = line
+    init?(element: LabeledExprSyntax, locationConverter: SourceLocationConverter, index: Int) {
+        self.offset = element.positionAfterSkippingLeadingTrivia
+        self.line = locationConverter.location(for: offset).line
         self.index = index
         self.expression = element.expression
     }

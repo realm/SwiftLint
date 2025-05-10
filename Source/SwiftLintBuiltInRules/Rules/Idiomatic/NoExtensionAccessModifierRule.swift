@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct NoExtensionAccessModifierRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -10,28 +11,25 @@ struct NoExtensionAccessModifierRule: SwiftSyntaxRule, OptInRule, ConfigurationP
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("extension String {}"),
-            Example("\n\n extension String {}")
+            Example("\n\n extension String {}"),
         ],
         triggeringExamples: [
             Example("↓private extension String {}"),
             Example("↓public \n extension String {}"),
             Example("↓open extension String {}"),
             Example("↓internal extension String {}"),
-            Example("↓fileprivate extension String {}")
+            Example("↓fileprivate extension String {}"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NoExtensionAccessModifierRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
-            if let modifiers = node.modifiers, modifiers.isNotEmpty {
+            let modifiers = node.modifiers
+            if modifiers.isNotEmpty {
                 violations.append(modifiers.positionAfterSkippingLeadingTrivia)
             }
         }

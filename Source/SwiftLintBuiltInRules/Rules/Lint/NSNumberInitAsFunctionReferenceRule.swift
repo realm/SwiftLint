@@ -1,7 +1,8 @@
 import SwiftSyntax
 
 // this rule exists due to a compiler bug: https://github.com/apple/swift/issues/51036
-struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NSNumberInitAsFunctionReferenceRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,27 +13,25 @@ struct NSNumberInitAsFunctionReferenceRule: SwiftSyntaxRule, ConfigurationProvid
         kind: .lint,
         nonTriggeringExamples: [
             Example("[0, 0.2].map(NSNumber.init(value:))"),
+            Example("let value = NSNumber.init(value: 0.0)"),
             Example("[0, 0.2].map { NSNumber(value: $0) }"),
             Example("[0, 0.2].map(NSDecimalNumber.init(value:))"),
-            Example("[0, 0.2].map { NSDecimalNumber(value: $0) }")
+            Example("[0, 0.2].map { NSDecimalNumber(value: $0) }"),
         ],
         triggeringExamples: [
             Example("[0, 0.2].map(↓NSNumber.init)"),
-            Example("[0, 0.2].map(↓NSDecimalNumber.init)")
+            Example("[0, 0.2].map(↓NSDecimalNumber.init)"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NSNumberInitAsFunctionReferenceRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberAccessExprSyntax) {
-            guard node.declNameArguments.isEmptyOrNil,
-                  node.name.text == "init",
-                  let baseText = node.base?.as(IdentifierExprSyntax.self)?.identifier.text,
+            guard node.declName.argumentNames.isEmptyOrNil,
+                  node.declName.baseName.text == "init",
+                  node.parent?.as(FunctionCallExprSyntax.self) == nil,
+                  let baseText = node.base?.as(DeclReferenceExprSyntax.self)?.baseName.text,
                   baseText == "NSNumber" || baseText == "NSDecimalNumber" else {
                 return
             }

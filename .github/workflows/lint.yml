@@ -1,0 +1,45 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lint-swift:
+    name: Lint Swift
+    runs-on: ubuntu-24.04 # "Noble Numbat"
+    container: swift:6.1-noble
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: swift run swiftlint --reporter github-actions-logging --strict 2> /dev/null
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            CHANGELOG.md
+            CONTRIBUTING.md
+            README.md
+  lint-actions:
+    name: Lint Actions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Register problem matcher
+        run: |
+          curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/main/.github/actionlint-matcher.json > actionlint-matcher.json
+          echo "::add-matcher::actionlint-matcher.json"
+      - name: Lint
+        uses: docker://rhysd/actionlint:latest
+        with:
+          args: -color

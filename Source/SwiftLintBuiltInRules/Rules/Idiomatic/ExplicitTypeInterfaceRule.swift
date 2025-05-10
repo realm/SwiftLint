@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExplicitTypeInterfaceRule: Rule {
     var configuration = ExplicitTypeInterfaceConfiguration()
 
     static let description = RuleDescription(
@@ -33,7 +34,7 @@ struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, SwiftSyn
             func f() {
                 if case .failure(let error) = errorCompletion {}
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -65,53 +66,44 @@ struct ExplicitTypeInterfaceRule: OptInRule, ConfigurationProviderRule, SwiftSyn
             class Foo {
               let ↓myVar = Set<Int>(0)
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
-private class Visitor: ViolationsSyntaxVisitor {
-    let configuration: ExplicitTypeInterfaceConfiguration
+private extension ExplicitTypeInterfaceRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
-
-    init(configuration: ExplicitTypeInterfaceConfiguration) {
-        self.configuration = configuration
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visitPost(_ node: VariableDeclSyntax) {
-        if node.modifiers.isClass {
-            if configuration.allowedKinds.contains(.class) {
-                checkViolation(node)
-            }
-        } else if node.modifiers.isStatic {
-            if configuration.allowedKinds.contains(.static) {
-                checkViolation(node)
-            }
-        } else if node.parent?.is(MemberDeclListItemSyntax.self) == true {
-            if configuration.allowedKinds.contains(.instance) {
-                checkViolation(node)
-            }
-        } else if node.parent?.is(CodeBlockItemSyntax.self) == true {
-            if configuration.allowedKinds.contains(.local) {
-                checkViolation(node)
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.modifiers.contains(keyword: .class) {
+                if configuration.allowedKinds.contains(.class) {
+                    checkViolation(node)
+                }
+            } else if node.modifiers.contains(keyword: .static) {
+                if configuration.allowedKinds.contains(.static) {
+                    checkViolation(node)
+                }
+            } else if node.parent?.is(MemberBlockItemSyntax.self) == true {
+                if configuration.allowedKinds.contains(.instance) {
+                    checkViolation(node)
+                }
+            } else if node.parent?.is(CodeBlockItemSyntax.self) == true {
+                if configuration.allowedKinds.contains(.local) {
+                    checkViolation(node)
+                }
             }
         }
-    }
 
-    private func checkViolation(_ node: VariableDeclSyntax) {
-        for binding in node.bindings {
-            if configuration.allowRedundancy, let initializer = binding.initializer,
-               initializer.isTypeConstructor || initializer.isTypeReference {
-                continue
-            }
-            if binding.typeAnnotation == nil {
-                violations.append(binding.positionAfterSkippingLeadingTrivia)
+        private func checkViolation(_ node: VariableDeclSyntax) {
+            for binding in node.bindings {
+                if configuration.allowRedundancy, let initializer = binding.initializer,
+                   initializer.isTypeConstructor || initializer.isTypeReference {
+                    continue
+                }
+                if binding.typeAnnotation == nil {
+                    violations.append(binding.positionAfterSkippingLeadingTrivia)
+                }
             }
         }
     }
@@ -130,7 +122,7 @@ private extension InitializerClauseSyntax {
     }
 
     var isTypeReference: Bool {
-        value.as(MemberAccessExprSyntax.self)?.name.tokenKind == .keyword(.self)
+        value.as(MemberAccessExprSyntax.self)?.declName.baseName.tokenKind == .keyword(.self)
     }
 }
 

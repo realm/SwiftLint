@@ -1,4 +1,4 @@
-struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable {
+struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = DeploymentTargetRule
 
     enum Platform: String {
@@ -16,18 +16,18 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             rawValue + "_deployment_target"
         }
 
-        var appExtensionCounterpart: Self? {
+        var appExtensionCounterpart: WritableKeyPath<DeploymentTargetConfiguration, Version>? {
             switch self {
-            case .iOS: return Self.iOSApplicationExtension
-            case .macOS: return Self.macOSApplicationExtension
-            case .watchOS: return Self.watchOSApplicationExtension
-            case .tvOS: return Self.tvOSApplicationExtension
-            default: return nil
+            case .iOS: \DeploymentTargetConfiguration.iOSAppExtensionDeploymentTarget
+            case .macOS: \DeploymentTargetConfiguration.macOSAppExtensionDeploymentTarget
+            case .watchOS: \DeploymentTargetConfiguration.watchOSAppExtensionDeploymentTarget
+            case .tvOS: \DeploymentTargetConfiguration.tvOSAppExtensionDeploymentTarget
+            default: nil
             }
         }
     }
 
-    class Version: Equatable, Comparable {
+    struct Version: Equatable, Comparable {
         let platform: Platform
         var major: Int
         var minor: Int
@@ -47,22 +47,19 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             self.patch = patch
         }
 
-        convenience init(platform: Platform, rawValue: String) throws {
-            let (major, minor, patch) = try Self.parseVersion(string: rawValue)
+        init(platform: Platform, value: Any) throws {
+            let (major, minor, patch) = try Self.parseVersion(string: String(describing: value))
             self.init(platform: platform, major: major, minor: minor, patch: patch)
         }
 
-        fileprivate func update(using value: Any) throws {
-            let (major, minor, patch) = try Self.parseVersion(string: String(describing: value))
-            self.major = major
-            self.minor = minor
-            self.patch = patch
+        var configurationKey: String {
+            platform.configurationKey
         }
 
         private static func parseVersion(string: String) throws -> (Int, Int, Int) {
             func parseNumber(_ string: String) throws -> Int {
                 guard let number = Int(string) else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+                    throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                 }
                 return number
             }
@@ -70,7 +67,7 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             let parts = string.components(separatedBy: ".")
             switch parts.count {
             case 0:
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             case 1:
                 return (try parseNumber(parts[0]), 0, 0)
             case 2:
@@ -80,11 +77,11 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
             }
         }
 
-        static func == (lhs: Version, rhs: Version) -> Bool {
+        static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch
         }
 
-        static func < (lhs: Version, rhs: Version) -> Bool {
+        static func < (lhs: Self, rhs: Self) -> Bool {
             if lhs.major != rhs.major {
                 return lhs.major < rhs.major
             }
@@ -107,16 +104,8 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
 
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
-    private let targets: [String: Version]
-
-    var consoleDescription: String {
-        "severity: \(severityConfiguration.consoleDescription)" + targets
-            .sorted { $0.key < $1.key }
-            .map { ", \($0): \($1.stringValue)" }.joined()
-    }
-
-    init() {
-        self.targets = Dictionary(uniqueKeysWithValues: [
+    var parameterDescription: RuleConfigurationDescription? {
+        let targets = Dictionary(uniqueKeysWithValues: [
                 iOSDeploymentTarget,
                 iOSAppExtensionDeploymentTarget,
                 macOSDeploymentTarget,
@@ -124,28 +113,55 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration, Equatable 
                 watchOSDeploymentTarget,
                 watchOSAppExtensionDeploymentTarget,
                 tvOSDeploymentTarget,
-                tvOSAppExtensionDeploymentTarget
+                tvOSAppExtensionDeploymentTarget,
         ].map { ($0.platform.configurationKey, $0) })
+        severityConfiguration
+        for (platform, target) in targets.sorted(by: { $0.key < $1.key }) {
+            platform => .symbol(target.stringValue)
+        }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
         for (key, value) in configuration {
             if key == "severity", let value = value as? String {
                 try severityConfiguration.apply(configuration: value)
                 continue
             }
-            guard let target = targets[key] else {
-                throw Issue.unknownConfiguration(ruleID: Parent.identifier)
+            switch key {
+            case iOSDeploymentTarget.platform.configurationKey:
+                try apply(value: value, to: \.iOSDeploymentTarget, from: configuration)
+            case iOSAppExtensionDeploymentTarget.platform.configurationKey:
+                iOSAppExtensionDeploymentTarget = try Version(platform: .iOSApplicationExtension, value: value)
+            case macOSDeploymentTarget.platform.configurationKey:
+                try apply(value: value, to: \.macOSDeploymentTarget, from: configuration)
+            case macOSAppExtensionDeploymentTarget.platform.configurationKey:
+                macOSAppExtensionDeploymentTarget = try Version(platform: .macOSApplicationExtension, value: value)
+            case watchOSDeploymentTarget.platform.configurationKey:
+                try apply(value: value, to: \.watchOSDeploymentTarget, from: configuration)
+            case watchOSAppExtensionDeploymentTarget.platform.configurationKey:
+                watchOSAppExtensionDeploymentTarget = try Version(platform: .watchOSApplicationExtension, value: value)
+            case tvOSDeploymentTarget.platform.configurationKey:
+                try apply(value: value, to: \.tvOSDeploymentTarget, from: configuration)
+            case tvOSAppExtensionDeploymentTarget.platform.configurationKey:
+                tvOSAppExtensionDeploymentTarget = try Version(platform: .tvOSApplicationExtension, value: value)
+            default: throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             }
-            try target.update(using: value)
-            if let extensionConfigurationKey = target.platform.appExtensionCounterpart?.configurationKey,
-               configuration[extensionConfigurationKey] == nil,
-               let child = targets[extensionConfigurationKey] {
-                try child.update(using: value)
-            }
+        }
+    }
+
+    private mutating func apply(value: Any,
+                                to target: WritableKeyPath<Self, Version>,
+                                from configuration: [String: Any]) throws {
+        let platform = self[keyPath: target].platform
+        self[keyPath: target] = try Version(platform: platform, value: value)
+        if let counterpart = platform.appExtensionCounterpart,
+           case let counterPlatform = self[keyPath: counterpart].platform,
+           configuration[counterPlatform.configurationKey] == nil {
+            self[keyPath: counterpart] = try Version(platform: counterPlatform, value: value)
         }
     }
 }

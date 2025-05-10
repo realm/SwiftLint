@@ -67,7 +67,8 @@ import SwiftSyntax
 ///     case accountCreated
 /// }
 /// ````
-struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct RequiredEnumCaseRule: Rule {
     var configuration = RequiredEnumCaseConfiguration()
 
     private static let exampleConfiguration = [
@@ -103,7 +104,7 @@ struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRu
                 case error
                 case notConnected(error: Error)
             }
-            """, configuration: exampleConfiguration)
+            """, configuration: exampleConfiguration),
         ],
         triggeringExamples: [
             Example("""
@@ -127,24 +128,13 @@ struct RequiredEnumCaseRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRu
                 case success
                 case error
             }
-            """, configuration: exampleConfiguration)
+            """, configuration: exampleConfiguration),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension RequiredEnumCaseRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: RequiredEnumCaseConfiguration
-
-        init(configuration: RequiredEnumCaseConfiguration) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: EnumDeclSyntax) {
             guard configuration.protocols.isNotEmpty else {
                 return
@@ -177,13 +167,13 @@ private extension RequiredEnumCaseRule {
 
 private extension EnumDeclSyntax {
     var enumCasesNames: [String] {
-        return memberBlock.members
+        memberBlock.members
             .flatMap { member -> [String] in
                 guard let enumCaseDecl = member.decl.as(EnumCaseDeclSyntax.self) else {
                     return []
                 }
 
-                return enumCaseDecl.elements.map(\.identifier.text)
+                return enumCaseDecl.elements.map(\.name.text)
             }
     }
 }

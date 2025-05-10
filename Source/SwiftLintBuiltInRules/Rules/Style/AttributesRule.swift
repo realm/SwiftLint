@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct AttributesRule: Rule {
     var configuration = AttributesConfiguration()
 
     static let description = RuleDescription(
@@ -10,30 +11,30 @@ struct AttributesRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
             Attributes should be on their own lines in functions and types, but on the same line as variables and \
             imports
             """,
+        rationale: """
+        Erica Sadun says:
+
+        > My take on things after the poll and after talking directly with a number of \
+        developers is this: Placing attributes like `@objc`, `@testable`, `@available`, `@discardableResult` on \
+        their own lines before a member declaration has become a conventional Swift style.
+
+        > This approach limits declaration length. It allows a member to float below its attribute and supports \
+        flush-left access modifiers, so `internal`, `public`, etc appear in the leftmost column. Many developers \
+        mix-and-match styles for short Swift attributes like `@objc`
+
+        See https://ericasadun.com/2016/10/02/quick-style-survey/ for discussion.
+
+        SwiftLint's rule requires attributes to be on their own lines for functions and types, but on the same line \
+        for variables and imports.
+        """,
         kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(
-            locationConverter: file.locationConverter,
-            configuration: configuration
-        )
-    }
 }
 
 private extension AttributesRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-        private let configuration: AttributesConfiguration
-
-        init(locationConverter: SourceLocationConverter, configuration: AttributesConfiguration) {
-            self.locationConverter = locationConverter
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: AttributeListSyntax) {
             guard let helper = node.makeHelper(locationConverter: locationConverter) else {
                 return
@@ -46,12 +47,30 @@ private extension AttributesRule {
 
             let hasViolation = helper.hasViolation(
                 locationConverter: locationConverter,
-                attributesAndPlacements: attributesAndPlacements
+                attributesAndPlacements: attributesAndPlacements,
+                attributesWithArgumentsAlwaysOnNewLine: configuration.attributesWithArgumentsAlwaysOnNewLine
             )
 
-            if hasViolation {
+            switch hasViolation {
+            case .argumentsAlwaysOnNewLineViolation:
+                let reason = """
+                    Attributes with arguments or inside always_on_line_above must be on a new line \
+                    instead of the same line
+                    """
+
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: helper.violationPosition,
+                        reason: reason,
+                        severity: configuration.severityConfiguration.severity
+                    )
+                )
+                return
+            case .violation:
                 violations.append(helper.violationPosition)
                 return
+            case .noViolation:
+                break
             }
 
             let linesForAttributes = attributesAndPlacements
@@ -60,7 +79,8 @@ private extension AttributesRule {
 
             if linesForAttributes.isEmpty {
                 return
-            } else if !linesForAttributes.contains(helper.keywordLine - 1) {
+            }
+            if !linesForAttributes.contains(helper.keywordLine - 1) {
                 violations.append(helper.violationPosition)
                 return
             }
@@ -68,9 +88,8 @@ private extension AttributesRule {
             let hasMultipleNewlines = node.children(viewMode: .sourceAccurate).enumerated().contains { index, element in
                 if index > 0 && element.leadingTrivia.hasMultipleNewlines == true {
                     return true
-                } else {
-                    return element.trailingTrivia.hasMultipleNewlines == true
                 }
+                return element.trailingTrivia.hasMultipleNewlines == true
             }
 
             if hasMultipleNewlines {
@@ -101,15 +120,20 @@ private extension TriviaPiece {
     var numberOfNewlines: Int {
         if case .newlines(let numberOfNewlines) = self {
             return numberOfNewlines
-        } else {
-            return 0
         }
+        return 0
     }
 }
 
 private enum AttributePlacement {
     case sameLineAsDeclaration
     case dedicatedLine
+}
+
+private enum Violation {
+    case argumentsAlwaysOnNewLineViolation
+    case noViolation
+    case violation
 }
 
 private struct RuleHelper {
@@ -119,8 +143,9 @@ private struct RuleHelper {
 
     func hasViolation(
         locationConverter: SourceLocationConverter,
-        attributesAndPlacements: [(AttributeSyntax, AttributePlacement)]
-    ) -> Bool {
+        attributesAndPlacements: [(AttributeSyntax, AttributePlacement)],
+        attributesWithArgumentsAlwaysOnNewLine: Bool
+    ) -> (Violation) {
         var linesWithAttributes: Set<Int> = [keywordLine]
         for (attribute, placement) in attributesAndPlacements {
             guard let attributeStartLine = attribute.startLine(locationConverter: locationConverter) else {
@@ -130,18 +155,21 @@ private struct RuleHelper {
             switch placement {
             case .sameLineAsDeclaration:
                 if attributeStartLine != keywordLine {
-                    return true
+                    return .violation
                 }
             case .dedicatedLine:
                 let hasViolation = attributeStartLine == keywordLine ||
                     linesWithAttributes.contains(attributeStartLine)
                 linesWithAttributes.insert(attributeStartLine)
                 if hasViolation {
-                    return true
+                    if attributesWithArgumentsAlwaysOnNewLine && shouldBeOnSameLine {
+                        return .argumentsAlwaysOnNewLineViolation
+                    }
+                    return .violation
                 }
             }
         }
-        return false
+        return .noViolation
     }
 }
 
@@ -155,9 +183,11 @@ private extension AttributeListSyntax {
                 let atPrefixedName = "@\(attribute.attributeNameText)"
                 if configuration.alwaysOnSameLine.contains(atPrefixedName) {
                     return (attribute, .sameLineAsDeclaration)
-                } else if configuration.alwaysOnNewLine.contains(atPrefixedName) {
+                }
+                if configuration.alwaysOnNewLine.contains(atPrefixedName) {
                     return (attribute, .dedicatedLine)
-                } else if attribute.argument != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
+                }
+                if attribute.arguments != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
                     return (attribute, .dedicatedLine)
                 }
 
@@ -194,10 +224,10 @@ private extension AttributeListSyntax {
         } else if let protocolKeyword = parent.as(ProtocolDeclSyntax.self)?.protocolKeyword {
             keyword = protocolKeyword
             shouldBeOnSameLine = false
-        } else if let importTok = parent.as(ImportDeclSyntax.self)?.importTok {
+        } else if let importTok = parent.as(ImportDeclSyntax.self)?.importKeyword {
             keyword = importTok
             shouldBeOnSameLine = true
-        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.bindingKeyword {
+        } else if let letOrVarKeyword = parent.as(VariableDeclSyntax.self)?.bindingSpecifier {
             keyword = letOrVarKeyword
             shouldBeOnSameLine = true
         } else {

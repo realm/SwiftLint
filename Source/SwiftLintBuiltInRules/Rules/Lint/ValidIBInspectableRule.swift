@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct ValidIBInspectableRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -67,7 +68,7 @@ struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -104,15 +105,11 @@ struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
             class Foo {
               @IBInspectable private ↓var x: Optional<String>
             }
-            """)
+            """),
         ]
     )
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    fileprivate static var supportedTypes: Set<String> = {
+    fileprivate static let supportedTypes: Set<String> = {
         // "You can add the IBInspectable attribute to any property in a class declaration,
         // class extension, or category of type: boolean, integer or floating point number, string,
         // localized string, rectangle, point, size, color, range, and nil."
@@ -125,7 +122,7 @@ struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
             "UIColor",
             "NSColor",
             "UIImage",
-            "NSImage"
+            "NSImage",
         ]
 
         let types = [
@@ -138,7 +135,7 @@ struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
             "CGSize",
             "NSSize",
             "CGRect",
-            "NSRect"
+            "NSRect",
         ]
 
         let intTypes: [String] = ["", "8", "16", "32", "64"].flatMap { size in
@@ -155,12 +152,12 @@ struct ValidIBInspectableRule: SwiftSyntaxRule, ConfigurationProviderRule {
 }
 
 private extension ValidIBInspectableRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [FunctionDeclSyntax.self] }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [FunctionDeclSyntax.self] }
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }
@@ -176,12 +173,12 @@ private extension VariableDeclSyntax {
     }
 
     var isReadOnlyProperty: Bool {
-        if bindingKeyword.tokenKind == .keyword(.let) {
+        if bindingSpecifier.tokenKind == .keyword(.let) {
             return true
         }
 
         let computedProperty = bindings.contains { binding in
-            binding.accessor != nil
+            binding.accessorBlock != nil
         }
 
         if !computedProperty {
@@ -189,7 +186,7 @@ private extension VariableDeclSyntax {
         }
 
         return bindings.allSatisfy { binding in
-            guard let accessorBlock = binding.accessor?.as(AccessorBlockSyntax.self) else {
+            guard let accessorBlock = binding.accessorBlock else {
                 return true
             }
 

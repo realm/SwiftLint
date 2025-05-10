@@ -1,46 +1,84 @@
-name: docker
+name: Docker Build
 
 on:
   push:
     branches:
       - main
-    tags:
-      - '*'
+  release:
+    types: published
+  workflow_call:
+    inputs:
+      ref:
+        description: 'Git reference'
+        required: true
+        type: string
+      tag:
+        description: 'Docker tag'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-  
+    name: Build Docker Image
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Extract DOCKER_TAG using tag name
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: Define variables on push to `main`
+      if: github.event_name == 'push'
       run: |
-        echo "DOCKER_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-    
-    - name: Use default DOCKER_TAG
-      if: startsWith(github.ref, 'refs/tags/') != true
+        {
+          echo "CHECKOUT_REF=main"
+          echo "DOCKER_TAG=latest"
+          echo "OUTPUT_TYPE=type=registry"
+        } >> "$GITHUB_ENV"
+    - name: Define variables on release event
+      if: github.event_name == 'release'
       run: |
-        echo "DOCKER_TAG=latest" >> $GITHUB_ENV
-    
+        {
+          echo "CHECKOUT_REF=${{ github.event.release.tag_name }}"
+          echo "DOCKER_TAG=${{ github.event.release.tag_name }}"
+          echo "OUTPUT_TYPE=type=registry"
+        } >> "$GITHUB_ENV"
+    - name: Define variables on workflow call
+      if: github.event_name != 'push' && github.event_name != 'release'
+      run: |
+        {
+          echo "CHECKOUT_REF=${{ inputs.ref }}"
+          echo "DOCKER_TAG=${{ inputs.tag }}"
+          echo "OUTPUT_TYPE=type=local,dest=artifacts"
+        } >> "$GITHUB_ENV"
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ env.CHECKOUT_REF }}
     - name: Set lowercase repository name
-      run: |
-        echo "REPOSITORY_LC=${REPOSITORY,,}" >>${GITHUB_ENV}
+      run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> "$GITHUB_ENV"
       env:
-        REPOSITORY: '${{ github.repository }}'
-      
+        REPOSITORY: ${{ github.repository }}
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-      
-    - name: Login to Github registry
-      uses: docker/login-action@v1 
+      uses: docker/setup-buildx-action@v3
+    - name: Login to GitHub registry
+      uses: docker/login-action@v3
       with:
         username: ${{ github.actor }}
-        password:  ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
-    
-    - uses: docker/build-push-action@v2
+    - uses: docker/build-push-action@v6
       with:
-        push: true
+        context: .
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
+        platforms: linux/amd64
+        outputs: ${{ env.OUTPUT_TYPE }}
+    - name: Rename binary artifact
+      if: contains(env.OUTPUT_TYPE, 'local')
+      run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
+    - name: Upload binary artifact
+      if: contains(env.OUTPUT_TYPE, 'local')
+      uses: actions/upload-artifact@v4
+      with:
+        name: swiftlint_linux_amd64
+        path: artifacts/usr/bin/swiftlint_linux_amd64
+        if-no-files-found: error
+        retention-days: 2

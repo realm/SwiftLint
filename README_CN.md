@@ -14,13 +14,39 @@ SwiftLint Hook 了 [Clang](http://clang.llvm.org) 和 [SourceKit](http://www.jps
 
 ## 安装
 
-### 使用 [Homebrew](http://brew.sh/)：
+### 使用[Swift Package Manager](https://github.com/apple/swift-package-manager)
+
+SwiftLint 可以用作[命令插件](#swift-package-command-plugin)或[构建工具插件](#build-tool-plugins)
+
+添加
+
+```swift
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "<version>")
+```
+
+到你的 `Package.swift` 文件中，以自动获取 SwiftLint 的最新版本，或者将依赖项固定到特定版本：
+
+```swift
+.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "<version>")
+```
+
+其中，用所需的最低版本或精确版本替换 `<version>`。
+
+### [Xcode Package Dependency](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
+
+使用以下链接将 SwiftLint 作为包依赖添加到 Xcode 项目中：
+
+```bash
+https://github.com/SimplyDanny/SwiftLintPlugins
+```
+
+### 使用 [Homebrew](http://brew.sh/)
 
 ```
 brew install swiftlint
 ```
 
-### 使用 [CocoaPods](https://cocoapods.org)：
+### 使用 [CocoaPods](https://cocoapods.org)
 
 将如下代码添加到你的 Podfile 即可：
 
@@ -34,64 +60,200 @@ pod 'SwiftLint'
 
 请注意这会将 SwiftLint 二进制文件、所依赖的二进制文件和 Swift 二进制库安装到 `Pods/` 目录下，所以不推荐将此目录添加到版本控制系统（如 git）中进行跟踪。
 
-### 使用 [Mint](https://github.com/yonaskolb/mint)：
+### 使用 [Mint](https://github.com/yonaskolb/mint)
+
 ```
-$ mint install realm/SwiftLint
+mint install realm/SwiftLint
 ```
 
-### 使用安装包：
+### 使用安装包
 
 你也可以通过从[最新的 GitHub 发布地址](https://github.com/realm/SwiftLint/releases/latest)下载 `SwiftLint.pkg` 然后执行的方式安装 SwiftLint。
 
-### 编译源代码：
+### 编译源代码
 
-你也可以通过 Clone SwiftLint 的 Git 仓库到本地然后执行 `make install` (Xcode 12.5+) 编译源代码的方式来安装。
+你也可以通过 clone SwiftLint 的 Git 仓库到本地然后执行
+`make install` (Xcode 15.0+) 以从源代码构建及安装。
+
+### 使用 Bazel
+
+把这个放到你的 `MODULE.bazel`：
+
+```bzl
+bazel_dep(name = "swiftlint", version = "0.50.4", repo_name = "SwiftLint")
+```
+
+或把它放到你的 `WORKSPACE`：
+
+<details>
+
+<summary>WORKSPACE</summary>
+
+```bzl
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "build_bazel_rules_apple",
+    sha256 = "390841dd5f8a85fc25776684f4793d56e21b098dfd7243cd145b9831e6ef8be6",
+    url = "https://github.com/bazelbuild/rules_apple/releases/download/2.4.1/rules_apple.2.4.1.tar.gz",
+)
+
+load(
+    "@build_bazel_rules_apple//apple:repositories.bzl",
+    "apple_rules_dependencies",
+)
+
+apple_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:repositories.bzl",
+    "swift_rules_dependencies",
+)
+
+swift_rules_dependencies()
+
+load(
+    "@build_bazel_rules_swift//swift:extras.bzl",
+    "swift_rules_extra_dependencies",
+)
+
+swift_rules_extra_dependencies()
+
+http_archive(
+    name = "SwiftLint",
+    sha256 = "c6ea58b9c72082cdc1ada4a2d48273ecc355896ed72204cedcc586b6ccb8aca6",
+    url = "https://github.com/realm/SwiftLint/releases/download/0.52.4/bazel.tar.gz",
+)
+
+load("@SwiftLint//bazel:repos.bzl", "swiftlint_repos")
+
+swiftlint_repos()
+
+load("@SwiftLint//bazel:deps.bzl", "swiftlint_deps")
+
+swiftlint_deps()
+```
+
+</details>
+
+然后你就可以在当前目录下使用这个命令运行 SwiftLint：
+
+```console
+bazel run -c opt @SwiftLint//:swiftlint
+```
 
 ## 用法
 
 ### 报告
 
-我们鼓励您观看本次报告，来获得将 SwiftLint 整合到你的项目中的推荐方式的一个高层次概括：
+我们鼓励你观看本次报告，来获得将 SwiftLint 整合到你的项目中的推荐方式的一个高层次概括：
 
-[![Presentation](assets/presentation.svg)](https://academy.realm.io/posts/slug-jp-simard-swiftlint/)
+[![Presentation](assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
 ### Xcode
 
 整合 SwiftLint 到 Xcode 体系中去从而可以使警告和错误显示到 IDE 上，只需要在 Xcode 中添加一个新的“Run Script Phase”并且包含如下代码即可：
 
+![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/runscript.png)
+
+Xcode 15 对 Build Settings 进行了重大更改，它将 `ENABLE_USER_SCRIPT_SANDBOXING` 的默认值从 `NO` 更改为 `YES`。
+因此，SwiftLint 会遇到与缺少文件权限相关的错误，通常报错信息为：`error: Sandbox: swiftlint(19427) deny(1) file-read-data.`
+
+要解决此问题，需要手动将 `ENABLE_USER_SCRIPT_SANDBOXING` 设置为 `NO`，以针对 SwiftLint 配置的特定目标。
+
+如果你是在搭载 Apple 芯片的 Mac 上通过 Homebrew 安装的 SwiftLint，你可能会遇到这个警告：
+
+> warning: SwiftLint not installed, download from <https://github.com/realm/SwiftLint>
+
+这是因为 Homebrew 在搭载 Apple 芯片的 Mac 上将二进制文件默认安装到了 `/opt/homebrew/bin`
+下。如果要让 Xcode 知道 SwiftLint 在哪，你可以在 Build Phase 中将
+`/opt/homebrew/bin` 路径添加到 `PATH` 环境变量
+
 ```bash
-if which swiftlint >/dev/null; then
+if [[ "$(uname -m)" == arm64 ]]; then
+    export PATH="/opt/homebrew/bin:$PATH"
+fi
+
+if which swiftlint > /dev/null; then
   swiftlint
 else
   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi
 ```
 
-![](assets/runscript.png)
+或者，你可以创建一个指向在 `/usr/local/bin` 中实际二进制文件的符号链接：
 
-或者，脚本看起来应该像这样如果你已经通过 CocoaPods 安装了 SwiftLint：
+```bash
+ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
+```
+
+你可能希望将SwiftLint阶段直接移到'Compile Sources'
+步骤之前，以便在编译之前快速检测错误。但是，SwiftLint 被设计
+为在有效的 Swift 代码上运行，这些代码干净利落地完成了编译器的解析阶段。
+因此，在'Compile Sources'之前运行 SwiftLint 可能会产生一些不正确的结果。
+
+如果你也希望修正违规行为，你的脚本可以运行
+`swiftlint --fix && swiftlint` 而不是 `swiftlint`。 这将意味着
+修复所有可纠正的违规行为，同时确保在你的项目中对剩余的违规行为显示警告。
+
+如果你已经通过 CocoaPods 安装了 SwiftLint，脚本看起来应该像这样：
 
 ```bash
 "${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
-#### 格式化保存 Xcode 插件
+### 插件支持
 
-在 Xcode 中保存时执行 `swiftlint autocorrect`，需要从 Alcatraz 安装 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) 插件。
+SwiftLint 既可以作为 Xcode 项目构建工具，也可以作为 Swift package。
 
-⚠ ️如果没有禁用 SIP 的话，这个插件在 Xcode 8 或者更新版本的 Xcode 上将不会工作。不推荐此操作。
+> 由于 Swift Package Manager 插件的限制，仅推荐
+> 在其根目录中有 SwiftLint 配置的项目使用，因为
+目前没有办法将任何附加选项传递给 SwiftLint 可执行文件。
 
-### AppCode
+#### Xcode
 
-在 AppCode 中使用 SwiftLint，安装[这个插件](https://plugins.jetbrains.com/plugin/9175)并且在插件设置中配置 SwiftLint 的安装路径即可。`autocorrect` 操作快捷键为 `⌥⏎`。
+如果你正在使用 Xcode 中的项目，你可以将 SwiftLint 集成为
+Xcode 构建工具插件。
 
-### Atom
+将 SwiftLint 作为依赖包添加到你的项目中，无需链接任何其他服务。
 
-整合 SwiftLint 到 [Atom](https://atom.io/) 需要从 APM 安装 [`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) 包。
+选择要添加修正的目标，打开 `Build Phases` 检查器。
+打开 `Run Build Tool Plug-ins` 并选择 `+` 按钮。
+从列表中选择 `SwiftLintBuildToolPlugin` 并将其添加到项目中。
+
+![](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/select-swiftlint-plugin.png)
+
+对于无人值守的使用场景（例如在 CI 上），可以通过以下方式禁用软件包和宏的验证对话框
+
+* 单独将 `-skipPackagePluginValidation` 和 `-skipMacroValidation` 传递到 `xcodebuild` 或者
+* 为那个用户使用 `defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES` 进行全局设置，然后写入 `defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES`
+
+_注意：这将隐含地信任所有的Xcode软件包插件，并绕过Xcode的软件包验证对话框。
+       这对安全有影响。_
+
+#### Swift Package
+
+你可以将 SwiftLint 集成为 Swift Package Manager 插件，如果你正在使用
+具有 `Package.swift` 清单的 Swift 包。
+
+将 SwiftLint 作为包依赖添加到你的 `Package.swift` 文件中。  
+使用`plugins`参数将SwiftLint添加到目标。
+
+```swift
+.target(
+    ...
+    plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+),
+```
+
+### Visual Studio Code
+
+如果要在[vscode](https://code.visualstudio.com)上使用 SwiftLint，在应用市场上安装
+[`vscode-swiftlint`](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint)扩展。
 
 ### fastlane
 
-你可以用[fastlane官方的SwiftLint功能](https://docs.fastlane.tools/actions/swiftlint)来运行SwiftLint作为你的Fastlane程序的一部分
+你可以用[fastlane官方的SwiftLint功能](https://docs.fastlane.tools/actions/swiftlint)来运行 SwiftLint 作为你的 Fastlane 程序的一部分。
 
 ```ruby
 swiftlint(
@@ -110,6 +272,34 @@ swiftlint(
     strict: true                            # 发现警告时报错? (默认值: false)
 )
 ```
+
+### Docker
+
+`swiftlint` 也可以在 [Docker](https://www.docker.com/) 上使用 `Ubuntu` 作为一个镜像使用。
+因此，第一次你需要使用下面的命令调用 docker 镜像：
+
+```bash
+docker pull ghcr.io/realm/swiftlint:latest
+```
+
+接下来，你只需在 docker 中运行`swiftlint`：
+
+```bash
+docker run -it -v `pwd`:`pwd` -w `pwd` ghcr.io/realm/swiftlint:latest
+```
+
+这将在你现在所在的文件夹（`pwd`）中执行`swiftlint`，显示类似的输出：
+
+```bash
+$ docker run -it -v `pwd`:`pwd` -w `pwd` ghcr.io/realm/swiftlint:latest
+Linting Swift files in current working directory
+Linting 'RuleDocumentation.swift' (1/490)
+...
+Linting 'YamlSwiftLintTests.swift' (490/490)
+Done linting! Found 0 violations, 0 serious in 490 files.
+```
+
+这里有更多关于使用[Docker 镜像](https://docs.docker.com/)的文档。
 
 ### 命令行
 
@@ -156,18 +346,46 @@ SwiftLint 工作于 SourceKit 这一层，所以 Swift 版本发生变化时它�
 你可能也给反向 DNS 符号设置了 `TOOLCHAINS` 环境变量来标记一个特定的 Swift 工具集版本：
 
 ```shell
-$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
+TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 ```
 
 在 Linux 上，SourceKit 默认需要位于 `/usr/lib/libsourcekitdInProc.so` 或者通过 `LINUX_SOURCEKIT_LIB_PATH` 环境变量进行指定。
 
+### 预提交
+
+SwiftLint 可以作为一个 [预提交](https://pre-commit.com/) 钩子运行。
+一当 [安装](https://pre-commit.com/#install)，把这个添加到在 root 路径中的
+`.pre-commit-config.yaml` 里：
+
+```yaml
+repos:
+  - repo: https://github.com/realm/SwiftLint
+    rev: 0.50.3
+    hooks:
+      - id: swiftlint
+```
+
+将 `rev` 调整为您选择的 SwiftLint 版本。可以使用 `pre-commit autoupdate` 来更新到当前版本。
+
+SwiftLint 可以使用 `entry` 进行配置以应用修复和报错：
+
+```yaml
+-   repo: https://github.com/realm/SwiftLint
+    rev: 0.50.3
+    hooks:
+    -   id: swiftlint
+        entry: swiftlint --fix --strict
+```
+
 ## 规则
 
-SwiftLint 已经包含了超过 75 条规则，并且我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。
+SwiftLint 已经包含了超过 200 条规则，并且我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。
 
-你可以在 [Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html) 找到规则的更新列表和更多信息。
+你可以在 [这里](https://realm.github.io/SwiftLint/rule-directory.html) 找到规则的更新列表和更多信息。
 
-你也可以检视 [Source/SwiftLintBuiltInRules/Rules](Source/SwiftLintBuiltInRules/Rules) 目录来查看它们的实现。
+你也可以查看 [Source/SwiftLintBuiltInRules/Rules](Source/SwiftLintBuiltInRules/Rules) 目录来查看它们的实现。
+
+### Opt-In 规则
 
 `opt_in_rules` 默认是关闭的（即，你需要在你的配置文件中明确地打开它们）。
 
@@ -181,11 +399,11 @@ SwiftLint 已经包含了超过 75 条规则，并且我们希望 Swift 社区�
 
 可以通过在一个源文件中定义一个如下格式的注释来关闭某个规则：
 
-`// swiftlint:disable <rule>`
+`// swiftlint:disable <rule1> [<rule2> <rule3>...]`
 
 在该文件结束之前或者在定义如下格式的匹配注释之前，这条规则都会被禁用：
 
-`// swiftlint:enable <rule>`
+`// swiftlint:enable <rule1> [<rule2> <rule3>...]`
 
 例如：
 
@@ -196,7 +414,24 @@ let noWarning :String = "" // No warning about colons immediately after variable
 let hasWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 
-也可以通过添加 `:previous`, `:this` 或者 `:next` 来使关闭或者打开某条规则的命令分别应用于前一行，当前或者后一行代码。
+包含 "all "关键字将禁用所有的规则，直到 linter 看到匹配的启用注释：
+
+`// swiftlint:disable all`
+`// swiftlint:enable all`
+
+例如：
+
+```swift
+// swiftlint:disable all
+let noWarning :String = "" // No warning about colons immediately after variable names!
+let i = "" // Also no warning about short identifier names
+// swiftlint:enable all
+let hasWarning :String = "" // Warning generated about colons immediately after variable names
+let y = "" // Warning generated about short identifier names
+```
+
+也可以通过添加`:previous`、`:this`或`:next`来修改`disable`或`enable`命令，
+使它们只对前一行，当前或者后一行代码有效。
 
 例如：
 
@@ -226,18 +461,26 @@ disabled_rules: # 执行时排除掉的规则
   - colon
   - comma
   - control_statement
-opt_in_rules: # 一些规则仅仅是可选的
-  - empty_count
-  - missing_docs
-  # 可以通过执行如下指令来查找所有可用的规则:
-  # swiftlint rules
+opt_in_rules: # 一些规则是默认关闭的，所以你需要手动启用
+  - empty_count # 你可以通过执行如下指令来查找所有可用的规则：`swiftlint rules`
+# 或者，通过取消对该选项的注释来明确指定所有规则：
+# only_rules：# 如果使用，请删除 `disabled_rules` 或 `opt_in_rules`
+#   - empty_parameters
+#   - vertical_whitespace
+
+analyzer_rules: # `swiftlint analyze` 运行的规则
+  - explicit_self
+
 included: # 执行 linting 时包含的路径。如果出现这个 `--path` 会被忽略。
-  - Source
+  - Sources
 excluded: # 执行 linting 时忽略的路径。 优先级比 `included` 更高。
   - Carthage
   - Pods
-  - Source/ExcludedFolder
-  - Source/ExcludedFile.swift
+  - Sources/ExcludedFolder
+  - Sources/ExcludedFile.swift
+
+# 如果值为 true，SwiftLint 将把所有警告都视为错误
+strict: false
 
 # 可配置的规则可以通过这个配置文件来自定义
 # 二进制规则可以设置他们的严格程度
@@ -346,3 +589,7 @@ SwiftLint 可以自动修正某些错误，磁盘上的文件会被一个修正�
 SwiftLint 是由 Realm Inc 建立和维护的。Realm 的名字和标志是属于 Realm Inc 的注册商标。
 
 我们 :heart: 开源软件！看一下[我们的其他开源项目](https://github.com/realm)，瞅一眼[我们的博客](https://realm.io/news)，或者在推特上跟我们唠唠嗑([@realm](https://twitter.com/realm))。
+
+<img src="https://raw.githubusercontent.com/realm/SwiftLint/main/assets/macstadium.png" width="184" />
+
+感谢 MacStadium 为我们的性能测试提供了一台 Mac Mini。

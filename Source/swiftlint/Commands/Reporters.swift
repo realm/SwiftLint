@@ -8,7 +8,6 @@ extension SwiftLint {
 
         func run() throws {
             print(TextTable(reporters: reportersList).render())
-            ExitHelper.successfullyExit()
         }
     }
 }
@@ -16,16 +15,16 @@ extension SwiftLint {
 // MARK: - SwiftyTextTable
 
 private extension TextTable {
-    init(reporters: [Reporter.Type]) {
+    init(reporters: [any Reporter.Type]) {
         let columns = [
             TextTableColumn(header: "identifier"),
-            TextTableColumn(header: "description")
+            TextTableColumn(header: "description"),
         ]
         self.init(columns: columns)
         for reporter in reporters {
             addRow(values: [
                 reporter.identifier,
-                reporter.description
+                reporter.description,
             ])
         }
     }

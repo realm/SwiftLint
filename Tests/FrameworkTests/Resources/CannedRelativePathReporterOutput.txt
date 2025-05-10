@@ -1,0 +1,4 @@
+filename:1:1: warning: Line Length Violation: Violation Reason 1 (line_length)
+filename:1:1: error: Line Length Violation: Violation Reason 2 (line_length)
+path/file.swift:1:2: error: Syntactic Sugar Violation: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int> (syntactic_sugar)
+<nopath>:1:1: error: Colon Spacing Violation: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals (colon)

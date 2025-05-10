@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ProhibitedInterfaceBuilderRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -10,24 +11,20 @@ struct ProhibitedInterfaceBuilderRule: ConfigurationProviderRule, SwiftSyntaxRul
         kind: .lint,
         nonTriggeringExamples: [
             wrapExample("var label: UILabel!"),
-            wrapExample("@objc func buttonTapped(_ sender: UIButton) {}")
+            wrapExample("@objc func buttonTapped(_ sender: UIButton) {}"),
         ],
         triggeringExamples: [
             wrapExample("@IBOutlet ↓var label: UILabel!"),
-            wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}")
+            wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ProhibitedInterfaceBuilderRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.isIBOutlet {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -39,8 +36,8 @@ private extension ProhibitedInterfaceBuilderRule {
     }
 }
 
-private func wrapExample(_ text: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+private func wrapExample(_ text: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+    Example("""
     class ViewController: UIViewController {
         \(text)
     }

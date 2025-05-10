@@ -1,14 +1,15 @@
 import SwiftSyntax
 
-private func wrapInSwitch(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+private func wrapInSwitch(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+    Example("""
     switch foo {
         \(str)
     }
     """, file: file, line: line)
 }
 
-struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct SwitchCaseOnNewlineRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -39,13 +40,13 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
              where lhsErrorCode > 10:
             return false
             """),
-            wrapInSwitch("case #selector(aFunction(_:)):\n return false\n"),
+            wrapInSwitch("case #selector(aFunction(_:)):\n return false"),
             Example("""
             do {
               let loadedToken = try tokenManager.decodeToken(from: response)
               return loadedToken
             } catch { throw error }
-            """)
+            """),
         ],
         triggeringExamples: [
             wrapInSwitch("↓case 1: return true"),
@@ -54,35 +55,22 @@ struct SwitchCaseOnNewlineRule: SwiftSyntaxRule, ConfigurationProviderRule, OptI
             wrapInSwitch("↓case \"a string\": return false"),
             wrapInSwitch("↓case .myCase: return false // error from network"),
             wrapInSwitch("↓case let .myCase(value) where value > 10: return false"),
-            wrapInSwitch("↓case #selector(aFunction(_:)): return false\n"),
+            wrapInSwitch("↓case #selector(aFunction(_:)): return false"),
             wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
-            wrapInSwitch("↓case .first,\n .second: return false")
+            wrapInSwitch("↓case .first,\n .second: return false"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 }
 
 private extension SwitchCaseOnNewlineRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-
-        init(locationConverter: SourceLocationConverter) {
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseSyntax) {
-            guard let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line,
-                  case let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia,
-                  let statementStartLine = locationConverter.location(for: statementsPosition).line,
-                  statementStartLine == caseEndLine else {
-                return
+            let caseEndLine = locationConverter.location(for: node.label.endPositionBeforeTrailingTrivia).line
+            let statementsPosition = node.statements.positionAfterSkippingLeadingTrivia
+            let statementStartLine = locationConverter.location(for: statementsPosition).line
+            if statementStartLine == caseEndLine {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-
-            violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }
 }

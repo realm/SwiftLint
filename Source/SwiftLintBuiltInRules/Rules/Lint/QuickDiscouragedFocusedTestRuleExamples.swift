@@ -13,7 +13,7 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                }
            }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -80,6 +80,6 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                ↓fitBehavesLike("foo")
            }
         }
-        """)
+        """),
     ]
 }

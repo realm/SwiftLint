@@ -1,8 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectableASTRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule(explicitRewriter: true)
+struct RedundantVoidReturnRule: Rule {
+    var configuration = RedundantVoidReturnConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_void_return",
@@ -10,93 +10,134 @@ struct RedundantVoidReturnRule: ConfigurationProviderRule, SubstitutionCorrectab
         description: "Returning Void in a function declaration is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("func foo() {}\n"),
-            Example("func foo() -> Int {}\n"),
-            Example("func foo() -> Int -> Void {}\n"),
-            Example("func foo() -> VoidResponse\n"),
-            Example("let foo: (Int) -> Void\n"),
-            Example("func foo() -> Int -> () {}\n"),
-            Example("let foo: (Int) -> ()\n"),
-            Example("func foo() -> ()?\n"),
-            Example("func foo() -> ()!\n"),
-            Example("func foo() -> Void?\n"),
-            Example("func foo() -> Void!\n"),
+            Example("func foo() {}"),
+            Example("func foo() -> Int {}"),
+            Example("func foo() -> Int -> Void {}"),
+            Example("func foo() -> VoidResponse"),
+            Example("let foo: (Int) -> Void"),
+            Example("func foo() -> Int -> () {}"),
+            Example("let foo: (Int) -> ()"),
+            Example("func foo() -> ()?"),
+            Example("func foo() -> ()!"),
+            Example("func foo() -> Void?"),
+            Example("func foo() -> Void!"),
             Example("""
             struct A {
                 subscript(key: String) {
                     print(key)
                 }
             }
-            """)
+            """),
+            Example("""
+            doSomething { arg -> Void in
+                print(arg)
+            }
+            """, configuration: ["include_closures": false]),
         ],
         triggeringExamples: [
-            Example("func foo()↓ -> Void {}\n"),
+            Example("func foo()↓ -> Void {}"),
             Example("""
             protocol Foo {
               func foo()↓ -> Void
             }
             """),
-            Example("func foo()↓ -> () {}\n"),
+            Example("func foo()↓ -> () {}"),
             Example("func foo()↓ -> ( ) {}"),
             Example("""
             protocol Foo {
               func foo()↓ -> ()
             }
-            """)
+            """),
+            Example("""
+            doSomething { arg↓ -> () in
+                print(arg)
+            }
+            """),
+            Example("""
+            doSomething { arg↓ -> Void in
+                print(arg)
+            }
+            """),
         ],
         corrections: [
-            Example("func foo()↓ -> Void {}\n"): Example("func foo() {}\n"),
-            Example("protocol Foo {\n func foo()↓ -> Void\n}\n"): Example("protocol Foo {\n func foo()\n}\n"),
-            Example("func foo()↓ -> () {}\n"): Example("func foo() {}\n"),
-            Example("protocol Foo {\n func foo()↓ -> ()\n}\n"): Example("protocol Foo {\n func foo()\n}\n"),
-            Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}\n"):
-                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}\n")
+            Example("func foo()↓ -> Void {}"): Example("func foo() {}"),
+            Example("protocol Foo {\n func foo()↓ -> Void\n}"): Example("protocol Foo {\n func foo()\n}"),
+            Example("func foo()↓ -> () {}"): Example("func foo() {}"),
+            Example("protocol Foo {\n func foo()↓ -> ()\n}"): Example("protocol Foo {\n func foo()\n}"),
+            Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}"):
+                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}"),
         ]
     )
+}
 
-    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))(?![?!])"
-    private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
-    private let functionKinds = SwiftDeclarationKind.functionKinds.subtracting([.functionSubscript])
+private extension RedundantVoidReturnRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: ReturnClauseSyntax) {
+            if !configuration.includeClosures && node.parent?.is(ClosureSignatureSyntax.self) == true {
+                return
+            }
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+            if node.containsRedundantVoidViolation,
+               let tokenBeforeOutput = node.previousToken(viewMode: .sourceAccurate) {
+                violations.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
+            }
         }
     }
 
-    func violationRanges(in file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [NSRange] {
-        guard functionKinds.contains(kind),
-              containsVoidReturnTypeBasedOnTypeName(dictionary: dictionary),
-            let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let length = dictionary.length,
-            let offset = dictionary.offset,
-            case let start = nameOffset + nameLength,
-            case let end = dictionary.bodyOffset ?? offset + length,
-            case let contents = file.stringView,
-            case let byteRange = ByteRange(location: start, length: end - start),
-            let range = contents.byteRangeToNSRange(byteRange),
-            file.match(pattern: "->", excludingSyntaxKinds: excludingKinds, range: range).count == 1,
-            let match = file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, range: range).first else {
-                return []
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
+            guard configuration.includeClosures,
+                  let output = node.returnClause,
+                  output.previousToken(viewMode: .sourceAccurate) != nil,
+                  output.containsRedundantVoidViolation
+            else {
+                return super.visit(node)
+            }
+            numberOfCorrections += 1
+            return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
         }
 
-        return [match]
+        override func visit(_ node: FunctionSignatureSyntax) -> FunctionSignatureSyntax {
+            guard let output = node.returnClause,
+                  output.previousToken(viewMode: .sourceAccurate) != nil,
+                  output.containsRedundantVoidViolation
+            else {
+                return super.visit(node)
+            }
+            numberOfCorrections += 1
+            return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
+        }
     }
+}
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, "")
-    }
-
-    private func containsVoidReturnTypeBasedOnTypeName(dictionary: SourceKittenDictionary) -> Bool {
-        guard let typeName = dictionary.typeName else {
+private extension ReturnClauseSyntax {
+    var containsRedundantVoidViolation: Bool {
+        if parent?.is(FunctionTypeSyntax.self) == true {
             return false
         }
+        if let simpleReturnType = type.as(IdentifierTypeSyntax.self) {
+           return simpleReturnType.typeName == "Void"
+        }
+        if let tupleReturnType = type.as(TupleTypeSyntax.self) {
+            return tupleReturnType.elements.isEmpty
+        }
+        return false
+    }
+}
 
-        return typeName == "Void" || typeName.components(separatedBy: .whitespaces).joined() == "()"
+private extension SyntaxProtocol {
+    /// `withOutput(nil)` adds a `.spaces(1)` trailing trivia, but we don't always want it.
+    func removingTrailingSpaceIfNeeded() -> Self {
+        guard
+            let nextToken = nextToken(viewMode: .sourceAccurate),
+            nextToken.leadingTrivia.containsNewlines()
+        else {
+            return self
+        }
+
+        return with(
+            \.trailingTrivia,
+            Trivia(pieces: trailingTrivia.dropFirst())
+        )
     }
 }

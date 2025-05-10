@@ -1,12 +1,16 @@
 internal struct MultilineArgumentsRuleExamples {
     static let nonTriggeringExamples = [
         Example("foo()"),
-        Example("foo(\n" +
-                    ")"),
+        Example("""
+        foo(
+        )
+        """),
         Example("foo { }"),
-        Example("foo {\n" +
-        "    \n" +
-        "}"),
+        Example("""
+        foo {
+
+        }
+        """),
         Example("foo(0)"),
         Example("foo(0, 1)"),
         Example("foo(0, 1) { }"),
@@ -64,7 +68,7 @@ internal struct MultilineArgumentsRuleExamples {
         } completion: { _ in
             print("b")
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -85,6 +89,6 @@ internal struct MultilineArgumentsRuleExamples {
             0, ↓param1: 1,
             param2: true, ↓param3: [3]
         )
-        """)
+        """),
     ]
 }

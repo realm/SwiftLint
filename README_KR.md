@@ -13,13 +13,13 @@ SwiftLint는 좀 더 정확한 결과를 위해 [Clang](http://clang.llvm.org)�
 
 ## 설치 방법
 
-### [Homebrew](http://brew.sh/)를 사용하는 경우:
+### [Homebrew](http://brew.sh/)를 사용하는 경우
 
 ```
 brew install swiftlint
 ```
 
-### [CocoaPods](https://cocoapods.org)를 사용하는 경우:
+### [CocoaPods](https://cocoapods.org)를 사용하는 경우
 
 Podfile에 아래 라인을 추가하기만 하면 됩니다.
 
@@ -33,16 +33,17 @@ CocoaPods를 사용하면 최신 버전 외에도 SwiftLint의 특정 버전을 
 
 이렇게 했을 때 SwiftLint 바이너리 및 그에 종속된 바이너리들과 스위프트 바이너리까지 `Pods/` 디렉터리에 추가되기 때문에, git 등의 SCM에 이런 디렉터리들을 체크인하는 것은 권장하지 않습니다.
 
-### [Mint](https://github.com/yonaskolb/mint)를 사용하는 경우:
+### [Mint](https://github.com/yonaskolb/mint)를 사용하는 경우
+
 ```
-$ mint install realm/SwiftLint
+mint install realm/SwiftLint
 ```
 
-### 빌드된 패키지를 사용하는 경우:
+### 빌드된 패키지를 사용하는 경우
 
 [최신 깃허브 릴리즈](https://github.com/realm/SwiftLint/releases/latest)에서 `SwiftLint.pkg`를 다운로드해서 설치하고 실행할 수 있습니다.
 
-### 소스를 직접 컴파일하는 경우:
+### 소스를 직접 컴파일하는 경우
 
 본 프로젝트를 클론해서 빌드할 수도 있습니다. `make install` 명령을 사용합니다. (Xcode 12.5 이후 버전)
 
@@ -52,7 +53,7 @@ $ mint install realm/SwiftLint
 
 프로젝트에 SwiftLint를 통합하기 위한 권장 사용 방식의 전반적인 개요를 알고 싶다면, 아래 프레젠테이션 영상을 보거나 스크립트를 읽어보면 좋습니다.
 
-[![Presentation](assets/presentation.svg)](https://academy.realm.io/posts/slug-jp-simard-swiftlint/)
+[![Presentation](assets/presentation.svg)](https://youtu.be/9Z1nTMTejqU)
 
 ### Xcode
 
@@ -70,7 +71,7 @@ fi
 
 만약, 애플 실리콘 환경에서 Homebrew를 통해 SwiftLint를 설치했다면, 아마도 다음과 같은 경고를 겪었을 것입니다.
 
-> warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint
+> warning: SwiftLint not installed, download from <https://github.com/realm/SwiftLint>
 
 그 이유는, 애플 실리콘 기반 맥에서 Homebrew는 기본적으로 바이너리들을 `/opt/homebrew/bin`에 저장하기 때문입니다. SwiftLint가 어디 있는지 찾는 것을 Xcode에 알려주기 위해, build phase에서 `/opt/homebrew/bin`를 `PATH` 환경 변수에 동시에 추가하여야 합니다.
 
@@ -159,7 +160,7 @@ SwiftLint는 SourceKit에 연결되어 있으므로 스위프트 언어가 변�
 
 SwiftLint를 실행할 때는 항상 스위프트 파일을 컴파일하는 동일한 툴체인을 사용해야 합니다.
 
-설치된 툴체인이나 Xcode가 여러 개인 경우 혹은 스위프트 구 버전을 사용해야 하는 경우(Xcode 8에서 스위프트 2.3 버전을 사용하는 경우)에는 SwiftLint의 기본 스위프트 툴체인을 변경해야 할 수도 있습니다. 
+설치된 툴체인이나 Xcode가 여러 개인 경우 혹은 스위프트 구 버전을 사용해야 하는 경우(Xcode 8에서 스위프트 2.3 버전을 사용하는 경우)에는 SwiftLint의 기본 스위프트 툴체인을 변경해야 할 수도 있습니다.
 
 SwiftLint가 어느 스위프트 툴체인을 사용할지 결정하는 순서는 다음과 같습니다.
 
@@ -176,7 +177,7 @@ SwiftLint가 어느 스위프트 툴체인을 사용할지 결정하는 순서�
 `TOOLCHAINS` 환경 변수에 스위프트 툴체인 버전을 식별할 수 있는 값을 리버스 DNS 형식으로 지정할 수도 있습니다.
 
 ```shell
-$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
+TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 ```
 
 리눅스에서는 SourceKit이 `/usr/lib/libsourcekitdInProc.so` 혹은 `LINUX_SOURCEKIT_LIB_PATH` 환경변수로 지정된 경로에 존재해야 합니다.
@@ -249,12 +250,12 @@ opt_in_rules: # 일부 룰은 옵트 인 형태로 제공
   - missing_docs
   # 사용 가능한 모든 룰은 swiftlint rules 명령으로 확인 가능
 included: # 린트 과정에 포함할 파일 경로. 이 항목이 존재하면 `--path`는 무시됨
-  - Source
+  - Sources
 excluded: # 린트 과정에서 무시할 파일 경로. `included`보다 우선순위 높음
   - Carthage
   - Pods
-  - Source/ExcludedFolder
-  - Source/ExcludedFile.swift
+  - Sources/ExcludedFolder
+  - Sources/ExcludedFile.swift
 
 # 설정 가능한 룰은 이 설정 파일에서 커스터마이징 가능
 # 경고나 에러 중 하나를 발생시키는 룰은 위반 수준을 설정 가능

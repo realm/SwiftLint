@@ -1,10 +1,11 @@
 /// A configuration value for a rule to allow users to modify its behavior.
-public protocol RuleConfiguration<Parent> {
+public protocol RuleConfiguration: Equatable {
     /// The type of the rule that's using this configuration.
     associatedtype Parent: Rule
 
-    /// A human-readable description for this configuration and its applied values.
-    var consoleDescription: String { get }
+    /// A description for this configuration's parameters. It can be built using the annotated result builder.
+    @RuleConfigurationDescriptionBuilder
+    var parameterDescription: RuleConfigurationDescription? { get }
 
     /// Apply an untyped configuration to the current value.
     ///
@@ -13,12 +14,9 @@ public protocol RuleConfiguration<Parent> {
     /// - throws: Throws if the configuration is not in the expected format.
     mutating func apply(configuration: Any) throws
 
-    /// Whether the specified configuration is equivalent to the current value.
-    ///
-    /// - parameter ruleConfiguration: The rule configuration to compare against.
-    ///
-    /// - returns: Whether the specified configuration is equivalent to the current value.
-    func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool
+    /// Run a sanity check on the configuration, perform optional postprocessing steps and/or warn about potential
+    /// issues.
+    mutating func validate() throws
 }
 
 /// A configuration for a rule that allows to configure at least the severity.
@@ -34,8 +32,17 @@ public extension SeverityBasedRuleConfiguration {
     }
 }
 
-public extension RuleConfiguration where Self: Equatable {
-    func isEqualTo(_ ruleConfiguration: some RuleConfiguration) -> Bool {
-        return self == ruleConfiguration as? Self
+public extension RuleConfiguration {
+    var parameterDescription: RuleConfigurationDescription? { nil }
+
+    func validate() throws {
+        // Do nothing by default.
+    }
+}
+
+public extension RuleConfiguration {
+    /// All keys supported by this configuration.
+    var supportedKeys: Set<String> {
+        Set(RuleConfigurationDescription.from(configuration: self).allowedKeys())
     }
 }

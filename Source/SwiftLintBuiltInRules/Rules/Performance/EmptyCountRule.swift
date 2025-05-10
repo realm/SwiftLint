@@ -1,6 +1,8 @@
+import SwiftLintCore
 import SwiftSyntax
 
-struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true, optIn: true)
+struct EmptyCountRule: Rule {
     var configuration = EmptyCountConfiguration()
 
     static let description = RuleDescription(
@@ -9,67 +11,135 @@ struct EmptyCountRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
         description: "Prefer checking `isEmpty` over comparing `count` to zero",
         kind: .performance,
         nonTriggeringExamples: [
-            Example("var count = 0\n"),
-            Example("[Int]().isEmpty\n"),
-            Example("[Int]().count > 1\n"),
-            Example("[Int]().count == 1\n"),
-            Example("[Int]().count == 0xff\n"),
-            Example("[Int]().count == 0b01\n"),
-            Example("[Int]().count == 0o07\n"),
-            Example("discount == 0\n"),
-            Example("order.discount == 0\n")
+            Example("var count = 0"),
+            Example("[Int]().isEmpty"),
+            Example("[Int]().count > 1"),
+            Example("[Int]().count == 1"),
+            Example("[Int]().count == 0xff"),
+            Example("[Int]().count == 0b01"),
+            Example("[Int]().count == 0o07"),
+            Example("discount == 0"),
+            Example("order.discount == 0"),
+            Example("let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }"),
+            Example("#Rule(param1: \"param1\")", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
-            Example("[Int]().↓count == 0\n"),
-            Example("0 == [Int]().↓count\n"),
-            Example("[Int]().↓count==0\n"),
-            Example("[Int]().↓count > 0\n"),
-            Example("[Int]().↓count != 0\n"),
-            Example("[Int]().↓count == 0x0\n"),
-            Example("[Int]().↓count == 0x00_00\n"),
-            Example("[Int]().↓count == 0b00\n"),
-            Example("[Int]().↓count == 0o00\n"),
-            Example("↓count == 0\n")
+            Example("[Int]().↓count == 0"),
+            Example("0 == [Int]().↓count"),
+            Example("[Int]().↓count==0"),
+            Example("[Int]().↓count > 0"),
+            Example("[Int]().↓count != 0"),
+            Example("[Int]().↓count == 0x0"),
+            Example("[Int]().↓count == 0x00_00"),
+            Example("[Int]().↓count == 0b00"),
+            Example("[Int]().↓count == 0o00"),
+            Example("↓count == 0"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"),
+            Example("#Rule { $0.donations.↓count == 0 }", excludeFromDocumentation: true),
+            Example(
+                "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }",
+                excludeFromDocumentation: true
+            ),
+            Example(
+                "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }",
+                excludeFromDocumentation: true
+            ),
+            Example("#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }", excludeFromDocumentation: true),
+            Example("""
+                #Rule(param1: "param1") {
+                    doSomething()
+                    return $0.donations.↓count == 0
+                }
+            """, excludeFromDocumentation: true),
+        ],
+        corrections: [
+            Example("[].↓count == 0"):
+                Example("[].isEmpty"),
+            Example("0 == [].↓count"):
+                Example("[].isEmpty"),
+            Example("[Int]().↓count == 0"):
+                Example("[Int]().isEmpty"),
+            Example("0 == [Int]().↓count"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count==0"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count > 0"):
+                Example("![Int]().isEmpty"),
+            Example("[Int]().↓count != 0"):
+                Example("![Int]().isEmpty"),
+            Example("[Int]().↓count == 0x0"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0x00_00"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0b00"):
+                Example("[Int]().isEmpty"),
+            Example("[Int]().↓count == 0o00"):
+                Example("[Int]().isEmpty"),
+            Example("↓count == 0"):
+                Example("isEmpty"),
+            Example("↓count == 0 && [Int]().↓count == 0o00"):
+                Example("isEmpty && [Int]().isEmpty"),
+            Example("[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2"):
+                Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
+            Example("#ExampleMacro { $0.list.↓count == 0 }"):
+                Example("#ExampleMacro { $0.list.isEmpty }"),
+            Example("#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }"):
+                Example("#Rule(param1: \"param1\") { return $0.donations.isEmpty }"),
         ]
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(onlyAfterDot: configuration.onlyAfterDot)
-    }
 }
 
 private extension EmptyCountRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let onlyAfterDot: Bool
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
+                return
+            }
 
-        init(onlyAfterDot: Bool) {
-            self.onlyAfterDot = onlyAfterDot
-            super.init(viewMode: .sourceAccurate)
+            if let (_, position) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
+                violations.append(position)
+            }
         }
 
-        private let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
+        override func visit(_ node: MacroExpansionExprSyntax) -> SyntaxVisitorContinueKind {
+            node.isTipsRuleMacro ? .skipChildren : .visitChildren
+        }
+    }
 
-        override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  let binaryOperator = operatorNode.operatorToken.binaryOperator,
-                  operators.contains(binaryOperator) else {
-                return
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
+            guard let binaryOperator = node.binaryOperator, binaryOperator.isComparison else {
+                return super.visit(node)
             }
 
-            if let intExpr = node.rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
-                violations.append(position)
+            if let (count, _) = node.countNodeAndPosition(onlyAfterDot: configuration.onlyAfterDot) {
+                let newNode =
+                    if let count = count.as(MemberAccessExprSyntax.self) {
+                        ExprSyntax(count.with(\.declName.baseName, "isEmpty").trimmed)
+                    } else {
+                        ExprSyntax(count.as(DeclReferenceExprSyntax.self)?.with(\.baseName, "isEmpty").trimmed)
+                    }
+                guard let newNode else {
+                    return super.visit(node)
+                }
+                numberOfCorrections += 1
                 return
+                    if ["!=", "<", ">"].contains(binaryOperator) {
+                        newNode.negated
+                            .withTrivia(from: node)
+                    } else {
+                        newNode
+                            .withTrivia(from: node)
+                    }
             }
+            return super.visit(node)
+        }
 
-            if let intExpr = node.leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
-               let position = node.rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
-                violations.append(position)
-                return
+        override func visit(_ node: MacroExpansionExprSyntax) -> ExprSyntax {
+            if node.isTipsRuleMacro {
+                ExprSyntax(node)
+            } else {
+                super.visit(node)
             }
         }
     }
@@ -78,15 +148,15 @@ private extension EmptyCountRule {
 private extension ExprSyntax {
     func countCallPosition(onlyAfterDot: Bool) -> AbsolutePosition? {
         if let expr = self.as(MemberAccessExprSyntax.self) {
-            if expr.declNameArguments == nil && expr.name.tokenKind == .identifier("count") {
-                return expr.name.positionAfterSkippingLeadingTrivia
+            if expr.declName.argumentNames == nil && expr.declName.baseName.tokenKind == .identifier("count") {
+                return expr.declName.baseName.positionAfterSkippingLeadingTrivia
             }
 
             return nil
         }
 
-        if !onlyAfterDot, let expr = self.as(IdentifierExprSyntax.self) {
-            return expr.identifier.tokenKind == .identifier("count") ? expr.positionAfterSkippingLeadingTrivia : nil
+        if !onlyAfterDot, let expr = self.as(DeclReferenceExprSyntax.self) {
+            return expr.baseName.tokenKind == .identifier("count") ? expr.positionAfterSkippingLeadingTrivia : nil
         }
 
         return nil
@@ -101,5 +171,53 @@ private extension TokenSyntax {
         default:
             return nil
         }
+    }
+}
+
+private extension MacroExpansionExprSyntax {
+    var isTipsRuleMacro: Bool {
+        macroName.text == "Rule" &&
+        additionalTrailingClosures.isEmpty &&
+        arguments.count == 1 &&
+        trailingClosure.map { $0.statements.onlyElement?.item.is(ReturnStmtSyntax.self) == false } ?? false
+    }
+}
+
+private extension ExprSyntaxProtocol {
+    var negated: ExprSyntax {
+        ExprSyntax(PrefixOperatorExprSyntax(operator: .prefixOperator("!"), expression: self))
+    }
+}
+
+private extension SyntaxProtocol {
+    func withTrivia(from node: some SyntaxProtocol) -> Self {
+        self
+            .with(\.leadingTrivia, node.leadingTrivia)
+            .with(\.trailingTrivia, node.trailingTrivia)
+    }
+}
+
+private extension InfixOperatorExprSyntax {
+    func countNodeAndPosition(onlyAfterDot: Bool) -> (ExprSyntax, AbsolutePosition)? {
+        if let intExpr = rightOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+           let position = leftOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+            return (leftOperand, position)
+        }
+        if let intExpr = leftOperand.as(IntegerLiteralExprSyntax.self), intExpr.isZero,
+           let position = rightOperand.countCallPosition(onlyAfterDot: onlyAfterDot) {
+            return (rightOperand, position)
+        }
+        return nil
+    }
+
+    var binaryOperator: String? {
+        self.operator.as(BinaryOperatorExprSyntax.self)?.operator.binaryOperator
+    }
+}
+
+private extension String {
+    private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
+    var isComparison: Bool {
+        String.operators.contains(self)
     }
 }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct PreferZeroOverExplicitInitRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -13,7 +14,7 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, Co
             Example("CGPoint(x: 0, y: -1)"),
             Example("CGSize(width: 2, height: 4)"),
             Example("CGVector(dx: -5, dy: 0)"),
-            Example("UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)")
+            Example("UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)"),
         ],
         triggeringExamples: [
             Example("↓CGPoint(x: 0, y: 0)"),
@@ -22,7 +23,7 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, Co
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"),
             Example("↓CGSize(width: 0, height: 0)"),
             Example("↓CGVector(dx: 0, dy: 0)"),
-            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)")
+            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"),
         ],
         corrections: [
             Example("↓CGPoint(x: 0, y: 0)"): Example("CGPoint.zero"),
@@ -30,24 +31,13 @@ struct PreferZeroOverExplicitInitRule: SwiftSyntaxCorrectableRule, OptInRule, Co
             Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"): Example("CGRect.zero"),
             Example("↓CGSize(width: 0, height: 0.000)"): Example("CGSize.zero"),
             Example("↓CGVector(dx: 0, dy: 0)"): Example("CGVector.zero"),
-            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero")
+            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension PreferZeroOverExplicitInitRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
@@ -55,32 +45,17 @@ private extension PreferZeroOverExplicitInitRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard node.hasViolation,
-                  let name = node.name,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard node.hasViolation, let name = node.name else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
+            numberOfCorrections += 1
             let newNode = MemberAccessExprSyntax(name: "zero")
                 .with(\.base, "\(raw: name)")
-            return super.visit(
-                newNode
-                    .with(\.leadingTrivia, node.leadingTrivia)
-                    .with(\.trailingTrivia, node.trailingTrivia)
-            )
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
+            return super.visit(newNode)
         }
     }
 }
@@ -95,56 +70,56 @@ private extension FunctionCallExprSyntax {
     }
 
     var isCGPointZeroCall: Bool {
-        return name == "CGPoint" &&
+        name == "CGPoint" &&
             argumentNames == ["x", "y"] &&
             argumentsAreAllZero
     }
 
     var isCGSizeCall: Bool {
-        return name == "CGSize" &&
+        name == "CGSize" &&
             argumentNames == ["width", "height"] &&
             argumentsAreAllZero
     }
 
     var isCGRectCall: Bool {
-        return name == "CGRect" &&
+        name == "CGRect" &&
             argumentNames == ["x", "y", "width", "height"] &&
             argumentsAreAllZero
     }
 
     var isCGVectorCall: Bool {
-        return name == "CGVector" &&
+        name == "CGVector" &&
             argumentNames == ["dx", "dy"] &&
             argumentsAreAllZero
     }
 
     var isUIEdgeInsetsCall: Bool {
-        return name == "UIEdgeInsets" &&
+        name == "UIEdgeInsets" &&
             argumentNames == ["top", "left", "bottom", "right"] &&
             argumentsAreAllZero
     }
 
     var name: String? {
-        guard let expr = calledExpression.as(IdentifierExprSyntax.self) else {
+        guard let expr = calledExpression.as(DeclReferenceExprSyntax.self) else {
             return nil
         }
 
-        return expr.identifier.text
+        return expr.baseName.text
     }
 
     var argumentNames: [String?] {
-        argumentList.map(\.label?.text)
+        arguments.map(\.label?.text)
     }
 
     var argumentsAreAllZero: Bool {
-        argumentList.allSatisfy { arg in
+        arguments.allSatisfy { arg in
             if let intExpr = arg.expression.as(IntegerLiteralExprSyntax.self) {
                 return intExpr.isZero
-            } else if let floatExpr = arg.expression.as(FloatLiteralExprSyntax.self) {
-                return floatExpr.isZero
-            } else {
-                return false
             }
+            if let floatExpr = arg.expression.as(FloatLiteralExprSyntax.self) {
+                return floatExpr.isZero
+            }
+            return false
         }
     }
 }

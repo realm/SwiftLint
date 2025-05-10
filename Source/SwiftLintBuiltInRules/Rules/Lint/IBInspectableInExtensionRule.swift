@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct IBInspectableInExtensionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -13,25 +14,21 @@ struct IBInspectableInExtensionRule: SwiftSyntaxRule, ConfigurationProviderRule,
             class Foo {
               @IBInspectable private var x: Int
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
             extension Foo {
               ↓@IBInspectable private var x: Int
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension IBInspectableInExtensionRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             .allExcept(ExtensionDeclSyntax.self, VariableDeclSyntax.self)
         }
 

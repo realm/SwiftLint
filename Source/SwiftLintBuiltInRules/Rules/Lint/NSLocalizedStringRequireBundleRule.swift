@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct NSLocalizedStringRequireBundleRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -24,7 +25,7 @@ struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, Configura
             """),
             Example("""
             arbitraryFunctionCall("something")
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -36,28 +37,24 @@ struct NSLocalizedStringRequireBundleRule: SwiftSyntaxRule, OptInRule, Configura
             Example("""
             ↓NSLocalizedString("someKey", tableName: "xyz",
                               value: "test", comment: "test")
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NSLocalizedStringRequireBundleRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let identifierExpr = node.calledExpression.as(IdentifierExprSyntax.self),
-               identifierExpr.identifier.tokenKind == .identifier("NSLocalizedString"),
-               !node.argumentList.containsArgument(named: "bundle") {
+            if let identifierExpr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               identifierExpr.baseName.tokenKind == .identifier("NSLocalizedString"),
+               !node.arguments.containsArgument(named: "bundle") {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 }
 
-private extension TupleExprElementListSyntax {
+private extension LabeledExprListSyntax {
     func containsArgument(named name: String) -> Bool {
         contains { arg in
             arg.label?.tokenKind == .identifier(name)

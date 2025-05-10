@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct ReturnValueFromVoidFunctionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,18 +13,40 @@ struct ReturnValueFromVoidFunctionRule: ConfigurationProviderRule, OptInRule, Sw
         nonTriggeringExamples: ReturnValueFromVoidFunctionRuleExamples.nonTriggeringExamples,
         triggeringExamples: ReturnValueFromVoidFunctionRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ReturnValueFromVoidFunctionVisitor(viewMode: .sourceAccurate)
-    }
 }
 
-private final class ReturnValueFromVoidFunctionVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: ReturnStmtSyntax) {
-        if node.expression != nil,
-           let functionNode = Syntax(node).enclosingFunction(),
-           functionNode.returnsVoid {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+private extension ReturnValueFromVoidFunctionRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: ReturnStmtSyntax) {
+            if node.expression != nil,
+               let functionNode = Syntax(node).enclosingFunction(),
+               functionNode.returnsVoid {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+    }
+
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ statements: CodeBlockItemListSyntax) -> CodeBlockItemListSyntax {
+            guard let returnStmt = statements.last?.item.as(ReturnStmtSyntax.self),
+                  let expr = returnStmt.expression,
+                  Syntax(statements).enclosingFunction()?.returnsVoid == true else {
+                return super.visit(statements)
+            }
+            numberOfCorrections += 1
+            let newStmtList = Array(statements.dropLast()) + [
+                CodeBlockItemSyntax(item: .expr(expr))
+                    .with(\.leadingTrivia, returnStmt.leadingTrivia),
+                CodeBlockItemSyntax(item: .stmt(StmtSyntax(
+                    returnStmt
+                        .with(\.expression, nil)
+                        .with(
+                            \.leadingTrivia,
+                            .newline + (returnStmt.leadingTrivia.indentation(isOnNewline: false) ?? []))
+                        .with(\.trailingTrivia, returnStmt.trailingTrivia)
+                ))),
+            ]
+            return super.visit(CodeBlockItemListSyntax(newStmtList))
         }
     }
 }
@@ -34,7 +57,7 @@ private extension Syntax {
             return node
         }
 
-        if self.is(ClosureExprSyntax.self) || self.is(VariableDeclSyntax.self) {
+        if self.is(ClosureExprSyntax.self) || self.is(VariableDeclSyntax.self) || self.is(InitializerDeclSyntax.self) {
             return nil
         }
 
@@ -44,10 +67,10 @@ private extension Syntax {
 
 private extension FunctionDeclSyntax {
     var returnsVoid: Bool {
-        if let type = signature.output?.returnType.as(SimpleTypeIdentifierSyntax.self) {
-            return type.name.text == "Void"
+        guard let type = signature.returnClause?.type else {
+            return true
         }
-
-        return signature.output?.returnType == nil
+        return type.as(IdentifierTypeSyntax.self)?.name.text == "Void"
+            || type.as(TupleTypeSyntax.self)?.elements.isEmpty == true
     }
 }

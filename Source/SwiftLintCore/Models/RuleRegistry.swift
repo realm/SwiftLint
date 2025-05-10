@@ -1,6 +1,6 @@
 /// Container to register and look up SwiftLint rules.
-public final class RuleRegistry {
-    private var registeredRules = [Rule.Type]()
+public final class RuleRegistry: @unchecked Sendable {
+    private var registeredRules = [any Rule.Type]()
 
     /// Shared rule registry instance.
     public static let shared = RuleRegistry()
@@ -12,12 +12,12 @@ public final class RuleRegistry {
     ///         accessed will not work.
     public private(set) lazy var list = RuleList(rules: registeredRules)
 
-    private init() {}
+    private init() { /* To guarantee that this is singleton. */ }
 
     /// Register rules.
     ///
     /// - parameter rules: The rules to register.
-    public func register(rules: [Rule.Type]) {
+    public func register(rules: [any Rule.Type]) {
         registeredRules.append(contentsOf: rules)
     }
 
@@ -26,7 +26,7 @@ public final class RuleRegistry {
     /// - parameter id: The ID for the rule to look up.
     ///
     /// - returns: The rule matching the specified ID, if one was found.
-    public func rule(forID id: String) -> Rule.Type? {
-        return list.list[id]
+    public func rule(forID id: String) -> (any Rule.Type)? {
+        list.list[id]
     }
 }

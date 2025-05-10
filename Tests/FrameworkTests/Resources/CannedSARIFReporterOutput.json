@@ -1,0 +1,93 @@
+{
+  "$schema" : "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json",
+  "runs" : [
+    {
+      "results" : [
+        {
+          "level" : "warning",
+          "locations" : [
+            {
+              "physicalLocation" : {
+                "artifactLocation" : {
+                  "uri" : "filename"
+                },
+                "region" : {
+                  "startColumn" : 1,
+                  "startLine" : 1
+                }
+              }
+            }
+          ],
+          "message" : {
+            "text" : "Violation Reason 1"
+          },
+          "ruleId" : "line_length"
+        },
+        {
+          "level" : "error",
+          "locations" : [
+            {
+              "physicalLocation" : {
+                "artifactLocation" : {
+                  "uri" : "filename"
+                },
+                "region" : {
+                  "startColumn" : 1,
+                  "startLine" : 1
+                }
+              }
+            }
+          ],
+          "message" : {
+            "text" : "Violation Reason 2"
+          },
+          "ruleId" : "line_length"
+        },
+        {
+          "level" : "error",
+          "locations" : [
+            {
+              "physicalLocation" : {
+                "artifactLocation" : {
+                  "uri" : "path/file.swift"
+                },
+                "region" : {
+                  "startColumn" : 2,
+                  "startLine" : 1
+                }
+              }
+            }
+          ],
+          "message" : {
+            "text" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>"
+          },
+          "ruleId" : "syntactic_sugar"
+        },
+        {
+          "level" : "error",
+          "locations" : [
+            {
+              "physicalLocation" : {
+                "artifactLocation" : {
+                  "uri" : ""
+                }
+              }
+            }
+          ],
+          "message" : {
+            "text" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals"
+          },
+          "ruleId" : "colon"
+        }
+      ],
+      "tool" : {
+        "driver" : {
+          "informationUri" : "https://github.com/realm/SwiftLint/blob/${SWIFTLINT_VERSION}/README.md",
+          "name" : "SwiftLint",
+          "semanticVersion" : "${SWIFTLINT_VERSION}"
+        }
+      }
+    }
+  ],
+  "version" : "2.1.0"
+}

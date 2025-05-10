@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct UnusedControlFlowLabelRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -27,7 +28,7 @@ struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, ConfigurationProv
                     break loop
                 }
             } while true
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("↓loop: while true { break }"),
@@ -47,7 +48,7 @@ struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, ConfigurationProv
                     break
                 }
             } while true
-            """)
+            """),
         ],
         corrections: [
             Example("↓loop: while true { break }"): Example("while true { break }"),
@@ -79,24 +80,13 @@ struct UnusedControlFlowLabelRule: SwiftSyntaxCorrectableRule, ConfigurationProv
                         break
                     }
                 } while true
-                """)
+                """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension UnusedControlFlowLabelRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: LabeledStmtSyntax) {
             if let position = node.violationPosition {
                 violations.append(position)
@@ -104,25 +94,13 @@ private extension UnusedControlFlowLabelRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: LabeledStmtSyntax) -> StmtSyntax {
-            guard let violationPosition = node.violationPosition,
-                  !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard node.violationPosition != nil else {
                 return super.visit(node)
             }
-
-            let newNode = node.statement.with(\.leadingTrivia, node.leadingTrivia)
-            correctionPositions.append(violationPosition)
-            return visit(newNode).as(StmtSyntax.self) ?? newNode
+            numberOfCorrections += 1
+            return visit(node.statement.with(\.leadingTrivia, node.leadingTrivia))
         }
     }
 }
@@ -131,11 +109,11 @@ private extension LabeledStmtSyntax {
     var violationPosition: AbsolutePosition? {
         let visitor = BreakAndContinueLabelCollector(viewMode: .sourceAccurate)
         let labels = visitor.walk(tree: self, handler: \.labels)
-        guard !labels.contains(labelName.text) else {
+        guard !labels.contains(label.text) else {
             return nil
         }
 
-        return labelName.positionAfterSkippingLeadingTrivia
+        return label.positionAfterSkippingLeadingTrivia
     }
 }
 

@@ -1,6 +1,6 @@
 internal struct NumberSeparatorRuleExamples {
     static let nonTriggeringExamples: [Example] = {
-        return ["-", "+", ""].flatMap { (sign: String) -> [Example] in
+        ["-", "+", ""].flatMap { (sign: String) -> [Example] in
             [
                 Example("let foo = \(sign)100"),
                 Example("let foo = \(sign)1_000"),
@@ -22,7 +22,7 @@ internal struct NumberSeparatorRuleExamples {
                 """, excludeFromDocumentation: true),
                 Example("""
                 let color = #colorLiteral(red: 0.354_398_250_6, green: 0.318_749_547, blue: 0.636_701_524_3, alpha: 1)
-                """, configuration: ["minimum_fraction_length": 3], excludeFromDocumentation: true)
+                """, configuration: ["minimum_fraction_length": 3], excludeFromDocumentation: true),
             ]
         }
     }()
@@ -33,7 +33,7 @@ internal struct NumberSeparatorRuleExamples {
     static let corrections = makeCorrections(signs: [("-↓", "-"), ("+↓", "+"), ("↓", "")])
 
     private static func makeTriggeringExamples(signs: [String]) -> [Example] {
-        return signs.flatMap { (sign: String) -> [Example] in
+        signs.flatMap { (sign: String) -> [Example] in
             [
                 Example("let foo = \(sign)10_0"),
                 Example("let foo = \(sign)1000"),
@@ -43,7 +43,7 @@ internal struct NumberSeparatorRuleExamples {
                 Example("let foo = \(sign)1.0001", configuration: ["minimum_fraction_length": 3]),
                 Example("let foo = \(sign)1_000_000.000000_1", configuration: ["minimum_fraction_length": 3]),
                 Example("let foo = \(sign)1000000.000000_1"),
-                Example("let foo = \(sign)6.2832e-6", configuration: ["minimum_fraction_length": 3])
+                Example("let foo = \(sign)6.2832e-6", configuration: ["minimum_fraction_length": 3]),
             ]
         }
     }
@@ -54,7 +54,10 @@ internal struct NumberSeparatorRuleExamples {
             [
                 Example("let foo: Double = \(sign)100000)"),
                 Example("let foo: Double = \(sign)10.000000_1)", configuration: ["minimum_fraction_length": 3]),
-                Example("let foo: Double = \(sign)123456 / ↓447.214214)", configuration: ["minimum_fraction_length": 3])
+                Example(
+                    "let foo: Double = \(sign)123456 / ↓447.214214)",
+                    configuration: ["minimum_fraction_length": 3]
+                ),
             ]
         }
     }

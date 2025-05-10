@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+struct FileNameRule: OptInRule, SourceKitFreeRule {
     var configuration = FileNameConfiguration()
 
     static let description = RuleDescription(
@@ -35,7 +35,9 @@ struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
         }
 
         // Process nested type separator
-        let allDeclaredTypeNames = TypeNameCollectingVisitor(viewMode: .sourceAccurate)
+        let allDeclaredTypeNames = TypeNameCollectingVisitor(
+            requireFullyQualifiedNames: configuration.requireFullyQualifiedNames
+        )
             .walk(tree: file.syntaxTree, handler: \.names)
             .map {
                 $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
@@ -45,40 +47,115 @@ struct FileNameRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
             return []
         }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: filePath, line: 1))]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: filePath, line: 1)
+            ),
+        ]
     }
 }
 
 private class TypeNameCollectingVisitor: SyntaxVisitor {
+    /// All of a visited node's ancestor type names if that node is nested, starting with the furthest
+    /// ancestor and ending with the direct parent
+    private var ancestorNames = Stack<String>()
+
+    /// All of the type names found in the file
     private(set) var names: Set<String> = []
 
-    override func visitPost(_ node: ClassDeclSyntax) {
-        names.insert(node.identifier.text)
+    /// If true, nested types are only allowed in the file name when used by their fully-qualified name
+    /// (e.g. `My.Nested.Type` and not just `Type`)
+    private let requireFullyQualifiedNames: Bool
+
+    init(requireFullyQualifiedNames: Bool) {
+        self.requireFullyQualifiedNames = requireFullyQualifiedNames
+        super.init(viewMode: .sourceAccurate)
     }
 
-    override func visitPost(_ node: ActorDeclSyntax) {
-        names.insert(node.identifier.text)
+    /// Calls `visit(name:)` using the name of the provided node
+    private func visit(node: some NamedDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(name: node.name.trimmedDescription)
     }
 
-    override func visitPost(_ node: StructDeclSyntax) {
-        names.insert(node.identifier.text)
+    /// Visits a node with the provided name, storing that name as an ancestor type name to prepend to
+    /// any children to form their fully-qualified names
+    private func visit(name: String) -> SyntaxVisitorContinueKind {
+        let fullyQualifiedName = (ancestorNames + [name]).joined(separator: ".")
+        names.insert(fullyQualifiedName)
+
+        // If the options don't require only fully-qualified names, then we will allow this node's
+        // name to be used by itself
+        if !requireFullyQualifiedNames {
+            names.insert(name)
+        }
+
+        ancestorNames.push(name)
+        return .visitChildren
     }
 
-    override func visitPost(_ node: TypealiasDeclSyntax) {
-        names.insert(node.identifier.text)
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
     }
 
-    override func visitPost(_ node: EnumDeclSyntax) {
-        names.insert(node.identifier.text)
+    override func visitPost(_: ClassDeclSyntax) {
+        ancestorNames.pop()
     }
 
-    override func visitPost(_ node: ProtocolDeclSyntax) {
-        names.insert(node.identifier.text)
+    override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
     }
 
-    override func visitPost(_ node: ExtensionDeclSyntax) {
-        names.insert(node.extendedType.trimmedDescription)
+    override func visitPost(_: ActorDeclSyntax) {
+        ancestorNames.pop()
+    }
+
+    override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: StructDeclSyntax) {
+        ancestorNames.pop()
+    }
+
+    override func visit(_ node: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: TypeAliasDeclSyntax) {
+        ancestorNames.pop()
+    }
+
+    override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: EnumDeclSyntax) {
+        ancestorNames.pop()
+    }
+
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: ProtocolDeclSyntax) {
+        ancestorNames.pop()
+    }
+
+    override func visit(_ node: MacroDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(node: node)
+    }
+
+    override func visitPost(_: MacroDeclSyntax) {
+        ancestorNames.pop()
+    }
+
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        visit(name: node.extendedType.trimmedDescription)
+    }
+
+    override func visitPost(_: ExtensionDeclSyntax) {
+        ancestorNames.pop()
     }
 }

@@ -3,8 +3,9 @@ import SwiftSyntax
 private func wrapInSwitch(
     variable: String = "foo",
     _ str: String,
-    file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example(
+    file: StaticString = #filePath,
+    line: UInt = #line) -> Example {
+    Example(
         """
         switch \(variable) {
         \(str): break
@@ -12,18 +13,19 @@ private func wrapInSwitch(
         """, file: file, line: line)
 }
 
-private func wrapInFunc(_ str: String, file: StaticString = #file, line: UInt = #line) -> Example {
-    return Example("""
+private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+    Example("""
     func example(foo: Foo) {
         switch foo {
-        case \(str):
+        \(str):
             break
         }
     }
     """, file: file, line: line)
 }
 
-struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct EmptyEnumArgumentsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -48,17 +50,17 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             Example("guard foo == .bar() else { return }"),
             Example("""
             if case .appStore = self.appInstaller, !UIDevice.isSimulator() {
-              viewController.present(self, animated: false)
+                viewController.present(self, animated: false)
             } else {
-              UIApplication.shared.open(self.appInstaller.url)
+                UIApplication.shared.open(self.appInstaller.url)
             }
             """),
             Example("""
             let updatedUserNotificationSettings = deepLink.filter { nav in
-              guard case .settings(.notifications(_, nil)) = nav else { return false }
-              return true
+                guard case .settings(.notifications(_, nil)) = nav else { return false }
+                return true
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -74,17 +76,17 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             Example("guard case .bar↓() = foo else {\n}"),
             Example("""
             if case .appStore↓(_) = self.appInstaller, !UIDevice.isSimulator() {
-              viewController.present(self, animated: false)
+                viewController.present(self, animated: false)
             } else {
-              UIApplication.shared.open(self.appInstaller.url)
+                UIApplication.shared.open(self.appInstaller.url)
             }
             """),
             Example("""
             let updatedUserNotificationSettings = deepLink.filter { nav in
-              guard case .settings(.notifications↓(_, _)) = nav else { return false }
-              return true
+                guard case .settings(.notifications↓(_, _)) = nav else { return false }
+                return true
             }
-            """)
+            """),
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
@@ -98,34 +100,23 @@ struct EmptyEnumArgumentsRule: SwiftSyntaxCorrectableRule, ConfigurationProvider
             Example("guard case .bar↓(_) = foo else {"): Example("guard case .bar = foo else {"),
             Example("""
             let updatedUserNotificationSettings = deepLink.filter { nav in
-              guard case .settings(.notifications↓(_, _)) = nav else { return false }
-              return true
+                guard case .settings(.notifications↓(_, _)) = nav else { return false }
+                return true
             }
             """):
                 Example("""
                 let updatedUserNotificationSettings = deepLink.filter { nav in
-                  guard case .settings(.notifications) = nav else { return false }
-                  return true
+                    guard case .settings(.notifications) = nav else { return false }
+                    return true
                 }
-                """)
+                """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension EmptyEnumArgumentsRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: CaseItemSyntax) {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: SwitchCaseItemSyntax) {
             if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
                 violations.append(violationPosition)
             }
@@ -138,37 +129,20 @@ private extension EmptyEnumArgumentsRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
-        override func visit(_ node: CaseItemSyntax) -> CaseItemSyntax {
-            guard
-                let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
+            guard let (_, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             return super.visit(node.with(\.pattern, newPattern))
         }
 
         override func visit(_ node: MatchingPatternConditionSyntax) -> MatchingPatternConditionSyntax {
-            guard
-                let (violationPosition, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard let (_, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(violationPosition)
+            numberOfCorrections += 1
             return super.visit(node.with(\.pattern, newPattern))
         }
     }
@@ -197,13 +171,13 @@ private extension PatternSyntax {
 
 private extension FunctionCallExprSyntax {
     var argumentsHasViolation: Bool {
-        !calledExpression.is(IdentifierExprSyntax.self) &&
+        !calledExpression.is(DeclReferenceExprSyntax.self) &&
             calledExpression.as(MemberAccessExprSyntax.self)?.isInit == false &&
-            argumentList.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
+        arguments.allSatisfy(\.expression.isDiscardAssignmentOrFunction)
     }
 
     var innermostFunctionCall: FunctionCallExprSyntax {
-        argumentList
+        arguments
             .lazy
             .compactMap { $0.expression.as(FunctionCallExprSyntax.self)?.innermostFunctionCall }
             .first ?? self
@@ -218,22 +192,22 @@ private extension FunctionCallExprSyntax {
             return ExprSyntax(self)
         }
 
-        if argumentList.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }) {
+        if arguments.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }) {
             let newCalledExpression = calledExpression
                 .with(\.trailingTrivia, rightParen?.trailingTrivia ?? Trivia())
             let newExpression = self
                 .with(\.calledExpression, ExprSyntax(newCalledExpression))
                 .with(\.leftParen, nil)
-                .with(\.argumentList, [])
+                .with(\.arguments, [])
                 .with(\.rightParen, nil)
             return ExprSyntax(newExpression)
         }
 
         var copy = self
-        for (index, arg) in argumentList.enumerated() {
-            if let newArgExpr = arg.expression.as(FunctionCallExprSyntax.self) {
+        for arg in arguments {
+            if let newArgExpr = arg.expression.as(FunctionCallExprSyntax.self), let index = arguments.index(of: arg) {
                 let newArg = arg.with(\.expression, newArgExpr.removingInnermostDiscardArguments)
-                copy.argumentList = copy.argumentList.replacing(childAt: index, with: newArg)
+                copy.arguments = copy.arguments.with(\.[index], newArg)
             }
         }
         return ExprSyntax(copy)

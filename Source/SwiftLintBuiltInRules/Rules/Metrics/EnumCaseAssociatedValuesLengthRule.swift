@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct EnumCaseAssociatedValuesLengthRule: Rule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 5, error: 6)
 
     static let description = RuleDescription(
@@ -19,7 +20,7 @@ struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Configura
             enum Barcode {
                 case upc(Int, Int, Int, Int)
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -32,27 +33,16 @@ struct EnumCaseAssociatedValuesLengthRule: SwiftSyntaxRule, OptInRule, Configura
             enum Barcode {
                 case ↓upc(Int, Int, Int, Int, Int, Int)
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension EnumCaseAssociatedValuesLengthRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: ConfigurationType
-
-        init(configuration: ConfigurationType) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            guard let associatedValue = node.associatedValue,
-                  case let enumCaseAssociatedValueCount = associatedValue.parameterList.count,
+            guard let associatedValue = node.parameterClause,
+                  case let enumCaseAssociatedValueCount = associatedValue.parameters.count,
                   enumCaseAssociatedValueCount >= configuration.warning else {
                 return
             }
@@ -65,7 +55,7 @@ private extension EnumCaseAssociatedValuesLengthRule {
                 violationSeverity = .warning
             }
 
-            let reason = "Enum case \(node.identifier.text) should contain "
+            let reason = "Enum case \(node.name.text) should contain "
                 + "less than \(configuration.warning) associated values: "
                 + "currently contains \(enumCaseAssociatedValueCount)"
             violations.append(

@@ -24,7 +24,7 @@ public extension RandomAccessCollection where Index == Int {
     @inlinable
     func firstIndexAssumingSorted(where predicate: (Self.Element) throws -> Bool) rethrows -> Int? {
         // Predicate should divide a collection to two pairs of values
-        // "bad" values for which predicate returns `false``
+        // "bad" values for which predicate returns `false`
         // "good" values for which predicate return `true`
 
         // false false false false false true true true

@@ -2,7 +2,8 @@ import Foundation
 import SourceKittenFramework
 
 /// A rule configuration used for defining custom rules in yaml.
-public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable, CacheDescriptionProvider {
+public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable,
+                                                CacheDescriptionProvider, InlinableOptionType {
     /// The identifier for this custom rule.
     public let identifier: String
     /// The name for this custom rule.
@@ -10,21 +11,19 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     /// The message to be presented when producing violations.
     public var message = "Regex matched"
     /// The regular expression to apply to trigger violations for this custom rule.
-    public var regex: NSRegularExpression!
+    @ConfigurationElement(key: "regex")
+    package var regex: RegularExpression! // swiftlint:disable:this implicitly_unwrapped_optional
     /// Regular expressions to include when matching the file path.
-    public var included: [NSRegularExpression] = []
+    public var included: [RegularExpression] = []
     /// Regular expressions to exclude when matching the file path.
-    public var excluded: [NSRegularExpression] = []
+    public var excluded: [RegularExpression] = []
     /// The syntax kinds to exclude from matches. If the regex matched syntax kinds from this list, it would
     /// be ignored and not count as a rule violation.
     public var excludedMatchKinds = Set<SyntaxKind>()
+    @ConfigurationElement(key: "severity")
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
-    public var captureGroup: Int = 0
-
-    public var consoleDescription: String {
-        return "\(severity.rawValue): \(regex.pattern)"
-    }
+    public var captureGroup = 0
 
     public var cacheDescription: String {
         let jsonObject: [String] = [
@@ -35,8 +34,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             included.map(\.pattern).joined(separator: ","),
             excluded.map(\.pattern).joined(separator: ","),
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
-                .map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
-            severityConfiguration.consoleDescription
+                .map(\.rawValue).sorted(by: <).joined(separator: ","),
+            severity.rawValue,
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {
@@ -47,8 +46,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
 
     /// The `RuleDescription` for the custom rule defined here.
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier,
-                               description: "", kind: .style)
+        RuleDescription(identifier: identifier, name: name ?? identifier,
+                        description: "", kind: .style)
     }
 
     /// Create a `RegexConfiguration` with the specified identifier, with other properties to be set later.
@@ -60,25 +59,25 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
 
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
-            let regexString = configurationDict["regex"] as? String else {
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+              let regexString = configurationDict[$regex.key] as? String else {
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
 
-        regex = try .cached(pattern: regexString)
+        regex = try .from(pattern: regexString, for: Parent.identifier)
 
         if let includedString = configurationDict["included"] as? String {
-            included = [try .cached(pattern: includedString)]
+            included = [try .from(pattern: includedString, for: Parent.identifier)]
         } else if let includedArray = configurationDict["included"] as? [String] {
             included = try includedArray.map { pattern in
-                try .cached(pattern: pattern)
+                try .from(pattern: pattern, for: Parent.identifier)
             }
         }
 
         if let excludedString = configurationDict["excluded"] as? String {
-            excluded = [try .cached(pattern: excludedString)]
+            excluded = [try .from(pattern: excludedString, for: Parent.identifier)]
         } else if let excludedArray = configurationDict["excluded"] as? [String] {
             excluded = try excludedArray.map { pattern in
-                try .cached(pattern: pattern)
+                try .from(pattern: pattern, for: Parent.identifier)
             }
         }
 
@@ -88,12 +87,12 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let severityString = configurationDict["severity"] as? String {
+        if let severityString = configurationDict[$severityConfiguration.key] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
         if let captureGroup = configurationDict["capture_group"] as? Int {
             guard (0 ... regex.numberOfCaptureGroups).contains(captureGroup) else {
-                throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             }
             self.captureGroup = captureGroup
         }
@@ -105,10 +104,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         hasher.combine(identifier)
     }
 
-    func shouldValidate(filePath: String) -> Bool {
+    package func shouldValidate(filePath: String) -> Bool {
         let pathRange = filePath.fullNSRange
         let isIncluded = included.isEmpty || included.contains { regex in
-            regex.firstMatch(in: filePath, range: pathRange) != nil
+            regex.regex.firstMatch(in: filePath, range: pathRange) != nil
         }
 
         guard isIncluded else {
@@ -116,7 +115,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         }
 
         return excluded.allSatisfy { regex in
-            regex.firstMatch(in: filePath, range: pathRange) == nil
+            regex.regex.firstMatch(in: filePath, range: pathRange) == nil
         }
     }
 
@@ -143,7 +142,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             if let kind = SyntaxKind(shortName: $0) {
                 return kind
             }
-            throw Issue.unknownConfiguration(ruleID: Parent.description.identifier)
+            throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }
         return Set(kinds)
     }

@@ -1,4 +1,4 @@
-import SourceKittenFramework
+@preconcurrency import SourceKittenFramework
 
 public extension SwiftDeclarationKind {
     static let variableKinds: Set<SwiftDeclarationKind> = [
@@ -7,7 +7,7 @@ public extension SwiftDeclarationKind {
         .varInstance,
         .varLocal,
         .varParameter,
-        .varStatic
+        .varStatic,
     ]
 
     static let functionKinds: Set<SwiftDeclarationKind> = [
@@ -24,7 +24,7 @@ public extension SwiftDeclarationKind {
         .functionMethodInstance,
         .functionMethodStatic,
         .functionOperator,
-        .functionSubscript
+        .functionSubscript,
     ]
 
     static let typeKinds: Set<SwiftDeclarationKind> = [
@@ -32,7 +32,7 @@ public extension SwiftDeclarationKind {
         .struct,
         .typealias,
         .associatedtype,
-        .enum
+        .enum,
     ]
 
     static let extensionKinds: Set<SwiftDeclarationKind> = [
@@ -40,6 +40,6 @@ public extension SwiftDeclarationKind {
         .extensionClass,
         .extensionEnum,
         .extensionProtocol,
-        .extensionStruct
+        .extensionStruct,
     ]
 }

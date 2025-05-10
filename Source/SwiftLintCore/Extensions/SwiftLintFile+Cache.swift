@@ -10,7 +10,8 @@ import SwiftParserDiagnostics
 import SwiftSyntax
 
 private typealias FileCacheKey = UUID
-private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
+
+private let responseCache = Cache { file -> [String: any SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file.file).sendIfNotDisabled()
     } catch let error as Request.Error {
@@ -21,18 +22,18 @@ private let responseCache = Cache { file -> [String: SourceKitRepresentable]? in
     }
 }
 private let structureDictionaryCache = Cache { file in
-    return responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
+    responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
 }
 private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
-    return Parser.parse(source: file.contents)
+    Parser.parse(source: file.contents)
 }
 private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
-    return OperatorTable.standardOperators
-        .foldAll(file.syntaxTree) { _ in }
+    OperatorTable.standardOperators
+        .foldAll(file.syntaxTree) { _ in /* Don't handle errors. */ }
         .as(SourceFileSyntax.self)
 }
 private let locationConverterCache = Cache { file -> SourceLocationConverter in
-    return SourceLocationConverter(file: file.path ?? "<nopath>", tree: file.syntaxTree)
+    SourceLocationConverter(fileName: file.path ?? "<nopath>", tree: file.syntaxTree)
 }
 private let commandsCache = Cache { file -> [Command] in
     guard file.contents.contains("swiftlint:") else {
@@ -49,21 +50,19 @@ private let syntaxKindsByLinesCache = Cache { $0.syntaxKindsByLine() }
 private let syntaxTokensByLinesCache = Cache { $0.syntaxTokensByLine() }
 private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
 
-internal typealias AssertHandler = () -> Void
+package typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
-@_spi(TestHelper)
-public var parserDiagnosticsDisabledForTests = false
+package nonisolated(unsafe) var parserDiagnosticsDisabledForTests = false
 
-private let assertHandlers = [FileCacheKey: AssertHandler]()
-private let assertHandlerCache = Cache { file in assertHandlers[file.cacheKey] }
+private let assertHandlerCache = Cache { (_: SwiftLintFile) -> AssertHandler? in nil }
 
-private class Cache<T> {
-    private var values = [FileCacheKey: T]()
-    private let factory: (SwiftLintFile) -> T
+private final class Cache<T>: Sendable {
+    private nonisolated(unsafe) var values = [FileCacheKey: T]()
+    private let factory: @Sendable (SwiftLintFile) -> T
     private let lock = PlatformLock()
 
-    fileprivate init(_ factory: @escaping (SwiftLintFile) -> T) {
+    fileprivate init(_ factory: @escaping @Sendable (SwiftLintFile) -> T) {
         self.factory = factory
     }
 
@@ -98,12 +97,12 @@ private class Cache<T> {
 
 extension SwiftLintFile {
     fileprivate var cacheKey: FileCacheKey {
-        return id
+        id
     }
 
     public var sourcekitdFailed: Bool {
         get {
-            return responseCache.get(self) == nil
+            responseCache.get(self) == nil
         }
         set {
             if newValue {
@@ -114,9 +113,9 @@ extension SwiftLintFile {
         }
     }
 
-    internal var assertHandler: AssertHandler? {
+    package var assertHandler: AssertHandler? {
         get {
-            return assertHandlerCache.get(self)
+            assertHandlerCache.get(self)
         }
         set {
             assertHandlerCache.set(key: cacheKey, value: newValue)
@@ -165,7 +164,7 @@ extension SwiftLintFile {
 
     public var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
 
-    public var commands: [Command] { commandsCache.get(self).filter { $0.isValid } }
+    public var commands: [Command] { commandsCache.get(self).filter(\.isValid) }
 
     public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 
@@ -208,8 +207,7 @@ extension SwiftLintFile {
         linesWithTokensCache.invalidate(self)
     }
 
-    @_spi(TestHelper)
-    public static func clearCaches() {
+    package static func clearCaches() {
         responseCache.clear()
         assertHandlerCache.clear()
         structureDictionaryCache.clear()
@@ -225,9 +223,9 @@ extension SwiftLintFile {
     }
 }
 
-private final class PlatformLock {
+private final class PlatformLock: Sendable {
 #if canImport(Darwin)
-    private let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
+    private nonisolated(unsafe) let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
 #else
     private let primitiveLock = NSLock()
 #endif

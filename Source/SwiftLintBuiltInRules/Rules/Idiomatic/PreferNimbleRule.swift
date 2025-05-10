@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct PreferNimbleRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -10,7 +11,7 @@ struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("expect(foo) == 1"),
-            Example("expect(foo).to(equal(1))")
+            Example("expect(foo).to(equal(1))"),
         ],
         triggeringExamples: [
             Example("↓XCTAssertTrue(foo)"),
@@ -18,20 +19,16 @@ struct PreferNimbleRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
             Example("↓XCTAssertNotEqual(foo, 2)"),
             Example("↓XCTAssertNil(foo)"),
             Example("↓XCTAssert(foo)"),
-            Example("↓XCTAssertGreaterThan(foo, 10)")
+            Example("↓XCTAssertGreaterThan(foo, 10)"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension PreferNimbleRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if let expr = node.calledExpression.as(IdentifierExprSyntax.self),
-               expr.identifier.text.starts(with: "XCTAssert") {
+            if let expr = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               expr.baseName.text.starts(with: "XCTAssert") {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

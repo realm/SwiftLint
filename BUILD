@@ -1,21 +1,93 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@build_bazel_rules_apple//apple:apple.bzl", "apple_universal_binary")
 load(
     "@build_bazel_rules_swift//swift:swift.bzl",
     "swift_binary",
+    "swift_compiler_plugin",
     "swift_library",
+    "universal_swift_compiler_plugin",
 )
-load(
-    "@rules_xcodeproj//xcodeproj:defs.bzl",
-    "xcode_schemes",
-    "xcodeproj",
+load("@build_bazel_rules_cc//cc:cc_library.bzl", "cc_library")
+load("@build_bazel_rules_shell//shell:sh_test.bzl", "sh_test")
+
+bool_flag(
+    name = "universal_tools",
+    build_setting_default = False,
 )
+
+config_setting(
+    name = "universal_tools_config",
+    flag_values = {
+        "@SwiftLint//:universal_tools": "true",
+    },
+)
+
+copts = [
+    "-warnings-as-errors",
+    "-enable-upcoming-feature",
+    "ExistentialAny",
+    "-enable-upcoming-feature",
+    "ConciseMagicFile",
+    "-enable-upcoming-feature",
+    "ImportObjcForwardDeclarations",
+    "-enable-upcoming-feature",
+    "ForwardTrailingClosures",
+    "-enable-upcoming-feature",
+    "ImplicitOpenExistentials",
+    "-Xfrontend",
+    "-warn-implicit-overrides",
+]
+
+strict_concurrency_copts = [
+    "-Xfrontend",
+    "-strict-concurrency=complete",
+]
+
+targeted_concurrency_copts = [
+    "-Xfrontend",
+    "-strict-concurrency=targeted",
+]
 
 # Targets
 
 swift_library(
+    name = "SwiftLintCoreMacrosLib",
+    srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
+    copts = copts + strict_concurrency_copts,
+    module_name = "SwiftLintCoreMacros",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@SwiftSyntax//:SwiftCompilerPlugin_opt",
+        "@SwiftSyntax//:SwiftSyntaxMacros_opt",
+    ],
+)
+
+swift_compiler_plugin(
+    name = "SwiftLintCoreMacros.underlying",
+    srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
+    copts = copts + strict_concurrency_copts,
+    module_name = "SwiftLintCoreMacros",
+    deps = [
+        "@SwiftSyntax//:SwiftCompilerPlugin_opt",
+        "@SwiftSyntax//:SwiftSyntaxMacros_opt",
+    ],
+)
+
+universal_swift_compiler_plugin(
+    name = "SwiftLintCoreMacros",
+    plugin = "SwiftLintCoreMacros.underlying",
+)
+
+swift_library(
     name = "SwiftLintCore",
+    package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintCore",
+    plugins = select({
+        ":universal_tools_config": [":SwiftLintCoreMacros"],
+        "//conditions:default": [":SwiftLintCoreMacros.underlying"],
+    }),
     visibility = ["//visibility:public"],
     deps = [
         "@SwiftSyntax//:SwiftIDEUtils_opt",
@@ -24,7 +96,7 @@ swift_library(
         "@SwiftSyntax//:SwiftSyntaxBuilder_opt",
         "@SwiftSyntax//:SwiftSyntax_opt",
         "@com_github_jpsim_sourcekitten//:SourceKittenFramework",
-        "@sourcekitten_com_github_jpsim_yams//:Yams",
+        ":Yams.wrapper",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ] + select({
         "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
@@ -33,8 +105,20 @@ swift_library(
 )
 
 swift_library(
+    name = "Yams.wrapper",
+    srcs = ["Source/YamsWrapper/Empty.swift"],
+    module_name = "YamsWrapper",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@sourcekitten_com_github_jpsim_yams//:Yams",
+    ],
+)
+
+swift_library(
     name = "SwiftLintBuiltInRules",
+    package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintBuiltInRules",
     visibility = ["//visibility:public"],
     deps = [
@@ -44,10 +128,12 @@ swift_library(
 
 swift_library(
     name = "SwiftLintExtraRules",
+    package_name = "SwiftLint",
     srcs = [
         "Source/SwiftLintExtraRules/Exports.swift",
         "@swiftlint_extra_rules//:extra_rules",
     ],
+    copts = copts + strict_concurrency_copts,
     module_name = "SwiftLintExtraRules",
     visibility = ["//visibility:public"],
     deps = [
@@ -57,36 +143,43 @@ swift_library(
 
 swift_library(
     name = "SwiftLintFramework",
+    package_name = "SwiftLint",
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
+    copts = copts + targeted_concurrency_copts,
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintBuiltInRules",
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
+        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
     ],
 )
 
-swift_library(
-    name = "swiftlint.library",
+swift_binary(
+    name = "swiftlint",
+    package_name = "SwiftLint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
-    module_name = "swiftlint",
+    copts = copts + strict_concurrency_copts,
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
-        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
         "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
 )
 
 swift_binary(
-    name = "swiftlint",
+    name = "swiftlint-dev",
+    package_name = "SwiftLint",
+    srcs = glob(["Source/swiftlint-dev/*.swift"]),
+    copts = copts + strict_concurrency_copts,
     visibility = ["//visibility:public"],
     deps = [
-        ":swiftlint.library",
+        ":SwiftLintFramework",
+        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
     ],
 )
 
@@ -121,9 +214,13 @@ cc_library(
 
 filegroup(
     name = "LintInputs",
-    srcs = glob(["Source/**/*.swift"]) + [
+    srcs = glob([
+        "Plugins/**/*.swift",
+        "Source/**/*.swift",
+    ]) + [
         ".swiftlint.yml",
-        "//Tests:SwiftLintFrameworkTestsData",
+        "Package.swift",
+        "//Tests:TestSources",
     ],
     visibility = ["//Tests:__subpackages__"],
 )
@@ -162,39 +259,6 @@ COPYFILE_DISABLE=1 tar czvfh "$${outs[0]}" \
   *
 shasum -a 256 "$${outs[0]}" > "$${outs[1]}"
     """,
-)
-
-# Xcode Integration
-
-xcodeproj(
-    name = "xcodeproj",
-    project_name = "SwiftLint",
-    schemes = [
-        xcode_schemes.scheme(
-            name = "SwiftLint",
-            launch_action = xcode_schemes.launch_action(
-                "swiftlint",
-                args = [
-                    "--progress",
-                ],
-            ),
-            test_action = xcode_schemes.test_action([
-                "//Tests:CLITests",
-                "//Tests:SwiftLintFrameworkTests",
-                "//Tests:GeneratedTests",
-                "//Tests:IntegrationTests",
-                "//Tests:ExtraRulesTests",
-            ]),
-        ),
-    ],
-    top_level_targets = [
-        "//:swiftlint",
-        "//Tests:CLITests",
-        "//Tests:SwiftLintFrameworkTests",
-        "//Tests:GeneratedTests",
-        "//Tests:IntegrationTests",
-        "//Tests:ExtraRulesTests",
-    ],
 )
 
 # Analyze

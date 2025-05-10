@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct RedundantOptionalInitializationRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,13 +10,13 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
         description: "Initializing an optional variable with nil is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("var myVar: Int?\n"),
-            Example("let myVar: Int? = nil\n"),
-            Example("var myVar: Int? = 0\n"),
-            Example("func foo(bar: Int? = 0) { }\n"),
-            Example("var myVar: Optional<Int>\n"),
-            Example("let myVar: Optional<Int> = nil\n"),
-            Example("var myVar: Optional<Int> = 0\n"),
+            Example("var myVar: Int?"),
+            Example("let myVar: Int? = nil"),
+            Example("var myVar: Int? = 0"),
+            Example("func foo(bar: Int? = 0) { }"),
+            Example("var myVar: Optional<Int>"),
+            Example("let myVar: Optional<Int> = nil"),
+            Example("var myVar: Optional<Int> = 0"),
             // properties with body should be ignored
             Example("""
             var foo: Int? {
@@ -42,16 +43,16 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
             func funcName() {
               let myVar: String? = nil
             }
-            """)
+            """),
         ],
         triggeringExamples: triggeringExamples,
         corrections: corrections
     )
 
     private static let triggeringExamples: [Example] = [
-        Example("var myVar: Int?↓ = nil\n"),
-        Example("var myVar: Optional<Int>↓ = nil\n"),
-        Example("var myVar: Int?↓=nil\n"),
+        Example("var myVar: Int?↓ = nil"),
+        Example("var myVar: Optional<Int>↓ = nil"),
+        Example("var myVar: Int?↓=nil"),
         Example("var myVar: Optional<Int>↓=nil\n)"),
         Example("""
               var myVar: String?↓ = nil {
@@ -62,14 +63,14 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
             func funcName() {
                 var myVar: String?↓ = nil
             }
-            """)
+            """),
     ]
 
     private static let corrections: [Example: Example] = [
-        Example("var myVar: Int?↓ = nil\n"): Example("var myVar: Int?\n"),
-        Example("var myVar: Optional<Int>↓ = nil\n"): Example("var myVar: Optional<Int>\n"),
-        Example("var myVar: Int?↓=nil\n"): Example("var myVar: Int?\n"),
-        Example("var myVar: Optional<Int>↓=nil\n"): Example("var myVar: Optional<Int>\n"),
+        Example("var myVar: Int?↓ = nil"): Example("var myVar: Int?"),
+        Example("var myVar: Optional<Int>↓ = nil"): Example("var myVar: Optional<Int>"),
+        Example("var myVar: Int?↓=nil"): Example("var myVar: Int?"),
+        Example("var myVar: Optional<Int>↓=nil"): Example("var myVar: Optional<Int>"),
         Example("class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}"):
             Example("class C {\n#if true\nvar myVar: Int?\n#endif\n}"),
         Example("""
@@ -101,26 +102,15 @@ struct RedundantOptionalInitializationRule: SwiftSyntaxCorrectableRule, Configur
             func foo() {
                 var myVar: String?, b: Int
             }
-            """)
+            """),
     ]
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension RedundantOptionalInitializationRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
-            guard node.bindingKeyword.tokenKind == .keyword(.var),
-                  !node.modifiers.containsLazy else {
+            guard node.bindingSpecifier.tokenKind == .keyword(.var),
+                  !node.modifiers.contains(keyword: .lazy) else {
                 return
             }
 
@@ -128,19 +118,12 @@ private extension RedundantOptionalInitializationRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visitAny(_: Syntax) -> Syntax? { nil }
 
         override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            guard node.bindingKeyword.tokenKind == .keyword(.var),
-                  !node.modifiers.containsLazy else {
+            guard node.bindingSpecifier.tokenKind == .keyword(.var),
+                  !node.modifiers.contains(keyword: .lazy) else {
                 return super.visit(node)
             }
 
@@ -155,16 +138,14 @@ private extension RedundantOptionalInitializationRule {
             guard violations.isNotEmpty else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(contentsOf: violations.map(\.0))
-
+            numberOfCorrections += violations.count
             let violatingBindings = violations.map(\.1)
             let newBindings = PatternBindingListSyntax(node.bindings.map { binding in
                 guard violatingBindings.contains(binding) else {
                     return binding
                 }
                 let newBinding = binding.with(\.initializer, nil)
-                if newBinding.accessor != nil {
+                if newBinding.accessorBlock != nil {
                     return newBinding
                 }
                 if binding.trailingComma != nil {
@@ -203,7 +184,7 @@ private extension TypeAnnotationSyntax {
             return true
         }
 
-        if let type = type.as(SimpleTypeIdentifierSyntax.self), let genericClause = type.genericArgumentClause {
+        if let type = type.as(IdentifierTypeSyntax.self), let genericClause = type.genericArgumentClause {
             return genericClause.arguments.count == 1 && type.name.text == "Optional"
         }
 

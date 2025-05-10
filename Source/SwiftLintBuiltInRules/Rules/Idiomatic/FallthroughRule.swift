@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FallthroughRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -14,7 +15,7 @@ struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
             case .bar, .bar2, .bar3:
               something()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -24,18 +25,14 @@ struct FallthroughRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
             case .bar2:
               something()
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FallthroughRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: FallthroughStmtSyntax) {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: FallThroughStmtSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
     }

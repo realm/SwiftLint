@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, ConfigurationProviderRule,
+struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
                                     SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -22,7 +22,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Configurati
             protocol G {
                 associatedtype Model: Codable, Equatable
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("struct A: Codable↓ & Equatable {}"),
@@ -36,7 +36,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Configurati
             protocol G {
                 associatedtype Model: Codable↓ & Equatable
             }
-            """)
+            """),
         ],
         corrections: [
             Example("struct A: Codable↓ & Equatable {}"): Example("struct A: Codable, Equatable {}"),
@@ -54,14 +54,14 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Configurati
             protocol G {
                 associatedtype Model: Codable, Equatable
             }
-            """)
+            """),
         ]
     )
 
     // MARK: - Rule
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(in: file).map {
+        violationRanges(in: file).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -70,8 +70,8 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule, Configurati
 
     // MARK: - SubstitutionCorrectableRule
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
-        return (violationRange, ", ")
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
+        (violationRange, ", ")
     }
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {

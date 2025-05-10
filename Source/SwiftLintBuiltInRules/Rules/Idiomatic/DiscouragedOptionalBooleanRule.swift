@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(optIn: true)
+struct DiscouragedOptionalBooleanRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,22 +12,18 @@ struct DiscouragedOptionalBooleanRule: OptInRule, ConfigurationProviderRule, Swi
         nonTriggeringExamples: DiscouragedOptionalBooleanRuleExamples.nonTriggeringExamples,
         triggeringExamples: DiscouragedOptionalBooleanRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DiscouragedOptionalBooleanRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: OptionalTypeSyntax) {
-            if node.wrappedType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Bool" {
+            if node.wrappedType.as(IdentifierTypeSyntax.self)?.typeName == "Bool" {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: OptionalChainingExprSyntax) {
-            if node.expression.as(IdentifierExprSyntax.self)?.identifier.text == "Bool" {
+            if node.expression.as(DeclReferenceExprSyntax.self)?.baseName.text == "Bool" {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -34,11 +31,11 @@ private extension DiscouragedOptionalBooleanRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             guard
                 let calledExpression = node.calledExpression.as(MemberAccessExprSyntax.self),
-                let singleArgument = node.argumentList.onlyElement,
+                let singleArgument = node.arguments.onlyElement,
                 singleArgument.expression.is(BooleanLiteralExprSyntax.self),
-                let base = calledExpression.base?.as(IdentifierExprSyntax.self),
-                base.identifier.text == "Optional",
-                calledExpression.name.text == "some"
+                let base = calledExpression.base?.as(DeclReferenceExprSyntax.self),
+                base.baseName.text == "Optional",
+                calledExpression.declName.baseName.text == "some"
             else {
                 return
             }

@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRule {
     var configuration = OperatorUsageWhitespaceConfiguration()
 
     static let description = RuleDescription(
@@ -16,7 +16,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationPro
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return violationRanges(file: file).map { range, _ in
+        violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: range.location))
@@ -35,7 +35,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationPro
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = violationRanges(file: file)
             .compactMap { byteRange, correction -> (NSRange, String)? in
                 guard let range = file.stringView.byteRangeToNSRange(byteRange) else {
@@ -45,26 +45,19 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationPro
                 return (range, correction)
             }
             .filter { range, _ in
-                return file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
+                file.ruleEnabled(violatingRanges: [range], for: self).isNotEmpty
             }
 
         var correctedContents = file.contents
-        var adjustedLocations = [Int]()
-
+        var numberOfCorrections = 0
         for (violatingRange, correction) in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: correction)
-                adjustedLocations.insert(violatingRange.location, at: 0)
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: correction)
+                numberOfCorrections += 1
             }
         }
-
         file.write(correctedContents)
-
-        return adjustedLocations.map {
-            Correction(ruleDescription: Self.description,
-                       location: Location(file: file, characterOffset: $0))
-        }
+        return numberOfCorrections
     }
 
     private func isAlignedConstant(in byteRange: ByteRange, file: SwiftLintFile) -> Bool {
@@ -100,7 +93,7 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationPro
             .flatMap { [lineIndex + $0, lineIndex - $0] }
 
         func isValidIndex(_ idx: Int) -> Bool {
-            return idx != lineIndex && idx >= 0 && idx < file.stringView.lines.count
+            idx != lineIndex && idx >= 0 && idx < file.stringView.lines.count
         }
 
         for lineIndex in lineIndexesAround where isValidIndex(lineIndex) {
@@ -128,7 +121,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: BinaryOperatorExprSyntax) {
-        if let violation = violation(operatorToken: node.operatorToken) {
+        if let violation = violation(operatorToken: node.operator) {
             violationRanges.append(violation)
         }
     }
@@ -146,13 +139,13 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: AssignmentExprSyntax) {
-        if let violation = violation(operatorToken: node.assignToken) {
+        if let violation = violation(operatorToken: node.equal) {
             violationRanges.append(violation)
         }
     }
 
     override func visitPost(_ node: TernaryExprSyntax) {
-        if let violation = violation(operatorToken: node.colonMark) {
+        if let violation = violation(operatorToken: node.colon) {
             violationRanges.append(violation)
         }
 
@@ -162,7 +155,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
-        if let violation = violation(operatorToken: node.colonMark) {
+        if let violation = violation(operatorToken: node.colon) {
             violationRanges.append(violation)
         }
 
@@ -214,7 +207,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
 
 private extension Trivia {
     var containsTooMuchWhitespacing: Bool {
-        return contains { element in
+        contains { element in
             guard case let .spaces(spaces) = element, spaces > 1 else {
                 return false
             }
@@ -224,12 +217,12 @@ private extension Trivia {
     }
 
     var containsComments: Bool {
-        return contains { element in
+        contains { (element: TriviaPiece) in
             switch element {
             case .blockComment, .docLineComment, .docBlockComment, .lineComment:
                 return true
             case .backslashes, .carriageReturnLineFeeds, .carriageReturns, .formfeeds, .newlines, .pounds,
-                 .shebang, .spaces, .tabs, .unexpectedText, .verticalTabs:
+                 .spaces, .tabs, .unexpectedText, .verticalTabs:
                 return false
             }
         }

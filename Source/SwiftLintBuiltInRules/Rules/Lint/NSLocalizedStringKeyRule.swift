@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct NSLocalizedStringKeyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -21,34 +22,30 @@ struct NSLocalizedStringKeyRule: SwiftSyntaxRule, OptInRule, ConfigurationProvid
             let format = NSLocalizedString("%@, %@.", comment: "Accessibility label for a post in the post list." +
             " The parameters are the title, and date respectively." +
             " For example, \"Let it Go, 1 hour ago.\"")
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("NSLocalizedString(↓method(), comment: \"\")"),
             Example("NSLocalizedString(↓\"key_\\(param)\", comment: \"\")"),
             Example("NSLocalizedString(\"key\", comment: ↓\"comment with \\(param)\")"),
-            Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())")
+            Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NSLocalizedStringKeyRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text == "NSLocalizedString" else {
+            guard node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text == "NSLocalizedString" else {
                 return
             }
 
-            if let keyArgument = node.argumentList.first(where: { $0.label == nil })?.expression,
+            if let keyArgument = node.arguments.first(where: { $0.label == nil })?.expression,
                keyArgument.hasViolation {
                 violations.append(keyArgument.positionAfterSkippingLeadingTrivia)
             }
 
-            if let commentArgument = node.argumentList.first(where: { $0.label?.text == "comment" })?.expression,
+            if let commentArgument = node.arguments.first(where: { $0.label?.text == "comment" })?.expression,
                commentArgument.hasViolation {
                 violations.append(commentArgument.positionAfterSkippingLeadingTrivia)
             }

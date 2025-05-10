@@ -3,12 +3,12 @@ import SwiftSyntaxBuilder
 
 /// A helper to hold a visitor and rewriter that can lint and correct legacy NS/CG functions to a more modern syntax.
 enum LegacyFunctionRuleHelper {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
         private let legacyFunctions: [String: RewriteStrategy]
 
-        init(legacyFunctions: [String: RewriteStrategy]) {
+        init(configuration: Configuration, file: SwiftLintFile, legacyFunctions: [String: RewriteStrategy]) {
             self.legacyFunctions = legacyFunctions
-            super.init(viewMode: .sourceAccurate)
+            super.init(configuration: configuration, file: file)
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
@@ -35,36 +35,26 @@ enum LegacyFunctionRuleHelper {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
+    final class Rewriter<Configuration: RuleConfiguration>: ViolationsSyntaxRewriter<Configuration> {
         private let legacyFunctions: [String: RewriteStrategy]
 
         init(
             legacyFunctions: [String: RewriteStrategy],
-            locationConverter: SourceLocationConverter,
-            disabledRegions: [SourceRange]
+            configuration: Configuration,
+            file: SwiftLintFile
         ) {
             self.legacyFunctions = legacyFunctions
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
+            super.init(configuration: configuration, file: file)
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard
-                node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions),
-                let funcName = node.calledExpression.as(IdentifierExprSyntax.self)?.identifier.text,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isLegacyFunctionExpression(legacyFunctions: legacyFunctions),
+                  let funcName = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-
-            let trimmedArguments = node.argumentList.map { $0.trimmingTrailingComma() }
+            numberOfCorrections += 1
+            let trimmedArguments = node.arguments.map { $0.trimmingTrailingComma() }
             let rewriteStrategy = legacyFunctions[funcName]
-
             let expr: ExprSyntax
             switch rewriteStrategy {
             case .equal:
@@ -91,9 +81,9 @@ enum LegacyFunctionRuleHelper {
 private extension FunctionCallExprSyntax {
     func isLegacyFunctionExpression(legacyFunctions: [String: LegacyFunctionRuleHelper.RewriteStrategy]) -> Bool {
         guard
-            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
-            let rewriteStrategy = legacyFunctions[calledExpression.identifier.text],
-            argumentList.count == rewriteStrategy.expectedInitialArguments
+            let calledExpression = calledExpression.as(DeclReferenceExprSyntax.self),
+            let rewriteStrategy = legacyFunctions[calledExpression.baseName.text],
+            arguments.count == rewriteStrategy.expectedInitialArguments
         else {
             return false
         }
@@ -102,8 +92,8 @@ private extension FunctionCallExprSyntax {
     }
 }
 
-private extension TupleExprElementSyntax {
-    func trimmingTrailingComma() -> TupleExprElementSyntax {
+private extension LabeledExprSyntax {
+    func trimmingTrailingComma() -> LabeledExprSyntax {
         self.trimmed.with(\.trailingComma, nil).trimmed
     }
 }

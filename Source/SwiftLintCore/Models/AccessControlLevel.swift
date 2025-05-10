@@ -8,6 +8,8 @@ public enum AccessControlLevel: String, CustomStringConvertible {
     case `fileprivate` = "source.lang.swift.accessibility.fileprivate"
     /// Accessible by the declaration's same module, or modules importing it with the `@testable` attribute.
     case `internal` = "source.lang.swift.accessibility.internal"
+    /// Accessible by all the modules defined in the same Swift package.
+    case `package` = "source.lang.swift.accessibility.package"
     /// Accessible by the declaration's same program.
     case `public` = "source.lang.swift.accessibility.public"
     /// Accessible and customizable (via subclassing or overrides) by the declaration's same program.
@@ -21,6 +23,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
         case "private": self = .private
         case "fileprivate": self = .fileprivate
         case "internal": self = .internal
+        case "package": self = .package
         case "public": self = .public
         case "open": self = .open
         default: return nil
@@ -39,6 +42,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
         case .private: return "private"
         case .fileprivate: return "fileprivate"
         case .internal: return "internal"
+        case .package: return "package"
         case .public: return "public"
         case .open: return "open"
         }
@@ -46,7 +50,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
 
     /// Returns true if is `private` or `fileprivate`
     public var isPrivate: Bool {
-        return self == .private || self == .fileprivate
+        self == .private || self == .fileprivate
     }
 }
 
@@ -56,12 +60,13 @@ extension AccessControlLevel: Comparable {
         case .private: return 1
         case .fileprivate: return 2
         case .internal: return 3
-        case .public: return 4
-        case .open: return 5
+        case .package: return 4
+        case .public: return 5
+        case .open: return 6
         }
     }
 
     public static func < (lhs: AccessControlLevel, rhs: AccessControlLevel) -> Bool {
-        return lhs.priority < rhs.priority
+        lhs.priority < rhs.priority
     }
 }

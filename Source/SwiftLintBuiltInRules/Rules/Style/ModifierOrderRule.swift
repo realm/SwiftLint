@@ -1,22 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, CorrectableRule {
-    var configuration = ModifierOrderConfiguration(
-        preferredModifierOrder: [
-            .override,
-            .acl,
-            .setterACL,
-            .dynamic,
-            .mutators,
-            .lazy,
-            .final,
-            .required,
-            .convenience,
-            .typeMethods,
-            .owned
-        ]
-    )
+struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
+    var configuration = ModifierOrderConfiguration()
 
     static let description = RuleDescription(
         identifier: "modifier_order",
@@ -28,7 +14,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
     )
 
     func validate(file: SwiftLintFile,
-                  kind: SwiftDeclarationKind,
+                  kind _: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         guard let offset = dictionary.offset else {
             return []
@@ -46,21 +32,24 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: reason
-                )
+                ),
             ]
-        } else {
-            return []
         }
+        return []
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
-        return file.structureDictionary.traverseDepthFirst { subDict in
-            guard subDict.declarationKind != nil else { return nil }
-            return correct(file: file, dictionary: subDict)
-        }
+    func correct(file: SwiftLintFile) -> Int {
+        file.structureDictionary.traverseDepthFirst { subDict in
+            guard subDict.declarationKind != nil else {
+                return [0]
+            }
+            return [correct(file: file, dictionary: subDict)]
+        }.reduce(0, +)
     }
-    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [Correction] {
-        guard let offset = dictionary.offset else { return [] }
+    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Int {
+        guard dictionary.offset != nil else {
+            return 0
+        }
         let originalContents = file.stringView
         let violatingRanges = violatingModifiers(dictionary: dictionary)
             .compactMap { preferred, declared -> (NSRange, NSRange)? in
@@ -76,34 +65,19 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
                 }
                 return (preferredRange, declaredRange)
             }
-
-        let corrections: [Correction]
         if violatingRanges.isEmpty {
-            corrections = []
-        } else {
-            var correctedContents = originalContents.nsString
-
-            violatingRanges.reversed().forEach { arg in
-                let (preferredModifierRange, declaredModifierRange) = arg
-                correctedContents = correctedContents.replacingCharacters(
-                    in: declaredModifierRange,
-                    with: originalContents.substring(with: preferredModifierRange)
-                ).bridge()
-            }
-
-            file.write(correctedContents.bridge())
-
-            corrections = [
-                Correction(
-                    ruleDescription: Self.description,
-                    location: Location(
-                        file: file,
-                        byteOffset: offset
-                    )
-                )
-            ]
+            return 0
         }
-        return corrections
+        var correctedContents = originalContents.nsString
+        violatingRanges.reversed().forEach { arg in
+            let (preferredModifierRange, declaredModifierRange) = arg
+            correctedContents = correctedContents.replacingCharacters(
+                in: declaredModifierRange,
+                with: originalContents.substring(with: preferredModifierRange)
+            ).bridge()
+        }
+        file.write(correctedContents.bridge())
+        return violatingRanges.count
     }
 
     private func violatableModifiers(declaredModifiers: [ModifierDescription]) -> [ModifierDescription] {
@@ -134,7 +108,7 @@ struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule, Correct
         let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
         let sortedByPriorityModifiers = prioritizedModifiers
             .sorted { $0.priority < $1.priority }
-            .map { $0.modifier }
+            .map(\.modifier)
 
         return zip(sortedByPriorityModifiers, violatableModifiers).filter { $0 != $1 }
     }
@@ -162,7 +136,8 @@ private extension SourceKittenDictionary {
                         offset: offset,
                         length: length
                     )
-                } else if let kind = $0.kind {
+                }
+                if let kind = $0.kind {
                     let keyword = kind.lastComponentAfter(".")
                     return ModifierDescription(
                         keyword: keyword,
@@ -185,7 +160,7 @@ private extension SourceKittenDictionary {
 
 private extension String {
     func lastComponentAfter(_ character: String) -> String {
-        return components(separatedBy: character).last ?? ""
+        components(separatedBy: character).last ?? ""
     }
 }
 
@@ -194,5 +169,5 @@ private struct ModifierDescription: Equatable {
     let group: SwiftDeclarationAttributeKind.ModifierGroup
     let offset: ByteCount
     let length: ByteCount
-    var range: ByteRange { return ByteRange(location: offset, length: length) }
+    var range: ByteRange { ByteRange(location: offset, length: length) }
 }

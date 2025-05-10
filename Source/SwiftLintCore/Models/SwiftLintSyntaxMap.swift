@@ -23,11 +23,11 @@ public struct SwiftLintSyntaxMap {
     /// - returns: The array of syntax tokens intersecting with byte range.
     public func tokens(inByteRange byteRange: ByteRange) -> [SwiftLintSyntaxToken] {
         func intersect(_ token: SwiftLintSyntaxToken) -> Bool {
-            return token.range.intersects(byteRange)
+            token.range.intersects(byteRange)
         }
 
         func intersectsOrAfter(_ token: SwiftLintSyntaxToken) -> Bool {
-            return token.offset + token.length > byteRange.location
+            token.offset + token.length > byteRange.location
         }
 
         guard let startIndex = tokens.firstIndexAssumingSorted(where: intersectsOrAfter) else {
@@ -49,6 +49,6 @@ public struct SwiftLintSyntaxMap {
     ///
     /// - returns: The syntax kinds in the specified byte range.
     public func kinds(inByteRange byteRange: ByteRange) -> [SyntaxKind] {
-        return tokens(inByteRange: byteRange).compactMap { $0.kind }
+        tokens(inByteRange: byteRange).compactMap(\.kind)
     }
 }

@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderRule {
+struct SingleTestClassRule: SourceKitFreeRule, OptInRule {
     var configuration = SingleTestClassConfiguration()
 
     static let description = RuleDescription(
@@ -9,9 +9,9 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
         description: "Test files should contain a single QuickSpec or XCTestCase class.",
         kind: .style,
         nonTriggeringExamples: [
-            Example("class FooTests {  }\n"),
-            Example("class FooTests: QuickSpec {  }\n"),
-            Example("class FooTests: XCTestCase {  }\n")
+            Example("class FooTests {  }"),
+            Example("class FooTests: QuickSpec {  }"),
+            Example("class FooTests: XCTestCase {  }"),
         ],
         triggeringExamples: [
             Example("""
@@ -45,39 +45,34 @@ struct SingleTestClassRule: SourceKitFreeRule, OptInRule, ConfigurationProviderR
             final ↓class FooTests: QuickSpec {  }
             ↓class BarTests: XCTestCase {  }
             class TotoTests {  }
-            """)
+            """),
         ]
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let classes = TestClassVisitor(viewMode: .sourceAccurate, testParentClasses: configuration.testParentClasses)
+        let classes = Visitor(configuration: configuration, file: file)
             .walk(tree: file.syntaxTree, handler: \.violations)
 
         guard classes.count > 1 else { return [] }
 
         return classes.map { position in
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, position: position.position),
-                                  reason: "\(classes.count) test classes found in this file")
+            StyleViolation(ruleDescription: Self.description,
+                           severity: configuration.severity,
+                           location: Location(file: file, position: position.position),
+                           reason: "\(classes.count) test classes found in this file")
         }
     }
 }
 
-private class TestClassVisitor: ViolationsSyntaxVisitor {
-    private let testParentClasses: Set<String>
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+private extension SingleTestClassRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    init(viewMode: SyntaxTreeViewMode, testParentClasses: Set<String>) {
-        self.testParentClasses = testParentClasses
-        super.init(viewMode: viewMode)
-    }
-
-    override func visitPost(_ node: ClassDeclSyntax) {
-        guard node.inheritanceClause.containsInheritedType(inheritedTypes: testParentClasses) else {
-            return
+        override func visitPost(_ node: ClassDeclSyntax) {
+            guard node.inheritanceClause.containsInheritedType(inheritedTypes: configuration.testParentClasses) else {
+                return
+            }
+            violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
         }
-
-        violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
     }
 }

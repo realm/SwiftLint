@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct StaticOperatorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -42,7 +43,7 @@ struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule
                 }
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -72,18 +73,14 @@ struct StaticOperatorRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule
                 return false
               }
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension StaticOperatorRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isFreeFunction, node.isOperator {
@@ -99,7 +96,7 @@ private extension FunctionDeclSyntax {
     }
 
     var isOperator: Bool {
-        switch identifier.tokenKind {
+        switch name.tokenKind {
         case .binaryOperator:
             return true
         default:

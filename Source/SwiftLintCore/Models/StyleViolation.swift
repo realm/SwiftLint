@@ -1,5 +1,5 @@
 /// A value describing an instance of Swift source code that is considered invalid by a SwiftLint rule.
-public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
+public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
     /// The identifier of the rule that generated this violation.
     public let ruleIdentifier: String
 
@@ -20,7 +20,14 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
 
     /// A printable description for this violation.
     public var description: String {
-        return XcodeReporter.generateForSingleViolation(self)
+        // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
+        [
+            "\(location): ",
+            "\(severity.rawValue): ",
+            "\(ruleName) Violation: ",
+            reason,
+            " (\(ruleIdentifier))",
+        ].joined()
     }
 
     /// Creates a `StyleViolation` by specifying its properties directly.
@@ -53,7 +60,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
 
     /// Returns the same violation, but with the `severity` that is passed in
     /// - Parameter severity: the new severity to use in the modified violation
-    public func with(severity: ViolationSeverity) -> StyleViolation {
+    public func with(severity: ViolationSeverity) -> Self {
         var new = self
         new.severity = severity
         return new
@@ -61,9 +68,13 @@ public struct StyleViolation: CustomStringConvertible, Equatable, Codable {
 
     /// Returns the same violation, but with the `location` that is passed in
     /// - Parameter location: the new location to use in the modified violation
-    public func with(location: Location) -> StyleViolation {
+    public func with(location: Location) -> Self {
         var new = self
         new.location = location
         return new
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(description)
     }
 }

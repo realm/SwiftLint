@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct LegacyHashingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -49,7 +50,7 @@ struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 set { bar = newValue }
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -69,31 +70,27 @@ struct LegacyHashingRule: SwiftSyntaxRule, ConfigurationProviderRule {
                     return bar
                 }
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
-extension LegacyHashingRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+private extension LegacyHashingRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard
-                node.parent?.is(MemberDeclListItemSyntax.self) == true,
-                node.bindingKeyword.tokenKind == .keyword(.var),
+                node.parent?.is(MemberBlockItemSyntax.self) == true,
+                node.bindingSpecifier.tokenKind == .keyword(.var),
                 let binding = node.bindings.onlyElement,
                 let identifier = binding.pattern.as(IdentifierPatternSyntax.self),
                 identifier.identifier.text == "hashValue",
-                let returnType = binding.typeAnnotation?.type.as(SimpleTypeIdentifierSyntax.self),
+                let returnType = binding.typeAnnotation?.type.as(IdentifierTypeSyntax.self),
                 returnType.name.text == "Int"
             else {
                 return
             }
 
-            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+            violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
         }
     }
 }

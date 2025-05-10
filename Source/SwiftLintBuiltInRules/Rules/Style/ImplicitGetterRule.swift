@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ImplicitGetterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,42 +12,40 @@ struct ImplicitGetterRule: ConfigurationProviderRule, SwiftSyntaxRule {
         nonTriggeringExamples: ImplicitGetterRuleExamples.nonTriggeringExamples,
         triggeringExamples: ImplicitGetterRuleExamples.triggeringExamples
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ImplicitGetterRuleVisitor(viewMode: .sourceAccurate)
+private enum ViolationKind {
+    case `subscript`, property
+
+    var violationDescription: String {
+        switch self {
+        case .subscript:
+            return "Computed read-only subscripts should avoid using the get keyword"
+        case .property:
+            return "Computed read-only properties should avoid using the get keyword"
+        }
     }
 }
 
-private final class ImplicitGetterRuleVisitor: ViolationsSyntaxVisitor {
-    enum ViolationKind {
-        case `subscript`, property
-
-        var violationDescription: String {
-            switch self {
-            case .subscript:
-                return "Computed read-only subscripts should avoid using the get keyword"
-            case .property:
-                return "Computed read-only properties should avoid using the get keyword"
+private extension ImplicitGetterRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: AccessorBlockSyntax) {
+            guard node.accessorsList.count == 1,
+                  let getAccessor = node.getAccessor,
+                  getAccessor.effectSpecifiers == nil,
+                  getAccessor.modifier == nil,
+                  getAccessor.attributes.isEmpty == true,
+                  getAccessor.body != nil else {
+                return
             }
-        }
-    }
 
-    override func visitPost(_ node: AccessorBlockSyntax) {
-        guard let getAccessor = node.getAccessor,
-              node.setAccessor == nil,
-              getAccessor.effectSpecifiers == nil,
-              getAccessor.modifier == nil,
-              (getAccessor.attributes == nil || getAccessor.attributes?.isEmpty == true),
-              getAccessor.body != nil else {
-            return
-        }
-
-        let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
-        violations.append(
-            ReasonedRuleViolation(
-                position: getAccessor.positionAfterSkippingLeadingTrivia,
-                reason: kind.violationDescription
+            let kind: ViolationKind = node.parent?.as(SubscriptDeclSyntax.self) == nil ? .property : .subscript
+            violations.append(
+                ReasonedRuleViolation(
+                    position: getAccessor.positionAfterSkippingLeadingTrivia,
+                    reason: kind.violationDescription
+                )
             )
-        )
+        }
     }
 }

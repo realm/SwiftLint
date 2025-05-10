@@ -102,12 +102,23 @@ internal struct PrivateSubjectRuleExamples {
             """#
         ),
         Example(
+            #"""
+            final class Foobar {
+                private let goodSubject: CurrentValueSubject<Bool, Never>
+                init() {
+                    let goodSubject = CurrentValueSubject<Bool, Never>(true)
+                    self.goosSubject = goodSubject
+                }
+            }
+            """#
+        ),
+        Example(
             """
             func foo() {
                 let goodSubject = PassthroughSubject<Bool, Never>(true)
             }
             """
-        )
+        ),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -261,6 +272,6 @@ internal struct PrivateSubjectRuleExamples {
                     CurrentValueSubject<Bool, Never>(true)
             }
             """#
-        )
+        ),
     ]
 }

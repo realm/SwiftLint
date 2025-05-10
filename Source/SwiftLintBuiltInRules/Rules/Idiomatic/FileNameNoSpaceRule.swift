@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeRule {
+struct FileNameNoSpaceRule: OptInRule, SourceKitFreeRule {
     var configuration = FileNameNoSpaceConfiguration()
 
     static let description = RuleDescription(
@@ -19,8 +19,12 @@ struct FileNameNoSpaceRule: ConfigurationProviderRule, OptInRule, SourceKitFreeR
             return []
         }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: filePath, line: 1))]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: filePath, line: 1)
+            ),
+        ]
     }
 }

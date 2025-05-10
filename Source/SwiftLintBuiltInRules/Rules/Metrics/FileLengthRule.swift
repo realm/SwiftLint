@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct FileLengthRule: ConfigurationProviderRule {
+struct FileLengthRule: Rule {
     var configuration = FileLengthConfiguration()
 
     static let description = RuleDescription(
@@ -14,7 +14,7 @@ struct FileLengthRule: ConfigurationProviderRule {
         triggeringExamples: [
             Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined()),
             Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
-            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined())
+            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined()),
         ].skipWrappingInCommentTests()
     )
 
@@ -22,7 +22,7 @@ struct FileLengthRule: ConfigurationProviderRule {
         func lineCountWithoutComments() -> Int {
             let commentKinds = SyntaxKind.commentKinds
             return file.syntaxKindsByLines.filter { kinds in
-                return !Set(kinds).isSubset(of: commentKinds)
+                !Set(kinds).isSubset(of: commentKinds)
             }.count
         }
 
@@ -39,10 +39,14 @@ struct FileLengthRule: ConfigurationProviderRule {
             let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less" +
                          (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespaces" : "") +
                          ": currently contains \(lineCount)"
-            return [StyleViolation(ruleDescription: Self.description,
-                                   severity: parameter.severity,
-                                   location: Location(file: file.path, line: file.lines.count),
-                                   reason: reason)]
+            return [
+                StyleViolation(
+                    ruleDescription: Self.description,
+                    severity: parameter.severity,
+                    location: Location(file: file.path, line: file.lines.count),
+                    reason: reason
+                ),
+            ]
         }
 
         return []

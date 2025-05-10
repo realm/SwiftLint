@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct UnhandledThrowingTaskRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -104,7 +105,7 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
                   try someThrowingFunc()
               }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -180,17 +181,13 @@ struct UnhandledThrowingTaskRule: ConfigurationProviderRule, SwiftSyntaxRule, Op
                 try await someThrowingFunction()
               }
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnhandledThrowingTaskRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if node.hasViolation {
                 violations.append(node.calledExpression.positionAfterSkippingLeadingTrivia)
@@ -207,16 +204,16 @@ private extension FunctionCallExprSyntax {
     }
 
     var isTaskWithImplicitErrorType: Bool {
-        if let typeIdentifier = calledExpression.as(IdentifierExprSyntax.self),
-           typeIdentifier.identifier.text == "Task" {
+        if let typeIdentifier = calledExpression.as(DeclReferenceExprSyntax.self),
+           typeIdentifier.baseName.text == "Task" {
             return true
         }
 
-        if let specializedExpression = calledExpression.as(SpecializeExprSyntax.self),
-           let typeIdentifier = specializedExpression.expression.as(IdentifierExprSyntax.self),
-           typeIdentifier.identifier.text == "Task",
+        if let specializedExpression = calledExpression.as(GenericSpecializationExprSyntax.self),
+           let typeIdentifier = specializedExpression.expression.as(DeclReferenceExprSyntax.self),
+           typeIdentifier.baseName.text == "Task",
            let lastGeneric = specializedExpression.genericArgumentClause
-            .arguments.last?.argumentType.as(SimpleTypeIdentifierSyntax.self),
+            .arguments.last?.argument.as(IdentifierTypeSyntax.self),
            lastGeneric.typeName == "_" {
             return true
         }
@@ -246,7 +243,7 @@ private extension FunctionCallExprSyntax {
             return false
         }
 
-        return parent.name.text == "value" || parent.name.text == "result"
+        return parent.declName.baseName.text == "value" || parent.declName.baseName.text == "result"
     }
 
     var doesThrow: Bool {
@@ -267,16 +264,16 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
 
         // If there are no catch clauses, visit children to see if there are any try expressions.
-        guard let lastCatchClause = node.catchClauses?.last else {
+        guard let lastCatchClause = node.catchClauses.last else {
             return .visitChildren
         }
 
-        let catchItems = lastCatchClause.catchItems ?? []
+        let catchItems = lastCatchClause.catchItems
 
         // If we have a value binding pattern, only an IdentifierPatternSyntax will catch
         // any error; if it's not an IdentifierPatternSyntax, we need to visit children.
         if let pattern = catchItems.last?.pattern?.as(ValueBindingPatternSyntax.self),
-           !pattern.valuePattern.is(IdentifierPatternSyntax.self) {
+           !pattern.pattern.is(IdentifierPatternSyntax.self) {
             return .visitChildren
         }
 
@@ -296,8 +293,8 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
 
         // Result initializers with trailing closures handle thrown errors.
-        if let typeIdentifier = node.calledExpression.as(IdentifierExprSyntax.self),
-           typeIdentifier.identifier.text == "Result",
+        if let typeIdentifier = node.calledExpression.as(DeclReferenceExprSyntax.self),
+           typeIdentifier.baseName.text == "Result",
            node.trailingClosure != nil {
             return .skipChildren
         }
@@ -311,7 +308,7 @@ private final class ThrowsVisitor: SyntaxVisitor {
         }
     }
 
-    override func visitPost(_ node: ThrowStmtSyntax) {
+    override func visitPost(_: ThrowStmtSyntax) {
         doesThrow = true
     }
 }
@@ -330,7 +327,7 @@ private extension SyntaxProtocol {
         guard
             let parentFunctionDecl = parent?.parent?.parent?.parent?.as(FunctionDeclSyntax.self),
             parentFunctionDecl.body?.statements.count == 1,
-            parentFunctionDecl.signature.output != nil
+            parentFunctionDecl.signature.returnClause != nil
         else {
             return false
         }

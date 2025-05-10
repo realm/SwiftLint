@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExplicitTopLevelACLRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,110 +10,80 @@ struct ExplicitTopLevelACLRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
         description: "Top-level declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("internal enum A {}\n"),
-            Example("public final class B {}\n"),
-            Example("private struct C {}\n"),
-            Example("internal enum A {\n enum B {}\n}"),
-            Example("internal final class Foo {}"),
-            Example("internal\nclass Foo {}"),
-            Example("internal func a() {}\n"),
+            Example("internal enum A {}"),
+            Example("public final class B {}"),
+            Example("""
+                private struct S1 {
+                    struct S2 {}
+                }
+                """),
+            Example("internal enum A { enum B {} }"),
+            Example("internal final actor Foo {}"),
+            Example("internal typealias Foo = Bar"),
+            Example("internal func a() {}"),
             Example("extension A: Equatable {}"),
-            Example("extension A {}")
+            Example("extension A {}"),
+            Example("f { func f() {} }", excludeFromDocumentation: true),
+            Example("do { func f() {} }", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
-            Example("↓enum A {}\n"),
-            Example("final ↓class B {}\n"),
-            Example("↓struct C {}\n"),
-            Example("↓func a() {}\n"),
-            Example("internal let a = 0\n↓func b() {}\n")
+            Example("↓enum A {}"),
+            Example("final ↓class B {}"),
+            Example("↓protocol P {}"),
+            Example("↓func a() {}"),
+            Example("internal let a = 0\n↓func b() {}"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ExplicitTopLevelACLRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.classKeyword)
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.structKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.structKeyword)
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.enumKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.enumKeyword)
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.protocolKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.protocolKeyword)
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.actorKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.actorKeyword)
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.typealiasKeyword.positionAfterSkippingLeadingTrivia)
-            }
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            collectViolations(decl: node, token: node.typealiasKeyword)
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.funcKeyword)
         }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            if hasViolation(modifiers: node.modifiers) {
-                violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(decl: node, token: node.bindingSpecifier)
         }
 
-        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
-        private func hasViolation(modifiers: ModifierListSyntax?) -> Bool {
-            guard let modifiers else {
-                return true
+        private func collectViolations(decl: some WithModifiersSyntax, token: TokenSyntax) {
+            if decl.modifiers.accessLevelModifier == nil {
+                violations.append(token.positionAfterSkippingLeadingTrivia)
             }
-
-            return !modifiers.contains(where: \.isACLModifier)
         }
-    }
-}
-
-private extension DeclModifierSyntax {
-    var isACLModifier: Bool {
-        let aclModifiers: Set<TokenKind> = [
-            .keyword(.private),
-            .keyword(.fileprivate),
-            .keyword(.internal),
-            .keyword(.public),
-            .keyword(.open)
-        ]
-
-        return detail == nil && aclModifiers.contains(name.tokenKind)
     }
 }

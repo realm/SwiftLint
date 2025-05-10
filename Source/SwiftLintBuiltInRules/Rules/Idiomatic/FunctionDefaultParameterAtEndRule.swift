@@ -1,7 +1,8 @@
 import SwiftSyntax
 
-struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule(optIn: true)
+struct FunctionDefaultParameterAtEndRule: Rule {
+    var configuration = FunctionDefaultParameterAtEndConfiguration()
 
     static let description = RuleDescription(
         identifier: "function_default_parameter_at_end",
@@ -40,93 +41,89 @@ struct FunctionDefaultParameterAtEndRule: SwiftSyntaxRule, ConfigurationProvider
             """),
             Example("""
             func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
+            Example("func foo(bar: Int, baz: Int = 0, z: () -> Void) {}"),
+            Example("func foo(bar: Int, baz: Int = 0, z: () -> Void, x: Int = 0) {}"),
+            Example("func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}"),
         ],
         triggeringExamples: [
-            Example("↓func foo(bar: Int = 0, baz: String) {}"),
-            Example("private ↓func foo(bar: Int = 0, baz: String) {}"),
-            Example("public ↓init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}")
+            Example("func foo(↓bar: Int = 0, baz: String) {}"),
+            Example("private func foo(↓bar: Int = 0, baz: String) {}"),
+            Example("public init?(↓for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
+            Example("func foo(bar: Int, ↓baz: Int = 0, z: () -> Void, x: Int) {}"),
+            Example(
+                "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}",
+                configuration: ["ignore_first_isolation_inheritance_parameter": false]
+            ),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension FunctionDefaultParameterAtEndRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
-                return
+            if !node.modifiers.contains(keyword: .override) {
+                collectViolations(for: node.signature)
             }
-
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            guard !node.modifiers.containsOverride, node.signature.containsViolation else {
+            if !node.modifiers.contains(keyword: .override) {
+                collectViolations(for: node.signature)
+            }
+        }
+
+        private func collectViolations(for signature: FunctionSignatureSyntax) {
+            let numberOfParameters = signature.parameterClause.parameters.count
+            if numberOfParameters < 2 {
                 return
             }
-
-            violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
+            var previousWithDefault = true
+            for (index, param) in signature.parameterClause.parameters.reversed().enumerated() {
+                if param.isClosure {
+                    continue
+                }
+                let hasDefault = param.defaultValue != nil
+                if !previousWithDefault, hasDefault {
+                    if index + 1 == numberOfParameters,
+                       param.isInheritedIsolation,
+                       configuration.ignoreFirstIsolationInheritanceParameter {
+                        break // It's the last element anyway.
+                    }
+                    violations.append(param.positionAfterSkippingLeadingTrivia)
+                }
+                previousWithDefault = hasDefault
+            }
         }
-    }
-}
-
-private extension FunctionSignatureSyntax {
-    var containsViolation: Bool {
-        let params = input.parameterList.filter { param in
-            !param.isClosure
-        }
-
-        guard params.isNotEmpty else {
-            return false
-        }
-
-        let defaultParams = params.filter { param in
-            param.defaultArgument != nil
-        }
-        guard defaultParams.isNotEmpty else {
-            return false
-        }
-
-        let lastParameters = params.suffix(defaultParams.count)
-        let lastParametersWithDefaultValue = lastParameters.filter { param in
-            param.defaultArgument != nil
-        }
-
-        return lastParameters.count != lastParametersWithDefaultValue.count
     }
 }
 
 private extension FunctionParameterSyntax {
     var isClosure: Bool {
-        if isEscaping || type.is(FunctionTypeSyntax.self) {
-            return true
-        }
-
-        if let optionalType = type.as(OptionalTypeSyntax.self),
-           let tuple = optionalType.wrappedType.as(TupleTypeSyntax.self) {
-            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
-        }
-
-        if let tuple = type.as(TupleTypeSyntax.self) {
-            return tuple.elements.onlyElement?.type.as(FunctionTypeSyntax.self) != nil
-        }
-
-        if let attrType = type.as(AttributedTypeSyntax.self) {
-            return attrType.baseType.is(FunctionTypeSyntax.self)
-        }
-
-        return false
+        isEscaping || type.isFunctionType
     }
 
     var isEscaping: Bool {
-        guard let attrType = type.as(AttributedTypeSyntax.self) else {
-            return false
-        }
+        type.as(AttributedTypeSyntax.self)?.attributes.contains(attributeNamed: "escaping") == true
+    }
 
-        return attrType.attributes.contains(attributeNamed: "escaping")
+    var isInheritedIsolation: Bool {
+        defaultValue?.value.as(MacroExpansionExprSyntax.self)?.macroName.text == "isolation"
+    }
+}
+
+private extension TypeSyntax {
+    var isFunctionType: Bool {
+        if `is`(FunctionTypeSyntax.self) {
+            true
+        } else if let optionalType = `as`(OptionalTypeSyntax.self) {
+            optionalType.wrappedType.isFunctionType
+        } else if let tupleType = `as`(TupleTypeSyntax.self) {
+            tupleType.elements.onlyElement?.type.isFunctionType == true
+        } else if let attributedType = `as`(AttributedTypeSyntax.self) {
+            attributedType.baseType.isFunctionType
+        } else {
+            false
+        }
     }
 }

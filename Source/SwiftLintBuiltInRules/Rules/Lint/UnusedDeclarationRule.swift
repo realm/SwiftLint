@@ -1,12 +1,12 @@
 import Foundation
 import SourceKittenFramework
 
-struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+struct UnusedDeclarationRule: AnalyzerRule, CollectingRule {
     struct FileUSRs: Hashable {
         var referenced: Set<String>
         var declared: Set<DeclaredUSR>
 
-        fileprivate static var empty: FileUSRs { Self(referenced: [], declared: []) }
+        fileprivate static var empty: Self { Self(referenced: [], declared: []) }
     }
 
     struct DeclaredUSR: Hashable {
@@ -28,25 +28,25 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
         requiresFileOnDisk: true
     )
 
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> UnusedDeclarationRule.FileUSRs {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> Self.FileUSRs {
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return .empty
         }
 
         guard let index = file.index(compilerArguments: compilerArguments), index.value.isNotEmpty else {
-            Issue.indexingError(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.indexingError(path: file.path, ruleID: Self.identifier).print()
             return .empty
         }
 
         guard let editorOpen = (try? Request.editorOpen(file: file.file).sendIfNotDisabled())
                 .map(SourceKittenDictionary.init) else {
-            Issue.fileNotReadable(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.fileNotReadable(path: file.path, ruleID: Self.identifier).print()
             return .empty
         }
 
         return FileUSRs(
-            referenced: file.referencedUSRs(index: index),
+            referenced: file.referencedUSRs(index: index, editorOpen: editorOpen),
             declared: file.declaredUSRs(index: index,
                                         editorOpen: editorOpen,
                                         compilerArguments: compilerArguments,
@@ -54,8 +54,9 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
         )
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
-                  compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileUSRs],
+                  compilerArguments _: [String]) -> [StyleViolation] {
         let allReferencedUSRs = collectedInfo.values.reduce(into: Set()) { $0.formUnion($1.referenced) }
         return violationOffsets(declaredUSRs: collectedInfo[file]?.declared ?? [],
                                 allReferencedUSRs: allReferencedUSRs)
@@ -70,9 +71,9 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
         // Unused declarations are:
         // 1. all declarations
         // 2. minus all references
-        return declaredUSRs
+        declaredUSRs
             .filter { !allReferencedUSRs.contains($0.usr) }
-            .map { $0.nameOffset }
+            .map(\.nameOffset)
             .sorted()
     }
 }
@@ -81,7 +82,7 @@ struct UnusedDeclarationRule: ConfigurationProviderRule, AnalyzerRule, Collectin
 
 private extension SwiftLintFile {
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
-        return path
+        path
             .flatMap { path in
                 try? Request.index(file: path, arguments: compilerArguments)
                             .send()
@@ -89,11 +90,16 @@ private extension SwiftLintFile {
             .map(SourceKittenDictionary.init)
     }
 
-    func referencedUSRs(index: SourceKittenDictionary) -> Set<String> {
-        return Set(index.traverseEntitiesDepthFirst { entity -> String? in
+    func referencedUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary) -> Set<String> {
+        Set(index.traverseEntitiesDepthFirst { parent, entity -> String? in
             if let usr = entity.usr,
-                let kind = entity.kind,
-                kind.starts(with: "source.lang.swift.ref") {
+               let kind = entity.kind,
+               kind.starts(with: "source.lang.swift.ref"),
+               !parent.extends(reference: entity),
+               let line = entity.line,
+               let column = entity.column,
+               let nameOffset = stringView.byteOffset(forLine: line, bytePosition: column),
+               editorOpen.propertyAtOffset(nameOffset, property: \.kind) != "source.lang.swift.decl.extension" {
                 return usr
             }
 
@@ -101,18 +107,34 @@ private extension SwiftLintFile {
         })
     }
 
-    func declaredUSRs(index: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                      compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        return Set(index.traverseEntitiesDepthFirst { indexEntity in
+    func declaredUSRs(index: SourceKittenDictionary,
+                      editorOpen: SourceKittenDictionary,
+                      compilerArguments: [String],
+                      configuration: UnusedDeclarationConfiguration) -> Set<UnusedDeclarationRule.DeclaredUSR> {
+        Set(index.traverseEntitiesDepthFirst { _, indexEntity in
             self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
                              configuration: configuration)
         })
     }
 
-    func declaredUSR(indexEntity: SourceKittenDictionary, editorOpen: SourceKittenDictionary,
-                     compilerArguments: [String], configuration: UnusedDeclarationConfiguration)
-    -> UnusedDeclarationRule.DeclaredUSR? {
+    func declaredUSR(indexEntity: SourceKittenDictionary,
+                     editorOpen: SourceKittenDictionary,
+                     compilerArguments: [String],
+                     configuration: UnusedDeclarationConfiguration) -> UnusedDeclarationRule.DeclaredUSR? {
+        // Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
+        let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
+            .enumelement,
+            .extensionProtocol,
+            .extension,
+            .extensionEnum,
+            .extensionClass,
+            .extensionStruct,
+            .functionConstructor,
+            .functionDestructor,
+            .functionSubscript,
+            .genericTypeParam,
+        ]
+
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),
@@ -133,21 +155,22 @@ private extension SwiftLintFile {
             return nil
         }
 
-        if !configuration.includePublicAndOpen, [.public, .open].contains(editorOpen.aclAtOffset(nameOffset)) {
+        if !configuration.includePublicAndOpen,
+           [.public, .open].contains(editorOpen.propertyAtOffset(nameOffset, property: \.accessibility)) {
             return nil
         }
 
         // Skip CodingKeys as they are used for Codable generation
         if kind == .enum,
             indexEntity.name == "CodingKeys",
-            case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $0.usr }),
+            case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $1.usr }),
             allRelatedUSRs.contains("s:s9CodingKeyP") {
             return nil
         }
 
         // Skip `static var allTests` members since those are used for Linux test discovery.
         if kind == .varStatic, indexEntity.name == "allTests" {
-            let allTestCandidates = indexEntity.traverseEntitiesDepthFirst { subEntity -> Bool in
+            let allTestCandidates = indexEntity.traverseEntitiesDepthFirst { _, subEntity -> Bool in
                 subEntity.value["key.is_test_candidate"] as? Bool == true
             }
 
@@ -187,6 +210,15 @@ private extension SwiftLintFile {
     }
 
     private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
+        let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
+            .ibsegueaction,
+            .ibaction,
+            .main,
+            .nsApplicationMain,
+            .override,
+            .uiApplicationMain,
+        ]
+
         if indexEntity.shouldSkipIndexEntityToWorkAroundSR11985() ||
             indexEntity.shouldSkipRelated(relatedUSRsToSkip: relatedUSRsToSkip) ||
             indexEntity.enclosedSwiftAttributes.contains(where: declarationAttributesToSkip.contains) ||
@@ -219,25 +251,25 @@ private extension SwiftLintFile {
 
 private extension SourceKittenDictionary {
     var usr: String? {
-        return value["key.usr"] as? String
+        value["key.usr"] as? String
     }
 
     var annotatedDeclaration: String? {
-        return value["key.annotated_decl"] as? String
+        value["key.annotated_decl"] as? String
     }
 
     var isImplicit: Bool {
-        return value["key.is_implicit"] as? Bool == true
+        value["key.is_implicit"] as? Bool == true
     }
 
-    func aclAtOffset(_ offset: ByteCount) -> AccessControlLevel? {
+    func propertyAtOffset<T>(_ offset: ByteCount, property: KeyPath<Self, T?>) -> T? {
         if let nameOffset,
             nameOffset == offset,
-            let acl = accessibility {
-            return acl
+            let field = self[keyPath: property] {
+            return field
         }
         for child in substructure {
-            if let acl = child.aclAtOffset(offset) {
+            if let acl = child.propertyAtOffset(offset, property: property) {
                 return acl
             }
         }
@@ -245,7 +277,7 @@ private extension SourceKittenDictionary {
     }
 
     func shouldSkipRelated(relatedUSRsToSkip: Set<String>) -> Bool {
-        return (value["key.related"] as? [[String: SourceKitRepresentable]])?
+        (value["key.related"] as? [[String: any SourceKitRepresentable]])?
             .compactMap { SourceKittenDictionary($0).usr }
             .contains(where: relatedUSRsToSkip.contains) == true
     }
@@ -268,7 +300,7 @@ private extension SourceKittenDictionary {
             "tableView(_:commit:forRowAt:)",
             "tableView(_:editingStyleForRowAt:)",
             "tableView(_:willDisplayHeaderView:forSection:)",
-            "tableView(_:willSelectRowAt:)"
+            "tableView(_:willSelectRowAt:)",
         ]
 
         return functionsToSkipForSR11985.contains(name)
@@ -291,31 +323,24 @@ private extension SourceKittenDictionary {
             "buildFinalResult(_:)",
             // https://github.com/apple/swift-evolution/blob/main/proposals/0348-buildpartialblock.md
             "buildPartialBlock(first:)",
-            "buildPartialBlock(accumulated:next:)"
+            "buildPartialBlock(accumulated:next:)",
         ]
 
         return resultBuilderStaticMethods.contains(name)
     }
+
+    func extends(reference other: Self) -> Bool {
+        if let kind, kind.starts(with: "source.lang.swift.decl.extension") {
+            let extendedKind = kind.components(separatedBy: ".").last
+            return extendedKind != nil && extendedKind == other.referencedKind
+        }
+        return false
+    }
+
+    private var referencedKind: String? {
+        if let kind, kind.starts(with: "source.lang.swift.ref") {
+            return kind.components(separatedBy: ".").last
+        }
+        return nil
+    }
 }
-
-// Skip initializers, deinit, enum cases and subscripts since we can't reliably detect if they're used.
-private let declarationKindsToSkip: Set<SwiftDeclarationKind> = [
-    .enumelement,
-    .extensionProtocol,
-    .extension,
-    .extensionEnum,
-    .extensionClass,
-    .extensionStruct,
-    .functionConstructor,
-    .functionDestructor,
-    .functionSubscript,
-    .genericTypeParam
-]
-
-private let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
-    .ibaction,
-    .main,
-    .nsApplicationMain,
-    .override,
-    .uiApplicationMain
-]

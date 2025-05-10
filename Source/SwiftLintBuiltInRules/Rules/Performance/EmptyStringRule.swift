@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(optIn: true)
+struct EmptyStringRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,28 +12,24 @@ struct EmptyStringRule: ConfigurationProviderRule, OptInRule, SwiftSyntaxRule {
         nonTriggeringExamples: [
             Example("myString.isEmpty"),
             Example("!myString.isEmpty"),
-            Example("\"\"\"\nfoo==\n\"\"\"")
+            Example("\"\"\"\nfoo==\n\"\"\""),
         ],
         triggeringExamples: [
             Example(#"myString↓ == """#),
             Example(#"myString↓ != """#),
             Example(#"myString↓=="""#),
             Example(##"myString↓ == #""#"##),
-            Example(###"myString↓ == ##""##"###)
+            Example(###"myString↓ == ##""##"###),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension EmptyStringRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StringLiteralExprSyntax) {
             guard
                 // Empty string literal: `""`, `#""#`, etc.
-                node.segments.onlyElement?.contentLength == .zero,
+                node.segments.onlyElement?.trimmedLength == .zero,
                 let previousToken = node.previousToken(viewMode: .sourceAccurate),
                 // On the rhs of an `==` or `!=` operator
                 previousToken.tokenKind.isEqualityComparison,

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
+struct IndentationWidthRule: OptInRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs(Int)
@@ -29,13 +29,13 @@ struct IndentationWidthRule: ConfigurationProviderRule, OptInRule {
             Example("firstLine\n    secondLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine"),
-            Example("firstLine\n    secondLine\n        thirdLine\nfourthLine")
+            Example("firstLine\n    secondLine\n        thirdLine\nfourthLine"),
         ],
         triggeringExamples: [
             Example("↓    firstLine", testMultiByteOffsets: false, testDisableCommand: false),
             Example("firstLine\n        secondLine"),
             Example("firstLine\n\tsecondLine\n\n↓\t\t\tfourthLine"),
-            Example("firstLine\n    secondLine\n        thirdLine\n↓ fourthLine")
+            Example("firstLine\n    secondLine\n        thirdLine\n↓ fourthLine"),
         ].skipWrappingInCommentTests()
     )
 

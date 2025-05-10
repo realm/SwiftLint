@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct ContainsOverFilterCountRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,32 +10,28 @@ struct ContainsOverFilterCountRule: SwiftSyntaxRule, OptInRule, ConfigurationPro
         description: "Prefer `contains` over comparing `filter(where:).count` to 0",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
-            return [
-                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1\n"),
-                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1\n"),
-                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01\n")
+            [
+                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1"),
+                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1"),
+                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01"),
             ]
         } + [
-            Example("let result = myList.contains(where: { $0 % 2 == 0 })\n"),
-            Example("let result = !myList.contains(where: { $0 % 2 == 0 })\n"),
-            Example("let result = myList.contains(10)\n")
+            Example("let result = myList.contains(where: { $0 % 2 == 0 })"),
+            Example("let result = !myList.contains(where: { $0 % 2 == 0 })"),
+            Example("let result = myList.contains(10)"),
         ],
         triggeringExamples: [">", "==", "!="].flatMap { operation in
-            return [
-                Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0\n"),
-                Example("let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0\n"),
-                Example("let result = ↓myList.filter(where: someFunction).count \(operation) 0\n")
+            [
+                Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0"),
+                Example("let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0"),
+                Example("let result = ↓myList.filter(where: someFunction).count \(operation) 0"),
             ]
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ContainsOverFilterCountRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ExprListSyntax) {
             guard
                 node.count == 3,
@@ -43,10 +40,10 @@ private extension ContainsOverFilterCountRule {
                 let second = node.dropFirst().first,
                 second.firstToken(viewMode: .sourceAccurate)?.tokenKind.isZeroComparison == true,
                 let first = node.first?.as(MemberAccessExprSyntax.self),
-                first.name.text == "count",
+                first.declName.baseName.text == "count",
                 let firstBase = first.base?.asFunctionCall,
                 let firstBaseCalledExpression = firstBase.calledExpression.as(MemberAccessExprSyntax.self),
-                firstBaseCalledExpression.name.text == "filter"
+                firstBaseCalledExpression.declName.baseName.text == "filter"
             else {
                 return
             }

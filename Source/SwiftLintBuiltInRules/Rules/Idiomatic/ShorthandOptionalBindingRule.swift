@@ -1,9 +1,10 @@
 import SwiftSyntax
 
-struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct ShorthandOptionalBindingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "shorthand_optional_binding",
         name: "Shorthand Optional Binding",
         description: "Use shorthand syntax for optional binding",
@@ -18,12 +19,12 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
                 if let i = i as? Foo {}
                 guard let `self` = self else {}
                 while var i { i = nil }
-            """),
+                """),
             Example("""
                 if let i,
                    var i = a,
                    j > 0 {}
-            """, excludeFromDocumentation: true)
+                """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -32,104 +33,82 @@ struct ShorthandOptionalBindingRule: OptInRule, SwiftSyntaxCorrectableRule, Conf
                 if ↓var `self` = `self` {}
                 if i > 0, ↓let j = j {}
                 if ↓let i = i, ↓var j = j {}
-            """),
+                """),
             Example("""
                 if ↓let i = i,
                    ↓var j = j,
                    j > 0 {}
-            """, excludeFromDocumentation: true),
+                """, excludeFromDocumentation: true),
             Example("""
                 guard ↓let i = i else {}
                 guard ↓let self = self else {}
                 guard ↓var `self` = `self` else {}
                 guard i > 0, ↓let j = j else {}
                 guard ↓let i = i, ↓var j = j else {}
-            """),
+                """),
             Example("""
                 while ↓var i = i { i = nil }
-            """)
+                """),
         ],
         corrections: [
             Example("""
                 if ↓let i = i {}
-            """): Example("""
-                if let i {}
-            """),
+                """): Example("""
+                    if let i {}
+                    """),
             Example("""
                 if ↓let self = self {}
-            """): Example("""
-                if let self {}
-            """),
+                """): Example("""
+                    if let self {}
+                    """),
             Example("""
                 if ↓var `self` = `self` {}
-            """): Example("""
-                if var `self` {}
-            """),
+                """): Example("""
+                    if var `self` {}
+                    """),
             Example("""
                 guard ↓let i = i, ↓var j = j  , ↓let k  =k else {}
-            """): Example("""
-                guard let i, var j  , let k else {}
-            """),
+                """): Example("""
+                    guard let i, var j  , let k else {}
+                    """),
             Example("""
                 while j > 0, ↓var i = i   { i = nil }
-            """): Example("""
-                while j > 0, var i   { i = nil }
-            """)
+                """): Example("""
+                    while j > 0, var i   { i = nil }
+                    """),
         ],
         deprecatedAliases: ["if_let_shadowing"]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
-private class Visitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: OptionalBindingConditionSyntax) {
-        if node.isShadowingOptionalBinding {
-            violations.append(node.bindingKeyword.positionAfterSkippingLeadingTrivia)
+private extension ShorthandOptionalBindingRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            if node.isShadowingOptionalBinding {
+                violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
-}
 
-private class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    private let locationConverter: SourceLocationConverter
-    private let disabledRegions: [SourceRange]
-
-    init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
-        guard
-            node.isShadowingOptionalBinding,
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
+            guard node.isShadowingOptionalBinding else {
+                return super.visit(node)
+            }
+            numberOfCorrections += 1
+            let newNode = node
+                .with(\.initializer, nil)
+                .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia))
+            return super.visit(newNode)
         }
-
-        correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-        let newNode = node
-            .with(\.initializer, nil)
-            .with(\.pattern, node.pattern.with(\.trailingTrivia, node.trailingTrivia))
-        return super.visit(newNode)
     }
 }
 
 private extension OptionalBindingConditionSyntax {
     var isShadowingOptionalBinding: Bool {
         if let id = pattern.as(IdentifierPatternSyntax.self),
-           let value = initializer?.value.as(IdentifierExprSyntax.self),
-           id.identifier.text == value.identifier.text {
+           let value = initializer?.value.as(DeclReferenceExprSyntax.self),
+           id.identifier.text == value.baseName.text {
             return true
         }
         return false

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites><testsuite>
+	<testcase name='warning: line_length in filename:1'>
+		<failure>Severity: warning
+Rule: line_length
+Reason: Violation Reason 1
+
+File: filename
+Line: 1
+Column: 1
+		</failure>
+	</testcase>
+	<testcase name='error: line_length in filename:1'>
+		<failure>Severity: error
+Rule: line_length
+Reason: Violation Reason 2
+
+File: filename
+Line: 1
+Column: nil
+		</failure>
+	</testcase>
+	<testcase name='error: syntactic_sugar in path/file.swift:1'>
+		<failure>Severity: error
+Rule: syntactic_sugar
+Reason: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;
+
+File: path/file.swift
+Line: 1
+Column: 2
+		</failure>
+	</testcase>
+	<testcase name='error: colon in &lt;nopath&gt;'>
+		<failure>Severity: error
+Rule: colon
+Reason: Colons should be next to the identifier when specifying a type and next to the key in dictionary literals
+
+File: &lt;nopath&gt;
+Line: nil
+Column: nil
+		</failure>
+	</testcase>
+</testsuite></testsuites>

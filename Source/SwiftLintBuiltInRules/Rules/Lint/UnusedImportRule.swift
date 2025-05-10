@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private let moduleToLog = ProcessInfo.processInfo.environment["SWIFTLINT_LOG_MODULE_USAGE"]
 
-struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
+struct UnusedImportRule: CorrectableRule, AnalyzerRule {
     var configuration = UnusedImportConfiguration()
 
     static let description = RuleDescription(
@@ -18,7 +18,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     )
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
+        importUsage(in: file, compilerArguments: compilerArguments).map { importUsage in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: importUsage.violationRange?.location ?? 1),
@@ -26,25 +26,23 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
         }
     }
 
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> Int {
         let importUsages = importUsage(in: file, compilerArguments: compilerArguments)
-        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap({ $0.violationRange }), for: self)
+        let matches = file.ruleEnabled(violatingRanges: importUsages.compactMap(\.violationRange), for: self)
 
         var contents = file.stringView.nsString
-        let description = Self.description
-        var corrections = [Correction]()
+        var numberOfCorrections = 0
         for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "").bridge()
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
+            numberOfCorrections += 1
         }
 
-        if corrections.isNotEmpty {
+        if numberOfCorrections > 0 {
             file.write(contents.bridge())
         }
 
         guard configuration.requireExplicitImports else {
-            return corrections
+            return numberOfCorrections
         }
 
         let missingImports = importUsages.compactMap { importUsage -> String? in
@@ -57,7 +55,7 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
         }
 
         guard missingImports.isNotEmpty else {
-            return corrections
+            return numberOfCorrections
         }
 
         var insertionLocation = 0
@@ -72,19 +70,16 @@ struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
             .joined(separator: "\n")
         let newContents = contents.replacingCharacters(in: insertionRange, with: missingImportStatements + "\n")
         file.write(newContents)
-        let location = Location(file: file, characterOffset: 0)
-        let missingImportCorrections = missingImports.map { _ in
-            Correction(ruleDescription: description, location: location)
-        }
-        corrections.append(contentsOf: missingImportCorrections)
+        numberOfCorrections += missingImports.count
+
         // Attempt to sort imports
-        corrections.append(contentsOf: SortedImportsRule().correct(file: file))
-        return corrections
+        numberOfCorrections += SortedImportsRule().correct(file: file)
+        return numberOfCorrections
     }
 
     private func importUsage(in file: SwiftLintFile, compilerArguments: [String]) -> [ImportUsage] {
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }
 
@@ -113,34 +108,50 @@ private extension SwiftLintFile {
             unusedImports.subtract(
                 operatorImports(
                     arguments: compilerArguments,
-                    processedTokenOffsets: Set(syntaxMap.tokens.map { $0.offset })
+                    processedTokenOffsets: Set(syntaxMap.tokens.map(\.offset))
                 )
             )
         }
 
-        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
-            .map { ImportUsage.unused(module: $0, range: $1) }
-
-        guard configuration.requireExplicitImports else {
-            return unusedImportUsages
-        }
-
+        // Find the missing imports, which should be imported, but are not.
         let currentModule = (compilerArguments.firstIndex(of: "-module-name")?.advanced(by: 1))
             .map { compilerArguments[$0] }
 
-        let missingImports = usrFragments
+        var missingImports = usrFragments
             .subtracting(imports + [currentModule].compactMap({ $0 }))
             .filter { module in
                 let modulesAllowedToImportCurrentModule = configuration.allowedTransitiveImports
                     .filter { !unusedImports.contains($0.importedModule) }
                     .filter { $0.transitivelyImportedModules.contains(module) }
-                    .map { $0.importedModule }
+                    .map(\.importedModule)
 
                 return modulesAllowedToImportCurrentModule.isEmpty ||
                     imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
             }
 
-        return unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+        // Check if unused imports were used for transitive imports
+        var foundUmbrellaModules = Set<String>()
+        var foundMissingImports = Set<String>()
+        for missingImport in missingImports {
+            let umbrellaModules = configuration.allowedTransitiveImports
+                .filter { $0.transitivelyImportedModules.contains(missingImport) }
+                .map(\.importedModule)
+            if umbrellaModules.isEmpty {
+                continue
+            }
+            foundMissingImports.insert(missingImport)
+            foundUmbrellaModules.formUnion(umbrellaModules.filter(unusedImports.contains))
+        }
+
+        unusedImports.subtract(foundUmbrellaModules)
+        missingImports.subtract(foundMissingImports)
+
+        let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
+            .map { ImportUsage.unused(module: $0, range: $1) }
+
+        return configuration.requireExplicitImports
+            ? unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
+            : unusedImportUsages
     }
 
     func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {
@@ -162,30 +173,33 @@ private extension SwiftLintFile {
                 file: path!, offset: token.offset, arguments: compilerArguments
             )
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
-                Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.description.identifier).print()
+                Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.identifier).print()
                 continue
             }
             if nextIsModuleImport {
+                nextIsModuleImport = false
                 if let importedModule = cursorInfo.moduleName,
                     cursorInfo.kind == "source.lang.swift.ref.module" {
                     imports.insert(importedModule)
-                    nextIsModuleImport = false
                     continue
-                } else {
-                    nextIsModuleImport = false
                 }
             }
 
             appendUsedImports(cursorInfo: cursorInfo, usrFragments: &usrFragments)
+
+            // also collect modules from secondary symbol usage if available
+            for secondaryInfo in cursorInfo.secondarySymbols {
+                appendUsedImports(cursorInfo: secondaryInfo, usrFragments: &usrFragments)
+            }
         }
 
         return (imports: imports, usrFragments: usrFragments)
     }
 
     func rangedAndSortedUnusedImports(of unusedImports: [String]) -> [(String, NSRange)] {
-        return unusedImports
+        unusedImports
             .compactMap { module in
-                match(pattern: "^(@\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
+                match(pattern: "^(@(?!_exported)\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }
@@ -194,7 +208,7 @@ private extension SwiftLintFile {
     func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
         guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
             .map(SourceKittenDictionary.init) else {
-            Issue.indexingError(path: path, ruleID: UnusedImportRule.description.identifier).print()
+            Issue.indexingError(path: path, ruleID: UnusedImportRule.identifier).print()
             return []
         }
 
@@ -217,7 +231,7 @@ private extension SwiftLintFile {
                 )
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
                     .map(SourceKittenDictionary.init) else {
-                    Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.description.identifier).print()
+                    Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.identifier).print()
                     continue
                 }
 
@@ -232,13 +246,12 @@ private extension SwiftLintFile {
         let entities = entity.entities
         if entities.isEmpty {
             return [entity]
-        } else {
-            return [entity] + entities.flatMap { flatEntities(entity: $0) }
         }
+        return [entity] + entities.flatMap { flatEntities(entity: $0) }
     }
 
     func offsetPerLine() -> [Int: Int64] {
-        return Dictionary(
+        Dictionary(
             uniqueKeysWithValues: contents.bridge()
                 .components(separatedBy: "\n")
                 .map { Int64($0.bridge().lengthOfBytes(using: .utf8)) }
@@ -257,7 +270,7 @@ private extension SwiftLintFile {
         guard let kind else { return false }
         return [
             "source.lang.swift.ref.function.operator",
-            "source.lang.swift.ref.function.method.static"
+            "source.lang.swift.ref.function.method.static",
         ].contains { kind.hasPrefix($0) }
     }
 
@@ -282,9 +295,8 @@ private extension SwiftLintFile {
             let attributesRequiringFoundation = SwiftDeclarationAttributeKind.attributesRequiringFoundation
             if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
                 return true
-            } else {
-                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
             }
+            return dict.substructure.contains(where: containsAttributesRequiringFoundation)
         }
 
         return containsAttributesRequiringFoundation(dict: structureDictionary)

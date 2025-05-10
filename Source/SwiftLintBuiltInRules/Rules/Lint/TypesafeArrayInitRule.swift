@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
+struct TypesafeArrayInitRule: AnalyzerRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -14,7 +14,7 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
                 enum MyError: Error {}
                 let myResult: Result<String, MyError> = .success("")
                 let result: Result<Any, MyError> = myResult.map { $0 }
-            """),
+                """),
             Example("""
                 struct IntArray {
                     let elements = [1, 2, 3]
@@ -24,44 +24,50 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
                 }
                 let ints = IntArray()
                 let intsCopy = ints.map { $0 }
-            """)
+                """),
         ],
         triggeringExamples: [
             Example("""
                 func f<Seq: Sequence>(s: Seq) -> [Seq.Element] {
                     s.↓map({ $0 })
                 }
-            """),
+                """),
             Example("""
                 func f(array: [Int]) -> [Int] {
                     array.↓map { $0 }
                 }
-            """),
+                """),
             Example("""
                 let myInts = [1, 2, 3].↓map { return $0 }
-            """),
+                """),
             Example("""
                 struct Generator: Sequence, IteratorProtocol {
                     func next() -> Int? { nil }
                 }
                 let array = Generator().↓map { i in i }
-            """)
+                """),
         ],
         requiresFileOnDisk: true
     )
 
     private static let parentRule = ArrayInitRule()
-    private static let mapTypePattern = regex("""
-            \\Q<Self, T where Self : \\E(?:Sequence|Collection)> \
-            \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
-            """)
+    private static let mapTypePatterns = [
+            regex("""
+                \\Q<Self, T where Self : \\E(?:Sequence|Collection)> \
+                \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
+                """),
+            regex("""
+                \\Q<Self, T, E where Self : \\E(?:Sequence|Collection), \
+                \\QE : Error> (Self) -> ((Self.Element) throws(E) -> T) throws(E) -> [T]\\E
+                """),
+    ]
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
         guard let filePath = file.path else {
             return []
         }
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }
         return Self.parentRule.validate(file: file)
@@ -76,14 +82,16 @@ struct TypesafeArrayInitRule: AnalyzerRule, ConfigurationProviderRule {
                     return false
                 }
                 return pointsToSystemMapType(pointee: request)
-            }
+            }.map { StyleViolation(ruleDescription: Self.description, location: $0.location ) }
     }
 
-    private func pointsToSystemMapType(pointee: [String: SourceKitRepresentable]) -> Bool {
+    private func pointsToSystemMapType(pointee: [String: any SourceKitRepresentable]) -> Bool {
         if let isSystem = pointee["key.is_system"], isSystem.isEqualTo(true),
            let name = pointee["key.name"], name.isEqualTo("map(_:)"),
            let typeName = pointee["key.typename"] as? String {
-            return Self.mapTypePattern.numberOfMatches(in: typeName, range: typeName.fullNSRange) == 1
+            return Self.mapTypePatterns.contains {
+                $0.numberOfMatches(in: typeName, range: typeName.fullNSRange) == 1
+            }
         }
         return false
     }

@@ -1,49 +1,34 @@
-struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration, Equatable {
+import SwiftLintCore
+
+@AutoConfigParser
+struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = ImplicitReturnRule
 
-    enum ReturnKind: String, CaseIterable {
+    @AcceptableByConfigurationElement
+    enum ReturnKind: String, CaseIterable, Comparable {
         case closure
         case function
         case getter
+        case `subscript`
+        case initializer
+
+        static func < (lhs: Self, rhs: Self) -> Bool {
+            lhs.rawValue < rhs.rawValue
+        }
     }
 
     static let defaultIncludedKinds = Set(ReturnKind.allCases)
 
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-
+    @ConfigurationElement(key: "included")
     private(set) var includedKinds = Self.defaultIncludedKinds
-
-    var consoleDescription: String {
-        let includedKinds = self.includedKinds.map { $0.rawValue }
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", included: [\(includedKinds.sorted().joined(separator: ", "))]"
-    }
 
     init(includedKinds: Set<ReturnKind> = Self.defaultIncludedKinds) {
         self.includedKinds = includedKinds
     }
 
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let includedKinds = configuration["included"] as? [String] {
-            self.includedKinds = try Set(includedKinds.map {
-                guard let kind = ReturnKind(rawValue: $0) else {
-                    throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-                }
-
-                return kind
-            })
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-    }
-
     func isKindIncluded(_ kind: ReturnKind) -> Bool {
-        return self.includedKinds.contains(kind)
+        includedKinds.contains(kind)
     }
 }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct InclusiveLanguageRule: Rule {
     var configuration = InclusiveLanguageConfiguration()
 
     static let description = RuleDescription(
@@ -14,23 +15,10 @@ struct InclusiveLanguageRule: SwiftSyntaxRule, ConfigurationProviderRule {
         nonTriggeringExamples: InclusiveLanguageRuleExamples.nonTriggeringExamples,
         triggeringExamples: InclusiveLanguageRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allTerms: configuration.allTerms, allAllowedTerms: configuration.allAllowedTerms)
-    }
 }
 
 private extension InclusiveLanguageRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let allTerms: [String]
-        private let allAllowedTerms: Set<String>
-
-        init(allTerms: [String], allAllowedTerms: Set<String>) {
-            self.allTerms = allTerms
-            self.allAllowedTerms = allAllowedTerms
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: IdentifierPatternSyntax) {
             if let violation = violation(for: node.identifier) {
                 violations.append(violation)
@@ -38,37 +26,37 @@ private extension InclusiveLanguageRule {
         }
 
         override func visitPost(_ node: StructDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
@@ -79,14 +67,14 @@ private extension InclusiveLanguageRule {
             }
         }
 
-        override func visitPost(_ node: AssociatedtypeDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+        override func visitPost(_ node: AssociatedTypeDeclSyntax) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if let violation = violation(for: node.identifier) {
+            if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
@@ -102,18 +90,18 @@ private extension InclusiveLanguageRule {
         }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            if let violation = violation(for: node.identifier) {
-                violations.append(violation)
-            }
-        }
-
-        override func visitPost(_ node: AccessorParameterSyntax) {
             if let violation = violation(for: node.name) {
                 violations.append(violation)
             }
         }
 
-        override func visit(_ node: StringLiteralExprSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: AccessorParametersSyntax) {
+            if let violation = violation(for: node.name) {
+                violations.append(violation)
+            }
+        }
+
+        override func visit(_: StringLiteralExprSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
         }
 
@@ -131,9 +119,9 @@ private extension InclusiveLanguageRule {
         private func violationTerm(for node: TokenSyntax) -> (violationTerm: String, name: String)? {
             let name = node.text
             let lowercased = name.lowercased()
-            let violationTerm = allTerms.first { term in
+            let violationTerm = configuration.allTerms.first { term in
                 guard let range = lowercased.range(of: term) else { return false }
-                let overlapsAllowedTerm = allAllowedTerms.contains { allowedTerm in
+                let overlapsAllowedTerm = configuration.allAllowedTerms.contains { allowedTerm in
                     guard let allowedRange = lowercased.range(of: allowedTerm) else { return false }
                     return range.overlaps(allowedRange)
                 }

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -10,11 +10,11 @@ struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, Source
         description: "Files should not contain leading whitespace",
         kind: .style,
         nonTriggeringExamples: [
-            Example("//\n")
+            Example("//")
         ],
         triggeringExamples: [
-            Example("\n//\n"),
-            Example(" //\n")
+            Example("\n//"),
+            Example(" //"),
         ].skipMultiByteOffsetTests().skipDisableCommandTests(),
         corrections: [
             Example("\n //", testMultiByteOffsets: false): Example("//")
@@ -27,18 +27,22 @@ struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, Source
             return []
         }
 
-        return [StyleViolation(ruleDescription: Self.description,
-                               severity: configuration.severity,
-                               location: Location(file: file.path, line: 1))]
+        return [
+            StyleViolation(
+                ruleDescription: Self.description,
+                severity: configuration.severity,
+                location: Location(file: file.path, line: 1)
+            ),
+        ]
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,
             let firstLineRange = file.lines.first?.range,
             file.ruleEnabled(violatingRanges: [firstLineRange], for: self).isNotEmpty else {
-                return []
+                return 0
         }
 
         let indexEnd = file.contents.index(
@@ -46,7 +50,6 @@ struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, Source
             offsetBy: spaceCount,
             limitedBy: file.contents.endIndex) ?? file.contents.endIndex
         file.write(String(file.contents[indexEnd...]))
-        let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: Self.description, location: location)]
+        return 1
     }
 }

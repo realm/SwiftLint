@@ -18,11 +18,10 @@ extension SwiftLint {
         func run() throws {
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
             let rulesFilter = RulesFilter(enabledRules: configuration.rules)
-            let rules = rulesFilter.getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
+            let rules = rulesFilter.getRules(excluding: rulesFilterOptions.excludingOptions)
 
             try RuleListDocumentation(rules)
                 .write(to: URL(fileURLWithPath: path, isDirectory: true))
-            ExitHelper.successfullyExit()
         }
     }
 }

@@ -1,9 +1,10 @@
 import SwiftSyntax
 
-struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct DiscouragedNoneNameRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    static var description = RuleDescription(
+    static let description = RuleDescription(
         identifier: "discouraged_none_name",
         name: "Discouraged None Name",
         description: "Enum cases and static members named `none` are discouraged as they can conflict with " +
@@ -82,7 +83,7 @@ struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
             class MyClass {
                 var none = MyClass()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -173,20 +174,16 @@ struct DiscouragedNoneNameRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
             struct MyStruct {
                 ↓static var none = MyStruct(), a = MyStruct()
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DiscouragedNoneNameRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            let emptyParams = node.associatedValue?.parameterList.isEmpty ?? true
-            if emptyParams, node.identifier.isNone {
+            let emptyParams = node.parameterClause?.parameters.isEmpty ?? true
+            if emptyParams, node.name.isNone {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: reason(type: "`case`")
@@ -196,13 +193,13 @@ private extension DiscouragedNoneNameRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             let type: String? = {
-                if node.modifiers.isClass {
+                if node.modifiers.contains(keyword: .class) {
                     return "`class` member"
-                } else if node.modifiers.isStatic {
-                    return "`static` member"
-                } else {
-                    return nil
                 }
+                if node.modifiers.contains(keyword: .static) {
+                    return "`static` member"
+                }
+                return nil
             }()
 
             guard let type else {

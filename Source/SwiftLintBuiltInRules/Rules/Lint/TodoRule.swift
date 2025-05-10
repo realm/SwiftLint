@@ -1,15 +1,9 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-extension SyntaxKind {
-    /// Returns if the syntax kind is comment-like.
-    var isCommentLike: Bool {
-        return Self.commentKinds.contains(self)
-    }
-}
-
-struct TodoRule: ConfigurationProviderRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule
+struct TodoRule: Rule {
+    var configuration = TodoConfiguration()
 
     static let description = RuleDescription(
         identifier: "todo",
@@ -17,69 +11,100 @@ struct TodoRule: ConfigurationProviderRule {
         description: "TODOs and FIXMEs should be resolved.",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("// notaTODO:\n"),
-            Example("// notaFIXME:\n")
+            Example("// notaTODO:"),
+            Example("// notaFIXME:"),
         ],
         triggeringExamples: [
-            Example("// ↓TODO:\n"),
-            Example("// ↓FIXME:\n"),
-            Example("// ↓TODO(note)\n"),
-            Example("// ↓FIXME(note)\n"),
-            Example("/* ↓FIXME: */\n"),
-            Example("/* ↓TODO: */\n"),
-            Example("/** ↓FIXME: */\n"),
-            Example("/** ↓TODO: */\n")
+            Example("// ↓TODO:"),
+            Example("// ↓FIXME:"),
+            Example("// ↓TODO(note)"),
+            Example("// ↓FIXME(note)"),
+            Example("/* ↓FIXME: */"),
+            Example("/* ↓TODO: */"),
+            Example("/** ↓FIXME: */"),
+            Example("/** ↓TODO: */"),
         ].skipWrappingInCommentTests()
     )
+}
 
-    private func customMessage(file: SwiftLintFile, range: NSRange) -> String {
-        var reason = Self.description.description
-        let offset = NSMaxRange(range)
-
-        guard let (lineNumber, _) = file.stringView.lineAndCharacter(forCharacterOffset: offset) else {
-            return reason
+private extension TodoRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: TokenSyntax) {
+            let leadingViolations = node.leadingTrivia.violations(offset: node.position,
+                                                                  for: configuration.only)
+            let trailingViolations = node.trailingTrivia.violations(offset: node.endPositionBeforeTrailingTrivia,
+                                                                    for: configuration.only)
+            violations.append(contentsOf: leadingViolations + trailingViolations)
         }
-
-        let line = file.lines[lineNumber - 1]
-        // customizing the reason message to be specific to fixme or todo
-        let violationSubstring = file.stringView.substring(with: range)
-
-        let range = NSRange(location: offset, length: NSMaxRange(line.range) - offset)
-        var message = file.stringView.substring(with: range)
-        let kind = violationSubstring.hasPrefix("FIXME") ? "FIXMEs" : "TODOs"
-
-        // trim whitespace
-        message = message.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // limiting the output length of todo message
-        let maxLengthOfMessage = 30
-        if message.utf16.count > maxLengthOfMessage {
-            let index = message.index(message.startIndex,
-                                      offsetBy: maxLengthOfMessage,
-                                      limitedBy: message.endIndex) ?? message.endIndex
-            message = message[..<index] + "..."
-        }
-
-        if message.isEmpty {
-            reason = "\(kind) should be resolved"
-        } else {
-            reason = "\(kind) should be resolved (\(message))"
-        }
-
-        return reason
     }
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        return file.match(pattern: "\\b(?:TODO|FIXME)(?::|\\b)").compactMap { range, syntaxKinds in
-            if syntaxKinds.contains(where: { !$0.isCommentLike }) {
-                return nil
-            }
-            let reason = customMessage(file: file, range: range)
-
-            return StyleViolation(ruleDescription: Self.description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: range.location),
-                                  reason: reason)
+private extension Trivia {
+    func violations(offset: AbsolutePosition,
+                    for todoKeywords: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
+        var position = offset
+        var violations = [ReasonedRuleViolation]()
+        for piece in self {
+            violations.append(contentsOf: piece.violations(offset: position, for: todoKeywords))
+            position += piece.sourceLength
         }
+        return violations
+    }
+}
+
+private extension TriviaPiece {
+    func violations(offset: AbsolutePosition,
+                    for todoKeywords: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
+        switch self {
+        case
+                .blockComment(let comment),
+                .lineComment(let comment),
+                .docBlockComment(let comment),
+                .docLineComment(let comment):
+
+            // Construct a regex string considering only keywords.
+            let searchKeywords = todoKeywords.map(\.rawValue).joined(separator: "|")
+            let matches = regex(#"\b((?:\#(searchKeywords))(?::|\b))"#)
+                .matches(in: comment, range: comment.bridge().fullNSRange)
+            return matches.reduce(into: []) { violations, match in
+                guard let annotationRange = Range(match.range(at: 1), in: comment) else {
+                    return
+                }
+
+                let maxLengthOfMessage = 30
+
+                // customizing the reason message to be specific to fixme or todo
+                let kind = comment[annotationRange].hasPrefix("FIXME") ? "FIXMEs" : "TODOs"
+                let message = comment[annotationRange.upperBound...]
+                    .trimmingCharacters(in: .whitespaces)
+                    .truncated(maxLength: maxLengthOfMessage)
+                    .prefix { $0 != "\n" }
+
+                let reason: String
+                if message.isEmpty {
+                    reason = "\(kind) should be resolved"
+                } else {
+                    reason = "\(kind) should be resolved (\(message))"
+                }
+
+                let violation = ReasonedRuleViolation(
+                    position: offset.advanced(by: comment[..<annotationRange.lowerBound].utf8.count),
+                    reason: reason
+                )
+                violations.append(violation)
+            }
+        default:
+            return []
+        }
+    }
+}
+
+private extension String {
+    func truncated(maxLength: Int) -> String {
+        if utf16.count > maxLength {
+            let end = index(startIndex, offsetBy: maxLength, limitedBy: endIndex) ?? endIndex
+            return self[..<end] + "..."
+        }
+        return self
     }
 }

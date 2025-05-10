@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
 
-struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+struct VerticalWhitespaceRule: CorrectableRule {
     var configuration = VerticalWhitespaceConfiguration()
 
     static let description = RuleDescription(
@@ -15,17 +15,17 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
             Example("let abc = 0\n"),
             Example("let abc = 0\n\n"),
             Example("/* bcs \n\n\n\n*/"),
-            Example("// bca \n\n")
+            Example("// bca \n\n"),
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
-            Example("class BBBB {}\n\n\n")
+            Example("class BBBB {}\n\n\n"),
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
             Example("let c = 0\n\n\nlet num = 1\n"): Example("let c = 0\n\nlet num = 1\n"),
-            Example("// bca \n\n\n"): Example("// bca \n\n")
+            Example("// bca \n\n\n"): Example("// bca \n\n"),
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
@@ -43,7 +43,7 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         }
 
         return linesSections.map { eachLastLine, eachSectionCount in
-            return StyleViolation(
+            StyleViolation(
                 ruleDescription: Self.description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: eachLastLine.index),
@@ -106,9 +106,11 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         return blankLinesSections
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let linesSections = violatingLineSections(in: file)
-        if linesSections.isEmpty { return [] }
+        if linesSections.isEmpty {
+            return 0
+        }
 
         var indexOfLinesToDelete = [Int]()
 
@@ -119,32 +121,26 @@ struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         }
 
         var correctedLines = [String]()
-        var corrections = [Correction]()
+        var numberOfCorrections = 0
         for currentLine in file.lines {
             // Doesn't correct lines where rule is disabled
             if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
                 correctedLines.append(currentLine.content)
                 continue
             }
-
             // removes lines by skipping them from correctedLines
             if Set(indexOfLinesToDelete).contains(currentLine.index) {
-                let description = Self.description
-                let location = Location(file: file, characterOffset: currentLine.range.location)
-
                 // reports every line that is being deleted
-                corrections.append(Correction(ruleDescription: description, location: location))
+                numberOfCorrections += 1
                 continue // skips line
             }
-
             // all lines that pass get added to final output file
             correctedLines.append(currentLine.content)
         }
         // converts lines back to file and adds trailing line
-        if corrections.isNotEmpty {
+        if numberOfCorrections > 0 {
             file.write(correctedLines.joined(separator: "\n") + "\n")
-            return corrections
         }
-        return []
+        return numberOfCorrections
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
-struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
     var configuration = ColonConfiguration()
 
     static let description = RuleDescription(
@@ -43,8 +43,8 @@ struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, Source
                 }
 
                 // [:]
-                if previous.tokenKind == .leftSquareBracket,
-                   next.tokenKind == .rightSquareBracket,
+                if previous.tokenKind == .leftSquare,
+                   next.tokenKind == .rightSquare,
                    previous.trailingTrivia.isEmpty,
                    current.leadingTrivia.isEmpty,
                    current.trailingTrivia.isEmpty,
@@ -56,7 +56,8 @@ struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, Source
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)
-                } else if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                }
+                if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
                     if case .spaces(1) = current.trailingTrivia.first {
                         return nil
                     }
@@ -75,16 +76,15 @@ struct ColonRule: SubstitutionCorrectableRule, ConfigurationProviderRule, Source
                     }
 
                     return ByteRange(location: ByteCount(current.position), length: length)
-                } else {
-                    return nil
                 }
+                return nil
             }
             .compactMap { byteRange in
                 file.stringView.byteRangeToNSRange(byteRange)
             }
     }
 
-    func substitution(for violationRange: NSRange, in file: SwiftLintFile) -> (NSRange, String)? {
+    func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
         (violationRange, ": ")
     }
 }
@@ -95,7 +95,7 @@ private final class ColonRuleVisitor: SyntaxVisitor {
     var caseStatementPositions: [AbsolutePosition] = []
 
     override func visitPost(_ node: TernaryExprSyntax) {
-        positionsToSkip.append(node.colonMark.position)
+        positionsToSkip.append(node.colon.position)
     }
 
     override func visitPost(_ node: DeclNameArgumentsSyntax) {
@@ -117,7 +117,7 @@ private final class ColonRuleVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: UnresolvedTernaryExprSyntax) {
-        positionsToSkip.append(node.colonMark.position)
+        positionsToSkip.append(node.colon.position)
     }
 
     override func visitPost(_ node: DictionaryElementSyntax) {
@@ -138,9 +138,8 @@ private extension Trivia {
         contains { piece in
             if case .blockComment = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 }

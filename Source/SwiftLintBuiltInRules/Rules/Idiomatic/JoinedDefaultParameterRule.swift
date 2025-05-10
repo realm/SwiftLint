@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct JoinedDefaultParameterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,7 +12,7 @@ struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProv
         nonTriggeringExamples: [
             Example("let foo = bar.joined()"),
             Example("let foo = bar.joined(separator: \",\")"),
-            Example("let foo = bar.joined(separator: toto)")
+            Example("let foo = bar.joined(separator: toto)"),
         ],
         triggeringExamples: [
             Example("let foo = bar.joined(↓separator: \"\")"),
@@ -23,7 +24,7 @@ struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProv
             func foo() -> String {
               return ["1", "2"].joined(↓separator: "")
             }
-            """)
+            """),
         ],
         corrections: [
             Example("let foo = bar.joined(↓separator: \"\")"): Example("let foo = bar.joined()"),
@@ -32,24 +33,13 @@ struct JoinedDefaultParameterRule: SwiftSyntaxCorrectableRule, ConfigurationProv
             Example("func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}"):
                 Example("func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}"),
             Example("class C {\n#if true\nlet foo = bar.joined(↓separator: \"\")\n#endif\n}"):
-                Example("class C {\n#if true\nlet foo = bar.joined()\n#endif\n}")
+                Example("class C {\n#if true\nlet foo = bar.joined()\n#endif\n}"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension JoinedDefaultParameterRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if let violationPosition = node.violationPosition {
                 violations.append(violationPosition)
@@ -57,24 +47,13 @@ private extension JoinedDefaultParameterRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        private let locationConverter: SourceLocationConverter
-        private let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard let violationPosition = node.violationPosition,
-                    !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) else {
+            guard node.violationPosition != nil else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(violationPosition)
-            let newNode = node.with(\.argumentList, [])
+            numberOfCorrections += 1
+            let newNode = node.with(\.arguments, [])
             return super.visit(newNode)
         }
     }
@@ -82,9 +61,9 @@ private extension JoinedDefaultParameterRule {
 
 private extension FunctionCallExprSyntax {
     var violationPosition: AbsolutePosition? {
-        guard let argument = argumentList.first,
+        guard let argument = arguments.first,
               let memberExp = calledExpression.as(MemberAccessExprSyntax.self),
-              memberExp.name.text == "joined",
+              memberExp.declName.baseName.text == "joined",
               argument.label?.text == "separator",
               let strLiteral = argument.expression.as(StringLiteralExprSyntax.self),
               strLiteral.isEmptyString else {

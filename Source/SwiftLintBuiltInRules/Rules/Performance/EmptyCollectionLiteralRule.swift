@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct EmptyCollectionLiteralRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,7 +13,7 @@ struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, O
             Example("myArray = []"),
             Example("myArray.isEmpty"),
             Example("!myArray.isEmpty"),
-            Example("myDict = [:]")
+            Example("myDict = [:]"),
         ],
         triggeringExamples: [
             Example("myArray↓ == []"),
@@ -22,25 +23,21 @@ struct EmptyCollectionLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, O
             Example("myDict↓ != [:]"),
             Example("myDict↓ == [: ]"),
             Example("myDict↓ == [ :]"),
-            Example("myDict↓ == [ : ]")
+            Example("myDict↓ == [ : ]"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension EmptyCollectionLiteralRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             guard
                 node.tokenKind.isEqualityComparison,
                 let violationPosition = node.previousToken(viewMode: .sourceAccurate)?.endPositionBeforeTrailingTrivia,
                 let expectedLeftSquareBracketToken = node.nextToken(viewMode: .sourceAccurate),
-                expectedLeftSquareBracketToken.tokenKind == .leftSquareBracket,
+                expectedLeftSquareBracketToken.tokenKind == .leftSquare,
                 let expectedColonToken = expectedLeftSquareBracketToken.nextToken(viewMode: .sourceAccurate),
-                expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquareBracket
+                expectedColonToken.tokenKind == .colon || expectedColonToken.tokenKind == .rightSquare
             else {
                 return
             }

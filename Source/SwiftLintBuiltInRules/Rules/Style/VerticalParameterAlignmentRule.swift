@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct VerticalParameterAlignmentRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,27 +12,16 @@ struct VerticalParameterAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRul
         nonTriggeringExamples: VerticalParameterAlignmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: VerticalParameterAlignmentRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter)
-    }
 }
 
 private extension VerticalParameterAlignmentRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-
-        init(locationConverter: SourceLocationConverter) {
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            violations.append(contentsOf: violations(for: node.signature.input.parameterList))
+            violations.append(contentsOf: violations(for: node.signature.parameterClause.parameters))
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            violations.append(contentsOf: violations(for: node.signature.input.parameterList))
+            violations.append(contentsOf: violations(for: node.signature.parameterClause.parameters))
         }
 
         private func violations(for params: FunctionParameterListSyntax) -> [AbsolutePosition] {
@@ -42,10 +32,7 @@ private extension VerticalParameterAlignmentRule {
             let paramLocations = params.compactMap { param -> (position: AbsolutePosition, line: Int, column: Int)? in
                 let position = param.positionAfterSkippingLeadingTrivia
                 let location = locationConverter.location(for: position)
-                guard let line = location.line, let column = location.column else {
-                    return nil
-                }
-                return (position, line, column)
+                return (position, location.line, location.column)
             }
 
             guard let firstParamLoc = paramLocations.first else { return [] }

@@ -82,7 +82,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true)
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -150,6 +150,13 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true)
+        extension E {
+            @objc class NestedClass {
+                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                    return false
+                }
+            }
+        }
+        """, excludeFromDocumentation: true),
     ]
 }

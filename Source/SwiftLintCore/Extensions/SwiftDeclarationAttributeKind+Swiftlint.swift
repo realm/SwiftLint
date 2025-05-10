@@ -2,15 +2,15 @@ import SourceKittenFramework
 
 public extension SwiftDeclarationAttributeKind {
     static var attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> {
-        return [
+        [
             .objc,
             .objcName,
             .objcMembers,
-            .objcNonLazyRealization
+            .objcNonLazyRealization,
         ]
     }
 
-    enum ModifierGroup: String, CustomDebugStringConvertible {
+    enum ModifierGroup: String, CustomDebugStringConvertible, Sendable {
         case `override`
         case acl
         case setterACL
@@ -27,7 +27,7 @@ public extension SwiftDeclarationAttributeKind {
         public init?(rawAttribute: String) {
             let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
                 .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,
-                .required, .convenience, .lazy
+                .required, .convenience, .lazy,
             ]
             let modifierGroup = allModifierGroups.first {
                 $0.swiftDeclarationAttributeKinds.contains(where: { $0.rawValue == rawAttribute })
@@ -48,7 +48,7 @@ public extension SwiftDeclarationAttributeKind {
                     .fileprivate,
                     .internal,
                     .public,
-                    .open
+                    .open,
                 ]
             case .setterACL:
                 return [
@@ -56,12 +56,12 @@ public extension SwiftDeclarationAttributeKind {
                     .setterFilePrivate,
                     .setterInternal,
                     .setterPublic,
-                    .setterOpen
+                    .setterOpen,
                 ]
             case .mutators:
                 return [
                     .mutating,
-                    .nonmutating
+                    .nonmutating,
                 ]
             case .override:
                 return [.override]
@@ -85,17 +85,18 @@ public extension SwiftDeclarationAttributeKind {
                     .nonobjc,
                     .objcMembers,
                     .ibaction,
+                    .ibsegueaction,
                     .iboutlet,
                     .ibdesignable,
                     .ibinspectable,
                     .nsManaged,
-                    .nsCopying
+                    .nsCopying,
                 ]
             }
         }
 
         public var debugDescription: String {
-            return self.rawValue
+            self.rawValue
         }
     }
 }

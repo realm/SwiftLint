@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ImplicitlyUnwrappedOptionalRule: Rule {
     var configuration = ImplicitlyUnwrappedOptionalConfiguration()
 
     static let description = RuleDescription(
@@ -20,7 +21,7 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
                 @IBOutlet
                 weak var bar: SomeObject!
             }
-            """, configuration: ["mode": "all_except_iboutlets"], excludeFromDocumentation: true)
+            """, configuration: ["mode": "all_except_iboutlets"], excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("let label: ↓UILabel!"),
@@ -37,34 +38,25 @@ struct ImplicitlyUnwrappedOptionalRule: SwiftSyntaxRule, ConfigurationProviderRu
             class MyClass {
                 weak var bar: ↓SomeObject!
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(mode: configuration.mode)
-    }
 }
 
 private extension ImplicitlyUnwrappedOptionalRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration
-
-        init(mode: ConfigurationType.ImplicitlyUnwrappedOptionalModeConfiguration) {
-            self.mode = mode
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ImplicitlyUnwrappedOptionalTypeSyntax) {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            switch mode {
+            switch configuration.mode {
             case .all:
                 return .visitChildren
             case .allExceptIBOutlets:
                 return node.isIBOutlet ? .skipChildren : .visitChildren
+            case .weakExceptIBOutlets:
+                return (node.isIBOutlet || node.weakOrUnownedModifier == nil) ? .skipChildren : .visitChildren
             }
         }
     }

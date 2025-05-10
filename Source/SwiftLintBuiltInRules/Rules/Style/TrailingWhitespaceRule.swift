@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+struct TrailingWhitespaceRule: CorrectableRule {
     var configuration = TrailingWhitespaceConfiguration()
 
     static let description = RuleDescription(
@@ -11,14 +11,14 @@ struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         kind: .style,
         nonTriggeringExamples: [
             Example("let name: String\n"), Example("//\n"), Example("// \n"),
-            Example("let name: String //\n"), Example("let name: String // \n")
+            Example("let name: String //\n"), Example("let name: String // \n"),
         ],
         triggeringExamples: [
             Example("let name: String \n"), Example("/* */ let name: String \n")
         ],
         corrections: [
             Example("let name: String \n"): Example("let name: String\n"),
-            Example("/* */ let name: String \n"): Example("/* */ let name: String\n")
+            Example("/* */ let name: String \n"): Example("/* */ let name: String\n"),
         ]
     )
 
@@ -45,10 +45,10 @@ struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let whitespaceCharacterSet = CharacterSet.whitespaces
         var correctedLines = [String]()
-        var corrections = [Correction]()
+        var numberOfCorrections = 0
         for line in file.lines {
             guard line.content.hasTrailingWhitespace() else {
                 correctedLines.append(line.content)
@@ -77,17 +77,14 @@ struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
             }
 
             if line.content != correctedLine {
-                let description = Self.description
-                let location = Location(file: file.path, line: line.index)
-                corrections.append(Correction(ruleDescription: description, location: location))
+                numberOfCorrections += 1
             }
             correctedLines.append(correctedLine)
         }
-        if corrections.isNotEmpty {
+        if numberOfCorrections > 0 {
             // join and re-add trailing newline
             file.write(correctedLines.joined(separator: "\n") + "\n")
-            return corrections
         }
-        return []
+        return numberOfCorrections
     }
 }

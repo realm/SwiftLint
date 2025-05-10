@@ -1,13 +1,14 @@
 import SwiftSyntax
 
-struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct SwitchCaseAlignmentRule: Rule {
     var configuration = SwitchCaseAlignmentConfiguration()
 
     static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
         description: """
-            Case statements should vertically align with their enclosing switch statement, or indented if configured \
+            Case statements should vertically align with their closing brace, or indented if configured \
             otherwise.
             """,
         kind: .style,
@@ -33,47 +34,40 @@ struct SwitchCaseAlignmentRule: SwiftSyntaxRule, ConfigurationProviderRule {
                 }
               }
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(locationConverter: file.locationConverter, indentedCases: configuration.indentedCases)
-    }
 }
 
 extension SwitchCaseAlignmentRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
-        private let locationConverter: SourceLocationConverter
-        private let indentedCases: Bool
-
-        init(locationConverter: SourceLocationConverter, indentedCases: Bool) {
-            self.locationConverter = locationConverter
-            self.indentedCases = indentedCases
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchExprSyntax) {
-            let switchPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
-            guard
-                let switchColumn = locationConverter.location(for: switchPosition).column,
-                node.cases.isNotEmpty,
-                let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia,
-                let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+            guard node.cases.isNotEmpty,
+                  let firstCasePosition = node.cases.first?.positionAfterSkippingLeadingTrivia
             else {
                 return
             }
 
+            let closingBracePosition = node.rightBrace.positionAfterSkippingLeadingTrivia
+            let closingBraceLocation = locationConverter.location(for: closingBracePosition)
+            let switchKeywordPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
+            let switchKeywordLocation = locationConverter.location(for: switchKeywordPosition)
+
+            if configuration.ignoreOneLiners && switchKeywordLocation.line == closingBraceLocation.line {
+                return
+            }
+
+            let closingBraceColumn = closingBraceLocation.column
+            let firstCaseColumn = locationConverter.location(for: firstCasePosition).column
+
             for `case` in node.cases where `case`.is(SwitchCaseSyntax.self) {
                 let casePosition = `case`.positionAfterSkippingLeadingTrivia
-                guard let caseColumn = locationConverter.location(for: casePosition).column else {
-                    continue
-                }
+                let caseColumn = locationConverter.location(for: casePosition).column
 
-                let hasViolation = (indentedCases && caseColumn <= switchColumn) ||
-                    (!indentedCases && caseColumn != switchColumn) ||
-                    (indentedCases && caseColumn != firstCaseColumn)
+                let hasViolation = (configuration.indentedCases && caseColumn <= closingBraceColumn) ||
+                    (!configuration.indentedCases && caseColumn != closingBraceColumn) ||
+                    (configuration.indentedCases && caseColumn != firstCaseColumn)
 
                 guard hasViolation else {
                     continue
@@ -81,8 +75,8 @@ extension SwitchCaseAlignmentRule {
 
                 let reason = """
                     Case statements should \
-                    \(indentedCases ? "be indented within" : "vertically align with") \
-                    their enclosing switch statement
+                    \(configuration.indentedCases ? "be indented within" : "vertically aligned with") \
+                    their closing brace
                     """
 
                 violations.append(ReasonedRuleViolation(position: casePosition, reason: reason))
@@ -99,11 +93,13 @@ extension SwitchCaseAlignmentRule {
         }
 
         var triggeringExamples: [Example] {
-            return (indentedCasesOption ? nonIndentedCases : indentedCases) + invalidCases
+            (indentedCasesOption ? nonIndentedCases : indentedCases)
+                + invalidCases
+                + invalidOneLiners
         }
 
         var nonTriggeringExamples: [Example] {
-            return indentedCasesOption ? indentedCases : nonIndentedCases
+            indentedCasesOption ? indentedCases : nonIndentedCases + validOneLiners
         }
 
         private var indentedCases: [Example] {
@@ -137,7 +133,13 @@ extension SwitchCaseAlignmentRule {
                     \(violationMarker)default:
                         print('Some other number')
                 }
-                """)
+                """),
+                Example("""
+                let a = switch i {
+                    \(violationMarker)case 1: 1
+                    \(violationMarker)default: 2
+                }
+                """),
             ]
         }
 
@@ -182,7 +184,15 @@ extension SwitchCaseAlignmentRule {
                 \(violationMarker)default:
                     print('Some other number')
                 }
-                """)
+                """),
+                Example("""
+                func f() -> Int {
+                    return switch i {
+                    \(violationMarker)case 1: 1
+                    \(violationMarker)default: 2
+                    }
+                }
+                """),
             ]
         }
 
@@ -207,7 +217,54 @@ extension SwitchCaseAlignmentRule {
                     \(indentation)print('blue')
                     }
                 }
-                """)
+                """),
+                Example("""
+                let a = switch i {
+                \(indentation)case 1: 1
+                    \(indentation)\(indentedCasesOption ? "" : violationMarker)default: 2
+                }
+                """),
+            ]
+        }
+
+        private var validOneLiners: [Example] = [
+            Example(
+                "switch i { case .x: 1 default: 0 }",
+                configuration: ["ignore_one_liners": true]
+            ),
+            Example(
+                "let a = switch i { case .x: 1 default: 0 }",
+                configuration: ["ignore_one_liners": true]
+            ),
+        ]
+
+        private var invalidOneLiners: [Example] {
+            [
+                // Default configuration should not ignore one liners
+                Example(
+                    "switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }"
+                ),
+                Example("""
+                switch i {
+                \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0
+                }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                switch i
+                { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                let a = switch i {
+                case .x: 1 \(violationMarker)default: 0
+                }
+                """, configuration: ["ignore_one_liners": true]),
+                Example("""
+                let a = switch i {
+                \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
+                """, configuration: ["ignore_one_liners": true]),
             ]
         }
     }

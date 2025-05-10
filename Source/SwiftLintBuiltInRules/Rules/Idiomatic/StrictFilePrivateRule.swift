@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(optIn: true)
+struct StrictFilePrivateRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -54,7 +55,7 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
                 protocol P<T> {
                     func f()
                 }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ] + ["actor", "class", "enum", "extension", "struct"].map { type in
             Example("""
                 \(type) T: P<Int> {
@@ -99,7 +100,7 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
             """),
             Example("""
                 ↓fileprivate func f() {}
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ] + ["actor", "class", "enum", "extension", "struct"].map { type in
             Example("""
                 \(type) T: P<Int> {
@@ -122,10 +123,6 @@ struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
             """, excludeFromDocumentation: true)
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate, file: file.syntaxTree)
-    }
 }
 
 private enum ProtocolRequirementType: Equatable {
@@ -135,49 +132,10 @@ private enum ProtocolRequirementType: Equatable {
 }
 
 private extension StrictFilePrivateRule {
-    final class ProtocolCollector: ViolationsSyntaxVisitor {
-        private(set) var protocols = [String: [ProtocolRequirementType]]()
-        private var currentProtocolName: String = ""
-
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
-
-        override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            currentProtocolName = node.identifier.text
-            return .visitChildren
-        }
-
-        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            protocols[currentProtocolName, default: []].append(.method(node.identifier.text))
-            return .skipChildren
-        }
-
-        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            for binding in node.bindings {
-                guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
-                      case .accessors(let accessors) = binding.accessor else {
-                    continue
-                }
-                if accessors.specifiesGetAccessor {
-                    protocols[currentProtocolName, default: []].append(.getter(name))
-                }
-                if accessors.specifiesSetAccessor {
-                    protocols[currentProtocolName, default: []].append(.setter(name))
-                }
-            }
-            return .skipChildren
-        }
-    }
-
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let file: SourceFileSyntax
-
-        init(viewMode: SyntaxTreeViewMode, file: SourceFileSyntax) {
-            self.file = file
-            super.init(viewMode: viewMode)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private lazy var protocols = {
-            ProtocolCollector(viewMode: .sourceAccurate).walk(tree: file, handler: \.protocols)
+            ProtocolCollector(configuration: configuration, file: file)
+                .walk(tree: file.syntaxTree, handler: \.protocols)
         }()
 
         override func visitPost(_ node: DeclModifierSyntax) {
@@ -190,7 +148,7 @@ private extension StrictFilePrivateRule {
             }
             let protocolMethodNames = implementedTypesInDecl(of: node).flatMap { protocols[$0, default: []] }
             if let funcDecl = grandparent.as(FunctionDeclSyntax.self),
-               protocolMethodNames.contains(.method(funcDecl.identifier.text)) {
+               protocolMethodNames.contains(.method(funcDecl.name.text)) {
                 return
             }
             if let varDecl = grandparent.as(VariableDeclSyntax.self) {
@@ -218,7 +176,7 @@ private extension StrictFilePrivateRule {
             violations.append(node.positionAfterSkippingLeadingTrivia)
         }
 
-        private func implementedTypesInDecl(of node: SyntaxProtocol?) -> [String] {
+        private func implementedTypesInDecl(of node: (some SyntaxProtocol)?) -> [String] {
             guard let node else {
                 queuedFatalError("Given node is nil. That should not happen.")
             }
@@ -245,8 +203,41 @@ private extension StrictFilePrivateRule {
     }
 }
 
-private extension TypeInheritanceClauseSyntax? {
+private final class ProtocolCollector<Configuration: RuleConfiguration>: ViolationsSyntaxVisitor<Configuration> {
+    private(set) var protocols = [String: [ProtocolRequirementType]]()
+    private var currentProtocolName = ""
+
+    override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .allExcept(ProtocolDeclSyntax.self) }
+
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        currentProtocolName = node.name.text
+        return .visitChildren
+    }
+
+    override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+        protocols[currentProtocolName, default: []].append(.method(node.name.text))
+        return .skipChildren
+    }
+
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        for binding in node.bindings {
+            guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
+                  let accessorBlock = binding.accessorBlock else {
+                continue
+            }
+            if accessorBlock.specifiesGetAccessor {
+                protocols[currentProtocolName, default: []].append(.getter(name))
+            }
+            if accessorBlock.specifiesSetAccessor {
+                protocols[currentProtocolName, default: []].append(.setter(name))
+            }
+        }
+        return .skipChildren
+    }
+}
+
+private extension InheritanceClauseSyntax? {
     var inheritedTypeNames: [String] {
-        self?.inheritedTypeCollection.compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self)?.name.text } ?? []
+        self?.inheritedTypes.compactMap { $0.type.as(IdentifierTypeSyntax.self)?.name.text } ?? []
     }
 }

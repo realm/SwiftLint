@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct ForceCastRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -9,26 +10,24 @@ struct ForceCastRule: ConfigurationProviderRule, SwiftSyntaxRule {
         description: "Force casts should be avoided",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("NSNumber() as? Int\n")
+            Example("NSNumber() as? Int")
         ],
-        triggeringExamples: [ Example("NSNumber() ↓as! Int\n") ]
+        triggeringExamples: [ Example("NSNumber() ↓as! Int") ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        ForceCastRuleVisitor(viewMode: .sourceAccurate)
-    }
 }
 
-private final class ForceCastRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: AsExprSyntax) {
-        if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            violations.append(node.asTok.positionAfterSkippingLeadingTrivia)
+private extension ForceCastRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: AsExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+                violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
-    }
 
-    override func visitPost(_ node: UnresolvedAsExprSyntax) {
-        if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
-            violations.append(node.asTok.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: UnresolvedAsExprSyntax) {
+            if node.questionOrExclamationMark?.tokenKind == .exclamationMark {
+                violations.append(node.asKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ public class RuleStorage: CustomStringConvertible {
     /// - parameter info: The file information to store.
     /// - parameter file: The file for which this information pertains to.
     /// - parameter rule: The SwiftLint rule that generated this info.
-    func collect<R: CollectingRule>(info: R.FileInfo, for file: SwiftLintFile, in rule: R) {
+    func collect<R: CollectingRule>(info: R.FileInfo, for file: SwiftLintFile, in _: R) {
         let key = ObjectIdentifier(R.self)
         access.sync(flags: .barrier) {
             storage[key, default: [:]][file] = info
@@ -31,8 +31,8 @@ public class RuleStorage: CustomStringConvertible {
     /// - parameter rule: The rule whose collected information should be retrieved.
     ///
     /// - returns: All file information for a given rule that was collected via `collect(...)`.
-    func collectedInfo<R: CollectingRule>(for rule: R) -> [SwiftLintFile: R.FileInfo]? {
-        return access.sync {
+    func collectedInfo<R: CollectingRule>(for _: R) -> [SwiftLintFile: R.FileInfo]? {
+        access.sync {
             storage[ObjectIdentifier(R.self)] as? [SwiftLintFile: R.FileInfo]
         }
     }

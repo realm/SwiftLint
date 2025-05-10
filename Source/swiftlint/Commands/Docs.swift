@@ -22,7 +22,6 @@ extension SwiftLint {
                 }
             }
             open(URL(string: "https://realm.github.io/SwiftLint/\(subPage)")!)
-            ExitHelper.successfullyExit()
         }
     }
 }

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingRule {
+struct CaptureVariableRule: AnalyzerRule, CollectingRule {
     struct Variable: Hashable {
         let usr: String
         let offset: ByteCount
@@ -72,7 +72,7 @@ struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingR
             closure()
             j = 1
             closure()
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -147,18 +147,19 @@ struct CaptureVariableRule: ConfigurationProviderRule, AnalyzerRule, CollectingR
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
-            """)
+            """),
         ],
         requiresFileOnDisk: true
     )
 
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> CaptureVariableRule.FileInfo {
+    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> Self.FileInfo {
         file.declaredVariables(compilerArguments: compilerArguments)
     }
 
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: CaptureVariableRule.FileInfo],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: Self.FileInfo],
                   compilerArguments: [String]) -> [StyleViolation] {
         file.captureListVariables(compilerArguments: compilerArguments)
             .filter { capturedVariable in collectedInfo.values.contains { $0.contains(capturedVariable.usr) } }
@@ -206,13 +207,13 @@ private extension SwiftLintFile {
         let offsets = self.captureListVariableOffsets()
         guard !offsets.isEmpty, let indexEntities = index(compilerArguments: compilerArguments) else { return Set() }
 
-        return Set(indexEntities.traverseEntitiesDepthFirst {
+        return Set(indexEntities.traverseEntitiesDepthFirst { _, entity in
             guard
-                let kind = $0.kind,
+                let kind = entity.kind,
                 kind.hasPrefix("source.lang.swift.ref.var."),
-                let usr = $0.usr,
-                let line = $0.line,
-                let column = $0.column,
+                let usr = entity.usr,
+                let line = entity.line,
+                let column = entity.column,
                 let offset = stringView.byteOffset(forLine: line, bytePosition: column)
             else { return nil }
             return offsets.contains(offset) ? CaptureVariableRule.Variable(usr: usr, offset: offset) : nil
@@ -245,16 +246,16 @@ private extension SwiftLintFile {
         let offsets = self.declaredVariableOffsets()
         guard !offsets.isEmpty, let indexEntities = index(compilerArguments: compilerArguments) else { return Set() }
 
-        return Set(indexEntities.traverseEntitiesDepthFirst {
+        return Set(indexEntities.traverseEntitiesDepthFirst { _, entity in
             guard
-                let declarationKind = $0.declarationKind,
+                let declarationKind = entity.declarationKind,
                 Self.checkedDeclarationKinds.contains(declarationKind),
-                let line = $0.line,
-                let column = $0.column,
+                let line = entity.line,
+                let column = entity.column,
                 let offset = stringView.byteOffset(forLine: line, bytePosition: column),
                 offsets.contains(offset)
             else { return nil }
-            return $0.usr
+            return entity.usr
         })
     }
 
@@ -263,7 +264,7 @@ private extension SwiftLintFile {
             let path = self.path,
             let response = try? Request.index(file: path, arguments: compilerArguments).sendIfNotDisabled()
         else {
-            Issue.indexingError(path: path, ruleID: CaptureVariableRule.description.identifier).print()
+            Issue.indexingError(path: path, ruleID: CaptureVariableRule.identifier).print()
             return nil
         }
 

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
+struct StatementPositionRule: CorrectableRule {
     var configuration = StatementPositionConfiguration()
 
     static let description = RuleDescription(
@@ -15,18 +15,18 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
             Example("} catch {"),
             Example("\"}else{\""),
             Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
+            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
         ],
         triggeringExamples: [
             Example("↓}else if {"),
             Example("↓}  else {"),
             Example("↓}\ncatch {"),
-            Example("↓}\n\t  catch {")
+            Example("↓}\n\t  catch {"),
         ],
         corrections: [
-            Example("↓}\n else {\n"): Example("} else {\n"),
-            Example("↓}\n   else if {\n"): Example("} else if {\n"),
-            Example("↓}\n catch {\n"): Example("} catch {\n")
+            Example("↓}\n else {"): Example("} else {"),
+            Example("↓}\n   else if {"): Example("} else if {"),
+            Example("↓}\n catch {"): Example("} catch {"),
         ]
     )
 
@@ -44,19 +44,19 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
             Example("\n\n  }\n  catch {"),
             Example("\"}\nelse{\""),
             Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
+            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
         ],
         triggeringExamples: [
             Example("↓  }else if {"),
             Example("↓}\n  else {"),
             Example("↓  }\ncatch {"),
-            Example("↓}\n\t  catch {")
+            Example("↓}\n\t  catch {"),
         ],
         corrections: [
             Example("  }else if {"): Example("  }\n  else if {"),
             Example("}\n  else {"): Example("}\nelse {"),
             Example("  }\ncatch {"): Example("  }\n  catch {"),
-            Example("}\n\t  catch {"): Example("}\ncatch {")
+            Example("}\n\t  catch {"): Example("}\ncatch {"),
         ]
     )
 
@@ -69,12 +69,12 @@ struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         switch configuration.statementMode {
         case .default:
-            return defaultCorrect(file: file)
+            defaultCorrect(file: file)
         case .uncuddledElse:
-            return uncuddledCorrect(file: file)
+            uncuddledCorrect(file: file)
         }
     }
 }
@@ -87,7 +87,7 @@ private extension StatementPositionRule {
     static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
     func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
-        return defaultViolationRanges(in: file, matching: Self.defaultPattern).compactMap { range in
+        defaultViolationRanges(in: file, matching: Self.defaultPattern).compactMap { range in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
@@ -95,34 +95,32 @@ private extension StatementPositionRule {
     }
 
     func defaultViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        return file.match(pattern: pattern).filter { _, syntaxKinds in
-            return syntaxKinds.starts(with: [.keyword])
+        file.match(pattern: pattern).filter { _, syntaxKinds in
+            syntaxKinds.starts(with: [.keyword])
         }.compactMap { $0.0 }
     }
 
-    func defaultCorrect(file: SwiftLintFile) -> [Correction] {
+    func defaultCorrect(file: SwiftLintFile) -> Int {
         let violations = defaultViolationRanges(in: file, matching: Self.defaultPattern)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
+        if matches.isEmpty {
+            return 0
+        }
         let regularExpression = regex(Self.defaultPattern)
-        let description = Self.description
-        var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reversed() {
             contents = regularExpression.stringByReplacingMatches(in: contents, options: [], range: range,
                                                                   withTemplate: "} $1")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)
-        return corrections
+        return matches.count
     }
 }
 
 // Uncuddled Behaviors
 private extension StatementPositionRule {
     func uncuddledValidate(file: SwiftLintFile) -> [StyleViolation] {
-        return uncuddledViolationRanges(in: file).compactMap { range in
+        uncuddledViolationRanges(in: file).compactMap { range in
             StyleViolation(ruleDescription: Self.uncuddledDescription,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
@@ -139,7 +137,7 @@ private extension StatementPositionRule {
 
     static func uncuddledMatchValidator(contents: StringView) -> ((NSTextCheckingResult)
         -> NSTextCheckingResult?) {
-            return { match in
+            { match in
                 if match.numberOfRanges != 5 {
                     return match
                 }
@@ -159,7 +157,7 @@ private extension StatementPositionRule {
 
     static func uncuddledMatchFilter(contents: StringView,
                                      syntaxMap: SwiftLintSyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
-        return { match in
+        { match in
             let range = match.range
             guard let matchRange = contents.NSRangeToByteRange(start: range.location,
                                                                length: range.length) else {
@@ -176,22 +174,20 @@ private extension StatementPositionRule {
         let validator = Self.uncuddledMatchValidator(contents: contents)
         let filterMatches = Self.uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
-        return matches.compactMap(validator).filter(filterMatches).map({ $0.range })
+        return matches.compactMap(validator).filter(filterMatches).map(\.range)
     }
 
-    func uncuddledCorrect(file: SwiftLintFile) -> [Correction] {
+    func uncuddledCorrect(file: SwiftLintFile) -> Int {
         var contents = file.contents
         let syntaxMap = file.syntaxMap
         let matches = Self.uncuddledRegex.matches(in: file)
         let validator = Self.uncuddledMatchValidator(contents: file.stringView)
         let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
-
         let validMatches = matches.compactMap(validator).filter(filterRanges)
                   .filter { file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty }
-        if validMatches.isEmpty { return [] }
-        let description = Self.uncuddledDescription
-        var corrections = [Correction]()
-
+        if validMatches.isEmpty {
+            return 0
+        }
         for match in validMatches.reversed() {
             let range1 = match.range(at: 1)
             let range2 = match.range(at: 3)
@@ -207,11 +203,8 @@ private extension StatementPositionRule {
                 whitespace.insert("\n", at: whitespace.startIndex)
             }
             contents = contents.bridge().replacingCharacters(in: range2, with: whitespace)
-            let location = Location(file: file, characterOffset: match.range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
-
         file.write(contents)
-        return corrections
+        return validMatches.count
     }
 }

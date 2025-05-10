@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
+struct QuickDiscouragedCallRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -15,15 +15,16 @@ struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         let dict = file.structureDictionary
         let testClasses = dict.substructure.filter {
-            return $0.inheritedTypes.isNotEmpty &&
+            $0.inheritedTypes.isNotEmpty &&
                 $0.declarationKind == .class
         }
 
         let specDeclarations = testClasses.flatMap { classDict in
-            return classDict.substructure.filter {
-                return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
-                    $0.declarationKind == .functionMethodInstance &&
-                    $0.enclosedSwiftAttributes.contains(.override)
+            classDict.substructure.filter { structure in
+                   structure.name == "spec()"
+                && structure.enclosedVarParameters.isEmpty
+                && [.functionMethodInstance, .functionMethodStatic].contains(structure.declarationKind)
+                && structure.enclosedSwiftAttributes.contains(.override)
             }
         }
 
@@ -33,7 +34,7 @@ struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return dictionary.traverseDepthFirst { subDict in
+        dictionary.traverseDepthFirst { subDict in
             guard let kind = subDict.expressionKind else { return nil }
             return validate(file: file, kind: kind, dictionary: subDict)
         }
@@ -59,13 +60,12 @@ struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [ByteCount] {
-        return substructure.flatMap { dictionary -> [ByteCount] in
+        substructure.flatMap { dictionary -> [ByteCount] in
             let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
                 if dict.expressionKind == .closure {
                     return dict.substructure
-                } else {
-                    return [dict]
                 }
+                return [dict]
             }
 
             return substructure.flatMap(toViolationOffsets)

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct LegacyMultipleRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -21,7 +22,7 @@ struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule
             let constant = 56
             let secret = value % constant == 5
             """),
-            Example("let secretValue = (value % 3) + 2")
+            Example("let secretValue = (value % 3) + 2"),
         ],
         triggeringExamples: [
             Example("cell.contentView.backgroundColor = indexPath.row ↓% 2 == 0 ? .gray : .white"),
@@ -33,26 +34,18 @@ struct LegacyMultipleRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule
             Example("""
             let constant = 56
             let isMultiple = value ↓% constant == 0
-            """)
+            """),
         ]
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension LegacyMultipleRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
-            guard let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                  operatorNode.operatorToken.tokenKind == .binaryOperator("%"),
+            guard let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                  operatorNode.operator.tokenKind == .binaryOperator("%"),
                   let parent = node.parent?.as(InfixOperatorExprSyntax.self),
-                  let parentOperatorNode = parent.operatorOperand.as(BinaryOperatorExprSyntax.self),
+                  let parentOperatorNode = parent.operator.as(BinaryOperatorExprSyntax.self),
                   parentOperatorNode.isEqualityOrInequalityOperator else {
                 return
             }
@@ -71,14 +64,14 @@ private extension LegacyMultipleRule {
                 return
             }
 
-            violations.append(node.operatorOperand.positionAfterSkippingLeadingTrivia)
+            violations.append(node.operator.positionAfterSkippingLeadingTrivia)
         }
     }
 }
 
 private extension BinaryOperatorExprSyntax {
     var isEqualityOrInequalityOperator: Bool {
-        operatorToken.tokenKind == .binaryOperator("==") ||
-            operatorToken.tokenKind == .binaryOperator("!=")
+        `operator`.tokenKind == .binaryOperator("==") ||
+        `operator`.tokenKind == .binaryOperator("!=")
     }
 }

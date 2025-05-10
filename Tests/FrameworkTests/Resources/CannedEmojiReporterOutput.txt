@@ -1,0 +1,7 @@
+${CURRENT_WORKING_DIRECTORY}/path/file.swift
+⛔️ Line 1: Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int> (syntactic_sugar)
+Other
+⛔️ Colons should be next to the identifier when specifying a type and next to the key in dictionary literals (colon)
+filename
+⛔️ Line 1: Violation Reason 2 (line_length)
+⚠️ Line 1: Violation Reason 1 (line_length)

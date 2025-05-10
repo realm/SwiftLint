@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct NoFallthroughOnlyRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -11,24 +12,20 @@ struct NoFallthroughOnlyRule: SwiftSyntaxRule, ConfigurationProviderRule {
         nonTriggeringExamples: NoFallthroughOnlyRuleExamples.nonTriggeringExamples,
         triggeringExamples: NoFallthroughOnlyRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension NoFallthroughOnlyRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseListSyntax) {
             let cases = node.compactMap { $0.as(SwitchCaseSyntax.self) }
 
             let localViolations = cases.enumerated()
                 .compactMap { index, element -> AbsolutePosition? in
-                    if let fallthroughStmt = element.statements.onlyElement?.item.as(FallthroughStmtSyntax.self) {
+                    if let fallthroughStmt = element.statements.onlyElement?.item.as(FallThroughStmtSyntax.self) {
                         if case let nextCaseIndex = cases.index(after: index),
                            nextCaseIndex < cases.endIndex,
                            case let nextCase = cases[nextCaseIndex],
-                           nextCase.unknownAttr != nil {
+                           nextCase.attribute != nil {
                             return nil
                         }
                         return fallthroughStmt.positionAfterSkippingLeadingTrivia

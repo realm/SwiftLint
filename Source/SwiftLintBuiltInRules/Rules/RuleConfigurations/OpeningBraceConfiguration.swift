@@ -1,28 +1,23 @@
-private enum ConfigurationKey: String {
-    case severity = "severity"
-    case allowMultilineFunc = "allow_multiline_func"
-}
+import SwiftLintCore
 
-struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration, Equatable {
+@AutoConfigParser
+struct OpeningBraceConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = OpeningBraceRule
 
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
+    @ConfigurationElement(key: "ignore_multiline_type_headers")
+    private(set) var ignoreMultilineTypeHeaders = false
+    @ConfigurationElement(key: "ignore_multiline_statement_conditions")
+    private(set) var ignoreMultilineStatementConditions = false
+    @ConfigurationElement(key: "ignore_multiline_function_signatures")
+    private(set) var ignoreMultilineFunctionSignatures = false
+    // TODO: [08/23/2026] Remove deprecation warning after ~2 years.
+    @ConfigurationElement(key: "allow_multiline_func", deprecationNotice: .suggestAlternative(
+        ruleID: Parent.identifier, name: "ignore_multiline_function_signatures"))
     private(set) var allowMultilineFunc = false
 
-    var consoleDescription: String {
-        return ["severity: \(severityConfiguration.consoleDescription)",
-                "\(ConfigurationKey.allowMultilineFunc): \(allowMultilineFunc)"].joined(separator: ", ")
-    }
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let severityString = configuration[ConfigurationKey.severity.rawValue] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-
-        allowMultilineFunc = configuration[ConfigurationKey.allowMultilineFunc.rawValue] as? Bool ?? false
+    var shouldIgnoreMultilineFunctionSignatures: Bool {
+        ignoreMultilineFunctionSignatures || allowMultilineFunc
     }
 }

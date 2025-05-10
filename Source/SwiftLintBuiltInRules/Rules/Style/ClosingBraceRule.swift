@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct ClosingBraceRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -10,31 +11,20 @@ struct ClosingBraceRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
         kind: .style,
         nonTriggeringExamples: [
             Example("[].map({ })"),
-            Example("[].map(\n  { }\n)")
+            Example("[].map(\n  { }\n)"),
         ],
         triggeringExamples: [
             Example("[].map({ ↓} )"),
-            Example("[].map({ ↓}\t)")
+            Example("[].map({ ↓}\t)"),
         ],
         corrections: [
-            Example("[].map({ ↓} )\n"): Example("[].map({ })\n")
+            Example("[].map({ ↓} )"): Example("[].map({ })")
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension ClosingBraceRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             if node.hasClosingBraceViolation {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
@@ -42,25 +32,12 @@ private extension ClosingBraceRule {
         }
     }
 
-    private final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: TokenSyntax) -> TokenSyntax {
-            guard
-                node.hasClosingBraceViolation,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.hasClosingBraceViolation else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return super.visit(node.with(\.trailingTrivia, Trivia()))
         }
     }
@@ -80,18 +57,16 @@ private extension TokenSyntax {
             == nextToken.positionAfterSkippingLeadingTrivia - SourceLength(utf8Length: 1)
         if isImmediatelyNext || nextToken.hasLeadingNewline {
             return false
-        } else {
-            return true
         }
+        return true
     }
 
     private var hasLeadingNewline: Bool {
         leadingTrivia.contains { piece in
             if case .newlines = piece {
                 return true
-            } else {
-                return false
             }
+            return false
         }
     }
 }

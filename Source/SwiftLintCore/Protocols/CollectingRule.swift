@@ -29,7 +29,8 @@ public protocol CollectingRule: AnyCollectingRule {
     /// - parameter compilerArguments: The compiler arguments needed to compile this file.
     ///
     /// - returns: All style violations to the rule's expectations.
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: FileInfo],
                   compilerArguments: [String]) -> [StyleViolation]
 
     /// Executes the rule on a file after collecting file info for all files and returns any violations to the rule's
@@ -42,6 +43,8 @@ public protocol CollectingRule: AnyCollectingRule {
     func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation]
 }
 
+// MARK: - == Implementations
+
 public extension CollectingRule {
     func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
         storage.collect(info: collectInfo(for: file, compilerArguments: compilerArguments),
@@ -53,126 +56,50 @@ public extension CollectingRule {
         }
         return validate(file: file, collectedInfo: info, compilerArguments: compilerArguments)
     }
-    func collectInfo(for file: SwiftLintFile, compilerArguments: [String]) -> FileInfo {
-        return collectInfo(for: file)
+    func collectInfo(for file: SwiftLintFile, compilerArguments _: [String]) -> FileInfo {
+        collectInfo(for: file)
     }
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                  compilerArguments: [String]) -> [StyleViolation] {
-        return validate(file: file, collectedInfo: collectedInfo)
+
+    func validate(file: SwiftLintFile,
+                  collectedInfo: [SwiftLintFile: FileInfo],
+                  compilerArguments _: [String]) -> [StyleViolation] {
+        validate(file: file, collectedInfo: collectedInfo)
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:)` for CollectingRule")
     }
-    func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile, compilerArguments _: [String]) -> [StyleViolation] {
         queuedFatalError("Must call `validate(file:collectedInfo:compilerArguments:)` for CollectingRule")
     }
 }
 
 public extension CollectingRule where Self: AnalyzerRule {
-    func collectInfo(for file: SwiftLintFile) -> FileInfo {
+    func collectInfo(for _: SwiftLintFile) -> FileInfo {
         queuedFatalError(
             "Must call `collect(infoFor:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile) -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
-    func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [StyleViolation] {
+    func validate(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: FileInfo]) -> [StyleViolation] {
         queuedFatalError(
             "Must call `validate(file:collectedInfo:compilerArguments:)` for AnalyzerRule & CollectingRule"
         )
     }
 }
-
-/// A `CollectingRule` that is also a `CorrectableRule`.
-@_spi(TestHelper)
-public protocol CollectingCorrectableRule: CollectingRule, CorrectableRule {
-    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
-    /// and returns all corrections that were applied.
-    ///
-    /// - note: This function is called by the linter and is always implemented in extensions.
-    ///
-    /// - parameter file:              The file for which to execute the rule.
-    /// - parameter collectedInfo:     All collected info.
-    /// - parameter compilerArguments: The compiler arguments needed to compile this file.
-    ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                 compilerArguments: [String]) -> [Correction]
-
-    /// Attempts to correct the violations to this rule in the specified file after collecting file info for all files
-    /// and returns all corrections that were applied.
-    ///
-    /// - note: This function is called by the linter and is always implemented in extensions.
-    ///
-    /// - parameter file:          The file for which to execute the rule.
-    /// - parameter collectedInfo: All collected info.
-    ///
-    /// - returns: All corrections that were applied.
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction]
-}
-
-@_spi(TestHelper)
-public extension CollectingCorrectableRule {
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo],
-                 compilerArguments: [String]) -> [Correction] {
-        return correct(file: file, collectedInfo: collectedInfo)
-    }
-
-    func correct(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [Correction] {
-        guard let info = storage.collectedInfo(for: self) else {
-            queuedFatalError("Attempt to correct a CollectingRule before collecting info for it")
-        }
-        return correct(file: file, collectedInfo: info, compilerArguments: compilerArguments)
-    }
-
-    func correct(file: SwiftLintFile) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:)` for AnalyzerRule")
-    }
-
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-}
-
-public extension CollectingCorrectableRule where Self: AnalyzerRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-    func correct(file: SwiftLintFile, collectedInfo: [SwiftLintFile: FileInfo]) -> [Correction] {
-        queuedFatalError("Must call `correct(file:collectedInfo:compilerArguments:)` for AnalyzerRule")
-    }
-}
-
-public extension ConfigurationProviderRule {
-    init(configuration: Any) throws {
-        self.init()
-        try self.configuration.apply(configuration: configuration)
-    }
-
-    func isEqualTo(_ rule: Rule) -> Bool {
-        if let rule = rule as? Self {
-            return configuration.isEqualTo(rule.configuration)
-        }
-        return false
-    }
-
-    var configurationDescription: String {
-        return configuration.consoleDescription
-    }
-}
-
-// MARK: - == Implementations
 
 /// :nodoc:
-public extension Array where Element == Rule {
+public extension Array where Element == any Rule {
     static func == (lhs: Array, rhs: Array) -> Bool {
-        if lhs.count != rhs.count { return false }
-        return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+        guard lhs.count == rhs.count else {
+            return false
+        }
+        return !zip(lhs, rhs).contains { pair in
+            let first = pair.0, second = pair.1
+            return !first.isEqualTo(second)
+        }
     }
 }

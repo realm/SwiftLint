@@ -1,14 +1,9 @@
 import ArgumentParser
-#if canImport(Darwin)
-import Darwin
-#elseif canImport(Glibc)
-import Glibc
-#else
-#error("Unsupported platform")
-#endif
 import Foundation
 import SwiftLintFramework
 import SwiftyTextTable
+
+private typealias SortedRules = [(String, any Rule.Type)]
 
 extension SwiftLint {
     struct Rules: ParsableCommand {
@@ -20,43 +15,79 @@ extension SwiftLint {
         var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")
         var verbose = false
+        @Flag(help: "Print only the YAML configuration(s)")
+        var configOnly = false
+        @Flag(help: "Print default configuration(s)")
+        var defaultConfig = false
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
         func run() throws {
+            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
             if let ruleID {
                 guard let rule = RuleRegistry.shared.rule(forID: ruleID) else {
                     throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
                 }
+                printDescription(for: rule, with: configuration)
+                return
+            }
+            let rules = RulesFilter(enabledRules: configuration.rules)
+                .getRules(excluding: rulesFilterOptions.excludingOptions)
+                .list
+                .sorted { $0.0 < $1.0 }
+            if configOnly {
+                rules.forEach { printConfig(for: createInstance(of: $0.value, using: configuration)) }
+            } else {
+                let table = TextTable(
+                    ruleList: rules,
+                    configuration: configuration,
+                    verbose: verbose,
+                    defaultConfig: defaultConfig
+                )
+                print(table.render())
+            }
+        }
 
-                rule.description.printDescription()
+        private func printDescription(for ruleType: any Rule.Type, with configuration: Configuration) {
+            let description = ruleType.description
+
+            let rule = createInstance(of: ruleType, using: configuration)
+            if configOnly {
+                printConfig(for: rule)
                 return
             }
 
-            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
-            let rulesFilter = RulesFilter(enabledRules: configuration.rules)
-            let rules = rulesFilter.getRules(excluding: .excludingOptions(byCommandLineOptions: rulesFilterOptions))
-            let table = TextTable(ruleList: rules, configuration: configuration, verbose: verbose)
-            print(table.render())
-            ExitHelper.successfullyExit()
+            print("\(description.consoleDescription)")
+            if let consoleRationale = description.consoleRationale {
+                print("\nRationale:\n\n\(consoleRationale)")
+            }
+            let configDescription = rule.createConfigurationDescription()
+            if configDescription.hasContent {
+                print("\nConfiguration (YAML):\n")
+                print("  \(description.identifier):")
+                print(configDescription.yaml().indent(by: 4))
+            }
+
+            guard description.triggeringExamples.isNotEmpty else { return }
+
+            print("\nTriggering Examples (violations are marked with '↓'):")
+            for (index, example) in description.triggeringExamples.enumerated() {
+                print("\nExample #\(index + 1)\n\n\(example.code.indent(by: 4))")
+            }
         }
-    }
-}
 
-private extension RuleDescription {
-    func printDescription() {
-        print("\(consoleDescription)")
-
-        guard !triggeringExamples.isEmpty else { return }
-
-        func indent(_ string: String) -> String {
-            return string.components(separatedBy: "\n")
-                .map { "    \($0)" }
-                .joined(separator: "\n")
+        private func printConfig(for rule: some Rule) {
+            let configDescription = rule.createConfigurationDescription()
+            if configDescription.hasContent {
+                print("\(type(of: rule).identifier):")
+                print(configDescription.yaml().indent(by: 2))
+            }
         }
-        print("\nTriggering Examples (violation is marked with '↓'):")
-        for (index, example) in triggeringExamples.enumerated() {
-            print("\nExample #\(index + 1)\n\n\(indent(example.code))")
+
+        private func createInstance(of ruleType: any Rule.Type, using config: Configuration) -> any Rule {
+            defaultConfig
+                ? ruleType.init()
+                : config.configuredRule(forID: ruleType.identifier) ?? ruleType.init()
         }
     }
 }
@@ -64,7 +95,7 @@ private extension RuleDescription {
 // MARK: - SwiftyTextTable
 
 private extension TextTable {
-    init(ruleList: RuleList, configuration: Configuration, verbose: Bool) {
+    init(ruleList: SortedRules, configuration: Configuration, verbose: Bool, defaultConfig: Bool) {
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
@@ -73,10 +104,9 @@ private extension TextTable {
             TextTableColumn(header: "kind"),
             TextTableColumn(header: "analyzer"),
             TextTableColumn(header: "uses sourcekit"),
-            TextTableColumn(header: "configuration")
+            TextTableColumn(header: "configuration"),
         ]
         self.init(columns: columns)
-        let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
         func truncate(_ string: String) -> String {
             let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
             let minWidth = "configuration".count - "...".count
@@ -92,18 +122,18 @@ private extension TextTable {
             }
             return stringWithNoNewlines
         }
-        for (ruleID, ruleType) in sortedRules {
+        for (ruleID, ruleType) in ruleList {
             let rule = ruleType.init()
             let configuredRule = configuration.configuredRule(forID: ruleID)
             addRow(values: [
                 ruleID,
-                (rule is OptInRule) ? "yes" : "no",
-                (rule is CorrectableRule) ? "yes" : "no",
+                (rule is any OptInRule) ? "yes" : "no",
+                (rule is any CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
-                (rule is AnalyzerRule) ? "yes" : "no",
-                (rule is SourceKitFreeRule) ? "no" : "yes",
-                truncate((configuredRule ?? rule).configurationDescription)
+                (rule is any AnalyzerRule) ? "yes" : "no",
+                (rule is any SourceKitFreeRule) ? "no" : "yes",
+                truncate((defaultConfig ? rule : configuredRule ?? rule).createConfigurationDescription().oneLiner()),
             ])
         }
     }

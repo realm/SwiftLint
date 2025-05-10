@@ -1,6 +1,6 @@
 struct ComputedAccessorsOrderRuleExamples {
     static var nonTriggeringExamples: [Example] {
-        return [
+        [
             Example("""
             class Foo {
                 var foo: Int {
@@ -163,12 +163,12 @@ struct ComputedAccessorsOrderRuleExamples {
             protocol Foo {
                 subscript(i: Int) -> Int { set get }
             }
-            """)
+            """),
         ]
     }
 
     static var triggeringExamples: [Example] {
-        return [
+        [
             Example("""
             class Foo {
                 var foo: Int {
@@ -230,7 +230,7 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """)
+            """),
         ]
     }
 }

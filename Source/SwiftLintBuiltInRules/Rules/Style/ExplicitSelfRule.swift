@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule {
+struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -16,37 +16,34 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
     )
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {
-        return violationRanges(in: file, compilerArguments: compilerArguments).map {
+        violationRanges(in: file, compilerArguments: compilerArguments).map {
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    func correct(file: SwiftLintFile, compilerArguments: [String]) -> [Correction] {
+    func correct(file: SwiftLintFile, compilerArguments: [String]) -> Int {
         let violations = violationRanges(in: file, compilerArguments: compilerArguments)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty { return [] }
-
+        if matches.isEmpty {
+            return 0
+        }
         var contents = file.contents.bridge()
-        let description = Self.description
-        var corrections = [Correction]()
         for range in matches.reversed() {
             contents = contents.replacingCharacters(in: range, with: "self.").bridge()
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents.bridge())
-        return corrections
+        return matches.count
     }
 
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
         guard compilerArguments.isNotEmpty else {
-            Issue.missingCompilerArguments(path: file.path, ruleID: Self.description.identifier).print()
+            Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }
 
-        let allCursorInfo: [[String: SourceKitRepresentable]]
+        let allCursorInfo: [[String: any SourceKitRepresentable]]
         do {
             let byteOffsets = try binaryOffsets(file: file, compilerArguments: compilerArguments)
             allCursorInfo = try file.allCursorInfo(compilerArguments: compilerArguments,
@@ -69,7 +66,7 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
 
         return cursorsMissingExplicitSelf.compactMap { cursorInfo in
             guard let byteOffset = (cursorInfo["swiftlint.offset"] as? Int64).flatMap(ByteCount.init) else {
-                Issue.genericWarning("Cannot convert offsets in '\(Self.description.identifier)' rule.").print()
+                Issue.genericWarning("Cannot convert offsets in '\(Self.identifier)' rule.").print()
                 return nil
             }
 
@@ -80,13 +77,13 @@ struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRul
 
 private let kindsToFind: Set = [
     "source.lang.swift.ref.function.method.instance",
-    "source.lang.swift.ref.var.instance"
+    "source.lang.swift.ref.var.instance",
 ]
 
 private extension SwiftLintFile {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [ByteCount]) throws
-        -> [[String: SourceKitRepresentable]] {
-        return try byteOffsets.compactMap { offset in
+        -> [[String: any SourceKitRepresentable]] {
+        try byteOffsets.compactMap { offset in
             if isExplicitAccess(at: offset) { return nil }
             let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
                 file: self.path!, offset: offset, arguments: compilerArguments

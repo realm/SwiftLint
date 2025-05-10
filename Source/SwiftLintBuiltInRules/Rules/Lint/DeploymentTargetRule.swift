@@ -1,7 +1,9 @@
 import SwiftSyntax
 
-struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
-    private typealias Version = DeploymentTargetConfiguration.Version
+@SwiftSyntaxRule
+struct DeploymentTargetRule: Rule {
+    fileprivate typealias Version = DeploymentTargetConfiguration.Version
+
     var configuration = DeploymentTargetConfiguration()
 
     static let description = RuleDescription(
@@ -13,59 +15,48 @@ struct DeploymentTargetRule: ConfigurationProviderRule, SwiftSyntaxRule {
         nonTriggeringExamples: DeploymentTargetRuleExamples.nonTriggeringExamples,
         triggeringExamples: DeploymentTargetRuleExamples.triggeringExamples
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(platformToConfiguredMinVersion: platformToConfiguredMinVersion)
-    }
+private enum AvailabilityType {
+    case condition
+    case attribute
+    case negativeCondition
 
-    private var platformToConfiguredMinVersion: [String: Version] {
-        return [
-            "iOS": configuration.iOSDeploymentTarget,
-            "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
-            "macOS": configuration.macOSDeploymentTarget,
-            "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
-            "OSX": configuration.macOSDeploymentTarget,
-            "tvOS": configuration.tvOSDeploymentTarget,
-            "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
-            "watchOS": configuration.watchOSDeploymentTarget,
-            "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget
-        ]
-    }
-
-    private enum AvailabilityType {
-        case condition
-        case attribute
-        case negativeCondition
-
-        var displayString: String {
-            switch self {
-            case .condition:
-                return "condition"
-            case .attribute:
-                return "attribute"
-            case .negativeCondition:
-                return "negative condition"
-            }
+    var displayString: String {
+        switch self {
+        case .condition:
+            return "condition"
+        case .attribute:
+            return "attribute"
+        case .negativeCondition:
+            return "negative condition"
         }
     }
 }
 
 private extension DeploymentTargetRule {
-    private final class Visitor: ViolationsSyntaxVisitor {
-        private let platformToConfiguredMinVersion: [String: Version]
-
-        init(platformToConfiguredMinVersion: [String: Version]) {
-            self.platformToConfiguredMinVersion = platformToConfiguredMinVersion
-            super.init(viewMode: .sourceAccurate)
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var platformToConfiguredMinVersion: [String: Version] {
+            [
+                "iOS": configuration.iOSDeploymentTarget,
+                "iOSApplicationExtension": configuration.iOSAppExtensionDeploymentTarget,
+                "macOS": configuration.macOSDeploymentTarget,
+                "macOSApplicationExtension": configuration.macOSAppExtensionDeploymentTarget,
+                "OSX": configuration.macOSDeploymentTarget,
+                "tvOS": configuration.tvOSDeploymentTarget,
+                "tvOSApplicationExtension": configuration.tvOSAppExtensionDeploymentTarget,
+                "watchOS": configuration.watchOSDeploymentTarget,
+                "watchOSApplicationExtension": configuration.watchOSAppExtensionDeploymentTarget,
+            ]
         }
 
         override func visitPost(_ node: AttributeSyntax) {
-            guard let argument = node.argument?.as(AvailabilitySpecListSyntax.self) else {
+            guard let argument = node.arguments?.as(AvailabilityArgumentListSyntax.self) else {
                 return
             }
 
             for arg in argument {
-                guard let entry = arg.entry.as(AvailabilityVersionRestrictionSyntax.self),
+                guard let entry = arg.argument.as(PlatformVersionSyntax.self),
                       let versionString = entry.version?.description,
                       case let platform = entry.platform,
                       let reason = reason(platform: platform, version: versionString, violationType: .attribute) else {
@@ -74,7 +65,7 @@ private extension DeploymentTargetRule {
 
                 violations.append(
                     ReasonedRuleViolation(
-                        position: node.atSignToken.positionAfterSkippingLeadingTrivia,
+                        position: node.atSign.positionAfterSkippingLeadingTrivia,
                         reason: reason
                     )
                 )
@@ -84,16 +75,16 @@ private extension DeploymentTargetRule {
         override func visitPost(_ node: AvailabilityConditionSyntax) {
             let violationType: AvailabilityType
             switch node.availabilityKeyword.tokenKind {
-            case .poundUnavailableKeyword:
+            case .poundUnavailable:
                 violationType = .negativeCondition
-            case .poundAvailableKeyword:
+            case .poundAvailable:
                 violationType = .condition
             default:
                 queuedFatalError("Unknown availability check type.")
             }
 
-            for elem in node.availabilitySpec {
-                guard let restriction = elem.entry.as(AvailabilityVersionRestrictionSyntax.self),
+            for elem in node.availabilityArguments {
+                guard let restriction = elem.argument.as(PlatformVersionSyntax.self),
                       let versionString = restriction.version?.description,
                       let reason = reason(platform: restriction.platform, version: versionString,
                                           violationType: violationType) else {
@@ -117,7 +108,7 @@ private extension DeploymentTargetRule {
                     return nil
             }
 
-            guard let version = try? Version(platform: platform, rawValue: versionString),
+            guard let version = try? Version(platform: platform, value: versionString),
                 version <= minVersion else {
                     return nil
             }

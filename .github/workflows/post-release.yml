@@ -1,0 +1,107 @@
+name: Post Release
+
+on:
+  release:
+    types: published
+
+jobs:
+  setup-credentials:
+    name: Setup Actor Credentials
+    uses: ./.github/workflows/actor-credentials.yml
+    with:
+      actor: ${{ github.event.release.author.login }}
+    permissions:
+      contents: write
+    secrets: inherit
+
+  merge-into-main:
+    name: Merge into main
+    needs: setup-credentials
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+      - name: Configure Git author
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+      - name: Merge release branch
+        run: |
+          git fetch origin release/${{ github.event.release.tag_name }}
+          git merge --ff-only origin/release/${{ github.event.release.tag_name }}
+          git push origin main
+          git push origin --delete release/${{ github.event.release.tag_name }}
+
+  publish-pod:
+    name: Publish Pod
+    needs:
+      - merge-into-main
+      - setup-credentials
+    runs-on: macOS-14
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: Deploy to CocoaPods
+        run: make pod_publish
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_15.0.1.app
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets[format('COCOAPODS_TRUNK_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+
+  dispatch-plugins:
+    name: Dispatch Plugins Repository
+    needs: merge-into-main
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: Parse checksum
+        id: parse_checksum
+        run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> "$GITHUB_OUTPUT"
+      - name: Dispatch release of plugins package
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SIMPLYDANNY_PLUGINS_SYNC }}
+          repository: SimplyDanny/SwiftLintPlugins
+          event-type: swiftlint-release
+          client-payload: |-
+            {
+              "title": "${{ github.event.release.name }}",
+              "tag": "${{ github.event.release.tag_name }}",
+              "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
+            }
+
+  bump-homebrew:
+    name: Bump Homebrew Formula
+    needs:
+      - merge-into-main
+      - setup-credentials
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/homebrew/ubuntu24.04:latest
+    permissions: {}
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+        with:
+          test-bot: false
+      - name: Configure Git author
+        uses: Homebrew/actions/git-user-config@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+      - name: Update Homebrew formula
+        uses: Homebrew/actions/bump-packages@master
+        with:
+          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+          formulae: swiftlint

@@ -2,7 +2,8 @@ import SwiftSyntax
 
 // MARK: - SelfBindingRule
 
-struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct SelfBindingRule: Rule {
     var configuration = SelfBindingConfiguration()
 
     static let description = RuleDescription(
@@ -16,7 +17,7 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
             Example("if let this = this { return }"),
             Example("guard let this = this else { return }"),
             Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"])
+            Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"]),
         ],
         triggeringExamples: [
             Example("if let ↓`self` = self { return }"),
@@ -26,7 +27,7 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
             Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]),
             Example("guard let ↓self = self else { return }", configuration: ["bind_identifier": "this"]),
             Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"])
+            Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"]),
         ],
         corrections: [
             Example("if let ↓`self` = self { return }"):
@@ -42,114 +43,78 @@ struct SelfBindingRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule, O
             Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]):
                 Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
             Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"]):
-                Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"])
+                Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"]),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        SelfBindingRuleVisitor(bindIdentifier: configuration.bindIdentifier)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        SelfBindingRuleRewriter(
-            bindIdentifier: configuration.bindIdentifier,
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
-// MARK: - SelfBindingRuleVisitor
+private extension SelfBindingRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: OptionalBindingConditionSyntax) {
+            if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
+               identifierPattern.identifier.text != configuration.bindIdentifier {
+                var hasViolation = false
+                if let initializerIdentifier = node.initializer?.value.as(DeclReferenceExprSyntax.self) {
+                    hasViolation = initializerIdentifier.baseName.text == "self"
+                } else if node.initializer == nil {
+                    hasViolation = identifierPattern.identifier.text == "self" && configuration.bindIdentifier != "self"
+                }
 
-private final class SelfBindingRuleVisitor: ViolationsSyntaxVisitor {
-    private let bindIdentifier: String
-
-    init(bindIdentifier: String) {
-        self.bindIdentifier = bindIdentifier
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visitPost(_ node: OptionalBindingConditionSyntax) {
-        if let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-           identifierPattern.identifier.text != bindIdentifier {
-            var hasViolation = false
-            if let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self) {
-                hasViolation = initializerIdentifier.identifier.text == "self"
-            } else if node.initializer == nil {
-                hasViolation = identifierPattern.identifier.text == "self" && bindIdentifier != "self"
-            }
-
-            if hasViolation {
-                violations.append(
-                    ReasonedRuleViolation(
-                        position: identifierPattern.positionAfterSkippingLeadingTrivia,
-                        reason: "`self` should always be re-bound to `\(bindIdentifier)`"
+                if hasViolation {
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: identifierPattern.positionAfterSkippingLeadingTrivia,
+                            reason: "`self` should always be re-bound to `\(configuration.bindIdentifier)`"
+                        )
                     )
-                )
+                }
             }
         }
     }
-}
 
-// MARK: - SelfBindingRuleRewriter
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
+            guard let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
+                  identifierPattern.identifier.text != configuration.bindIdentifier else {
+                return super.visit(node)
+            }
 
-private final class SelfBindingRuleRewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-    private(set) var correctionPositions: [AbsolutePosition] = []
-    private let bindIdentifier: String
-    let locationConverter: SourceLocationConverter
-    let disabledRegions: [SourceRange]
-
-    init(bindIdentifier: String, locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-        self.bindIdentifier = bindIdentifier
-        self.locationConverter = locationConverter
-        self.disabledRegions = disabledRegions
-    }
-
-    override func visit(_ node: OptionalBindingConditionSyntax) -> OptionalBindingConditionSyntax {
-        guard
-            let identifierPattern = node.pattern.as(IdentifierPatternSyntax.self),
-            identifierPattern.identifier.text != bindIdentifier,
-            !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        else {
-            return super.visit(node)
-        }
-
-        if let initializerIdentifier = node.initializer?.value.as(IdentifierExprSyntax.self),
-           initializerIdentifier.identifier.text == "self" {
-            correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
-
-            let newPattern = PatternSyntax(
-                identifierPattern
-                    .with(\.identifier,
-                          identifierPattern.identifier.with(\.tokenKind, .identifier(bindIdentifier))
+            if let initializerIdentifier = node.initializer?.value.as(DeclReferenceExprSyntax.self),
+               initializerIdentifier.baseName.text == "self" {
+                numberOfCorrections += 1
+                let newPattern = PatternSyntax(
+                    identifierPattern
+                        .with(\.identifier, identifierPattern.identifier
+                            .with(\.tokenKind, .identifier(configuration.bindIdentifier)))
                 )
-            )
 
-            return super.visit(node.with(\.pattern, newPattern))
-        } else if node.initializer == nil, identifierPattern.identifier.text == "self", bindIdentifier != "self" {
-            correctionPositions.append(identifierPattern.positionAfterSkippingLeadingTrivia)
+                return super.visit(node.with(\.pattern, newPattern))
+            }
+            if node.initializer == nil,
+                      identifierPattern.identifier.text == "self",
+                      configuration.bindIdentifier != "self" {
+                numberOfCorrections += 1
+                let newPattern = PatternSyntax(
+                    identifierPattern
+                        .with(\.identifier, identifierPattern.identifier
+                            .with(\.tokenKind, .identifier(configuration.bindIdentifier)))
+                )
 
-            let newPattern = PatternSyntax(
-                identifierPattern
-                    .with(\.identifier,
-                          identifierPattern.identifier.with(\.tokenKind, .identifier(bindIdentifier)))
-            )
-
-            let newInitializer = InitializerClauseSyntax(
-                value: IdentifierExprSyntax(
-                    identifier: .keyword(
-                        .`self`,
-                        leadingTrivia: .space,
-                        trailingTrivia: identifierPattern.trailingTrivia
+                let newInitializer = InitializerClauseSyntax(
+                    value: DeclReferenceExprSyntax(
+                        baseName: .keyword(
+                            .`self`,
+                            leadingTrivia: .space,
+                            trailingTrivia: identifierPattern.trailingTrivia
+                        )
                     )
                 )
-            )
 
-            let newNode = node
-                .with(\.pattern, newPattern)
-                .with(\.initializer, newInitializer)
-            return super.visit(newNode)
-        } else {
+                let newNode = node
+                    .with(\.pattern, newPattern)
+                    .with(\.initializer, newInitializer)
+                return super.visit(newNode)
+            }
             return super.visit(node)
         }
     }

@@ -3,7 +3,7 @@ public struct Stack<Element> {
     private var elements = [Element]()
 
     /// Creates an empty `Stack`.
-    public init() {}
+    public init() { /* Publish no-op initializer */ }
 
     /// The number of elements in this stack.
     public var count: Int {
@@ -29,9 +29,33 @@ public struct Stack<Element> {
     public func peek() -> Element? {
         elements.last
     }
+
+    /// Check whether the sequence contains an element that satisfies the given predicate.
+    ///
+    /// - parameter predicate: A closure that takes an element of the sequence
+    ///   and returns whether it represents a match.
+    /// - returns: `true` if the sequence contains an element that satisfies `predicate`.
+    public func contains(where predicate: (Element) -> Bool) -> Bool {
+        elements.contains(where: predicate)
+    }
+
+    /// Modify the last element.
+    ///
+    /// - parameter modifier: A function to be applied to the last element to modify the same in place.
+    public mutating func modifyLast(by modifier: (inout Element) -> Void) {
+        if elements.isNotEmpty {
+            modifier(&elements[count - 1])
+        }
+    }
 }
 
-extension Stack: CustomDebugStringConvertible where Element == CustomDebugStringConvertible {
+extension Stack: Sequence {
+    public func makeIterator() -> [Element].Iterator {
+        elements.makeIterator()
+    }
+}
+
+extension Stack: CustomDebugStringConvertible where Element: CustomDebugStringConvertible {
     public var debugDescription: String {
         let intermediateElements = count > 1 ? elements[1 ..< count - 1] : []
         return """

@@ -1,0 +1,12 @@
+disabled_rules:
+  - force_cast
+included:
+  - "everything"
+excluded:
+  - "the place where i committed many coding sins"
+line_length: 10000000000
+reporter: "json"
+allow_zero_lintable_files: true
+strict: true
+baseline: Baseline.json
+write_baseline: Baseline.json

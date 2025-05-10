@@ -1,7 +1,8 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
-struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct LegacyConstantRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -13,23 +14,12 @@ struct LegacyConstantRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule
         triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,
         corrections: LegacyConstantRuleExamples.corrections
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension LegacyConstantRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if LegacyConstantRuleExamples.patterns.keys.contains(node.identifier.text) {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            if LegacyConstantRuleExamples.patterns.keys.contains(node.baseName.text) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -41,41 +31,24 @@ private extension LegacyConstantRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
-        override func visit(_ node: IdentifierExprSyntax) -> ExprSyntax {
-            guard
-                let correction = LegacyConstantRuleExamples.patterns[node.identifier.text],
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: DeclReferenceExprSyntax) -> ExprSyntax {
+            guard let correction = LegacyConstantRuleExamples.patterns[node.baseName.text] else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return ("\(raw: correction)" as ExprSyntax)
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard
-                node.isLegacyPiExpression,
-                let calledExpression = node.calledExpression.as(IdentifierExprSyntax.self),
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isLegacyPiExpression,
+                  let calledExpression = node.calledExpression.as(DeclReferenceExprSyntax.self) else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
-            return ("\(raw: calledExpression.identifier.text).pi" as ExprSyntax)
+            numberOfCorrections += 1
+            return ("\(raw: calledExpression.baseName.text).pi" as ExprSyntax)
                 .with(\.leadingTrivia, node.leadingTrivia)
                 .with(\.trailingTrivia, node.trailingTrivia)
         }
@@ -85,10 +58,10 @@ private extension LegacyConstantRule {
 private extension FunctionCallExprSyntax {
     var isLegacyPiExpression: Bool {
         guard
-            let calledExpression = calledExpression.as(IdentifierExprSyntax.self),
-            calledExpression.identifier.text == "CGFloat" || calledExpression.identifier.text == "Float",
-            let argument = argumentList.onlyElement?.expression.as(IdentifierExprSyntax.self),
-            argument.identifier.text == "M_PI"
+            let calledExpression = calledExpression.as(DeclReferenceExprSyntax.self),
+            calledExpression.baseName.text == "CGFloat" || calledExpression.baseName.text == "Float",
+            let argument = arguments.onlyElement?.expression.as(DeclReferenceExprSyntax.self),
+            argument.baseName.text == "M_PI"
         else {
             return false
         }

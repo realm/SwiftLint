@@ -1,9 +1,9 @@
 import Foundation
 import SourceKittenFramework
 
-struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
-    private typealias FileTypeOffset = (fileType: FileType, offset: ByteCount)
+private typealias FileTypeOffset = (fileType: FileTypesOrderConfiguration.FileType, offset: ByteCount)
 
+struct FileTypesOrderRule: OptInRule {
     var configuration = FileTypesOrderConfiguration()
 
     static let description = RuleDescription(
@@ -74,7 +74,7 @@ struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
                 let fileTypeOffset = orderedFileTypeOffsets[index]
 
                 let fileType = fileTypeOffset.fileType.rawValue
-                let expected = expectedTypes.map { $0.rawValue }.joined(separator: ",")
+                let expected = expectedTypes.map(\.rawValue).joined(separator: ",")
                 let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1)) ? "An" : "A"
 
                 let styleViolation = StyleViolation(
@@ -173,7 +173,7 @@ private extension SourceKittenDictionary {
 }
 
 private extension Array where Element == SourceKittenDictionary {
-    func offsets(for fileType: FileType) -> [(fileType: FileType, offset: ByteCount)] {
+    func offsets(for fileType: FileTypesOrderConfiguration.FileType) -> [FileTypeOffset] {
         self.compactMap { substructure in
             guard let offset = substructure.offset else { return nil }
             return (fileType, offset)

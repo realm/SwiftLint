@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct ConvenienceTypeRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -72,7 +73,7 @@ struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
             @globalActor actor MyActor {
               static let shared = MyActor()
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -111,18 +112,14 @@ struct ConvenienceTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRul
             ↓class SomeClass {
                 static func foo() {}
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ConvenienceTypeRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: StructDeclSyntax) {
             if hasViolation(
@@ -144,65 +141,65 @@ private extension ConvenienceTypeRule {
             }
         }
 
-        private func hasViolation(inheritance: TypeInheritanceClauseSyntax?,
+        private func hasViolation(inheritance: InheritanceClauseSyntax?,
                                   attributes: AttributeListSyntax?,
-                                  members: MemberDeclBlockSyntax) -> Bool {
+                                  members: MemberBlockSyntax) -> Bool {
             guard inheritance.isNilOrEmpty,
-                  !attributes.containsObjcMembers,
-                  !attributes.containsObjc,
+                  attributes?.containsObjcMembers == false,
+                  attributes?.containsObjc == false,
                   !members.members.isEmpty else {
                 return false
             }
 
-            return ConvenienceTypeCheckVisitor(viewMode: .sourceAccurate)
+            return ConvenienceTypeCheckVisitor(configuration: configuration, file: file)
                 .walk(tree: members, handler: \.canBeConvenienceType)
         }
     }
-}
 
-private class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
+    final class ConvenienceTypeCheckVisitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    private(set) var canBeConvenienceType = true
+        private(set) var canBeConvenienceType = true
 
-    override func visitPost(_ node: VariableDeclSyntax) {
-        if node.isInstanceVariable {
-            canBeConvenienceType = false
-        } else if node.attributes.containsObjc {
-            canBeConvenienceType = false
-        }
-    }
-
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        if node.modifiers.containsStaticOrClass {
-            if node.attributes.containsObjc {
+        override func visitPost(_ node: VariableDeclSyntax) {
+            if node.isInstanceVariable {
+                canBeConvenienceType = false
+            } else if node.attributes.containsObjc {
                 canBeConvenienceType = false
             }
-        } else {
-            canBeConvenienceType = false
         }
-    }
 
-    override func visitPost(_ node: InitializerDeclSyntax) {
-        if !node.attributes.hasUnavailableAttribute {
-            canBeConvenienceType = false
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if node.modifiers.containsStaticOrClass {
+                if node.attributes.containsObjc {
+                    canBeConvenienceType = false
+                }
+            } else {
+                canBeConvenienceType = false
+            }
         }
-    }
 
-    override func visitPost(_ node: SubscriptDeclSyntax) {
-        if !node.modifiers.containsStaticOrClass {
-            canBeConvenienceType = false
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if !node.attributes.hasUnavailableAttribute {
+                canBeConvenienceType = false
+            }
+        }
+
+        override func visitPost(_ node: SubscriptDeclSyntax) {
+            if !node.modifiers.containsStaticOrClass {
+                canBeConvenienceType = false
+            }
         }
     }
 }
 
-private extension TypeInheritanceClauseSyntax? {
+private extension InheritanceClauseSyntax? {
     var isNilOrEmpty: Bool {
-        self?.inheritedTypeCollection.isEmpty ?? true
+        self?.inheritedTypes.isEmpty ?? true
     }
 }
 
-private extension AttributeListSyntax? {
+private extension AttributeListSyntax {
     var containsObjcMembers: Bool {
         contains(attributeNamed: "objcMembers")
     }
@@ -210,23 +207,15 @@ private extension AttributeListSyntax? {
     var containsObjc: Bool {
         contains(attributeNamed: "objc")
     }
-}
 
-private extension AttributeListSyntax? {
     var hasUnavailableAttribute: Bool {
-        guard let attrs = self else {
-            return false
-        }
-
-        return attrs.contains { elem in
+        contains { elem in
             guard let attr = elem.as(AttributeSyntax.self),
-                  let arguments = attr.argument?.as(AvailabilitySpecListSyntax.self) else {
+                  attr.attributeNameText == "available",
+                  let arguments = attr.arguments?.as(AvailabilityArgumentListSyntax.self) else {
                 return false
             }
-
-            return attr.attributeNameText == "available" && arguments.contains { arg in
-                arg.entry.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true
-            }
+            return arguments.contains { $0.argument.as(TokenSyntax.self)?.tokenKind.isUnavailableKeyword == true }
         }
     }
 }

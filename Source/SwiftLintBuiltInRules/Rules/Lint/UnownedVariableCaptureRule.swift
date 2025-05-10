@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct UnownedVariableCaptureRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -18,29 +19,27 @@ struct UnownedVariableCaptureRule: SwiftSyntaxRule, OptInRule, ConfigurationProv
             Example("""
             final class First {}
             final class Second {
-              unowned var value: First
-              init(value: First) {
-                self.value = value
-              }
+                unowned var value: First
+                init(value: First) {
+                    self.value = value
+                }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("foo { [↓unowned self] in _ }"),
             Example("foo { [↓unowned bar] in _ }"),
-            Example("foo { [bar, ↓unowned self] in _ }")
+            Example("foo { [bar, ↓unowned self] in _ }"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        UnownedVariableCaptureRuleVisitor(viewMode: .sourceAccurate)
-    }
 }
 
-private final class UnownedVariableCaptureRuleVisitor: ViolationsSyntaxVisitor {
-    override func visitPost(_ node: TokenSyntax) {
-        if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureItemSpecifierSyntax.self) == true {
-            violations.append(node.positionAfterSkippingLeadingTrivia)
+private extension UnownedVariableCaptureRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: TokenSyntax) {
+            if case .keyword(.unowned) = node.tokenKind, node.parent?.is(ClosureCaptureSpecifierSyntax.self) == true {
+                violations.append(node.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }

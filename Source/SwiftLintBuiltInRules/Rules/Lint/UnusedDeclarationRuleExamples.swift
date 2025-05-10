@@ -71,6 +71,15 @@ struct UnusedDeclarationRuleExamples {
         }
         """),
         Example("""
+            struct S {
+                var i: Int? = nil
+                func f() {
+                    if let i { print(i) }
+                }
+            }
+            S().f()
+        """),
+        Example("""
         enum Component {
           case string(StaticString)
           indirect case array([Component])
@@ -127,8 +136,8 @@ struct UnusedDeclarationRuleExamples {
         acceptComponentBuilder {
           "hello"
         }
-        """)
-    ] + platformSpecificNonTriggeringExamples + versionSpecificNonTriggeringExamples
+        """),
+    ] + platformSpecificNonTriggeringExamples
 
     static let triggeringExamples = [
         Example("""
@@ -198,8 +207,23 @@ struct UnusedDeclarationRuleExamples {
         }
 
         _ = ComponentBuilder()
-        """)
-    ] + platformSpecificTriggeringExamples
+        """),
+        Example("""
+        protocol ↓Foo {}
+        extension Foo {}
+        """),
+        Example("""
+        class ↓C<T> {}
+        extension C<Int> {}
+        """),
+    ] + ["actor", "enum", "class", "struct"].map {
+        Example("""
+        protocol Foo {}
+        \($0) ↓FooImpl {}
+        extension FooImpl {}
+        extension FooImpl: Foo {}
+        """, excludeFromDocumentation: true)
+    } + platformSpecificTriggeringExamples
 
 #if os(macOS)
     private static let platformSpecificNonTriggeringExamples = [
@@ -253,7 +277,7 @@ struct UnusedDeclarationRuleExamples {
                 didSet { print("didSet") }
             }
         }
-        """)
+        """),
     ]
 
     private static let platformSpecificTriggeringExamples = [
@@ -295,26 +319,10 @@ struct UnusedDeclarationRuleExamples {
         final class ↓Bar {
             var ↓foo = Foo()
         }
-        """)
+        """),
     ]
 #else
     private static let platformSpecificNonTriggeringExamples = [Example]()
     private static let platformSpecificTriggeringExamples = [Example]()
-#endif
-
-#if compiler(>=5.8)
-    private static let versionSpecificNonTriggeringExamples = [
-        Example("""
-            struct S {
-                var i: Int? = nil
-                func f() {
-                    if let i { print(i) }
-                }
-            }
-            S().f()
-        """)
-    ]
-#else
-    private static let versionSpecificNonTriggeringExamples = [Example]()
 #endif
 }

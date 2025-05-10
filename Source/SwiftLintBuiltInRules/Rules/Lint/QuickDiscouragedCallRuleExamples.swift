@@ -1,6 +1,15 @@
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""
+        class TotoTests {
+           override func spec() {
+               describe("foo") {
+                   let foo = Foo()
+               }
+           }
+        }
+        """),
+        Example("""
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -163,20 +172,22 @@ internal struct QuickDiscouragedCallRuleExamples {
                xitBehavesLike("foo")
            }
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
         Example("""
-        class TotoTests {
+        class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
-                   let foo = Foo()
+                   let foo = ↓Foo()
                }
            }
         }
+        """),
+        Example("""
         class TotoTests: QuickSpec {
-           override func spec() {
+           override static func spec() {
                describe("foo") {
                    let foo = ↓Foo()
                }
@@ -312,6 +323,6 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """)
+        """),
     ]
 }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct UnusedSetterValueRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -60,7 +61,7 @@ struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
                 }
                 set {}
             }
-            """, excludeFromDocumentation: true)
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -123,28 +124,24 @@ struct UnusedSetterValueRule: ConfigurationProviderRule, SwiftSyntaxRule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension UnusedSetterValueRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: AccessorDeclSyntax) {
-            guard node.accessorKind.tokenKind == .keyword(.set) else {
+            guard node.accessorSpecifier.tokenKind == .keyword(.set) else {
                 return
             }
 
-            let variableName = node.parameter?.name.text ?? "newValue"
+            let variableName = node.parameters?.name.text ?? "newValue"
             let visitor = NewValueUsageVisitor(variableName: variableName)
             if !visitor.walk(tree: node, handler: \.isVariableUsed) {
-                if (Syntax(node).closestVariableOrSubscript()?.modifiers).containsOverride,
+                if Syntax(node).closestVariableOrSubscript()?.modifiers?.contains(keyword: .override) == true,
                     let body = node.body, body.statements.isEmpty {
                     return
                 }
@@ -153,20 +150,20 @@ private extension UnusedSetterValueRule {
             }
         }
     }
+}
 
-    final class NewValueUsageVisitor: SyntaxVisitor {
-        let variableName: String
-        private(set) var isVariableUsed = false
+private final class NewValueUsageVisitor: SyntaxVisitor {
+    let variableName: String
+    private(set) var isVariableUsed = false
 
-        init(variableName: String) {
-            self.variableName = variableName
-            super.init(viewMode: .sourceAccurate)
-        }
+    init(variableName: String) {
+        self.variableName = variableName
+        super.init(viewMode: .sourceAccurate)
+    }
 
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if node.identifier.text == variableName {
-                isVariableUsed = true
-            }
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        if node.baseName.text == variableName {
+            isVariableUsed = true
         }
     }
 }
@@ -175,7 +172,8 @@ private extension Syntax {
     func closestVariableOrSubscript() -> Either<SubscriptDeclSyntax, VariableDeclSyntax>? {
         if let subscriptDecl = self.as(SubscriptDeclSyntax.self) {
             return .left(subscriptDecl)
-        } else if let variableDecl = self.as(VariableDeclSyntax.self) {
+        }
+        if let variableDecl = self.as(VariableDeclSyntax.self) {
             return .right(variableDecl)
         }
 
@@ -189,7 +187,7 @@ private enum Either<L, R> {
 }
 
 private extension Either<SubscriptDeclSyntax, VariableDeclSyntax> {
-    var modifiers: ModifierListSyntax? {
+    var modifiers: DeclModifierListSyntax? {
         switch self {
         case .left(let left):
             return left.modifiers

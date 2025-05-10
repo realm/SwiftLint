@@ -1,7 +1,8 @@
 import Foundation
 import SwiftSyntax
 
-struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
+@SwiftSyntaxRule
+struct TypeNameRule: Rule {
     var configuration = TypeNameConfiguration()
 
     static let description = RuleDescription(
@@ -16,72 +17,61 @@ struct TypeNameRule: SwiftSyntaxRule, ConfigurationProviderRule {
         nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(configuration: configuration)
-    }
 }
 
 private extension TypeNameRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let configuration: TypeNameConfiguration
-
-        init(configuration: TypeNameConfiguration) {
-            self.configuration = configuration
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StructDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: TypealiasDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers, inheritedTypes: nil) {
+        override func visitPost(_ node: TypeAliasDeclSyntax) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers, inheritedTypes: nil) {
                 violations.append(violation)
             }
         }
 
-        override func visitPost(_ node: AssociatedtypeDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+        override func visitPost(_ node: AssociatedTypeDeclSyntax) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
             if configuration.validateProtocols,
-               let violation = violation(identifier: node.identifier, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypeCollection) {
+               let violation = violation(identifier: node.name, modifiers: node.modifiers,
+                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
                 violations.append(violation)
             }
         }
 
         private func violation(identifier: TokenSyntax,
-                               modifiers: ModifierListSyntax?,
+                               modifiers: DeclModifierListSyntax,
                                inheritedTypes: InheritedTypeListSyntax?) -> ReasonedRuleViolation? {
             let originalName = identifier.text
             let nameConfiguration = configuration.nameConfiguration
@@ -92,22 +82,22 @@ private extension TypeNameRule {
                 .strippingBackticks()
                 .strippingLeadingUnderscoreIfPrivate(modifiers: modifiers)
                 .strippingTrailingSwiftUIPreviewProvider(inheritedTypes: inheritedTypes)
-            let allowedSymbols = nameConfiguration.allowedSymbols.union(.alphanumerics)
-
-            if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+            if !nameConfiguration.containsOnlyAllowedCharacters(name: name) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
-                    reason: "Type name '\(name)' should only contain alphanumeric characters",
-                    severity: .error
+                    reason: "Type name '\(name)' should only contain alphanumeric and other allowed characters",
+                    severity: nameConfiguration.unallowedSymbolsSeverity.severity
                 )
-            } else if let requiresCaseCheck = nameConfiguration.validatesStartWithLowercase,
+            }
+            if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,
                 name.first?.isLowercase == true {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should start with an uppercase character",
-                    severity: requiresCaseCheck.severity
+                    severity: caseCheckSeverity
                 )
-            } else if let severity = nameConfiguration.severity(forLength: name.count) {
+            }
+            if let severity = nameConfiguration.severity(forLength: name.count) {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should be between \(nameConfiguration.minLengthThreshold) and " +
@@ -137,8 +127,8 @@ private extension String {
         return substring(from: 0, length: lastPreviewsIndex)
     }
 
-    func strippingLeadingUnderscoreIfPrivate(modifiers: ModifierListSyntax?) -> String {
-        if first == "_", modifiers.isPrivateOrFileprivate {
+    func strippingLeadingUnderscoreIfPrivate(modifiers: DeclModifierListSyntax) -> String {
+        if first == "_", modifiers.containsPrivateOrFileprivate() {
             return String(self[index(after: startIndex)...])
         }
         return self
@@ -147,6 +137,6 @@ private extension String {
 
 private extension InheritedTypeListSyntax {
     var typeNames: Set<String> {
-        Set(compactMap { $0.typeName.as(SimpleTypeIdentifierSyntax.self) }.map(\.name.text))
+        Set(compactMap { $0.type.as(IdentifierTypeSyntax.self) }.map(\.name.text))
     }
 }

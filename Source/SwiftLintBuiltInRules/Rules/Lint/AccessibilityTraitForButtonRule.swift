@@ -1,13 +1,6 @@
 import SourceKittenFramework
 
-/// The accessibility button and link traits are used to tell assistive technologies that an element is tappable. When
-/// an element has one of these traits, VoiceOver will automatically read "button" or "link" after the element's label
-/// to let the user know that they can activate it. When using a UIKit `UIButton` or SwiftUI `Button` or
-/// `Link`, the button trait is added by default, but when you manually add a tap gesture recognizer to an
-/// element, you need to explicitly add the button or link trait. In most cases the button trait should be used, but for
-/// buttons that open a URL in an external browser we use the link trait instead. This rule attempts to catch uses of
-/// the SwiftUI `.onTapGesture` modifier where the `.isButton` or `.isLink` trait is not explicitly applied.
-struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRule, OptInRule {
+struct AccessibilityTraitForButtonRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -15,6 +8,18 @@ struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRule, OptI
         name: "Accessibility Trait for Button",
         description: "All views with tap gestures added should include the .isButton or the .isLink accessibility " +
                      "traits",
+        rationale: """
+        The accessibility button and link traits are used to tell assistive technologies that an element is tappable. \
+        When an element has one of these traits, VoiceOver will automatically read "button" or "link" after the \
+        element's label to let the user know that they can activate it.
+
+        When using a UIKit `UIButton` or SwiftUI `Button` or `Link`, the button trait is added by default, but when \
+        you manually add a tap gesture recognizer to an element, you need to explicitly add the button or link trait. \
+
+        In most cases the button trait should be used, but for buttons that open a URL in an external browser we use \
+        the link trait instead. This rule attempts to catch uses of the SwiftUI `.onTapGesture` modifier where the \
+        `.isButton` or `.isLink` trait is not explicitly applied.
+        """,
         kind: .lint,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: AccessibilityTraitForButtonRuleExamples.nonTriggeringExamples,
@@ -23,7 +28,8 @@ struct AccessibilityTraitForButtonRule: ASTRule, ConfigurationProviderRule, OptI
 
     // MARK: AST Rule
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
         guard kind == .struct,
@@ -88,7 +94,7 @@ private extension SourceKittenDictionary {
     /// or by a `gesture`, `simultaneousGesture`, or `highPriorityGesture` modifier with an argument
     /// starting with a `TapGesture` object with a count of 1 (default value is 1).
     func hasOnSingleTapModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "onTapGesture",
@@ -111,7 +117,7 @@ private extension SourceKittenDictionary {
                     arguments: [
                         .init(name: "", values: ["TapGesture()", "TapGesture(count: 1)"], matchType: .prefix)
                     ]
-                )
+                ),
             ],
             in: file
         )
@@ -120,7 +126,7 @@ private extension SourceKittenDictionary {
     /// Whether or not the dictionary represents a SwiftUI View with an `accessibilityAddTraits()` or
     /// `accessibility(addTraits:)` modifier with the specified trait (specify trait as a String).
     func hasAccessibilityTrait(_ trait: String, in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityAddTraits",
@@ -129,7 +135,7 @@ private extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "addTraits", values: [trait], matchType: .substring)]
-                )
+                ),
             ],
             in: file
         )

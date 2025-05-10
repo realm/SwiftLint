@@ -1,46 +1,39 @@
 import SwiftSyntax
 
-struct ContainsOverRangeNilComparisonRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct ContainsOverRangeNilComparisonRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
         identifier: "contains_over_range_nil_comparison",
-        name: "Contains over Range Comparision to Nil",
+        name: "Contains over Range Comparison to Nil",
         description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`",
         kind: .performance,
         nonTriggeringExamples: [
             Example("let range = myString.range(of: \"Test\")"),
             Example("myString.contains(\"Test\")"),
             Example("!myString.contains(\"Test\")"),
-            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil")
+            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil"),
         ],
         triggeringExamples: ["!=", "=="].flatMap { comparison in
-            return [
+            [
                 Example("↓myString.range(of: \"Test\") \(comparison) nil")
             ]
         }
     )
-
-    func preprocess(file: SwiftLintFile) -> SourceFileSyntax? {
-        file.foldedSyntaxTree
-    }
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension ContainsOverRangeNilComparisonRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: InfixOperatorExprSyntax) {
             guard
-                let operatorNode = node.operatorOperand.as(BinaryOperatorExprSyntax.self),
-                operatorNode.operatorToken.tokenKind.isEqualityComparison,
+                let operatorNode = node.operator.as(BinaryOperatorExprSyntax.self),
+                operatorNode.operator.tokenKind.isEqualityComparison,
                 node.rightOperand.is(NilLiteralExprSyntax.self),
                 let first = node.leftOperand.asFunctionCall,
-                first.argumentList.onlyElement?.label?.text == "of",
+                first.arguments.onlyElement?.label?.text == "of",
                 let calledExpression = first.calledExpression.as(MemberAccessExprSyntax.self),
-                calledExpression.name.text == "range"
+                calledExpression.declName.baseName.text == "range"
             else {
                 return
             }

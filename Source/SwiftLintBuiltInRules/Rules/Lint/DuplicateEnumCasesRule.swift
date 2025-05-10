@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct DuplicateEnumCasesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
     static let description = RuleDescription(
@@ -42,7 +43,7 @@ struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
               case file(URL)
             #endif
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -51,17 +52,13 @@ struct DuplicateEnumCasesRule: ConfigurationProviderRule, SwiftSyntaxRule {
                 case addURL(url: URL)
                 case ↓add(data: Data)
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension DuplicateEnumCasesRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: EnumDeclSyntax) {
             let enumElements = node.memberBlock.members
                 .flatMap { member -> EnumCaseElementListSyntax in
@@ -73,13 +70,13 @@ private extension DuplicateEnumCasesRule {
                 }
 
             let elementsByName = enumElements.reduce(into: [String: [AbsolutePosition]]()) { elements, element in
-                let name = String(element.identifier.text)
+                let name = String(element.name.text)
                 elements[name, default: []].append(element.positionAfterSkippingLeadingTrivia)
             }
 
             let duplicatedElementPositions = elementsByName
                 .filter { $0.value.count > 1 }
-                .flatMap { $0.value }
+                .flatMap(\.value)
 
             violations.append(contentsOf: duplicatedElementPositions)
         }

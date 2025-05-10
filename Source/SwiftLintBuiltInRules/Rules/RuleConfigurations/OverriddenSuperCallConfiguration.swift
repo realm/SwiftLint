@@ -1,7 +1,10 @@
-struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatable {
+import SwiftLintCore
+
+@AutoConfigParser
+struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = OverriddenSuperCallRule
 
-    private let defaultIncluded = [
+    private static let defaultIncluded = [
         // NSObject
         "awakeFromNib()",
         "prepareForInterfaceBuilder()",
@@ -28,51 +31,24 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration, Equatab
         "viewDidDisappear(_:)",
         "viewDidLoad()",
         "viewWillAppear(_:)",
-        "viewWillDisappear(_:)"
+        "viewWillDisappear(_:)",
+        // XCTestCase
+        "invokeTest()",
     ]
 
+    @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    var excluded: [String] = []
-    var included: [String] = ["*"]
+    @ConfigurationElement(key: "excluded")
+    private(set) var excluded = [String]()
+    @ConfigurationElement(key: "included")
+    private(set) var included = ["*"]
 
-    private(set) var resolvedMethodNames: [String]
-
-    init() {
-        resolvedMethodNames = defaultIncluded
-    }
-
-    var consoleDescription: String {
-        return "severity: \(severityConfiguration.consoleDescription)" +
-            ", excluded: \(excluded)" +
-            ", included: \(included)"
-    }
-
-    mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw Issue.unknownConfiguration(ruleID: Parent.identifier)
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-
-        if let excluded = [String].array(of: configuration["excluded"]) {
-            self.excluded = excluded
-        }
-
-        if let included = [String].array(of: configuration["included"]) {
-            self.included = included
-        }
-
-        resolvedMethodNames = calculateResolvedMethodNames()
-    }
-
-    private func calculateResolvedMethodNames() -> [String] {
+    var resolvedMethodNames: [String] {
         var names: [String] = []
         if included.contains("*") && !excluded.contains("*") {
-            names += defaultIncluded
+            names += Self.defaultIncluded
         }
-        names += included.filter({ $0 != "*" })
+        names += included.filter { $0 != "*" }
         names = names.filter { !excluded.contains($0) }
         return names
     }

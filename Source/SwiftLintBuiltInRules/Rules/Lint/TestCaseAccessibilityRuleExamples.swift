@@ -50,6 +50,16 @@ internal struct TestCaseAccessibilityRuleExamples {
 
         Example("""
         class FooTests: XCTestCase {
+            override init() {
+                super.init()
+                let foo = 1
+                var bar = 2
+            }
+        }
+        """),
+
+        Example("""
+        class FooTests: XCTestCase {
             func allowedPrefixTestFoo() {}
         }
         """, configuration: ["allowed_prefixes": ["allowedPrefix"]]),
@@ -64,7 +74,7 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             func testFoo() {}
         }
-        """)
+        """),
     ]
 
     static let triggeringExamples = [
@@ -95,7 +105,7 @@ internal struct TestCaseAccessibilityRuleExamples {
         final class BarTests: XCTestCase {
             ↓class Nested {}
         }
-        """)
+        """),
     ]
 
     static let corrections = [
@@ -132,6 +142,6 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             private func helperFunction() {}
         }
-        """)
+        """),
     ]
 }

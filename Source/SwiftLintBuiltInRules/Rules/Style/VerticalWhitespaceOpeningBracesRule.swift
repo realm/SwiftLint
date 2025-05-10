@@ -3,11 +3,11 @@ import SourceKittenFramework
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 }
 
-struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
+struct VerticalWhitespaceOpeningBracesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let nonTriggeringExamples = [
@@ -22,7 +22,7 @@ struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
 
             }
         */
-        """)
+        """),
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
@@ -134,15 +134,13 @@ struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
               self.dismiss(animated: false, completion: {
               })
             }
-            """)
+            """),
     ]
 
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule {
-    init(configuration: Any) throws {}
-
     static let description = RuleDescription(
         identifier: "vertical_whitespace_opening_braces",
         name: "Vertical Whitespace after Opening Braces",
@@ -173,31 +171,22 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
 }
 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> [Correction] {
+    func correct(file: SwiftLintFile) -> Int {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
-        guard violatingRanges.isNotEmpty else { return [] }
-
-        let patternRegex: NSRegularExpression = regex(pattern)
-        let replacementTemplate = "$1$3"
-        let description = Self.description
-
-        var corrections = [Correction]()
+        guard violatingRanges.isNotEmpty else {
+            return 0
+        }
+        let patternRegex = regex(pattern)
         var fileContents = file.contents
-
         for violationRange in violatingRanges.reversed() {
             fileContents = patternRegex.stringByReplacingMatches(
                 in: fileContents,
                 options: [],
                 range: violationRange,
-                withTemplate: replacementTemplate
+                withTemplate: "$1$3"
             )
-
-            let location = Location(file: file, characterOffset: violationRange.location)
-            let correction = Correction(ruleDescription: description, location: location)
-            corrections.append(correction)
         }
-
         file.write(fileContents)
-        return corrections
+        return violatingRanges.count
     }
 }

@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct TrailingSemicolonRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -9,35 +10,24 @@ struct TrailingSemicolonRule: SwiftSyntaxCorrectableRule, ConfigurationProviderR
         description: "Lines should not have trailing semicolons",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("let a = 0\n"),
-            Example("let a = 0; let b = 0")
+            Example("let a = 0"),
+            Example("let a = 0; let b = 0"),
         ],
         triggeringExamples: [
             Example("let a = 0↓;\n"),
-            Example("let a = 0↓;\nlet b = 1\n"),
-            Example("let a = 0↓; // a comment\n")
+            Example("let a = 0↓;\nlet b = 1"),
+            Example("let a = 0↓; // a comment\n"),
         ],
         corrections: [
             Example("let a = 0↓;\n"): Example("let a = 0\n"),
-            Example("let a = 0↓;\nlet b = 1\n"): Example("let a = 0\nlet b = 1\n"),
-            Example("let foo = 12↓;  // comment\n"): Example("let foo = 12  // comment\n")
+            Example("let a = 0↓;\nlet b = 1"): Example("let a = 0\nlet b = 1"),
+            Example("let foo = 12↓;  // comment\n"): Example("let foo = 12  // comment\n"),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
-
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter? {
-        Rewriter(
-            locationConverter: file.locationConverter,
-            disabledRegions: disabledRegions(file: file)
-        )
-    }
 }
 
 private extension TrailingSemicolonRule {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TokenSyntax) {
             if node.isTrailingSemicolon {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
@@ -45,25 +35,12 @@ private extension TrailingSemicolonRule {
         }
     }
 
-    final class Rewriter: SyntaxRewriter, ViolationsSyntaxRewriter {
-        private(set) var correctionPositions: [AbsolutePosition] = []
-        let locationConverter: SourceLocationConverter
-        let disabledRegions: [SourceRange]
-
-        init(locationConverter: SourceLocationConverter, disabledRegions: [SourceRange]) {
-            self.locationConverter = locationConverter
-            self.disabledRegions = disabledRegions
-        }
-
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: TokenSyntax) -> TokenSyntax {
-            guard
-                node.isTrailingSemicolon,
-                !node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.isTrailingSemicolon else {
                 return super.visit(node)
             }
-
-            correctionPositions.append(node.positionAfterSkippingLeadingTrivia)
+            numberOfCorrections += 1
             return .unknown("").with(\.trailingTrivia, node.trailingTrivia)
         }
     }

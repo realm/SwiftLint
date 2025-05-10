@@ -1,7 +1,7 @@
 import SwiftSyntax
 
 /// A contiguous region of Swift source code.
-public struct Region: Equatable {
+public struct Region: Equatable, Sendable {
     /// The location describing the start of the region. All locations that are less than this value
     /// (earlier in the source file) are not contained in this region.
     public let start: Location
@@ -28,7 +28,7 @@ public struct Region: Equatable {
     ///
     /// - returns: True if the specific location is contained in this region.
     public func contains(_ location: Location) -> Bool {
-        return start <= location && end >= location
+        start <= location && end >= location
     }
 
     /// Whether the specified rule is enabled in this region.
@@ -36,23 +36,34 @@ public struct Region: Equatable {
     /// - parameter rule: The rule whose status should be determined.
     ///
     /// - returns: True if the specified rule is enabled in this region.
-    public func isRuleEnabled(_ rule: Rule) -> Bool {
-        return !isRuleDisabled(rule)
+    public func isRuleEnabled(_ rule: some Rule) -> Bool {
+        !isRuleDisabled(rule)
     }
 
     /// Whether the specified rule is disabled in this region.
     ///
     /// - parameter rule: The rule whose status should be determined.
     ///
+    /// - note: For CustomRules, this will only return true if the `custom_rules` identifier
+    ///         is used with the `swiftlint` disable command, but this method is never
+    ///         called for CustomRules.
+    ///
     /// - returns: True if the specified rule is disabled in this region.
-    public func isRuleDisabled(_ rule: Rule) -> Bool {
-        guard !disabledRuleIdentifiers.contains(.all) else {
+    public func isRuleDisabled(_ rule: some Rule) -> Bool {
+        areRulesDisabled(ruleIDs: type(of: rule).description.allIdentifiers)
+    }
+
+    /// Whether the given rules are disabled in this region.
+    ///
+    /// - parameter ruleIDs: A list of rule IDs. Typically all identifiers of a single rule.
+    ///
+    /// - returns: True if the specified rules are disabled in this region.
+    public func areRulesDisabled(ruleIDs: [String]) -> Bool {
+        if disabledRuleIdentifiers.contains(.all) {
             return true
         }
-
-        let identifiersToCheck = type(of: rule).description.allIdentifiers
-        let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
-        return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
+        let regionIdentifiers = Set(disabledRuleIdentifiers.map(\.stringRepresentation))
+        return !regionIdentifiers.isDisjoint(with: ruleIDs)
     }
 
     /// Returns the deprecated rule aliases that are disabling the specified rule in this region.
@@ -61,9 +72,9 @@ public struct Region: Equatable {
     /// - parameter rule: The rule to check.
     ///
     /// - returns: Deprecated rule aliases.
-    public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
+    public func deprecatedAliasesDisabling(rule: some Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
-        return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
+        return Set(disabledRuleIdentifiers.map(\.stringRepresentation)).intersection(identifiers)
     }
 
     /// Converts this `Region` to a SwiftSyntax `SourceRange`.

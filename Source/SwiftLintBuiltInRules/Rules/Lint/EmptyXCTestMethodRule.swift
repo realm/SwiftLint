@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxRule {
+@SwiftSyntaxRule(optIn: true)
+struct EmptyXCTestMethodRule: Rule {
     var configuration = EmptyXCTestMethodConfiguration()
 
     static let description = RuleDescription(
@@ -11,28 +12,20 @@ struct EmptyXCTestMethodRule: OptInRule, ConfigurationProviderRule, SwiftSyntaxR
         nonTriggeringExamples: EmptyXCTestMethodRuleExamples.nonTriggeringExamples,
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        EmptyXCTestMethodRuleVisitor(testParentClasses: configuration.testParentClasses)
-    }
 }
 
-private final class EmptyXCTestMethodRuleVisitor: ViolationsSyntaxVisitor {
-    override var skippableDeclarations: [DeclSyntaxProtocol.Type] { .all }
-    private let testParentClasses: Set<String>
+private extension EmptyXCTestMethodRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-    init(testParentClasses: Set<String>) {
-        self.testParentClasses = testParentClasses
-        super.init(viewMode: .sourceAccurate)
-    }
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            node.isXCTestCase(configuration.testParentClasses) ? .visitChildren : .skipChildren
+        }
 
-    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        node.isXCTestCase(testParentClasses) ? .visitChildren : .skipChildren
-    }
-
-    override func visitPost(_ node: FunctionDeclSyntax) {
-        if (node.modifiers.containsOverride || node.isTestMethod) && node.hasEmptyBody {
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if (node.modifiers.contains(keyword: .override) || node.isTestMethod) && node.hasEmptyBody {
+                violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+            }
         }
     }
 }
@@ -46,6 +39,6 @@ private extension FunctionDeclSyntax {
     }
 
     var isTestMethod: Bool {
-        identifier.text.hasPrefix("test") && signature.input.parameterList.isEmpty
+        name.text.hasPrefix("test") && signature.parameterClause.parameters.isEmpty
     }
 }

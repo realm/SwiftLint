@@ -1,15 +1,6 @@
 import SourceKittenFramework
 
-/// In UIKit, a `UIImageView` was by default not an accessibility element, and would only be visible to VoiceOver
-/// and other assistive technologies if the developer explicitly made them an accessibility element. In SwiftUI,
-/// however, an `Image` is an accessibility element by default. If the developer does not explicitly hide them from
-/// accessibility or give them an accessibility label, they will inherit the name of the image file, which often creates
-/// a poor experience when VoiceOver reads things like "close icon white".
-///
-/// Known false negatives for Images declared as instance variables and containers that provide a label but are
-/// not accessibility elements. Known false positives for Images created in a separate function from where they
-/// have accessibility properties applied.
-struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptInRule {
+struct AccessibilityLabelForImageRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -17,6 +8,17 @@ struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptIn
         name: "Accessibility Label for Image",
         description: "Images that provide context should have an accessibility label or should be explicitly hidden " +
                      "from accessibility",
+        rationale: """
+        In UIKit, a `UIImageView` was by default not an accessibility element, and would only be visible to VoiceOver \
+        and other assistive technologies if the developer explicitly made them an accessibility element. In SwiftUI, \
+        however, an `Image` is an accessibility element by default. If the developer does not explicitly hide them \
+        from accessibility or give them an accessibility label, they will inherit the name of the image file, which \
+        often creates a poor experience when VoiceOver reads things like "close icon white".
+
+        Known false negatives for Images declared as instance variables and containers that provide a label but are \
+        not accessibility elements. Known false positives for Images created in a separate function from where they \
+        have accessibility properties applied.
+        """,
         kind: .lint,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: AccessibilityLabelForImageRuleExamples.nonTriggeringExamples,
@@ -25,7 +27,8 @@ struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptIn
 
     // MARK: AST Rule
 
-    func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
+    func validate(file: SwiftLintFile,
+                  kind: SwiftDeclarationKind,
                   dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // Only proceed to check View structs.
         guard kind == .struct,
@@ -47,7 +50,7 @@ struct AccessibilityLabelForImageRule: ASTRule, ConfigurationProviderRule, OptIn
 
             // If it's image, and does not hide from accessibility or provide a label, it's a violation.
             if dictionary.isImage {
-                if dictionary.isDecorativeOrLabeledOrSystemImage ||
+                if dictionary.isDecorativeOrLabeledImage ||
                   dictionary.hasAccessibilityHiddenModifier(in: file) ||
                     dictionary.hasAccessibilityLabelModifier(in: file) {
                     continue
@@ -97,19 +100,19 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     --> Image(decorative: "myImage").resizable
         //         --> Image
-        return substructure.contains(where: { $0.isImage })
+        return substructure.contains(where: \.isImage)
     }
 
     /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor (hides
-    /// from a11y), or one of the `Image(_:label:)` or `Image(systemName:)` constructors (provides label).
-    var isDecorativeOrLabeledOrSystemImage: Bool {
+    /// from a11y), or the `Image(_:label:)` constructors (which provide labels).
+    var isDecorativeOrLabeledImage: Bool {
         guard isImage else {
             return false
         }
 
-        // Check for Image(decorative:), Image(_:label:), or Image(systemName:) constructor.
+        // Check for Image(decorative:) or Image(_:label:) constructor.
         if expressionKind == .call &&
-            enclosedArguments.contains(where: { ["decorative", "label", "systemName"].contains($0.name) }) {
+            enclosedArguments.contains(where: { ["decorative", "label"].contains($0.name) }) {
             return true
         }
 
@@ -118,13 +121,13 @@ private extension SourceKittenDictionary {
         // Image(decorative: "myImage").resizable().frame
         //     --> Image(decorative: "myImage").resizable
         //         --> Image
-        return substructure.contains(where: { $0.isDecorativeOrLabeledOrSystemImage })
+        return substructure.contains(where: \.isDecorativeOrLabeledImage)
     }
 
     /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`
     /// or `accessibility(label:)` modifier.
     func hasAccessibilityLabelModifier(in file: SwiftLintFile) -> Bool {
-        return hasModifier(
+        hasModifier(
             anyOf: [
                 SwiftUIModifier(
                     name: "accessibilityLabel",
@@ -133,7 +136,7 @@ private extension SourceKittenDictionary {
                 SwiftUIModifier(
                     name: "accessibility",
                     arguments: [.init(name: "label", values: [])]
-                )
+                ),
             ],
             in: file
         )

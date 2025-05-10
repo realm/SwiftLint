@@ -1,0 +1,21 @@
+name: Stale Issues
+
+on:
+  schedule:
+    - cron: '0 0 15 * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  close-stale-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Mark or close stale issues
+        run: |
+          ./tools/stale-issues.rb ${{ github.repository }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

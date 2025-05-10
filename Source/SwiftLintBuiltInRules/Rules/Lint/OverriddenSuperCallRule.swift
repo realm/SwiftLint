@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct OverriddenSuperCallRule: Rule {
     var configuration = OverriddenSuperCallConfiguration()
 
     static let description = RuleDescription(
@@ -45,7 +46,7 @@ struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptI
                     }
                 }
             }
-            """)
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -70,34 +71,21 @@ struct OverriddenSuperCallRule: ConfigurationProviderRule, SwiftSyntaxRule, OptI
                 override func didReceiveMemoryWarning() {↓
                 }
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(resolvedMethodNames: configuration.resolvedMethodNames)
-    }
 }
 
 private extension OverriddenSuperCallRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let resolvedMethodNames: [String]
-
-        override var skippableDeclarations: [DeclSyntaxProtocol.Type] {
-            [ProtocolDeclSyntax.self]
-        }
-
-        init(resolvedMethodNames: [String]) {
-            self.resolvedMethodNames = resolvedMethodNames
-            super.init(viewMode: .sourceAccurate)
-        }
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard let body = node.body,
-                  node.modifiers.containsOverride,
+                  node.modifiers.contains(keyword: .override),
                   !node.modifiers.containsStaticOrClass,
-                  case let name = node.resolvedName(),
-                  resolvedMethodNames.contains(name) else {
+                  case let name = node.resolvedName,
+                  configuration.resolvedMethodNames.contains(name) else {
                 return
             }
 

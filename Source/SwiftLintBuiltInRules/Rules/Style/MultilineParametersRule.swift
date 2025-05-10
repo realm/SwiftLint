@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineParametersRule: Rule {
     var configuration = MultilineParametersConfiguration()
 
     static let description = RuleDescription(
@@ -11,26 +12,13 @@ struct MultilineParametersRule: SwiftSyntaxRule, OptInRule, ConfigurationProvide
         nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(allowsSingleLine: configuration.allowsSingleLine, locationConverter: file.locationConverter)
-    }
 }
 
 private extension MultilineParametersRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let allowsSingleLine: Bool
-        private let locationConverter: SourceLocationConverter
-
-        init(allowsSingleLine: Bool, locationConverter: SourceLocationConverter) {
-            self.allowsSingleLine = allowsSingleLine
-            self.locationConverter = locationConverter
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if containsViolation(for: node.signature) {
-                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+                violations.append(node.name.positionAfterSkippingLeadingTrivia)
             }
         }
 
@@ -41,7 +29,7 @@ private extension MultilineParametersRule {
         }
 
         private func containsViolation(for signature: FunctionSignatureSyntax) -> Bool {
-            let parameterPositions = signature.input.parameterList.map(\.positionAfterSkippingLeadingTrivia)
+            let parameterPositions = signature.parameterClause.parameters.map(\.positionAfterSkippingLeadingTrivia)
             guard parameterPositions.isNotEmpty else {
                 return false
             }
@@ -50,15 +38,18 @@ private extension MultilineParametersRule {
             var linesWithParameters = Set<Int>()
 
             for position in parameterPositions {
-                guard let line = locationConverter.location(for: position).line else {
-                    continue
-                }
-
+                let line = locationConverter.location(for: position).line
                 linesWithParameters.insert(line)
                 numberOfParameters += 1
             }
 
-            guard linesWithParameters.count > (allowsSingleLine ? 1 : 0),
+            if let maxNumberOfSingleLineParameters = configuration.maxNumberOfSingleLineParameters,
+               configuration.allowsSingleLine,
+               numberOfParameters > maxNumberOfSingleLineParameters {
+                return true
+            }
+
+            guard linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
                   numberOfParameters != linesWithParameters.count else {
                 return false
             }

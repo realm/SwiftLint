@@ -1,6 +1,7 @@
 import SwiftSyntax
 
-struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ObjectLiteralRule: Rule {
     var configuration = ObjectLiteralConfiguration<Self>()
 
     static let description = RuleDescription(
@@ -16,7 +17,7 @@ struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule 
             Example("let color = UIColor(red: value, green: value, blue: value, alpha: 1)"),
             Example("let image = NSImage(named: aVariable)"),
             Example("let image = NSImage(named: \"interpolated \\(variable)\")"),
-            Example("let color = NSColor(red: value, green: value, blue: value, alpha: 1)")
+            Example("let color = NSColor(red: value, green: value, blue: value, alpha: 1)"),
         ],
         triggeringExamples: ["", ".init"].flatMap { (method: String) -> [Example] in
             ["UI", "NS"].flatMap { (prefix: String) -> [Example] in
@@ -25,45 +26,32 @@ struct ObjectLiteralRule: SwiftSyntaxRule, ConfigurationProviderRule, OptInRule 
                     Example("let color = ↓\(prefix)Color\(method)(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)"),
                     // swiftlint:disable:next line_length
                     Example("let color = ↓\(prefix)Color\(method)(red: 100 / 255.0, green: 50 / 255.0, blue: 0, alpha: 1)"),
-                    Example("let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)")
+                    Example("let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)"),
                 ]
             }
         }
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(validateImageLiteral: configuration.imageLiteral, validateColorLiteral: configuration.colorLiteral)
-    }
 }
 
 private extension ObjectLiteralRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        private let validateImageLiteral: Bool
-        private let validateColorLiteral: Bool
-
-        init(validateImageLiteral: Bool, validateColorLiteral: Bool) {
-            self.validateImageLiteral = validateImageLiteral
-            self.validateColorLiteral = validateColorLiteral
-            super.init(viewMode: .sourceAccurate)
-        }
-
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard validateColorLiteral || validateImageLiteral else {
+            guard configuration.colorLiteral || configuration.imageLiteral else {
                 return
             }
 
             let name = node.calledExpression.trimmedDescription
-            if validateImageLiteral, isImageNamedInit(node: node, name: name) {
+            if configuration.imageLiteral, isImageNamedInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
-            } else if validateColorLiteral, isColorInit(node: node, name: name) {
+            } else if configuration.colorLiteral, isColorInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         private func isImageNamedInit(node: FunctionCallExprSyntax, name: String) -> Bool {
             guard inits(forClasses: ["UIImage", "NSImage"]).contains(name),
-                  node.argumentList.compactMap(\.label?.text) == ["named"],
-                  let argument = node.argumentList.first?.expression.as(StringLiteralExprSyntax.self),
+                  node.arguments.compactMap(\.label?.text) == ["named"],
+                  let argument = node.arguments.first?.expression.as(StringLiteralExprSyntax.self),
                   argument.isConstantString else {
                 return false
             }
@@ -73,21 +61,19 @@ private extension ObjectLiteralRule {
 
         private func isColorInit(node: FunctionCallExprSyntax, name: String) -> Bool {
             guard inits(forClasses: ["UIColor", "NSColor"]).contains(name),
-                case let argumentsNames = node.argumentList.compactMap(\.label?.text),
+                  case let argumentsNames = node.arguments.compactMap(\.label?.text),
                 argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"] else {
                     return false
             }
 
-            return node.argumentList.allSatisfy { elem in
-                elem.expression.canBeExpressedAsColorLiteralParams
-            }
+            return node.arguments.allSatisfy(\.expression.canBeExpressedAsColorLiteralParams)
         }
 
         private func inits(forClasses names: [String]) -> [String] {
-            return names.flatMap { name in
+            names.flatMap { name in
                 [
                     name,
-                    name + ".init"
+                    name + ".init",
                 ]
             }
         }

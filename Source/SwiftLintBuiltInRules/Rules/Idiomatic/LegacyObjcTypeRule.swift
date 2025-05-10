@@ -25,11 +25,12 @@ private let legacyObjcTypes = [
     "NSURLComponents",
     "NSURLQueryItem",
     "NSURLRequest",
-    "NSUUID"
+    "NSUUID",
 ]
 
-struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+@SwiftSyntaxRule(optIn: true)
+struct LegacyObjcTypeRule: Rule {
+    var configuration = LegacyObjcTypeConfiguration()
 
     static let description = RuleDescription(
         identifier: "legacy_objc_type",
@@ -37,12 +38,18 @@ struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
         description: "Prefer Swift value types to bridged Objective-C reference types",
         kind: .idiomatic,
         nonTriggeringExamples: [
-            Example("var array = Array<Int>()\n"),
+            Example("var array = Array<Int>()"),
             Example("var calendar: Calendar? = nil"),
             Example("var formatter: NSDataDetector"),
             Example("var className: String = NSStringFromClass(MyClass.self)"),
             Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#)
+            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#),
+            Example(#"""
+            class SLURLRequest: NSURLRequest {
+                let data = NSData()
+                let number: NSNumber
+            }
+            """#, configuration: ["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
         ],
         triggeringExamples: [
             Example("var array = ↓NSArray()"),
@@ -62,37 +69,33 @@ struct LegacyObjcTypeRule: SwiftSyntaxRule, OptInRule, ConfigurationProviderRule
                     return Foundation.Notification.Name("org.wordpress.reachability.changed")
                 }
             }
-            """)
+            """),
         ]
     )
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 private extension LegacyObjcTypeRule {
-    final class Visitor: ViolationsSyntaxVisitor {
-        override func visitPost(_ node: SimpleTypeIdentifierSyntax) {
-            if let typeName = node.typeName, legacyObjcTypes.contains(typeName) {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: IdentifierTypeSyntax) {
+            if let name = node.typeName, isViolatingType(name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        override func visitPost(_ node: IdentifierExprSyntax) {
-            if legacyObjcTypes.contains(node.identifier.text) {
-                violations.append(node.identifier.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: DeclReferenceExprSyntax) {
+            if isViolatingType(node.baseName.text) {
+                violations.append(node.baseName.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        override func visitPost(_ node: MemberTypeIdentifierSyntax) {
-            guard node.baseType.as(SimpleTypeIdentifierSyntax.self)?.typeName == "Foundation",
-               legacyObjcTypes.contains(node.name.text)
-            else {
-                return
+        override func visitPost(_ node: MemberTypeSyntax) {
+            if node.baseType.as(IdentifierTypeSyntax.self)?.typeName == "Foundation", isViolatingType(node.name.text) {
+                violations.append(node.name.positionAfterSkippingLeadingTrivia)
             }
+        }
 
-            violations.append(node.name.positionAfterSkippingLeadingTrivia)
+        private func isViolatingType(_ name: String) -> Bool {
+            legacyObjcTypes.contains(name) && !configuration.allowedTypes.contains(name)
         }
     }
 }

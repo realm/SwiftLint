@@ -22,6 +22,25 @@ struct RedundantDiscardableLetRule: Rule {
                     return Text("Hello, World!")
                 }
                 """, configuration: ["ignore_swiftui_view_bodies": true]),
+            Example("""
+                @ViewBuilder
+                func bar() -> some View {
+                    let _ = foo()
+                    Text("Hello, World!")
+                }
+                """, configuration: ["ignore_swiftui_view_bodies": true]),
+            Example("""
+                #Preview {
+                    let _ = foo()
+                    Text("Hello, World!")
+                }
+                """, configuration: ["ignore_swiftui_view_bodies": true]),
+            Example("""
+                static var previews: some View {
+                    let _ = foo()
+                    Text("Hello, World!")
+                }
+                """, configuration: ["ignore_swiftui_view_bodies": true]),
         ],
         triggeringExamples: [
             Example("↓let _ = foo()"),
@@ -29,6 +48,25 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 var body: some View {
                     ↓let _ = foo()
+                    Text("Hello, World!")
+                }
+                """),
+            Example("""
+                @ViewBuilder
+                func bar() -> some View {
+                    let _ = foo()
+                    return Text("Hello, World!")
+                }
+                """),
+            Example("""
+                #Preview {
+                    let _ = foo()
+                    return Text("Hello, World!")
+                }
+                """),
+            Example("""
+                static var previews: some View {
+                    let _ = foo()
                     Text("Hello, World!")
                 }
                 """),
@@ -50,7 +88,7 @@ private extension RedundantDiscardableLetRule {
         private var codeBlockScopes = Stack<CodeBlockKind>()
 
         override func visit(_ node: AccessorBlockSyntax) -> SyntaxVisitorContinueKind {
-            codeBlockScopes.push(node.isViewBody ? .view : .normal)
+            codeBlockScopes.push(node.isViewBody || node.isPreviewProviderBody ? .view : .normal)
             return .visitChildren
         }
 
@@ -58,12 +96,21 @@ private extension RedundantDiscardableLetRule {
             codeBlockScopes.pop()
         }
 
-        override func visit(_: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
-            codeBlockScopes.push(.normal)
+        override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
+            codeBlockScopes.push(node.isViewBuilderFunctionBody ? .view : .normal)
             return .visitChildren
         }
 
         override func visitPost(_: CodeBlockSyntax) {
+            codeBlockScopes.pop()
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            codeBlockScopes.push(node.isPreviewMacroBody ? .view : .normal)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ClosureExprSyntax) {
             codeBlockScopes.pop()
         }
 
@@ -97,6 +144,58 @@ private extension AccessorBlockSyntax {
             return type.someOrAnySpecifier.text == "some"
                 && type.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
                 && binding.parent?.parent?.is(VariableDeclSyntax.self) == true
+        }
+        return false
+    }
+
+    var isPreviewProviderBody: Bool {
+        guard let binding = parent?.as(PatternBindingSyntax.self),
+              binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text == "previews",
+              let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
+              let variableDecl = bindingList.parent?.as(VariableDeclSyntax.self) else {
+            return false
+        }
+
+        guard variableDecl.modifiers.contains(keyword: .static) &&
+                variableDecl.bindingSpecifier.tokenKind == .keyword(.var) else {
+            return false
+        }
+
+        if let type = binding.typeAnnotation?.type.as(SomeOrAnyTypeSyntax.self) {
+            return type.someOrAnySpecifier.text == "some" &&
+                type.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
+        }
+
+        return false
+    }
+}
+
+private extension CodeBlockSyntax {
+    var isViewBuilderFunctionBody: Bool {
+        parent?.as(FunctionDeclSyntax.self)?.isViewBuilderFunction == true
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isViewBuilderFunction: Bool {
+        guard attributes.contains(attributeNamed: "ViewBuilder") else {
+            return false
+        }
+
+        guard let returnType = signature.returnClause?.type.as(SomeOrAnyTypeSyntax.self) else {
+            return false
+        }
+
+        return returnType.someOrAnySpecifier.text == "some" &&
+            returnType.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
+    }
+}
+
+private extension ClosureExprSyntax {
+    var isPreviewMacroBody: Bool {
+        if let macroExpansionExpr = parent?.as(MacroExpansionExprSyntax.self),
+           macroExpansionExpr.macroName.text == "Preview" {
+            return true
         }
         return false
     }

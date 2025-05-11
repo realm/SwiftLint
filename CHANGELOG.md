@@ -35,6 +35,8 @@
   or other error.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#6052](https://github.com/realm/SwiftLint/issues/6052)
+* Fix false positives in `redundant_discardable_let` when `ignore_swiftui_view_bodies` is enabled.
+  [kaseken](https://github.com/kaseken)
 
 ## 0.59.1: Crisp Spring Clean
 

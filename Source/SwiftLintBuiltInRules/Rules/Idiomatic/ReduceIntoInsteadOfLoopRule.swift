@@ -1,10 +1,10 @@
 import SwiftSyntax
 
-typealias ReferencedVariable = ReduceIntoInsteadOfLoop.ReferencedVariable
-typealias CollectionType = ReduceIntoInsteadOfLoop.CollectionType
+typealias ReferencedVariable = ReduceIntoInsteadOfLoopRule.ReferencedVariable
+typealias CollectionType = ReduceIntoInsteadOfLoopRule.CollectionType
 
 @SwiftSyntaxRule
-struct ReduceIntoInsteadOfLoop: Rule {
+struct ReduceIntoInsteadOfLoopRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,12 +12,12 @@ struct ReduceIntoInsteadOfLoop: Rule {
         name: "Reduce Into Instead Of Loop",
         description: "Prefer using reduce(into:) instead of a loop",
         kind: .idiomatic,
-        nonTriggeringExamples: ReduceIntoInsteadOfLoopExamples.nonTriggeringExamples,
-        triggeringExamples: ReduceIntoInsteadOfLoopExamples.triggeringExamples
+        nonTriggeringExamples: ReduceIntoInsteadOfLoopRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ReduceIntoInsteadOfLoopRuleExamples.triggeringExamples
     )
 }
 
-internal extension ReduceIntoInsteadOfLoop {
+internal extension ReduceIntoInsteadOfLoopRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: CodeBlockItemListSyntax) {
             // reduce into forInStmts and variableDecls map
@@ -59,7 +59,7 @@ internal extension ReduceIntoInsteadOfLoop {
     ]
 
     static let collectionNames: [String: CollectionType] =
-        ReduceIntoInsteadOfLoop.collectionTypes.reduce(into: [String: CollectionType]()) { partialResult, type in
+    ReduceIntoInsteadOfLoopRule.collectionTypes.reduce(into: [String: CollectionType]()) { partialResult, type in
             partialResult[type.name] = type
         }
 }

@@ -1,8 +1,8 @@
 import SwiftSyntax
 
-typealias ReduceIntoInsteadOfLoopModels = ReduceIntoInsteadOfLoop
+typealias ReduceIntoInsteadOfLoopModels = ReduceIntoInsteadOfLoopRule
 
-internal extension ReduceIntoInsteadOfLoop {
+internal extension ReduceIntoInsteadOfLoopRule {
     struct ReferencedVariable: Hashable {
         let name: String
         let position: AbsolutePosition

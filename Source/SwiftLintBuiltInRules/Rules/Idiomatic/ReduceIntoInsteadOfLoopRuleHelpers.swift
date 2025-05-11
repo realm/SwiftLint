@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-struct ReduceIntoInsteadOfLoopHelpers { }
+struct ReduceIntoInsteadOfLoopRuleHelpers { }
 
 extension PatternBindingListSyntax {
     func optionalIndex(after: PatternBindingListSyntax.Index?) -> PatternBindingListSyntax.Index? {

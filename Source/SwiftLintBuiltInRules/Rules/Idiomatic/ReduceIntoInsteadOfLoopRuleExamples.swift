@@ -1,4 +1,4 @@
-internal struct ReduceIntoInsteadOfLoopExamples {
+internal struct ReduceIntoInsteadOfLoopRuleExamples {
     static let nonTriggeringExamples: [Example] = [
 //        Example("""
 //        class Foo {

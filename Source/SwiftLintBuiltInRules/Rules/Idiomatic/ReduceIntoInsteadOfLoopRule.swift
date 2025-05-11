@@ -75,7 +75,9 @@ private extension CodeBlockItemListSyntax {
                 assertionFailure("Unreachable")
                 return
             }
-            guard codeBlockItem.kind == .forStmt, let forStmt = codeBlockItem.item.as(ForStmtSyntax.self), forStmt.inKeyword == .keyword(.in) else {
+            guard codeBlockItem.item.kind == .forStmt,
+                  let forStmt = codeBlockItem.item.as(ForStmtSyntax.self),
+                  forStmt.inKeyword.tokenKind == .keyword(.in) else {
                 return
             }
             guard let lastEncountered = partialResult.last else {

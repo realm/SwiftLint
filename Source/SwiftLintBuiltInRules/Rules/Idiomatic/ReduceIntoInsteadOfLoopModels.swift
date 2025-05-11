@@ -36,18 +36,18 @@ internal extension ReduceIntoInsteadOfLoop {
         let name: String
         let genericArguments: Int
 
-        static let types: [CollectionType] = [
+        static let types: [Self] = [
             .set,
             .array,
-            .dictionary
+            .dictionary,
         ]
 
-        static let array = CollectionType(name: "Array", genericArguments: 1)
-        static let set = CollectionType(name: "Set", genericArguments: 1)
-        static let dictionary = CollectionType(name: "Dictionary", genericArguments: 2)
+        static let array = Self(name: "Array", genericArguments: 1)
+        static let set = Self(name: "Set", genericArguments: 1)
+        static let dictionary = Self(name: "Dictionary", genericArguments: 2)
 
-        static let names: [String: CollectionType] = {
-            return CollectionType.types.reduce(into: [String: CollectionType]()) { partialResult, collectionType in
+        static let names: [String: Self] = {
+            Self.types.reduce(into: [String: Self]()) { partialResult, collectionType in
                 partialResult[collectionType.name] = collectionType
             }
         }()

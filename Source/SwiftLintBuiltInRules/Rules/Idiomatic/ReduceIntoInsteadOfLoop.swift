@@ -3,7 +3,8 @@ import SwiftSyntax
 typealias ReferencedVariable = ReduceIntoInsteadOfLoop.ReferencedVariable
 typealias CollectionType = ReduceIntoInsteadOfLoop.CollectionType
 
-struct ReduceIntoInsteadOfLoop: ConfigurationProviderRule, SwiftSyntaxRule, OptInRule {
+@SwiftSyntaxRule
+struct ReduceIntoInsteadOfLoop: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -14,26 +15,20 @@ struct ReduceIntoInsteadOfLoop: ConfigurationProviderRule, SwiftSyntaxRule, OptI
         nonTriggeringExamples: ReduceIntoInsteadOfLoopExamples.nonTriggeringExamples,
         triggeringExamples: ReduceIntoInsteadOfLoopExamples.triggeringExamples
     )
-
-    init() {}
-
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor {
-        Visitor(viewMode: .sourceAccurate)
-    }
 }
 
 internal extension ReduceIntoInsteadOfLoop {
-    final class Visitor: ViolationsSyntaxVisitor {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: CodeBlockItemListSyntax) {
             // reduce into forInStmts and variableDecls map
             guard let all = node.allVariableDeclsForInStatmts() else {
                 return
             }
             // reduce variableDecls into the ones we're interested in
-            let selected = all.reduce(into: [ForInStmtSyntax: [VariableDeclSyntax]]()) { partialResult, element in
+            let selected = all.reduce(into: [ForStmtSyntax: [VariableDeclSyntax]]()) { partialResult, element in
                 // we're interested fully type declared and implicitly declared by initializer
                 let interestingVariableDecls = element.value.filter { variableDecl in
-                    return variableDecl.isTypeAnnotatedAndInitializer
+                    variableDecl.isTypeAnnotatedAndInitializer
                         || variableDecl.isCollectionTypeInitializer
                 }
                 guard !interestingVariableDecls.isEmpty else {
@@ -60,56 +55,59 @@ internal extension ReduceIntoInsteadOfLoop {
     static let collectionTypes: [CollectionType] = [
         CollectionType(name: "Set", genericArguments: 1),
         CollectionType(name: "Array", genericArguments: 1),
-        CollectionType(name: "Dictionary", genericArguments: 2)
+        CollectionType(name: "Dictionary", genericArguments: 2),
     ]
 
     static let collectionNames: [String: CollectionType] =
         ReduceIntoInsteadOfLoop.collectionTypes.reduce(into: [String: CollectionType]()) { partialResult, type in
-            return partialResult[type.name] = type
+            partialResult[type.name] = type
         }
 }
 
 private extension CodeBlockItemListSyntax {
     /// Returns a dictionary with all VariableDecls preceding a ForInStmt, at the same scope level
-    func allVariableDeclsForInStatmts() -> [ForInStmtSyntax: [VariableDeclSyntax]]? {
+    func allVariableDeclsForInStatmts() -> [ForStmtSyntax: [VariableDeclSyntax]]? {
         typealias IndexRange = Range<Self.Index>
-        typealias IndexRangeForStmts = (IndexRange, ForInStmtSyntax)
-        typealias IndexRangeStmts = (IndexRange, CodeBlockItemSyntax)
-        // collect all ForInStmts and track their index ranges
-        let indexed: [IndexRangeForStmts] = self.reduce(into: [IndexRangeStmts]()) { partialResult, codeBlockItem in
-            guard codeBlockItem.is(ForInStmtSyntax.self) else {
+        typealias IndexRangeForStmts = (range: IndexRange, forStmt: ForStmtSyntax)
+        // Collect all ForInStmts and track their index ranges
+        let indexRangeForStatements: [IndexRangeForStmts] = self.reduce(into: [IndexRangeForStmts]()) { partialResult, codeBlockItem in
+            guard let codeBlockItemIndex = self.index(of: codeBlockItem) else {
+                assertionFailure("Unreachable")
                 return
             }
-            // Not sure whether ForInStmtSyntax.index == CodeBlockItem.index
-            guard let last = partialResult.last else {
-                partialResult.append((self.startIndex..<codeBlockItem.index, codeBlockItem))
+            guard codeBlockItem.kind == .forStmt, let forStmt = codeBlockItem.item.as(ForStmtSyntax.self), forStmt.inKeyword == .keyword(.in) else {
                 return
             }
-            let start = self.index(after: last.1.index)
-            partialResult.append((start..<codeBlockItem.index, codeBlockItem))
-        }.compactMap { element in
-            let (range, codeBlockItem) = element
-            guard let forInStmt = codeBlockItem.as(ForInStmtSyntax.self) else {
-                return nil
+            guard let lastEncountered = partialResult.last else {
+                // First item encountered
+                partialResult.append((range: self.startIndex..<codeBlockItemIndex, forStmt: forStmt))
+                return
             }
-            return (range, forInStmt)
+            // Start where the lastEncountered ended
+            let start = self.index(after: lastEncountered.range.upperBound)
+            partialResult.append((range: start..<codeBlockItemIndex, forStmt: forStmt))
         }
-        guard !indexed.isEmpty else {
+        guard !indexRangeForStatements.isEmpty else {
             return nil
         }
-        // only VariableDecls on same level of scope of the ForInStmt.
-        let result = self.reduce(into: [ForInStmtSyntax: [VariableDeclSyntax]]()) { partialResult, codeBlockItem in
-            guard let variableDecl = codeBlockItem.as(VariableDeclSyntax.self) else {
+        // Only VariableDecls on same level of scope of the ForInStmt.
+        let result = self.reduce(into: [ForStmtSyntax: [VariableDeclSyntax]]()) { partialResult, codeBlockItem in
+            guard let codeBlockItemIndex = self.index(of: codeBlockItem) else {
+                assertionFailure("Unreachable")
                 return
             }
-            guard let matchingForInStmt = indexed.first(where: { element in
+            guard let variableDecl = codeBlockItem.item.as(VariableDeclSyntax.self) else {
+                return
+            }
+            guard let matchingForInStmt = indexRangeForStatements.first(where: { element in
                 let (range, _) = element
-                return range.contains(codeBlockItem.index)
+                return range.contains(codeBlockItemIndex)
             }) else {
                 return
             }
             let (_, forInStmt) = matchingForInStmt
             let array = partialResult[forInStmt, default: []]
+            // Add variable declaration
             partialResult[forInStmt] = array + [variableDecl]
         }
         return result.isEmpty ? nil : result
@@ -124,10 +122,10 @@ private extension VariableDeclSyntax {
             return false
         }
         //  Is type-annotated, and initialized?
-        guard let typeAnnotationIndex = self.next(after: idIndex),
-              let typeAnnotation = typeAnnotationIndex.as(TypeAnnotationSyntax.self),
+        guard let patternBindingSyntax = self.next(after: idIndex),
+              let typeAnnotation = patternBindingSyntax.typeAnnotation,
               let type = typeAnnotation.collectionDeclarationType(),
-              let initializerClause = self.next(after: typeAnnotationIndex)?.as(InitializerClauseSyntax.self) else {
+              let initializerClause = self.next(after: patternBindingSyntax)?.initializer else {
             return false
         }
         return initializerClause.isTypeInitializer(for: type)
@@ -136,12 +134,18 @@ private extension VariableDeclSyntax {
     /// Is initialized with empty collection: `= Set<Int>(), = Array<Int>(), = Dictionary[:]`
     /// but a couple of more, see `InitializerClauseExprSyntax.isCollectionInitializer`
     var isCollectionTypeInitializer: Bool {
-        guard self.isVar && self.identifier != nil,
-              let idIndex = self.firstIndexOf(IdentifierPatternSyntax.self) else {
+        guard self.isVar && self.identifier != nil else {
             return false
         }
-        let initializerClause = self.next(after: idIndex, of: InitializerClauseSyntax.self)
-        guard initializerClause?.isTypeInitializer() ?? false else {
+        guard let initializerClausePatternBinding = self.bindings.first(where: { patternBindingSyntax in
+            patternBindingSyntax.initializer != nil
+        }) else {
+            return false
+        }
+        guard let initializerClause = initializerClausePatternBinding.initializer else {
+            return false
+        }
+        guard initializerClause.isTypeInitializer() else {
             return false
         }
         return true
@@ -149,24 +153,26 @@ private extension VariableDeclSyntax {
 }
 
 private extension TypeAnnotationSyntax {
+    /// Returns one of the collection types we define
     func collectionDeclarationType() -> CollectionType? {
         if let genericTypeName = self.genericCollectionDeclarationType() {
             return genericTypeName
-        } else if let array = self.arrayDeclarationType() {
-            return array
-        } else if let dictionary = self.dictionaryDeclarationType() {
-            return dictionary
-        } else {
-            return nil
         }
+        if let array = self.arrayDeclarationType() {
+            return array
+        }
+        if let dictionary = self.dictionaryDeclarationType() {
+            return dictionary
+        }
+        return nil
     }
 
     /// var x: Set<>, var x: Array<>, var x: Dictionary<>
     func genericCollectionDeclarationType() -> CollectionType? {
-        guard let simpleTypeIdentifier = self.type.as(SimpleTypeIdentifierSyntax.self),
+        guard let simpleTypeIdentifier = self.type.as(IdentifierTypeSyntax.self),
               let genericArgumentClause = simpleTypeIdentifier.genericArgumentClause,
-              genericArgumentClause.leftAngleBracket.tokenKind == .leftAngle,
-              genericArgumentClause.rightAngleBracket.tokenKind == .rightAngle,
+              genericArgumentClause.leftAngle.tokenKind == .leftAngle,
+              genericArgumentClause.rightAngle.tokenKind == .rightAngle,
               case .identifier(let name) = simpleTypeIdentifier.name.tokenKind,
               let collectionType = CollectionType.names[name],
               genericArgumentClause.arguments.count == collectionType.genericArguments else {
@@ -178,9 +184,9 @@ private extension TypeAnnotationSyntax {
     /// var x: [Y]
     func arrayDeclarationType() -> CollectionType? {
         guard let arrayType = self.type.as(ArrayTypeSyntax.self),
-              case .leftSquareBracket = arrayType.leftSquareBracket.tokenKind,
-              case .rightSquareBracket = arrayType.rightSquareBracket.tokenKind,
-              arrayType.elementType.kind == .simpleTypeIdentifier else {
+              case .leftSquare = arrayType.leftSquare.tokenKind,
+              case .rightSquare = arrayType.rightSquare.tokenKind,
+              arrayType.element.kind == .identifierType else {
             return nil
         }
         return .array
@@ -189,8 +195,8 @@ private extension TypeAnnotationSyntax {
     /// var x: [K: V]
     func dictionaryDeclarationType() -> CollectionType? {
         guard let dictionaryType = self.type.as(DictionaryTypeSyntax.self),
-              case .leftSquareBracket = dictionaryType.leftSquareBracket.tokenKind,
-              case .rightSquareBracket = dictionaryType.rightSquareBracket.tokenKind,
+              case .leftSquare = dictionaryType.leftSquare.tokenKind,
+              case .rightSquare = dictionaryType.rightSquare.tokenKind,
               case .colon = dictionaryType.colon.tokenKind else {
             return nil
         }
@@ -212,22 +218,23 @@ private extension InitializerClauseSyntax {
         func isSupportedType(with name: String) -> Bool {
             if let collectionType {
                 return collectionType.name == name
-            } else {
-                return CollectionType.names[name] != nil
             }
+            return CollectionType.names[name] != nil
         }
         guard self.equal.tokenKind == .equal else { return false }
         if let functionCallExpr = self.value.as(FunctionCallExprSyntax.self) {
             // either construction using explicit specialisation, or general construction
-            if let specializeExpr = functionCallExpr.calledExpression.as(SpecializeExprSyntax.self),
-               let identifierExpr = specializeExpr.expression.as(IdentifierExprSyntax.self),
-               case .identifier(let typename) = identifierExpr.identifier.tokenKind {
+            if let specializeExpr = functionCallExpr.calledExpression.as(GenericSpecializationExprSyntax.self),
+               let identifierExpr = specializeExpr.expression.as(DeclReferenceExprSyntax.self),
+               case .identifier(let typename) = identifierExpr.baseName.tokenKind {
                 return isSupportedType(with: typename)
-            } else if let identifierExpr = functionCallExpr.calledExpression.as(IdentifierExprSyntax.self),
-                      case .identifier(let typename) = identifierExpr.identifier.tokenKind {
+            }
+            if let identifierExpr = functionCallExpr.calledExpression.as(DeclReferenceExprSyntax.self),
+                      case .identifier(let typename) = identifierExpr.baseName.tokenKind {
                 return isSupportedType(with: typename)
-            } else if let memberAccessExpr = functionCallExpr.calledExpression.as(MemberAccessExprSyntax.self),
-                      memberAccessExpr.name.tokenKind == .keyword(.`init`) {
+            }
+            if let memberAccessExpr = functionCallExpr.calledExpression.as(MemberAccessExprSyntax.self),
+                      memberAccessExpr.declName.baseName.tokenKind == .keyword(.`init`) {
                 return true
             }
         } else if collectionType == .dictionary,
@@ -241,13 +248,12 @@ private extension InitializerClauseSyntax {
     }
 }
 
-private extension ForInStmtSyntax {
+private extension ForStmtSyntax {
     func referencedVariables(for variables: [VariableDeclSyntax]?) -> Set<ReferencedVariable>? {
-        guard let variables, !variables.isEmpty,
-              let codeBlock = self.body.as(CodeBlockSyntax.self),
-              let codeBlockItemList = codeBlock.statements.as(CodeBlockItemListSyntax.self) else {
+        guard let variables, !variables.isEmpty else {
             return nil
         }
+        let codeBlockItemList = self.body.statements
         let references: Set<ReferencedVariable> = codeBlockItemList.reduce(into: .init(), { partialResult, codeBlock in
             // no need to cover one liner: someMutation(); someOtherMutation()
             variables.forEach { variableDecl in
@@ -285,17 +291,16 @@ private extension FunctionCallExprSyntax {
         guard self.leftParen?.tokenKind == .leftParen,
               self.rightParen?.tokenKind == .rightParen,
               let memberAccessExpr = self.calledExpression.as(MemberAccessExprSyntax.self),
-              memberAccessExpr.dot.tokenKind == .period,
-              let arguments = self.argumentList.as(TupleExprElementListSyntax.self)?.count,
-              let identifierExpr = memberAccessExpr.base?.as(IdentifierExprSyntax.self),
-              identifierExpr.identifier.tokenKind == .identifier(varName),
-              case .identifier(let name) = memberAccessExpr.name.tokenKind else {
+              memberAccessExpr.period.tokenKind == .period,
+              let identifierExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
+              identifierExpr.baseName.tokenKind == .identifier(varName),
+              case .identifier(let name) = memberAccessExpr.declName.baseName.tokenKind else {
             return nil
         }
         return .init(
             name: varName,
             position: memberAccessExpr.positionAfterSkippingLeadingTrivia,
-            kind: .method(name: name, arguments: arguments)
+            kind: .method(name: name, arguments: self.arguments.count)
         )
     }
 }
@@ -303,19 +308,19 @@ private extension FunctionCallExprSyntax {
 private extension SequenceExprSyntax {
     /// varName[xxx] = ...
     func referencedVariable(for varName: String) -> ReferencedVariable? {
-        guard let exprList = self.as(ExprListSyntax.self), exprList.count >= 2 else {
+        let exprList = self.elements
+        guard exprList.count >= 2 else {
             return nil
         }
         let first = exprList.startIndex
         let second = exprList.index(after: first)
-        guard let subscrExpr = exprList[first].as(SubscriptExprSyntax.self),
+        guard let subscrExpr = exprList[first].as(SubscriptCallExprSyntax.self),
               let assignmentExpr = exprList[second].as(AssignmentExprSyntax.self),
-              assignmentExpr.assignToken.text == "=",
-              subscrExpr.leftBracket.tokenKind == .leftSquareBracket,
-              subscrExpr.rightBracket.tokenKind == .rightSquareBracket,
-              subscrExpr.argumentList.is(TupleExprElementListSyntax.self),
-              let identifierExpr = subscrExpr.calledExpression.as(IdentifierExprSyntax.self),
-              identifierExpr.identifier.tokenKind == .identifier(varName) else {
+              assignmentExpr.equal.text == "=",
+              subscrExpr.leftSquare.tokenKind == .leftSquare,
+              subscrExpr.rightSquare.tokenKind == .rightSquare,
+              let identifierExpr = subscrExpr.calledExpression.as(DeclReferenceExprSyntax.self),
+              identifierExpr.baseName.tokenKind == .identifier(varName) else {
             return nil
         }
         return .init(

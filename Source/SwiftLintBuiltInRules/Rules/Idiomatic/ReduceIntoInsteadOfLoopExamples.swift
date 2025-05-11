@@ -30,7 +30,7 @@ internal struct ReduceIntoInsteadOfLoopExamples {
         let encountered: Set<Int> = someArray.reduce(into: Set<Int>(), { result, eachN in
             result.insert(eachN)
         })
-        """)
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -55,7 +55,7 @@ internal struct ReduceIntoInsteadOfLoopExamples {
         for eachN in someArray {
             ↓encountered.insert(eachN)
         }
-        """)
+        """),
     ]
 }
 

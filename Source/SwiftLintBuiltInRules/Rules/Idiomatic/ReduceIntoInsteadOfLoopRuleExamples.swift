@@ -1,78 +1,121 @@
-internal struct ReduceIntoInsteadOfLoopRuleExamples {
+struct ReduceIntoInsteadOfLoopRuleExamples {
     static let nonTriggeringExamples: [Example] = [
-//        Example("""
-//        class Foo {
-//            static let constant: Int = 1
-//            var variable: Int = 2
-//        }
-//        """),
-//        Example("""
-//        struct Foo {
-//            static let constant: Int = 1
-//        }
-//        """),
-//        Example("""
-//        enum InstFooance {
-//            static let constant = 1
-//        }
-//        """),
-//        Example("""
-//        struct Foo {
-//            let property1
-//            let property2
-//            init(property1: Int, property2: String) {
-//                self.property1 = property1
-//                self.property2 = property2
-//            }
-//        }
-//        """)
         Example("""
-        let encountered: Set<Int> = someArray.reduce(into: Set<Int>(), { result, eachN in
-            result.insert(eachN)
-        })
+            let encountered: Array<SomeType> = someSequence.reduce(into: Array<SomeType>(), { result, eachN in
+                result.insert(eachN)
+            })
+        """),
+        Example("""
+            let encountered: Set<SomeType> = someSequence.reduce(into: Set<SomeType>(), { result, eachN in
+                result.insert(eachN)
+            })
+        """),
+        Example("""
+            let encountered: Dictionary<SomeType1, SomeType2> = someSequence.reduce(into: Dictionary<SomeType1, SomeType2>(), { result, eachN in
+                result[SomeType1Value] = SomeType2Value
+            })
         """),
     ]
 
-    static let triggeringExamples: [Example] = [
-//        Example("""
-//        class Foo {
-//            static let one = 32
-//            ↓let constant: Int = 1
-//        }
-//        """),
-//        Example("""
-//        struct Foo {
-//            ↓let constant: Int = 1
-//        }
-//        """),
-//        Example("""
-//        enum Foo {
-//            ↓let constant: Int = 1
-//        }
-//        """),
+    static let triggeringExamples: [Example] =
+          triggeringArrayExamples
+        + triggeringSetExamples
+        + triggeringDictionaryExamples
+}
+
+extension ReduceIntoInsteadOfLoopRuleExamples {
+
+    private static let triggeringDictionaryExamples: [Example] = [
         Example("""
-        var encountered: Set<Int> = []
-        for eachN in someArray {
-            ↓encountered.insert(eachN)
-        }
+            var result: Dictionary<SomeType1, SomeType2> = [:]
+            for eachN in someSequence {
+                ↓result[SomeType1Value] = SomeType2Value + eachN
+            }
+        """),
+        Example("""
+            var result: Dictionary<SomeType1, SomeType2> = [:]
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result: Dictionary<SomeType1, SomeType2> = .init()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result = Dictionary<SomeType1, SomeType2>()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+    ]
+
+    private static let triggeringSetExamples: [Example] = [
+        Example("""
+            var result: Set<SomeType> = []
+            for eachN in someSequence {
+                ↓result = result + [eachN]
+            }
+        """),
+        Example("""
+            var result: Set<SomeType> = []
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result: Set<SomeType> = .init()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result = Set<SomeType>()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+    ]
+
+    private static let triggeringArrayExamples: [Example] = [
+        Example("""
+            var result: [SomeType] = []
+            for eachN in someSequence {
+                ↓result[5] = eachN
+            }
+        """),
+        Example("""
+            var result: [SomeType] = []
+            for eachN in someSequence {
+                ↓result = result + [eachN]
+            }
+        """),
+        Example("""
+            var result: [SomeType] = []
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result: [SomeType] = .init()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result = Array<SomeType>()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
+        """),
+        Example("""
+            var result = [SomeType]()
+            for eachN in someSequence {
+                ↓result.someMethod(eachN)
+            }
         """),
     ]
 }
 
-//    var encountered1: Set<Int> = []
-//    var encountered1a = Set<Int>()
-//    var encountered1b: Set<Int> = Set()
-//    var encountered1c: Set<Int> = .init()
-//    var encountered2: [String] = []
-//    var encountered2a = [String]()
-//    var encountered2b: [String] = [1, 2, 3, 4]
-//    var encountered2c: [String] = Array<String>(contentsOf: other)
-//    var encountered3: Array<String> = []
-//    var encountered4: Dictionary<Int, String> = []
-//    var encountered4b: [String: Int] = [:]
-//    var encountered4c: [String: Int] = ["2": 2, "3": 3]
-//    for eachN in someArray {
-//        encountered.insert(eachN)
-//        encountered1[2] = 45
-//        let newSet = encountered.popFirst()
-//    }

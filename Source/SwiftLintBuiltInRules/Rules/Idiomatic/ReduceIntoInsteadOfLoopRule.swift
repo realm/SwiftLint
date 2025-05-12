@@ -119,15 +119,16 @@ private extension CodeBlockItemListSyntax {
 private extension VariableDeclSyntax {
     /// Is type declared with initializer: `: Set<> = []`, `: Array<> = []`, or `: Dictionary<> = [:]`
     var isTypeAnnotatedAndInitializer: Bool {
-        guard self.isVar && self.identifier != nil,
-              let idIndex = self.firstIndexOf(IdentifierPatternSyntax.self) else {
+        guard self.isVar,
+              self.identifier != nil,
+              let identifiePatternSyntax = self.firstPatternOf(IdentifierPatternSyntax.self) else {
             return false
         }
         //  Is type-annotated, and initialized?
-        guard let patternBindingSyntax = self.next(after: idIndex),
+        guard let patternBindingSyntax = identifiePatternSyntax.parent?.as(PatternBindingSyntax.self),
               let typeAnnotation = patternBindingSyntax.typeAnnotation,
               let type = typeAnnotation.collectionDeclarationType(),
-              let initializerClause = self.next(after: patternBindingSyntax)?.initializer else {
+              let initializerClause = patternBindingSyntax.initializer else {
             return false
         }
         return initializerClause.isTypeInitializer(for: type)

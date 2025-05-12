@@ -14,11 +14,11 @@ extension PatternBindingListSyntax {
 extension VariableDeclSyntax {
     /// Binding is a var: "`var` someVar = <...>"
     var isVar: Bool {
-        self.bindingSpecifier == .keyword(.var)
+        return self.bindingSpecifier.tokenKind == .keyword(.var)
     }
 
     var identifier: String? {
-        guard let identifierPattern = self.firstOf(IdentifierPatternSyntax.self),
+        guard let identifierPattern = self.firstPatternOf(IdentifierPatternSyntax.self),
               case .identifier(let name) = identifierPattern.identifier.tokenKind else {
             return nil
         }
@@ -42,9 +42,12 @@ extension VariableDeclSyntax {
         let newIndex = self.bindings.index(after: index)
         guard newIndex >= self.bindings.startIndex && newIndex < self.bindings.endIndex else {
             return nil
+    /// Returns the first binding with a `pattern` of type
+    /// `type`.
+    func firstPatternOf<T: PatternSyntaxProtocol>(_ type: T.Type) -> T? {
+        let result = self.bindings.first { patternBinding in
+            return patternBinding.pattern.as(type) != nil
         }
-        return self.bindings[newIndex]
-    }
 
     func firstOf<T: PatternSyntaxProtocol>(_ type: T.Type) -> T? {
         self.bindings.first { patternBinding in
@@ -56,5 +59,6 @@ extension VariableDeclSyntax {
         self.bindings.firstIndex(where: { patternBinding in
             patternBinding.pattern.as(type) != nil
         })
+        return result?.pattern.as(type)
     }
 }

@@ -262,6 +262,11 @@ private extension InitializerClauseSyntax {
 }
 
 private extension ForStmtSyntax {
+    /// Checks whether any of the collection variables in scope are referenced
+    /// in the forStmt.
+    /// Note: When a varDecl is referenced, that's already a good trigger for
+    /// the warning: detecting which functions are mutating is not possible,
+    /// other than checking for a lhs-assignment. 
     func referencedVariables(for variables: [VariableDeclSyntax]?) -> Set<ReferencedVariable>? {
         guard let variables, !variables.isEmpty else {
             return nil
@@ -319,27 +324,40 @@ private extension FunctionCallExprSyntax {
 }
 
 private extension SequenceExprSyntax {
-    /// varName[xxx] = ...
+    /// Detect assignment expression:
+    ///     varName[xxx] = ...  // index
+    ///     varName = ...
     func referencedVariable(for varName: String) -> ReferencedVariable? {
         let exprList = self.elements
         guard exprList.count >= 2 else {
             return nil
         }
-        let first = exprList.startIndex
-        let second = exprList.index(after: first)
-        guard let subscrExpr = exprList[first].as(SubscriptCallExprSyntax.self),
-              let assignmentExpr = exprList[second].as(AssignmentExprSyntax.self),
-              assignmentExpr.equal.text == "=",
-              subscrExpr.leftSquare.tokenKind == .leftSquare,
-              subscrExpr.rightSquare.tokenKind == .rightSquare,
-              let identifierExpr = subscrExpr.calledExpression.as(DeclReferenceExprSyntax.self),
-              identifierExpr.baseName.tokenKind == .identifier(varName) else {
+        let firstExpr = exprList[exprList.startIndex]
+        let secondExpr = exprList[exprList.index(after: exprList.startIndex)]
+        guard let assignmentExpr = secondExpr.as(AssignmentExprSyntax.self),
+              assignmentExpr.equal.tokenKind == .equal else {
+            // no assignment expression
             return nil
         }
-        return .init(
-            name: varName,
-            position: exprList.positionAfterSkippingLeadingTrivia,
-            kind: .assignment(subscript: true)
-        )
+        if let subscrExpr = firstExpr.as(SubscriptCallExprSyntax.self),
+           subscrExpr.leftSquare.tokenKind == .leftSquare,
+           subscrExpr.rightSquare.tokenKind == .rightSquare,
+           let identifierExpr = subscrExpr.calledExpression.as(DeclReferenceExprSyntax.self),
+              identifierExpr.baseName.tokenKind == .identifier(varName) {
+            return .init(
+                name: varName,
+                position: exprList.positionAfterSkippingLeadingTrivia,
+                kind: .assignment(subscript: true)
+            )
+        } else if let declExpr = firstExpr.as(DeclReferenceExprSyntax.self),
+                  declExpr.baseName.tokenKind == .identifier(varName) {
+            return .init(
+                name: varName,
+                position: exprList.positionAfterSkippingLeadingTrivia,
+                kind: .assignment(subscript: false)
+            )
+        } else {
+            return nil
+        }
     }
 }

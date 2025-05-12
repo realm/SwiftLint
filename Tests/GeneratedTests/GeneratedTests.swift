@@ -1009,6 +1009,12 @@ final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class ReduceIntoInsteadOfLoopRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceIntoInsteadOfLoopRule.description)
+    }
+}
+
 final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceIntoRule.description)

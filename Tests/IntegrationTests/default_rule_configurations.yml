@@ -964,6 +964,11 @@ reduce_into:
   meta:
     opt-in: true
     correctable: false
+reduce_into_instead_of_loop:
+  severity: warning
+  meta:
+    opt-in: false
+    correctable: false
 redundant_discardable_let:
   severity: warning
   ignore_swiftui_view_bodies: false

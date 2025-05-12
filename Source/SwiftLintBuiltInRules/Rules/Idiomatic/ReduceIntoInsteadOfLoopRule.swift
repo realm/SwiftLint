@@ -216,6 +216,7 @@ private extension InitializerClauseSyntax {
     /// Otherwise checks for `FunctionCallExpr`,`MemberAccessExpr`,`DictionaryExpr` and `ArrayExpr`:
     /// 1. `= Set<T>(...)`  | `Set(...)`  |  `.init(...)`  |  `[]`
     /// 2. `= Array<T>(...)` | `Array(...)` | `.init(...)` | `[]`
+    ///     2b. `= [Type]()`
     /// 3. `= Dictionary<K, V>()` | `Dictionary()` | `.init(..)` | `[:]`
     func isTypeInitializer(for collectionType: CollectionType? = nil) -> Bool {
         func isSupportedType(with name: String) -> Bool {
@@ -238,6 +239,15 @@ private extension InitializerClauseSyntax {
             }
             if let memberAccessExpr = functionCallExpr.calledExpression.as(MemberAccessExprSyntax.self),
                       memberAccessExpr.declName.baseName.tokenKind == .keyword(.`init`) {
+                // found a collection initialisation expression of `.init()`
+                // e.g. var array: [Int] = .init()
+                return true
+            }
+            if let arrayExpr = functionCallExpr.calledExpression.as(ArrayExprSyntax.self),
+               arrayExpr.elements.count == 1,
+               arrayExpr.elements.first?.expression.is(DeclReferenceExprSyntax.self) == true {
+                // found an array initialisation expression of `[type]`()
+                // e.g. var array = [Int]()
                 return true
             }
         } else if collectionType == .dictionary,

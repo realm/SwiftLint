@@ -169,6 +169,7 @@ public let builtInRules: [any Rule.Type] = [
     QuickDiscouragedPendingTestRule.self,
     RawValueForCamelCasedCodableEnumRule.self,
     ReduceBooleanRule.self,
+    ReduceIntoInsteadOfLoopRule.self,
     ReduceIntoRule.self,
     ReduceIntoInsteadOfLoop.self,
     RedundantDiscardableLetRule.self,

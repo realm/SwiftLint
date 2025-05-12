@@ -24,7 +24,6 @@ struct ReduceIntoInsteadOfLoopRuleExamples {
 }
 
 extension ReduceIntoInsteadOfLoopRuleExamples {
-
     private static let triggeringDictionaryExamples: [Example] = [
         Example("""
             var result: Dictionary<SomeType1, SomeType2> = [:]
@@ -118,4 +117,3 @@ extension ReduceIntoInsteadOfLoopRuleExamples {
         """),
     ]
 }
-

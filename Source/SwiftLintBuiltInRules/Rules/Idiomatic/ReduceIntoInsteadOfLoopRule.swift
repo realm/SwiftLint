@@ -3,7 +3,7 @@ import SwiftSyntax
 typealias ReferencedVariable = ReduceIntoInsteadOfLoopRule.ReferencedVariable
 typealias CollectionType = ReduceIntoInsteadOfLoopRule.CollectionType
 
-@SwiftSyntaxRule
+@SwiftSyntaxRule(optIn: true)
 struct ReduceIntoInsteadOfLoopRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -28,7 +28,7 @@ internal extension ReduceIntoInsteadOfLoopRule {
             let selected = all.reduce(into: [ForStmtSyntax: [VariableDeclSyntax]]()) { partialResult, element in
                 // we're interested fully type declared and implicitly declared by initializer
                 let interestingVariableDecls = element.value.filter { variableDecl in
-                    return variableDecl.isTypeAnnotatedAndInitializer
+                    variableDecl.isTypeAnnotatedAndInitializer
                         || variableDecl.isCollectionTypeInitializer
                 }
                 guard !interestingVariableDecls.isEmpty else {
@@ -142,7 +142,7 @@ private extension VariableDeclSyntax {
             return false
         }
         guard let initializerClausePatternBinding = self.bindings.first(where: { patternBindingSyntax in
-            return patternBindingSyntax.initializer != nil
+            patternBindingSyntax.initializer != nil
         }) else {
             return false
         }
@@ -326,7 +326,7 @@ private extension FunctionCallExprSyntax {
 
 private extension SequenceExprSyntax {
     /// Detect assignment expression:
-    ///     varName[xxx] = ...  // index
+    ///     varName[xxx] = ... // index
     ///     varName = ...
     func referencedVariable(for varName: String) -> ReferencedVariable? {
         let exprList = self.elements
@@ -350,15 +350,15 @@ private extension SequenceExprSyntax {
                 position: exprList.positionAfterSkippingLeadingTrivia,
                 kind: .assignment(subscript: true)
             )
-        } else if let declExpr = firstExpr.as(DeclReferenceExprSyntax.self),
+        }
+        if let declExpr = firstExpr.as(DeclReferenceExprSyntax.self),
                   declExpr.baseName.tokenKind == .identifier(varName) {
             return ReferencedVariable(
                 name: varName,
                 position: exprList.positionAfterSkippingLeadingTrivia,
                 kind: .assignment(subscript: false)
             )
-        } else {
-            return nil
         }
+        return nil
     }
 }

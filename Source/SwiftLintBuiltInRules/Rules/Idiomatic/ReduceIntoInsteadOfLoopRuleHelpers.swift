@@ -5,7 +5,7 @@ struct ReduceIntoInsteadOfLoopRuleHelpers { }
 extension VariableDeclSyntax {
     /// Binding is a var: "`var` someVar = <...>"
     var isVar: Bool {
-        return self.bindingSpecifier.tokenKind == .keyword(.var)
+        self.bindingSpecifier.tokenKind == .keyword(.var)
     }
 
     var identifier: String? {
@@ -20,7 +20,7 @@ extension VariableDeclSyntax {
     /// `type`.
     func firstPatternOf<T: PatternSyntaxProtocol>(_ type: T.Type) -> T? {
         let result = self.bindings.first { patternBinding in
-            return patternBinding.pattern.as(type) != nil
+            patternBinding.pattern.as(type) != nil
         }
         return result?.pattern.as(type)
     }

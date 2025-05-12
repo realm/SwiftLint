@@ -36,7 +36,9 @@
 
 * Add new `allowed_numbers` option to the `no_magic_numbers` rule.  
   [Martin Redington](https://github.com/mildm8nnered)
-* Add new `reduce_into_instead_of_loop` opt-in rule that triggers when a `for ... in <sequence>` is used to update a sequence where a `reduce(into:)` is preferred.  
+* Add new `reduce_into_instead_of_loop` opt-in rule that triggers when a 
+  `for ... in <sequence>` is used to update a sequence where a `reduce(into:)` is 
+  preferred.  
   [Alfons Hoogervorst](https://github.com/snofla/SwiftLint)  
 
 ### Bug Fixes

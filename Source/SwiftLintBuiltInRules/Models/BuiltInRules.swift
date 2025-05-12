@@ -171,7 +171,6 @@ public let builtInRules: [any Rule.Type] = [
     ReduceBooleanRule.self,
     ReduceIntoInsteadOfLoopRule.self,
     ReduceIntoRule.self,
-    ReduceIntoInsteadOfLoop.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantObjcAttributeRule.self,

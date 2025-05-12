@@ -4,7 +4,9 @@
 
 ### Breaking
 
-* None.
+* Removed support for boolean values in the `validates_start_with_lowercase` option
+  and its deprecation warning. Use severity levels (`off`, `warning`, or `error`) instead.
+  [kaseken](https://github.com/kaseken)
 
 ### Experimental
 

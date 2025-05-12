@@ -10,7 +10,7 @@ struct ReduceIntoInsteadOfLoopRule: Rule {
     static let description = RuleDescription(
         identifier: "reduce_into_instead_of_loop",
         name: "Reduce Into Instead Of Loop",
-        description: "Prefer using reduce(into:) instead of a loop",
+        description: "Prefer using `reduce(into:)` instead of mutating a sequence in a `for _ in ...` loop",
         kind: .idiomatic,
         nonTriggeringExamples: ReduceIntoInsteadOfLoopRuleExamples.nonTriggeringExamples,
         triggeringExamples: ReduceIntoInsteadOfLoopRuleExamples.triggeringExamples
@@ -72,7 +72,6 @@ private extension CodeBlockItemListSyntax {
         // Collect all ForInStmts and track their index ranges
         let indexRangeForStatements: [IndexRangeForStmts] = self.reduce(into: [IndexRangeForStmts]()) { partialResult, codeBlockItem in
             guard let codeBlockItemIndex = self.index(of: codeBlockItem) else {
-                assertionFailure("Unreachable")
                 return
             }
             guard codeBlockItem.item.kind == .forStmt,
@@ -95,7 +94,6 @@ private extension CodeBlockItemListSyntax {
         // Only VariableDecls on same level of scope of the ForInStmt.
         let result = self.reduce(into: [ForStmtSyntax: [VariableDeclSyntax]]()) { partialResult, codeBlockItem in
             guard let codeBlockItemIndex = self.index(of: codeBlockItem) else {
-                assertionFailure("Unreachable")
                 return
             }
             guard let variableDecl = codeBlockItem.item.as(VariableDeclSyntax.self) else {
@@ -121,11 +119,11 @@ private extension VariableDeclSyntax {
     var isTypeAnnotatedAndInitializer: Bool {
         guard self.isVar,
               self.identifier != nil,
-              let identifiePatternSyntax = self.firstPatternOf(IdentifierPatternSyntax.self) else {
+              let identifierPatternSyntax = self.firstPatternOf(IdentifierPatternSyntax.self) else {
             return false
         }
         //  Is type-annotated, and initialized?
-        guard let patternBindingSyntax = identifiePatternSyntax.parent?.as(PatternBindingSyntax.self),
+        guard let patternBindingSyntax = identifierPatternSyntax.parent?.as(PatternBindingSyntax.self),
               let typeAnnotation = patternBindingSyntax.typeAnnotation,
               let type = typeAnnotation.collectionDeclarationType(),
               let initializerClause = patternBindingSyntax.initializer else {

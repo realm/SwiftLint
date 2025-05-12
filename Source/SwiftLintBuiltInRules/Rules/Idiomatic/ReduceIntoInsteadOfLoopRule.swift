@@ -20,15 +20,15 @@ struct ReduceIntoInsteadOfLoopRule: Rule {
 internal extension ReduceIntoInsteadOfLoopRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: CodeBlockItemListSyntax) {
-            // reduce into forInStmts and variableDecls map
+            // Collect all varDecls in the same scope as forInStmts
             guard let all = node.allVariableDeclsForInStatmts() else {
                 return
             }
-            // reduce variableDecls into the ones we're interested in
+            // Select those varDecls that have initialisers
             let selected = all.reduce(into: [ForStmtSyntax: [VariableDeclSyntax]]()) { partialResult, element in
                 // we're interested fully type declared and implicitly declared by initializer
                 let interestingVariableDecls = element.value.filter { variableDecl in
-                    variableDecl.isTypeAnnotatedAndInitializer
+                    return variableDecl.isTypeAnnotatedAndInitializer
                         || variableDecl.isCollectionTypeInitializer
                 }
                 guard !interestingVariableDecls.isEmpty else {
@@ -39,6 +39,8 @@ internal extension ReduceIntoInsteadOfLoopRule {
             guard !selected.isEmpty else {
                 return
             }
+            // Collect all varDecls that are referenced (and in our case possibly
+            // mutate) in the forInStmt
             let referencedVars = selected.reduce(into: Set<ReferencedVariable>()) { partialResult, keyValue in
                 let (forInStmt, variableDecls) = keyValue
                 if let allReferencedVars = forInStmt.referencedVariables(for: variableDecls) {
@@ -48,6 +50,7 @@ internal extension ReduceIntoInsteadOfLoopRule {
             guard !referencedVars.isEmpty else {
                 return
             }
+            // If there are referenced varDecls, then report violations
             self.violations.append(contentsOf: referencedVars.map { $0.position })
         }
     }
@@ -59,7 +62,7 @@ internal extension ReduceIntoInsteadOfLoopRule {
     ]
 
     static let collectionNames: [String: CollectionType] =
-    ReduceIntoInsteadOfLoopRule.collectionTypes.reduce(into: [String: CollectionType]()) { partialResult, type in
+        ReduceIntoInsteadOfLoopRule.collectionTypes.reduce(into: [String: CollectionType]()) { partialResult, type in
             partialResult[type.name] = type
         }
 }
@@ -125,7 +128,7 @@ private extension VariableDeclSyntax {
         //  Is type-annotated, and initialized?
         guard let patternBindingSyntax = identifierPatternSyntax.parent?.as(PatternBindingSyntax.self),
               let typeAnnotation = patternBindingSyntax.typeAnnotation,
-              let type = typeAnnotation.collectionDeclarationType(),
+              let type = typeAnnotation.collectionDeclarationType,
               let initializerClause = patternBindingSyntax.initializer else {
             return false
         }
@@ -139,7 +142,7 @@ private extension VariableDeclSyntax {
             return false
         }
         guard let initializerClausePatternBinding = self.bindings.first(where: { patternBindingSyntax in
-            patternBindingSyntax.initializer != nil
+            return patternBindingSyntax.initializer != nil
         }) else {
             return false
         }
@@ -155,21 +158,21 @@ private extension VariableDeclSyntax {
 
 private extension TypeAnnotationSyntax {
     /// Returns one of the collection types we define
-    func collectionDeclarationType() -> CollectionType? {
-        if let genericTypeName = self.genericCollectionDeclarationType() {
+    var collectionDeclarationType: CollectionType? {
+        if let genericTypeName = self.genericCollectionDeclarationType {
             return genericTypeName
         }
-        if let array = self.arrayDeclarationType() {
+        if let array = self.arrayDeclarationType {
             return array
         }
-        if let dictionary = self.dictionaryDeclarationType() {
+        if let dictionary = self.dictionaryDeclarationType {
             return dictionary
         }
         return nil
     }
 
     /// var x: Set<>, var x: Array<>, var x: Dictionary<>
-    func genericCollectionDeclarationType() -> CollectionType? {
+    var genericCollectionDeclarationType: CollectionType? {
         guard let simpleTypeIdentifier = self.type.as(IdentifierTypeSyntax.self),
               let genericArgumentClause = simpleTypeIdentifier.genericArgumentClause,
               genericArgumentClause.leftAngle.tokenKind == .leftAngle,
@@ -183,7 +186,7 @@ private extension TypeAnnotationSyntax {
     }
 
     /// var x: [Y]
-    func arrayDeclarationType() -> CollectionType? {
+    var arrayDeclarationType: CollectionType? {
         guard let arrayType = self.type.as(ArrayTypeSyntax.self),
               case .leftSquare = arrayType.leftSquare.tokenKind,
               case .rightSquare = arrayType.rightSquare.tokenKind,
@@ -194,7 +197,7 @@ private extension TypeAnnotationSyntax {
     }
 
     /// var x: [K: V]
-    func dictionaryDeclarationType() -> CollectionType? {
+    var dictionaryDeclarationType: CollectionType? {
         guard let dictionaryType = self.type.as(DictionaryTypeSyntax.self),
               case .leftSquare = dictionaryType.leftSquare.tokenKind,
               case .rightSquare = dictionaryType.rightSquare.tokenKind,
@@ -270,7 +273,7 @@ private extension ForStmtSyntax {
             return nil
         }
         let codeBlockItemList = self.body.statements
-        let references: Set<ReferencedVariable> = codeBlockItemList.reduce(into: .init(), { partialResult, codeBlock in
+        let references: Set<ReferencedVariable> = codeBlockItemList.reduce(into: [], { partialResult, codeBlock in
             // no need to cover one liner: someMutation(); someOtherMutation()
             variables.forEach { variableDecl in
                 if let referenced = codeBlock.referencedVariable(for: variableDecl) {
@@ -313,7 +316,7 @@ private extension FunctionCallExprSyntax {
               case .identifier(let name) = memberAccessExpr.declName.baseName.tokenKind else {
             return nil
         }
-        return .init(
+        return ReferencedVariable(
             name: varName,
             position: memberAccessExpr.positionAfterSkippingLeadingTrivia,
             kind: .method(name: name, arguments: self.arguments.count)
@@ -342,14 +345,14 @@ private extension SequenceExprSyntax {
            subscrExpr.rightSquare.tokenKind == .rightSquare,
            let identifierExpr = subscrExpr.calledExpression.as(DeclReferenceExprSyntax.self),
               identifierExpr.baseName.tokenKind == .identifier(varName) {
-            return .init(
+            return ReferencedVariable(
                 name: varName,
                 position: exprList.positionAfterSkippingLeadingTrivia,
                 kind: .assignment(subscript: true)
             )
         } else if let declExpr = firstExpr.as(DeclReferenceExprSyntax.self),
                   declExpr.baseName.tokenKind == .identifier(varName) {
-            return .init(
+            return ReferencedVariable(
                 name: varName,
                 position: exprList.positionAfterSkippingLeadingTrivia,
                 kind: .assignment(subscript: false)

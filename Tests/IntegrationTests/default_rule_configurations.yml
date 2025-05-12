@@ -967,7 +967,7 @@ reduce_into:
 reduce_into_instead_of_loop:
   severity: warning
   meta:
-    opt-in: false
+    opt-in: true
     correctable: false
 redundant_discardable_let:
   severity: warning

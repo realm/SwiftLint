@@ -1,17 +1,17 @@
 struct ReduceIntoInsteadOfLoopRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""
-            let encountered: Array<SomeType> = someSequence.reduce(into: Array<SomeType>(), { result, eachN in
+            let result: [SomeType] = someSequence.reduce(into: [], { result, eachN in
                 result.insert(eachN)
             })
         """),
         Example("""
-            let encountered: Set<SomeType> = someSequence.reduce(into: Set<SomeType>(), { result, eachN in
+            let result: Set<SomeType> = someSequence.reduce(into: []], { result, eachN in
                 result.insert(eachN)
             })
         """),
         Example("""
-            let encountered: Dictionary<SomeType1, SomeType2> = someSequence.reduce(into: Dictionary<SomeType1, SomeType2>(), { result, eachN in
+            let result: [SomeType1: SomeType2] = someSequence.reduce(into: [:], { result, eachN in
                 result[SomeType1Value] = SomeType2Value
             })
         """),

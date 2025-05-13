@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-typealias ReduceIntoInsteadOfLoopModels = ReduceIntoInsteadOfLoopRule
+struct ReduceIntoInsteadOfLoopRuleModels {}
 
 internal extension ReduceIntoInsteadOfLoopRule {
     struct ReferencedVariable: Hashable {

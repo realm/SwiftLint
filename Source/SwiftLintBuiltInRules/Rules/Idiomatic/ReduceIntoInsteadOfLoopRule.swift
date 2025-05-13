@@ -62,7 +62,7 @@ internal extension ReduceIntoInsteadOfLoopRule {
     ]
 
     static let collectionNames: [String: CollectionType] =
-        ReduceIntoInsteadOfLoopRule.collectionTypes.reduce(into: [String: CollectionType]()) { partialResult, type in
+        ReduceIntoInsteadOfLoopRule.collectionTypes.reduce(into: [:]) { partialResult, type in
             partialResult[type.name] = type
         }
 }
@@ -73,7 +73,7 @@ private extension CodeBlockItemListSyntax {
         typealias IndexRange = Range<Self.Index>
         typealias IndexRangeForStmts = (range: IndexRange, forStmt: ForStmtSyntax)
         // Collect all ForInStmts and track their index ranges
-        let indexRangeForStatements: [IndexRangeForStmts] = self.reduce(into: [IndexRangeForStmts]()) { partialResult, codeBlockItem in
+        let indexRangeForStatements: [IndexRangeForStmts] = self.reduce(into: []) { partialResult, codeBlockItem in
             guard let codeBlockItemIndex = self.index(of: codeBlockItem) else {
                 return
             }

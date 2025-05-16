@@ -18,7 +18,8 @@
 
 ### Bug Fixes
 
-* None.
+* Fix false positives in `redundant_discardable_let` when `ignore_swiftui_view_bodies` is enabled.
+  [kaseken](https://github.com/kaseken)
 
 ## 0.59.1: Crisp Spring Clean
 

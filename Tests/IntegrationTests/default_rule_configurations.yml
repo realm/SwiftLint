@@ -1262,6 +1262,11 @@ unneeded_synthesized_initializer:
   meta:
     opt-in: false
     correctable: true
+unnest_switches_using_tuple:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: false
 unowned_variable_capture:
   severity: warning
   meta:

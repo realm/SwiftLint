@@ -131,7 +131,7 @@ private extension UnnestSwitchesUsingTupleRule {
             let variables: Set<String> = nestingSwitch
                 .filter { !$0.hasDeclarationInLabelScope(for: $0.referencedVariable) }
                 .compactMap { $0.referencedVariable }
-                .reduce(into: [], { p, e in p.insert(e) })
+                .reduce(into: [], { $0.insert($1) })
             
             // we want all nested switches to reference the same variable
             // to be able to unnest a switch using tuples

@@ -2,8 +2,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
 struct OneDeclarationPerFileRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
-
+    var configuration = OneDeclarationPerFileConfiguration()
     static let description = RuleDescription(
         identifier: "one_declaration_per_file",
         name: "One Declaration per File",
@@ -22,6 +21,18 @@ struct OneDeclarationPerFileRule: Rule {
                         struct N {}
                     }
                     """),
+            Example("""
+                    enum Foo {
+                    }
+                    struct Bar {
+                    }
+                    """,
+                    configuration: ["allowed_types": ["enum", "struct"]]),
+            Example("""
+                    struct Foo {}
+                    struct Bar {}
+                    """,
+                    configuration: ["allowed_types": ["struct"]]),
         ],
         triggeringExamples: [
             Example("""
@@ -36,14 +47,24 @@ struct OneDeclarationPerFileRule: Rule {
                     struct Foo {}
                     ↓struct Bar {}
                     """),
+            Example("""
+                    struct Foo {}
+                    ↓enum Bar {}
+                    """,
+                    configuration: ["allowed_types": ["protocol"]]),
         ]
     )
 }
 
 private extension OneDeclarationPerFileRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private let allowedTypes: Set<String>
         private var declarationVisited = false
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+        override init(configuration: OneDeclarationPerFileConfiguration, file: SwiftLintFile) {
+            allowedTypes = Set(configuration.enabledTypes.map(\.rawValue))
+            super.init(configuration: configuration, file: file)
+        }
 
         override func visitPost(_ node: ActorDeclSyntax) {
             appendViolationIfNeeded(node: node.actorKeyword)
@@ -66,10 +87,10 @@ private extension OneDeclarationPerFileRule {
         }
 
         func appendViolationIfNeeded(node: TokenSyntax) {
-            if declarationVisited {
+            defer { declarationVisited = true }
+            if declarationVisited && !allowedTypes.contains(node.text) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
-            declarationVisited = true
         }
     }
 }

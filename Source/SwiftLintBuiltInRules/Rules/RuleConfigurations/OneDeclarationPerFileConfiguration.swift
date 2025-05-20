@@ -11,6 +11,7 @@ struct OneDeclarationPerFileConfiguration: SeverityBasedRuleConfiguration {
         case `enum`
         case `protocol`
         case `struct`
+
         static let all = Set(allCases)
     }
 

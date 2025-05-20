@@ -61,6 +61,7 @@ private extension OneDeclarationPerFileRule {
         private let allowedTypes: Set<String>
         private var declarationVisited = false
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
+
         override init(configuration: OneDeclarationPerFileConfiguration, file: SwiftLintFile) {
             allowedTypes = Set(configuration.enabledTypes.map(\.rawValue))
             super.init(configuration: configuration, file: file)

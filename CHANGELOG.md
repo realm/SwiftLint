@@ -18,7 +18,10 @@
 
 ### Bug Fixes
 
-* None.
+* Improved error reporting when SwiftLint exits, because of an invalid configuration file
+  or other error.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#6052](https://github.com/realm/SwiftLint/issues/6052)
 
 ## 0.59.1: Crisp Spring Clean
 

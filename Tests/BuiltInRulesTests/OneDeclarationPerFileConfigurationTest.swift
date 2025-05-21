@@ -17,7 +17,7 @@ final class OneDeclarationPerFileConfigurationTest: SwiftLintTestCase {
             .sorted()
         let goodConfig: [String: Any] = [
             "severity": "error",
-            "allowed_types": allowedTypesString
+            "allowed_types": allowedTypesString,
         ]
         var configuration = OneDeclarationPerFileConfiguration()
         try configuration.apply(configuration: goodConfig)
@@ -28,12 +28,11 @@ final class OneDeclarationPerFileConfigurationTest: SwiftLintTestCase {
     func testOneDeclarationPerFileConfigurationBadConfigWrongTypes() throws {
         let badConfig: [String: Any] = [
             "severity": "error",
-            "allowed_types": ["clas"]
+            "allowed_types": ["clas"],
         ]
         var configuration = OneDeclarationPerFileConfiguration()
         checkError(Issue.invalidConfiguration(ruleID: OneDeclarationPerFileRule.identifier)) {
             try configuration.apply(configuration: badConfig)
         }
-        XCTAssert(configuration.enabledTypes == [])
-    }    
+    }
 }

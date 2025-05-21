@@ -69,6 +69,12 @@ internal struct MultilineArgumentsRuleExamples {
             print("b")
         }
         """),
+        Example("""
+        f(
+            foo: 1,
+            bar: false,
+        )
+        """),
     ]
 
     static let triggeringExamples = [

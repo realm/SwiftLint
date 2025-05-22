@@ -221,6 +221,7 @@ public let builtInRules: [any Rule.Type] = [
     UnneededOverrideRule.self,
     UnneededParenthesesInClosureArgumentRule.self,
     UnneededSynthesizedInitializerRule.self,
+    UnneededThrowsRule.self,
     UnownedVariableCaptureRule.self,
     UntypedErrorInCatchRule.self,
     UnusedClosureParameterRule.self,

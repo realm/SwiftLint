@@ -22,6 +22,7 @@
   or other error.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#6052](https://github.com/realm/SwiftLint/issues/6052)
+
 * Individual `custom_rules` can now be specified in the `only_rule` configuration
   setting and the `--only-rule` command line option without having to specify
   `custom_rules` as well. Additionally, violations of custom rules are now reported

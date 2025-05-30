@@ -5,14 +5,16 @@ struct NonOptionalStringDataConversionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
     static let description = RuleDescription(
         identifier: "non_optional_string_data_conversion",
-        name: "Non-optional String -> Data Conversion",
-        description: "Prefer non-optional `Data(_:)` initializer when converting `String` to `Data`",
+        name: "Non-optional String <-> Data Conversion",
+        description: "Prefer the non-optional initializers when converting between `String` and `Data` (e.g. `Data(_:)` and `String(decoding:as:)`)",
         kind: .lint,
         nonTriggeringExamples: [
-            Example("Data(\"foo\".utf8)")
+            Example("Data(\"foo\".utf8)"),
+            Example("String(decoding: data, as: UTF8.self)"),
         ],
         triggeringExamples: [
-            Example("\"foo\".data(using: .utf8)")
+            Example("\"foo\".data(using: .utf8)"),
+            Example("String(data: data, encoding: .utf8)"),
         ]
     )
 }

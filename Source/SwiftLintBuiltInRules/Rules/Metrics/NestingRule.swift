@@ -46,7 +46,7 @@ private extension NestingRule {
         private var levels = Levels()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.actorKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.actorKeyword)
             return .visitChildren
         }
 
@@ -55,7 +55,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.classKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.classKeyword)
             return .visitChildren
         }
 
@@ -64,9 +64,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            if !configuration.ignoreCodingKeys || !node.definesCodingKeys {
-                validate(forFunction: false, triggeringToken: node.enumKeyword)
-            }
+            validate(forFunction: false, definesCodingKeys: node.definesCodingKeys, triggeringToken: node.enumKeyword)
             return .visitChildren
         }
 
@@ -75,7 +73,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.extensionKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.extensionKeyword)
             return .visitChildren
         }
 
@@ -84,7 +82,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: true, triggeringToken: node.funcKeyword)
+            validate(forFunction: true, definesCodingKeys: false, triggeringToken: node.funcKeyword)
             return .visitChildren
         }
 
@@ -93,7 +91,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.protocolKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.protocolKeyword)
             return .visitChildren
         }
 
@@ -102,7 +100,7 @@ private extension NestingRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.structKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.structKeyword)
             return .visitChildren
         }
 
@@ -115,7 +113,7 @@ private extension NestingRule {
             if configuration.ignoreTypealiasesAndAssociatedtypes {
                 return
             }
-            validate(forFunction: false, triggeringToken: node.typealiasKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.typealiasKeyword)
             levels.pop()
         }
 
@@ -123,7 +121,7 @@ private extension NestingRule {
             if configuration.ignoreTypealiasesAndAssociatedtypes {
                 return
             }
-            validate(forFunction: false, triggeringToken: node.associatedtypeKeyword)
+            validate(forFunction: false, definesCodingKeys: false, triggeringToken: node.associatedtypeKeyword)
             levels.pop()
         }
 
@@ -143,7 +141,7 @@ private extension NestingRule {
         }
 
         // MARK: -
-        private func validate(forFunction: Bool, triggeringToken: TokenSyntax) {
+        private func validate(forFunction: Bool, definesCodingKeys: Bool, triggeringToken: TokenSyntax) {
             let inFunction = levels.lastIsFunction
             levels.push(forFunction)
 
@@ -154,6 +152,12 @@ private extension NestingRule {
             if configuration.alwaysAllowOneTypeInFunctions && inFunction && !forFunction {
                 return
             }
+
+            // if current defines coding keys and we're ignoring coding keys, then skip nesting rule
+            if configuration.ignoreCodingKeys && definesCodingKeys {
+                return
+            }
+
             guard let severity = configuration.severity(with: targetLevel, for: level) else { return }
 
             let targetName = forFunction ? "Functions" : "Types"

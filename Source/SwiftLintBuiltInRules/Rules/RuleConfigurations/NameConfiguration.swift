@@ -73,16 +73,6 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
         }
         if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase.key] as? String {
             try self.validatesStartWithLowercase.apply(configuration: validatesStartWithLowercase)
-        } else if let validatesStartWithLowercase = configurationDict[$validatesStartWithLowercase.key] as? Bool {
-            // TODO: [05/10/2025] Remove deprecation warning after ~2 years.
-            self.validatesStartWithLowercase = validatesStartWithLowercase ? .error : .off
-            Issue.genericWarning(
-                """
-                The \"validates_start_with_lowercase\" configuration now expects a severity (warning or \
-                error). The boolean value 'true' will still enable it as an error. It is now deprecated and will be \
-                removed in a future release.
-                """
-            ).print()
         }
     }
 }

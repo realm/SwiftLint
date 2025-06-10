@@ -58,6 +58,6 @@ final class GenericTypeNameRuleTests: SwiftLintTestCase {
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
-        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": "off"])
     }
 }

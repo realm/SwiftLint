@@ -47,21 +47,6 @@ final class NameConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(nameConfig.validatesStartWithLowercase, .warning)
     }
 
-    func testNameConfigurationWithDeprecatedBooleanSeverity() throws {
-        var nameConfig = TesteeType(minLengthWarning: 0,
-                                    minLengthError: 0,
-                                    maxLengthWarning: 0,
-                                    maxLengthError: 0)
-
-        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)
-
-        try nameConfig.apply(configuration: ["validates_start_with_lowercase": false])
-        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .off)
-
-        try nameConfig.apply(configuration: ["validates_start_with_lowercase": true])
-        XCTAssertEqual(nameConfig.validatesStartWithLowercase, .error)
-    }
-
     func testNameConfigurationThrowsOnBadConfig() {
         let config = 17
         var nameConfig = TesteeType(minLengthWarning: 0,

@@ -33,11 +33,6 @@ internal struct IdentifierNameRuleExamples {
     ]
 
     static let triggeringExamples = [
-        Example(
-            "let ↓MyLet = 0",
-            configuration: ["validates_start_with_lowercase": true],
-            excludeFromDocumentation: true
-        ),
         Example("class C { static let ↓_myLet = 0 }"),
         Example("class C { class let ↓MyLet = 0 }"),
         Example("class C { static func ↓MyFunc() {} }"),

@@ -62,7 +62,7 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
+        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": "off"])
     }
 
     func testStartsWithLowercaseCheck() {
@@ -81,14 +81,14 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
             IdentifierNameRule.description
                 .with(triggeringExamples: triggeringExamples)
                 .with(nonTriggeringExamples: nonTriggeringExamples),
-            ruleConfiguration: ["validates_start_with_lowercase": true]
+            ruleConfiguration: ["validates_start_with_lowercase": "error"]
         )
 
         verifyRule(
             IdentifierNameRule.description
                 .with(triggeringExamples: [])
                 .with(nonTriggeringExamples: nonTriggeringExamples + triggeringExamples.removingViolationMarkers()),
-            ruleConfiguration: ["validates_start_with_lowercase": false]
+            ruleConfiguration: ["validates_start_with_lowercase": "off"]
         )
     }
 
@@ -103,7 +103,7 @@ final class IdentifierNameRuleTests: SwiftLintTestCase {
                     Example("enum Foo { case myCase }"),
                 ]),
             ruleConfiguration: [
-                "validates_start_with_lowercase": true,
+                "validates_start_with_lowercase": "error",
                 "allowed_symbols": ["M"],
             ] as [String: any Sendable]
         )

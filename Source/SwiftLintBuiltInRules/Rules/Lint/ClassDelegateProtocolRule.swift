@@ -45,7 +45,7 @@ struct ClassDelegateProtocolRule: Rule {
             Example("protocol FooDelegate where Self: Foo & BarDelegate & Bar {}"),
             Example("protocol FooDelegate where Self: AnyObject {}"),
             Example("protocol FooDelegate where Self: NSObjectProtocol {}"),
-            Example("↓protocol FooDelegate: Actor {}")
+            Example("protocol FooDelegate: Actor {}")
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}"),

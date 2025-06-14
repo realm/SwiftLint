@@ -130,4 +130,43 @@ final class FileNameRuleTests: SwiftLintTestCase {
             ).isEmpty
         )
     }
+
+    func testExcludedWithRegex() {
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [".*"]
+            ).isEmpty
+        )
+
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [".*.swift"]
+            ).isEmpty
+        )
+
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [".*/FileNameRuleFixtures/.*"]
+            ).isEmpty
+        )
+    }
+
+    func testExcludedWithRegexDoesntMatch() {
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [".*/OtherFolder/.*"]
+            ).isNotEmpty
+        )
+
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: ["/FileNameRuleFixtures/.*"]
+            ).isNotEmpty
+        )
+    }
 }

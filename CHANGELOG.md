@@ -3852,10 +3852,9 @@ This is the last release to support building with Swift 5.0.x.
 
 * API docs for SwiftLintFramework are now available at
   [realm.github.io/SwiftLint](https://realm.github.io/SwiftLint). `Rules.md`
-  now redirects to the rules directory in the API docs
-  [here](https://realm.github.io/SwiftLint/rule-directory.html). Contributors no
-  longer need to update rule documentation in PRs as this is now done
-  automatically. The rule documentation now includes the default configuration.  
+  now redirects to the [Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html)
+  in the API docs. Contributors no longer need to update rule documentation in PRs as this is
+  now done automatically. The rule documentation now includes the default configuration.  
   [JP Simard](https://github.com/jpsim)
   [#1653](https://github.com/realm/SwiftLint/issues/1653)
   [#1704](https://github.com/realm/SwiftLint/issues/1704)

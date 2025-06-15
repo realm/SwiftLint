@@ -596,8 +596,8 @@ continues to contribute more over time.
 [Pull requests](https://github.com/realm/SwiftLint/blob/main/CONTRIBUTING.md)
 are encouraged.
 
-You can find an updated list of rules and more information about them
-[here](https://realm.github.io/SwiftLint/rule-directory.html).
+You can find an updated list of rules and more information about them in the
+[Rule Directory](https://realm.github.io/SwiftLint/rule-directory.html).
 
 You can also check the
 [Source/SwiftLintBuiltInRules/Rules](https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintBuiltInRules/Rules)

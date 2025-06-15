@@ -37,12 +37,9 @@ jobs:
         image: 'macOS-14'
         xcode: '15.4'
       # '14 : Xcode 16.3': Runs on Buildkite.
-      '15 : Xcode 15.4':
+      '15 : Xcode 16.4':
         image: 'macOS-15'
-        xcode: '15.4'
-      '15 : Xcode 16.2':
-        image: 'macOS-15'
-        xcode: '16.2'
+        xcode: '16.4'
   pool:
     vmImage: $(image)
   variables:

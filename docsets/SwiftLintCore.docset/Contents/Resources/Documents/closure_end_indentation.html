@@ -360,7 +360,6 @@ warning
    <span class="o">.</span><span class="n">startWithNext</span> <span class="p">{</span> <span class="n">number</span> <span class="k">in</span>
        <span class="nf">print</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
    <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="nv">$0</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span>
 
@@ -370,18 +369,15 @@ warning
 <span class="p">}</span><span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="n">command</span> <span class="k">in</span>
    <span class="k">return</span> <span class="n">command</span><span class="o">.</span><span class="nf">expand</span><span class="p">()</span>
 <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="nv">foo</span><span class="p">:</span> <span class="n">bar</span><span class="p">,</span>
     <span class="nv">options</span><span class="p">:</span> <span class="n">baz</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="n">someReallyLongProperty</span><span class="o">.</span><span class="n">chainingWithAnotherProperty</span>
    <span class="o">.</span><span class="n">foo</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">}</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">foo</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span>
 <span class="p">{</span> <span class="n">_</span> <span class="k">in</span> <span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">function</span><span class="p">(</span>
     <span class="nv">closure</span><span class="p">:</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>
@@ -410,14 +406,12 @@ warning
    <span class="o">.</span><span class="n">startWithNext</span> <span class="p">{</span> <span class="n">number</span> <span class="k">in</span>
        <span class="nf">print</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
 <span class="err">↓</span><span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="k">return</span> <span class="nf">match</span><span class="p">(</span><span class="nv">pattern</span><span class="p">:</span> <span class="n">pattern</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="n">comment</span><span class="p">])</span><span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="n">range</span> <span class="k">in</span>
    <span class="k">return</span> <span class="kt">Command</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="n">contents</span><span class="p">,</span> <span class="nv">range</span><span class="p">:</span> <span class="n">range</span><span class="p">)</span>
    <span class="err">↓</span><span class="p">}</span><span class="o">.</span><span class="n">flatMap</span> <span class="p">{</span> <span class="n">command</span> <span class="k">in</span>
    <span class="k">return</span> <span class="n">command</span><span class="o">.</span><span class="nf">expand</span><span class="p">()</span>
 <span class="err">↓</span><span class="p">}</span>
-
 </code></pre>
 <pre class="highlight swift"><code><span class="nf">function</span><span class="p">(</span>
     <span class="nv">closure</span><span class="p">:</span> <span class="p">{</span> <span class="n">x</span> <span class="k">in</span>

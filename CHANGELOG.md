@@ -14,7 +14,9 @@
 
 ### Enhancements
 
-* None.
+* Fix false positives for `Actor`-conforming delegate protocols in the `class_delegate_protocol` rule.  
+  [imsonalbajaj](https://github.com/imsonalbajaj)
+  [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
 ### Bug Fixes
 

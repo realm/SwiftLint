@@ -45,6 +45,7 @@ struct ClassDelegateProtocolRule: Rule {
             Example("protocol FooDelegate where Self: Foo & BarDelegate & Bar {}"),
             Example("protocol FooDelegate where Self: AnyObject {}"),
             Example("protocol FooDelegate where Self: NSObjectProtocol {}"),
+            Example("protocol FooDelegate: Actor {}"),
         ],
         triggeringExamples: [
             Example("↓protocol FooDelegate {}"),
@@ -52,7 +53,6 @@ struct ClassDelegateProtocolRule: Rule {
             Example("↓protocol FooDelegate: Foo & Bar {}"),
             Example("↓protocol FooDelegate where Self: StringProtocol {}"),
             Example("↓protocol FooDelegate where Self: A & B {}"),
-            Example("↓protocol FooDelegate: Actor {}"),
         ]
     )
 }
@@ -108,7 +108,8 @@ private extension ProtocolDeclSyntax {
 private extension TypeSyntax {
     func isObjectOrDelegate() -> Bool {
         if let typeName = `as`(IdentifierTypeSyntax.self)?.typeName {
-            return (typeName == "AnyObject" || typeName == "NSObjectProtocol" || typeName.hasSuffix("Delegate")) && typeName != "Actor"
+            let objectTypes = ["AnyObject", "NSObjectProtocol", "Actor"]
+            return objectTypes.contains(typeName) || typeName.hasSuffix("Delegate")
         }
         if let combined = `as`(CompositionTypeSyntax.self) {
             return combined.elements.contains { $0.type.isObjectOrDelegate() }

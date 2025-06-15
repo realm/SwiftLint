@@ -14,7 +14,9 @@
 
 ### Enhancements
 
-* None.
+* Fix false positives for `Actor`-conforming delegate protocols in the `class_delegate_protocol` rule.  
+  [imsonalbajaj](https://github.com/imsonalbajaj)
+  [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
 ### Bug Fixes
 
@@ -62,10 +64,6 @@
   [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Enhancements
-
-* Fix false positive for Actor-conforming delegate protocols in `class_delegate_protocol` rule
-  [imsonalbajaj](https://github.com/imsonalbajaj)
-  [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
 * Add new option `ignores_multiline_strings` to `line_length` rule. It allows to ignore too long
   lines inside of multiline strings.  

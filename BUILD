@@ -7,7 +7,7 @@ load(
     "swift_library",
     "universal_swift_compiler_plugin",
 )
-load("@build_bazel_rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@build_bazel_rules_shell//shell:sh_test.bzl", "sh_test")
 
 bool_flag(

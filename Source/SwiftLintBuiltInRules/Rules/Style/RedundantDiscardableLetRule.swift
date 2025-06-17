@@ -153,9 +153,7 @@ private extension AccessorBlockSyntax {
         if let binding = parent?.as(PatternBindingSyntax.self),
            binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text == "body",
            let type = binding.typeAnnotation?.type.as(SomeOrAnyTypeSyntax.self) {
-            return type.someOrAnySpecifier.text == "some"
-                && type.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
-                && binding.parent?.parent?.is(VariableDeclSyntax.self) == true
+            return type.isView && binding.parent?.parent?.is(VariableDeclSyntax.self) == true
         }
         return false
     }
@@ -171,8 +169,7 @@ private extension AccessorBlockSyntax {
             return false
         }
 
-        return type.someOrAnySpecifier.text == "some" &&
-            type.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
+        return type.isView
     }
 }
 
@@ -187,18 +184,19 @@ private extension FunctionDeclSyntax {
         guard attributes.contains(attributeNamed: "ViewBuilder") else {
             return false
         }
-
-        guard let returnType = signature.returnClause?.type.as(SomeOrAnyTypeSyntax.self) else {
-            return false
-        }
-
-        return returnType.someOrAnySpecifier.text == "some" &&
-            returnType.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
+        return signature.returnClause?.type.as(SomeOrAnyTypeSyntax.self)?.isView ?? false
     }
 }
 
 private extension ClosureExprSyntax {
     var isPreviewMacroBody: Bool {
         parent?.as(MacroExpansionExprSyntax.self)?.macroName.text == "Preview"
+    }
+}
+
+private extension SomeOrAnyTypeSyntax {
+    var isView: Bool {
+        someOrAnySpecifier.text == "some" &&
+            constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
     }
 }

@@ -175,16 +175,11 @@ private extension AccessorBlockSyntax {
 
 private extension CodeBlockSyntax {
     var isViewBuilderFunctionBody: Bool {
-        parent?.as(FunctionDeclSyntax.self)?.isViewBuilderFunction == true
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var isViewBuilderFunction: Bool {
-        guard attributes.contains(attributeNamed: "ViewBuilder") else {
+        guard let functionDecl = parent?.as(FunctionDeclSyntax.self),
+              functionDecl.attributes.contains(attributeNamed: "ViewBuilder") else {
             return false
         }
-        return signature.returnClause?.type.as(SomeOrAnyTypeSyntax.self)?.isView ?? false
+        return functionDecl.signature.returnClause?.type.as(SomeOrAnyTypeSyntax.self)?.isView ?? false
     }
 }
 

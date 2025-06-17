@@ -54,19 +54,19 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 @ViewBuilder
                 func bar() -> some View {
-                    let _ = foo()
+                    ↓let _ = foo()
                     return Text("Hello, World!")
                 }
                 """),
             Example("""
                 #Preview {
-                    let _ = foo()
+                    ↓let _ = foo()
                     return Text("Hello, World!")
                 }
                 """),
             Example("""
                 static var previews: some View {
-                    let _ = foo()
+                    ↓let _ = foo()
                     Text("Hello, World!")
                 }
                 """),

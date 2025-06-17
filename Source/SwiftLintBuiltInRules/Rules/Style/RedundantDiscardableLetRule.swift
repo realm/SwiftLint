@@ -199,10 +199,6 @@ private extension FunctionDeclSyntax {
 
 private extension ClosureExprSyntax {
     var isPreviewMacroBody: Bool {
-        if let macroExpansionExpr = parent?.as(MacroExpansionExprSyntax.self),
-           macroExpansionExpr.macroName.text == "Preview" {
-            return true
-        }
-        return false
+        parent?.as(MacroExpansionExprSyntax.self)?.macroName.text == "Preview"
     }
 }

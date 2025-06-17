@@ -152,21 +152,15 @@ private extension AccessorBlockSyntax {
         guard let binding = parent?.as(PatternBindingSyntax.self),
               binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text == "previews",
               let bindingList = binding.parent?.as(PatternBindingListSyntax.self),
-              let variableDecl = bindingList.parent?.as(VariableDeclSyntax.self) else {
+              let variableDecl = bindingList.parent?.as(VariableDeclSyntax.self),
+              variableDecl.modifiers.contains(keyword: .static),
+              variableDecl.bindingSpecifier.tokenKind == .keyword(.var),
+              let type = binding.typeAnnotation?.type.as(SomeOrAnyTypeSyntax.self) else {
             return false
         }
 
-        guard variableDecl.modifiers.contains(keyword: .static) &&
-                variableDecl.bindingSpecifier.tokenKind == .keyword(.var) else {
-            return false
-        }
-
-        if let type = binding.typeAnnotation?.type.as(SomeOrAnyTypeSyntax.self) {
-            return type.someOrAnySpecifier.text == "some" &&
-                type.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
-        }
-
-        return false
+        return type.someOrAnySpecifier.text == "some" &&
+            type.constraint.as(IdentifierTypeSyntax.self)?.name.text == "View"
     }
 }
 

@@ -86,6 +86,52 @@ struct RedundantDiscardableLetRule: Rule {
         corrections: [
             Example("↓let _ = foo()"): Example("_ = foo()"),
             Example("if _ = foo() { ↓let _ = bar() }"): Example("if _ = foo() { _ = bar() }"),
+            Example("""
+                var body: some View {
+                    ↓let _ = foo()
+                    Text("Hello, World!")
+                }
+                """): Example("""
+                    var body: some View {
+                        _ = foo()
+                        Text("Hello, World!")
+                    }
+                    """),
+            Example("""
+                @ViewBuilder
+                func bar() -> some View {
+                    ↓let _ = foo()
+                    return Text("Hello, World!")
+                }
+                """): Example("""
+                    @ViewBuilder
+                    func bar() -> some View {
+                        _ = foo()
+                        return Text("Hello, World!")
+                    }
+                    """),
+            Example("""
+                #Preview {
+                    ↓let _ = foo()
+                    return Text("Hello, World!")
+                }
+                """): Example("""
+                    #Preview {
+                        _ = foo()
+                        return Text("Hello, World!")
+                    }
+                    """),
+            Example("""
+                static var previews: some View {
+                    ↓let _ = foo()
+                    Text("Hello, World!")
+                }
+                """): Example("""
+                    static var previews: some View {
+                        _ = foo()
+                        Text("Hello, World!")
+                    }
+                    """),
         ]
     )
 }

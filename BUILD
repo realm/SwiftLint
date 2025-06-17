@@ -99,7 +99,7 @@ swift_library(
         ":Yams.wrapper",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ] + select({
-        "@platforms//os:linux": ["@com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
+        "@platforms//os:linux": ["@swiftlint_com_github_krzyzanowskim_cryptoswift//:CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
 )
@@ -110,7 +110,7 @@ swift_library(
     module_name = "YamsWrapper",
     visibility = ["//visibility:private"],
     deps = [
-        "@sourcekitten_com_github_jpsim_yams//:Yams",
+        "@com_github_jpsim_yams//:Yams",
     ],
 )
 
@@ -154,7 +154,7 @@ swift_library(
         ":SwiftLintBuiltInRules",
         ":SwiftLintCore",
         ":SwiftLintExtraRules",
-        "@com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
+        "@swiftlint_com_github_johnsundell_collectionconcurrencykit//:CollectionConcurrencyKit",
     ],
 )
 
@@ -166,7 +166,7 @@ swift_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
-        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
+        "@com_github_apple_swift_argument_parser//:ArgumentParser",
         "@swiftlint_com_github_scottrhoyt_swifty_text_table//:SwiftyTextTable",
     ],
 )
@@ -179,7 +179,7 @@ swift_binary(
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
-        "@sourcekitten_com_github_apple_swift_argument_parser//:ArgumentParser",
+        "@com_github_apple_swift_argument_parser//:ArgumentParser",
     ],
 )
 

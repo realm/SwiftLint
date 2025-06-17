@@ -5,23 +5,23 @@ module(
     repo_name = "SwiftLint",
 )
 
-bazel_dep(name = "apple_support", version = "1.16.0", repo_name = "build_bazel_apple_support")
+bazel_dep(name = "apple_support", version = "1.21.1", repo_name = "build_bazel_apple_support")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "platforms", version = "0.0.11")
 bazel_dep(name = "rules_apple", version = "4.0.1", repo_name = "build_bazel_rules_apple")
 bazel_dep(name = "rules_cc", version = "0.1.1")
 bazel_dep(name = "rules_shell", version = "0.4.0", repo_name = "build_bazel_rules_shell")
 bazel_dep(name = "rules_swift", version = "2.8.1", max_compatibility_level = 3, repo_name = "build_bazel_rules_swift")
 bazel_dep(name = "sourcekitten", version = "0.37.2", repo_name = "com_github_jpsim_sourcekitten")
-bazel_dep(name = "swift_argument_parser", version = "1.3.1.2", repo_name = "sourcekitten_com_github_apple_swift_argument_parser")
+bazel_dep(name = "swift_argument_parser", version = "1.5.0", repo_name = "com_github_apple_swift_argument_parser")
 bazel_dep(name = "swift-syntax", version = "601.0.1.1", repo_name = "SwiftSyntax")
-bazel_dep(name = "yams", version = "6.0.1", repo_name = "sourcekitten_com_github_jpsim_yams")
+bazel_dep(name = "yams", version = "6.0.1", repo_name = "com_github_jpsim_yams")
 
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
     swiftlint_repos,
-    "com_github_johnsundell_collectionconcurrencykit",
-    "com_github_krzyzanowskim_cryptoswift",
+    "swiftlint_com_github_johnsundell_collectionconcurrencykit",
+    "swiftlint_com_github_krzyzanowskim_cryptoswift",
     "swiftlint_com_github_scottrhoyt_swifty_text_table",
 )
 

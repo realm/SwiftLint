@@ -61,13 +61,6 @@ private extension FileLengthRule {
 
                 // Process leading trivia
                 addTriviaLines(token.leadingTrivia, startingAt: token.position, to: &linesWithActualContent)
-
-                // Process trailing trivia
-                addTriviaLines(
-                    token.trailingTrivia,
-                    startingAt: token.endPositionBeforeTrailingTrivia,
-                    to: &linesWithActualContent
-                )
             }
             return linesWithActualContent.count
         }
@@ -104,28 +97,6 @@ private extension FileLengthRule {
             for line in startLine...endLine {
                 lines.insert(line)
             }
-        }
-    }
-}
-
-private extension TriviaPiece {
-    var isComment: Bool {
-        switch self {
-        case .lineComment, .blockComment, .docLineComment, .docBlockComment:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isWhitespace: Bool {
-        switch self {
-        case .spaces, .tabs, .newlines, .carriageReturns, .carriageReturnLineFeeds, .formfeeds, .verticalTabs:
-            return true
-        case .unexpectedText(let text):
-            return text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        default:
-            return false
         }
     }
 }

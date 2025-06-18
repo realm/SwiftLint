@@ -1,5 +1,6 @@
-import SourceKittenFramework
+import SwiftSyntax
 
+@SwiftSyntaxRule
 struct FileLengthRule: Rule {
     var configuration = FileLengthConfiguration()
 
@@ -17,38 +18,85 @@ struct FileLengthRule: Rule {
             Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined()),
         ].skipWrappingInCommentTests()
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        func lineCountWithoutComments() -> Int {
-            let commentKinds = SyntaxKind.commentKinds
-            return file.syntaxKindsByLines.filter { kinds in
-                !Set(kinds).isSubset(of: commentKinds)
-            }.count
+private extension FileLengthRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: SourceFileSyntax) {
+            let lineCount = configuration.ignoreCommentOnlyLines ? countNonCommentLines(in: node) : file.lines.count
+
+            let severity: ViolationSeverity, upperBound: Int
+            if let error = configuration.severityConfiguration.error, lineCount > error {
+                severity = .error
+                upperBound = error
+            } else if lineCount > configuration.severityConfiguration.warning {
+                severity = .warning
+                upperBound = configuration.severityConfiguration.warning
+            } else {
+                return
+            }
+
+            let reason = "File should contain \(upperBound) lines or less" +
+                       (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespaces" : "") +
+                       ": currently contains \(lineCount)"
+
+            // Position violation at the start of the last line to avoid boundary issues
+            let lastLine = file.lines.last
+            let lastLineStartOffset = lastLine?.byteRange.location ?? 0
+            let violationPosition = AbsolutePosition(utf8Offset: lastLineStartOffset.value)
+
+            let violation = ReasonedRuleViolation(
+                position: violationPosition,
+                reason: reason,
+                severity: severity
+            )
+            violations.append(violation)
         }
 
-        var lineCount = file.lines.count
-        let hasViolation = configuration.severityConfiguration.params.contains {
-            $0.value < lineCount
+        private func countNonCommentLines(in node: SourceFileSyntax) -> Int {
+            var linesWithActualContent = Set<Int>()
+
+            for token in node.tokens(viewMode: .sourceAccurate) {
+                addTokenContentLines(token, to: &linesWithActualContent)
+
+                // Process leading trivia
+                addTriviaLines(token.leadingTrivia, startingAt: token.position, to: &linesWithActualContent)
+            }
+            return linesWithActualContent.count
         }
 
-        if hasViolation && configuration.ignoreCommentOnlyLines {
-            lineCount = lineCountWithoutComments()
+        private func addTokenContentLines(_ token: TokenSyntax, to lines: inout Set<Int>) {
+            // Skip tokens whose text is empty or only whitespace
+            // (e.g., EOF token, or an unlikely malformed token).
+            guard !token.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+
+            let startLocation = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia)
+            let endLocation = locationConverter.location(for: token.endPositionBeforeTrailingTrivia)
+
+            addLinesInRange(from: startLocation.line, to: endLocation.line, to: &lines)
         }
 
-        for parameter in configuration.severityConfiguration.params where lineCount > parameter.value {
-            let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less" +
-                         (configuration.ignoreCommentOnlyLines ? " excluding comments and whitespaces" : "") +
-                         ": currently contains \(lineCount)"
-            return [
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: parameter.severity,
-                    location: Location(file: file.path, line: file.lines.count),
-                    reason: reason
-                ),
-            ]
+        private func addTriviaLines(
+            _ trivia: Trivia,
+            startingAt startPosition: AbsolutePosition,
+            to lines: inout Set<Int>
+        ) {
+            var currentPosition = startPosition
+            for piece in trivia {
+                if !piece.isComment && !piece.isWhitespace {
+                    let startLocation = locationConverter.location(for: currentPosition)
+                    let endLocation = locationConverter.location(for: currentPosition + piece.sourceLength)
+                    addLinesInRange(from: startLocation.line, to: endLocation.line, to: &lines)
+                }
+                currentPosition += piece.sourceLength
+            }
         }
 
-        return []
+        private func addLinesInRange(from startLine: Int, to endLine: Int, to lines: inout Set<Int>) {
+            guard startLine > 0 && startLine <= endLine else { return }
+            for line in startLine...endLine {
+                lines.insert(line)
+            }
+        }
     }
 }

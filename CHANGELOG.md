@@ -18,6 +18,10 @@
   [imsonalbajaj](https://github.com/imsonalbajaj)
   [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
+* Migrate `file_length` rule from SourceKit to SwiftSyntax for improved performance
+  and fewer false positives.  
+  [JP Simard](https://github.com/jpsim)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

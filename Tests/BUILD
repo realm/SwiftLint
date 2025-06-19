@@ -1,4 +1,5 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
+load(":generated_tests.bzl", "generated_tests")
 
 exports_files(["BUILD"])
 
@@ -143,23 +144,7 @@ swift_test(
 
 # GeneratedTests
 
-swift_library(
-    name = "GeneratedTests.library",
-    testonly = True,
-    srcs = ["GeneratedTests/GeneratedTests.swift"],
-    module_name = "GeneratedTests",
-    package_name = "SwiftLint",
-    deps = [
-        ":TestHelpers",
-    ],
-    copts = copts + strict_concurrency_copts,
-)
-
-swift_test(
-    name = "GeneratedTests",
-    visibility = ["//visibility:public"],
-    deps = [":GeneratedTests.library"],
-)
+generated_tests(copts, strict_concurrency_copts)
 
 # IntegrationTests
 

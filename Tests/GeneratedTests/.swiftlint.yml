@@ -1,0 +1,4 @@
+disabled_rules:
+  - file_name
+  - single_test_class
+  - type_name

@@ -47,6 +47,7 @@ extension SwiftLintDev.Rules {
                 .sorted()
             try registerInRulesList(rules)
             try registerInTests(rules)
+            try registerInTestsBzl(rules)
             try registerInTestReference(adding: newRule)
             print("(Re-)Registered \(rules.count) rules.")
         }
@@ -74,53 +75,158 @@ struct NewRuleDetails: Equatable {
     }
 }
 
+/// Struct to hold processed rule information and shard calculations
+private struct ProcessedRulesContext {
+    let baseRuleNames: [String]
+    let totalShards: Int
+    let shardSize: Int
+
+    init(ruleFiles: [String], shardSize: Int) {
+        self.baseRuleNames = ruleFiles.map { $0.replacingOccurrences(of: ".swift", with: "") }
+        self.shardSize = shardSize
+        guard shardSize > 0, !baseRuleNames.isEmpty else {
+            self.totalShards = baseRuleNames.isEmpty ? 0 : 1
+            return
+        }
+        self.totalShards = (baseRuleNames.count + shardSize - 1) / shardSize // Ceiling division
+    }
+
+    /// Returns the rule names for a specific shard index
+    func shardRules(forIndex shardIndex: Int) -> ArraySlice<String> {
+        let startIndex = shardIndex * shardSize
+        let endIndex = min(startIndex + shardSize, baseRuleNames.count)
+        return baseRuleNames[startIndex..<endIndex]
+    }
+
+    /// Returns zero-padded shard numbers for all shards
+    var shardNumbers: [String] {
+        (1...totalShards).map { String(format: "%02d", $0) }
+    }
+}
+
 private extension SwiftLintDev.Rules.Register {
+    /// Number of test classes per shard for optimal parallelization
+    private static let shardSize = 25
+
+    /// Common parent directory of testsDirectory
+    private var testsParentDirectory: URL {
+        testsDirectory.deletingLastPathComponent()
+    }
+
+    /// Generate content for BuiltInRules.swift file
+    private func generateBuiltInRulesFileContent(rulesImportList: String) -> String {
+        """
+        // GENERATED FILE. DO NOT EDIT!
+
+        /// The rule list containing all available rules built into SwiftLint.
+        public let builtInRules: [any Rule.Type] = [
+        \(rulesImportList.indent(by: 4)),
+        ]
+
+        """
+    }
+
+    /// Generate content for Swift test files
+    private func generateSwiftTestFileContent(forTestClasses testClassesString: String) -> String {
+        """
+        // GENERATED FILE. DO NOT EDIT!
+        // swiftlint:disable:previous file_name
+        // swiftlint:disable:previous blanket_disable_command superfluous_disable_command
+        // swiftlint:disable:next blanket_disable_command superfluous_disable_command
+        // swiftlint:disable file_length single_test_class type_name
+
+        @testable import SwiftLintBuiltInRules
+        @testable import SwiftLintCore
+        import TestHelpers
+
+        \(testClassesString)
+
+        """
+    }
+
+    /// Generate content for Bazel .bzl files
+    private func generateBzlFileContent(macroInvocations: String) -> String {
+        #"""
+        # GENERATED FILE. DO NOT EDIT!
+
+        load(":test_macros.bzl", "generated_test_shard")
+
+        def generated_tests(copts, strict_concurrency_copts):
+            """Creates all generated test targets for SwiftLint rules.
+
+            Args:
+                copts: Common compiler options
+                strict_concurrency_copts: Strict concurrency compiler options
+            """
+        \#(macroInvocations)
+
+        """#
+    }
+
     func registerInRulesList(_ ruleFiles: [String]) throws {
-        let rules = ruleFiles
+        let rulesImportString = ruleFiles
             .map { $0.replacingOccurrences(of: ".swift", with: ".self") }
             .joined(separator: ",\n")
         let builtInRulesFile = rulesDirectory.deletingLastPathComponent()
             .appendingPathComponent("Models", isDirectory: true)
             .appendingPathComponent("BuiltInRules.swift", isDirectory: false)
-        try """
-            // GENERATED FILE. DO NOT EDIT!
 
-            /// The rule list containing all available rules built into SwiftLint.
-            public let builtInRules: [any Rule.Type] = [
-            \(rules.indent(by: 4)),
-            ]
-
-            """.write(to: builtInRulesFile, atomically: true, encoding: .utf8)
+        let fileContent = generateBuiltInRulesFileContent(rulesImportList: rulesImportString)
+        try fileContent.write(to: builtInRulesFile, atomically: true, encoding: .utf8)
     }
 
     func registerInTests(_ ruleFiles: [String]) throws {
-        let testFile = testsDirectory
-            .appendingPathComponent("GeneratedTests.swift", isDirectory: false)
-        let rules = ruleFiles
-            .map { $0.replacingOccurrences(of: ".swift", with: "") }
-            .map { testName in """
+        let rulesContext = ProcessedRulesContext(ruleFiles: ruleFiles, shardSize: Self.shardSize)
+
+        // Remove old generated files
+        let existingFiles = try FileManager.default.contentsOfDirectory(
+            at: testsDirectory,
+            includingPropertiesForKeys: nil
+        )
+        for file in existingFiles where file.lastPathComponent.hasPrefix("GeneratedTests") &&
+            file.pathExtension == "swift" {
+            try FileManager.default.removeItem(at: file)
+        }
+
+        // Create sharded test files
+        for shardIndex in 0..<rulesContext.totalShards {
+            let shardRules = rulesContext.shardRules(forIndex: shardIndex)
+
+            let testClasses = shardRules.map { testName in """
                 final class \(testName)GeneratedTests: SwiftLintTestCase {
                     func testWithDefaultConfiguration() {
                         verifyRule(\(testName).description)
                     }
                 }
                 """
-            }
-            .joined(separator: "\n\n")
+            }.joined(separator: "\n\n")
 
-        try """
-            // GENERATED FILE. DO NOT EDIT!
+            let shardNumber = rulesContext.shardNumbers[shardIndex]
+            let testFile = testsDirectory.appendingPathComponent(
+                "GeneratedTests_\(shardNumber).swift",
+                isDirectory: false
+            )
 
-            @testable import SwiftLintBuiltInRules
-            @testable import SwiftLintCore
-            import TestHelpers
+            let fileContent = generateSwiftTestFileContent(forTestClasses: testClasses)
+            try fileContent.write(to: testFile, atomically: true, encoding: .utf8)
+        }
+    }
 
-            // swiftlint:disable:next blanket_disable_command
-            // swiftlint:disable file_length single_test_class type_name
+    func registerInTestsBzl(_ ruleFiles: [String]) throws {
+        let rulesContext = ProcessedRulesContext(ruleFiles: ruleFiles, shardSize: Self.shardSize)
 
-            \(rules)
+        // Generate macro calls for each shard
+        let macroInvocationsString = rulesContext.shardNumbers.map {
+            #"    generated_test_shard("\#($0)", copts, strict_concurrency_copts)"#
+        }.joined(separator: "\n")
 
-            """.write(to: testFile, atomically: true, encoding: .utf8)
+        let bzlFile = testsParentDirectory.appendingPathComponent(
+            "generated_tests.bzl",
+            isDirectory: false
+        )
+
+        let fileContent = generateBzlFileContent(macroInvocations: macroInvocationsString)
+        try fileContent.write(to: bzlFile, atomically: true, encoding: .utf8)
     }
 
     func registerInTestReference(adding newRule: NewRuleDetails?) throws {
@@ -147,7 +253,7 @@ private extension SwiftLintDev.Rules.Register {
             .joined(separator: "\n")
             .appending("\n")
             .write(
-                to: testsDirectory.deletingLastPathComponent()
+                to: testsParentDirectory
                     .appendingPathComponent("IntegrationTests", isDirectory: true)
                     .appendingPathComponent("default_rule_configurations.yml", isDirectory: false),
                 atomically: true,

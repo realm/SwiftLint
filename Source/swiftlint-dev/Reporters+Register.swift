@@ -18,7 +18,7 @@ extension SwiftLintDev.Reporters {
                 .appendingPathComponent("Reporters", isDirectory: true)
         }
 
-        func run() async throws {
+        func run() throws {
             guard FileManager.default.fileExists(atPath: reportersDirectory.path) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
             }

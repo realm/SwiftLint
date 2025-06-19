@@ -6,7 +6,7 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
     func createBuildCommands(
         context: PluginContext,
         target: Target
-    ) async throws -> [Command] {
+    ) throws -> [Command] {
         try makeCommand(executable: context.tool(named: "swiftlint"),
                         swiftFiles: (target as? SourceModuleTarget).flatMap(swiftFiles) ?? [],
                         environment: environment(context: context, target: target),

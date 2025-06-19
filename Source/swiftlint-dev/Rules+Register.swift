@@ -26,7 +26,7 @@ extension SwiftLintDev.Rules {
                 .appendingPathComponent("GeneratedTests", isDirectory: true)
         }
 
-        func run() async throws {
+        func run() throws {
             try runFor(newRule: nil)
         }
 

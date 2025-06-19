@@ -42,7 +42,7 @@ extension SwiftLintDev.Rules {
         @Flag(name: .long, help: "Skip registration.")
         var skipRegistration = false
 
-        func run() async throws {
+        func run() throws {
             let rootDirectory = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
             let ruleDirectory = rootDirectory
                 .appendingPathComponent("Source", isDirectory: true)

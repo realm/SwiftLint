@@ -15,16 +15,19 @@ struct VerticalWhitespaceRule: Rule {
             Example("let abc = 0\n\n"),
             Example("/* bcs \n\n\n\n*/"),
             Example("// bca \n\n"),
+            Example("class CCCC {\n  \n}"),
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
             Example("class BBBB {}\n\n\n"),
+            Example("class CCCC {\n  \n  \n}"),
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
             Example("let c = 0\n\n\nlet num = 1\n"): Example("let c = 0\n\nlet num = 1\n"),
             Example("// bca \n\n\n"): Example("// bca \n\n"),
+            Example("class CCCC {\n  \n  \n  \n}"): Example("class CCCC {\n  \n}"),
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 }
@@ -34,6 +37,10 @@ private extension VerticalWhitespaceRule {
         override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
             // The strategy here is to keep track of the position of the _first_ violating newline
             // in each consecutive run, and report the violation when the run _ends_.
+
+            if token.leadingTrivia.isEmpty {
+                return .visitChildren
+            }
 
             var consecutiveNewlines = 0
             var currentPosition = token.position
@@ -129,8 +136,8 @@ private extension VerticalWhitespaceRule {
                     pendingWhitespace.removeAll()
                 }
             }
-            // Pull in any remaining pending whitespace if we need to
-            if !pendingWhitespace.isEmpty && consecutiveNewlines <= configuration.maxEmptyLines + 1 {
+            // Pull in any remaining pending whitespace
+            if !pendingWhitespace.isEmpty {
                 result.append(contentsOf: pendingWhitespace)
             }
 

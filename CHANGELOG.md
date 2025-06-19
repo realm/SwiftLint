@@ -22,6 +22,9 @@
   and fewer false positives.  
   [JP Simard](https://github.com/jpsim)
 
+* Migrate `vertical_whitespace` rule from SourceKit to SwiftSyntax for improved performance.
+  [Matt Pennig](https://github.com/pennig)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

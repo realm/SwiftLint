@@ -9,7 +9,10 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
         // Test with custom `max_empty_lines`
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [Example("let aaaa = 0\n\n\n")])
-            .with(triggeringExamples: [Example("struct AAAA {}\n\n\n\n")])
+            .with(triggeringExamples: [
+                Example("struct AAAA {}\n\n\n\n"),
+                Example("class BBBB {\n  \n  \n  \n}"),
+            ])
             .with(corrections: [:])
 
         verifyRule(maxEmptyLinesDescription,
@@ -23,6 +26,7 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
             .with(corrections: [
                 Example("let b = 0\n\n↓\n↓\n↓\n\nclass AAA {}\n"): Example("let b = 0\n\n\nclass AAA {}\n"),
                 Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\n\nclass AAA {}\n"),
+                Example("class BB {\n  \n  \n↓  \n  let b = 0\n}\n"): Example("class BB {\n  \n  \n  let b = 0\n}\n"),
             ])
 
         verifyRule(maxEmptyLinesDescription,

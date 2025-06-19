@@ -1,146 +1,147 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line"
-
-struct VerticalWhitespaceRule: CorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true, correctable: true)
+struct VerticalWhitespaceRule: Rule {
     var configuration = VerticalWhitespaceConfiguration()
 
     static let description = RuleDescription(
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",
-        description: defaultDescriptionReason + ".",
+        description: VerticalWhitespaceConfiguration.defaultDescriptionReason,
         kind: .style,
         nonTriggeringExamples: [
             Example("let abc = 0\n"),
             Example("let abc = 0\n\n"),
             Example("/* bcs \n\n\n\n*/"),
             Example("// bca \n\n"),
+            Example("class CCCC {\n  \n}"),
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
             Example("class BBBB {}\n\n\n"),
+            Example("class CCCC {\n  \n  \n}"),
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
             Example("let c = 0\n\n\nlet num = 1\n"): Example("let c = 0\n\nlet num = 1\n"),
             Example("// bca \n\n\n"): Example("// bca \n\n"),
+            Example("class CCCC {\n  \n  \n  \n}"): Example("class CCCC {\n  \n}"),
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
+}
 
-    private var configuredDescriptionReason: String {
-        guard configuration.maxEmptyLines == 1 else {
-            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines"
+private extension VerticalWhitespaceRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
+            // The strategy here is to keep track of the position of the _first_ violating newline
+            // in each consecutive run, and report the violation when the run _ends_.
+
+            if token.leadingTrivia.isEmpty {
+                return .visitChildren
+            }
+
+            var consecutiveNewlines = 0
+            var currentPosition = token.position
+            var violationPosition: AbsolutePosition?
+
+            func process(_ count: Int, _ offset: Int) {
+                for _ in 0..<count {
+                    if consecutiveNewlines > configuration.maxEmptyLines && violationPosition == nil {
+                        violationPosition = currentPosition
+                    }
+                    consecutiveNewlines += 1
+                    currentPosition = currentPosition.advanced(by: offset)
+                }
+            }
+
+            for piece in token.leadingTrivia {
+                switch piece {
+                case .newlines(let count), .carriageReturns(let count), .formfeeds(let count), .verticalTabs(let count):
+                    process(count, 1)
+                case .carriageReturnLineFeeds(let count):
+                    process(count, 2) // CRLF is 2 bytes
+                case .spaces, .tabs:
+                    currentPosition += piece.sourceLength
+                default:
+                    if let violationPosition {
+                        report(violationPosition, consecutiveNewlines)
+                    }
+                    violationPosition = nil
+                    consecutiveNewlines = 0
+                    currentPosition += piece.sourceLength
+                }
+            }
+            if let violationPosition {
+                report(violationPosition, consecutiveNewlines)
+            }
+
+            return .visitChildren
         }
-        return defaultDescriptionReason
+
+        private func report(_ position: AbsolutePosition, _ newlines: Int) {
+            violations.append(ReasonedRuleViolation(
+                position: position,
+                reason: configuration.configuredDescriptionReason + "; currently \(newlines - 1)"
+            ))
+        }
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let linesSections = violatingLineSections(in: file)
-        guard linesSections.isNotEmpty else {
-            return []
-        }
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ token: TokenSyntax) -> TokenSyntax {
+            var result = [TriviaPiece]()
+            var pendingWhitespace = [TriviaPiece]()
+            var consecutiveNewlines = 0
 
-        return linesSections.map { eachLastLine, eachSectionCount in
-            StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file.path, line: eachLastLine.index),
-                reason: configuredDescriptionReason + "; currently \(eachSectionCount + 1)"
-            )
-        }
-    }
+            func process(_ count: Int, _ create: (Int) -> TriviaPiece) {
+                let linesToPreserve = min(count, max(0, configuration.maxEmptyLines + 1 - consecutiveNewlines))
+                consecutiveNewlines += count
 
-    private typealias LineSection = (lastLine: Line, linesToRemove: Int)
+                if count > linesToPreserve {
+                    self.numberOfCorrections += count - linesToPreserve
+                }
 
-    private func violatingLineSections(in file: SwiftLintFile) -> [LineSection] {
-        let nonSpaceRegex = regex("\\S", options: [])
-        let filteredLines = file.lines.filter {
-            nonSpaceRegex.firstMatch(in: file.contents, options: [], range: $0.range) == nil
-        }
-
-        guard filteredLines.isNotEmpty else {
-            return []
-        }
-
-        let blankLinesSections = extractSections(from: filteredLines)
-
-        // filtering out violations in comments and strings
-        let stringAndComments = SyntaxKind.commentAndStringKinds
-        let syntaxMap = file.syntaxMap
-        let result = blankLinesSections.compactMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
-            guard let lastLine = eachSection.last else {
-                return nil
-            }
-            let kindInSection = syntaxMap.kinds(inByteRange: lastLine.byteRange)
-            if stringAndComments.isDisjoint(with: kindInSection) {
-                return (lastLine, eachSection.count)
+                if linesToPreserve > 0 {
+                    // We can still add this piece, even if we adjusted its count lower.
+                    // Pull in any pending whitespace along with it.
+                    result.append(contentsOf: pendingWhitespace)
+                    result.append(create(linesToPreserve))
+                    pendingWhitespace.removeAll()
+                } else {
+                    // We're now in violation. Dump pending whitespace so it's excluded from the result.
+                    pendingWhitespace.removeAll()
+                }
             }
 
-            return nil
-        }
-
-        return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }
-    }
-
-    private func extractSections(from lines: [Line]) -> [[Line]] {
-        var blankLinesSections = [[Line]]()
-        var lineSection = [Line]()
-
-        var previousIndex = 0
-        for (index, line) in lines.enumerated() {
-            let previousLine: Line = lines[previousIndex]
-            if previousLine.index + 1 == line.index {
-                lineSection.append(line)
-            } else if lineSection.isNotEmpty {
-                blankLinesSections.append(lineSection)
-                lineSection.removeAll()
+            for piece in token.leadingTrivia {
+                switch piece {
+                case .newlines(let count):
+                    process(count, TriviaPiece.newlines)
+                case .carriageReturns(let count):
+                    process(count, TriviaPiece.carriageReturns)
+                case .carriageReturnLineFeeds(let count):
+                    process(count, TriviaPiece.carriageReturnLineFeeds)
+                case .formfeeds(let count):
+                    process(count, TriviaPiece.formfeeds)
+                case .verticalTabs(let count):
+                    process(count, TriviaPiece.verticalTabs)
+                case .spaces, .tabs:
+                    pendingWhitespace.append(piece)
+                default:
+                    // Reset and pull in pending whitespace
+                    consecutiveNewlines = 0
+                    result.append(contentsOf: pendingWhitespace)
+                    result.append(piece)
+                    pendingWhitespace.removeAll()
+                }
             }
-            previousIndex = index
-        }
-        if lineSection.isNotEmpty {
-            blankLinesSections.append(lineSection)
-        }
-
-        return blankLinesSections
-    }
-
-    func correct(file: SwiftLintFile) -> Int {
-        let linesSections = violatingLineSections(in: file)
-        if linesSections.isEmpty {
-            return 0
-        }
-
-        var indexOfLinesToDelete = [Int]()
-
-        for section in linesSections {
-            let linesToRemove = section.linesToRemove - configuration.maxEmptyLines + 1
-            let start = section.lastLine.index - linesToRemove
-            indexOfLinesToDelete.append(contentsOf: start..<section.lastLine.index)
-        }
-
-        var correctedLines = [String]()
-        var numberOfCorrections = 0
-        for currentLine in file.lines {
-            // Doesn't correct lines where rule is disabled
-            if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
-                correctedLines.append(currentLine.content)
-                continue
+            // Pull in any remaining pending whitespace
+            if !pendingWhitespace.isEmpty {
+                result.append(contentsOf: pendingWhitespace)
             }
-            // removes lines by skipping them from correctedLines
-            if Set(indexOfLinesToDelete).contains(currentLine.index) {
-                // reports every line that is being deleted
-                numberOfCorrections += 1
-                continue // skips line
-            }
-            // all lines that pass get added to final output file
-            correctedLines.append(currentLine.content)
+
+            return super.visit(token.with(\.leadingTrivia, Trivia(pieces: result)))
         }
-        // converts lines back to file and adds trailing line
-        if numberOfCorrections > 0 {
-            file.write(correctedLines.joined(separator: "\n") + "\n")
-        }
-        return numberOfCorrections
     }
 }

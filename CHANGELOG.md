@@ -26,10 +26,6 @@
 * Migrate `vertical_whitespace` rule from SourceKit to SwiftSyntax for improved performance.  
   [Matt Pennig](https://github.com/pennig)
 
-* Migrate `accessibility_label_for_image` rule from SourceKit to SwiftSyntax for improved
-  performance and fewer false positives.  
-  [JP Simard](https://github.com/jpsim)
-
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

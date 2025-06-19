@@ -79,14 +79,28 @@ struct NewRuleDetails: Equatable {
 private struct ProcessedRulesContext {
     let baseRuleNames: [String]
     let totalShards: Int
+    let shardSize: Int
 
     init(ruleFiles: [String], shardSize: Int) {
         self.baseRuleNames = ruleFiles.map { $0.replacingOccurrences(of: ".swift", with: "") }
+        self.shardSize = shardSize
         guard shardSize > 0, !baseRuleNames.isEmpty else {
             self.totalShards = baseRuleNames.isEmpty ? 0 : 1
             return
         }
         self.totalShards = (baseRuleNames.count + shardSize - 1) / shardSize // Ceiling division
+    }
+
+    /// Returns the rule names for a specific shard index
+    func shardRules(forIndex shardIndex: Int) -> ArraySlice<String> {
+        let startIndex = shardIndex * shardSize
+        let endIndex = min(startIndex + shardSize, baseRuleNames.count)
+        return baseRuleNames[startIndex..<endIndex]
+    }
+
+    /// Returns zero-padded shard numbers for all shards
+    var shardNumbers: [String] {
+        (1...totalShards).map { String(format: "%02d", $0) }
     }
 }
 
@@ -115,9 +129,11 @@ private extension SwiftLintDev.Rules.Register {
     /// Generate content for Swift test files
     private func generateSwiftTestFileContent(forTestClasses testClassesString: String) -> String {
         """
-        // swiftlint:disable file_length file_name single_test_class type_name
-        // swiftlint:disable:previous blanket_disable_command superfluous_disable_command
         // GENERATED FILE. DO NOT EDIT!
+        // swiftlint:disable:previous file_name
+        // swiftlint:disable:previous blanket_disable_command superfluous_disable_command
+        // swiftlint:disable:next blanket_disable_command superfluous_disable_command
+        // swiftlint:disable file_length single_test_class type_name
 
         @testable import SwiftLintBuiltInRules
         @testable import SwiftLintCore
@@ -187,8 +203,6 @@ private extension SwiftLintDev.Rules.Register {
 
     func registerInTests(_ ruleFiles: [String]) throws {
         let rulesContext = ProcessedRulesContext(ruleFiles: ruleFiles, shardSize: Self.shardSize)
-        let ruleNames = rulesContext.baseRuleNames
-        let totalShards = rulesContext.totalShards
 
         // Remove old generated files
         let existingFiles = try FileManager.default.contentsOfDirectory(
@@ -201,10 +215,8 @@ private extension SwiftLintDev.Rules.Register {
         }
 
         // Create sharded test files
-        for shardIndex in 0..<totalShards {
-            let startIndex = shardIndex * Self.shardSize
-            let endIndex = min(startIndex + Self.shardSize, ruleNames.count)
-            let shardRules = Array(ruleNames[startIndex..<endIndex])
+        for shardIndex in 0..<rulesContext.totalShards {
+            let shardRules = rulesContext.shardRules(forIndex: shardIndex)
 
             let testClasses = shardRules.map { testName in """
                 final class \(testName)GeneratedTests: SwiftLintTestCase {
@@ -215,7 +227,7 @@ private extension SwiftLintDev.Rules.Register {
                 """
             }.joined(separator: "\n\n")
 
-            let shardNumber = shardIndex + 1
+            let shardNumber = rulesContext.shardNumbers[shardIndex]
             let testFile = testsDirectory.appendingPathComponent(
                 "GeneratedTests_\(shardNumber).swift",
                 isDirectory: false
@@ -228,11 +240,9 @@ private extension SwiftLintDev.Rules.Register {
 
     func registerInTestsBzl(_ ruleFiles: [String]) throws {
         let rulesContext = ProcessedRulesContext(ruleFiles: ruleFiles, shardSize: Self.shardSize)
-        let totalShards = rulesContext.totalShards
 
         // Generate macro calls for each shard
-        let shardNumbers = (1...totalShards).map(String.init)
-        let macroInvocationsString = shardNumbers.map {
+        let macroInvocationsString = rulesContext.shardNumbers.map {
             #"    _generated_test_shard("\#($0)", copts, strict_concurrency_copts)"#
         }.joined(separator: "\n")
 

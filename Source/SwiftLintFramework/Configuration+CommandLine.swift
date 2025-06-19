@@ -75,8 +75,8 @@ private func autoreleasepool<T>(block: () -> T) -> T { block() }
 
 extension Configuration {
     func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage) async throws -> [SwiftLintFile] {
-        let files = try await Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
-            try await getFiles(with: visitor)
+        let files = try Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
+            try getFiles(with: visitor)
         }
         let groupedFiles = try Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
             try groupFiles(files, visitor: visitor)
@@ -236,7 +236,7 @@ extension Configuration {
             linters.asyncMap(visit)
     }
 
-    fileprivate func getFiles(with visitor: LintableFilesVisitor) async throws -> [SwiftLintFile] {
+    fileprivate func getFiles(with visitor: LintableFilesVisitor) throws -> [SwiftLintFile] {
         let options = visitor.options
         if options.useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()

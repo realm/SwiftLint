@@ -31,6 +31,7 @@ extension SwiftLint {
                 useScriptInputFiles: common.useScriptInputFiles,
                 useScriptInputFileLists: common.useScriptInputFileLists,
                 benchmark: common.benchmark,
+                reportCoverage: common.reportCoverage,
                 reporter: common.reporter,
                 baseline: common.baseline,
                 writeBaseline: common.writeBaseline,

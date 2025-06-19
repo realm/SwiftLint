@@ -14,7 +14,8 @@
 
 ### Enhancements
 
-* Fix false positives for `Actor`-conforming delegate protocols in the `class_delegate_protocol` rule.  
+* Fix false positives for `Actor`-conforming delegate protocols in the
+  `class_delegate_protocol` rule.  
   [imsonalbajaj](https://github.com/imsonalbajaj)
   [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
@@ -22,7 +23,7 @@
   and fewer false positives.  
   [JP Simard](https://github.com/jpsim)
 
-* Migrate `vertical_whitespace` rule from SourceKit to SwiftSyntax for improved performance.
+* Migrate `vertical_whitespace` rule from SourceKit to SwiftSyntax for improved performance.  
   [Matt Pennig](https://github.com/pennig)
 
 ### Bug Fixes

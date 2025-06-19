@@ -1321,6 +1321,12 @@ final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase 
     }
 }
 
+final class UnnestSwitchesUsingTupleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnnestSwitchesUsingTupleRule.description)
+    }
+}
+
 final class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)

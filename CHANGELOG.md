@@ -31,6 +31,10 @@
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
 
+* Migrate `line_length` rule from SourceKit to SwiftSyntax for improved
+  performance and fewer false positives.  
+  [JP Simard](https://github.com/jpsim)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

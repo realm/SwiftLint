@@ -72,7 +72,7 @@ private extension LargeTupleRule {
             for parameter in configuration.params where memberCount > parameter.value {
                 violations.append(.init(
                     position: node.positionAfterSkippingLeadingTrivia,
-                    reason: "Tuples should have at most \(parameter.value) members",
+                    reason: "Tuples should have at most \(configuration.warning) members",
                     severity: parameter.severity
                 ))
                 return

@@ -35,6 +35,7 @@
   * `file_header`
   * `file_length`
   * `line_length`
+  * `statement_position`
   * `trailing_whitespace`
   * `vertical_whitespace`
   <!-- Keep empty line to have the contributors on a separate line. -->

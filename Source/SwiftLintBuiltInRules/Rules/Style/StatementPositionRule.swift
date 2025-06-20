@@ -1,7 +1,7 @@
-import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct StatementPositionRule: CorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true)
+struct StatementPositionRule: Rule {
     var configuration = StatementPositionConfiguration()
 
     static let description = RuleDescription(
@@ -9,25 +9,9 @@ struct StatementPositionRule: CorrectableRule {
         name: "Statement Position",
         description: "Else and catch should be on the same line, one space after the previous declaration",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("} else if {"),
-            Example("} else {"),
-            Example("} catch {"),
-            Example("\"}else{\""),
-            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
-        ],
-        triggeringExamples: [
-            Example("↓}else if {"),
-            Example("↓}  else {"),
-            Example("↓}\ncatch {"),
-            Example("↓}\n\t  catch {"),
-        ],
-        corrections: [
-            Example("↓}\n else {"): Example("} else {"),
-            Example("↓}\n   else if {"): Example("} else if {"),
-            Example("↓}\n catch {"): Example("} catch {"),
-        ]
+        nonTriggeringExamples: StatementPositionRuleExamples.nonTriggeringExamples,
+        triggeringExamples: StatementPositionRuleExamples.triggeringExamples,
+        corrections: StatementPositionRuleExamples.corrections
     )
 
     static let uncuddledDescription = RuleDescription(
@@ -36,175 +20,217 @@ struct StatementPositionRule: CorrectableRule {
         description: "Else and catch should be on the next line, with equal indentation to the " +
                      "previous declaration",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("  }\n  else if {"),
-            Example("    }\n    else {"),
-            Example("  }\n  catch {"),
-            Example("  }\n\n  catch {"),
-            Example("\n\n  }\n  catch {"),
-            Example("\"}\nelse{\""),
-            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
-        ],
-        triggeringExamples: [
-            Example("↓  }else if {"),
-            Example("↓}\n  else {"),
-            Example("↓  }\ncatch {"),
-            Example("↓}\n\t  catch {"),
-        ],
-        corrections: [
-            Example("  }else if {"): Example("  }\n  else if {"),
-            Example("}\n  else {"): Example("}\nelse {"),
-            Example("  }\ncatch {"): Example("  }\n  catch {"),
-            Example("}\n\t  catch {"): Example("}\ncatch {"),
-        ]
+        nonTriggeringExamples: StatementPositionRuleExamples.uncuddledNonTriggeringExamples,
+        triggeringExamples: StatementPositionRuleExamples.uncuddledTriggeringExamples,
+        corrections: StatementPositionRuleExamples.uncuddledCorrections
     )
-
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        switch configuration.statementMode {
-        case .default:
-            return defaultValidate(file: file)
-        case .uncuddledElse:
-            return uncuddledValidate(file: file)
-        }
-    }
-
-    func correct(file: SwiftLintFile) -> Int {
-        switch configuration.statementMode {
-        case .default:
-            defaultCorrect(file: file)
-        case .uncuddledElse:
-            uncuddledCorrect(file: file)
-        }
-    }
 }
 
-// Default Behaviors
-private extension StatementPositionRule {
-    // match literal '}'
-    // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
-    // followed by 'else' or 'catch' literals
-    static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
+// MARK: - Shared Validation Logic
 
-    func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
-        defaultViolationRanges(in: file, matching: Self.defaultPattern).compactMap { range in
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: range.location))
-        }
-    }
+private struct StatementValidation {
+    let hasLeadingNewline: Bool
+    let hasTrailingContent: Bool
+    let expectedIndentation: Int
+    let actualIndentation: Int
+    let isSingleSpace: Bool
+    let hasCommentsBetween: Bool
 
-    func defaultViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        file.match(pattern: pattern).filter { _, syntaxKinds in
-            syntaxKinds.starts(with: [.keyword])
-        }.compactMap { $0.0 }
-    }
-
-    func defaultCorrect(file: SwiftLintFile) -> Int {
-        let violations = defaultViolationRanges(in: file, matching: Self.defaultPattern)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty {
-            return 0
-        }
-        let regularExpression = regex(Self.defaultPattern)
-        var contents = file.contents
-        for range in matches.reversed() {
-            contents = regularExpression.stringByReplacingMatches(in: contents, options: [], range: range,
-                                                                  withTemplate: "} $1")
-        }
-        file.write(contents)
-        return matches.count
-    }
-}
-
-// Uncuddled Behaviors
-private extension StatementPositionRule {
-    func uncuddledValidate(file: SwiftLintFile) -> [StyleViolation] {
-        uncuddledViolationRanges(in: file).compactMap { range in
-            StyleViolation(ruleDescription: Self.uncuddledDescription,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: range.location))
-        }
-    }
-
-    // match literal '}'
-    // preceded by whitespace (or nothing)
-    // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
-    // followed by newline and the same amount of whitespace then 'else' or 'catch' literals
-    static let uncuddledPattern = "([ \t]*)\\}(\\n+)?([ \t]*)\\b(else|catch)\\b"
-
-    static let uncuddledRegex = regex(uncuddledPattern, options: [])
-
-    static func uncuddledMatchValidator(contents: StringView) -> ((NSTextCheckingResult)
-        -> NSTextCheckingResult?) {
-            { match in
-                if match.numberOfRanges != 5 {
-                    return match
-                }
-                if match.range(at: 2).length == 0 {
-                    return match
-                }
-                let range1 = match.range(at: 1)
-                let range2 = match.range(at: 3)
-                let whitespace1 = contents.string.substring(from: range1.location, length: range1.length)
-                let whitespace2 = contents.string.substring(from: range2.location, length: range2.length)
-                if whitespace1 == whitespace2 {
-                    return nil
-                }
-                return match
-            }
-    }
-
-    static func uncuddledMatchFilter(contents: StringView,
-                                     syntaxMap: SwiftLintSyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
-        { match in
-            let range = match.range
-            guard let matchRange = contents.NSRangeToByteRange(start: range.location,
-                                                               length: range.length) else {
+    init(keyword: TokenSyntax, previousToken: TokenSyntax) {
+        self.hasLeadingNewline = keyword.leadingTrivia.contains { piece in
+            switch piece {
+            case .newlines, .carriageReturns, .carriageReturnLineFeeds:
+                return true
+            default:
                 return false
             }
-            return syntaxMap.kinds(inByteRange: matchRange) == [.keyword]
         }
+        self.hasTrailingContent = !previousToken.trailingTrivia.isEmpty
+        self.expectedIndentation = Self.calculateIndentation(previousToken.leadingTrivia)
+        self.actualIndentation = Self.calculateIndentation(keyword.leadingTrivia)
+        self.isSingleSpace = previousToken.trailingTrivia.isSingleSpace
+
+        // Check for comments between closing brace and keyword
+        self.hasCommentsBetween = previousToken.trailingTrivia.contains(where: \.isComment) ||
+                                  keyword.leadingTrivia.contains(where: \.isComment)
     }
 
-    func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
-        let contents = file.stringView
-        let syntaxMap = file.syntaxMap
-        let matches = Self.uncuddledRegex.matches(in: file)
-        let validator = Self.uncuddledMatchValidator(contents: contents)
-        let filterMatches = Self.uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
-
-        return matches.compactMap(validator).filter(filterMatches).map(\.range)
+    private static func calculateIndentation(_ trivia: Trivia) -> Int {
+        var indentation = 0
+        for piece in trivia.reversed() {
+            switch piece {
+            case .spaces(let count):
+                indentation += count
+            case .tabs(let count):
+                indentation += count * 4 // Assuming 1 tab = 4 spaces
+            case .newlines, .carriageReturns, .carriageReturnLineFeeds:
+                break
+            default:
+                continue
+            }
+        }
+        return indentation
     }
 
-    func uncuddledCorrect(file: SwiftLintFile) -> Int {
-        var contents = file.contents
-        let syntaxMap = file.syntaxMap
-        let matches = Self.uncuddledRegex.matches(in: file)
-        let validator = Self.uncuddledMatchValidator(contents: file.stringView)
-        let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
-        let validMatches = matches.compactMap(validator).filter(filterRanges)
-                  .filter { file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty }
-        if validMatches.isEmpty {
-            return 0
+    func isValidForDefaultMode() -> Bool {
+        !hasLeadingNewline && isSingleSpace
+    }
+
+    func isValidForUncuddledMode() -> Bool {
+        hasLeadingNewline && !hasTrailingContent && actualIndentation == expectedIndentation
+    }
+}
+
+// MARK: - Visitor
+
+private extension StatementPositionRule {
+    final class Visitor: ViolationsSyntaxVisitor<StatementPositionConfiguration> {
+        override func visitPost(_ node: IfExprSyntax) {
+            guard let elseKeyword = node.elseKeyword else { return }
+            validateStatement(keyword: elseKeyword)
         }
-        for match in validMatches.reversed() {
-            let range1 = match.range(at: 1)
-            let range2 = match.range(at: 3)
-            let newlineRange = match.range(at: 2)
-            var whitespace = contents.bridge().substring(with: range1)
-            let newLines: String
-            if newlineRange.location != NSNotFound {
-               newLines = contents.bridge().substring(with: newlineRange)
-            } else {
-                newLines = ""
+
+        override func visitPost(_ node: DoStmtSyntax) {
+            for catchClause in node.catchClauses {
+                validateStatement(keyword: catchClause.catchKeyword)
             }
-            if !whitespace.hasPrefix("\n") && newLines != "\n" {
-                whitespace.insert("\n", at: whitespace.startIndex)
-            }
-            contents = contents.bridge().replacingCharacters(in: range2, with: whitespace)
         }
-        file.write(contents)
-        return validMatches.count
+
+        private func validateStatement(keyword: TokenSyntax) {
+            guard let previousToken = keyword.previousToken(viewMode: .sourceAccurate),
+                  previousToken.tokenKind == .rightBrace else { return }
+
+            let validation = StatementValidation(keyword: keyword, previousToken: previousToken)
+            let isValid = configuration.statementMode == .default ?
+                validation.isValidForDefaultMode() :
+                validation.isValidForUncuddledMode()
+
+            if !isValid {
+                let description = configuration.statementMode == .default ?
+                    StatementPositionRule.description :
+                    StatementPositionRule.uncuddledDescription
+
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: previousToken.positionAfterSkippingLeadingTrivia,
+                        reason: description.description,
+                        severity: configuration.severity
+                    )
+                )
+            }
+        }
+    }
+}
+
+// MARK: - Rewriter
+
+private extension StatementPositionRule {
+    final class Rewriter: ViolationsSyntaxRewriter<StatementPositionConfiguration> {
+        override func visit(_ node: IfExprSyntax) -> ExprSyntax {
+            guard let elseKeyword = node.elseKeyword else {
+                return super.visit(node)
+            }
+
+            if let corrected = correctIfStatement(node: node, elseKeyword: elseKeyword) {
+                return super.visit(corrected)
+            }
+
+            return super.visit(node)
+        }
+
+        override func visit(_ node: DoStmtSyntax) -> StmtSyntax {
+            var newNode = node
+            var newCatchClauses: [CatchClauseSyntax] = []
+            var needsBodyUpdate = false
+
+            for catchClause in node.catchClauses {
+                if let corrected = correctCatchStatement(
+                    catchClause: catchClause,
+                    keyword: catchClause.catchKeyword
+                ) {
+                    newCatchClauses.append(corrected)
+                    needsBodyUpdate = true
+                } else {
+                    newCatchClauses.append(catchClause)
+                }
+            }
+
+            // Update the body's closing brace if needed
+            if needsBodyUpdate {
+                var newBody = newNode.body
+                if configuration.statementMode == .default {
+                    newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, .space)
+                } else {
+                    // Uncuddled mode - remove trailing trivia
+                    newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, [])
+                }
+                newNode.body = newBody
+            }
+
+            newNode.catchClauses = CatchClauseListSyntax(newCatchClauses)
+            return super.visit(newNode)
+        }
+
+        private func correctIfStatement(node: IfExprSyntax, elseKeyword: TokenSyntax) -> IfExprSyntax? {
+            guard let previousToken = elseKeyword.previousToken(viewMode: .sourceAccurate),
+                  previousToken.tokenKind == .rightBrace else { return nil }
+
+            let validation = StatementValidation(keyword: elseKeyword, previousToken: previousToken)
+            let needsCorrection = configuration.statementMode == .default ?
+                !validation.isValidForDefaultMode() :
+                !validation.isValidForUncuddledMode()
+
+            guard needsCorrection else { return nil }
+
+            // Skip correction if there are comments between brace and keyword
+            guard !validation.hasCommentsBetween else { return nil }
+
+            numberOfCorrections += 1
+
+            if configuration.statementMode == .default {
+                // Update the right brace trailing trivia
+                var newBody = node.body
+                newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, .space)
+                let newNode = node.with(\.body, newBody)
+
+                // Update the else keyword leading trivia
+                return newNode.with(\.elseKeyword, elseKeyword.with(\.leadingTrivia, []))
+            }
+            // Uncuddled mode
+            let newTrivia = Trivia.newline + .spaces(validation.expectedIndentation)
+
+            // Update the right brace trailing trivia
+            var newBody = node.body
+            newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, [])
+            let newNode = node.with(\.body, newBody)
+
+            // Update the else keyword leading trivia
+            return newNode.with(\.elseKeyword, elseKeyword.with(\.leadingTrivia, newTrivia))
+        }
+
+        private func correctCatchStatement(catchClause: CatchClauseSyntax, keyword: TokenSyntax) -> CatchClauseSyntax? {
+            guard let previousToken = keyword.previousToken(viewMode: .sourceAccurate),
+                  previousToken.tokenKind == .rightBrace else { return nil }
+
+            let validation = StatementValidation(keyword: keyword, previousToken: previousToken)
+            let needsCorrection = configuration.statementMode == .default ?
+                !validation.isValidForDefaultMode() :
+                !validation.isValidForUncuddledMode()
+
+            guard needsCorrection else { return nil }
+
+            // Skip correction if there are comments between brace and keyword
+            guard !validation.hasCommentsBetween else { return nil }
+
+            numberOfCorrections += 1
+
+            if configuration.statementMode == .default {
+                // For default mode, just update the keyword
+                return catchClause.with(\.catchKeyword, keyword.with(\.leadingTrivia, []))
+            }
+            // Uncuddled mode
+            let newTrivia = Trivia.newline + .spaces(validation.expectedIndentation)
+            return catchClause.with(\.catchKeyword, keyword.with(\.leadingTrivia, newTrivia))
+        }
     }
 }

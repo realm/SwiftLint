@@ -51,88 +51,95 @@ struct ExpiringTodoRule: Rule {
 private extension ExpiringTodoRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
-            // Process the entire file to handle multiline comment cases
-            let fileContent = file.contents
+            let pattern = #"""
+            \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
+            \\#(configuration.dateDelimiters.opening)\#
+            (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
+            \\#(configuration.dateDelimiters.closing)
+            """#
 
-            do {
-                let regex = try buildRegex()
-                let matches = fileContent.matches(of: regex)
+            let regex = SwiftLintCore.regex(pattern)
 
-                for match in matches {
-                    // Get the date capture group (first capture)
-                    let fullMatchRange = match.range
-                    let dateSubstring = match.output.1
-
-                    // Find the range of the date capture within the full match
-                    let fullMatch = String(fileContent[fullMatchRange])
-                    guard let dateRangeInMatch = fullMatch.range(of: String(dateSubstring)) else { continue }
-
-                    // Calculate the absolute position of the date capture
-                    let dateStartIndex = fileContent.index(
-                        fullMatchRange.lowerBound,
-                        offsetBy: fullMatch.distance(from: fullMatch.startIndex, to: dateRangeInMatch.lowerBound)
-                    )
-                    let prefix = String(fileContent[..<dateStartIndex])
-                    let matchOffset = prefix.utf8.count
-                    let matchPosition = AbsolutePosition(utf8Offset: matchOffset)
-
-                    guard isPositionInComment(position: matchPosition, in: node) else { continue }
-
-                    let dateString = String(dateSubstring)
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-
-                    if let violationLevel = getViolationLevel(for: parseDate(dateString: dateString)),
-                       let severity = getSeverity(for: violationLevel) {
-                        let violation = ReasonedRuleViolation(
-                            position: matchPosition,
-                            reason: violationLevel.reason,
-                            severity: severity
-                        )
-                        violations.append(violation)
-                    }
-                }
-            } catch {
-                // Invalid regex - should not happen
+            // Process each comment individually
+            for token in node.tokens(viewMode: .sourceAccurate) {
+                processTrivia(
+                    token.leadingTrivia,
+                    baseOffset: token.position.utf8Offset,
+                    regex: regex
+                )
+                processTrivia(
+                    token.trailingTrivia,
+                    baseOffset: token.endPositionBeforeTrailingTrivia.utf8Offset,
+                    regex: regex
+                )
             }
 
             return .skipChildren
         }
 
-        private func buildRegex() throws -> Regex<(Substring, Substring)> {
-            let pattern = #"""
-            \b(?:TODO|FIXME)(?::|\b)[\s\S]*?\#
-            \\#(configuration.dateDelimiters.opening)\#
-            (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
-            \\#(configuration.dateDelimiters.closing)
-            """#
-            return try Regex(pattern, as: (Substring, Substring).self)
-        }
+        private func processTrivia(_ trivia: Trivia, baseOffset: Int, regex: NSRegularExpression) {
+            var triviaOffset = baseOffset
 
-        private func isPositionInComment(position: AbsolutePosition, in tree: SourceFileSyntax) -> Bool {
-            // Walk through all tokens to find if the position is within a comment
-            for token in tree.tokens(viewMode: .sourceAccurate) {
-                // Check leading trivia
-                var triviaOffset = token.position.utf8Offset
-                for piece in token.leadingTrivia {
-                    let pieceEndOffset = triviaOffset + piece.sourceLength.utf8Length
-                    if position.utf8Offset >= triviaOffset && position.utf8Offset < pieceEndOffset {
-                        return piece.isComment
-                    }
-                    triviaOffset = pieceEndOffset
-                }
+            for piece in trivia {
+                defer { triviaOffset += piece.sourceLength.utf8Length }
 
-                // Check trailing trivia
-                triviaOffset = token.endPositionBeforeTrailingTrivia.utf8Offset
-                for piece in token.trailingTrivia {
-                    let pieceEndOffset = triviaOffset + piece.sourceLength.utf8Length
-                    if position.utf8Offset >= triviaOffset && position.utf8Offset < pieceEndOffset {
-                        return piece.isComment
+                guard let commentText = piece.commentText else { continue }
+
+                // Handle multiline comments by checking consecutive line comments
+                if piece.isLineComment {
+                    var combinedText = commentText
+                    let currentOffset = triviaOffset
+
+                    // Look ahead for consecutive line comments
+                    let remainingTrivia = trivia.dropFirst(trivia.firstIndex(of: piece)! + 1)
+
+                    for nextPiece in remainingTrivia {
+                        if case .lineComment(let nextText) = nextPiece {
+                            // Check if it's a continuation (starts with //)
+                            if nextText.hasPrefix("//") {
+                                combinedText += "\n" + nextText
+                            } else {
+                                break
+                            }
+                        } else if !nextPiece.isNewline && !nextPiece.isWhitespace {
+                            break
+                        }
                     }
-                    triviaOffset = pieceEndOffset
+
+                    processComment(combinedText, offset: currentOffset, regex: regex)
+                } else {
+                    processComment(commentText, offset: triviaOffset, regex: regex)
                 }
             }
+        }
 
-            return false
+        private func processComment(_ commentText: String, offset: Int, regex: NSRegularExpression) {
+            let matches = regex.matches(in: commentText, options: [], range: commentText.fullNSRange)
+            let nsStringComment = commentText.bridge()
+
+            for match in matches {
+                guard match.numberOfRanges > 1 else { continue }
+
+                // Get the date capture group (second capture group, index 1)
+                let dateRange = match.range(at: 1)
+                guard dateRange.location != NSNotFound else { continue }
+
+                let matchOffset = offset + dateRange.location
+                let matchPosition = AbsolutePosition(utf8Offset: matchOffset)
+
+                let dateString = nsStringComment.substring(with: dateRange)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let violationLevel = getViolationLevel(for: parseDate(dateString: dateString)),
+                   let severity = getSeverity(for: violationLevel) {
+                    let violation = ReasonedRuleViolation(
+                        position: matchPosition,
+                        reason: violationLevel.reason,
+                        severity: severity
+                    )
+                    violations.append(violation)
+                }
+            }
         }
 
         private func parseDate(dateString: String) -> Date? {
@@ -176,5 +183,44 @@ private extension ExpiringTodoRule {
 private extension Date {
     var isAfterToday: Bool {
         Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
+    }
+}
+
+private extension TriviaPiece {
+    var isLineComment: Bool {
+        switch self {
+        case .lineComment, .docLineComment:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isWhitespace: Bool {
+        switch self {
+        case .spaces, .tabs:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isNewline: Bool {
+        switch self {
+        case .newlines, .carriageReturns, .carriageReturnLineFeeds:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var commentText: String? {
+        switch self {
+        case .lineComment(let text), .blockComment(let text),
+             .docLineComment(let text), .docBlockComment(let text):
+            return text
+        default:
+            return nil
+        }
     }
 }

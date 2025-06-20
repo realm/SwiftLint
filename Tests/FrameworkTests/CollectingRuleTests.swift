@@ -136,7 +136,7 @@ extension MockCollectingRule {
     @RuleConfigurationDescriptionBuilder
     var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
     static var description: RuleDescription {
-        RuleDescription(identifier: "test_rule", name: "", description: "", kind: .lint)
+        RuleDescription(identifier: "mock_test_rule_for_swiftlint_tests", name: "", description: "", kind: .lint)
     }
     static var configuration: Configuration? {
         Configuration(rulesMode: .onlyConfiguration([identifier]), ruleList: RuleList(rules: self))

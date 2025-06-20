@@ -87,7 +87,11 @@ public extension SwiftVersion {
         if !Request.disableSourceKit {
             // This request was added in Swift 5.1
             let params: SourceKitObject = ["key.request": UID("source.request.compiler_version")]
-            if let result = try? Request.customRequest(request: params).send(),
+            // Allow this specific SourceKit request outside of rule execution context
+            let result = CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
+                try? Request.customRequest(request: params).sendIfNotDisabled()
+            }
+            if let result,
                 let major = result.versionMajor, let minor = result.versionMinor, let patch = result.versionPatch {
                 return SwiftVersion(rawValue: "\(major).\(minor).\(patch)")
             }

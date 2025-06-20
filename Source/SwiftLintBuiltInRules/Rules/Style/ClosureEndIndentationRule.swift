@@ -52,14 +52,7 @@ private extension ClosureEndIndentationRule {
                 let correctionReplacement: String
 
                 // Check if there's leading trivia on the right brace that contains a newline
-                let hasNewlineInTrivia = node.rightBrace.leadingTrivia.contains { piece in
-                    switch piece {
-                    case .newlines, .carriageReturns, .carriageReturnLineFeeds:
-                        return true
-                    default:
-                        return false
-                    }
-                }
+                let hasNewlineInTrivia = node.rightBrace.leadingTrivia.contains(where: \.isNewline)
 
                 if hasNewlineInTrivia {
                     // If there's already a newline, we just need to fix the indentation.

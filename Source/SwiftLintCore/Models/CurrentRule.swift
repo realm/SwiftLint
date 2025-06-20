@@ -2,6 +2,7 @@
 /// This allows SourceKit request handling to determine if the current rule
 /// is a SourceKitFreeRule without modifying function signatures throughout the codebase.
 public enum CurrentRule {
+    /// The Rule ID for the currently executing rule.
     @TaskLocal public static var identifier: String?
 
     /// Allows specific SourceKit requests to be made outside of rule execution context.

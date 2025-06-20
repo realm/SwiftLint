@@ -19,6 +19,20 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
             }
         */
         """),
+        Example("""
+        func foo() {
+            // This is a comment
+
+            let x = 5
+        }
+        """),
+        Example("""
+        if condition {
+            // Comment explaining the logic
+
+            performAction()
+        }
+        """),
     ]
 
     private static let violatingToValidExamples: [Example: Example] = [
@@ -131,6 +145,30 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
               })
             }
             """),
+        Example("""
+        func foo() {
+        ↓
+            // This is a comment
+            let x = 5
+        }
+        """): Example("""
+            func foo() {
+                // This is a comment
+                let x = 5
+            }
+            """),
+        Example("""
+        if condition {
+        ↓
+            // Comment explaining the logic
+            performAction()
+        }
+        """): Example("""
+            if condition {
+                // Comment explaining the logic
+                performAction()
+            }
+            """),
     ]
 
     static let description = RuleDescription(
@@ -148,6 +186,103 @@ private struct TriviaAnalysis {
     var consecutiveNewlines = 0
     var violationStartPosition: AbsolutePosition?
     var violationEndPosition: AbsolutePosition?
+    var hasViolation = false
+    var commentDirectlyAfterBrace = false
+
+    mutating func processTriviaPiece(
+        _ piece: TriviaPiece,
+        currentPosition: AbsolutePosition
+    ) -> Int {
+        switch piece {
+        case .newlines(let count), .carriageReturns(let count):
+            var context = NewlineProcessingContext(
+                currentPosition: currentPosition,
+                consecutiveNewlines: consecutiveNewlines,
+                violationStartPosition: violationStartPosition,
+                violationEndPosition: violationEndPosition
+            )
+            let processResult = context.processNewlines(count: count, bytesPerNewline: 1)
+            consecutiveNewlines = processResult.newlines
+            violationStartPosition = context.violationStartPosition
+            violationEndPosition = context.violationEndPosition
+
+            // If we have 2+ consecutive newlines and haven't seen a comment directly after the brace,
+            // mark this as a violation
+            if consecutiveNewlines >= 2 && !commentDirectlyAfterBrace {
+                hasViolation = true
+            }
+
+            return processResult.positionAdvance
+        case .carriageReturnLineFeeds(let count):
+            var context = NewlineProcessingContext(
+                currentPosition: currentPosition,
+                consecutiveNewlines: consecutiveNewlines,
+                violationStartPosition: violationStartPosition,
+                violationEndPosition: violationEndPosition
+            )
+            let processResult = context.processNewlines(count: count, bytesPerNewline: 2)
+            consecutiveNewlines = processResult.newlines
+            violationStartPosition = context.violationStartPosition
+            violationEndPosition = context.violationEndPosition
+
+            // If we have 2+ consecutive newlines and haven't seen a comment directly after the brace,
+            // mark this as a violation
+            if consecutiveNewlines >= 2 && !commentDirectlyAfterBrace {
+                hasViolation = true
+            }
+
+            return processResult.positionAdvance
+        case .spaces, .tabs:
+            return piece.sourceLength.utf8Length
+        case .lineComment, .blockComment, .docLineComment, .docBlockComment:
+            // If we see a comment after only one newline, mark it
+            if consecutiveNewlines == 1 {
+                commentDirectlyAfterBrace = true
+            }
+            // Comments reset the consecutive newline count
+            consecutiveNewlines = 0
+            // Don't clear violation positions if we already found a violation
+            if !hasViolation {
+                violationStartPosition = nil
+                violationEndPosition = nil
+            }
+            return piece.sourceLength.utf8Length
+        default:
+            // Any other trivia breaks the sequence
+            consecutiveNewlines = 0
+            // Don't clear violation positions if we already found a violation
+            if !hasViolation {
+                violationStartPosition = nil
+                violationEndPosition = nil
+            }
+            return piece.sourceLength.utf8Length
+        }
+    }
+
+    private func processNewlines(
+        count: Int,
+        bytesPerNewline: Int,
+        context: inout NewlineProcessingContext
+    ) -> (newlines: Int, positionAdvance: Int) {
+        var newConsecutiveNewlines = context.consecutiveNewlines
+        var totalAdvance = 0
+
+        for _ in 0..<count {
+            newConsecutiveNewlines += 1
+            // violationStartPosition marks the beginning of the first newline
+            // that constitutes an empty line (i.e., the second in a sequence of \n\n).
+            if newConsecutiveNewlines == 2 && context.violationStartPosition == nil {
+                context.violationStartPosition = context.currentPosition.advanced(by: totalAdvance)
+            }
+            // violationEndPosition tracks the end of the last newline in any sequence of >= 2 newlines.
+            if newConsecutiveNewlines >= 2 {
+                context.violationEndPosition = context.currentPosition.advanced(by: totalAdvance + bytesPerNewline)
+            }
+            totalAdvance += bytesPerNewline
+        }
+
+        return (newConsecutiveNewlines, totalAdvance)
+    }
 }
 
 private struct CorrectionState {
@@ -159,9 +294,29 @@ private struct CorrectionState {
 
 private struct NewlineProcessingContext {
     let currentPosition: AbsolutePosition
-    let consecutiveNewlines: Int
+    var consecutiveNewlines: Int
     var violationStartPosition: AbsolutePosition?
     var violationEndPosition: AbsolutePosition?
+
+    mutating func processNewlines(count: Int, bytesPerNewline: Int) -> (newlines: Int, positionAdvance: Int) {
+        var totalAdvance = 0
+
+        for _ in 0..<count {
+            consecutiveNewlines += 1
+            // violationStartPosition marks the beginning of the first newline
+            // that constitutes an empty line (i.e., the second in a sequence of \n\n).
+            if consecutiveNewlines == 2 && violationStartPosition == nil {
+                violationStartPosition = currentPosition.advanced(by: totalAdvance)
+            }
+            // violationEndPosition tracks the end of the last newline in any sequence of >= 2 newlines.
+            if consecutiveNewlines >= 2 {
+                violationEndPosition = currentPosition.advanced(by: totalAdvance + bytesPerNewline)
+            }
+            totalAdvance += bytesPerNewline
+        }
+
+        return (consecutiveNewlines, totalAdvance)
+    }
 }
 
 private extension VerticalWhitespaceOpeningBracesRule {
@@ -170,9 +325,8 @@ private extension VerticalWhitespaceOpeningBracesRule {
             // Check for violations after opening braces
             if node.isOpeningBrace {
                 checkForViolationAfterToken(node)
-            }
-            // Check for violations after "in" keywords in closures
-            else if node.tokenKind == .keyword(.in) {
+            } else if node.tokenKind == .keyword(.in) {
+                // Check for violations after "in" keywords in closures
                 // Check if this "in" is part of a closure signature
                 if isClosureSignatureIn(node) {
                     checkForViolationAfterToken(node)
@@ -225,9 +379,10 @@ private extension VerticalWhitespaceOpeningBracesRule {
         ) -> (position: AbsolutePosition, endPosition: AbsolutePosition)? {
             let analysis = analyzeTrivia(trivia: trivia, startPosition: position)
 
+            // Only flag violations if we found an empty line that wasn't allowed
             guard let startPos = analysis.violationStartPosition,
                   let endPos = analysis.violationEndPosition,
-                  analysis.consecutiveNewlines >= 2 else {
+                  analysis.hasViolation else {
                 return nil
             }
 
@@ -242,91 +397,11 @@ private extension VerticalWhitespaceOpeningBracesRule {
             var currentPosition = startPosition
 
             for piece in trivia {
-                let (newlines, positionAdvance) = processTriviaPiece(
-                    piece: piece,
-                    currentPosition: currentPosition,
-                    consecutiveNewlines: result.consecutiveNewlines,
-                    violationStartPosition: &result.violationStartPosition,
-                    violationEndPosition: &result.violationEndPosition
-                )
-                result.consecutiveNewlines = newlines
+                let positionAdvance = result.processTriviaPiece(piece, currentPosition: currentPosition)
                 currentPosition = currentPosition.advanced(by: positionAdvance)
             }
 
             return result
-        }
-
-        private func processTriviaPiece(
-            piece: TriviaPiece,
-            currentPosition: AbsolutePosition,
-            consecutiveNewlines: Int,
-            violationStartPosition: inout AbsolutePosition?,
-            violationEndPosition: inout AbsolutePosition?
-        ) -> (newlines: Int, positionAdvance: Int) {
-            switch piece {
-            case .newlines(let count), .carriageReturns(let count):
-                var context = NewlineProcessingContext(
-                    currentPosition: currentPosition,
-                    consecutiveNewlines: consecutiveNewlines,
-                    violationStartPosition: violationStartPosition,
-                    violationEndPosition: violationEndPosition
-                )
-                let result = processNewlines(
-                    count: count,
-                    bytesPerNewline: 1,
-                    context: &context
-                )
-                violationStartPosition = context.violationStartPosition
-                violationEndPosition = context.violationEndPosition
-                return result
-            case .carriageReturnLineFeeds(let count):
-                var context = NewlineProcessingContext(
-                    currentPosition: currentPosition,
-                    consecutiveNewlines: consecutiveNewlines,
-                    violationStartPosition: violationStartPosition,
-                    violationEndPosition: violationEndPosition
-                )
-                let result = processNewlines(
-                    count: count,
-                    bytesPerNewline: 2,
-                    context: &context
-                )
-                violationStartPosition = context.violationStartPosition
-                violationEndPosition = context.violationEndPosition
-                return result
-            case .spaces, .tabs:
-                return (consecutiveNewlines, piece.sourceLength.utf8Length)
-            default:
-                // Any other trivia breaks the sequence
-                violationStartPosition = nil
-                violationEndPosition = nil
-                return (0, piece.sourceLength.utf8Length)
-            }
-        }
-
-        private func processNewlines(
-            count: Int,
-            bytesPerNewline: Int,
-            context: inout NewlineProcessingContext
-        ) -> (newlines: Int, positionAdvance: Int) {
-            var newConsecutiveNewlines = context.consecutiveNewlines
-            var totalAdvance = 0
-
-            for _ in 0..<count {
-                newConsecutiveNewlines += 1
-                // violationStartPosition marks the beginning of the first newline
-                // that constitutes an empty line (i.e., the second in a sequence of \n\n).
-                if newConsecutiveNewlines == 2 && context.violationStartPosition == nil {
-                    context.violationStartPosition = context.currentPosition.advanced(by: totalAdvance)
-                }
-                // violationEndPosition tracks the end of the last newline in any sequence of >= 2 newlines.
-                if newConsecutiveNewlines >= 2 {
-                    context.violationEndPosition = context.currentPosition.advanced(by: totalAdvance + bytesPerNewline)
-                }
-                totalAdvance += bytesPerNewline
-            }
-
-            return (newConsecutiveNewlines, totalAdvance)
         }
     }
 

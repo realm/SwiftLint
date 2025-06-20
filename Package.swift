@@ -24,7 +24,7 @@ swiftLintPluginDependencies = [.target(name: "swiftlint")]
 
 let package = Package(
     name: "SwiftLint",
-    platforms: [.macOS(.v12)],
+    platforms: [.macOS(.v13)],
     products: [
         .executable(name: "swiftlint", targets: ["swiftlint"]),
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),

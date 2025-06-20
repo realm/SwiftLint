@@ -28,6 +28,6 @@ steps:
   - label: "Registration"
     commands:
       - echo "+++ Register Rules and Reporters"
-      - make --always-make register
+      - make --always-make bazel_register
       - echo "+++ Diff Files"
       - git diff --quiet HEAD

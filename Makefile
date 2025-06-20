@@ -36,6 +36,11 @@ register:
 	swift run swiftlint-dev rules register
 	swift run swiftlint-dev reporters register
 
+bazel_register:
+	bazel build //:swiftlint-dev
+	./bazel-bin/swiftlint-dev rules register
+	./bazel-bin/swiftlint-dev reporters register
+
 test: clean_xcode
 	$(BUILD_TOOL) $(XCODEFLAGS) test
 

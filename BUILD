@@ -190,7 +190,7 @@ apple_universal_binary(
         "x86_64",
         "arm64",
     ],
-    minimum_os_version = "12.0",
+    minimum_os_version = "13.0",
     platform_type = "macos",
     visibility = ["//visibility:public"],
 )

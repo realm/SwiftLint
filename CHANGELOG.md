@@ -8,6 +8,9 @@
   Use the severity levels `off`, `warning` or `error` instead.  
   [kaseken](https://github.com/kaseken)
 
+* SwiftLint now requires macOS 13 or higher to run.  
+  [JP Simard](https://github.com/jpsim)
+
 ### Experimental
 
 * None.

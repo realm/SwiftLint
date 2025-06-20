@@ -2,6 +2,12 @@
 import XCTest
 
 final class SourceKitCrashTests: SwiftLintTestCase {
+    override func invokeTest() {
+        CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
+            super.invokeTest()
+        }
+    }
+
     func testAssertHandlerIsNotCalledOnNormalFile() {
         let file = SwiftLintFile(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false

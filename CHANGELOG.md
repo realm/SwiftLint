@@ -34,6 +34,7 @@
   [JP Simard](https://github.com/jpsim)
 
 * Migrate `accessibility_trait_for_button` rule from SourceKit to SwiftSyntax for improved
+* Migrate `closure_end_indentation` rule from SourceKit to SwiftSyntax for improved
   performance and fewer false positives.  
   [JP Simard](https://github.com/jpsim)
 

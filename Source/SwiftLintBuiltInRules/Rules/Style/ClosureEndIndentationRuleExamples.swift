@@ -64,7 +64,7 @@ internal struct ClosureEndIndentationRuleExamples {
            return Command(string: contents, range: range)
            ↓}.flatMap { command in
            return command.expand()
-        ↓}
+        }
         """),
         Example("""
         function(
@@ -139,7 +139,7 @@ internal struct ClosureEndIndentationRuleExamples {
         """): Example("""
             function(
                 closure: { x in
-                    print(x) \("")
+                    print(x)
                 })
             """),
         Example("""
@@ -214,7 +214,7 @@ internal struct ClosureEndIndentationRuleExamples {
         """): Example("""
             function(
                 closure: { x in
-                    print(x) \("")
+                    print(x)
                 },
                 anotherClosure: { y in
                     print(y)
@@ -233,7 +233,7 @@ internal struct ClosureEndIndentationRuleExamples {
                     print(x)
                 }, anotherClosure: { y in
                 print(y)
-                })
+            })
             """),
     ]
 }

@@ -3,7 +3,9 @@ import XCTest
 
 final class SwiftVersionTests: SwiftLintTestCase {
     func testDetectSwiftVersion() {
-#if compiler(>=6.1.2)
+#if compiler(>=6.2)
+        let version = "6.2"
+#elseif compiler(>=6.1.2)
         let version = "6.1.2"
 #elseif compiler(>=6.1.1)
         let version = "6.1.1"

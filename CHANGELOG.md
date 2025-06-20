@@ -33,6 +33,10 @@
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
 
+* Migrate `expiring_todo` rule from SourceKit to SwiftSyntax and from NSRegularExpression
+  to native Swift Regex for improved performance and fewer false positives.  
+  [JP Simard](https://github.com/jpsim)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

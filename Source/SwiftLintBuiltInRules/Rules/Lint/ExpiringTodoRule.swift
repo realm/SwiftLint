@@ -1,7 +1,8 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct ExpiringTodoRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExpiringTodoRule: Rule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired
@@ -45,73 +46,130 @@ struct ExpiringTodoRule: OptInRule {
     )
 
     var configuration = ExpiringTodoConfiguration()
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let regex = #"""
-        \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
-        \\#(configuration.dateDelimiters.opening)\#
-        (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
-        \\#(configuration.dateDelimiters.closing)
-        """#
+private extension ExpiringTodoRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+            // Process the entire file to handle multiline comment cases
+            let fileContent = file.contents
 
-        return file.matchesAndSyntaxKinds(matching: regex).compactMap { checkingResult, syntaxKinds in
-            guard
-                syntaxKinds.allSatisfy(\.isCommentLike),
-                checkingResult.numberOfRanges > 1,
-                case let range = checkingResult.range(at: 1),
-                let violationLevel = violationLevel(for: expiryDate(file: file, range: range)),
-                let severity = severity(for: violationLevel) else {
-                return nil
+            do {
+                let regex = try buildRegex()
+                let matches = fileContent.matches(of: regex)
+
+                for match in matches {
+                    // Get the date capture group (first capture)
+                    let fullMatchRange = match.range
+                    let dateSubstring = match.output.1
+
+                    // Find the range of the date capture within the full match
+                    let fullMatch = String(fileContent[fullMatchRange])
+                    guard let dateRangeInMatch = fullMatch.range(of: String(dateSubstring)) else { continue }
+
+                    // Calculate the absolute position of the date capture
+                    let dateStartIndex = fileContent.index(
+                        fullMatchRange.lowerBound,
+                        offsetBy: fullMatch.distance(from: fullMatch.startIndex, to: dateRangeInMatch.lowerBound)
+                    )
+                    let prefix = String(fileContent[..<dateStartIndex])
+                    let matchOffset = prefix.utf8.count
+                    let matchPosition = AbsolutePosition(utf8Offset: matchOffset)
+
+                    guard isPositionInComment(position: matchPosition, in: node) else { continue }
+
+                    let dateString = String(dateSubstring)
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+
+                    if let violationLevel = getViolationLevel(for: parseDate(dateString: dateString)),
+                       let severity = getSeverity(for: violationLevel) {
+                        let violation = ReasonedRuleViolation(
+                            position: matchPosition,
+                            reason: violationLevel.reason,
+                            severity: severity
+                        )
+                        violations.append(violation)
+                    }
+                }
+            } catch {
+                // Invalid regex - should not happen
             }
 
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: severity,
-                location: Location(file: file, characterOffset: range.location),
-                reason: violationLevel.reason
-            )
+            return .skipChildren
         }
-    }
 
-    private func expiryDate(file: SwiftLintFile, range: NSRange) -> Date? {
-        let expiryDateString = file.contents.bridge()
-            .substring(with: range)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let formatter = DateFormatter()
-        formatter.calendar = .current
-        formatter.dateFormat = configuration.dateFormat
-
-        return formatter.date(from: expiryDateString)
-    }
-
-    private func severity(for violationLevel: ExpiryViolationLevel) -> ViolationSeverity? {
-        switch violationLevel {
-        case .approachingExpiry:
-            return configuration.approachingExpirySeverity.severity
-        case .expired:
-            return configuration.expiredSeverity.severity
-        case .badFormatting:
-            return configuration.badFormattingSeverity.severity
+        private func buildRegex() throws -> Regex<(Substring, Substring)> {
+            let pattern = #"""
+            \b(?:TODO|FIXME)(?::|\b)[\s\S]*?\#
+            \\#(configuration.dateDelimiters.opening)\#
+            (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
+            \\#(configuration.dateDelimiters.closing)
+            """#
+            return try Regex(pattern, as: (Substring, Substring).self)
         }
-    }
 
-    private func violationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
-        guard let expiryDate else {
-            return .badFormatting
+        private func isPositionInComment(position: AbsolutePosition, in tree: SourceFileSyntax) -> Bool {
+            // Walk through all tokens to find if the position is within a comment
+            for token in tree.tokens(viewMode: .sourceAccurate) {
+                // Check leading trivia
+                var triviaOffset = token.position.utf8Offset
+                for piece in token.leadingTrivia {
+                    let pieceEndOffset = triviaOffset + piece.sourceLength.utf8Length
+                    if position.utf8Offset >= triviaOffset && position.utf8Offset < pieceEndOffset {
+                        return piece.isComment
+                    }
+                    triviaOffset = pieceEndOffset
+                }
+
+                // Check trailing trivia
+                triviaOffset = token.endPositionBeforeTrailingTrivia.utf8Offset
+                for piece in token.trailingTrivia {
+                    let pieceEndOffset = triviaOffset + piece.sourceLength.utf8Length
+                    if position.utf8Offset >= triviaOffset && position.utf8Offset < pieceEndOffset {
+                        return piece.isComment
+                    }
+                    triviaOffset = pieceEndOffset
+                }
+            }
+
+            return false
         }
-        guard expiryDate.isAfterToday else {
-            return .expired
+
+        private func parseDate(dateString: String) -> Date? {
+            let formatter = DateFormatter()
+            formatter.calendar = .current
+            formatter.dateFormat = configuration.dateFormat
+            return formatter.date(from: dateString)
         }
-        guard let approachingDate = Calendar.current.date(
-            byAdding: .day,
-            value: -configuration.approachingExpiryThreshold,
-            to: expiryDate) else {
-                return nil
+
+        private func getSeverity(for violationLevel: ExpiryViolationLevel) -> ViolationSeverity? {
+            switch violationLevel {
+            case .approachingExpiry:
+                return configuration.approachingExpirySeverity.severity
+            case .expired:
+                return configuration.expiredSeverity.severity
+            case .badFormatting:
+                return configuration.badFormattingSeverity.severity
+            }
         }
-        return approachingDate.isAfterToday ?
-            nil :
-            .approachingExpiry
+
+        private func getViolationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
+            guard let expiryDate else {
+                return .badFormatting
+            }
+            guard expiryDate.isAfterToday else {
+                return .expired
+            }
+            guard let approachingDate = Calendar.current.date(
+                byAdding: .day,
+                value: -configuration.approachingExpiryThreshold,
+                to: expiryDate) else {
+                    return nil
+            }
+            return approachingDate.isAfterToday ?
+                nil :
+                .approachingExpiry
+        }
     }
 }
 
@@ -119,11 +177,4 @@ private extension Date {
     var isAfterToday: Bool {
         Calendar.current.compare(.init(), to: self, toGranularity: .day) == .orderedAscending
     }
-}
-
-private extension SyntaxKind {
-   /// Returns if the syntax kind is comment-like.
-   var isCommentLike: Bool {
-       Self.commentKinds.contains(self)
-   }
 }

@@ -58,7 +58,7 @@ private extension TypeBodyLengthRule {
                 leftBrace: node.memberBlock.leftBrace,
                 rightBrace: node.memberBlock.rightBrace,
                 violationNode: node.introducer,
-                objectName: "Type"
+                objectName: node.introducer.text.capitalized
             )
         }
     }

@@ -39,6 +39,7 @@
   <!-- Keep empty line to have the contributors on a separate line. -->
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
+
 * Add support for regex pattern in the `excluded` option of the `file_name` rule.  
   [Ueeek](https://github.com/Ueeek)
   [#6066](https://github.com/realm/SwiftLint/issues/6066)

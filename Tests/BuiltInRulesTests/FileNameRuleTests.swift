@@ -169,4 +169,26 @@ final class FileNameRuleTests: SwiftLintTestCase {
             ).isNotEmpty
         )
     }
+    
+    func testFileNameIsInvalidRegex() {
+        XCTAssert(
+            try validate(
+                fileName: "NSString+Extension.swift",
+                excluded: ["NSString+Extension.swift"],
+                prefixPattern: "",
+                suffixPattern: ""
+            ).isEmpty
+        )
+    }
+    
+    func testInvalidRegex() {
+        XCTAssert(
+            try validate(
+                fileName: "NSString+Extension.swift",
+                excluded: ["("],
+                prefixPattern: "",
+                suffixPattern: ""
+            ).isNotEmpty
+        )
+    }
 }

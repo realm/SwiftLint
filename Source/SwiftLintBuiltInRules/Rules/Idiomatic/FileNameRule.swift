@@ -13,11 +13,10 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
-            !shouldExclude(filePath: filePath),
-            case let fileName = filePath.bridge().lastPathComponent,
-            !configuration.excluded.contains(fileName) else {
+              !configuration.shouldExclude(filePath: filePath) else {
             return []
         }
+        let fileName = filePath.bridge().lastPathComponent
 
         let prefixRegex = regex("\\A(?:\(configuration.prefixPattern))")
         let suffixRegex = regex("(?:\(configuration.suffixPattern))\\z")
@@ -56,16 +55,6 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
                 location: Location(file: filePath, line: 1)
             ),
         ]
-    }
-}
-
-// MARK: - For `excluded` option
-private extension FileNameRule {
-    func shouldExclude(filePath: String) -> Bool {
-        configuration.excluded.compactMap {
-            let regex = try? RegularExpression(pattern: "^\($0)$")
-            return regex?.regex.firstMatch(in: filePath, options: [], range: filePath.fullNSRange)
-        }.isNotEmpty
     }
 }
 

@@ -19,7 +19,10 @@ public extension Request {
                     }
 
                     // Check if the current rule is a SourceKitFreeRule
-                    if ruleType is any SourceKitFreeRule.Type {
+                    // Skip check for ConditionallySourceKitFree rules since we can't determine
+                    // at the type level if they're effectively SourceKit-free
+                    if ruleType is any SourceKitFreeRule.Type &&
+                       !(ruleType is any ConditionallySourceKitFree.Type) {
                         queuedFatalError("""
                             '\(ruleID)' is a SourceKitFreeRule and should not be making requests to SourceKit.
                             """)

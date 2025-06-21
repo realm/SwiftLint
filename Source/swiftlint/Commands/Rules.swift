@@ -132,7 +132,7 @@ private extension TextTable {
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
                 (rule is any AnalyzerRule) ? "yes" : "no",
-                (rule is any SourceKitFreeRule) ? "no" : "yes",
+                rule.requiresSourceKit ? "yes" : "no",
                 truncate((defaultConfig ? rule : configuredRule ?? rule).createConfigurationDescription().oneLiner()),
             ])
         }

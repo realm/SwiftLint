@@ -36,7 +36,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 
 // MARK: - CustomRules
 
-struct CustomRules: Rule, CacheDescriptionProvider {
+struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
     var cacheDescription: String {
         configuration.cacheDescription
     }
@@ -55,6 +55,11 @@ struct CustomRules: Rule, CacheDescriptionProvider {
         kind: .style)
 
     var configuration = CustomRulesConfiguration()
+
+    var isEffectivelySourceKitFree: Bool {
+        // Just a stub, will be implemented in a follow-up PR
+        false
+    }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations

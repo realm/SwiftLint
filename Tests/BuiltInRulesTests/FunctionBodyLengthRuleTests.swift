@@ -25,7 +25,7 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
-                    location: Location(file: nil, line: 1, character: 6),
+                    location: Location(file: nil, line: 1, character: 1),
                     reason: "Function body should span 50 lines or less excluding comments and " +
                             "whitespace: currently spans 51 lines"
                 ),
@@ -54,7 +54,7 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
-                    location: Location(file: nil, line: 1, character: 6),
+                    location: Location(file: nil, line: 1, character: 1),
                     reason: "Function body should span 50 lines or less excluding comments and " +
                             "whitespace: currently spans 51 lines"
                 ),
@@ -78,7 +78,7 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
-                    location: Location(file: nil, line: 1, character: 6),
+                    location: Location(file: nil, line: 1, character: 1),
                     reason: "Function body should span 50 lines or less excluding comments and " +
                             "whitespace: currently spans 51 lines"
                 ),

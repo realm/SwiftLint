@@ -19,7 +19,7 @@ private extension FunctionBodyLengthRule {
                 registerViolations(
                     leftBrace: body.leftBrace,
                     rightBrace: body.rightBrace,
-                    violationNode: node.name,
+                    violationNode: node.funcKeyword,
                     objectName: "Function"
                 )
             }

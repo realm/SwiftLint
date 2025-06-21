@@ -26,16 +26,13 @@
   * `accessibility_label_for_image`
   * `accessibility_trait_for_button`
   * `closure_end_indentation`
+  * `expiring_todo`
   * `file_length`
   * `line_length`
   * `vertical_whitespace`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
-
-* Migrate `expiring_todo` rule from SourceKit to SwiftSyntax for improved performance
-  and fewer false positives.  
-  [JP Simard](https://github.com/jpsim)
 
 ### Bug Fixes
 

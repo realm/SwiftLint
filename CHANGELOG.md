@@ -27,6 +27,13 @@
   [imsonalbajaj](https://github.com/imsonalbajaj)
   [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
+* Support extensions and protocols in `type_body_length` rule. They can be configured using the
+  new `excluded_types` option which by default excludes `extension` and `protocol` types.
+  This means the rule now checks `struct`, `class`, `actor` and `enum` by default. To enable
+  checking of extensions and protocols, set `excluded_types` to an empty array or exclude other
+  types as needed.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Ignore various assignment operators like `=`, `+=`, `&=`, etc. with right-hand side
   ternary expressions otherwise violating the `void_function_in_ternary` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

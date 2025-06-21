@@ -2,102 +2,67 @@
 import TestHelpers
 import XCTest
 
-private func funcWithBody(_ body: String,
-                          violates: Bool = false,
-                          file: StaticString = #filePath,
-                          line: UInt = #line) -> Example {
-    let marker = violates ? "↓" : ""
-    return Example("func \(marker)abc() {\n\(body)}\n", file: file, line: line)
-}
-
-private func violatingFuncWithBody(_ body: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
-    funcWithBody(body, violates: true, file: file, line: line)
-}
-
 final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
-    func testFunctionBodyLengths() {
-        let longFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 49).joined())
-        XCTAssertEqual(self.violations(longFunctionBody), [])
+    func testWarning() {
+        let example = Example("""
+            func f() {
+                let x = 0
+                let y = 1
+                let z = 2
+            }
+            """)
 
-        let longerFunctionBody = violatingFuncWithBody(repeatElement("x = 0\n", count: 51).joined())
         XCTAssertEqual(
-            self.violations(longerFunctionBody),
+            self.violations(example, configuration: ["warning": 2, "error": 4]),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
+                    severity: .warning,
                     location: Location(file: nil, line: 1, character: 1),
-                    reason: "Function body should span 50 lines or less excluding comments and " +
-                            "whitespace: currently spans 51 lines"
-                ),
-            ]
-        )
-
-        let longerFunctionBodyWithEmptyLines = funcWithBody(
-            repeatElement("\n", count: 100).joined()
-        )
-        XCTAssertEqual(self.violations(longerFunctionBodyWithEmptyLines), [])
-    }
-
-    func testFunctionBodyLengthsWithComments() {
-        let longFunctionBodyWithComments = funcWithBody(
-            repeatElement("x = 0\n", count: 49).joined() +
-            "// comment only line should be ignored.\n"
-        )
-        XCTAssertEqual(violations(longFunctionBodyWithComments), [])
-
-        let longerFunctionBodyWithComments = violatingFuncWithBody(
-            repeatElement("x = 0\n", count: 51).joined() +
-            "// comment only line should be ignored.\n"
-        )
-        XCTAssertEqual(
-            self.violations(longerFunctionBodyWithComments),
-            [
-                StyleViolation(
-                    ruleDescription: FunctionBodyLengthRule.description,
-                    location: Location(file: nil, line: 1, character: 1),
-                    reason: "Function body should span 50 lines or less excluding comments and " +
-                            "whitespace: currently spans 51 lines"
+                    reason: """
+                        Function body should span 2 lines or less excluding comments and \
+                        whitespace: currently spans 3 lines
+                        """
                 ),
             ]
         )
     }
 
-    func testFunctionBodyLengthsWithMultilineComments() {
-        let longFunctionBodyWithMultilineComments = funcWithBody(
-            repeatElement("x = 0\n", count: 49).joined() +
-            "/* multi line comment only line should be ignored.\n*/\n"
-        )
-        XCTAssertEqual(self.violations(longFunctionBodyWithMultilineComments), [])
+    func testError() {
+        let example = Example("""
+            func f() {
+                let x = 0
+                let y = 1
+                let z = 2
+            }
+            """)
 
-        let longerFunctionBodyWithMultilineComments = violatingFuncWithBody(
-            repeatElement("x = 0\n", count: 51).joined() +
-            "/* multi line comment only line should be ignored.\n*/\n"
-        )
         XCTAssertEqual(
-            self.violations(longerFunctionBodyWithMultilineComments),
+            self.violations(example, configuration: ["warning": 1, "error": 2]),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
+                    severity: .error,
                     location: Location(file: nil, line: 1, character: 1),
-                    reason: "Function body should span 50 lines or less excluding comments and " +
-                            "whitespace: currently spans 51 lines"
+                    reason: """
+                        Function body should span 2 lines or less excluding comments and \
+                        whitespace: currently spans 3 lines
+                        """
                 ),
             ]
         )
     }
 
-    func testConfiguration() {
-        let function = violatingFuncWithBody(repeatElement("x = 0\n", count: 10).joined())
+    func testViolationMessages() {
+        let types = FunctionBodyLengthRule.description.triggeringExamples.flatMap {
+            self.violations($0, configuration: ["warning": 2])
+        }.compactMap {
+            $0.reason.split(separator: " ", maxSplits: 1).first
+        }
 
-        XCTAssertEqual(self.violations(function, configuration: ["warning": 12]).count, 0)
-        XCTAssertEqual(self.violations(function, configuration: ["warning": 12, "error": 14]).count, 0)
         XCTAssertEqual(
-            self.violations(function, configuration: ["warning": 8]).map(\.reason),
-            ["Function body should span 8 lines or less excluding comments and whitespace: currently spans 10 lines"]
-        )
-        XCTAssertEqual(
-            self.violations(function, configuration: ["warning": 12, "error": 8]).map(\.reason),
-            ["Function body should span 8 lines or less excluding comments and whitespace: currently spans 10 lines"]
+            types,
+            ["Function", "Deinitializer", "Initializer", "Subscript", "Accessor", "Accessor", "Accessor"]
         )
     }
 

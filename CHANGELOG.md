@@ -27,6 +27,7 @@
   * `accessibility_trait_for_button`
   * `closure_end_indentation`
   * `file_length`
+  * `line_length`
   * `vertical_whitespace`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [JP Simard](https://github.com/jpsim)

@@ -1,12 +1,10 @@
 import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
+@SwiftSyntaxRule
 struct LineLengthRule: Rule {
     var configuration = LineLengthConfiguration()
-
-    private let commentKinds = SyntaxKind.commentKinds
-    private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
-    private let functionKinds = SwiftDeclarationKind.functionKinds
 
     static let description = RuleDescription(
         identifier: "line_length",
@@ -24,149 +22,219 @@ struct LineLengthRule: Rule {
             Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + ""),
         ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let minValue = configuration.params.map(\.value).min() ?? .max
-        let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
-        let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])
+private extension LineLengthRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        // To store line numbers that should be ignored based on configuration
+        private var functionDeclarationLines = Set<Int>()
+        private var commentOnlyLines = Set<Int>()
+        private var interpolatedStringLines = Set<Int>()
+        private var multilineStringLines = Set<Int>()
 
-        return file.lines.compactMap { line in
-            // `line.content.count` <= `line.range.length` is true.
-            // So, `check line.range.length` is larger than minimum parameter value.
-            // for avoiding using heavy `line.content.count`.
-            if line.range.length < minValue {
-                return nil
+        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+            // Populate functionDeclarationLines if ignores_function_declarations is true
+            if configuration.ignoresFunctionDeclarations {
+                let funcVisitor = FunctionLineVisitor(locationConverter: locationConverter)
+                functionDeclarationLines = funcVisitor.walk(tree: node, handler: \.lines)
             }
 
-            if configuration.ignoresFunctionDeclarations &&
-                lineHasKinds(line: line,
-                             kinds: functionKinds,
-                             kindsByLine: swiftDeclarationKindsByLine.value) {
-                return nil
+            // Populate multilineStringLines if ignores_multiline_strings is true
+            if configuration.ignoresMultilineStrings {
+                let stringVisitor = MultilineStringLiteralVisitor(locationConverter: locationConverter)
+                multilineStringLines = stringVisitor.walk(tree: node, handler: \.linesSpanned)
             }
 
-            if configuration.ignoresComments &&
-                lineHasKinds(line: line,
-                             kinds: commentKinds,
-                             kindsByLine: syntaxKindsByLine.value) &&
-                !lineHasKinds(line: line,
-                              kinds: nonCommentKinds,
-                              kindsByLine: syntaxKindsByLine.value) {
-                return nil
+            // Populate interpolatedStringLines if ignores_interpolated_strings is true
+            if configuration.ignoresInterpolatedStrings {
+                let interpVisitor = InterpolatedStringLineVisitor(locationConverter: locationConverter)
+                interpolatedStringLines = interpVisitor.walk(tree: node, handler: \.lines)
             }
 
-            if configuration.ignoresInterpolatedStrings &&
-                lineHasKinds(line: line,
-                             kinds: [.stringInterpolationAnchor],
-                             kindsByLine: syntaxKindsByLine.value) {
-                return nil
+            // Populate commentOnlyLines if ignores_comments is true
+            if configuration.ignoresComments {
+                commentOnlyLines = findCommentOnlyLines(in: node, file: file, locationConverter: locationConverter)
             }
 
-            if configuration.ignoresMultilineStrings &&
-               lineIsMultilineString(line, file: file, syntaxKindsByLine: syntaxKindsByLine.value) {
-                return nil
-            }
-
-            for pattern in configuration.excludedLinesPatterns where line.containsMatchingPattern(pattern) {
-                return nil
-            }
-
-            var strippedString = line.content
-            if configuration.ignoresURLs {
-                strippedString = strippedString.strippingURLs
-            }
-            strippedString = stripLiterals(fromSourceString: strippedString,
-                                           withDelimiter: "#colorLiteral")
-            strippedString = stripLiterals(fromSourceString: strippedString,
-                                           withDelimiter: "#imageLiteral")
-
-            let length = strippedString.count
-
-            for param in configuration.params where length > param.value {
-                let reason = "Line should be \(param.value) characters or less; currently it has \(length) characters"
-                return StyleViolation(ruleDescription: Self.description,
-                                      severity: param.severity,
-                                      location: Location(file: file.path, line: line.index),
-                                      reason: reason)
-            }
-            return nil
-        }
-    }
-
-    /// Checks if the given line is part of a multiline string
-    /// - Example:
-    /// ```
-    /// let a = """
-    /// <line is somewhere in here>
-    /// """
-    /// ```
-    private func lineIsMultilineString(_ line: Line, file: SwiftLintFile, syntaxKindsByLine: [[SyntaxKind]]) -> Bool {
-        // contents of multiline strings only include one string element per line
-        guard syntaxKindsByLine[line.index] == [.string] else { return false }
-
-        // find the trailing delimiter `"""` in order to make sure we're not in a list of concatenated strings
-        let lastStringLineIndex = syntaxKindsByLine.dropFirst(line.index + 1).firstIndex(where: { $0 != [.string] })
-        guard let lastStringLineIndex else {
-            return file.lines.last?.content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") == true
+            return .skipChildren // We'll do the main processing in visitPost
         }
 
-        // lines include leading empty element
-        // check last string line for single `"""`
-        // and if it fails, check the next line contains more than just a string for `"""; let a = 1`
-        return file.lines[lastStringLineIndex - 1].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"") ||
-        file.lines[lastStringLineIndex - 2].content.trimmingCharacters(in: .whitespaces).hasPrefix("\"\"\"")
-    }
+        override func visitPost(_: SourceFileSyntax) {
+            let minLengthThreshold = configuration.params.map(\.value).min() ?? .max
 
-    /// Takes a string and replaces any literals specified by the `delimiter` parameter with `#`
-    ///
-    /// - parameter sourceString: Original string, possibly containing literals
-    /// - parameter delimiter:    Delimiter of the literal
-    ///                           (characters before the parentheses, e.g. `#colorLiteral`)
-    ///
-    /// - returns: sourceString with the given literals replaced by `#`
-    private func stripLiterals(fromSourceString sourceString: String,
-                               withDelimiter delimiter: String) -> String {
-        var modifiedString = sourceString
+            for line in file.lines {
+                // Quick check to skip very short lines before expensive stripping
+                // `line.content.count` <= `line.range.length` is true.
+                // So, check `line.range.length` is larger than minimum parameter value
+                // for avoiding using heavy `line.content.count`.
+                if line.range.length < minLengthThreshold {
+                    continue
+                }
 
-        // While copy of content contains literal, replace with a single character
-        while modifiedString.contains("\(delimiter)(") {
-            if let rangeStart = modifiedString.range(of: "\(delimiter)("),
-                let rangeEnd = modifiedString.range(of: ")",
-                                                    options: .literal,
-                                                    range:
-                    rangeStart.lowerBound..<modifiedString.endIndex) {
-                modifiedString.replaceSubrange(rangeStart.lowerBound..<rangeEnd.upperBound,
-                                               with: "#")
-            } else { // Should never be the case, but break to avoid accidental infinity loop
-                break
+                // Apply ignore configurations
+                if configuration.ignoresFunctionDeclarations && functionDeclarationLines.contains(line.index) {
+                    continue
+                }
+                if configuration.ignoresComments && commentOnlyLines.contains(line.index) {
+                    continue
+                }
+                if configuration.ignoresInterpolatedStrings && interpolatedStringLines.contains(line.index) {
+                    continue
+                }
+                if configuration.ignoresMultilineStrings && multilineStringLines.contains(line.index) {
+                    continue
+                }
+                if configuration.excludedLinesPatterns.contains(where: {
+                    regex($0).firstMatch(in: line.content, range: line.content.fullNSRange) != nil
+                }) {
+                    continue
+                }
+
+                // String stripping logic
+                var strippedString = line.content
+                if configuration.ignoresURLs {
+                    strippedString = strippedString.strippingURLs
+                }
+                strippedString = stripLiterals(fromSourceString: strippedString, withDelimiter: "#colorLiteral")
+                strippedString = stripLiterals(fromSourceString: strippedString, withDelimiter: "#imageLiteral")
+
+                let length = strippedString.count // Character count for reporting
+
+                // Check against configured length limits
+                for param in configuration.params where length > param.value {
+                    let reason = "Line should be \(param.value) characters or less; " +
+                        "currently it has \(length) characters"
+                    // Position the violation at the start of the line, consistent with original behavior
+                    violations.append(ReasonedRuleViolation(
+                        position: locationConverter.position(ofLine: line.index, column: 1), // Start of the line
+                        reason: reason,
+                        severity: param.severity
+                    ))
+                    break // Only report one violation (the most severe one reached) per line
+                }
             }
         }
 
-        return modifiedString
-    }
-
-    private func lineHasKinds<Kind>(line: Line, kinds: Set<Kind>, kindsByLine: [[Kind]]) -> Bool {
-        let index = line.index
-        if index >= kindsByLine.count {
-            return false
+        // Strip color and image literals from the source string
+        private func stripLiterals(fromSourceString sourceString: String,
+                                   withDelimiter delimiter: String) -> String {
+            var modifiedString = sourceString
+            while modifiedString.contains("\(delimiter)(") {
+                if let rangeStart = modifiedString.range(of: "\(delimiter)("),
+                   let rangeEnd = modifiedString.range(of: ")", options: .literal,
+                                                       range: rangeStart.lowerBound..<modifiedString.endIndex) {
+                    modifiedString.replaceSubrange(rangeStart.lowerBound..<rangeEnd.upperBound, with: "#")
+                } else {
+                    break
+                }
+            }
+            return modifiedString
         }
-        return !kinds.isDisjoint(with: kindsByLine[index])
+
+        private func findCommentOnlyLines(
+            in node: SourceFileSyntax,
+            file: SwiftLintFile,
+            locationConverter: SourceLocationConverter
+        ) -> Set<Int> {
+            var commentOnlyLines = Set<Int>()
+
+            // For each line, check if it contains only comments and whitespace
+            for line in file.lines {
+                let lineContent = line.content.trimmingCharacters(in: .whitespaces)
+
+                // Skip empty lines
+                if lineContent.isEmpty { continue }
+
+                // Check if line starts with comment markers
+                if lineContent.hasPrefix("//") || lineContent.hasPrefix("/*") ||
+                   (lineContent.hasPrefix("*/") && lineContent.count == 2) {
+                    // Now verify using SwiftSyntax that this line doesn't contain any tokens
+                    var hasNonCommentContent = false
+
+                    for token in node.tokens(viewMode: .sourceAccurate) {
+                        if token.tokenKind == .endOfFile { continue }
+
+                        let tokenLine = locationConverter.location(for: token.position).line
+                        if tokenLine == line.index {
+                            hasNonCommentContent = true
+                            break
+                        }
+                    }
+
+                    if !hasNonCommentContent {
+                        commentOnlyLines.insert(line.index)
+                    }
+                }
+            }
+
+            return commentOnlyLines
+        }
     }
 }
 
-private extension Line {
-    func containsMatchingPattern(_ pattern: String) -> Bool {
-        regex(pattern).firstMatch(in: content, range: content.fullNSRange) != nil
+// MARK: - Helper Visitors for Pre-computation
+
+// Visitor to find lines spanned by function declarations
+private final class FunctionLineVisitor: SyntaxVisitor {
+    let locationConverter: SourceLocationConverter
+    var lines = Set<Int>()
+
+    init(locationConverter: SourceLocationConverter) {
+        self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: FunctionDeclSyntax) {
+        let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
+        let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
+        for line in startLocation.line...endLocation.line {
+            lines.insert(line)
+        }
     }
 }
 
-// extracted from https://forums.swift.org/t/pitch-declaring-local-variables-as-lazy/9287/3
-private class Lazy<Result> {
-    private var computation: () -> Result
-    fileprivate private(set) lazy var value: Result = computation()
+// Visitor to find lines with interpolated strings
+private final class InterpolatedStringLineVisitor: SyntaxVisitor {
+    let locationConverter: SourceLocationConverter
+    var lines = Set<Int>()
 
-    init(_ computation: @escaping @autoclosure () -> Result) {
-        self.computation = computation
+    init(locationConverter: SourceLocationConverter) {
+        self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: ExpressionSegmentSyntax) {
+        // ExpressionSegmentSyntax is the interpolation inside a string
+        let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
+        let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
+        for line in startLocation.line...endLocation.line {
+            lines.insert(line)
+        }
+    }
+}
+
+// Visitor to find line ranges covered by multiline string literals
+private final class MultilineStringLiteralVisitor: SyntaxVisitor {
+    let locationConverter: SourceLocationConverter
+    var linesSpanned = Set<Int>()
+
+    init(locationConverter: SourceLocationConverter) {
+        self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: StringLiteralExprSyntax) {
+        guard node.openingQuote.tokenKind == .multilineStringQuote ||
+              (node.openingPounds != nil && node.openingQuote.tokenKind == .stringQuote) else {
+            return
+        }
+
+        let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
+        let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
+
+        for line in startLocation.line...endLocation.line {
+            linesSpanned.insert(line)
+        }
     }
 }
 

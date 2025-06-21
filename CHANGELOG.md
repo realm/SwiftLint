@@ -27,13 +27,10 @@
   * `accessibility_trait_for_button`
   * `closure_end_indentation`
   * `file_length`
+  * `line_length`
   * `vertical_whitespace`
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
-
-* Migrate `line_length` rule from SourceKit to SwiftSyntax for improved
-  performance and fewer false positives.  
-  [JP Simard](https://github.com/jpsim)
 
 ### Bug Fixes
 

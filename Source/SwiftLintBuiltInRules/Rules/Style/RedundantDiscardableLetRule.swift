@@ -98,19 +98,6 @@ struct RedundantDiscardableLetRule: Rule {
                     }
                     """),
             Example("""
-                @ViewBuilder
-                func bar() -> some View {
-                    ↓let _ = foo()
-                    return Text("Hello, World!")
-                }
-                """): Example("""
-                    @ViewBuilder
-                    func bar() -> some View {
-                        _ = foo()
-                        return Text("Hello, World!")
-                    }
-                    """),
-            Example("""
                 #Preview {
                     ↓let _ = foo()
                     return Text("Hello, World!")
@@ -122,14 +109,14 @@ struct RedundantDiscardableLetRule: Rule {
                     }
                     """),
             Example("""
-                static var previews: some View {
-                    ↓let _ = foo()
-                    Text("Hello, World!")
+                var body: some View {
+                    let _ = foo()
+                    return Text("Hello, World!")
                 }
-                """): Example("""
-                    static var previews: some View {
-                        _ = foo()
-                        Text("Hello, World!")
+                """, configuration: ["ignore_swiftui_view_bodies": true]): Example("""
+                    var body: some View {
+                        let _ = foo()
+                        return Text("Hello, World!")
                     }
                     """),
         ]

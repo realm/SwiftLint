@@ -49,6 +49,10 @@ private let syntaxClassificationsCache = Cache { $0.syntaxTree.classifications }
 private let syntaxKindsByLinesCache = Cache { $0.syntaxKindsByLine() }
 private let syntaxTokensByLinesCache = Cache { $0.syntaxTokensByLine() }
 private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
+private let swiftSyntaxTokensCache = Cache { file -> [SwiftLintSyntaxToken]? in
+    // Use SwiftSyntaxKindBridge to derive SourceKitten-compatible tokens from SwiftSyntax
+    SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
+}
 
 package typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
@@ -190,6 +194,10 @@ extension SwiftLintFile {
         return syntaxKindsByLines
     }
 
+    public var swiftSyntaxDerivedSourceKittenTokens: [SwiftLintSyntaxToken]? {
+        swiftSyntaxTokensCache.get(self)
+    }
+
     /// Invalidates all cached data for this file.
     public func invalidateCache() {
         file.clearCaches()
@@ -200,6 +208,7 @@ extension SwiftLintFile {
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
+        swiftSyntaxTokensCache.invalidate(self)
         syntaxTreeCache.invalidate(self)
         foldedSyntaxTreeCache.invalidate(self)
         locationConverterCache.invalidate(self)
@@ -215,6 +224,7 @@ extension SwiftLintFile {
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
+        swiftSyntaxTokensCache.clear()
         syntaxTreeCache.clear()
         foldedSyntaxTreeCache.clear()
         locationConverterCache.clear()

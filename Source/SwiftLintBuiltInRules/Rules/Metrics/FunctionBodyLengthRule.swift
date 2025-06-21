@@ -31,7 +31,7 @@ private extension FunctionBodyLengthRule {
                     leftBrace: body.leftBrace,
                     rightBrace: body.rightBrace,
                     violationNode: node.initKeyword,
-                    objectName: "Function"
+                    objectName: "Initializer"
                 )
             }
         }

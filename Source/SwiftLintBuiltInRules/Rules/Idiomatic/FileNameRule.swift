@@ -1,4 +1,3 @@
-import SwiftLintCore
 import SwiftSyntax
 
 struct FileNameRule: OptInRule, SourceKitFreeRule {

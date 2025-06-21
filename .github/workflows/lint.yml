@@ -13,11 +13,20 @@ jobs:
   lint-swift:
     name: Lint Swift
     runs-on: ubuntu-24.04 # "Noble Numbat"
-    container: swift:6.1-noble
     steps:
       - uses: actions/checkout@v4
+      - name: Create ci.bazelrc file
+        run: echo "$CI_BAZELRC_FILE_CONTENT" | base64 -d > ci.bazelrc
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Lint
-        run: swift run swiftlint --reporter github-actions-logging --strict 2> /dev/null
+        run: |
+          export PATH="/usr/share/swift/usr/bin:$PATH"
+          git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
+          bazel build --config release //:swiftlint
+          ./bazel-bin/swiftlint lint --reporter github-actions-logging --strict 2> /dev/null
+        env:
+          CC: clang
   lint-markdown:
     name: Lint Markdown
     runs-on: ubuntu-24.04

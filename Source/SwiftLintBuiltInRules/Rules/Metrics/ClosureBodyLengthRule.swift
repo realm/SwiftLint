@@ -1,5 +1,9 @@
-struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule {
+import SwiftSyntax
+
+@SwiftSyntaxRule(optIn: true)
+struct ClosureBodyLengthRule: Rule {
     private static let defaultWarningThreshold = 30
+
     var configuration = SeverityLevelsConfiguration<Self>(warning: Self.defaultWarningThreshold, error: 100)
 
     static let description = RuleDescription(
@@ -15,8 +19,17 @@ struct ClosureBodyLengthRule: OptInRule, SwiftSyntaxRule {
         nonTriggeringExamples: ClosureBodyLengthRuleExamples.nonTriggeringExamples,
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        BodyLengthRuleVisitor(kind: .closure, file: file, configuration: configuration)
+private extension ClosureBodyLengthRule {
+    final class Visitor: BodyLengthVisitor<ClosureBodyLengthRule> {
+        override func visitPost(_ node: ClosureExprSyntax) {
+            registerViolations(
+                leftBrace: node.leftBrace,
+                rightBrace: node.rightBrace,
+                violationNode: node.leftBrace,
+                objectName: "Closure"
+            )
+        }
     }
 }

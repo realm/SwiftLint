@@ -1,6 +1,7 @@
-import SwiftLintCore
+import SwiftSyntax
 
-struct FunctionBodyLengthRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct FunctionBodyLengthRule: Rule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 50, error: 100)
 
     static let description = RuleDescription(
@@ -9,8 +10,30 @@ struct FunctionBodyLengthRule: SwiftSyntaxRule {
         description: "Function bodies should not span too many lines",
         kind: .metrics
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        BodyLengthRuleVisitor(kind: .function, file: file, configuration: configuration)
+private extension FunctionBodyLengthRule {
+    final class Visitor: BodyLengthVisitor<FunctionBodyLengthRule> {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            if let body = node.body {
+                registerViolations(
+                    leftBrace: body.leftBrace,
+                    rightBrace: body.rightBrace,
+                    violationNode: node.name,
+                    objectName: "Function"
+                )
+            }
+        }
+
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            if let body = node.body {
+                registerViolations(
+                    leftBrace: body.leftBrace,
+                    rightBrace: body.rightBrace,
+                    violationNode: node.initKeyword,
+                    objectName: "Function"
+                )
+            }
+        }
     }
 }

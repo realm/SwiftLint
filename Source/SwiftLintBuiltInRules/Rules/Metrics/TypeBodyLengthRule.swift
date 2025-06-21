@@ -1,4 +1,4 @@
-import SwiftLintCore
+import SwiftSyntax
 
 private func wrapExample(
     prefix: String = "",
@@ -12,7 +12,8 @@ private func wrapExample(
                    repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
-struct TypeBodyLengthRule: SwiftSyntaxRule {
+@SwiftSyntaxRule
+struct TypeBodyLengthRule: Rule {
     var configuration = SeverityLevelsConfiguration<Self>(warning: 250, error: 350)
 
     static let description = RuleDescription(
@@ -32,8 +33,33 @@ struct TypeBodyLengthRule: SwiftSyntaxRule {
              wrapExample(prefix: "↓", type, "let abc = 0\n", 251)
         })
     )
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        BodyLengthRuleVisitor(kind: .type, file: file, configuration: configuration)
+private extension TypeBodyLengthRule {
+    final class Visitor: BodyLengthVisitor<TypeBodyLengthRule> {
+        override func visitPost(_ node: ActorDeclSyntax) {
+            collectViolation(node)
+        }
+
+        override func visitPost(_ node: EnumDeclSyntax) {
+            collectViolation(node)
+        }
+
+        override func visitPost(_ node: ClassDeclSyntax) {
+            collectViolation(node)
+        }
+
+        override func visitPost(_ node: StructDeclSyntax) {
+            collectViolation(node)
+        }
+
+        private func collectViolation(_ node: some DeclGroupSyntax) {
+            registerViolations(
+                leftBrace: node.memberBlock.leftBrace,
+                rightBrace: node.memberBlock.rightBrace,
+                violationNode: node.introducer,
+                objectName: "Type"
+            )
+        }
     }
 }

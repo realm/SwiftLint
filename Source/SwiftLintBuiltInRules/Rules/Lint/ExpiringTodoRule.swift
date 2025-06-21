@@ -50,16 +50,17 @@ struct ExpiringTodoRule: Rule {
 
 private extension ExpiringTodoRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+        private lazy var regex: NSRegularExpression = {
             let pattern = #"""
             \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
             \\#(configuration.dateDelimiters.opening)\#
             (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
             \\#(configuration.dateDelimiters.closing)
             """#
+            return SwiftLintCore.regex(pattern)
+        }()
 
-            let regex = SwiftLintCore.regex(pattern)
-
+        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
             // Process each comment individually
             for token in node.tokens(viewMode: .sourceAccurate) {
                 processTrivia(
@@ -80,7 +81,7 @@ private extension ExpiringTodoRule {
         private func processTrivia(_ trivia: Trivia, baseOffset: Int, regex: NSRegularExpression) {
             var triviaOffset = baseOffset
 
-            for piece in trivia {
+            for (index, piece) in trivia.enumerated() {
                 defer { triviaOffset += piece.sourceLength.utf8Length }
 
                 guard let commentText = piece.commentText else { continue }
@@ -91,7 +92,7 @@ private extension ExpiringTodoRule {
                     let currentOffset = triviaOffset
 
                     // Look ahead for consecutive line comments
-                    let remainingTrivia = trivia.dropFirst(trivia.firstIndex(of: piece)! + 1)
+                    let remainingTrivia = trivia.dropFirst(index + 1)
 
                     for nextPiece in remainingTrivia {
                         if case .lineComment(let nextText) = nextPiece {
@@ -101,7 +102,7 @@ private extension ExpiringTodoRule {
                             } else {
                                 break
                             }
-                        } else if !nextPiece.isNewline && !nextPiece.isWhitespace {
+                        } else if !nextPiece.isWhitespace {
                             break
                         }
                     }
@@ -190,24 +191,6 @@ private extension TriviaPiece {
     var isLineComment: Bool {
         switch self {
         case .lineComment, .docLineComment:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isWhitespace: Bool {
-        switch self {
-        case .spaces, .tabs:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isNewline: Bool {
-        switch self {
-        case .newlines, .carriageReturns, .carriageReturnLineFeeds:
             return true
         default:
             return false

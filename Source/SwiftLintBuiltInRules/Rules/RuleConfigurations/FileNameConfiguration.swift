@@ -8,6 +8,8 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
     private(set) var excluded: Set = ["main.swift", "LinuxMain.swift"]
+    @ConfigurationElement(key: "exclude_path_patterns")
+    private(set) var excludePathPatterns: Set<String> = []
     @ConfigurationElement(key: "prefix_pattern")
     private(set) var prefixPattern = ""
     @ConfigurationElement(key: "suffix_pattern")
@@ -18,19 +20,16 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration {
     private(set) var requireFullyQualifiedNames = false
 }
 
-// MARK: - For `excluded` option
 extension FileNameConfiguration {
     func shouldExclude(filePath: String) -> Bool {
         let fileName = filePath.bridge().lastPathComponent
-
-        // For backwards compatibility,
-        // `excluded` can have a fileName which is invalid as regex.(e.g. "NSString+Extension.swift")
         if excluded.contains(fileName) {
             return true
         }
 
-        return excluded.compactMap {
-            try? Regex("^\($0)$").firstMatch(in: filePath)
-        }.isNotEmpty
+        return excludePathPatterns.contains {
+            let regex = try? RegularExpression(pattern: "^\($0)$")
+            return regex?.regex.firstMatch(in: filePath, range: filePath.fullNSRange) != nil
+        }
     }
 }

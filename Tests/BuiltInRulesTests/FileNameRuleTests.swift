@@ -7,6 +7,7 @@ private let fixturesDirectory = "\(TestResources.path())/FileNameRuleFixtures"
 final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String,
                           excluded: [String]? = nil,
+                          excludedPathPatterns: [String]? = nil,
                           prefixPattern: String? = nil,
                           suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil,
@@ -17,6 +18,9 @@ final class FileNameRuleTests: SwiftLintTestCase {
 
         if let excluded {
             configuration["excluded"] = excluded
+        }
+        if let excludedPathPatterns {
+            configuration["exclude_path_patterns"] = excludedPathPatterns
         }
         if let prefixPattern {
             configuration["prefix_pattern"] = prefixPattern
@@ -131,53 +135,56 @@ final class FileNameRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testExcludedWithRegex() {
+    func testExcludedDoesntSupportRegex() {
         XCTAssert(
             try validate(
                 fileName: "main.swift",
                 excluded: [".*"]
+            ).isNotEmpty
+        )
+    }
+
+    func testExcludedPathPatternsSupportRegex() {
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [],
+                excludedPathPatterns: [".*"]
             ).isEmpty
         )
 
         XCTAssert(
             try validate(
                 fileName: "main.swift",
-                excluded: [".*.swift"]
+                excluded: [],
+                excludedPathPatterns: [".*.swift"]
             ).isEmpty
         )
 
         XCTAssert(
             try validate(
                 fileName: "main.swift",
-                excluded: [".*/FileNameRuleFixtures/.*"]
+                excluded: [],
+                excludedPathPatterns: [".*/FileNameRuleFixtures/.*"]
             ).isEmpty
         )
     }
 
-    func testExcludedWithRegexDoesntMatch() {
+    func testExcludedPathPatternsWithRegexDoesntMatch() {
         XCTAssert(
             try validate(
                 fileName: "main.swift",
-                excluded: [".*/OtherFolder/.*"]
+                excluded: [],
+                excludedPathPatterns: [".*/OtherFolder/.*"]
             ).isNotEmpty
         )
 
         XCTAssert(
             try validate(
                 fileName: "main.swift",
-                excluded: ["/FileNameRuleFixtures/.*"]
+                excluded: [],
+                excludedPathPatterns: ["/FileNameRuleFixtures/.*"]
             ).isNotEmpty
-        )
-    }
-
-    func testFileNameIsInvalidRegex() {
-        XCTAssert(
-            try validate(
-                fileName: "NSString+Extension.swift",
-                excluded: ["NSString+Extension.swift"],
-                prefixPattern: "",
-                suffixPattern: ""
-            ).isEmpty
         )
     }
 
@@ -185,10 +192,29 @@ final class FileNameRuleTests: SwiftLintTestCase {
         XCTAssert(
             try validate(
                 fileName: "NSString+Extension.swift",
-                excluded: ["("],
+                excluded: [],
+                excludedPathPatterns: ["("],
                 prefixPattern: "",
                 suffixPattern: ""
             ).isNotEmpty
+        )
+    }
+
+    func testExcludedPathPatternsWithMultipleRegexs() {
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [],
+                excludedPathPatterns: ["/FileNameRuleFixtures/.*", "("]
+            ).isNotEmpty
+        )
+
+        XCTAssert(
+            try validate(
+                fileName: "main.swift",
+                excluded: [],
+                excludedPathPatterns: ["/FileNameRuleFixtures/.*", "(", ".*.swift"]
+            ).isEmpty
         )
     }
 }

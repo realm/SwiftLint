@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 import SwiftLintCore
 
 struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {

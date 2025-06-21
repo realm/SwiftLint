@@ -169,7 +169,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
             ).isNotEmpty
         )
     }
-    
+
     func testFileNameIsInvalidRegex() {
         XCTAssert(
             try validate(
@@ -180,7 +180,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
             ).isEmpty
         )
     }
-    
+
     func testInvalidRegex() {
         XCTAssert(
             try validate(

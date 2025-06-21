@@ -68,10 +68,7 @@
             <a class="nav-group-name-link" href="Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/BodyLengthRuleVisitor.html">BodyLengthRuleVisitor</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/BodyLengthRuleVisitor/Kind.html">– Kind</a>
+                <a class="nav-group-task-link" href="Classes/BodyLengthVisitor.html">BodyLengthVisitor</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/CodeBlockVisitor.html">CodeBlockVisitor</a>
@@ -498,9 +495,9 @@ AST nodes (e.g. a code block in a code block).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SwiftLintCore21BodyLengthRuleVisitorC"></a>
-                    <a name="//apple_ref/swift/Class/BodyLengthRuleVisitor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SwiftLintCore21BodyLengthRuleVisitorC">BodyLengthRuleVisitor</a>
+                    <a name="/s:13SwiftLintCore17BodyLengthVisitorC"></a>
+                    <a name="//apple_ref/swift/Class/BodyLengthVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13SwiftLintCore17BodyLengthVisitorC">BodyLengthVisitor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -508,20 +505,20 @@ AST nodes (e.g. a code block in a code block).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Visitor that collection violations of code block lengths.</p>
+                        <p>Violation visitor customized to collect violations of code blocks that exceed a specified number of lines.</p>
 
-                        <a href="Classes/BodyLengthRuleVisitor.html" class="slightly-smaller">See more</a>
+                        <a href="Classes/BodyLengthVisitor.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">BodyLengthRuleVisitor</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Classes/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a></span><span class="o">&lt;</span><span class="kt"><a href="Structs/SeverityLevelsConfiguration.html">SeverityLevelsConfiguration</a></span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;&gt;</span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">BodyLengthVisitor</span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Classes/ViolationsSyntaxVisitor.html">ViolationsSyntaxVisitor</a></span><span class="o">&lt;</span><span class="kt"><a href="Structs/SeverityLevelsConfiguration.html">SeverityLevelsConfiguration</a></span><span class="o">&lt;</span><span class="kt">Parent</span><span class="o">&gt;&gt;</span> <span class="k">where</span> <span class="kt">Parent</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Rule.html">Rule</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/BodyLengthRuleVisitor.swift#L4-L142">Show on GitHub</a>
+                        <a href="https://github.com/realm/SwiftLint/tree/main/Source/SwiftLintCore/Visitors/BodyLengthVisitor.swift#L4-L47">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

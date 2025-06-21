@@ -6,7 +6,9 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
                                                 CacheDescriptionProvider, InlinableOptionType {
     /// The execution mode for this custom rule.
     public enum ExecutionMode: String, Codable, Sendable {
+        /// Uses SwiftSyntax to obtain syntax token kinds.
         case swiftsyntax
+        /// Uses SourceKit to obtain syntax token kinds.
         case sourcekit
     }
     /// The identifier for this custom rule.

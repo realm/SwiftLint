@@ -12,10 +12,10 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
-            case let fileName = filePath.bridge().lastPathComponent,
-            !configuration.excluded.contains(fileName) else {
+              !configuration.shouldExclude(filePath: filePath) else {
             return []
         }
+        let fileName = filePath.bridge().lastPathComponent
 
         let prefixRegex = regex("\\A(?:\(configuration.prefixPattern))")
         let suffixRegex = regex("(?:\(configuration.suffixPattern))\\z")

@@ -1,6 +1,7 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-struct AccessibilityLabelForImageRule: ASTRule, OptInRule {
+@SwiftSyntaxRule
+struct AccessibilityLabelForImageRule: Rule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -24,121 +25,259 @@ struct AccessibilityLabelForImageRule: ASTRule, OptInRule {
         nonTriggeringExamples: AccessibilityLabelForImageRuleExamples.nonTriggeringExamples,
         triggeringExamples: AccessibilityLabelForImageRuleExamples.triggeringExamples
     )
+}
 
-    // MARK: AST Rule
+private extension AccessibilityLabelForImageRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var isInViewStruct = false
 
-    func validate(file: SwiftLintFile,
-                  kind: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        // Only proceed to check View structs.
-        guard kind == .struct,
-            dictionary.inheritedTypes.contains("View"),
-            dictionary.substructure.isNotEmpty else {
-                return []
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            isInViewStruct = node.isViewStruct
+            return .visitChildren
         }
 
-        return findImageViolations(file: file, substructure: dictionary.substructure)
-    }
+        override func visitPost(_: StructDeclSyntax) {
+            isInViewStruct = false
+        }
 
-    /// Recursively check a file for image violations, and return all such violations.
-    private func findImageViolations(file: SwiftLintFile, substructure: [SourceKittenDictionary]) -> [StyleViolation] {
-        var violations = [StyleViolation]()
-        for dictionary in substructure {
-            guard let offset: ByteCount = dictionary.offset else {
-                continue
-            }
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            // Only check Image calls within View structs
+            guard isInViewStruct else { return }
 
-            // If it's image, and does not hide from accessibility or provide a label, it's a violation.
-            if dictionary.isImage {
-                if dictionary.isDecorativeOrLabeledImage ||
-                  dictionary.hasAccessibilityHiddenModifier(in: file) ||
-                    dictionary.hasAccessibilityLabelModifier(in: file) {
-                    continue
-                }
+            // Only process direct Image calls
+            guard node.isDirectImageCall else { return }
 
-                violations.append(
-                    StyleViolation(ruleDescription: Self.description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset))
+            // Use centralized exemption logic
+            if !AccessibilityDeterminator.isExempt(node) {
+                let violation = ReasonedRuleViolation(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: """
+                        Images that provide context should have an accessibility label or should be \
+                        explicitly hidden from accessibility
+                        """,
+                    severity: configuration.severity
                 )
-            }
-
-            // If dictionary did not represent an Image, recursively check substructure,
-            // unless it's a container that hides its children from accessibility or is labeled.
-            else if dictionary.substructure.isNotEmpty {
-                if dictionary.hasAccessibilityHiddenModifier(in: file) ||
-                    dictionary.hasAccessibilityElementChildrenIgnoreModifier(in: file) ||
-                    dictionary.hasAccessibilityLabelModifier(in: file) {
-                    continue
-                }
-
-                violations.append(contentsOf: findImageViolations(file: file, substructure: dictionary.substructure))
+                violations.append(violation)
             }
         }
-
-        return violations
     }
 }
 
-// MARK: SourceKittenDictionary extensions
+// MARK: Accessibility Exemption Logic
 
-private extension SourceKittenDictionary {
-    /// Whether or not the dictionary represents a SwiftUI Image.
-    /// Currently only accounts for SwiftUI image literals and not instance variables.
-    var isImage: Bool {
-        // Image literals will be reported as calls to the initializer.
-        guard expressionKind == .call else {
-            return false
-        }
+private struct AccessibilityDeterminator {
+    /// Maximum depth to search up the syntax tree for exemptions
+    static let maxSearchDepth = 20
 
-        if name == "Image" || name == "SwiftUI.Image" {
+    /// Determines if an Image call is exempt from requiring accessibility treatment
+    static func isExempt(_ imageCall: FunctionCallExprSyntax) -> Bool {
+        // 1. Check for decorative or labeled initializers (e.g., Image(decorative:))
+        if imageCall.isDecorativeOrLabeledImage {
             return true
         }
 
-        // Recursively check substructure.
-        // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
-        // Image(decorative: "myImage").resizable().frame
-        //     --> Image(decorative: "myImage").resizable
-        //         --> Image
-        return substructure.contains(where: \.isImage)
+        // 2. Check the parent hierarchy for exemptions
+        return imageCall.isExemptedByAncestors()
+    }
+}
+
+// MARK: SwiftSyntax extensions
+
+private extension StructDeclSyntax {
+    /// Whether this struct conforms to View protocol
+    var isViewStruct: Bool {
+        guard let inheritanceClause else { return false }
+
+        return inheritanceClause.inheritedTypes.contains { inheritedType in
+            inheritedType.type.as(IdentifierTypeSyntax.self)?.name.text == "View"
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    /// Check if this is a direct Image call (not a modifier)
+    var isDirectImageCall: Bool {
+        // Check for direct Image call
+        if let identifierExpr = calledExpression.as(DeclReferenceExprSyntax.self) {
+            return identifierExpr.baseName.text == "Image"
+        }
+
+        // Check for SwiftUI.Image call
+        if let memberAccessExpr = calledExpression.as(MemberAccessExprSyntax.self),
+           let baseIdentifier = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self) {
+            return baseIdentifier.baseName.text == "SwiftUI" &&
+                   memberAccessExpr.declName.baseName.text == "Image"
+        }
+
+        return false
     }
 
-    /// Whether or not the dictionary represents a SwiftUI Image using the `Image(decorative:)` constructor (hides
-    /// from a11y), or the `Image(_:label:)` constructors (which provide labels).
+    /// Whether this is Image(decorative:) or Image(_:label:)
     var isDecorativeOrLabeledImage: Bool {
-        guard isImage else {
-            return false
+        arguments.contains { arg in
+            let label = arg.label?.text
+            return label == "decorative" || label == "label"
+        }
+    }
+
+    /// Walks up the syntax tree to find accessibility exemptions with depth limit
+    func isExemptedByAncestors() -> Bool {
+        var currentNode: Syntax? = Syntax(self)
+        var depth = 0
+
+        while let node = currentNode, depth < AccessibilityDeterminator.maxSearchDepth {
+            defer {
+                currentNode = node.parent
+                depth += 1
+            }
+
+            // Check function calls for exempting patterns
+            guard let funcCall = node.as(FunctionCallExprSyntax.self) else { continue }
+
+            // Check for accessibility modifiers
+            if let memberAccess = funcCall.calledExpression.as(MemberAccessExprSyntax.self) {
+                let modifierName = memberAccess.declName.baseName.text
+
+                if funcCall.isDirectAccessibilityModifier(modifierName) ||
+                   funcCall.isContainerExemptingModifier(modifierName) {
+                    return true
+                }
+            }
+
+            // Check for inherently exempting containers
+            if funcCall.isInherentlyExemptingContainer() {
+                return true
+            }
+
+            // Check container views with accessibility modifiers
+            if funcCall.isContainerView() && funcCall.hasAccessibilityModifiersInChain() {
+                return true
+            }
+
+            // Stop early at statement boundaries for performance
+            if node.parent?.is(StmtSyntax.self) == true {
+                break
+            }
         }
 
-        // Check for Image(decorative:) or Image(_:label:) constructor.
-        if expressionKind == .call &&
-            enclosedArguments.contains(where: { ["decorative", "label"].contains($0.name) }) {
+        return false
+    }
+
+    /// Check if this function call represents a container view
+    func isContainerView() -> Bool {
+        guard let identifierExpr = calledExpression.as(DeclReferenceExprSyntax.self) else { return false }
+        let containerNames: Set<String> = ["VStack", "HStack", "ZStack", "Group", "LazyVStack", "LazyHStack"]
+        return containerNames.contains(identifierExpr.baseName.text)
+    }
+
+    /// Check if this container has accessibility modifiers in its modifier chain
+    func hasAccessibilityModifiersInChain() -> Bool {
+        var currentNode: Syntax? = Syntax(self)
+        var depth = 0
+
+        while let node = currentNode, depth < AccessibilityDeterminator.maxSearchDepth {
+            defer {
+                currentNode = node.parent
+                depth += 1
+            }
+
+            guard let funcCall = node.as(FunctionCallExprSyntax.self),
+                  let memberAccess = funcCall.calledExpression.as(MemberAccessExprSyntax.self) else { continue }
+
+            let modifierName = memberAccess.declName.baseName.text
+
+            if funcCall.isDirectAccessibilityModifier(modifierName) ||
+               funcCall.isContainerExemptingModifier(modifierName) {
+                return true
+            }
+
+            // Stop at statement boundaries
+            if node.parent?.is(StmtSyntax.self) == true {
+                break
+            }
+        }
+
+        return false
+    }
+
+    /// Checks for modifiers like .accessibilityLabel(...) or .accessibilityHidden(true)
+    func isDirectAccessibilityModifier(_ name: String) -> Bool {
+        switch name {
+        case "accessibilityHidden":
+            return arguments.first?.expression.as(BooleanLiteralExprSyntax.self)?.literal.tokenKind == .keyword(.true)
+        case "accessibilityLabel", "accessibilityValue", "accessibilityHint":
+            return true
+        case "accessibility":
+            return arguments.contains { arg in
+                guard let label = arg.label?.text else { return false }
+                if ["label", "value", "hint"].contains(label) { return true }
+                if label == "hidden" {
+                    return arg.expression.as(BooleanLiteralExprSyntax.self)?.literal.tokenKind == .keyword(.true)
+                }
+                return false
+            }
+        default:
+            return false
+        }
+    }
+
+    /// Checks for modifiers that make a container exempt its children from individual accessibility
+    func isContainerExemptingModifier(_ name: String) -> Bool {
+        guard name == "accessibilityElement" else { return false }
+
+        // Check for .accessibilityElement(children: .ignore) which exempts children
+        if let childrenArg = arguments.first(where: { $0.label?.text == "children" }) {
+            let childrenValue = childrenArg.expression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
+            return childrenValue == "ignore" // Only .ignore exempts individual children
+        }
+
+        // .accessibilityElement() with no arguments defaults to behavior that exempts children
+        return arguments.isEmpty
+    }
+
+    /// Checks for container views that provide their own accessibility context
+    func isInherentlyExemptingContainer() -> Bool {
+        guard let identifier = calledExpression.as(DeclReferenceExprSyntax.self) else { return false }
+        let containerName = identifier.baseName.text
+
+        // NavigationLink automatically exempts children
+        if containerName == "NavigationLink" {
             return true
         }
 
-        // Recursively check substructure.
-        // SwiftUI literal Views with modifiers will have a SourceKittenDictionary structure like:
-        // Image(decorative: "myImage").resizable().frame
-        //     --> Image(decorative: "myImage").resizable
-        //         --> Image
-        return substructure.contains(where: \.isDecorativeOrLabeledImage)
+        // Button exempts children if it has accessibility treatment
+        if containerName == "Button" {
+            return hasDirectAccessibilityTreatment()
+        }
+
+        return false
     }
 
-    /// Whether or not the dictionary represents a SwiftUI View with an `accesibilityLabel(_:)`
-    /// or `accessibility(label:)` modifier.
-    func hasAccessibilityLabelModifier(in file: SwiftLintFile) -> Bool {
-        hasModifier(
-            anyOf: [
-                SwiftUIModifier(
-                    name: "accessibilityLabel",
-                    arguments: [.init(name: "", values: [])]
-                ),
-                SwiftUIModifier(
-                    name: "accessibility",
-                    arguments: [.init(name: "label", values: [])]
-                ),
-            ],
-            in: file
-        )
+    /// Check if this container has direct accessibility treatment
+    private func hasDirectAccessibilityTreatment() -> Bool {
+        var currentNode: Syntax? = Syntax(self)
+        var depth = 0
+
+        while let node = currentNode, depth < AccessibilityDeterminator.maxSearchDepth {
+            defer {
+                currentNode = node.parent
+                depth += 1
+            }
+
+            guard let funcCall = node.as(FunctionCallExprSyntax.self),
+                  let memberAccess = funcCall.calledExpression.as(MemberAccessExprSyntax.self) else { continue }
+
+            let modifierName = memberAccess.declName.baseName.text
+            if funcCall.isDirectAccessibilityModifier(modifierName) {
+                return true
+            }
+
+            // Stop at statement boundaries
+            if node.parent?.is(StmtSyntax.self) == true {
+                break
+            }
+        }
+
+        return false
     }
 }

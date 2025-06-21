@@ -1,3 +1,6 @@
+// swiftlint:disable file_length
+
+// swiftlint:disable:next type_body_length
 internal struct AccessibilityLabelForImageRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -149,6 +152,112 @@ internal struct AccessibilityLabelForImageRuleExamples {
             }
         }
         """),
+        // MARK: - SwiftSyntax Migration Regression Tests
+        // These examples would have been false positives with the SourceKit implementation
+        // but now correctly pass with the SwiftSyntax implementation
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                NavigationLink("Go to Details") {
+                    DetailView()
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.right")
+                        Text("Navigate Here")
+                    }
+                }
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                Button("Save Changes") {
+                    saveAction()
+                } label: {
+                    Label("Save", systemImage: "square.and.arrow.down")
+                }
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                Button(action: performAction) {
+                    HStack {
+                        Image(uiImage: UIImage(systemName: "star") ?? UIImage())
+                        Text("Favorite")
+                    }
+                }
+                .accessibilityLabel("Add to Favorites")
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                VStack {
+                    Image(systemName: "wifi")
+                    Image("network-icon")
+                    Text("Network Status")
+                }.accessibilityElement(children: .ignore)
+                .accessibilityLabel("Connected to WiFi")
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            let statusImage: UIImage
+            var body: some View {
+                HStack {
+                    Image(uiImage: statusImage)
+                        .foregroundColor(.green)
+                    Text("System Status")
+                }.accessibilityElement(children: .ignore)
+                .accessibilityLabel("System is operational")
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                NavigationLink(destination: SettingsView()) {
+                    HStack {
+                        Image(nsImage: NSImage(named: "gear") ?? NSImage())
+                        Text("Preferences")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                }
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                Button {
+                    toggleState()
+                } label: {
+                    Image(systemName: isEnabled ? "eye" : "eye.slash")
+                        .foregroundColor(isEnabled ? .blue : .gray)
+                }
+                .accessibilityLabel(isEnabled ? "Hide content" : "Show content")
+            }
+        }
+        """),
+        Example("""
+        struct CustomCard: View {
+            var body: some View {
+                VStack {
+                    Image("card-background")
+                    Image(systemName: "checkmark.circle")
+                    Text("Task Complete")
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Task completed successfully")
+            }
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -262,6 +371,67 @@ internal struct AccessibilityLabelForImageRuleExamples {
         struct MyView: View {
             var body: some View {
                 ↓Image(systemName: "circle.plus")
+            }
+        }
+        """),
+        // MARK: - SwiftSyntax Migration Detection Improvements  
+        // These violations would have been missed by the SourceKit implementation
+        // but are now correctly detected by SwiftSyntax
+        Example("""
+        struct StatusView: View {
+            let statusIcon: UIImage
+            var body: some View {
+                HStack {
+                    ↓Image(uiImage: statusIcon)
+                        .foregroundColor(.green)
+                    Text("Status")
+                }
+            }
+        }
+        """),
+        Example("""
+        struct PreferencesView: View {
+            var body: some View {
+                VStack {
+                    ↓Image(nsImage: NSImage(named: "gear") ?? NSImage())
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                    Text("Settings")
+                }
+            }
+        }
+        """),
+        Example("""
+        struct FaviconView: View {
+            let favicon: UIImage?
+            var body: some View {
+                ↓Image(uiImage: favicon ?? UIImage())
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 16, height: 16)
+            }
+        }
+        """),
+        Example("""
+        struct IconGrid: View {
+            var body: some View {
+                HStack {
+                    ↓Image(uiImage: loadedImage)
+                        .resizable()
+                    ↓Image(systemName: "star.fill")
+                        .foregroundColor(.yellow)
+                }.accessibilityElement(children: .combine)
+            }
+        }
+        """),
+        Example("""
+        struct CardView: View {
+            var body: some View {
+                VStack {
+                    ↓Image(uiImage: backgroundImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                    Text("Card Content")
+                }.accessibilityElement(children: .contain)
             }
         }
         """),

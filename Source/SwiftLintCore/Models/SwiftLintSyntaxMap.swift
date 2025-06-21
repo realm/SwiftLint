@@ -2,9 +2,6 @@ import SourceKittenFramework
 
 /// Represents a Swift file's syntax information.
 public struct SwiftLintSyntaxMap {
-    /// The raw `SyntaxMap` obtained by SourceKitten.
-    public let value: SyntaxMap
-
     /// The SwiftLint-specific syntax tokens for this syntax map.
     public let tokens: [SwiftLintSyntaxToken]
 
@@ -12,7 +9,6 @@ public struct SwiftLintSyntaxMap {
     ///
     /// - parameter value: The raw `SyntaxMap` obtained by SourceKitten.
     public init(value: SyntaxMap) {
-        self.value = value
         self.tokens = value.tokens.map(SwiftLintSyntaxToken.init)
     }
 

@@ -46,12 +46,6 @@ public struct SourceKittenDictionary {
         (value["key.bodyoffset"] as? Int64).map(ByteCount.init)
     }
 
-    /// Body byte range.
-    public var bodyByteRange: ByteRange? {
-        guard let offset = bodyOffset, let length = bodyLength else { return nil }
-        return ByteRange(location: offset, length: length)
-    }
-
     /// Kind.
     public var kind: String? {
         value["key.kind"] as? String
@@ -76,12 +70,6 @@ public struct SourceKittenDictionary {
         (value["key.nameoffset"] as? Int64).map(ByteCount.init)
     }
 
-    /// Byte range of name.
-    public var nameByteRange: ByteRange? {
-        guard let offset = nameOffset, let length = nameLength else { return nil }
-        return ByteRange(location: offset, length: length)
-    }
-
     /// Offset.
     public var offset: ByteCount? {
         (value["key.offset"] as? Int64).map(ByteCount.init)
@@ -101,11 +89,6 @@ public struct SourceKittenDictionary {
     /// Type name.
     public var typeName: String? {
         value["key.typename"] as? String
-    }
-
-    /// Documentation length.
-    public var docLength: ByteCount? {
-        (value["key.doclength"] as? Int64).flatMap(ByteCount.init)
     }
 
     /// The attribute for this dictionary, as returned by SourceKit.

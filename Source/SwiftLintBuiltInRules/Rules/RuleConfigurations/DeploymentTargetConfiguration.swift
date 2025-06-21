@@ -52,10 +52,6 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
             self.init(platform: platform, major: major, minor: minor, patch: patch)
         }
 
-        var configurationKey: String {
-            platform.configurationKey
-        }
-
         private static func parseVersion(string: String) throws -> (Int, Int, Int) {
             func parseNumber(_ string: String) throws -> Int {
                 guard let number = Int(string) else {

@@ -57,16 +57,6 @@ enum LintOrAnalyzeModeWithCompilerArguments {
     case analyze(allCompilerInvocations: CompilerInvocations)
 }
 
-private func resolveParamsFiles(args: [String]) -> [String] {
-    args.reduce(into: []) { (allArgs: inout [String], arg: String) in
-        if arg.hasPrefix("@"), let contents = try? String(contentsOfFile: String(arg.dropFirst())) {
-            allArgs.append(contentsOf: resolveParamsFiles(args: contents.split(separator: "\n").map(String.init)))
-        } else {
-            allArgs.append(arg)
-        }
-    }
-}
-
 struct LintableFilesVisitor {
     let options: LintOrAnalyzeOptions
     let cache: LinterCache?

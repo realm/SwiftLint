@@ -193,9 +193,3 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["ignore_multiline_function_signatures": true])
     }
 }
-
-private extension Array where Element == Example {
-    func removing(_ examples: Self) -> Self {
-        filter { !examples.contains($0) }
-    }
-}

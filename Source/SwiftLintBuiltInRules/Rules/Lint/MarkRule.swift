@@ -78,7 +78,6 @@ private extension TokenSyntax {
         ].map(basePattern).joined(separator: "|")) + capturingGroup(hyphenOrEmpty)
 
         private static let anySpace = " *"
-        private static let nonSpaceOrTwoOrMoreSpace = "(?: {2,})?"
 
         private static let anyText = "(?:\\S.*)"
 

@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 import SwiftLintCore
 import SwiftSyntax
 
@@ -37,22 +36,19 @@ private extension LineLengthRule {
             // Populate functionDeclarationLines if ignores_function_declarations is true
             if configuration.ignoresFunctionDeclarations {
                 let funcVisitor = FunctionLineVisitor(locationConverter: locationConverter)
-                funcVisitor.walk(node)
-                functionDeclarationLines = funcVisitor.lines
+                functionDeclarationLines = funcVisitor.walk(tree: node, handler: \.lines)
             }
 
             // Populate multilineStringLines if ignores_multiline_strings is true
             if configuration.ignoresMultilineStrings {
                 let stringVisitor = MultilineStringLiteralVisitor(locationConverter: locationConverter)
-                stringVisitor.walk(node)
-                multilineStringLines = stringVisitor.linesSpanned
+                multilineStringLines = stringVisitor.walk(tree: node, handler: \.linesSpanned)
             }
 
             // Populate interpolatedStringLines if ignores_interpolated_strings is true
             if configuration.ignoresInterpolatedStrings {
                 let interpVisitor = InterpolatedStringLineVisitor(locationConverter: locationConverter)
-                interpVisitor.walk(node)
-                interpolatedStringLines = interpVisitor.lines
+                interpolatedStringLines = interpVisitor.walk(tree: node, handler: \.lines)
             }
 
             // Populate commentOnlyLines if ignores_comments is true
@@ -63,13 +59,13 @@ private extension LineLengthRule {
             return .skipChildren // We'll do the main processing in visitPost
         }
 
-        override func visitPost(_ node: SourceFileSyntax) {  // swiftlint:disable:this unused_parameter
+        override func visitPost(_: SourceFileSyntax) {
             let minLengthThreshold = configuration.params.map(\.value).min() ?? .max
 
             for line in file.lines {
                 // Quick check to skip very short lines before expensive stripping
                 // `line.content.count` <= `line.range.length` is true.
-                // So, `check line.range.length` is larger than minimum parameter value.
+                // So, check `line.range.length` is larger than minimum parameter value
                 // for avoiding using heavy `line.content.count`.
                 if line.range.length < minLengthThreshold {
                     continue
@@ -94,7 +90,7 @@ private extension LineLengthRule {
                     continue
                 }
 
-                // String stripping logic (remains largely the same as it's string-based)
+                // String stripping logic
                 var strippedString = line.content
                 if configuration.ignoresURLs {
                     strippedString = strippedString.strippingURLs
@@ -119,7 +115,7 @@ private extension LineLengthRule {
             }
         }
 
-        // This helper remains largely the same, as it's string manipulation.
+        // Strip color and image literals from the source string
         private func stripLiterals(fromSourceString sourceString: String,
                                    withDelimiter delimiter: String) -> String {
             var modifiedString = sourceString
@@ -236,10 +232,8 @@ private final class MultilineStringLiteralVisitor: SyntaxVisitor {
         let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
         let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
 
-        if startLocation.line < endLocation.line {
-            for line in startLocation.line...endLocation.line {
-                linesSpanned.insert(line)
-            }
+        for line in startLocation.line...endLocation.line {
+            linesSpanned.insert(line)
         }
     }
 }

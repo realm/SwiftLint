@@ -78,7 +78,9 @@ private extension Rule {
             return false
         }
 
-        if !(self is any SourceKitFreeRule) && file.sourcekitdFailed {
+        // Only check sourcekitdFailed if the rule requires SourceKit.
+        // This avoids triggering SourceKit initialization for SourceKit-free rules.
+        if requiresSourceKit && file.sourcekitdFailed {
             warnSourceKitFailedOnce()
             return false
         }

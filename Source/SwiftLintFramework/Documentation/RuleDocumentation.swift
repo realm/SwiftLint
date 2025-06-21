@@ -12,7 +12,12 @@ struct RuleDocumentation {
     var isLinterRule: Bool { !isAnalyzerRule }
 
     /// If this rule uses SourceKit.
-    var usesSourceKit: Bool { !(ruleType is any SourceKitFreeRule.Type) }
+    /// Note: For ConditionallySourceKitFree rules, this returns true since we can't
+    /// determine at the type level if they're effectively SourceKit-free.
+    var usesSourceKit: Bool {
+        !(ruleType is any SourceKitFreeRule.Type) ||
+            (ruleType is any ConditionallySourceKitFree.Type)
+    }
 
     /// If this rule is disabled by default.
     var isDisabledByDefault: Bool { ruleType is any OptInRule.Type }

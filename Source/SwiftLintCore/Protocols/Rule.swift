@@ -240,6 +240,32 @@ public extension SubstitutionCorrectableRule {
 /// A rule that does not need SourceKit to operate and can still operate even after SourceKit has crashed.
 public protocol SourceKitFreeRule: Rule {}
 
+/// A rule that may or may not require SourceKit depending on its configuration.
+public protocol ConditionallySourceKitFree: Rule {
+    /// Whether this rule is currently configured in a way that doesn't require SourceKit.
+    var isEffectivelySourceKitFree: Bool { get }
+}
+
+public extension Rule {
+    /// Whether this rule requires SourceKit to operate.
+    /// Returns false if the rule conforms to SourceKitFreeRule or if it conforms to
+    /// ConditionallySourceKitFree and is currently configured to not require SourceKit.
+    var requiresSourceKit: Bool {
+        // Check if rule conforms to SourceKitFreeRule
+        if self is any SourceKitFreeRule {
+            return false
+        }
+
+        // Check if rule is conditionally SourceKit-free and currently doesn't need SourceKit
+        if let conditionalRule = self as? any ConditionallySourceKitFree {
+            return !conditionalRule.isEffectivelySourceKitFree
+        }
+
+        // All other rules require SourceKit
+        return true
+    }
+}
+
 /// A rule that can operate on the post-typechecked AST using compiler arguments. Performs rules that are more like
 /// static analysis than syntactic checks.
 public protocol AnalyzerRule: OptInRule {}

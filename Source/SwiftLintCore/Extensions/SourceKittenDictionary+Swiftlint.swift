@@ -27,21 +27,6 @@ public extension SourceKittenDictionary {
         return results
     }
 
-    func structures(forByteOffset byteOffset: ByteCount) -> [SourceKittenDictionary] {
-        var results = [SourceKittenDictionary]()
-
-        func parse(_ dictionary: SourceKittenDictionary) {
-            guard let byteRange = dictionary.byteRange, byteRange.contains(byteOffset) else {
-                return
-            }
-
-            results.append(dictionary)
-            dictionary.substructure.forEach(parse)
-        }
-        parse(self)
-        return results
-    }
-
     /// Return the string content of this structure in the given file.
     /// - Parameter file: File this structure occurs in
     /// - Returns: The content of the file which this `SourceKittenDictionary` structure represents

@@ -1,15 +1,6 @@
 @preconcurrency import SourceKittenFramework
 
 public extension SwiftDeclarationKind {
-    static let variableKinds: Set<SwiftDeclarationKind> = [
-        .varClass,
-        .varGlobal,
-        .varInstance,
-        .varLocal,
-        .varParameter,
-        .varStatic,
-    ]
-
     static let functionKinds: Set<SwiftDeclarationKind> = [
         .functionAccessorAddress,
         .functionAccessorDidset,
@@ -33,13 +24,5 @@ public extension SwiftDeclarationKind {
         .typealias,
         .associatedtype,
         .enum,
-    ]
-
-    static let extensionKinds: Set<SwiftDeclarationKind> = [
-        .extension,
-        .extensionClass,
-        .extensionEnum,
-        .extensionProtocol,
-        .extensionStruct,
     ]
 }

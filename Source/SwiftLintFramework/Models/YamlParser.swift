@@ -4,7 +4,7 @@ import Yams
 // MARK: - YamlParser
 
 /// An interface for parsing YAML.
-public struct YamlParser {
+struct YamlParser {
     /// Parses the input YAML string as an untyped dictionary.
     ///
     /// - parameter yaml: YAML-formatted string.
@@ -13,8 +13,8 @@ public struct YamlParser {
     /// - returns: The parsed YAML as an untyped dictionary.
     ///
     /// - throws: Throws if the `yaml` string provided could not be parsed.
-    public static func parse(_ yaml: String,
-                             env: [String: String] = ProcessInfo.processInfo.environment) throws -> [String: Any] {
+    static func parse(_ yaml: String,
+                      env: [String: String] = ProcessInfo.processInfo.environment) throws -> [String: Any] {
         do {
             return try Yams.load(yaml: yaml, .default,
                                  .swiftlintConstructor(env: env)) as? [String: Any] ?? [:]

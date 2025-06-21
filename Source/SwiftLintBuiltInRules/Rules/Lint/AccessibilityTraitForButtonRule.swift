@@ -273,13 +273,4 @@ private extension FunctionCallExprSyntax {
 
         return false
     }
-
-    func isModifierChainRoot() -> Bool {
-        // Check if this function call is at the root of a modifier chain
-        // (i.e., it's the topmost expression in a chain like Text().modifier1().modifier2())
-        guard let memberAccess = calledExpression.as(MemberAccessExprSyntax.self) else {
-            return false // Direct function calls like Text() are not modifier chain roots
-        }
-        return memberAccess.base != nil // Has a base, so it's part of a modifier chain
-    }
 }

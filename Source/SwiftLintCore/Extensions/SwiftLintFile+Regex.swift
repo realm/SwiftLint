@@ -117,11 +117,6 @@ extension SwiftLintFile {
         }
     }
 
-    public func rangesAndTokens(matching pattern: String,
-                                range: NSRange? = nil) -> [(NSRange, [SwiftLintSyntaxToken])] {
-        matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
-    }
-
     public func match(pattern: String, range: NSRange? = nil, captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
         matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
             (textCheckingResult.range(at: captureGroup), syntaxKinds)
@@ -208,23 +203,6 @@ extension SwiftLintFile {
             .map(\.0)
     }
 
-    public typealias MatchMapping = (NSTextCheckingResult) -> NSRange
-
-    public func match(pattern: String,
-                      range: NSRange? = nil,
-                      excludingSyntaxKinds: Set<SyntaxKind>,
-                      excludingPattern: String,
-                      exclusionMapping: MatchMapping = \.range) -> [NSRange] {
-        let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
-        if matches.isEmpty {
-            return []
-        }
-        let range = range ?? stringView.range
-        let exclusionRanges = regex(excludingPattern).matches(in: stringView, options: [],
-                                                              range: range).map(exclusionMapping)
-        return matches.filter { !$0.intersects(exclusionRanges) }
-    }
-
     public func append(_ string: String) {
         guard string.isNotEmpty else {
             return
@@ -280,15 +258,6 @@ extension SwiftLintFile {
 
     public func ruleEnabled(violatingRange: NSRange, for rule: some Rule) -> NSRange? {
         ruleEnabled(violatingRanges: [violatingRange], for: rule).first
-    }
-
-    public func isACL(token: SwiftLintSyntaxToken) -> Bool {
-        guard token.kind == .attributeBuiltin else {
-            return false
-        }
-
-        let aclString = contents(for: token)
-        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
     }
 
     public func contents(for token: SwiftLintSyntaxToken) -> String? {

@@ -146,12 +146,6 @@ private extension IdentifierNameRule {
     }
 }
 
-private extension DeclModifierListSyntax {
-    var staticOrClassModifier: DeclModifierSyntax? {
-        first { ["static", "class"].contains($0.name.text) }
-    }
-}
-
 private extension IdentifierPatternSyntax {
     var enclosingVarDecl: VariableDeclSyntax? {
         let identifierDecl =
@@ -168,24 +162,6 @@ private extension IdentifierPatternSyntax {
             .parent?.as(PatternBindingSyntax.self)?
             .parent?.as(PatternBindingListSyntax.self)?
             .parent?.as(VariableDeclSyntax.self)
-    }
-}
-
-private extension VariableDeclSyntax {
-    var allDeclaredNames: [String] {
-        bindings
-            .map(\.pattern)
-            .flatMap { pattern -> [String] in
-                if let id = pattern.as(IdentifierPatternSyntax.self) {
-                    [id.identifier.text]
-                } else if let tuple = pattern.as(TuplePatternSyntax.self) {
-                    tuple.elements.compactMap {
-                        $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
-                    }
-                } else {
-                    []
-                }
-            }
     }
 }
 

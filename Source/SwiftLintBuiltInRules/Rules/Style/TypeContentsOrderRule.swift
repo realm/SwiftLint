@@ -3,8 +3,6 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
 struct TypeContentsOrderRule: Rule {
-    private typealias TypeContentOffset = (typeContent: TypeContent, offset: ByteCount)
-
     var configuration = TypeContentsOrderConfiguration()
 
     static let description = RuleDescription(

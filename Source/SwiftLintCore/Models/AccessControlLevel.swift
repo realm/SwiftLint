@@ -47,11 +47,6 @@ public enum AccessControlLevel: String, CustomStringConvertible {
         case .open: return "open"
         }
     }
-
-    /// Returns true if is `private` or `fileprivate`
-    public var isPrivate: Bool {
-        self == .private || self == .fileprivate
-    }
 }
 
 extension AccessControlLevel: Comparable {

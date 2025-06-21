@@ -4,6 +4,11 @@ import SourceKittenFramework
 /// A rule configuration used for defining custom rules in yaml.
 public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, Hashable,
                                                 CacheDescriptionProvider, InlinableOptionType {
+    /// The execution mode for this custom rule.
+    public enum ExecutionMode: String, Codable, Sendable {
+        case swiftsyntax
+        case sourcekit
+    }
     /// The identifier for this custom rule.
     public let identifier: String
     /// The name for this custom rule.
@@ -24,6 +29,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup = 0
+    /// The execution mode for this rule (nil means use global default).
+    public var executionMode: ExecutionMode?
 
     public var cacheDescription: String {
         let jsonObject: [String] = [
@@ -36,6 +43,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map(\.rawValue).sorted(by: <).joined(separator: ","),
             severity.rawValue,
+            executionMode?.rawValue ?? "",
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {
@@ -57,6 +65,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         self.identifier = identifier
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
               let regexString = configurationDict[$regex.key] as? String else {
@@ -97,11 +106,19 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             self.captureGroup = captureGroup
         }
 
+        if let modeString = configurationDict["mode"] as? String {
+            guard let mode = ExecutionMode(rawValue: modeString) else {
+                throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+            }
+            self.executionMode = mode
+        }
+
         self.excludedMatchKinds = try self.excludedMatchKinds(from: configurationDict)
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+        hasher.combine(executionMode)
     }
 
     package func shouldValidate(filePath: String) -> Bool {

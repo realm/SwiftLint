@@ -29,16 +29,18 @@
 * Migrate `vertical_whitespace` rule from SourceKit to SwiftSyntax for improved performance.  
   [Matt Pennig](https://github.com/pennig)
 
+* Fix false positives of `redundant_discardable_let` rule in `@ViewBuilder` functions,
+  `#Preview` macro bodies and preview providers when `ignore_swiftui_view_bodies` is
+  enabled.  
+  [kaseken](https://github.com/kaseken)
+  [#6063](https://github.com/realm/SwiftLint/issues/6063)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file
   or other error.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#6052](https://github.com/realm/SwiftLint/issues/6052)
-* Fix false positives of `redundant_discardable_let` rule in `@ViewBuilder` functions,
-  `#Preview` macro bodies and preview provides when `ignore_swiftui_view_bodies` is
-  enabled.  
-  [kaseken](https://github.com/kaseken)
 
 ## 0.59.1: Crisp Spring Clean
 

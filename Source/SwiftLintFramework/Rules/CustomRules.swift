@@ -38,11 +38,6 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 
             do {
                 try ruleConfiguration.apply(configuration: value)
-
-                // Apply default execution mode if the rule doesn't specify its own
-                if ruleConfiguration.executionMode == nil {
-                    ruleConfiguration.executionMode = defaultExecutionMode
-                }
             } catch {
                 Issue.invalidConfiguration(ruleID: key).print()
                 continue
@@ -70,7 +65,7 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
         description: """
             Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, \
             the severity level, and what message to display. Rules default to SwiftSyntax mode for improved \
-            performance. Use `mode: sourcekit` or `default_execution_mode: sourcekit` for SourceKit mode.
+            performance. Use `execution_mode: sourcekit` or `default_execution_mode: sourcekit` for SourceKit mode.
             """,
         kind: .style)
 
@@ -79,7 +74,9 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
     /// Returns true if all configured custom rules use SwiftSyntax mode, making this rule effectively SourceKit-free.
     var isEffectivelySourceKitFree: Bool {
         configuration.customRuleConfigurations.allSatisfy { config in
-            let effectiveMode = config.executionMode ?? configuration.defaultExecutionMode ?? .swiftsyntax
+            let effectiveMode = config.executionMode == .default
+                ? (configuration.defaultExecutionMode ?? .swiftsyntax)
+                : config.executionMode
             return effectiveMode == .swiftsyntax
         }
     }

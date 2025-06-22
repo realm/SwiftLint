@@ -33,6 +33,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         comp.regex = "regex"
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = SyntaxKind.allKinds.subtracting([.comment])
+        comp.executionMode = .default
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {
@@ -60,6 +61,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         comp.regex = "regex"
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.excludedMatchKinds = Set<SyntaxKind>([.comment])
+        comp.executionMode = .default
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {
@@ -514,54 +516,42 @@ final class CustomRulesTests: SwiftLintTestCase {
 
     // MARK: - ExecutionMode Tests (Phase 1)
 
-    func testRegexConfigurationParsesExecutionMode() {
+    func testRegexConfigurationParsesExecutionMode() throws {
         let configDict = [
             "regex": "pattern",
-            "mode": "swiftsyntax",
+            "execution_mode": "swiftsyntax",
         ]
 
         var regexConfig = Configuration(identifier: "test_rule")
-        do {
-            try regexConfig.apply(configuration: configDict)
-            XCTAssertEqual(regexConfig.executionMode, .swiftsyntax)
-        } catch {
-            XCTFail("Failed to parse execution mode")
-        }
+        try regexConfig.apply(configuration: configDict)
+        XCTAssertEqual(regexConfig.executionMode, .swiftsyntax)
     }
 
-    func testRegexConfigurationParsesSourceKitMode() {
+    func testRegexConfigurationParsesSourceKitMode() throws {
         let configDict = [
             "regex": "pattern",
-            "mode": "sourcekit",
+            "execution_mode": "sourcekit",
         ]
 
         var regexConfig = Configuration(identifier: "test_rule")
-        do {
-            try regexConfig.apply(configuration: configDict)
-            XCTAssertEqual(regexConfig.executionMode, .sourcekit)
-        } catch {
-            XCTFail("Failed to parse sourcekit mode")
-        }
+        try regexConfig.apply(configuration: configDict)
+        XCTAssertEqual(regexConfig.executionMode, .sourcekit)
     }
 
-    func testRegexConfigurationWithoutModeIsNil() {
+    func testRegexConfigurationWithoutModeIsDefault() throws {
         let configDict = [
             "regex": "pattern",
         ]
 
         var regexConfig = Configuration(identifier: "test_rule")
-        do {
-            try regexConfig.apply(configuration: configDict)
-            XCTAssertNil(regexConfig.executionMode)
-        } catch {
-            XCTFail("Failed to parse configuration without mode")
-        }
+        try regexConfig.apply(configuration: configDict)
+        XCTAssertEqual(regexConfig.executionMode, .default)
     }
 
     func testRegexConfigurationRejectsInvalidMode() {
         let configDict = [
             "regex": "pattern",
-            "mode": "invalid_mode",
+            "execution_mode": "invalid_mode",
         ]
 
         var regexConfig = Configuration(identifier: "test_rule")
@@ -570,7 +560,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         }
     }
 
-    func testCustomRulesConfigurationParsesDefaultExecutionMode() {
+    func testCustomRulesConfigurationParsesDefaultExecutionMode() throws {
         let configDict: [String: Any] = [
             "default_execution_mode": "swiftsyntax",
             "my_rule": [
@@ -579,17 +569,13 @@ final class CustomRulesTests: SwiftLintTestCase {
         ]
 
         var customRulesConfig = CustomRulesConfiguration()
-        do {
-            try customRulesConfig.apply(configuration: configDict)
-            XCTAssertEqual(customRulesConfig.defaultExecutionMode, .swiftsyntax)
-            XCTAssertEqual(customRulesConfig.customRuleConfigurations.count, 1)
-            XCTAssertEqual(customRulesConfig.customRuleConfigurations[0].executionMode, .swiftsyntax)
-        } catch {
-            XCTFail("Failed to parse default execution mode")
-        }
+        try customRulesConfig.apply(configuration: configDict)
+        XCTAssertEqual(customRulesConfig.defaultExecutionMode, .swiftsyntax)
+        XCTAssertEqual(customRulesConfig.customRuleConfigurations.count, 1)
+        XCTAssertEqual(customRulesConfig.customRuleConfigurations[0].executionMode, .default)
     }
 
-    func testCustomRulesAppliesDefaultModeToRulesWithoutExplicitMode() {
+    func testCustomRulesAppliesDefaultModeToRulesWithoutExplicitMode() throws {
         let configDict: [String: Any] = [
             "default_execution_mode": "sourcekit",
             "rule1": [
@@ -597,26 +583,22 @@ final class CustomRulesTests: SwiftLintTestCase {
             ],
             "rule2": [
                 "regex": "pattern2",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
             ],
         ]
 
         var customRulesConfig = CustomRulesConfiguration()
-        do {
-            try customRulesConfig.apply(configuration: configDict)
-            XCTAssertEqual(customRulesConfig.defaultExecutionMode, .sourcekit)
-            XCTAssertEqual(customRulesConfig.customRuleConfigurations.count, 2)
+        try customRulesConfig.apply(configuration: configDict)
+        XCTAssertEqual(customRulesConfig.defaultExecutionMode, .sourcekit)
+        XCTAssertEqual(customRulesConfig.customRuleConfigurations.count, 2)
 
-            // rule1 should inherit default mode
-            let rule1 = customRulesConfig.customRuleConfigurations.first { $0.identifier == "rule1" }
-            XCTAssertEqual(rule1?.executionMode, .sourcekit)
+        // rule1 should have default mode
+        let rule1 = customRulesConfig.customRuleConfigurations.first { $0.identifier == "rule1" }
+        XCTAssertEqual(rule1?.executionMode, .default)
 
-            // rule2 should keep its explicit mode
-            let rule2 = customRulesConfig.customRuleConfigurations.first { $0.identifier == "rule2" }
-            XCTAssertEqual(rule2?.executionMode, .swiftsyntax)
-        } catch {
-            XCTFail("Failed to apply default mode correctly")
-        }
+        // rule2 should keep its explicit mode
+        let rule2 = customRulesConfig.customRuleConfigurations.first { $0.identifier == "rule2" }
+        XCTAssertEqual(rule2?.executionMode, .swiftsyntax)
     }
 
     func testCustomRulesConfigurationRejectsInvalidDefaultMode() {
@@ -652,7 +634,7 @@ final class CustomRulesTests: SwiftLintTestCase {
 
         var config3 = Configuration(identifier: "test_rule")
         config3.regex = "pattern"
-        config3.executionMode = nil
+        config3.executionMode = .default
 
         // Different execution modes should produce different hashes
         XCTAssertNotEqual(config1.hashValue, config2.hashValue)
@@ -667,7 +649,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "no_foo": [
                 "regex": "\\bfoo\\b",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "message": "Don't use foo",
             ],
         ]
@@ -740,7 +722,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "comment_foo": [
                 "regex": "foo",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "match_kinds": "comment",
                 "message": "No foo in comments",
             ],
@@ -824,7 +806,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let swiftSyntaxRules: [String: Any] = [
             "todo_rule": [
                 "regex": pattern,
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "message": message,
             ],
         ]
@@ -832,7 +814,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let sourceKitRules: [String: Any] = [
             "todo_rule": [
                 "regex": pattern,
-                "mode": "sourcekit",
+                "execution_mode": "sourcekit",
                 "message": message,
             ],
         ]
@@ -866,7 +848,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "number_suffix": [
                 "regex": "\\b(\\d+)_suffix\\b",
                 "capture_group": 1,
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "message": "Number found",
             ],
         ]
@@ -963,7 +945,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "keyword_test": [
                 "regex": "\\b\\w+\\b",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "match_kinds": "keyword",
                 "message": "Found keyword",
             ],
@@ -998,7 +980,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "no_identifier": [
                 "regex": "\\b\\w+\\b",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "excluded_match_kinds": ["identifier", "typeidentifier"],
                 "message": "Found non-identifier",
             ],
@@ -1018,7 +1000,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "special_tokens": [
                 "regex": "\\S+",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "match_kinds": ["string", "number", "comment"],
                 "message": "Found special token",
             ],
@@ -1040,7 +1022,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "string_content": [
                 "regex": #""([^"]+)""#,
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "match_kinds": "string",
                 "capture_group": 1,
                 "message": "String content",
@@ -1060,7 +1042,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "default_execution_mode": "swiftsyntax",
             "sourcekit_rule": [
                 "regex": "foo",
-                "mode": "sourcekit",
+                "execution_mode": "sourcekit",
                 "match_kinds": "identifier",
                 "message": "Found foo",
             ],
@@ -1079,7 +1061,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         let customRules: [String: Any] = [
             "attribute_only": [
                 "regex": "\\w+",
-                "mode": "swiftsyntax",
+                "execution_mode": "swiftsyntax",
                 "match_kinds": "attributeBuiltin", // Very specific kind that won't match normal code
                 "message": "Found attribute",
             ],

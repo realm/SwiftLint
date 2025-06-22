@@ -10,6 +10,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         case swiftsyntax
         /// Uses SourceKit to obtain syntax token kinds.
         case sourcekit
+        /// Uses SwiftSyntax by default unless overridden to use SourceKit.
+        case `default`
     }
     /// The identifier for this custom rule.
     public let identifier: String
@@ -31,8 +33,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
     public var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     /// The index of the regex capture group to match.
     public var captureGroup = 0
-    /// The execution mode for this rule (nil means use global default).
-    public var executionMode: ExecutionMode?
+    /// The execution mode for this rule.
+    public var executionMode: ExecutionMode = .default
 
     public var cacheDescription: String {
         let jsonObject: [String] = [
@@ -45,7 +47,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             SyntaxKind.allKinds.subtracting(excludedMatchKinds)
                 .map(\.rawValue).sorted(by: <).joined(separator: ","),
             severity.rawValue,
-            executionMode?.rawValue ?? "",
+            executionMode.rawValue,
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {
@@ -108,7 +110,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             self.captureGroup = captureGroup
         }
 
-        if let modeString = configurationDict["mode"] as? String {
+        if let modeString = configurationDict["execution_mode"] as? String {
             guard let mode = ExecutionMode(rawValue: modeString) else {
                 throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             }

@@ -269,6 +269,9 @@
                 <a class="nav-group-task-link" href="Structs/RegexConfiguration.html">RegexConfiguration</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/RegexConfiguration/ExecutionMode.html">– ExecutionMode</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/Region.html">Region</a>
               </li>
               <li class="nav-group-task">
@@ -335,7 +338,7 @@
             
             <h1 id='custom-rules' class='heading'>Custom Rules</h1>
 
-<p>Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, the severity level, and what message to display.</p>
+<p>Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, the severity level, and what message to display. Rules default to SwiftSyntax mode for improved performance. Use <code>execution_mode: sourcekit</code> or <code>default_execution_mode: sourcekit</code> for SourceKit mode.</p>
 
 <ul>
 <li><strong>Identifier:</strong> <code>custom_rules</code></li>

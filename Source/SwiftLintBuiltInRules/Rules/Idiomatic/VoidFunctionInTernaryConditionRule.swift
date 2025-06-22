@@ -60,6 +60,56 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             subscript(index: Int) -> Int {
                 index == 0 ? defaultValue() : compute(index)
             """),
+            Example("""
+            func example(index: Int) -> String {
+                if true {
+                  return index == 0 ? defaultValue() : defaultValue()
+                } else {
+                  return "Default"
+                }
+            }
+            """),
+            Example("""
+            func exampleNestedIfExpr(index: Int) -> String {
+                if true {
+                  return index == 0 ? defaultValue() : defaultValue()
+                } else {
+                  return "Default"
+                }
+            }
+            """),
+            Example("""
+            func collectionView() -> CGSize {
+                switch indexPath.section {
+                case 0: return isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+            }
+            """),
+            Example("""
+            func exampleNestedIfExprAndSwitchExpr(index: Int) -> String {
+                if index <= 3 {
+                    switch index {
+                    case 1:
+                        if isTrue {
+                            return isTrue ? "1" : "2"
+                        } else {
+                            return "3"
+                        }
+                    case 2:
+                        if isTrue {
+                            return "4"
+                        } else {
+                            return "5"
+                        }
+                    default:
+                        return "6"
+                    }
+                } else {
+                    return "7"
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -103,6 +153,64 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                     index == 0 ↓? something() : somethingElse(index)
                     return index
                 }
+            """),
+            Example("""
+            func example() -> Void {
+                if true {
+                    isTrue ↓? defaultValue() : defaultValue()
+                } else {
+                    print("false")
+                }
+            }
+            """),
+            Example("""
+            func collectionView() -> CGSize {
+                switch indexPath.section {
+                case 0: isEditing ↓? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+                return hoge
+            }
+            """),
+            Example("""
+            func exampleNestedIfExpr() -> String {
+                if true {
+                  if true {
+                    isTrue ↓? defaultValue() : defaultValue()
+                    retun "True"
+                  } else {
+                    return "False"
+                  }
+                } else {
+                  return "Default"
+                }
+                return "hoge"
+            }
+            """),
+            Example("""
+            func exampleNestedIfExprAndSwitchExpr() -> String {
+                if true {
+                    switch value {
+                    case 1:
+                        if flag {
+                            isTrue ↓? print("hoge") : print("hoge")
+                            return "3"
+                        } else {
+                            return "3"
+                        }
+                    case 2:
+                        if true {
+                            return "4"
+                        } else {
+                            return "5"
+                        }
+                    default:
+                        return "6"
+                    }
+                } else {
+                    return "7"
+                }
+            }
             """),
         ]
     )
@@ -152,7 +260,7 @@ private extension CodeBlockItemSyntax {
     var isImplicitReturn: Bool {
         isClosureImplictReturn || isFunctionImplicitReturn ||
         isVariableImplicitReturn || isSubscriptImplicitReturn ||
-        isAcessorImplicitReturn
+        isAcessorImplicitReturn || isIfOrSwitchExprImplicitReturn
     }
 
     var isClosureImplictReturn: Bool {
@@ -198,6 +306,37 @@ private extension CodeBlockItemSyntax {
         }
 
         return parent.children(viewMode: .sourceAccurate).count == 1
+    }
+
+    // For codeBlockItem, recursively traverse it to determine if it is within its own FunctionDeclSyntax.
+    func getFunctionDeclSyntax(codeBlockItem: CodeBlockItemSyntax) -> FunctionDeclSyntax? {
+      let targetSyntax = codeBlockItem.parent?.parent?.parent?.parent
+      if let targetSyntax = targetSyntax?.as(FunctionDeclSyntax.self) {
+        return targetSyntax
+      }
+      if let ifExprSyntax = targetSyntax?.as(IfExprSyntax.self) {
+        if ifExprSyntax.body.statements.last != codeBlockItem {
+          return nil
+        }
+        guard let codeBlockItemSyntax = ifExprSyntax.parent?.parent?.as(CodeBlockItemSyntax.self) else {
+          return nil
+        }
+        return getFunctionDeclSyntax(codeBlockItem: codeBlockItemSyntax)
+      }
+
+      if let switchExpr = targetSyntax?.parent?.as(SwitchExprSyntax.self) {
+        guard let codeBlockItemSyntax = switchExpr.parent?.parent?.as(CodeBlockItemSyntax.self) else {
+          return nil
+        }
+        return getFunctionDeclSyntax(codeBlockItem: codeBlockItemSyntax)
+      }
+
+      return nil
+    }
+
+    var isIfOrSwitchExprImplicitReturn: Bool {
+      guard let functionDeclSyntax = getFunctionDeclSyntax(codeBlockItem: self) else { return false }
+      return functionDeclSyntax.signature.allowsImplicitReturns
     }
 }
 

@@ -2,8 +2,6 @@ name: Lint
 
 on:
   pull_request:
-    branches:
-      - '*'
 
 permissions:
   contents: read

@@ -18,6 +18,11 @@ jobs:
     container: swift:6.1-noble
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: ${{ runner.os }}-swift-spm-
+          path: .build
       - name: Run SPM tests
         uses: ./.github/actions/run-make
         with:

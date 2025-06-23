@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  SKIP_INTEGRATION_TESTS: 'true'
+
+jobs:
+  spm_linux:
+    name: SPM, Linux, Swift 6.1
+    runs-on: ubuntu-24.04
+    container: swift:6.1-noble
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run SPM tests
+        uses: ./.github/actions/run-make
+        with:
+          rule: spm_test

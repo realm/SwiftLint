@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build
 
 on:
   push:
@@ -9,22 +9,11 @@ permissions:
   contents: read
 
 env:
-    SKIP_INTEGRATION_TESTS: 'true'
+  SKIP_INTEGRATION_TESTS: 'true'
 
 jobs:
-  spm_linux:
-    name: "SPM tests on Linux with Swift 6.1"
-    runs-on: ubuntu-24.04
-    container: swift:6.1-noble
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run SPM tests
-        uses: ./.github/actions/run-make
-        with:
-          rule: spm_test
-
   bazel_linux:
-    name: "Bazel build on Linux with pre-installed Swift"
+    name: Bazel, Linux, Swift 6.1 # pre-installed
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -33,9 +22,8 @@ jobs:
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
 
-  # Plugins shall be able to build with older Swift versions.
   plugins_linux:
-    name: "SPM plugins build on Linux with Swift ${{ matrix.version }}"
+    name: SPM plugins, Linux, Swift ${{ matrix.version }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false

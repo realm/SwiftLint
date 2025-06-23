@@ -4,14 +4,18 @@ runs:
   using: 'composite'
   steps:
     - name: Add Swift to PATH
+      shell: bash
       run: export PATH="/usr/share/swift/usr/bin:$PATH"
     - name: Create ci.bazelrc file
+      shell: bash
       run: echo "$CI_BAZELRC_FILE_CONTENT" | base64 -d > ci.bazelrc
       env:
         CI_BAZELRC_FILE_CONTENT: ${{ env.CI_BAZELRC_FILE_CONTENT }}
     - name: Apply patch
+      shell: bash
       run: git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
     - name: Build SwiftLint with Bazel
+      shell: bash
       run: bazel build --config release //:swiftlint
       env:
         CC: clang

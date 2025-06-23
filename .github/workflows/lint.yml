@@ -16,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/bazel-linux-build
+        name: Build SwiftLint with Bazel
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Lint

@@ -1,7 +1,8 @@
-import Foundation
-import SourceKittenFramework
+import SwiftLintCore
+import SwiftSyntax
 
-struct MultilineParametersBracketsRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineParametersBracketsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -89,97 +90,153 @@ struct MultilineParametersBracketsRule: OptInRule {
             """),
         ]
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        violations(in: file.structureDictionary, file: file)
-    }
+private extension MultilineParametersBracketsRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            checkViolations(for: node.signature.parameterClause)
+        }
 
-    private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {
-        var violations = [StyleViolation]()
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            checkViolations(for: node.signature.parameterClause)
+        }
 
-        // find violations at current level
-        if let kind = substructure.declarationKind,
-            SwiftDeclarationKind.functionKinds.contains(kind) {
-            guard
-                let nameOffset = substructure.nameOffset,
-                let nameLength = substructure.nameLength,
-                case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
-                let functionName = file.stringView.substringWithByteRange(nameByteRange)
-            else {
-                return []
+        private func significantStartToken(for parameter: FunctionParameterSyntax) -> TokenSyntax? {
+            // The first name token (external or internal)
+            if parameter.firstName.tokenKind == .wildcard, let secondName = parameter.secondName {
+                return secondName
+            }
+            return parameter.firstName
+        }
+
+        private func significantEndToken(for parameter: FunctionParameterSyntax) -> TokenSyntax? {
+            // End of ellipsis, or type, or name (in that order of preference)
+            if let ellipsis = parameter.ellipsis {
+                return ellipsis
+            }
+            // Type is not optional, so directly use it
+            return parameter.type.lastToken(viewMode: .sourceAccurate) // Gets the very last token of the type
+        }
+
+        private func checkViolations(
+            for parameterClause: FunctionParameterClauseSyntax
+        ) {
+            guard parameterClause.parameters.isNotEmpty else {
+                return
             }
 
-            let parameters = substructure.substructure.filter { $0.declarationKind == .varParameter }
-            let parameterBodies = parameters.compactMap { $0.content(in: file) }
-            let parametersNewlineCount = parameterBodies.map { body in
-                body.countOccurrences(of: "\n")
-            }.reduce(0, +)
-            let declarationNewlineCount = functionName.countOccurrences(of: "\n")
-            let isMultiline = declarationNewlineCount > parametersNewlineCount
+            let parameters = parameterClause.parameters
+            let leftParen = parameterClause.leftParen
+            let rightParen = parameterClause.rightParen
 
-            if isMultiline && parameters.isNotEmpty {
-                if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
-                    violations.append(openingBracketViolation)
-                }
+            let leftParenLine = locationConverter.location(for: leftParen.positionAfterSkippingLeadingTrivia).line
+            let rightParenLine = locationConverter.location(for: rightParen.positionAfterSkippingLeadingTrivia).line
 
-                if let closingBracketViolation = closingBracketViolation(parameters: parameters, file: file) {
-                    violations.append(closingBracketViolation)
-                }
+            guard let firstParam = parameters.first, let lastParam = parameters.last else { return }
+
+            guard let firstParamStartToken = significantStartToken(for: firstParam),
+                  let lastParamEndToken = significantEndToken(for: lastParam) else {
+                return // Should not happen with valid parameters
+            }
+
+            let firstParamSignificantStartLine = locationConverter.location(
+                for: firstParamStartToken.positionAfterSkippingLeadingTrivia
+            ).line
+            let lastParamSignificantEndLine = locationConverter.location(
+                for: lastParamEndToken.endPositionBeforeTrailingTrivia
+            ).line
+
+            guard isStructurallyMultiline(
+                parameters: parameters,
+                firstParam: firstParam,
+                firstParamStartLine: firstParamSignificantStartLine,
+                lastParamEndLine: lastParamSignificantEndLine,
+                leftParenLine: leftParenLine
+            ) else {
+                return // Not structurally multiline, so this rule doesn't apply.
+            }
+
+            // Check if opening paren has first parameter on same line
+            if leftParenLine == firstParamSignificantStartLine {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: firstParam.positionAfterSkippingLeadingTrivia,
+                        reason: "Opening parenthesis should be on a separate line when using multiline parameters"
+                    )
+                )
+            }
+
+            // Check if closing paren is on same line as last parameter's significant part
+            if rightParenLine == lastParamSignificantEndLine {
+                violations.append(
+                    ReasonedRuleViolation(
+                        position: rightParen.positionAfterSkippingLeadingTrivia,
+                        reason: "Closing parenthesis should be on a separate line when using multiline parameters"
+                    )
+                )
             }
         }
 
-        // find violations at deeper levels
-        for substructure in substructure.substructure {
-            violations += self.violations(in: substructure, file: file)
+        private func isStructurallyMultiline(
+            parameters: FunctionParameterListSyntax,
+            firstParam: FunctionParameterSyntax,
+            firstParamStartLine: Int,
+            lastParamEndLine: Int,
+            leftParenLine: Int
+        ) -> Bool {
+            // First check if parameters themselves span multiple lines
+            if parameters.count > 1 && areParametersOnDifferentLines(parameters: parameters, firstParam: firstParam) {
+                return true
+            }
+
+            // Also check if first parameter starts on a different line than opening paren
+            if firstParamStartLine > leftParenLine {
+                return true
+            }
+
+            // Also check if parameters span from opening to closing paren across lines
+            if firstParamStartLine != lastParamEndLine {
+                return true
+            }
+
+            return false
         }
 
-        return violations
-    }
+        private func areParametersOnDifferentLines(
+            parameters: FunctionParameterListSyntax,
+            firstParam: FunctionParameterSyntax
+        ) -> Bool {
+            var previousParamSignificantEndLine = -1
+            if let firstParamEndToken = significantEndToken(for: firstParam) {
+                 previousParamSignificantEndLine = locationConverter.location(
+                    for: firstParamEndToken.endPositionBeforeTrailingTrivia
+                 ).line
+            }
 
-    private func openingBracketViolation(parameters: [SourceKittenDictionary],
-                                         file: SwiftLintFile) -> StyleViolation? {
-        guard
-            let firstParamByteRange = parameters.first?.byteRange,
-            let firstParamRange = file.stringView.byteRangeToNSRange(firstParamByteRange)
-        else {
-            return nil
+            for (index, parameter) in parameters.enumerated() {
+                if index == 0 { continue } // Already used firstParam for initialization
+
+                guard let currentParamStartToken = significantStartToken(for: parameter) else { continue }
+                let currentParamSignificantStartLine = locationConverter.location(
+                    for: currentParamStartToken.positionAfterSkippingLeadingTrivia
+                ).line
+
+                if currentParamSignificantStartLine > previousParamSignificantEndLine {
+                    return true
+                }
+
+                if let currentParamEndToken = significantEndToken(for: parameter) {
+                     previousParamSignificantEndLine = locationConverter.location(
+                        for: currentParamEndToken.endPositionBeforeTrailingTrivia
+                     ).line
+                } else {
+                    // If a parameter somehow doesn't have a significant end,
+                    // fallback to its start line to avoid issues in comparison.
+                    previousParamSignificantEndLine = currentParamSignificantStartLine
+                }
+            }
+            return false
         }
-
-        let prefix = file.stringView.nsString.substring(to: firstParamRange.lowerBound)
-        let invalidRegex = regex("\\([ \\t]*\\z")
-
-        guard let invalidMatch = invalidRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange) else {
-            return nil
-        }
-
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, characterOffset: invalidMatch.range.location + 1)
-        )
-    }
-
-    private func closingBracketViolation(parameters: [SourceKittenDictionary],
-                                         file: SwiftLintFile) -> StyleViolation? {
-        guard
-            let lastParamByteRange = parameters.last?.byteRange,
-            let lastParamRange = file.stringView.byteRangeToNSRange(lastParamByteRange)
-        else {
-            return nil
-        }
-
-        let suffix = file.stringView.nsString.substring(from: lastParamRange.upperBound)
-        let invalidRegex = regex("\\A[ \\t]*\\)")
-
-        guard let invalidMatch = invalidRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange) else {
-            return nil
-        }
-
-        let characterOffset = lastParamRange.upperBound + invalidMatch.range.upperBound - 1
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, characterOffset: characterOffset)
-        )
     }
 }

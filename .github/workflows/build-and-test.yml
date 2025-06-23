@@ -19,7 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run SPM tests
-        run: make spm_test
+        uses: ./.github/actions/run-make
+        with:
+          rule: spm_test
 
   bazel_linux:
     name: "Bazel build on Linux with pre-installed Swift"
@@ -51,4 +53,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build plugins
-        run: make spm_build_plugins
+        uses: ./.github/actions/run-make
+        with:
+          rule: spm_build_plugins

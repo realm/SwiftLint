@@ -10,11 +10,11 @@ jobs:
   strategy:
     maxParallel: '10'
     matrix:
-      '14 : Xcode 15.4':
+      '14, Xcode 15.4':
         image: 'macOS-14'
         xcode: '15.4'
-      # '14 : Xcode 16.3': Runs on Buildkite.
-      '15 : Xcode 16.4':
+      # '14, Xcode 16.3': Runs on Buildkite.
+      '15, Xcode 16.4':
         image: 'macOS-15'
         xcode: '16.4'
   pool:

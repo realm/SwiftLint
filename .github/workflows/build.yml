@@ -8,9 +8,6 @@ on:
 permissions:
   contents: read
 
-env:
-  SKIP_INTEGRATION_TESTS: 'true'
-
 jobs:
   bazel_linux:
     name: Bazel, Linux, Swift 6.1 # pre-installed

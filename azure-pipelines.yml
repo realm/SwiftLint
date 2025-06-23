@@ -5,29 +5,6 @@ variables:
   SKIP_INTEGRATION_TESTS: 'true'
 
 jobs:
-- job: spm_linux
-  displayName: 'SPM, Linux : Swift 6.1'
-  pool:
-    vmImage: 'ubuntu-24.04' # "Noble Numbat"
-  container: swift:6.1-noble
-  steps:
-    - template: .azure/templates/run-make.yml
-      parameters:
-        rule: spm_test
-
-- job: bazel_linux
-  displayName: 'Bazel, Linux : Swift 6.0'
-  pool:
-    vmImage: 'ubuntu-24.04'
-  steps:
-    - script: |
-        export PATH="/usr/share/swift/usr/bin:$PATH"
-        git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
-        bazel build :swiftlint
-      displayName: Build SwiftLint with Bazel
-      env:
-        CC: "clang"
-
 - job: tests_macos
   displayName: 'Tests, macOS'
   strategy:
@@ -47,27 +24,6 @@ jobs:
   steps:
     - script: make spm_test
       displayName: Run tests
-
-- job: plugins_linux # Plugins shall be able to run on older Swift versions.
-  displayName: 'Plugins, Linux'
-  pool:
-    vmImage: 'ubuntu-24.04' # "Noble Numbat"
-  strategy:
-    maxParallel: '10'
-    matrix:
-      ': Swift 5.9':
-        image: swift:5.9-focal
-      ': Swift 5.10':
-        image: swift:5.10-noble
-      ': Swift 6.0':
-        image: swift:6.0-noble
-      ': Swift 6.1':
-        image: swift:6.1-noble
-  container: $[ variables['image'] ]
-  steps:
-    - template: .azure/templates/run-make.yml
-      parameters:
-        rule: spm_build_plugins
 
 - job: Jazzy
   pool:

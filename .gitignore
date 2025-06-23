@@ -63,7 +63,7 @@ Packages/
 bundle/
 
 # Bazel
-bazel-*
+/bazel-*
 /MODULE.bazel.lock
 
 # Danger

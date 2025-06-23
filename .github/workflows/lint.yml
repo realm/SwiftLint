@@ -15,18 +15,11 @@ jobs:
     runs-on: ubuntu-24.04 # "Noble Numbat"
     steps:
       - uses: actions/checkout@v4
-      - name: Create ci.bazelrc file
-        run: echo "$CI_BAZELRC_FILE_CONTENT" | base64 -d > ci.bazelrc
+      - uses: ./.github/actions/bazel-linux-build
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Lint
-        run: |
-          export PATH="/usr/share/swift/usr/bin:$PATH"
-          git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
-          bazel build --config release //:swiftlint
-          ./bazel-bin/swiftlint lint --reporter github-actions-logging --strict 2> /dev/null
-        env:
-          CC: clang
+        run: ./bazel-bin/swiftlint lint --reporter github-actions-logging --strict 2> /dev/null
   lint-markdown:
     name: Lint Markdown
     runs-on: ubuntu-24.04

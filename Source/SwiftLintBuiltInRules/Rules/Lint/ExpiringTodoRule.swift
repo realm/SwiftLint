@@ -1,7 +1,8 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-struct ExpiringTodoRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct ExpiringTodoRule: Rule {
     enum ExpiryViolationLevel {
         case approachingExpiry
         case expired
@@ -10,11 +11,11 @@ struct ExpiringTodoRule: OptInRule {
         var reason: String {
             switch self {
             case .approachingExpiry:
-                return "TODO/FIXME is approaching its expiry and should be resolved soon"
+                "TODO/FIXME is approaching its expiry and should be resolved soon"
             case .expired:
-                return "TODO/FIXME has expired and must be resolved"
+                "TODO/FIXME has expired and must be resolved"
             case .badFormatting:
-                return "Expiring TODO/FIXME is incorrectly formatted"
+                "Expiring TODO/FIXME is incorrectly formatted"
             }
         }
     }
@@ -45,73 +46,142 @@ struct ExpiringTodoRule: OptInRule {
     )
 
     var configuration = ExpiringTodoConfiguration()
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let regex = #"""
-        \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
-        \\#(configuration.dateDelimiters.opening)\#
-        (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
-        \\#(configuration.dateDelimiters.closing)
-        """#
+private extension ExpiringTodoRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var regex: NSRegularExpression = {
+            let pattern = #"""
+            \b(?:TODO|FIXME)(?::|\b)(?:(?!\b(?:TODO|FIXME)(?::|\b)).)*?\#
+            \\#(configuration.dateDelimiters.opening)\#
+            (\d{1,4}\\#(configuration.dateSeparator)\d{1,4}\\#(configuration.dateSeparator)\d{1,4})\#
+            \\#(configuration.dateDelimiters.closing)
+            """#
+            return SwiftLintCore.regex(pattern)
+        }()
 
-        return file.matchesAndSyntaxKinds(matching: regex).compactMap { checkingResult, syntaxKinds in
-            guard
-                syntaxKinds.allSatisfy(\.isCommentLike),
-                checkingResult.numberOfRanges > 1,
-                case let range = checkingResult.range(at: 1),
-                let violationLevel = violationLevel(for: expiryDate(file: file, range: range)),
-                let severity = severity(for: violationLevel) else {
+        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+            // Process each comment individually
+            for token in node.tokens(viewMode: .sourceAccurate) {
+                processTrivia(
+                    token.leadingTrivia,
+                    baseOffset: token.position.utf8Offset
+                )
+                processTrivia(
+                    token.trailingTrivia,
+                    baseOffset: token.endPositionBeforeTrailingTrivia.utf8Offset
+                )
+            }
+
+            return .skipChildren
+        }
+
+        private func processTrivia(_ trivia: Trivia, baseOffset: Int) {
+            var triviaOffset = baseOffset
+
+            for (index, piece) in trivia.enumerated() {
+                defer { triviaOffset += piece.sourceLength.utf8Length }
+
+                guard let commentText = piece.commentText else { continue }
+
+                // Handle multiline comments by checking consecutive line comments
+                if piece.isLineComment {
+                    var combinedText = commentText
+                    let currentOffset = triviaOffset
+
+                    // Look ahead for consecutive line comments
+                    let remainingTrivia = trivia.dropFirst(index + 1)
+
+                    for nextPiece in remainingTrivia {
+                        if case .lineComment(let nextText) = nextPiece {
+                            // Check if it's a continuation (starts with //)
+                            if nextText.hasPrefix("//") {
+                                combinedText += "\n" + nextText
+                            } else {
+                                break
+                            }
+                        } else if !nextPiece.isWhitespace {
+                            break
+                        }
+                    }
+
+                    processComment(combinedText, offset: currentOffset)
+                } else {
+                    processComment(commentText, offset: triviaOffset)
+                }
+            }
+        }
+
+        private func processComment(_ commentText: String, offset: Int) {
+            let matches = regex.matches(in: commentText, options: [], range: commentText.fullNSRange)
+            let nsStringComment = commentText.bridge()
+
+            for match in matches {
+                guard match.numberOfRanges > 1 else { continue }
+
+                // Get the date capture group (second capture group, index 1)
+                let dateRange = match.range(at: 1)
+                guard dateRange.location != NSNotFound else { continue }
+
+                let matchOffset = offset + dateRange.location
+                let matchPosition = AbsolutePosition(utf8Offset: matchOffset)
+
+                let dateString = nsStringComment.substring(with: dateRange)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let violationLevel = getViolationLevel(for: parseDate(dateString: dateString)),
+                   let severity = getSeverity(for: violationLevel) {
+                    let violation = ReasonedRuleViolation(
+                        position: matchPosition,
+                        reason: violationLevel.reason,
+                        severity: severity
+                    )
+                    violations.append(violation)
+                }
+            }
+        }
+
+        private func parseDate(dateString: String) -> Date? {
+            let formatter = DateFormatter()
+            formatter.calendar = .current
+            formatter.dateFormat = configuration.dateFormat
+            return formatter.date(from: dateString)
+        }
+
+        private func getSeverity(for violationLevel: ExpiryViolationLevel) -> ViolationSeverity? {
+            switch violationLevel {
+            case .approachingExpiry:
+                configuration.approachingExpirySeverity.severity
+            case .expired:
+                configuration.expiredSeverity.severity
+            case .badFormatting:
+                configuration.badFormattingSeverity.severity
+            }
+        }
+
+        private func getViolationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
+            guard let expiryDate else {
+                return .badFormatting
+            }
+
+            guard expiryDate.isAfterToday else {
+                return .expired
+            }
+
+            let approachingDate = Calendar.current.date(
+                byAdding: .day,
+                value: -configuration.approachingExpiryThreshold,
+                to: expiryDate
+            )
+
+            guard let approachingDate else {
                 return nil
             }
 
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: severity,
-                location: Location(file: file, characterOffset: range.location),
-                reason: violationLevel.reason
-            )
+            return approachingDate.isAfterToday ?
+                nil :
+                .approachingExpiry
         }
-    }
-
-    private func expiryDate(file: SwiftLintFile, range: NSRange) -> Date? {
-        let expiryDateString = file.contents.bridge()
-            .substring(with: range)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let formatter = DateFormatter()
-        formatter.calendar = .current
-        formatter.dateFormat = configuration.dateFormat
-
-        return formatter.date(from: expiryDateString)
-    }
-
-    private func severity(for violationLevel: ExpiryViolationLevel) -> ViolationSeverity? {
-        switch violationLevel {
-        case .approachingExpiry:
-            return configuration.approachingExpirySeverity.severity
-        case .expired:
-            return configuration.expiredSeverity.severity
-        case .badFormatting:
-            return configuration.badFormattingSeverity.severity
-        }
-    }
-
-    private func violationLevel(for expiryDate: Date?) -> ExpiryViolationLevel? {
-        guard let expiryDate else {
-            return .badFormatting
-        }
-        guard expiryDate.isAfterToday else {
-            return .expired
-        }
-        guard let approachingDate = Calendar.current.date(
-            byAdding: .day,
-            value: -configuration.approachingExpiryThreshold,
-            to: expiryDate) else {
-                return nil
-        }
-        return approachingDate.isAfterToday ?
-            nil :
-            .approachingExpiry
     }
 }
 
@@ -121,9 +191,23 @@ private extension Date {
     }
 }
 
-private extension SyntaxKind {
-   /// Returns if the syntax kind is comment-like.
-   var isCommentLike: Bool {
-       Self.commentKinds.contains(self)
-   }
+private extension TriviaPiece {
+    var isLineComment: Bool {
+        switch self {
+        case .lineComment, .docLineComment:
+            true
+        default:
+            false
+        }
+    }
+
+    var commentText: String? {
+        switch self {
+        case .lineComment(let text), .blockComment(let text),
+             .docLineComment(let text), .docBlockComment(let text):
+            text
+        default:
+            nil
+        }
+    }
 }

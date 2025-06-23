@@ -11,11 +11,11 @@ struct ExpiringTodoRule: Rule {
         var reason: String {
             switch self {
             case .approachingExpiry:
-                return "TODO/FIXME is approaching its expiry and should be resolved soon"
+                "TODO/FIXME is approaching its expiry and should be resolved soon"
             case .expired:
-                return "TODO/FIXME has expired and must be resolved"
+                "TODO/FIXME has expired and must be resolved"
             case .badFormatting:
-                return "Expiring TODO/FIXME is incorrectly formatted"
+                "Expiring TODO/FIXME is incorrectly formatted"
             }
         }
     }
@@ -65,20 +65,18 @@ private extension ExpiringTodoRule {
             for token in node.tokens(viewMode: .sourceAccurate) {
                 processTrivia(
                     token.leadingTrivia,
-                    baseOffset: token.position.utf8Offset,
-                    regex: regex
+                    baseOffset: token.position.utf8Offset
                 )
                 processTrivia(
                     token.trailingTrivia,
-                    baseOffset: token.endPositionBeforeTrailingTrivia.utf8Offset,
-                    regex: regex
+                    baseOffset: token.endPositionBeforeTrailingTrivia.utf8Offset
                 )
             }
 
             return .skipChildren
         }
 
-        private func processTrivia(_ trivia: Trivia, baseOffset: Int, regex: NSRegularExpression) {
+        private func processTrivia(_ trivia: Trivia, baseOffset: Int) {
             var triviaOffset = baseOffset
 
             for (index, piece) in trivia.enumerated() {
@@ -107,14 +105,14 @@ private extension ExpiringTodoRule {
                         }
                     }
 
-                    processComment(combinedText, offset: currentOffset, regex: regex)
+                    processComment(combinedText, offset: currentOffset)
                 } else {
-                    processComment(commentText, offset: triviaOffset, regex: regex)
+                    processComment(commentText, offset: triviaOffset)
                 }
             }
         }
 
-        private func processComment(_ commentText: String, offset: Int, regex: NSRegularExpression) {
+        private func processComment(_ commentText: String, offset: Int) {
             let matches = regex.matches(in: commentText, options: [], range: commentText.fullNSRange)
             let nsStringComment = commentText.bridge()
 
@@ -153,11 +151,11 @@ private extension ExpiringTodoRule {
         private func getSeverity(for violationLevel: ExpiryViolationLevel) -> ViolationSeverity? {
             switch violationLevel {
             case .approachingExpiry:
-                return configuration.approachingExpirySeverity.severity
+                configuration.approachingExpirySeverity.severity
             case .expired:
-                return configuration.expiredSeverity.severity
+                configuration.expiredSeverity.severity
             case .badFormatting:
-                return configuration.badFormattingSeverity.severity
+                configuration.badFormattingSeverity.severity
             }
         }
 
@@ -165,15 +163,21 @@ private extension ExpiringTodoRule {
             guard let expiryDate else {
                 return .badFormatting
             }
+
             guard expiryDate.isAfterToday else {
                 return .expired
             }
-            guard let approachingDate = Calendar.current.date(
+
+            let approachingDate = Calendar.current.date(
                 byAdding: .day,
                 value: -configuration.approachingExpiryThreshold,
-                to: expiryDate) else {
-                    return nil
+                to: expiryDate
+            )
+
+            guard let approachingDate else {
+                return nil
             }
+
             return approachingDate.isAfterToday ?
                 nil :
                 .approachingExpiry
@@ -191,9 +195,9 @@ private extension TriviaPiece {
     var isLineComment: Bool {
         switch self {
         case .lineComment, .docLineComment:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 
@@ -201,9 +205,9 @@ private extension TriviaPiece {
         switch self {
         case .lineComment(let text), .blockComment(let text),
              .docLineComment(let text), .docBlockComment(let text):
-            return text
+            text
         default:
-            return nil
+            nil
         }
     }
 }

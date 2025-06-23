@@ -35,6 +35,7 @@ jobs:
     name: "SPM plugins build on Linux with Swift ${{ matrix.version }}"
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         include:
           - image: swift:5.9-focal

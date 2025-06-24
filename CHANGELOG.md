@@ -22,6 +22,11 @@
   [imsonalbajaj](https://github.com/imsonalbajaj)
   [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
+* Ignore various assignment operators like `=`, `+=`, `&=`, etc. with right-hand side
+  ternary expressions otherwise violating the `void_function_in_ternary` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5611](https://github.com/realm/SwiftLint/issues/5611)
+
 * Rewrite the following rules with SwiftSyntax:
   * `accessibility_label_for_image`
   * `accessibility_trait_for_button`

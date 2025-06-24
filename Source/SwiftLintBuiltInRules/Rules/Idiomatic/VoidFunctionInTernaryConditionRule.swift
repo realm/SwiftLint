@@ -11,7 +11,6 @@ struct VoidFunctionInTernaryConditionRule: Rule {
         kind: .idiomatic,
         minSwiftVersion: .fiveDotOne,
         nonTriggeringExamples: [
-            Example("let result = success ? foo() : bar()"),
             Example("""
             if success {
                 askQuestion()
@@ -59,6 +58,14 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             Example("""
             subscript(index: Int) -> Int {
                 index == 0 ? defaultValue() : compute(index)
+            """),
+            Example("""
+            var a = b ? c() : d()
+            a += b ? c() : d()
+            a -= b ? c() : d()
+            a *= b ? c() : d()
+            a &<<= b ? c() : d()
+            a &-= b ? c() : d()
             """),
         ],
         triggeringExamples: [
@@ -144,18 +151,43 @@ private extension VoidFunctionInTernaryConditionRule {
 
 private extension ExprListSyntax {
     var containsAssignment: Bool {
-        children(viewMode: .sourceAccurate).contains(where: { $0.is(AssignmentExprSyntax.self) })
+        children(viewMode: .sourceAccurate).contains {
+            if let binOp = $0.as(BinaryOperatorExprSyntax.self) {
+                // https://developer.apple.com/documentation/swift/operator-declarations
+                return [
+                    "*=",
+                    "/=",
+                    "%=",
+                    "+=",
+                    "-=",
+                    "<<=",
+                    ">>=",
+                    "&=",
+                    "|=",
+                    "^=",
+                    "&*=",
+                    "&+=",
+                    "&-=",
+                    "&<<=",
+                    "&>>=",
+                    ".&=",
+                    ".|=",
+                    ".^=",
+                ].contains(binOp.operator.text)
+            }
+            return $0.is(AssignmentExprSyntax.self)
+        }
     }
 }
 
 private extension CodeBlockItemSyntax {
     var isImplicitReturn: Bool {
-        isClosureImplictReturn || isFunctionImplicitReturn ||
+        isClosureImplicitReturn || isFunctionImplicitReturn ||
         isVariableImplicitReturn || isSubscriptImplicitReturn ||
-        isAcessorImplicitReturn
+        isAccessorImplicitReturn
     }
 
-    var isClosureImplictReturn: Bool {
+    var isClosureImplicitReturn: Bool {
         guard let parent = parent?.as(CodeBlockItemListSyntax.self),
               let grandparent = parent.parent else {
             return false
@@ -191,7 +223,7 @@ private extension CodeBlockItemSyntax {
         return parent.children(viewMode: .sourceAccurate).count == 1 && subscriptDecl.allowsImplicitReturns
     }
 
-    var isAcessorImplicitReturn: Bool {
+    var isAccessorImplicitReturn: Bool {
         guard let parent = parent?.as(CodeBlockItemListSyntax.self),
               parent.parent?.parent?.as(AccessorDeclSyntax.self) != nil else {
             return false

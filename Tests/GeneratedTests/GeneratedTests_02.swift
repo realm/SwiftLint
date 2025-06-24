@@ -1,6 +1,5 @@
 // GENERATED FILE. DO NOT EDIT!
-// swiftlint:disable:previous file_name
-// swiftlint:disable:previous blanket_disable_command superfluous_disable_command
+
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable file_length single_test_class type_name
 

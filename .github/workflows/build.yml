@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  bazel_linux:
+    name: Bazel, Linux, Swift 6.1 # pre-installed
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/bazel-linux-build
+        name: Build SwiftLint with Bazel
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+
+  plugins_linux:
+    name: SPM plugins, Linux, Swift ${{ matrix.version }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: swift:5.9-focal
+            version: '5.9'
+          - image: swift:5.10-noble
+            version: '5.10'
+          - image: swift:6.0-noble
+            version: '6.0'
+          - image: swift:6.1-noble
+            version: '6.1'
+    container: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build plugins
+        uses: ./.github/actions/run-make
+        with:
+          rule: spm_build_plugins

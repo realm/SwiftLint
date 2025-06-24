@@ -32,6 +32,7 @@
   * `accessibility_trait_for_button`
   * `closure_end_indentation`
   * `expiring_todo`
+  * `file_header`
   * `file_length`
   * `line_length`
   * `vertical_whitespace`

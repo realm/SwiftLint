@@ -1,7 +1,9 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
-struct FileHeaderRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FileHeaderRule: Rule {
     var configuration = FileHeaderConfiguration()
 
     static let description = RuleDescription(
@@ -30,80 +32,200 @@ struct FileHeaderRule: OptInRule {
             """),
         ].skipWrappingInCommentTests()
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        var firstToken: SwiftLintSyntaxToken?
-        var lastToken: SwiftLintSyntaxToken?
-        var firstNonCommentToken: SwiftLintSyntaxToken?
+private struct ProcessTriviaResult {
+    let foundNonComment: Bool
+}
 
-        for token in file.syntaxTokensByLines.lazy.joined() {
-            guard let kind = token.kind, kind.isFileHeaderKind else {
-                // found a token that is not a comment, which means it's not the top of the file
-                // so we can just skip the remaining tokens
-                firstNonCommentToken = token
-                break
+private extension FileHeaderRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+            let headerRange = collectHeaderComments(from: node)
+
+            let requiredRegex = configuration.requiredRegex(for: file)
+
+            // If no header comments found
+            guard let headerRange else {
+                if requiredRegex != nil {
+                    let violationPosition = node.shebang?.endPosition ?? node.position
+                    violations.append(ReasonedRuleViolation(
+                        position: violationPosition,
+                        reason: requiredReason()
+                    ))
+                }
+                return .skipChildren
             }
 
-            // skip SwiftLint commands
-            guard !isSwiftLintCommand(token: token, file: file) else {
-                continue
+            // Extract header content
+            guard let headerContent = extractHeaderContent(from: headerRange) else {
+                return .skipChildren
             }
 
-            if firstToken == nil {
-                firstToken = token
-            }
-            lastToken = token
+            // Check patterns
+            checkForbiddenPattern(in: headerContent, startingAt: headerRange.start)
+            checkRequiredPattern(requiredRegex, in: headerContent, startingAt: headerRange.start)
+
+            return .skipChildren
         }
 
-        let requiredRegex = configuration.requiredRegex(for: file)
+        private func collectHeaderComments(
+            from node: SourceFileSyntax
+        ) -> (start: AbsolutePosition, end: AbsolutePosition)? {
+            var firstHeaderCommentStart: AbsolutePosition?
+            var lastHeaderCommentEnd: AbsolutePosition?
 
-        var violationsOffsets = [Int]()
-        if let firstToken, let lastToken {
-            let start = firstToken.offset
-            let length = lastToken.offset + lastToken.length - firstToken.offset
-            let byteRange = ByteRange(location: start, length: length)
-            guard let range = file.stringView.byteRangeToNSRange(byteRange) else {
-                return []
+            // Skip past shebang if present
+            var currentPosition = node.position
+            if let shebang = node.shebang {
+                currentPosition = shebang.endPosition
             }
 
-            if let regex = configuration.forbiddenRegex(for: file),
-                let firstMatch = regex.matches(in: file.contents, options: [], range: range).first {
-                violationsOffsets.append(firstMatch.range.location)
+            // Collect header comments from tokens' trivia
+            for token in node.tokens(viewMode: .sourceAccurate) {
+                // Skip tokens before the start position (e.g., shebang)
+                if token.endPosition <= currentPosition {
+                    continue
+                }
+
+                let triviaResult = processTrivia(
+                    token.leadingTrivia,
+                    startingAt: &currentPosition,
+                    firstStart: &firstHeaderCommentStart,
+                    lastEnd: &lastHeaderCommentEnd
+                )
+
+                if triviaResult.foundNonComment || token.tokenKind != .endOfFile {
+                    break
+                }
+
+                // Update current position past the token
+                currentPosition = token.endPositionBeforeTrailingTrivia
+
+                // Process trailing trivia if it's EOF
+                if token.tokenKind == .endOfFile {
+                    _ = processTrivia(token.trailingTrivia,
+                                      startingAt: &currentPosition,
+                                      firstStart: &firstHeaderCommentStart,
+                                      lastEnd: &lastHeaderCommentEnd)
+                }
             }
 
-            if let regex = requiredRegex,
-                case let matches = regex.matches(in: file.contents, options: [], range: range),
-                matches.isEmpty {
-                violationsOffsets.append(file.stringView.location(fromByteOffset: start))
+            guard let start = firstHeaderCommentStart,
+                  let end = lastHeaderCommentEnd,
+                  start < end else {
+                return nil
             }
-        } else if requiredRegex != nil {
-            let location = firstNonCommentToken.map {
-                Location(file: file, byteOffset: $0.offset)
-            } ?? Location(file: file.path, line: 1)
-            return [makeViolation(at: location)]
+
+            return (start: start, end: end)
         }
 
-        return violationsOffsets.map { makeViolation(at: Location(file: file, characterOffset: $0)) }
-    }
+        private func processTrivia(_ trivia: Trivia,
+                                   startingAt currentPosition: inout AbsolutePosition,
+                                   firstStart: inout AbsolutePosition?,
+                                   lastEnd: inout AbsolutePosition?) -> ProcessTriviaResult {
+            for piece in trivia {
+                let pieceStart = currentPosition
+                currentPosition += piece.sourceLength
 
-    private func isSwiftLintCommand(token: SwiftLintSyntaxToken, file: SwiftLintFile) -> Bool {
-        guard let range = file.stringView.byteRangeToNSRange(token.range) else {
-            return false
+                if isSwiftLintCommand(piece: piece) {
+                    continue
+                }
+
+                if piece.isComment && !piece.isDocComment {
+                    if firstStart == nil {
+                        firstStart = pieceStart
+                    }
+                    lastEnd = currentPosition
+                } else if !piece.isWhitespace {
+                    return ProcessTriviaResult(foundNonComment: true)
+                }
+            }
+            return ProcessTriviaResult(foundNonComment: false)
         }
 
-        return file.commands(in: range).isNotEmpty
-    }
+        private func extractHeaderContent(from range: (start: AbsolutePosition, end: AbsolutePosition)) -> String? {
+            let headerByteRange = ByteRange(
+                location: ByteCount(range.start.utf8Offset),
+                length: ByteCount(range.end.utf8Offset - range.start.utf8Offset)
+            )
 
-    private func makeViolation(at location: Location) -> StyleViolation {
-        StyleViolation(ruleDescription: Self.description,
-                       severity: configuration.severityConfiguration.severity,
-                       location: location,
-                       reason: "Header comments should be consistent with project patterns")
+            return file.stringView.substringWithByteRange(headerByteRange)
+        }
+
+        private func checkForbiddenPattern(in headerContent: String, startingAt headerStart: AbsolutePosition) {
+            guard
+                let forbiddenRegex = configuration.forbiddenRegex(for: file),
+                let firstMatch = forbiddenRegex.firstMatch(
+                    in: headerContent,
+                    options: [],
+                    range: headerContent.fullNSRange
+                )
+            else {
+                return
+            }
+
+            // Calculate violation position
+            let matchLocationUTF16 = firstMatch.range.location
+            let headerPrefix = String(headerContent.utf16.prefix(matchLocationUTF16)) ?? ""
+            let utf8OffsetInHeader = headerPrefix.utf8.count
+            let violationPosition = AbsolutePosition(utf8Offset: headerStart.utf8Offset + utf8OffsetInHeader)
+
+            violations.append(ReasonedRuleViolation(
+                position: violationPosition,
+                reason: forbiddenReason()
+            ))
+        }
+
+        private func checkRequiredPattern(_ requiredRegex: NSRegularExpression?,
+                                          in headerContent: String,
+                                          startingAt headerStart: AbsolutePosition) {
+            guard
+                let requiredRegex,
+                requiredRegex.firstMatch(in: headerContent, options: [], range: headerContent.fullNSRange) == nil
+            else {
+                return
+            }
+
+            violations.append(ReasonedRuleViolation(
+                position: headerStart,
+                reason: requiredReason()
+            ))
+        }
+
+        private func isSwiftLintCommand(piece: TriviaPiece) -> Bool {
+            guard let text = piece.commentText else { return false }
+            return text.contains("swiftlint:")
+        }
+
+        private func forbiddenReason() -> String {
+            "Header comments should be consistent with project patterns"
+        }
+
+        private func requiredReason() -> String {
+            "Header comments should be consistent with project patterns"
+        }
     }
 }
 
-private extension SyntaxKind {
-    var isFileHeaderKind: Bool {
-        self == .comment || self == .commentURL
+// Helper extensions
+private extension TriviaPiece {
+    var isDocComment: Bool {
+        switch self {
+        case .docLineComment, .docBlockComment:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var commentText: String? {
+        switch self {
+        case .lineComment(let text), .blockComment(let text),
+             .docLineComment(let text), .docBlockComment(let text):
+            return text
+        default:
+            return nil
+        }
     }
 }

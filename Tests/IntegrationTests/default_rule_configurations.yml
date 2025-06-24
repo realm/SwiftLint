@@ -377,6 +377,7 @@ file_length:
 file_name:
   severity: warning
   excluded: ["LinuxMain.swift", "main.swift"]
+  excluded_paths: []
   prefix_pattern: ""
   suffix_pattern: "\+.*"
   nested_type_separator: "."

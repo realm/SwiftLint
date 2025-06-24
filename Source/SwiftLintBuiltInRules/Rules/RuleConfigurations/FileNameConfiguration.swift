@@ -7,9 +7,9 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")
-    private(set) var excluded: Set = ["main.swift", "LinuxMain.swift"]
-    @ConfigurationElement(key: "exclude_path_patterns")
-    private(set) var excludePathPatterns: Set<String> = []
+    private(set) var excluded = Set(["main.swift", "LinuxMain.swift"])
+    @ConfigurationElement(key: "excluded_paths")
+    private(set) var excludedPaths = Set<RegularExpression>()
     @ConfigurationElement(key: "prefix_pattern")
     private(set) var prefixPattern = ""
     @ConfigurationElement(key: "suffix_pattern")
@@ -26,10 +26,8 @@ extension FileNameConfiguration {
         if excluded.contains(fileName) {
             return true
         }
-
-        return excludePathPatterns.contains {
-            let regex = try? RegularExpression(pattern: "^\($0)$")
-            return regex?.regex.firstMatch(in: filePath, range: filePath.fullNSRange) != nil
+        return excludedPaths.contains {
+            $0.regex.firstMatch(in: filePath, range: filePath.fullNSRange) != nil
         }
     }
 }

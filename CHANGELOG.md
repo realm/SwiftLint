@@ -40,7 +40,10 @@
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
 
-* Added `exclud_path_pattern` option in `file_name` rule.  
+* Add `excluded_paths` option to the `file_name` rule. It allows to exclude complete file
+  paths from analysis. All entries are treated as regular expressions. A single match in
+  its full path is enough to ignore a file. This is different from the `excluded` option
+  that only accepts and checks against file names.  
   [Ueeek](https://github.com/Ueeek)
   [#6066](https://github.com/realm/SwiftLint/issues/6066)
 

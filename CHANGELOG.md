@@ -10,6 +10,11 @@
 
 * SwiftLint now requires macOS 13 or higher to run.  
   [JP Simard](https://github.com/jpsim)
+  
+* In `SwiftLintBuildToolPlugin`, print the content of the `BUILD_WORKSPACE_DIRECTORY`
+  environment variable only in debug builds.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6135](https://github.com/realm/SwiftLint/issues/6135)
 
 ### Experimental
 

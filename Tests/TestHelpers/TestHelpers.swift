@@ -203,8 +203,15 @@ private extension Configuration {
         let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
         let linter = collector.collect(into: storage)
         let corrections = linter.correct(using: storage)
-        let beforeCode = expected.allowsViolationsInCorrections ? before.removingViolationMarkers().code : before.code
-        let expectedCode = expected.allowsViolationsInCorrections ? expected.removingViolationMarkers().code : expected.code
+        let beforeCode: String
+        let expectedCode: String
+        if expected.allowsViolationsInCorrections {
+            beforeCode = before.removingViolationMarkers().code
+            expectedCode = expected.removingViolationMarkers().code
+        } else {
+            beforeCode = before.code
+            expectedCode = expected.code
+        }
         XCTAssertGreaterThanOrEqual(
             corrections.count,
             beforeCode != expectedCode ? 1 : 0,

@@ -50,7 +50,9 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
             return []
         }
         // Outputs the environment to the build log for reference.
+        #if DEBUG
         print("Environment:", environment)
+        #endif
         let arguments: [String] = [
             "lint",
             "--quiet",

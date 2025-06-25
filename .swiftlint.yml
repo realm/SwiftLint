@@ -74,6 +74,8 @@ file_name:
     - RuleConfigurationMacros.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
+  excluded_paths:
+    - Tests/GeneratedTests/GeneratedTests_\d\d\.swift
 final_test_case: *unit_test_configuration
 function_body_length: 60
 identifier_name:

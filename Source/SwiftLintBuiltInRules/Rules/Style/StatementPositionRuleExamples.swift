@@ -124,6 +124,24 @@ struct StatementPositionRuleExamples {
             bar()
         }
         """),
+        // Comments don't prevent violation detection
+        Example("""
+        if true {
+            foo()
+        ↓} // comment
+        else {
+            bar()
+        }
+        """),
+        Example("""
+        do {
+            foo()
+        ↓}
+        // comment
+        catch {
+            bar()
+        }
+        """),
     ]
 
     static let corrections = [

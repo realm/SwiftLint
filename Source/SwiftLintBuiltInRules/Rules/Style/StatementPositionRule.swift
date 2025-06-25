@@ -57,6 +57,8 @@ private struct StatementValidation {
 
     private static func calculateIndentation(_ trivia: Trivia) -> Int {
         var indentation = 0
+        // Traverse the trivia in reverse because we need to calculate the indentation
+        // of the *last* line in the trivia, not the first.
         for piece in trivia.reversed() {
             switch piece {
             case .spaces(let count):
@@ -81,6 +83,25 @@ private struct StatementValidation {
     }
 }
 
+// MARK: - Shared Helpers
+
+private extension StatementPositionRule {
+    static func validateAndPrepareCorrection(
+        keyword: TokenSyntax,
+        configuration: StatementPositionConfiguration
+    ) -> (previousToken: TokenSyntax, validation: StatementValidation, needsCorrection: Bool)? {
+        guard let previousToken = keyword.previousToken(viewMode: .sourceAccurate),
+              previousToken.tokenKind == .rightBrace else { return nil }
+
+        let validation = StatementValidation(keyword: keyword, previousToken: previousToken)
+        let needsCorrection = configuration.statementMode == .default ?
+            !validation.isValidForDefaultMode() :
+            !validation.isValidForUncuddledMode()
+
+        return (previousToken, validation, needsCorrection)
+    }
+}
+
 // MARK: - Visitor
 
 private extension StatementPositionRule {
@@ -97,27 +118,22 @@ private extension StatementPositionRule {
         }
 
         private func validateStatement(keyword: TokenSyntax) {
-            guard let previousToken = keyword.previousToken(viewMode: .sourceAccurate),
-                  previousToken.tokenKind == .rightBrace else { return }
+            guard let result = StatementPositionRule.validateAndPrepareCorrection(
+                keyword: keyword,
+                configuration: configuration
+            ), result.needsCorrection else { return }
 
-            let validation = StatementValidation(keyword: keyword, previousToken: previousToken)
-            let isValid = configuration.statementMode == .default ?
-                validation.isValidForDefaultMode() :
-                validation.isValidForUncuddledMode()
+            let description = configuration.statementMode == .default ?
+                StatementPositionRule.description :
+                StatementPositionRule.uncuddledDescription
 
-            if !isValid {
-                let description = configuration.statementMode == .default ?
-                    StatementPositionRule.description :
-                    StatementPositionRule.uncuddledDescription
-
-                violations.append(
-                    ReasonedRuleViolation(
-                        position: previousToken.positionAfterSkippingLeadingTrivia,
-                        reason: description.description,
-                        severity: configuration.severity
-                    )
+            violations.append(
+                ReasonedRuleViolation(
+                    position: result.previousToken.positionAfterSkippingLeadingTrivia,
+                    reason: description.description,
+                    severity: configuration.severity
                 )
-            }
+            )
         }
     }
 }
@@ -141,30 +157,30 @@ private extension StatementPositionRule {
         override func visit(_ node: DoStmtSyntax) -> StmtSyntax {
             var newNode = node
             var newCatchClauses: [CatchClauseSyntax] = []
-            var needsBodyUpdate = false
+            var bodyUpdated = false
 
-            for catchClause in node.catchClauses {
+            for (index, catchClause) in node.catchClauses.enumerated() {
                 if let corrected = correctCatchStatement(
                     catchClause: catchClause,
                     keyword: catchClause.catchKeyword
                 ) {
                     newCatchClauses.append(corrected)
-                    needsBodyUpdate = true
+
+                    // Update the body's closing brace only for the first catch that needs correction
+                    if !bodyUpdated && index == 0 {
+                        var newBody = newNode.body
+                        if configuration.statementMode == .default {
+                            newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, .space)
+                        } else {
+                            // Uncuddled mode - remove trailing trivia
+                            newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, [])
+                        }
+                        newNode.body = newBody
+                        bodyUpdated = true
+                    }
                 } else {
                     newCatchClauses.append(catchClause)
                 }
-            }
-
-            // Update the body's closing brace if needed
-            if needsBodyUpdate {
-                var newBody = newNode.body
-                if configuration.statementMode == .default {
-                    newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, .space)
-                } else {
-                    // Uncuddled mode - remove trailing trivia
-                    newBody.rightBrace = newBody.rightBrace.with(\.trailingTrivia, [])
-                }
-                newNode.body = newBody
             }
 
             newNode.catchClauses = CatchClauseListSyntax(newCatchClauses)
@@ -172,15 +188,12 @@ private extension StatementPositionRule {
         }
 
         private func correctIfStatement(node: IfExprSyntax, elseKeyword: TokenSyntax) -> IfExprSyntax? {
-            guard let previousToken = elseKeyword.previousToken(viewMode: .sourceAccurate),
-                  previousToken.tokenKind == .rightBrace else { return nil }
+            guard let result = StatementPositionRule.validateAndPrepareCorrection(
+                keyword: elseKeyword,
+                configuration: configuration
+            ), result.needsCorrection else { return nil }
 
-            let validation = StatementValidation(keyword: elseKeyword, previousToken: previousToken)
-            let needsCorrection = configuration.statementMode == .default ?
-                !validation.isValidForDefaultMode() :
-                !validation.isValidForUncuddledMode()
-
-            guard needsCorrection else { return nil }
+            let validation = result.validation
 
             // Skip correction if there are comments between brace and keyword
             guard !validation.hasCommentsBetween else { return nil }
@@ -209,15 +222,12 @@ private extension StatementPositionRule {
         }
 
         private func correctCatchStatement(catchClause: CatchClauseSyntax, keyword: TokenSyntax) -> CatchClauseSyntax? {
-            guard let previousToken = keyword.previousToken(viewMode: .sourceAccurate),
-                  previousToken.tokenKind == .rightBrace else { return nil }
+            guard let result = StatementPositionRule.validateAndPrepareCorrection(
+                keyword: keyword,
+                configuration: configuration
+            ), result.needsCorrection else { return nil }
 
-            let validation = StatementValidation(keyword: keyword, previousToken: previousToken)
-            let needsCorrection = configuration.statementMode == .default ?
-                !validation.isValidForDefaultMode() :
-                !validation.isValidForUncuddledMode()
-
-            guard needsCorrection else { return nil }
+            let validation = result.validation
 
             // Skip correction if there are comments between brace and keyword
             guard !validation.hasCommentsBetween else { return nil }

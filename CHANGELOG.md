@@ -41,6 +41,13 @@
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)
 
+* Add `excluded_paths` option to the `file_name` rule. It allows to exclude complete file
+  paths from analysis. All entries are treated as regular expressions. A single match in
+  its full path is enough to ignore a file. This is different from the `excluded` option
+  that only accepts and checks against file names.  
+  [Ueeek](https://github.com/Ueeek)
+  [#6066](https://github.com/realm/SwiftLint/issues/6066)
+
 * Fix false positives of `redundant_discardable_let` rule in `@ViewBuilder` functions,
   `#Preview` macro bodies and preview providers when `ignore_swiftui_view_bodies` is
   enabled.  

@@ -418,7 +418,7 @@ end
 
 def warmup
   %w[branch main].each do |branch|
-    perform("swiftlint-#{branch} lint --no-cache --enable-all-rules --quiet", dir: "#{$working_dir}/builds")
+    perform("../builds/swiftlint-#{branch} lint --no-cache --enable-all-rules", dir: "#{$working_dir}/Aerial")
   end
 end
 

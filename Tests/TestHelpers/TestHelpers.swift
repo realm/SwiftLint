@@ -203,16 +203,18 @@ private extension Configuration {
         let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
         let linter = collector.collect(into: storage)
         let corrections = linter.correct(using: storage)
+        let beforeCode = expected.allowsViolationsInCorrections ? before.removingViolationMarkers().code : before.code
+        let expectedCode = expected.allowsViolationsInCorrections ? expected.removingViolationMarkers().code : expected.code
         XCTAssertGreaterThanOrEqual(
             corrections.count,
-            before.code != expected.code ? 1 : 0,
+            beforeCode != expectedCode ? 1 : 0,
             #function + ".expectedLocationsEmpty",
             file: before.file,
             line: before.line
         )
         XCTAssertEqual(
             file.contents,
-            expected.code,
+            expectedCode,
             #function + ".file contents",
             file: before.file, line: before.line)
         let path = file.path!
@@ -220,7 +222,7 @@ private extension Configuration {
             let corrected = try String(contentsOfFile: path, encoding: .utf8)
             XCTAssertEqual(
                 corrected,
-                expected.code,
+                expectedCode,
                 #function + ".corrected file equals expected",
                 file: before.file, line: before.line)
         } catch {

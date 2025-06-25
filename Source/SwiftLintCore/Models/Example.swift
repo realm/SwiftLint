@@ -41,6 +41,8 @@ public struct Example: Sendable {
 
     /// Specifies whether the test example should be the only example run during the current test case execution.
     package var isFocused: Bool
+    /// If violations are allowed in this example when correcting.
+    package var allowsViolationsInCorrections: Bool
 }
 
 public extension Example {
@@ -59,6 +61,7 @@ public extension Example {
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
+    ///   - allowsViolationsInCorrections: If violations are allowed in this example when correcting.
     init(_ code: String,
          configuration: [String: any Sendable]? = nil,
          testMultiByteOffsets: Bool = true,
@@ -68,7 +71,8 @@ public extension Example {
          testOnLinux: Bool = true,
          file: StaticString = #filePath,
          line: UInt = #line,
-         excludeFromDocumentation: Bool = false) {
+         excludeFromDocumentation: Bool = false,
+         allowsViolationsInCorrections: Bool = false) {
         self.code = code
         self.configuration = configuration
         self.testMultiByteOffsets = testMultiByteOffsets
@@ -80,6 +84,7 @@ public extension Example {
         self.testWrappingInString = testWrappingInString
         self.testDisableCommand = testDisableCommand
         self.isFocused = false
+        self.allowsViolationsInCorrections = allowsViolationsInCorrections
     }
 
     /// Returns the same example, but with the `code` that is passed in

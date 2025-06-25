@@ -213,6 +213,23 @@ struct StatementPositionRuleExamples {
             bar()
         }
         """),
+        Example("""
+        do {
+            foo()
+        ↓}
+        // comment
+        catch {
+            bar()
+        }
+        """): Example("""
+        do {
+            foo()
+        ↓}
+        // comment
+        catch {
+            bar()
+        }
+        """, allowsViolationsInCorrections: true),
     ]
 
     // MARK: - Uncuddled Examples

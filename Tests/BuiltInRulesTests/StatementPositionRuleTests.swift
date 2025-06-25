@@ -65,48 +65,48 @@ final class StatementPositionRuleTests: SwiftLintTestCase {
         Example("""
         if true {
             foo()
-        ↓} else {
+        } ↓else {
             bar()
         }
         """),
         Example("""
         if true {
             foo()
-        ↓} else if true {
+        } ↓else if true {
             bar()
-        ↓} else {
+        } ↓else {
             return
         }
         """),
         Example("""
         if true {
             foo()
-        ↓}
-            else {
+        }
+            ↓else {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓} catch {
+        } ↓catch {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓} catch let error {
+        } ↓catch let error {
             bar()
-        ↓} catch {
+        } ↓catch {
             return
         }
         """),
         Example("""
         do {
             foo()
-        ↓}
-            catch {
+        }
+            ↓catch {
             bar()
         }
         """),
@@ -116,8 +116,8 @@ final class StatementPositionRuleTests: SwiftLintTestCase {
         Example("""
         if true {
             foo()
-        ↓}
-            else {
+        }
+            ↓else {
             bar()
         }
         """):
@@ -132,9 +132,9 @@ final class StatementPositionRuleTests: SwiftLintTestCase {
         Example("""
         if true {
             foo()
-        ↓} else if true {
+        } ↓else if true {
             bar()
-        ↓} else {
+        } ↓else {
             bar()
         }
         """):
@@ -152,7 +152,7 @@ final class StatementPositionRuleTests: SwiftLintTestCase {
         Example("""
         do {
             foo()
-        ↓} catch {
+        } ↓catch {
             bar()
         }
         """):
@@ -167,8 +167,8 @@ final class StatementPositionRuleTests: SwiftLintTestCase {
         Example("""
         do {
             foo()
-        ↓}
-            catch {
+        }
+            ↓catch {
             bar()
         }
         """):

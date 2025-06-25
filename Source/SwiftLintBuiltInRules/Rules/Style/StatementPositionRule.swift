@@ -129,7 +129,7 @@ private extension StatementPositionRule {
 
             violations.append(
                 ReasonedRuleViolation(
-                    position: result.previousToken.positionAfterSkippingLeadingTrivia,
+                    position: keyword.positionAfterSkippingLeadingTrivia,
                     reason: description.description,
                     severity: configuration.severity
                 )

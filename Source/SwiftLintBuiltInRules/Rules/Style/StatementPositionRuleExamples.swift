@@ -67,60 +67,60 @@ struct StatementPositionRuleExamples {
 
     static let triggeringExamples = [
         // Single line examples
-        Example("if true { ↓}else if false { }"),
-        Example("if true { ↓}  else { }"),
+        Example("if true { }↓else if false { }"),
+        Example("if true { }  ↓else { }"),
         Example("""
-        do { ↓}
-        catch { }
+        do { }
+        ↓catch { }
         """),
         Example("""
         do {
             let a = 1
-        ↓}
-        \t  catch { }
+        }
+        \t  ↓catch { }
         """),
         // Multi-line examples
         Example("""
         if true {
             foo()
-        ↓}else {
+        }↓else {
             bar()
         }
         """),
         Example("""
         if true {
             foo()
-        ↓}    else if true {
+        }    ↓else if true {
             bar()
         }
         """),
         Example("""
         if true {
             foo()
-        ↓}
-        else {
+        }
+        ↓else {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓}catch {
+        }↓catch {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓}    catch {
+        }    ↓catch {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓}
-        catch {
+        }
+        ↓catch {
             bar()
         }
         """),
@@ -128,17 +128,17 @@ struct StatementPositionRuleExamples {
         Example("""
         if true {
             foo()
-        ↓} // comment
-        else {
+        } // comment
+        ↓else {
             bar()
         }
         """),
         Example("""
         do {
             foo()
-        ↓}
+        }
         // comment
-        catch {
+        ↓catch {
             bar()
         }
         """),
@@ -147,23 +147,23 @@ struct StatementPositionRuleExamples {
     static let corrections = [
         // Single line examples
         Example("""
-        if true { ↓}
-         else { }
+        if true { }
+         ↓else { }
         """): Example("if true { } else { }"),
         Example("""
-        if true { ↓}
-           else if false { }
+        if true { }
+           ↓else if false { }
         """): Example("if true { } else if false { }"),
         Example("""
-        do { ↓}
-         catch { }
+        do { }
+         ↓catch { }
         """): Example("do { } catch { }"),
         // Multi-line examples
         Example("""
         if true {
             foo()
-        ↓}
-        else {
+        }
+        ↓else {
             bar()
         }
         """): Example("""
@@ -176,7 +176,7 @@ struct StatementPositionRuleExamples {
         Example("""
         if true {
             foo()
-        ↓}   else if true {
+        }   ↓else if true {
             bar()
         }
         """): Example("""
@@ -189,8 +189,8 @@ struct StatementPositionRuleExamples {
         Example("""
         do {
             foo()
-        ↓}
-        catch {
+        }
+        ↓catch {
             bar()
         }
         """): Example("""
@@ -203,7 +203,7 @@ struct StatementPositionRuleExamples {
         Example("""
         do {
             foo()
-        ↓}    catch {
+        }    ↓catch {
             bar()
         }
         """): Example("""
@@ -216,17 +216,17 @@ struct StatementPositionRuleExamples {
         Example("""
         do {
             foo()
-        ↓}
+        }
         // comment
-        catch {
+        ↓catch {
             bar()
         }
         """): Example("""
         do {
             foo()
-        ↓}
+        }
         // comment
-        catch {
+        ↓catch {
             bar()
         }
         """, allowsViolationsInCorrections: true),
@@ -286,25 +286,25 @@ struct StatementPositionRuleExamples {
     static let uncuddledTriggeringExamples = [
         Example("""
         if true {
-          ↓}else if false {
+          }↓else if false {
           }
         """),
         Example("""
         if condition {
-        ↓}
-          else {
+        }
+          ↓else {
         }
         """),
         Example("""
         do {
-          ↓}
-        catch {
+          }
+        ↓catch {
         }
         """),
         Example("""
         do {
-        ↓}
-        \t  catch {
+        }
+        \t  ↓catch {
         }
         """),
     ]

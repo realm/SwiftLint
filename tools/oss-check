@@ -297,6 +297,7 @@ def diff_and_report_changes_to_danger
     severity_changed = []
     rule_id_changed = []
     column_changed = []
+    remaining_violations = []
 
     new_violations.each do |line|
       fixed = fixed_violations.find { |other| line.equal_to?(other, [:message]) }
@@ -315,7 +316,10 @@ def diff_and_report_changes_to_danger
       if fixed
         next column_changed << Change.new(:column, line, fixed)
       end
+      remaining_violations << line
     end
+
+    remaining_fixed = fixed_violations - (message_changed + severity_changed + rule_id_changed + column_changed).map(&:old)
 
     # Print new and fixed violations to be processed by Danger.
     new_violations.each { |line|
@@ -346,13 +350,13 @@ def diff_and_report_changes_to_danger
     summary.puts
     column_changed.each { |change| change.print_as_diff(repo, summary) }
     summary.puts
-    summary.puts "### Fixed violations (#{fixed_violations.count})"
+    summary.puts "### Other fixed violations (#{remaining_fixed.count})"
     summary.puts
-    fixed_violations.each { |violation| summary.puts "- #{violation.to_full_message_with_linked_path(repo)}" }
+    remaining_fixed.each { |violation| summary.puts "- #{violation.to_full_message_with_linked_path(repo)}" }
     summary.puts
-    summary.puts "### New violations (#{new_violations.count})"
+    summary.puts "### Other new violations (#{remaining_violations.count})"
     summary.puts
-    new_violations.each { |violation| summary.puts "- #{violation.to_full_message_with_linked_path(repo)}" }
+    remaining_violations.each { |violation| summary.puts "- #{violation.to_full_message_with_linked_path(repo)}" }
     summary.puts
 
     summary.string

@@ -40,6 +40,7 @@
   * `file_header`
   * `file_length`
   * `line_length`
+  * `multiline_parameters_brackets`
   * `trailing_whitespace`
   * `vertical_whitespace`
   <!-- Keep empty line to have the contributors on a separate line. -->

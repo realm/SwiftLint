@@ -420,6 +420,12 @@ def report_binary_size
   end
 end
 
+def warmup
+  %w[branch main].each do |branch|
+    perform("../builds/swiftlint-#{branch} lint --no-cache --enable-all-rules", dir: "#{$working_dir}/Aerial")
+  end
+end
+
 ################################
 # Script
 ################################
@@ -478,6 +484,7 @@ unless @options[:force]
 end
 
 setup_repos
+warmup
 
 %w[branch main].each do |branch|
   generate_reports(branch)

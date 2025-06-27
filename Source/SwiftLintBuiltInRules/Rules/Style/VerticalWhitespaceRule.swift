@@ -16,12 +16,28 @@ struct VerticalWhitespaceRule: Rule {
             Example("/* bcs \n\n\n\n*/"),
             Example("// bca \n\n"),
             Example("class CCCC {\n  \n}"),
+            Example("""
+            // comment
+
+            import Foundation
+            """),
+            Example("""
+
+            // comment
+
+            import Foundation
+            """),
         ],
         triggeringExamples: [
             Example("let aaaa = 0\n\n\n"),
             Example("struct AAAA {}\n\n\n\n"),
             Example("class BBBB {}\n\n\n"),
             Example("class CCCC {\n  \n  \n}"),
+            Example("""
+
+
+            import Foundation
+            """),
         ],
         corrections: [
             Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
@@ -34,7 +50,13 @@ struct VerticalWhitespaceRule: Rule {
 
 private extension VerticalWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        /// The number of additional newlines to expect before the first token.
+        private var firstTokenAdditionalNewlines = 1
+
         override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
+            // Reset immediately. Only the first token has an additional leading newline.
+            defer { firstTokenAdditionalNewlines = 0 }
+
             // The strategy here is to keep track of the position of the _first_ violating newline
             // in each consecutive run, and report the violation when the run _ends_.
 
@@ -47,7 +69,7 @@ private extension VerticalWhitespaceRule {
             var violationPosition: AbsolutePosition?
 
             func process(_ count: Int, _ offset: Int) {
-                for _ in 0..<count {
+                for _ in 0..<(count + firstTokenAdditionalNewlines) {
                     if consecutiveNewlines > configuration.maxEmptyLines && violationPosition == nil {
                         violationPosition = currentPosition
                     }
@@ -65,6 +87,8 @@ private extension VerticalWhitespaceRule {
                 case .spaces, .tabs:
                     currentPosition += piece.sourceLength
                 default:
+                    // A comment breaks the chain of newlines.
+                    firstTokenAdditionalNewlines = 0
                     if let violationPosition {
                         report(violationPosition, consecutiveNewlines)
                     }

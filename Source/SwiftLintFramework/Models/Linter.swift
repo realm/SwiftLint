@@ -292,7 +292,7 @@ public struct Linter {
 public struct CollectedLinter {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
-    private let rules: [any Rule]
+    let rules: [any Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
@@ -335,7 +335,7 @@ public struct CollectedLinter {
             return cached
         }
 
-        let regions = file.regions()
+        let regions = file.regions
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
@@ -473,7 +473,7 @@ public struct CollectedLinter {
     }
 }
 
-private extension SwiftLintFile {
+extension SwiftLintFile {
     var isEmpty: Bool {
         contents.isEmpty || contents == "\n"
     }

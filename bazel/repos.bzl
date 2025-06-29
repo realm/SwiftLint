@@ -11,13 +11,6 @@ def swiftlint_repos(bzlmod = False):
         )
 
         http_archive(
-            name = "SwiftSyntax",
-            sha256 = "02450ab3fd1d676fffd3719f3263293c51d567cae741fc340c68930388781286",
-            strip_prefix = "swift-syntax-601.0.1",
-            url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/601.0.1.tar.gz",
-        )
-
-        http_archive(
             name = "com_github_apple_swift_argument_parser",
             url = "https://github.com/apple/swift-argument-parser/archive/refs/tags/1.6.1.tar.gz",
             build_file = "@SwiftLint//bazel:SwiftArgumentParser.BUILD",
@@ -39,6 +32,13 @@ def swiftlint_repos(bzlmod = False):
             sha256 = "d7d600f062d6840b037fc1fb2ac3afce7a1c43ae430d78e22d7bd6f8e02cfc9d",
             strip_prefix = "SWXMLHash-7.0.2",
         )
+
+    http_archive(
+        name = "SwiftSyntax",
+        sha256 = "4097eeba84b24fbb05d56353683a0aac57ee94d36d65863a2733744e9dc44323",
+        strip_prefix = "swift-syntax-602.0.0-prerelease-2025-08-11",
+        url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/602.0.0-prerelease-2025-08-11.tar.gz",
+    )
 
     http_archive(
         name = "swiftlint_com_github_scottrhoyt_swifty_text_table",

@@ -21,7 +21,7 @@ struct YodaConditionRule: Rule {
             Example("if foo == nil {}"),
             Example("if flags & 1 == 1 {}"),
             Example("if true {}", excludeFromDocumentation: true),
-            Example("if true == false || b, 2 != 3, {}", excludeFromDocumentation: true),
+            Example("if true == false || b, 2 != 3 {}", excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("if ↓42 == foo {}"),
@@ -72,20 +72,20 @@ private extension YodaConditionRule {
                 guard let operatorIndex = children.index(of: comparisonOperator) else {
                     continue
                 }
-                let rhsIdx = children.index(operatorIndex, offsetBy: 1)
+                let rhsIdx = children.index(after: operatorIndex)
                 if children[rhsIdx].isLiteral {
-                    let afterRhsIndex = children.index(after: rhsIdx)
-                    guard children.endIndex != rhsIdx, afterRhsIndex != nil else {
+                    guard children.endIndex != children.index(after: rhsIdx) else {
                         // This is already the end of the expression.
                         continue
                     }
+                    let afterRhsIndex = children.index(after: rhsIdx)
                     if children[afterRhsIndex].isLogicalBinaryOperator {
                         // Next token is an operator with weaker binding. Thus, the literal is unique on the
                         // right-hand side of the comparison operator.
                         continue
                     }
                 }
-                let lhsIdx = children.index(operatorIndex, offsetBy: -1)
+                let lhsIdx = children.index(before: operatorIndex)
                 let lhs = children[lhsIdx]
                 if lhs.isLiteral,
                    children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {

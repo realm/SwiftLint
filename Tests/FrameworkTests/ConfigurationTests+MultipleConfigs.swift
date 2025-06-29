@@ -10,6 +10,7 @@ private extension Configuration {
     }
 }
 
+// swiftlint:disable:next type_body_length
 extension ConfigurationTests {
     // MARK: - Rules Merging
     func testMerge() {

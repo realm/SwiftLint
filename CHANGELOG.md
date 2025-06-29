@@ -59,6 +59,9 @@
   [kaseken](https://github.com/kaseken)
   [#6063](https://github.com/realm/SwiftLint/issues/6063)
 
+* Support deinitializers and subscripts in `function_body_length` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

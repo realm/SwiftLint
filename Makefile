@@ -190,6 +190,7 @@ docs: bundle_install
 
 docs_linux: bundle_install
 	bundle binstubs jazzy
+	swift run swiftlint generate-docs
 	sourcekitten doc --spm --module-name SwiftLintCore > doc.json
 	./bin/jazzy --sourcekitten-sourcefile doc.json
 

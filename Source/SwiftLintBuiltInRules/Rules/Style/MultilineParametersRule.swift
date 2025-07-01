@@ -35,26 +35,32 @@ private extension MultilineParametersRule {
             }
 
             var numberOfParameters = 0
-            var linesWithParameters = Set<Int>()
+            var linesWithParameters: Set<Int> = []
+            var hasMultipleParametersOnSameLine = false
 
             for position in parameterPositions {
                 let line = locationConverter.location(for: position).line
-                linesWithParameters.insert(line)
+
+                if !linesWithParameters.insert(line).inserted {
+                    hasMultipleParametersOnSameLine = true
+                }
+
                 numberOfParameters += 1
             }
 
-            if let maxNumberOfSingleLineParameters = configuration.maxNumberOfSingleLineParameters,
-               configuration.allowsSingleLine,
-               numberOfParameters > maxNumberOfSingleLineParameters {
-                return true
-            }
+            if linesWithParameters.count == 1 {
+                guard configuration.allowsSingleLine else {
+                    return numberOfParameters > 1
+                }
 
-            guard linesWithParameters.count > (configuration.allowsSingleLine ? 1 : 0),
-                  numberOfParameters != linesWithParameters.count else {
+                if let maxNumberOfSingleLineParameters = configuration.maxNumberOfSingleLineParameters {
+                    return numberOfParameters > maxNumberOfSingleLineParameters
+                }
+
                 return false
             }
 
-            return true
+            return hasMultipleParametersOnSameLine
         }
     }
 }

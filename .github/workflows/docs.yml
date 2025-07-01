@@ -16,6 +16,7 @@ jobs:
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install sourcekitten
+          gem install bundler
           make docs_linux
       - name: Validate documentation coverage
         run: |

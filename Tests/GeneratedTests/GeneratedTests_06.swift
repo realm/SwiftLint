@@ -1,7 +1,7 @@
 // GENERATED FILE. DO NOT EDIT!
 
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
-// swiftlint:disable file_length single_test_class type_name
+// swiftlint:disable single_test_class type_name
 
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore

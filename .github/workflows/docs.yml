@@ -24,6 +24,7 @@ jobs:
       - name: Generate docs
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          export LINUX_SOURCEKIT_LIB_PATH=$HOMEBREW_PREFIX/opt/swift/usr/lib
           brew install sourcekitten
           make docs_linux
       - name: Validate documentation coverage

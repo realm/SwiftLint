@@ -45,6 +45,3 @@ jobs:
       - name: Deploy docs
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          branch: gh-pages
-          folder: docs

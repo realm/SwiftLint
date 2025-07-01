@@ -11,13 +11,12 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Prepare Homebrew
-        run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-      - name: Install SourceKitten
-        run: brew install sourcekitten
       - uses: actions/checkout@v4
       - name: Generate docs
-        run: make docs_linux
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install sourcekitten
+          make docs_linux
       - name: Validate documentation coverage
         run: |
           if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then

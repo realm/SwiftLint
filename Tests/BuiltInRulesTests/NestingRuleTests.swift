@@ -599,4 +599,23 @@ final class NestingRuleTests: SwiftLintTestCase {
 
         verifyRule(description, ruleConfiguration: ["ignore_coding_keys": true ])
     }
+
+    func testNestingWithCodingKeys() {
+        var triggeringExamples = NestingRule.description.triggeringExamples
+        triggeringExamples.append(contentsOf: [
+            .init("""
+                struct Outer {
+                    struct Inner {
+                        enum CodingKeys: String, CodingKey {
+                            case id
+                        }
+                    }
+                }
+            """),
+        ])
+
+        let description = NestingRule.description.with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignore_coding_keys": false ])
+    }
 }

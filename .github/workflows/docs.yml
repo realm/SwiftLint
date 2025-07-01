@@ -1,0 +1,48 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  create-docs:
+    runs-on: macos-14
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_15.4.app
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate docs
+        run: make docs
+      - name: Validate documentation coverage
+        run: |
+          if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+            echo "Undocumented declarations:"
+            cat docs/undocumented.json
+            exit 1
+          fi
+      - name: Upload docs
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy-docs:
+    runs-on: ubuntu-24.04
+    needs: create-docs
+    if: github.event_name == 'push'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy docs
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          branch: gh-pages
+          folder: docs

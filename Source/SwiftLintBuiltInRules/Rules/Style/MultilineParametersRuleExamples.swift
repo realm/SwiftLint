@@ -199,11 +199,20 @@ internal struct MultilineParametersRuleExamples {
         """, configuration: ["allows_single_line": false]),
         Example("func foo(param1: Int, param2: Bool, param3: [String]) { }",
                 configuration: ["max_number_of_single_line_parameters": 3]),
+        Example("func foo(param1: Int, param2: Bool) { }",
+                configuration: ["max_number_of_single_line_parameters": 2]),
         Example("""
         func foo(param1: Int,
                  param2: Bool,
                  param3: [String]) { }
         """, configuration: ["max_number_of_single_line_parameters": 3]),
+        Example("""
+        func foo(
+            param1: Int,
+            param2: Bool,
+            param3: [String]
+        ) { }
+        """, configuration: ["max_number_of_single_line_parameters": 2]),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -350,5 +359,9 @@ internal struct MultilineParametersRuleExamples {
                   param2: Bool, param3: [String]) { }
         """,
                 configuration: ["max_number_of_single_line_parameters": 3]),
+        Example("""
+        func foo(param1: Int, param2: Bool, param3: [String]) { }
+        """,
+                configuration: ["max_number_of_single_line_parameters": 2]),
     ]
 }

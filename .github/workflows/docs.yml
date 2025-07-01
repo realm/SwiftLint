@@ -27,6 +27,8 @@ jobs:
           export LINUX_SOURCEKIT_LIB_PATH=$HOMEBREW_PREFIX/opt/swift/usr/lib
           brew install sourcekitten
           make docs_linux
+        env:
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
       - name: Validate documentation coverage
         run: |
           if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then

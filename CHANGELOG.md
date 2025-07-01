@@ -27,6 +27,9 @@
   [imsonalbajaj](https://github.com/imsonalbajaj)
   [#6054](https://github.com/realm/SwiftLint/issues/6054)
 
+* Support extensions and protocols in `type_body_length` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Ignore various assignment operators like `=`, `+=`, `&=`, etc. with right-hand side
   ternary expressions otherwise violating the `void_function_in_ternary` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

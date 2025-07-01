@@ -7,15 +7,17 @@ on:
 
 jobs:
   create-docs:
-    runs-on: macos-14
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_15.4.app
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
+      - name: Prepare Homebrew
+        run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      - name: Install SourceKitten
+        run: brew install sourcekitten
       - uses: actions/checkout@v4
       - name: Generate docs
-        run: make docs
+        run: make docs_linux
       - name: Validate documentation coverage
         run: |
           if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then

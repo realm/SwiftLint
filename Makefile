@@ -188,6 +188,11 @@ docs: bundle_install
 	swift run swiftlint generate-docs
 	bundle exec jazzy
 
+docs_linux: bundle_install
+	bundle binstubs jazzy
+	sourcekitten doc --spm --module-name SwiftLintCore > doc.json
+	./bin/jazzy --sourcekitten-sourcefile doc.json
+
 get_version:
 	@echo "$(VERSION_STRING)"
 

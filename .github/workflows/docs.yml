@@ -7,6 +7,7 @@ on:
 
 jobs:
   create-docs:
+    name: Create Documentation
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -34,6 +35,7 @@ jobs:
           path: docs
 
   deploy-docs:
+    name: Deploy Documentation
     runs-on: ubuntu-24.04
     needs: create-docs
     if: github.event_name == 'push'

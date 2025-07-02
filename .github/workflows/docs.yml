@@ -16,12 +16,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Build SwiftLint
-        uses: ./.github/actions/bazel-linux-build
-      - name: Build SourceKitten
+      - name: Build SwiftLint and SourceKitten
         uses: ./.github/actions/bazel-linux-build
         with:
-          target: "@com_github_jpsim_sourcekitten//:sourcekitten"
+          target: "//:swiftlint @com_github_jpsim_sourcekitten//:sourcekitten"
       - name: Generate documentation
         run: |
           export PATH="/usr/share/swift/usr/bin:$PATH"

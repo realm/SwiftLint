@@ -357,11 +357,9 @@ internal struct MultilineParametersRuleExamples {
         Example("""
         func ↓foo(param1: Int,
                   param2: Bool, param3: [String]) { }
-        """,
-                configuration: ["max_number_of_single_line_parameters": 3]),
+       """, configuration: ["max_number_of_single_line_parameters": 3]),
         Example("""
-        func foo(param1: Int, param2: Bool, param3: [String]) { }
-        """,
-                configuration: ["max_number_of_single_line_parameters": 2]),
+        func ↓foo(param1: Int, param2: Bool, param3: [String]) { }
+        """, configuration: ["max_number_of_single_line_parameters": 2]),
     ]
 }

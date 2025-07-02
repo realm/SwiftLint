@@ -61,7 +61,6 @@
 
 * Improve `multiline_parameters` rule to correctly support  
   `max_number_of_single_line_parameters` and detect mixed formatting.  
-
   [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Bug Fixes

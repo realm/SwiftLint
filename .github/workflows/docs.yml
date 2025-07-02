@@ -21,14 +21,16 @@ jobs:
           key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
           restore-keys: ${{ runner.os }}-swift-spm-
           path: .build
+      - name: Build SwiftLint
+        uses: ./.github/actions/bazel-linux-build
+      - name: Build SourceKitten
+        uses: ./.github/actions/bazel-linux-build
+        with:
+          target: "@com_github_jpsim_sourcekitten//:sourcekitten"
       - name: Generate docs
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           export PATH="/usr/share/swift/usr/bin:$PATH"
-          brew install sourcekitten
           make docs_linux
-        env:
-          HOMEBREW_NO_INSTALL_CLEANUP: 1
       - name: Validate documentation coverage
         run: |
           if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then

@@ -1,5 +1,9 @@
 name: Bazel Linux Build
 description: Common steps to build SwiftLint with Bazel on GitHub Linux runners
+inputs:
+  target:
+    description: The Bazel target to build
+    default: //:swiftlint
 runs:
   using: composite
   steps:
@@ -15,6 +19,6 @@ runs:
       shell: bash
       run: |
         export PATH="/usr/share/swift/usr/bin:$PATH"
-        bazel build --config release //:swiftlint
+        bazel build --config release ${{ inputs.target }}
       env:
         CC: clang

@@ -22,7 +22,7 @@ jobs:
         uses: ./.github/actions/bazel-linux-build
         with:
           target: "@com_github_jpsim_sourcekitten//:sourcekitten"
-      - name: Generate docs
+      - name: Generate documentation
         run: |
           export PATH="/usr/share/swift/usr/bin:$PATH"
           make docs_linux
@@ -33,7 +33,7 @@ jobs:
             cat docs/undocumented.json
             exit 1
           fi
-      - name: Upload docs
+      - name: Upload documentation
         if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
@@ -51,6 +51,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy docs
+      - name: Deploy documentation
         id: deployment
         uses: actions/deploy-pages@v4

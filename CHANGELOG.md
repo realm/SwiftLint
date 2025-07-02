@@ -59,6 +59,11 @@
   [kaseken](https://github.com/kaseken)
   [#6063](https://github.com/realm/SwiftLint/issues/6063)
 
+* Add `ignore_coding_keys` parameter to `nesting` rule. Setting this to true prevents
+  `CodingKey` enums from violating the rule.  
+  [braker1nine](https://github.com/braker1nine)
+  [#5641](https://github.com/realm/SwiftLint/issues/5641)
+  
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

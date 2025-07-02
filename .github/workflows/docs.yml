@@ -24,7 +24,7 @@ jobs:
       - name: Generate docs
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          export LINUX_SOURCEKIT_LIB_PATH=$HOMEBREW_PREFIX/opt/swift/usr/lib
+          export PATH="/usr/share/swift/usr/bin:$PATH"
           brew install sourcekitten
           make docs_linux
         env:

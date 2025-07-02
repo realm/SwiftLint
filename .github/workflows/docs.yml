@@ -16,11 +16,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - uses: actions/cache@v4
-        with:
-          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
-          restore-keys: ${{ runner.os }}-swift-spm-
-          path: .build
       - name: Build SwiftLint
         uses: ./.github/actions/bazel-linux-build
       - name: Build SourceKitten

@@ -109,9 +109,9 @@ public struct Command: Equatable {
             // Store any text after the comment delimiter as the trailingComment.
             // The addition to currentIndex is to move past the delimiter
             trailingComment = String(
-              scanner
-                .string[scanner.currentIndex...]
-                .dropFirst(Self.commentDelimiter.count)
+                scanner
+                    .string[scanner.currentIndex...]
+                    .dropFirst(Self.commentDelimiter.count)
             )
         }
         let ruleTexts = rawRuleTexts.components(separatedBy: .whitespacesAndNewlines).filter {

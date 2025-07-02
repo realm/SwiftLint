@@ -67,7 +67,7 @@ private extension GenericTypeNameRule {
                     )
                 )
             } else if let caseCheckSeverity = configuration.validatesStartWithLowercase.severity,
-                !String(name[name.startIndex]).isUppercase() {
+                      !String(name[name.startIndex]).isUppercase() {
                 violations.append(
                     ReasonedRuleViolation(
                         position: node.positionAfterSkippingLeadingTrivia,

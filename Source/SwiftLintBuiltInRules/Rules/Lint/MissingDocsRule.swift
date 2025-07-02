@@ -220,9 +220,9 @@ private extension SyntaxProtocol {
                 return false
             }
             let ifConfigDecl = itemList
-                              .parent?.as(IfConfigClauseSyntax.self)?
-                              .parent?.as(IfConfigClauseListSyntax.self)?
-                              .parent?.as(IfConfigDeclSyntax.self)
+                .parent?.as(IfConfigClauseSyntax.self)?
+                .parent?.as(IfConfigClauseListSyntax.self)?
+                .parent?.as(IfConfigDeclSyntax.self)
             if let ifConfigDecl {
                 return ifConfigDecl.hasDocComment
             }
@@ -303,19 +303,19 @@ private extension Stack<AccessControlBehavior> {
     func computeAcl(givenExplicitAcl acl: AccessControlLevel?, evalEffectiveAcl: Bool) -> AccessControlLevel {
         if let parentBehavior = peek() {
             switch parentBehavior {
-               case .local:
-                   .private
-               case .actor, .class, .struct, .enum:
-                   if let acl {
-                       acl < parentBehavior.effectiveAcl || !evalEffectiveAcl ? acl : parentBehavior.effectiveAcl
-                   } else {
-                       parentBehavior.effectiveAcl >= .internal ? .internal : parentBehavior.effectiveAcl
-                   }
-               case .protocol:
-                   parentBehavior.effectiveAcl
-               case .extension:
-                   acl ?? parentBehavior.effectiveAcl
-               }
+            case .local:
+                .private
+            case .actor, .class, .struct, .enum:
+                if let acl {
+                    acl < parentBehavior.effectiveAcl || !evalEffectiveAcl ? acl : parentBehavior.effectiveAcl
+                } else {
+                    parentBehavior.effectiveAcl >= .internal ? .internal : parentBehavior.effectiveAcl
+                }
+            case .protocol:
+                parentBehavior.effectiveAcl
+            case .extension:
+                acl ?? parentBehavior.effectiveAcl
+            }
         } else {
             acl ?? .internal
         }

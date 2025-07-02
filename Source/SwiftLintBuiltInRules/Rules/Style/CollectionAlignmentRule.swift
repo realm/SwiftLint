@@ -26,7 +26,7 @@ private extension CollectionAlignmentRule {
         override func visitPost(_ node: DictionaryElementListSyntax) {
             let locations = node.map { element in
                 let position = configuration.alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
-                element.key.positionAfterSkippingLeadingTrivia
+                    element.key.positionAfterSkippingLeadingTrivia
                 let location = locationConverter.location(for: position)
 
                 let graphemeColumn: Int

@@ -10,9 +10,9 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
 
     init(fromAny configuration: Any, context _: String) throws {
         guard let configurationDict = configuration as? [String: Any],
-            Set(configurationDict.keys) == ["module", "allowed_transitive_imports"],
-            let importedModule = configurationDict["module"] as? String,
-            let transitivelyImportedModules = configurationDict["allowed_transitive_imports"] as? [String]
+              Set(configurationDict.keys) == ["module", "allowed_transitive_imports"],
+              let importedModule = configurationDict["module"] as? String,
+              let transitivelyImportedModules = configurationDict["allowed_transitive_imports"] as? [String]
         else {
             throw Issue.invalidConfiguration(ruleID: Parent.identifier)
         }

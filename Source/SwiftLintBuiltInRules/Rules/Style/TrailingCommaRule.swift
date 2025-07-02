@@ -154,7 +154,7 @@ private extension TrailingCommaRule {
                             .with(\.expression, lastElement.expression.with(\.trailingTrivia, []))
                             .with(\.trailingComma, .commaToken())
                             .with(\.trailingTrivia, lastElement.expression.trailingTrivia)
-                )
+                    )
                 return super.visit(newNode)
             case (_, true), (nil, false):
                 return super.visit(node)

@@ -24,13 +24,13 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
 
         // Process prefix
         if let match = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
-            let range = typeInFileName.nsrangeToIndexRange(match.range) {
+           let range = typeInFileName.nsrangeToIndexRange(match.range) {
             typeInFileName.removeSubrange(range)
         }
 
         // Process suffix
         if let match = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
-            let range = typeInFileName.nsrangeToIndexRange(match.range) {
+           let range = typeInFileName.nsrangeToIndexRange(match.range) {
             typeInFileName.removeSubrange(range)
         }
 
@@ -38,10 +38,10 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
         let allDeclaredTypeNames = TypeNameCollectingVisitor(
             requireFullyQualifiedNames: configuration.requireFullyQualifiedNames
         )
-            .walk(tree: file.syntaxTree, handler: \.names)
-            .map {
-                $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
-            }
+        .walk(tree: file.syntaxTree, handler: \.names)
+        .map {
+            $0.replacingOccurrences(of: ".", with: configuration.nestedTypeSeparator)
+        }
 
         guard allDeclaredTypeNames.isNotEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
             return []

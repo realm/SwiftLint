@@ -47,10 +47,10 @@ public let allRuleIdentifiers = Set(RuleRegistry.shared.list.list.keys)
 public extension Configuration {
     func applyingConfiguration(from example: Example) -> Configuration {
         guard let exampleConfiguration = example.configuration,
-           case let .onlyConfiguration(onlyRules) = self.rulesMode,
-           let firstRule = (onlyRules.first { $0 != "superfluous_disable_command" }),
-           case let configDict: [_: any Sendable] = ["only_rules": onlyRules, firstRule: exampleConfiguration],
-           let typedConfiguration = try? Configuration(dict: configDict) else { return self }
+              case let .onlyConfiguration(onlyRules) = self.rulesMode,
+              let firstRule = (onlyRules.first { $0 != "superfluous_disable_command" }),
+              case let configDict: [_: any Sendable] = ["only_rules": onlyRules, firstRule: exampleConfiguration],
+              let typedConfiguration = try? Configuration(dict: configDict) else { return self }
         return merged(withChild: typedConfiguration, rootDirectory: rootDirectory)
     }
 }
@@ -156,7 +156,7 @@ private func render(violations: [StyleViolation], in contents: String) -> String
     var contents = StringView(contents).lines.map(\.content)
     for violation in violations.sorted(by: { $0.location > $1.location }) {
         guard let line = violation.location.line,
-            let character = violation.location.character else { continue }
+              let character = violation.location.character else { continue }
 
         let message = String(repeating: " ", count: character - 1) + "^ " + [
             "\(violation.severity.rawValue): ",
@@ -267,10 +267,10 @@ private func testCorrection(_ correction: (Example, Example),
 #endif
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
-        case let .onlyConfiguration(onlyRules) = configuration.rulesMode,
-        let ruleToConfigure = (onlyRules.first { $0 != SuperfluousDisableCommandRule.identifier }),
-        case let configDict: [_: any Sendable] = ["only_rules": onlyRules, ruleToConfigure: correctionConfiguration],
-        let typedConfiguration = try? Configuration(dict: configDict) {
+       case let .onlyConfiguration(onlyRules) = configuration.rulesMode,
+       let ruleToConfigure = (onlyRules.first { $0 != SuperfluousDisableCommandRule.identifier }),
+       case let configDict: [_: any Sendable] = ["only_rules": onlyRules, ruleToConfigure: correctionConfiguration],
+       let typedConfiguration = try? Configuration(dict: configDict) {
         config = configuration.merged(withChild: typedConfiguration, rootDirectory: configuration.rootDirectory)
     }
 
@@ -307,11 +307,11 @@ public extension XCTestCase {
         }
 
         guard let config = makeConfig(
-            ruleConfiguration,
-            ruleDescription.identifier,
-            skipDisableCommandTests: skipDisableCommandTests) else {
-                XCTFail("Failed to create configuration", file: (file), line: line)
-                return
+                ruleConfiguration,
+                ruleDescription.identifier,
+                skipDisableCommandTests: skipDisableCommandTests) else {
+            XCTFail("Failed to create configuration", file: (file), line: line)
+            return
         }
 
         let disableCommands: [String]

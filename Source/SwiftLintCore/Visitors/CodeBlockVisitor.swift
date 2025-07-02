@@ -32,7 +32,7 @@ open class CodeBlockVisitor<Configuration: RuleConfiguration>: ViolationsSyntaxV
             return
         }
         if parent.is(FunctionCallExprSyntax.self) || parent.is(MultipleTrailingClosureElementSyntax.self),
-            node.keyPathInParent != \FunctionCallExprSyntax.calledExpression {
+           node.keyPathInParent != \FunctionCallExprSyntax.calledExpression {
             // Trailing closure
             collectViolations(for: node)
         }

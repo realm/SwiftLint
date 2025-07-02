@@ -49,7 +49,7 @@ private extension TrailingWhitespaceRule {
 
                 // Apply `ignoresEmptyLines` configuration
                 if configuration.ignoresEmptyLines &&
-                   line.trimmingCharacters(in: .whitespaces).isEmpty {
+                    line.trimmingCharacters(in: .whitespaces).isEmpty {
                     continue
                 }
 

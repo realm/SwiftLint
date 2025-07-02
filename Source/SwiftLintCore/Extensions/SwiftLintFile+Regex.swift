@@ -159,7 +159,7 @@ extension SwiftLintFile {
             let tokenRange = token.range
             if line.byteRange.contains(token.offset) ||
                 tokenRange.contains(line.byteRange.location) {
-                    results[line.index].append(token)
+                results[line.index].append(token)
             }
             let tokenEnd = tokenRange.upperBound
             let lineEnd = line.byteRange.upperBound

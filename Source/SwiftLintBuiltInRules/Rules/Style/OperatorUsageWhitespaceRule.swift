@@ -68,9 +68,9 @@ struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, SourceKitFreeRul
         let equalityOperatorRegex = regex("\\s+=\\s")
 
         guard let match = equalityOperatorRegex.firstMatch(
-            in: matchedString,
-            options: [],
-            range: matchedString.fullNSRange),
+                in: matchedString,
+                options: [],
+                range: matchedString.fullNSRange),
               match.range == matchedString.fullNSRange
         else {
             return false

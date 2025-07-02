@@ -148,7 +148,7 @@ struct VerticalWhitespaceBetweenCasesRule: Rule {
         let patternRegex = regex(pattern)
         let substring = file.contents.substring(from: range.location, length: range.length)
         guard let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substring.fullNSRange),
-            matchResult.numberOfRanges > 1 else {
+              matchResult.numberOfRanges > 1 else {
             return false
         }
 

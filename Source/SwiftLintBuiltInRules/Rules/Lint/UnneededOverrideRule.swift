@@ -96,7 +96,7 @@ private extension OverridableDecl {
         }
 
         guard let call = extractFunctionCallSyntax(statement.item),
-            let member = call.calledExpression.as(MemberAccessExprSyntax.self),
+              let member = call.calledExpression.as(MemberAccessExprSyntax.self),
               member.base?.is(SuperExprSyntax.self) == true,
               member.declName.baseName.text == name else {
             return false

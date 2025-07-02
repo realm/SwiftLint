@@ -62,8 +62,8 @@ private extension ObjectLiteralRule {
         private func isColorInit(node: FunctionCallExprSyntax, name: String) -> Bool {
             guard inits(forClasses: ["UIColor", "NSColor"]).contains(name),
                   case let argumentsNames = node.arguments.compactMap(\.label?.text),
-                argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"] else {
-                    return false
+                  argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"] else {
+                return false
             }
 
             return node.arguments.allSatisfy(\.expression.canBeExpressedAsColorLiteralParams)

@@ -152,8 +152,8 @@ private extension ExprSyntax {
                 return identifierExpr.isCopyOnWriteType
             }
             if let memberAccesExpr = expr.calledExpression.as(MemberAccessExprSyntax.self),
-                      memberAccesExpr.declName.baseName.text == "init",
-                      let identifierExpr = memberAccesExpr.base?.identifierExpr {
+               memberAccesExpr.declName.baseName.text == "init",
+               let identifierExpr = memberAccesExpr.base?.identifierExpr {
                 return identifierExpr.isCopyOnWriteType
             }
             if expr.calledExpression.isCopyOnWriteType {
@@ -162,7 +162,7 @@ private extension ExprSyntax {
         }
 
         return false
-     }
+    }
 
     var identifierExpr: DeclReferenceExprSyntax? {
         if let identifierExpr = self.as(DeclReferenceExprSyntax.self) {

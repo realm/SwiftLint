@@ -273,8 +273,8 @@ extension Configuration {
             queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
         }
         let excludeLintableFilesBy = options.useExcludingByPrefix
-                    ? Configuration.ExcludeBy.prefix
-                    : .paths(excludedPaths: excludedPaths())
+            ? Configuration.ExcludeBy.prefix
+            : .paths(excludedPaths: excludedPaths())
         return options.paths.flatMap {
             self.lintableFiles(
                 inPath: $0,

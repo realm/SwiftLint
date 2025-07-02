@@ -74,9 +74,9 @@ public final class LinterCache {
 
     internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file),
-            let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file],
-            entry.lastModification == lastModification,
-            entry.swiftVersion == swiftVersion
+              let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file],
+              entry.lastModification == lastModification,
+              entry.swiftVersion == swiftVersion
         else {
             return nil
         }

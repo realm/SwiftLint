@@ -384,7 +384,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         ]
 
         let example = Example(
-             """
+            """
              // swiftlint:disable custom1 custom3
              return 10
              """

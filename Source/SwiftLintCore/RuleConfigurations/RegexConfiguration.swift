@@ -50,8 +50,8 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             executionMode.rawValue,
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
-          let jsonString = String(data: jsonData, encoding: .utf8) {
-              return jsonString
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            return jsonString
         }
         queuedFatalError("Could not serialize regex configuration for cache")
     }

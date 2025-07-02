@@ -92,7 +92,7 @@ public extension SwiftVersion {
                 try? Request.customRequest(request: params).sendIfNotDisabled()
             }
             if let result,
-                let major = result.versionMajor, let minor = result.versionMinor, let patch = result.versionPatch {
+               let major = result.versionMajor, let minor = result.versionMinor, let patch = result.versionPatch {
                 return SwiftVersion(rawValue: "\(major).\(minor).\(patch)")
             }
         }

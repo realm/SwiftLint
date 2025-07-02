@@ -127,7 +127,7 @@ public struct SourceKittenDictionary {
     public var elements: [Self] {
         let elements = value["key.elements"] as? [any SourceKitRepresentable] ?? []
         return elements.compactMap { $0 as? [String: any SourceKitRepresentable] }
-        .map(Self.init)
+            .map(Self.init)
     }
 
     public var entities: [Self] {

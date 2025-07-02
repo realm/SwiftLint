@@ -238,11 +238,11 @@ private extension ExprSyntax {
             return true
         }
         if let expr = self.as(MemberAccessExprSyntax.self),
-                  expr.description.split(separator: ".").allSatisfy(\.startsWithUppercase) {
+           expr.description.split(separator: ".").allSatisfy(\.startsWithUppercase) {
             return true
         }
         if let expr = self.as(GenericSpecializationExprSyntax.self)?.expression.as(DeclReferenceExprSyntax.self),
-                  expr.baseName.text.startsWithUppercase {
+           expr.baseName.text.startsWithUppercase {
             return true
         }
         return false

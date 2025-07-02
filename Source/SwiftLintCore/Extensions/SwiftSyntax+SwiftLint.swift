@@ -66,8 +66,8 @@ public extension ExprSyntax {
             return functionCall
         }
         if let tuple = self.as(TupleExprSyntax.self),
-                  let firstElement = tuple.elements.onlyElement,
-                  let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
+           let firstElement = tuple.elements.onlyElement,
+           let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
             return functionCall
         }
         return nil

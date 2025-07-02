@@ -650,12 +650,30 @@ true
 
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// max_number_of_single_line_parameters: 2</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">//</span>
 <span class="c1">// max_number_of_single_line_parameters: 3</span>
 <span class="c1">//</span>
 
 <span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
          <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span>
          <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// max_number_of_single_line_parameters: 2</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">(</span>
+    <span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+    <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span>
+    <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span>
+<span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
 
 </code></pre>
 <h2 id='triggering-examples' class='heading'>Triggering Examples</h2>
@@ -794,8 +812,15 @@ true
 <span class="c1">// max_number_of_single_line_parameters: 3</span>
 <span class="c1">//</span>
 
-<span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
-          <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
+ <span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+           <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
+
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">//</span>
+<span class="c1">// max_number_of_single_line_parameters: 2</span>
+<span class="c1">//</span>
+
+<span class="kd">func</span> <span class="err">↓</span><span class="nf">foo</span><span class="p">(</span><span class="nv">param1</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">param2</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">param3</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">])</span> <span class="p">{</span> <span class="p">}</span>
 
 </code></pre>
 

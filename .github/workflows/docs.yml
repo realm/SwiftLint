@@ -22,6 +22,11 @@ jobs:
           target: "//:swiftlint @com_github_jpsim_sourcekitten//:sourcekitten"
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: ${{ runner.os }}-swift-spm-
+          path: .build
       - name: Generate documentation
         run: |
           export PATH="/usr/share/swift/usr/bin:$PATH"

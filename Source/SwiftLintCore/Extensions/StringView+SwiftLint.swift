@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public extension StringView {
@@ -11,5 +12,18 @@ public extension StringView {
             return nil
         }
         return lines[Int(line) - 1].byteRange.location + ByteCount(bytePosition - 1)
+    }
+
+    /// Matches a pattern in the string view and returns ranges for the specified capture group.
+    /// This method does not use SourceKit and is suitable for SwiftSyntax mode.
+    /// - Parameters:
+    ///   - pattern: The regular expression pattern to match.
+    ///   - captureGroup: The capture group index to extract (0 for the full match).
+    /// - Returns: An array of NSRange objects for the matched capture groups.
+    func match(pattern: String, captureGroup: Int = 0) -> [NSRange] {
+        regex(pattern).matches(in: self).compactMap { match in
+            let range = match.range(at: captureGroup)
+            return range.location != NSNotFound ? range : nil
+        }
     }
 }

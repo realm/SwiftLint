@@ -184,7 +184,7 @@ private extension StatementPositionRule {
         let validator = Self.uncuddledMatchValidator(contents: file.stringView)
         let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
         let validMatches = matches.compactMap(validator).filter(filterRanges)
-                  .filter { file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty }
+            .filter { file.ruleEnabled(violatingRanges: [$0.range], for: self).isNotEmpty }
         if validMatches.isEmpty {
             return 0
         }
@@ -195,7 +195,7 @@ private extension StatementPositionRule {
             var whitespace = contents.bridge().substring(with: range1)
             let newLines: String
             if newlineRange.location != NSNotFound {
-               newLines = contents.bridge().substring(with: newlineRange)
+                newLines = contents.bridge().substring(with: newlineRange)
             } else {
                 newLines = ""
             }

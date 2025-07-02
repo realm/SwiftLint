@@ -105,12 +105,12 @@ private extension DeploymentTargetRule {
                             violationType: AvailabilityType) -> String? {
             guard let platform = DeploymentTargetConfiguration.Platform(rawValue: platform.text),
                   let minVersion = platformToConfiguredMinVersion[platform.rawValue] else {
-                    return nil
+                return nil
             }
 
             guard let version = try? Version(platform: platform, value: versionString),
-                version <= minVersion else {
-                    return nil
+                  version <= minVersion else {
+                return nil
             }
 
             return """

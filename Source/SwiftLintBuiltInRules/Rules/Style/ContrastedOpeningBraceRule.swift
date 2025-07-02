@@ -80,7 +80,7 @@ private extension BracedSyntax {
         }
         if let closure = `as`(ClosureExprSyntax.self),
            closure.keyPathInParent == \FunctionCallExprSyntax.trailingClosure {
-           return closure.leftBrace.previousIndentationDecidingToken
+            return closure.leftBrace.previousIndentationDecidingToken
         }
         if let closureLabel = parent?.as(MultipleTrailingClosureElementSyntax.self)?.label {
             return closureLabel.previousIndentationDecidingToken

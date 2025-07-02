@@ -55,8 +55,8 @@ public extension String {
                                limitedBy: utf16.endIndex) ?? utf16.endIndex
 
         guard let fromIndex = Index(from16, within: self),
-            let toIndex = Index(to16, within: self) else {
-                return nil
+              let toIndex = Index(to16, within: self) else {
+            return nil
         }
 
         return fromIndex..<toIndex

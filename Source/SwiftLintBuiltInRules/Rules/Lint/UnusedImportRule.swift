@@ -179,7 +179,7 @@ private extension SwiftLintFile {
             if nextIsModuleImport {
                 nextIsModuleImport = false
                 if let importedModule = cursorInfo.moduleName,
-                    cursorInfo.kind == "source.lang.swift.ref.module" {
+                   cursorInfo.kind == "source.lang.swift.ref.module" {
                     imports.insert(importedModule)
                     continue
                 }
@@ -207,7 +207,7 @@ private extension SwiftLintFile {
     // Operators are omitted in the editor.open request and thus have to be looked up by the indexsource request
     func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
         guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
-            .map(SourceKittenDictionary.init) else {
+                .map(SourceKittenDictionary.init) else {
             Issue.indexingError(path: path, ruleID: UnusedImportRule.identifier).print()
             return []
         }
@@ -230,7 +230,7 @@ private extension SwiftLintFile {
                     file: path!, offset: ByteCount(offset), arguments: arguments
                 )
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
-                    .map(SourceKittenDictionary.init) else {
+                        .map(SourceKittenDictionary.init) else {
                     Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.identifier).print()
                     continue
                 }

@@ -119,10 +119,10 @@ private extension StringView {
     func recursiveByteOffsets(_ dict: [String: Any]) -> [ByteCount] {
         let cur: [ByteCount]
         if let line = dict["key.line"] as? Int64,
-            let column = dict["key.column"] as? Int64,
-            let kindString = dict["key.kind"] as? String,
-            kindsToFind.contains(kindString),
-            let offset = byteOffset(forLine: line, bytePosition: column) {
+           let column = dict["key.column"] as? Int64,
+           let kindString = dict["key.kind"] as? String,
+           kindsToFind.contains(kindString),
+           let offset = byteOffset(forLine: line, bytePosition: column) {
             cur = [offset]
         } else {
             cur = []

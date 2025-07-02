@@ -220,17 +220,17 @@ extension LiteralExpressionEndIndentationRule {
 
         let contents = file.stringView
         guard elements.isNotEmpty,
-            let offset = dictionary.offset,
-            let length = dictionary.length,
-            let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
-            let firstParamOffset = elements[0].offset,
-            let (firstParamLine, _) = contents.lineAndCharacter(forByteOffset: firstParamOffset),
-            startLine != firstParamLine,
-            let lastParamOffset = elements.last?.offset,
-            let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: lastParamOffset),
-            case let endOffset = offset + length - 1,
-            let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
-            lastParamLine != endLine
+              let offset = dictionary.offset,
+              let length = dictionary.length,
+              let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
+              let firstParamOffset = elements[0].offset,
+              let (firstParamLine, _) = contents.lineAndCharacter(forByteOffset: firstParamOffset),
+              startLine != firstParamLine,
+              let lastParamOffset = elements.last?.offset,
+              let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: lastParamOffset),
+              case let endOffset = offset + length - 1,
+              let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
+              lastParamLine != endLine
         else {
             return nil
         }
@@ -239,8 +239,8 @@ extension LiteralExpressionEndIndentationRule {
         let regex = Self.notWhitespace
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
-            case let expected = match.location - range.location,
-            expected != actual
+              case let expected = match.location - range.location,
+              expected != actual
         else {
             return nil
         }

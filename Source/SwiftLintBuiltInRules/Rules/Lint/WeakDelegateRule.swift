@@ -74,8 +74,8 @@ private extension WeakDelegateRule {
         override func visitPost(_ node: VariableDeclSyntax) {
             guard node.hasDelegateSuffix,
                   node.weakOrUnownedModifier == nil,
-                 !node.hasComputedBody,
-                 !node.containsIgnoredAttribute,
+                  !node.hasComputedBody,
+                  !node.containsIgnoredAttribute,
                   let parent = node.parent,
                   Syntax(parent).enclosingClass() != nil else {
                 return

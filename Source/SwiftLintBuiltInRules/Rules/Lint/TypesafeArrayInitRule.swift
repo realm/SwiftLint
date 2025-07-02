@@ -52,14 +52,14 @@ struct TypesafeArrayInitRule: AnalyzerRule {
 
     private static let parentRule = ArrayInitRule()
     private static let mapTypePatterns = [
-            regex("""
-                \\Q<Self, T where Self : \\E(?:Sequence|Collection)> \
-                \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
-                """),
-            regex("""
-                \\Q<Self, T, E where Self : \\E(?:Sequence|Collection), \
-                \\QE : Error> (Self) -> ((Self.Element) throws(E) -> T) throws(E) -> [T]\\E
-                """),
+        regex("""
+            \\Q<Self, T where Self : \\E(?:Sequence|Collection)> \
+            \\Q(Self) -> ((Self.Element) throws -> T) throws -> [T]\\E
+            """),
+        regex("""
+            \\Q<Self, T, E where Self : \\E(?:Sequence|Collection), \
+            \\QE : Error> (Self) -> ((Self.Element) throws(E) -> T) throws(E) -> [T]\\E
+            """),
     ]
 
     func validate(file: SwiftLintFile, compilerArguments: [String]) -> [StyleViolation] {

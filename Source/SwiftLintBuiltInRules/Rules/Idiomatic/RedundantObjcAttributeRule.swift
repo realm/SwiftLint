@@ -63,7 +63,7 @@ private extension Syntax {
             return true
         }
         if let variableDecl = self.as(VariableDeclSyntax.self),
-                  variableDecl.bindings.allSatisfy({ $0.accessorBlock == nil }) {
+           variableDecl.bindings.allSatisfy({ $0.accessorBlock == nil }) {
             return true
         }
         return false
@@ -93,12 +93,12 @@ private extension AttributeListSyntax {
             return nil
         }
         if parent?.isFunctionOrStoredProperty == true,
-                  let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
-                  parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
+           let parentClassDecl = parent?.parent?.parent?.parent?.parent?.as(ClassDeclSyntax.self),
+           parentClassDecl.attributes.contains(attributeNamed: "objcMembers") {
             return parent?.functionOrVariableModifiers?.containsPrivateOrFileprivate() == true ? nil : objcAttribute
         }
         if let parentExtensionDecl = parent?.parent?.parent?.parent?.parent?.as(ExtensionDeclSyntax.self),
-                  parentExtensionDecl.attributes.objCAttribute != nil {
+           parentExtensionDecl.attributes.objCAttribute != nil {
             return objcAttribute
         }
         return nil
@@ -111,7 +111,7 @@ extension RedundantObjcAttributeRule {
         let nsCharSet = CharacterSet.whitespacesAndNewlines.bridge()
         let nsContent = file.contents.bridge()
         while nsCharSet
-            .characterIsMember(nsContent.character(at: violationRange.upperBound + whitespaceAndNewlineOffset)) {
+                .characterIsMember(nsContent.character(at: violationRange.upperBound + whitespaceAndNewlineOffset)) {
             whitespaceAndNewlineOffset += 1
         }
 

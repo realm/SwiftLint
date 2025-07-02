@@ -28,7 +28,7 @@ public protocol Rule {
     /// Create a description of how this rule has been configured to run.
     ///
     /// - parameter exclusiveOptions: A set of options that should be excluded from the description.
-    /// 
+    ///
     /// - returns: A description of the rule's configuration.
     func createConfigurationDescription(exclusiveOptions: Set<String>) -> RuleConfigurationDescription
 
@@ -83,17 +83,17 @@ public protocol Rule {
     ///   - ruleID: The name of a rule as used in a disable command.
     ///
     /// - Returns: A boolean value indicating whether the violation can be disabled by the given ID.
-   func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool
+    func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool
 
-   /// Checks if a the rule is enabled in a given region. A specific rule ID can be provided in case a rule supports
-   /// more than one identifier.
-   ///
-   /// - Parameters:
-   ///   - region: The region to check.
-   ///   - ruleID: Rule identifier deviating from the default rule's name.
-   ///
-   /// - Returns: A boolean value indicating whether the rule is enabled in the given region.
-   func isEnabled(in region: Region, for ruleID: String) -> Bool
+    /// Checks if a the rule is enabled in a given region. A specific rule ID can be provided in case a rule supports
+    /// more than one identifier.
+    ///
+    /// - Parameters:
+    ///   - region: The region to check.
+    ///   - ruleID: Rule identifier deviating from the default rule's name.
+    ///
+    /// - Returns: A boolean value indicating whether the rule is enabled in the given region.
+    func isEnabled(in region: Region, for ruleID: String) -> Bool
 }
 
 public extension Rule {

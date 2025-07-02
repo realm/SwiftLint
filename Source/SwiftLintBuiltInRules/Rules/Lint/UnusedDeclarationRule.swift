@@ -161,9 +161,9 @@ private extension SwiftLintFile {
 
         // Skip CodingKeys as they are used for Codable generation
         if kind == .enum,
-            indexEntity.name == "CodingKeys",
-            case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $1.usr }),
-            allRelatedUSRs.contains("s:s9CodingKeyP") {
+           indexEntity.name == "CodingKeys",
+           case let allRelatedUSRs = indexEntity.traverseEntitiesDepthFirst(traverseBlock: { $1.usr }),
+           allRelatedUSRs.contains("s:s9CodingKeyP") {
             return nil
         }
 
@@ -263,8 +263,8 @@ private extension SourceKittenDictionary {
 
     func propertyAtOffset<T>(_ offset: ByteCount, property: KeyPath<Self, T?>) -> T? {
         if let nameOffset,
-            nameOffset == offset,
-            let field = self[keyPath: property] {
+           nameOffset == offset,
+           let field = self[keyPath: property] {
             return field
         }
         for child in substructure {

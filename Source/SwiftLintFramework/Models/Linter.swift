@@ -373,7 +373,7 @@ public struct CollectedLinter {
     private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
         let start = Date()
         guard let cache, let file = file.path,
-            let cachedViolations = cache.violations(forFile: file, configuration: configuration) else {
+              let cachedViolations = cache.violations(forFile: file, configuration: configuration) else {
             return nil
         }
 

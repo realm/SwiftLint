@@ -131,7 +131,7 @@ package struct LintOrAnalyzeCommand {
                                  Could not change working directory to '\(workingDirectory)'. \
                                  Make sure it exists and is accessible.
                                  """
-                    )
+                )
             }
         }
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
@@ -236,9 +236,8 @@ package struct LintOrAnalyzeCommand {
                 return try Baseline(fromPath: baselinePath)
             } catch {
                 Issue.baselineNotReadable(path: baselinePath).print()
-                if
-                    (error as? CocoaError)?.code != CocoaError.fileReadNoSuchFile ||
-                    options.writeBaseline != options.baseline {
+                if (error as? CocoaError)?.code != CocoaError.fileReadNoSuchFile ||
+                        options.writeBaseline != options.baseline {
                     throw error
                 }
             }

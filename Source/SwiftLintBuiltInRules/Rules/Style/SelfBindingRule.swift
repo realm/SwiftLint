@@ -91,8 +91,8 @@ private extension SelfBindingRule {
                 return super.visit(node.with(\.pattern, newPattern))
             }
             if node.initializer == nil,
-                      identifierPattern.identifier.text == "self",
-                      configuration.bindIdentifier != "self" {
+               identifierPattern.identifier.text == "self",
+               configuration.bindIdentifier != "self" {
                 numberOfCorrections += 1
                 let newPattern = PatternSyntax(
                     identifierPattern

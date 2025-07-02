@@ -65,8 +65,8 @@ private extension PrivateSwiftUIStatePropertyRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             guard node.parent?.is(MemberBlockItemSyntax.self) == true,
-                swiftUITypeScopes.peek() ?? false,
-                node.containsSwiftUIStateAccessLevelViolation
+                  swiftUITypeScopes.peek() ?? false,
+                  node.containsSwiftUIStateAccessLevelViolation
             else {
                 return
             }
@@ -102,8 +102,8 @@ private extension PrivateSwiftUIStatePropertyRule {
 
         override func visitPost(_ node: Syntax) {
             if node.is(ClassDeclSyntax.self) ||
-               node.is(StructDeclSyntax.self) ||
-               node.is(ActorDeclSyntax.self) {
+                node.is(StructDeclSyntax.self) ||
+                node.is(ActorDeclSyntax.self) {
                 swiftUITypeScopes.pop()
             }
         }

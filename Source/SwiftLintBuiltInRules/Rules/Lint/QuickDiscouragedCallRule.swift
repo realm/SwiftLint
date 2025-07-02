@@ -44,12 +44,12 @@ struct QuickDiscouragedCallRule: OptInRule {
                           kind: SwiftExpressionKind,
                           dictionary: SourceKittenDictionary) -> [StyleViolation] {
         // is it a call to a restricted method?
-        guard
-            kind == .call,
-            let name = dictionary.name,
-            let kindName = QuickCallKind(rawValue: name),
-            QuickCallKind.restrictiveKinds.contains(kindName)
-            else { return [] }
+        guard kind == .call,
+              let name = dictionary.name,
+              let kindName = QuickCallKind(rawValue: name),
+              QuickCallKind.restrictiveKinds.contains(kindName) else {
+            return []
+        }
 
         return violationOffsets(in: dictionary.enclosedArguments).map {
             StyleViolation(ruleDescription: Self.description,
@@ -73,29 +73,30 @@ struct QuickDiscouragedCallRule: OptInRule {
     }
 
     private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [ByteCount] {
-        guard
-            dictionary.kind != nil,
-            let offset = dictionary.offset
-            else { return [] }
+        guard dictionary.kind != nil,
+              let offset = dictionary.offset else {
+            return []
+        }
 
         if dictionary.expressionKind == .call,
-            let name = dictionary.name, QuickCallKind(rawValue: name) == nil {
+           let name = dictionary.name, QuickCallKind(rawValue: name) == nil {
             return [offset]
         }
 
-        guard dictionary.expressionKind != .call else { return [] }
+        guard dictionary.expressionKind != .call else {
+            return []
+        }
 
         return dictionary.substructure.compactMap(toViolationOffset)
     }
 
     private func toViolationOffset(dictionary: SourceKittenDictionary) -> ByteCount? {
-        guard
-            let name = dictionary.name,
-            let offset = dictionary.offset,
-            dictionary.expressionKind == .call,
-            QuickCallKind(rawValue: name) == nil
-            else { return nil }
-
+        guard let name = dictionary.name,
+              let offset = dictionary.offset,
+              dictionary.expressionKind == .call,
+              QuickCallKind(rawValue: name) == nil else {
+            return nil
+        }
         return offset
     }
 }

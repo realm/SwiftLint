@@ -89,9 +89,9 @@ private extension YodaConditionRule {
                 let lhs = children[lhsIdx]
                 if lhs.isLiteral,
                    children.startIndex == lhsIdx || children[children.index(before: lhsIdx)].isLogicalBinaryOperator {
-                        // Literal is at the very beginning of the expression or the previous token is an operator with
-                        // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
-                        violations.append(lhs.positionAfterSkippingLeadingTrivia)
+                    // Literal is at the very beginning of the expression or the previous token is an operator with
+                    // weaker binding. Thus, the literal is unique on the left-hand side of the comparison operator.
+                    violations.append(lhs.positionAfterSkippingLeadingTrivia)
                 }
             }
         }

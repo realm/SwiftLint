@@ -103,7 +103,7 @@ private extension ShorthandArgumentRule {
                 if complexArguments.contains(argument) {
                     nil
                 } else if locationConverter.location(for: argument.position).line
-                          <= startLine + configuration.allowUntilLineAfterOpeningBrace {
+                            <= startLine + configuration.allowUntilLineAfterOpeningBrace {
                     nil
                 } else {
                     ReasonedRuleViolation(

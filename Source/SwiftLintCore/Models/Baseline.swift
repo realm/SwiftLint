@@ -105,10 +105,9 @@ public struct Baseline: Equatable {
         var filteredViolations: Set<BaselineViolation> = []
 
         for (ruleIdentifier, ruleViolations) in violationsByRuleIdentifier {
-            guard
-                let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier],
-                    baselineViolations.isNotEmpty else {
-                filteredViolations.formUnion(ruleViolations)
+            guard let baselineViolations = baselineViolationsByRuleIdentifier[ruleIdentifier],
+                  baselineViolations.isNotEmpty else {
+                  filteredViolations.formUnion(ruleViolations)
                 continue
             }
 

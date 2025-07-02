@@ -243,9 +243,9 @@ private extension FunctionCallExprSyntax {
 
     var enumeratedPosition: AbsolutePosition? {
         if let memberAccess = calledExpression.as(MemberAccessExprSyntax.self),
-              memberAccess.base != nil,
-              memberAccess.declName.baseName.text == "enumerated",
-              hasNoArguments {
+           memberAccess.base != nil,
+           memberAccess.declName.baseName.text == "enumerated",
+           hasNoArguments {
             return memberAccess.declName.positionAfterSkippingLeadingTrivia
         }
 

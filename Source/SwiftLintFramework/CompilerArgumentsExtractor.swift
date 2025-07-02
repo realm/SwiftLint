@@ -66,8 +66,8 @@ extension Array where Element == String {
             let responseFile = String(arg.dropFirst())
             return (try? String(contentsOf: URL(fileURLWithPath: responseFile, isDirectory: false))).flatMap {
                 $0.trimmingCharacters(in: .newlines)
-                  .components(separatedBy: "\n")
-                  .expandingResponseFiles
+                    .components(separatedBy: "\n")
+                    .expandingResponseFiles
             } ?? [arg]
         }
     }

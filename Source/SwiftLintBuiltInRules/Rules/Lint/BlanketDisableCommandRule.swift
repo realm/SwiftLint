@@ -61,7 +61,7 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
             """),
             Example("// swiftlint:disable all"),
         ].skipWrappingInCommentTests().skipDisableCommandTests()
-     )
+    )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         var violations: [StyleViolation] = []

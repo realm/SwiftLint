@@ -234,9 +234,9 @@ private extension CodeBlockItemSyntax {
 }
 
 private extension FunctionSignatureSyntax {
-     var allowsImplicitReturns: Bool {
-         returnClause?.allowsImplicitReturns ?? false
-     }
+    var allowsImplicitReturns: Bool {
+        returnClause?.allowsImplicitReturns ?? false
+    }
 }
 
 private extension SubscriptDeclSyntax {

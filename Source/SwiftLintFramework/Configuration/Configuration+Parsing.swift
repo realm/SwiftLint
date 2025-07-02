@@ -171,8 +171,8 @@ extension Configuration {
     ) {
         for key in dict.keys where !validGlobalKeys.contains(key) {
             guard let identifier = ruleList.identifier(for: key),
-                let ruleType = ruleList.list[identifier] else {
-                    continue
+                  let ruleType = ruleList.list[identifier] else {
+                continue
             }
 
             switch rulesMode {

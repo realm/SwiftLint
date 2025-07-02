@@ -99,7 +99,7 @@ struct MultilineParametersBracketsRule: OptInRule {
 
         // find violations at current level
         if let kind = substructure.declarationKind,
-            SwiftDeclarationKind.functionKinds.contains(kind) {
+           SwiftDeclarationKind.functionKinds.contains(kind) {
             guard
                 let nameOffset = substructure.nameOffset,
                 let nameLength = substructure.nameLength,

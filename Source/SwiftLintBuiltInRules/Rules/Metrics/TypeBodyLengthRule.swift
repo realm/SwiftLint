@@ -9,7 +9,7 @@ private func wrapExample(
     file: StaticString = #filePath,
     line: UInt = #line) -> Example {
     Example("\(prefix)\(type) Abc {\n" +
-                   repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
+                repeatElement(template, count: count).joined() + "\(add)}\n", file: file, line: line)
 }
 
 @SwiftSyntaxRule
@@ -30,7 +30,7 @@ struct TypeBodyLengthRule: Rule {
             ]
         }),
         triggeringExamples: ["class", "struct", "enum", "actor"].map({ type in
-             wrapExample(prefix: "↓", type, "let abc = 0\n", 251)
+            wrapExample(prefix: "↓", type, "let abc = 0\n", 251)
         })
     )
 }

@@ -3,7 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 
 struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
-                                    SourceKitFreeRule {
+                             SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

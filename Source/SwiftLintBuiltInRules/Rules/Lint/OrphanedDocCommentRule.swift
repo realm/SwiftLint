@@ -99,7 +99,7 @@ private func isOrphanedDocComment(
     while let (_, piece) = iterator.next() {
         switch piece {
         case .docLineComment, .docBlockComment,
-                .carriageReturns, .carriageReturnLineFeeds, .newlines, .spaces:
+             .carriageReturns, .carriageReturnLineFeeds, .newlines, .spaces:
             break
 
         case .lineComment, .blockComment:

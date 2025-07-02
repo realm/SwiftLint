@@ -161,8 +161,8 @@ private struct AccessibilityButtonTraitDeterminator {
 
             // Stop if we reach a new View declaration or similar boundary
             if currentSyntaxNode.is(StructDeclSyntax.self) ||
-               currentSyntaxNode.is(ClassDeclSyntax.self) ||
-               currentSyntaxNode.is(EnumDeclSyntax.self) {
+                currentSyntaxNode.is(ClassDeclSyntax.self) ||
+                currentSyntaxNode.is(EnumDeclSyntax.self) {
                 break
             }
         }

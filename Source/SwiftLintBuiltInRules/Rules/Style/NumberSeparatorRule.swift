@@ -104,15 +104,15 @@ private extension NumberSeparatorValidator {
     func violation(token: TokenSyntax) -> NumberSeparatorViolation? {
         let content = token.text
         guard isDecimal(number: content),
-            !isInValidRanges(number: content)
+              !isInValidRanges(number: content)
         else {
             return nil
         }
 
         let exponential = CharacterSet(charactersIn: "eE")
         guard case let exponentialComponents = content.components(separatedBy: exponential),
-            let nonExponential = exponentialComponents.first else {
-                return nil
+              let nonExponential = exponentialComponents.first else {
+            return nil
         }
 
         let components = nonExponential.components(separatedBy: ".")
@@ -124,8 +124,8 @@ private extension NumberSeparatorValidator {
         }
 
         guard let integerSubstring = components.first,
-            case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
-            !valid || !validFraction
+              case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
+              !valid || !validFraction
         else {
             return nil
         }

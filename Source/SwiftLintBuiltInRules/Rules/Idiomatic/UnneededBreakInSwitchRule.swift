@@ -50,9 +50,9 @@ struct UnneededBreakInSwitchRule: Rule {
         ],
         corrections: [
             embedInSwitch("something()\n    ↓break")
-            : embedInSwitch("something()"),
+                : embedInSwitch("something()"),
             embedInSwitch("something()\n    ↓break // line comment")
-            : embedInSwitch("something()\n     // line comment"),
+                : embedInSwitch("something()\n     // line comment"),
             embedInSwitch("""
                 something()
                 ↓break
@@ -60,14 +60,14 @@ struct UnneededBreakInSwitchRule: Rule {
                 block comment
                 */
                 """)
-            : embedInSwitch("""
+                : embedInSwitch("""
                 something()
                 /*
                 block comment
                 */
                 """),
             embedInSwitch("something()\n    ↓break /// doc line comment")
-            : embedInSwitch("something()\n     /// doc line comment"),
+                : embedInSwitch("something()\n     /// doc line comment"),
             embedInSwitch("""
                 something()
                 ↓break
@@ -75,16 +75,16 @@ struct UnneededBreakInSwitchRule: Rule {
                 /// doc block comment
                 ///
                 """)
-            : embedInSwitch("""
+                : embedInSwitch("""
                 something()
                 ///
                 /// doc block comment
                 ///
                 """),
             embedInSwitch("something()\n    ↓break", case: "default")
-            : embedInSwitch("something()", case: "default"),
+                : embedInSwitch("something()", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition")
-            : embedInSwitch("something()", case: "case .foo, .foo2 where condition"),
+                : embedInSwitch("something()", case: "case .foo, .foo2 where condition"),
         ]
     )
 }

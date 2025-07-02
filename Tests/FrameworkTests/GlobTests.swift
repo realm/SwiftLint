@@ -38,7 +38,7 @@ final class GlobTests: SwiftLintTestCase {
 
     func testNoMatchOneCharacterInBracket() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[ab].swift"))
-         XCTAssertTrue(files.isEmpty)
+        XCTAssertTrue(files.isEmpty)
     }
 
     func testMatchesCharacterInRange() {

@@ -131,7 +131,7 @@ private extension ClosureSignatureSyntax {
             return list.onlyElement?.name.text
         }
         if let clause = parameterClause?.as(ClosureParameterClauseSyntax.self), clause.parameters.count == 1,
-                  clause.parameters.first?.secondName == nil {
+           clause.parameters.first?.secondName == nil {
             return clause.parameters.first?.firstName.text
         }
         return nil

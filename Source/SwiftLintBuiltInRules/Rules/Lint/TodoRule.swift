@@ -57,10 +57,10 @@ private extension TriviaPiece {
                     for todoKeywords: [TodoConfiguration.TodoKeyword]) -> [ReasonedRuleViolation] {
         switch self {
         case
-                .blockComment(let comment),
-                .lineComment(let comment),
-                .docBlockComment(let comment),
-                .docLineComment(let comment):
+            .blockComment(let comment),
+            .lineComment(let comment),
+            .docBlockComment(let comment),
+            .docLineComment(let comment):
 
             // Construct a regex string considering only keywords.
             let searchKeywords = todoKeywords.map(\.rawValue).joined(separator: "|")

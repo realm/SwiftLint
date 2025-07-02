@@ -374,7 +374,7 @@ internal struct AccessibilityLabelForImageRuleExamples {
             }
         }
         """),
-        // MARK: - SwiftSyntax Migration Detection Improvements  
+        // MARK: - SwiftSyntax Migration Detection Improvements
         // These violations would have been missed by the SourceKit implementation
         // but are now correctly detected by SwiftSyntax
         Example("""

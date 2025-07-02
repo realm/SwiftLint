@@ -139,7 +139,7 @@ private extension FunctionCallExprSyntax {
                 let modifierName = memberAccess.declName.baseName.text
 
                 if funcCall.isDirectAccessibilityModifier(modifierName) ||
-                   funcCall.isContainerExemptingModifier(modifierName) {
+                    funcCall.isContainerExemptingModifier(modifierName) {
                     return true
                 }
             }
@@ -187,7 +187,7 @@ private extension FunctionCallExprSyntax {
             let modifierName = memberAccess.declName.baseName.text
 
             if funcCall.isDirectAccessibilityModifier(modifierName) ||
-               funcCall.isContainerExemptingModifier(modifierName) {
+                funcCall.isContainerExemptingModifier(modifierName) {
                 return true
             }
 

@@ -142,7 +142,7 @@ struct LintableFilesVisitor {
 
     private static func loadLogCompilerInvocations(_ path: String) -> [[String]]? {
         if let data = FileManager.default.contents(atPath: path),
-            let logContents = String(data: data, encoding: .utf8) {
+           let logContents = String(data: data, encoding: .utf8) {
             if logContents.isEmpty {
                 return nil
             }
@@ -164,7 +164,7 @@ struct LintableFilesVisitor {
         }
 
         guard let object = try? JSONSerialization.jsonObject(with: fileContents),
-            let compileDB = object as? [[String: Any]] else {
+              let compileDB = object as? [[String: Any]] else {
             throw CompileCommandsLoadError.malformedCommands(path)
         }
 

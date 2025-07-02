@@ -42,7 +42,7 @@ private extension CompilerProtocolInitRule {
             let argumentsNames = arguments.map(\.text)
             for compilerProtocol in ExpressibleByCompiler.allProtocols {
                 guard compilerProtocol.initCallNames.contains(name),
-                    compilerProtocol.match(arguments: argumentsNames) else {
+                      compilerProtocol.match(arguments: argumentsNames) else {
                     continue
                 }
 

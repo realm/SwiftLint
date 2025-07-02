@@ -40,9 +40,9 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,
-            let firstLineRange = file.lines.first?.range,
-            file.ruleEnabled(violatingRanges: [firstLineRange], for: self).isNotEmpty else {
-                return 0
+              let firstLineRange = file.lines.first?.range,
+              file.ruleEnabled(violatingRanges: [firstLineRange], for: self).isNotEmpty else {
+            return 0
         }
 
         let indexEnd = file.contents.index(

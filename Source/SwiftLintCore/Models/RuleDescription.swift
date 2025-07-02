@@ -11,7 +11,7 @@ public struct RuleDescription: Equatable, Sendable {
     /// explanation of the rule's purpose and rationale.
     public let description: String
 
-    /// A longer explanation of the rule's purpose and rationale. Typically defined as a multiline string, long text 
+    /// A longer explanation of the rule's purpose and rationale. Typically defined as a multiline string, long text
     /// lines should be wrapped. Markdown formatting is supported. Multiline code blocks will be formatted as
     /// `swift` code unless otherwise specified, and will automatically be indented by four spaces when printed
     /// to the console.

@@ -121,7 +121,7 @@ private extension AsyncWithoutAwaitRule {
 
         override func visitPost(_ node: VariableDeclSyntax) {
             if node.bindingSpecifier.tokenKind == .keyword(.let),
-                node.modifiers.contains(keyword: .async) {
+               node.modifiers.contains(keyword: .async) {
                 functionScopes.modifyLast {
                     $0.containsAwait = true
                 }

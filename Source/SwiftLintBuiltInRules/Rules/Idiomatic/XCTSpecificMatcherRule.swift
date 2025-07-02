@@ -25,7 +25,7 @@ private extension XCTSpecificMatcherRule {
                     reason: "Prefer the specific matcher '\(suggestion)' instead"
                 ))
             } else if configuration.matchers.contains(.oneArgumentAsserts),
-               let suggestion = OneArgXCTAssert.violations(in: node) {
+                      let suggestion = OneArgXCTAssert.violations(in: node) {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: "Prefer the specific matcher '\(suggestion)' instead"

@@ -84,8 +84,9 @@ struct SortedImportsRule: CorrectableRule, OptInRule {
         let contents = file.stringView
         let lines = file.lines
         let importLines: [Line] = importRanges.compactMap { range in
-            guard let line = contents.lineAndCharacter(forCharacterOffset: range.location)?.line
-                else { return nil }
+            guard let line = contents.lineAndCharacter(forCharacterOffset: range.location)?.line else {
+                return nil
+            }
             return lines[line - 1]
         }
 

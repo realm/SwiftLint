@@ -29,7 +29,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ActorDeclSyntax) {
             if configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword) {
+               hasMultilinePredecessors(node.memberBlock, keyword: node.actorKeyword) {
                 return
             }
 
@@ -38,7 +38,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ClassDeclSyntax) {
             if configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword) {
+               hasMultilinePredecessors(node.memberBlock, keyword: node.classKeyword) {
                 return
             }
 
@@ -47,7 +47,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: EnumDeclSyntax) {
             if configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword) {
+               hasMultilinePredecessors(node.memberBlock, keyword: node.enumKeyword) {
                 return
             }
 
@@ -56,7 +56,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             if configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword) {
+               hasMultilinePredecessors(node.memberBlock, keyword: node.extensionKeyword) {
                 return
             }
 
@@ -65,7 +65,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
             if configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword) {
+               hasMultilinePredecessors(node.memberBlock, keyword: node.protocolKeyword) {
                 return
             }
 
@@ -74,7 +74,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: StructDeclSyntax) {
             if configuration.ignoreMultilineTypeHeaders,
-                hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword) {
+               hasMultilinePredecessors(node.memberBlock, keyword: node.structKeyword) {
                 return
             }
 
@@ -85,7 +85,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: ForStmtSyntax) {
             if configuration.ignoreMultilineStatementConditions,
-                hasMultilinePredecessors(node.body, keyword: node.forKeyword) {
+               hasMultilinePredecessors(node.body, keyword: node.forKeyword) {
                 return
             }
 
@@ -94,7 +94,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: IfExprSyntax) {
             if configuration.ignoreMultilineStatementConditions,
-                hasMultilinePredecessors(node.body, keyword: node.ifKeyword) {
+               hasMultilinePredecessors(node.body, keyword: node.ifKeyword) {
                 return
             }
 
@@ -103,7 +103,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: WhileStmtSyntax) {
             if configuration.ignoreMultilineStatementConditions,
-                hasMultilinePredecessors(node.body, keyword: node.whileKeyword) {
+               hasMultilinePredecessors(node.body, keyword: node.whileKeyword) {
                 return
             }
 
@@ -114,8 +114,8 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if let body = node.body,
-                configuration.shouldIgnoreMultilineFunctionSignatures,
-                hasMultilinePredecessors(body, keyword: node.funcKeyword) {
+               configuration.shouldIgnoreMultilineFunctionSignatures,
+               hasMultilinePredecessors(body, keyword: node.funcKeyword) {
                 return
             }
 
@@ -124,8 +124,8 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: InitializerDeclSyntax) {
             if let body = node.body,
-                configuration.shouldIgnoreMultilineFunctionSignatures,
-                hasMultilinePredecessors(body, keyword: node.initKeyword) {
+               configuration.shouldIgnoreMultilineFunctionSignatures,
+               hasMultilinePredecessors(body, keyword: node.initKeyword) {
                 return
             }
 

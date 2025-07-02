@@ -108,10 +108,9 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
         let ranges = callRanges(file: file, kind: kind, dictionary: dictionary)
 
         let calls = ranges.compactMap { range -> (dotLine: Int, dotOffset: Int, range: ByteRange)? in
-            guard
-                let offset = callDotOffset(file: file, callRange: range),
-                let line = file.stringView.lineAndCharacter(forCharacterOffset: offset)?.line else {
-                    return nil
+            guard let offset = callDotOffset(file: file, callRange: range),
+                  let line = file.stringView.lineAndCharacter(forCharacterOffset: offset)?.line else {
+                return nil
             }
             return (dotLine: line, dotOffset: offset, range: range)
         }
@@ -133,11 +132,10 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
     private static let whitespaceDotRegex = regex("\\s*\\.")
 
     private func callDotOffset(file: SwiftLintFile, callRange: ByteRange) -> Int? {
-        guard
-            let range = file.stringView.byteRangeToNSRange(callRange),
-            case let regex = Self.whitespaceDotRegex,
-            let match = regex.matches(in: file.contents, options: [], range: range).last?.range else {
-                return nil
+        guard let range = file.stringView.byteRangeToNSRange(callRange),
+              case let regex = Self.whitespaceDotRegex,
+              let match = regex.matches(in: file.contents, options: [], range: range).last?.range else {
+            return nil
         }
         return match.location + match.length - 1
     }
@@ -145,11 +143,10 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
     private static let newlineWhitespaceDotRegex = regex("\\n\\s*\\.")
 
     private func callHasLeadingNewline(file: SwiftLintFile, callRange: ByteRange) -> Bool {
-        guard
-            let range = file.stringView.byteRangeToNSRange(callRange),
-            case let regex = Self.newlineWhitespaceDotRegex,
-            regex.firstMatch(in: file.contents, options: [], range: range) != nil else {
-                return false
+        guard let range = file.stringView.byteRangeToNSRange(callRange),
+              case let regex = Self.newlineWhitespaceDotRegex,
+              regex.firstMatch(in: file.contents, options: [], range: range) != nil else {
+            return false
         }
         return true
     }
@@ -189,17 +186,15 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
                               call: SourceKittenDictionary,
                               parentName: String,
                               parentNameOffset: ByteCount) -> ByteRange? {
-        guard
-            case let contents = file.stringView,
-            let nameOffset = call.nameOffset,
-            parentNameOffset == nameOffset,
-            let nameLength = call.nameLength,
-            let bodyOffset = call.bodyOffset,
-            let bodyLength = call.bodyLength,
-            case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
-            let name = contents.substringWithByteRange(nameByteRange),
-            parentName.starts(with: name)
-        else {
+        guard case let contents = file.stringView,
+              let nameOffset = call.nameOffset,
+              parentNameOffset == nameOffset,
+              let nameLength = call.nameLength,
+              let bodyOffset = call.bodyOffset,
+              let bodyLength = call.bodyLength,
+              case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
+              let name = contents.substringWithByteRange(nameByteRange),
+              parentName.starts(with: name) else {
             return nil
         }
 

@@ -90,7 +90,7 @@ private extension TypeNameRule {
                 )
             }
             if let caseCheckSeverity = nameConfiguration.validatesStartWithLowercase.severity,
-                name.first?.isLowercase == true {
+               name.first?.isLowercase == true {
                 return ReasonedRuleViolation(
                     position: identifier.positionAfterSkippingLeadingTrivia,
                     reason: "Type name '\(name)' should start with an uppercase character",

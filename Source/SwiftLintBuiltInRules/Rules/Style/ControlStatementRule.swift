@@ -175,7 +175,7 @@ private extension ExprSyntax {
         return nil
     }
 
-   private func containsTrailingClosure(_ node: Syntax) -> Bool {
+    private func containsTrailingClosure(_ node: Syntax) -> Bool {
         switch node.as(SyntaxEnum.self) {
         case .functionCallExpr(let node):
             node.trailingClosure != nil || node.calledExpression.is(ClosureExprSyntax.self)

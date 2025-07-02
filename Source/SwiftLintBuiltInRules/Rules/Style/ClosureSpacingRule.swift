@@ -136,7 +136,7 @@ private extension TokenSyntax {
             return true
         }
         if let previousToken = previousToken(viewMode: .sourceAccurate),
-                  case .spaces(1) = Array(previousToken.trailingTrivia).last {
+           case .spaces(1) = Array(previousToken.trailingTrivia).last {
             return true
         }
         return false
@@ -147,7 +147,7 @@ private extension TokenSyntax {
             return true
         }
         if let nextToken = nextToken(viewMode: .sourceAccurate),
-                  case .spaces(1) = nextToken.leadingTrivia.first {
+           case .spaces(1) = nextToken.leadingTrivia.first {
             return true
         }
         return false
@@ -197,7 +197,7 @@ private extension TokenSyntax {
             return true
         }
         if let nextToken = nextToken(viewMode: .sourceAccurate),
-                  allowedKinds.contains(nextToken.tokenKind) {
+           allowedKinds.contains(nextToken.tokenKind) {
             return true
         }
         return false

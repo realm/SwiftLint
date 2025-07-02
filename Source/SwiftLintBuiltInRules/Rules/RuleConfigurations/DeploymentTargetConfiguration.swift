@@ -102,14 +102,14 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
 
     var parameterDescription: RuleConfigurationDescription? {
         let targets = Dictionary(uniqueKeysWithValues: [
-                iOSDeploymentTarget,
-                iOSAppExtensionDeploymentTarget,
-                macOSDeploymentTarget,
-                macOSAppExtensionDeploymentTarget,
-                watchOSDeploymentTarget,
-                watchOSAppExtensionDeploymentTarget,
-                tvOSDeploymentTarget,
-                tvOSAppExtensionDeploymentTarget,
+            iOSDeploymentTarget,
+            iOSAppExtensionDeploymentTarget,
+            macOSDeploymentTarget,
+            macOSAppExtensionDeploymentTarget,
+            watchOSDeploymentTarget,
+            watchOSAppExtensionDeploymentTarget,
+            tvOSDeploymentTarget,
+            tvOSAppExtensionDeploymentTarget,
         ].map { ($0.platform.configurationKey, $0) })
         severityConfiguration
         for (platform, target) in targets.sorted(by: { $0.key < $1.key }) {

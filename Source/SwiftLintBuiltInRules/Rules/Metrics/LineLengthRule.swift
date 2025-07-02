@@ -147,7 +147,7 @@ private extension LineLengthRule {
 
                 // Check if line starts with comment markers
                 if lineContent.hasPrefix("//") || lineContent.hasPrefix("/*") ||
-                   (lineContent.hasPrefix("*/") && lineContent.count == 2) {
+                    (lineContent.hasPrefix("*/") && lineContent.count == 2) {
                     // Now verify using SwiftSyntax that this line doesn't contain any tokens
                     var hasNonCommentContent = false
 
@@ -225,7 +225,7 @@ private final class MultilineStringLiteralVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: StringLiteralExprSyntax) {
         guard node.openingQuote.tokenKind == .multilineStringQuote ||
-              (node.openingPounds != nil && node.openingQuote.tokenKind == .stringQuote) else {
+                (node.openingPounds != nil && node.openingQuote.tokenKind == .stringQuote) else {
             return
         }
 

@@ -145,7 +145,7 @@ private extension MultilineLiteralBracketsRule {
                               firstElement: (some ExprSyntaxProtocol)?,
                               lastElement: (some ExprSyntaxProtocol)?) {
             guard let firstElement, let lastElement,
-                    isMultiline(node) else {
+                  isMultiline(node) else {
                 return
             }
 

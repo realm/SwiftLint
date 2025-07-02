@@ -116,7 +116,7 @@ private extension ReturnClauseSyntax {
             return false
         }
         if let simpleReturnType = type.as(IdentifierTypeSyntax.self) {
-           return simpleReturnType.typeName == "Void"
+            return simpleReturnType.typeName == "Void"
         }
         if let tupleReturnType = type.as(TupleTypeSyntax.self) {
             return tupleReturnType.elements.isEmpty

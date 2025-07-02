@@ -52,8 +52,8 @@ private extension ExprSyntax {
             return true
         }
         if let functionCall = self.as(FunctionCallExprSyntax.self),
-                  let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
-                  calledExpression.baseName.text == "NSPredicate" {
+           let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
+           calledExpression.baseName.text == "NSPredicate" {
             return true
         }
         return false

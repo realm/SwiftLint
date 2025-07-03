@@ -175,6 +175,16 @@
   to avoid causing compilation errors.  
   [p4checo](https://github.com/p4checo)
   [#5965](https://github.com/realm/SwiftLint/issues/5965)
+* Add `function_name_whitespace` rule to enforce consistent spacing between the `func`
+  keyword, function name, and its generic parameters. Ensures exactly one space between
+  `func` and the function name, and configurable spacing around generics via
+  `generic_space`:
+  * `no_space` (default): `func name<T>()`
+  * `leading_space`: `func name <T>()`
+  * `trailing_space`: `func name<T> ()`
+  * `leading_trailing_space`: `func name <T> ()`
+  Supports autocorrection.  
+  [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Bug Fixes
 

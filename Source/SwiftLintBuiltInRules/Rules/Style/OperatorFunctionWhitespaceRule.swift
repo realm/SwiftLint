@@ -7,7 +7,10 @@ struct OperatorFunctionWhitespaceRule: Rule {
     static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",
-        description: "Operators should be surrounded by a single whitespace when defining them",
+        description: "Functions and operator functions should use a single space between the `func` " +
+                     "keyword and their name or operator symbol. For named functions, there must be " +
+                     "no whitespace between the function name and the opening parenthesis"
+        ,
         kind: .style,
         nonTriggeringExamples: [
             Example("func <| (lhs: Int, rhs: Int) -> Int {}"),
@@ -21,6 +24,9 @@ struct OperatorFunctionWhitespaceRule: Rule {
             Example("↓func <|<  <A>(lhs: A, rhs: A) -> A {}"),   // 2 spaces after
             Example("↓func  <| (lhs: Int, rhs: Int) -> Int {}"), // 2 spaces before
             Example("↓func  <|< <A>(lhs: A, rhs: A) -> A {}"),   // 2 spaces before
+            Example("↓func  name(lhs: A, rhs: A) -> A {}"),      // 2 spaces before
+            Example("func ↓name (lhs: A, rhs: A) -> A {}"),      // 1 space after
+            Example("↓func  ↓name (lhs: A, rhs: A) -> A {}"),      // 1 space after, 2 spaces before
         ]
     )
 }
@@ -28,26 +34,21 @@ struct OperatorFunctionWhitespaceRule: Rule {
 private extension OperatorFunctionWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard node.isOperatorDeclaration, node.hasWhitespaceViolation else {
+            switch node.name.tokenKind {
+            case .binaryOperator:
+                if !node.name.trailingTrivia.isSingleSpace || !node.funcKeyword.trailingTrivia.isSingleSpace {
+                    violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+                }
+            case .identifier:
+                if !node.funcKeyword.trailingTrivia.isSingleSpace {
+                    violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
+                }
+                if !node.name.trailingTrivia.isEmpty {
+                    violations.append(node.name.positionAfterSkippingLeadingTrivia)
+                }
+            default:
                 return
             }
-
-            violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
         }
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var isOperatorDeclaration: Bool {
-        switch name.tokenKind {
-        case .binaryOperator:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var hasWhitespaceViolation: Bool {
-        !name.trailingTrivia.isSingleSpace || !funcKeyword.trailingTrivia.isSingleSpace
     }
 }

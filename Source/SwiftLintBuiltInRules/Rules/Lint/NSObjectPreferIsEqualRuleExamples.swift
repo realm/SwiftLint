@@ -13,7 +13,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // Class with == which does not subclass NSObject
         Example("""
         class AClass: Equatable {
-            static func ==(lhs: AClass, rhs: AClass) -> Bool {
+            static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return true
             }
         """),
@@ -36,7 +36,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // NSObject subclass implementing == with different signature
         Example("""
         class AClass: NSObject {
-            static func ==(lhs: AClass, rhs: BClass) -> Bool {
+            static func == (lhs: AClass, rhs: BClass) -> Bool {
                 return true
             }
         }
@@ -44,7 +44,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // Equatable struct
         Example("""
         struct AStruct: Equatable {
-            static func ==(lhs: AStruct, rhs: AStruct) -> Bool {
+            static func == (lhs: AStruct, rhs: AStruct) -> Bool {
                 return false
             }
         }
@@ -52,7 +52,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // Equatable enum
         Example("""
         enum AnEnum: Equatable {
-            static func ==(lhs: AnEnum, rhs: AnEnum) -> Bool {
+            static func == (lhs: AnEnum, rhs: AnEnum) -> Bool {
                 return true
             }
         }
@@ -61,7 +61,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         Example("""
         class C: NSObject {
             class NestedClass {
-                static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
                     return false
                 }
             }
@@ -89,7 +89,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // NSObject subclass implementing ==
         Example("""
         class AClass: NSObject {
-            ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+            ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return false
             }
         }
@@ -97,7 +97,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // @objc class implementing ==
         Example("""
         @objc class AClass: SomeOtherNSObjectSubclass {
-            ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+            ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return true
             }
         }
@@ -105,7 +105,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         // Equatable NSObject subclass implementing ==
         Example("""
         class AClass: NSObject, Equatable {
-            ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+            ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return false
             }
         }
@@ -120,7 +120,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 return true
             }
 
-            ↓static func ==(lhs: AClass, rhs: AClass) -> Bool {
+            ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return false
             }
         }
@@ -129,14 +129,14 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         Example("""
         class C {
             @objc class NestedClass {
-                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                ↓static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
                     return false
                 }
             }
         }
         struct S {
             @objcMembers class NestedClass {
-                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                ↓static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
                     return false
                 }
             }
@@ -144,7 +144,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         enum E {
             struct S {
                 @objc class NestedClass {
-                    ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                    ↓static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
                         return false
                     }
                 }
@@ -152,7 +152,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
         }
         extension E {
             @objc class NestedClass {
-                ↓static func ==(lhs: NestedClass, rhs: NestedClass) -> Bool {
+                ↓static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
                     return false
                 }
             }

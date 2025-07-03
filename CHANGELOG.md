@@ -63,6 +63,12 @@
   `max_number_of_single_line_parameters` and detect mixed formatting.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Extend `operator_whitespace` rule to validate named functions.
+  The rule now requires exactly one space between the `func` keyword
+  and the function name or operator symbol, and no space
+  between a function name and its opening parenthesis.
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

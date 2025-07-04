@@ -23,7 +23,29 @@ jobs:
           key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
           restore-keys: ${{ runner.os }}-swift-spm-
           path: .build
-      - name: Run SPM tests
+      - name: Run tests
         uses: ./.github/actions/run-make
         with:
           rule: spm_test
+
+  spm_macos:
+    name: SPM, macOS ${{ matrix.macOS }}, Xcode ${{ matrix.xcode }}
+    runs-on: macos-${{ matrix.macOS }}
+    strategy:
+      matrix:
+        include:
+          - macOS: '14'
+            xcode: '15.4'
+          - macOS: '15'
+            xcode: '16.4'
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-
+          path: .build
+      - name: Run tests
+        run: make spm_test

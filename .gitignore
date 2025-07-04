@@ -61,6 +61,7 @@ Packages/
 # Bundler
 .bundle/
 bundle/
+bin/
 
 # Bazel
 /bazel-*

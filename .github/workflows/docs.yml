@@ -1,0 +1,61 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  create-docs:
+    name: Create
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Build SwiftLint and SourceKitten
+        uses: ./.github/actions/bazel-linux-build
+        with:
+          target: "//:swiftlint @com_github_jpsim_sourcekitten//:sourcekitten"
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: ${{ runner.os }}-swift-spm-
+          path: .build
+      - name: Generate documentation
+        run: |
+          export PATH="/usr/share/swift/usr/bin:$PATH"
+          make docs_linux
+      - name: Validate documentation coverage
+        run: |
+          if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
+            echo "Undocumented declarations:"
+            cat docs/undocumented.json
+            exit 1
+          fi
+      - name: Upload documentation
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy-docs:
+    name: Deploy
+    runs-on: ubuntu-24.04
+    needs: create-docs
+    if: github.event_name == 'push'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy documentation
+        id: deployment
+        uses: actions/deploy-pages@v4

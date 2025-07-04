@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                      = 'SwiftLint'
-  s.version                   = `make get_version`
+  s.version                   = '0.59.1'
   s.summary                   = 'A tool to enforce Swift style and conventions.'
   s.homepage                  = 'https://github.com/realm/SwiftLint'
   s.license                   = { type: 'MIT', file: 'LICENSE' }

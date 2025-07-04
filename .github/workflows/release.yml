@@ -51,6 +51,7 @@ jobs:
         run: |
           sed 's/__VERSION__/${{ inputs.version }}/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
           sed -i -e '3s/.*/    version = "${{ inputs.version }}",/' MODULE.bazel
+          sed -i -e "s/^\(\s*s\.version\s*=\s*'\)[^']*'/\1${{ inputs.version }}'/" SwiftLint.podspec
       - name: Configure Git author
         uses: Homebrew/actions/git-user-config@master
         with:

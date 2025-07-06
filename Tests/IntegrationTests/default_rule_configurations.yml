@@ -849,6 +849,11 @@ period_spacing:
   meta:
     opt-in: true
     correctable: true
+prefer_condition_list:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: true
 prefer_key_path:
   severity: warning
   restrict_to_standard_functions: true

@@ -31,6 +31,12 @@ final class FunctionDefaultParameterAtEndRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class FunctionNameWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(FunctionNameWhitespaceRule.description)
+    }
+}
+
 final class FunctionParameterCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FunctionParameterCountRule.description)
@@ -148,11 +154,5 @@ final class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
 final class LegacyHashingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyHashingRule.description)
-    }
-}
-
-final class LegacyMultipleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyMultipleRule.description)
     }
 }

@@ -81,6 +81,7 @@ public let builtInRules: [any Rule.Type] = [
     ForceUnwrappingRule.self,
     FunctionBodyLengthRule.self,
     FunctionDefaultParameterAtEndRule.self,
+    FunctionNameWhitespaceRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
     IBInspectableInExtensionRule.self,

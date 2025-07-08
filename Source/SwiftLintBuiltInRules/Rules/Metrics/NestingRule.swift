@@ -64,7 +64,6 @@ private extension NestingRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-
             // if current defines coding keys and we're ignoring coding keys, then skip nesting rule
             // push another level on and proceed to visit children
             if configuration.ignoreCodingKeys && node.definesCodingKeys {

@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftLint}",
+            "name": "Debug swiftlint",
+            "program": "${workspaceFolder:SwiftLint}/.build/debug/swiftlint",
+            "preLaunchTask": "swift: Build Debug swiftlint"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftLint}",
+            "name": "Release swiftlint",
+            "program": "${workspaceFolder:SwiftLint}/.build/release/swiftlint",
+            "preLaunchTask": "swift: Build Release swiftlint"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftLint}",
+            "name": "Debug swiftlint-dev",
+            "program": "${workspaceFolder:SwiftLint}/.build/debug/swiftlint-dev",
+            "preLaunchTask": "swift: Build Debug swiftlint-dev"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftLint}",
+            "name": "Release swiftlint-dev",
+            "program": "${workspaceFolder:SwiftLint}/.build/release/swiftlint-dev",
+            "preLaunchTask": "swift: Build Release swiftlint-dev"
+        }
+    ]
+}

@@ -241,7 +241,7 @@ internal struct NestingRuleExamples {
                 }
             }
             """,
-            configuration: ["ignore_coding_keys": true],
+            configuration: ["ignore_coding_keys": true]
         ),
     ]
 }
@@ -541,7 +541,7 @@ extension NestingRuleExamples {
                 }
             }
             """,
-            configuration: ["ignore_coding_keys": true],
+            configuration: ["ignore_coding_keys": true]
         ),
         Example(
             """
@@ -552,7 +552,7 @@ extension NestingRuleExamples {
               }
             }
             """,
-            configuration: ["ignore_coding_keys": true],
+            configuration: ["ignore_coding_keys": true]
         ),
     ]
 }

@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
+    }
+}
+
 final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferTypeCheckingRule.description)
@@ -148,11 +154,5 @@ final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
 final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSendableRule.description)
-    }
-}
-
-final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantSetAccessControlRule.description)
     }
 }

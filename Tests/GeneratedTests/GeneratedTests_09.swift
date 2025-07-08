@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class SyntacticSugarRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SyntacticSugarRule.description)
+    }
+}
+
 final class TestCaseAccessibilityRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(TestCaseAccessibilityRule.description)
@@ -148,11 +154,5 @@ final class UnusedControlFlowLabelRuleGeneratedTests: SwiftLintTestCase {
 final class UnusedDeclarationRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedDeclarationRule.description)
-    }
-}
-
-final class UnusedEnumeratedRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedEnumeratedRule.description)
     }
 }

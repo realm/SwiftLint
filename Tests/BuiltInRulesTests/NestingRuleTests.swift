@@ -606,7 +606,7 @@ final class NestingRuleTests: SwiftLintTestCase {
             .init("""
                 struct Outer {
                     struct Inner {
-                        enum CodingKeys: String, CodingKey {
+                        ↓enum CodingKeys: String, CodingKey {
                             case id
                         }
                     }

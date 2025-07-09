@@ -48,28 +48,30 @@ private extension ClosureEndIndentationRule {
             let actualIndentationColumn = rightBraceLocation.column - 1
 
             if actualIndentationColumn != expectedIndentationColumn {
-                let correctionStart: AbsolutePosition
-                let correctionReplacement: String
+                // Check if there's leading trivia on the right brace that ends with a newline and only whitespace
+                // after it.
+                let leadingTriviaEndsWithNewline = node.rightBrace.leadingTrivia
+                    .reversed()
+                    .drop(while: \.isSpaceOrTab)
+                    .first
+                    .map(\.isNewline) ?? false
 
-                // Check if there's leading trivia on the right brace that contains a newline
-                let hasNewlineInTrivia = node.rightBrace.leadingTrivia.contains(where: \.isNewline)
-
-                if hasNewlineInTrivia {
-                    // If there's already a newline, we just need to fix the indentation.
-                    // The range to replace is the trivia before the brace.
-                    correctionStart = node.rightBrace.position
-                    correctionReplacement = "\n" + String(repeating: " ", count: max(0, expectedIndentationColumn))
-                } else if let previousToken = node.rightBrace.previousToken(viewMode: .sourceAccurate) {
-                    // If no newline, we need to add one. The replacement will be inserted
-                    // after the previous token and before the closing brace.
-                    correctionStart = previousToken.endPositionBeforeTrailingTrivia
-                    correctionReplacement = "\n" + String(repeating: " ", count: max(0, expectedIndentationColumn))
-                } else {
-                    // Fallback: If there's no previous token, which is unlikely for a closure body,
-                    // replace the trivia before the brace.
-                    correctionStart = node.rightBrace.position
-                    correctionReplacement = "\n" + String(repeating: " ", count: max(0, expectedIndentationColumn))
-                }
+                let (correctionStartPosition, correctionPartBeforeIndentation) =
+                    if leadingTriviaEndsWithNewline {
+                        // If there's already a newline, we just need to fix the indentation.
+                        // The range to replace is the trivia before the brace.
+                        (
+                            locationConverter.position(ofLine: rightBraceLocation.line, column: 1),
+                            ""
+                        )
+                    } else {
+                        // If no newline, we need to add one. The replacement will be inserted
+                        // after the previous token and before the closing brace.
+                        (
+                            node.rightBrace.positionAfterSkippingLeadingTrivia,
+                            "\n"
+                        )
+                    }
 
                 let reason = "expected \(expectedIndentationColumn), got \(actualIndentationColumn)"
                 violations.append(
@@ -78,9 +80,10 @@ private extension ClosureEndIndentationRule {
                         reason: reason,
                         severity: configuration.severity,
                         correction: .init(
-                            start: correctionStart,
+                            start: correctionStartPosition,
                             end: node.rightBrace.positionAfterSkippingLeadingTrivia,
-                            replacement: correctionReplacement
+                            replacement: correctionPartBeforeIndentation
+                                + String(repeating: " ", count: max(0, expectedIndentationColumn))
                         )
                     )
                 )

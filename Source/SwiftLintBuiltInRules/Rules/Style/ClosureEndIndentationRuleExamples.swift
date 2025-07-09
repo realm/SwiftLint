@@ -139,7 +139,7 @@ internal struct ClosureEndIndentationRuleExamples {
         """): Example("""
             function(
                 closure: { x in
-                    print(x)
+                    print(x) \("")
                 })
             """),
         Example("""
@@ -172,18 +172,21 @@ internal struct ClosureEndIndentationRuleExamples {
         Example("""
         function(
             closure: { x in
-                print(x)
+                print(x) // comment
+                // comment
         ↓       },
             anotherClosure: { y in
                 print(y)
-            })
+                /* comment */})
         """): Example("""
             function(
                 closure: { x in
-                    print(x)
+                    print(x) // comment
+                    // comment
                 },
                 anotherClosure: { y in
                     print(y)
+                    /* comment */
                 })
             """),
         Example("""
@@ -214,7 +217,7 @@ internal struct ClosureEndIndentationRuleExamples {
         """): Example("""
             function(
                 closure: { x in
-                    print(x)
+                    print(x) \("")
                 },
                 anotherClosure: { y in
                     print(y)
@@ -234,6 +237,15 @@ internal struct ClosureEndIndentationRuleExamples {
                 }, anotherClosure: { y in
                 print(y)
             })
+            """),
+        Example("""
+        f {
+            // do something
+            ↓}
+        """): Example("""
+            f {
+                // do something
+            }
             """),
     ]
 }

@@ -64,7 +64,14 @@ private extension NestingRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            validate(forFunction: false, triggeringToken: node.enumKeyword)
+            // if current defines coding keys and we're ignoring coding keys, then skip nesting rule
+            // push another level on and proceed to visit children
+            if configuration.ignoreCodingKeys && node.definesCodingKeys {
+                levels.push(levels.lastIsFunction)
+            } else {
+                validate(forFunction: false, triggeringToken: node.enumKeyword)
+            }
+
             return .visitChildren
         }
 
@@ -152,6 +159,7 @@ private extension NestingRule {
             if configuration.alwaysAllowOneTypeInFunctions && inFunction && !forFunction {
                 return
             }
+
             guard let severity = configuration.severity(with: targetLevel, for: level) else { return }
 
             let targetName = forFunction ? "Functions" : "Types"

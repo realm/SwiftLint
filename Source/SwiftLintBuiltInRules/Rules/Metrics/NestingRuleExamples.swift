@@ -8,6 +8,7 @@ internal struct NestingRuleExamples {
         + nonTriggeringClosureAndStatementExamples
         + nonTriggeringProtocolExamples
         + nonTriggeringMixedExamples
+        + nonTriggeringExamplesIgnoreCodingKeys
 
     private static let nonTriggeringTypeExamples =
         detectingTypes.flatMap { type -> [Example] in
@@ -228,6 +229,21 @@ internal struct NestingRuleExamples {
                     """),
             ]
         }
+
+    private static let nonTriggeringExamplesIgnoreCodingKeys: [Example] = [
+        Example(
+            """
+            struct Outer {
+                struct Inner {
+                    enum CodingKeys: String, CodingKey {
+                        case id
+                    }
+                }
+            }
+            """,
+            configuration: ["ignore_coding_keys": true]
+        ),
+    ]
 }
 
 extension NestingRuleExamples {
@@ -236,6 +252,8 @@ extension NestingRuleExamples {
         + triggeringClosureAndStatementExamples
         + triggeringProtocolExamples
         + triggeringMixedExamples
+        + triggeringExamplesCodingKeys
+        + triggeringExamplesIgnoreCodingKeys
 
     private static let triggeringTypeExamples =
         detectingTypes.flatMap { type -> [Example] in
@@ -499,4 +517,42 @@ extension NestingRuleExamples {
                     """),
             ]
         }
+
+    private static let triggeringExamplesCodingKeys: [Example] = [
+        Example("""
+                struct Outer {
+                    struct Inner {
+                        ↓enum CodingKeys: String, CodingKey {
+                            case id
+                        }
+                    }
+                }
+        """),
+    ]
+
+    private static let triggeringExamplesIgnoreCodingKeys: [Example] = [
+        Example(
+            """
+            struct Outer {
+                struct Inner {
+                    ↓enum Example: String, CodingKey {
+                        case id
+                    }
+                }
+            }
+            """,
+            configuration: ["ignore_coding_keys": true]
+        ),
+        Example(
+            """
+            struct Outer {
+              enum CodingKeys: String, CodingKey {
+                case id
+                ↓struct S {}
+              }
+            }
+            """,
+            configuration: ["ignore_coding_keys": true]
+        ),
+    ]
 }

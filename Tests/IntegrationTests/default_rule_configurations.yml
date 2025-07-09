@@ -693,6 +693,7 @@ nesting:
   check_nesting_in_closures_and_statements: true
   always_allow_one_type_in_functions: false
   ignore_typealiases_and_associatedtypes: false
+  ignore_coding_keys: false
   meta:
     opt-in: false
     correctable: false

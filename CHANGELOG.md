@@ -63,6 +63,11 @@
   `max_number_of_single_line_parameters` and detect mixed formatting.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Add `ignore_coding_keys` parameter to `nesting` rule. Setting this to true prevents
+  `CodingKey` enums from violating the rule.  
+  [braker1nine](https://github.com/braker1nine)
+  [#5641](https://github.com/realm/SwiftLint/issues/5641)
+  
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

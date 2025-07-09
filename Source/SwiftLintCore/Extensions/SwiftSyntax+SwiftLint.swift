@@ -1,6 +1,8 @@
 import SourceKittenFramework
 import SwiftSyntax
 
+// swiftlint:disable file_length
+
 // workaround for https://bugs.swift.org/browse/SR-10121 so we can use `Self` in a closure
 public protocol SwiftLintSyntaxVisitor: SyntaxVisitor {}
 extension SyntaxVisitor: SwiftLintSyntaxVisitor {}
@@ -189,6 +191,19 @@ public extension EnumDeclSyntax {
             }
 
             return rawValueTypes.contains(identifier)
+        }
+    }
+
+    /// True if this enum is a `CodingKey`. For that, it has to be named `CodingKeys` 
+    /// and must conform to the `CodingKey` protocol.
+    var definesCodingKeys: Bool {
+        guard let inheritedTypeCollection = inheritanceClause?.inheritedTypes,
+              name.text == "CodingKeys" else {
+            return false
+        }
+
+        return inheritedTypeCollection.contains { element in
+            element.type.as(IdentifierTypeSyntax.self)?.name.text == "CodingKey"
         }
     }
 }

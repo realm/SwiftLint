@@ -104,7 +104,7 @@ struct FunctionBodyLengthRule: Rule {
 }
 
 private extension FunctionBodyLengthRule {
-    final class Visitor: BodyLengthVisitor<FunctionBodyLengthRule> {
+    final class Visitor: BodyLengthVisitor<ConfigurationType> {
         override func visitPost(_ node: DeinitializerDeclSyntax) {
             if let body = node.body {
                 registerViolations(

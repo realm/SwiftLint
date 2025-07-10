@@ -36,7 +36,7 @@ struct TypeBodyLengthRule: Rule {
 }
 
 private extension TypeBodyLengthRule {
-    final class Visitor: BodyLengthVisitor<TypeBodyLengthRule> {
+    final class Visitor: BodyLengthVisitor<ConfigurationType> {
         override func visitPost(_ node: ActorDeclSyntax) {
             collectViolation(node)
         }

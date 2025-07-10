@@ -1,9 +1,19 @@
 import SwiftSyntax
 
+/// A configuration that's based on warning and error thresholds for violations.
+public protocol SeverityLevelsBasedRuleConfiguration<Parent>: RuleConfiguration {
+    /// The severity configuration that defines the thresholds for warning and error severities.
+    var severityConfiguration: SeverityLevelsConfiguration<Parent> { get }
+}
+
+extension SeverityLevelsConfiguration: SeverityLevelsBasedRuleConfiguration {
+    public var severityConfiguration: SeverityLevelsConfiguration<Parent> { self }
+}
+
 /// Violation visitor customized to collect violations of code blocks that exceed a specified number of lines.
-open class BodyLengthVisitor<Parent: Rule>: ViolationsSyntaxVisitor<SeverityLevelsConfiguration<Parent>> {
+open class BodyLengthVisitor<LevelConfig: SeverityLevelsBasedRuleConfiguration>: ViolationsSyntaxVisitor<LevelConfig> {
     @inlinable
-    override public init(configuration: SeverityLevelsConfiguration<Parent>, file: SwiftLintFile) {
+    override public init(configuration: LevelConfig, file: SwiftLintFile) {
         super.init(configuration: configuration, file: file)
     }
 
@@ -25,12 +35,12 @@ open class BodyLengthVisitor<Parent: Rule>: ViolationsSyntaxVisitor<SeverityLeve
         let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
                                                                         rightBraceLine: rightBraceLine)
         let severity: ViolationSeverity, upperBound: Int
-        if let error = configuration.error, lineCount > error {
+        if let error = configuration.severityConfiguration.error, lineCount > error {
             severity = .error
             upperBound = error
-        } else if lineCount > configuration.warning {
+        } else if lineCount > configuration.severityConfiguration.warning {
             severity = .warning
-            upperBound = configuration.warning
+            upperBound = configuration.severityConfiguration.warning
         } else {
             return
         }

@@ -77,6 +77,11 @@
   or other error.  
   [Martin Redington](https://github.com/mildm8nnered)
   [#6052](https://github.com/realm/SwiftLint/issues/6052)
+  
+* Keep the default severity levels when neither `warning` nor `error` values are configured.
+  Ensure especially that the `error` level is not set to `nil` when the `warning` level
+  isn't set either.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ## 0.59.1: Crisp Spring Clean
 

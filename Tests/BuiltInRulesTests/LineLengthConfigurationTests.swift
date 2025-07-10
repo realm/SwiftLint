@@ -99,7 +99,7 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testLineLengthConfigurationApplyConfigurationWithArray() {
+    func testLineLengthConfigurationApplyConfigurationWithArray() throws {
         var configuration = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 0, error: 0))
 
         let warning1 = 100
@@ -111,18 +111,14 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: nil)
         let config2 = [warning2]
 
-        do {
-            try configuration.apply(configuration: config1)
-            XCTAssertEqual(configuration.length, length1)
+        try configuration.apply(configuration: config1)
+        XCTAssertEqual(configuration.length, length1)
 
-            try configuration.apply(configuration: config2)
-            XCTAssertEqual(configuration.length, length2)
-        } catch {
-            XCTFail("Failed to apply configuration with array")
-        }
+        try configuration.apply(configuration: config2)
+        XCTAssertEqual(configuration.length, length2)
     }
 
-    func testLineLengthConfigurationApplyConfigurationWithDictionary() {
+    func testLineLengthConfigurationApplyConfigurationWithDictionary() throws {
         var configuration = LineLengthConfiguration(length: SeverityLevelsConfiguration(warning: 0, error: 0))
 
         let warning1 = 100
@@ -141,34 +137,29 @@ final class LineLengthConfigurationTests: SwiftLintTestCase {
         let length2 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
 
-        let length3 = SeverityLevelsConfiguration<LineLengthRule>(warning: warning2)
         let config3: [String: Bool] = [
             "ignores_urls": false,
             "ignores_function_declarations": false,
             "ignores_comments": false,
         ]
 
-        do {
-            try configuration.apply(configuration: config1)
-            XCTAssertEqual(configuration.length, length1)
-            XCTAssertTrue(configuration.ignoresURLs)
-            XCTAssertTrue(configuration.ignoresFunctionDeclarations)
-            XCTAssertTrue(configuration.ignoresComments)
+        try configuration.apply(configuration: config1)
+        XCTAssertEqual(configuration.length, length1)
+        XCTAssertTrue(configuration.ignoresURLs)
+        XCTAssertTrue(configuration.ignoresFunctionDeclarations)
+        XCTAssertTrue(configuration.ignoresComments)
 
-            try configuration.apply(configuration: config2)
-            XCTAssertEqual(configuration.length, length2)
-            XCTAssertTrue(configuration.ignoresURLs)
-            XCTAssertTrue(configuration.ignoresFunctionDeclarations)
-            XCTAssertTrue(configuration.ignoresComments)
+        try configuration.apply(configuration: config2)
+        XCTAssertEqual(configuration.length, length2)
+        XCTAssertTrue(configuration.ignoresURLs)
+        XCTAssertTrue(configuration.ignoresFunctionDeclarations)
+        XCTAssertTrue(configuration.ignoresComments)
 
-            try configuration.apply(configuration: config3)
-            XCTAssertEqual(configuration.length, length3)
-            XCTAssertFalse(configuration.ignoresURLs)
-            XCTAssertFalse(configuration.ignoresFunctionDeclarations)
-            XCTAssertFalse(configuration.ignoresComments)
-        } catch {
-            XCTFail("Failed to apply configuration with dictionary")
-        }
+        try configuration.apply(configuration: config3)
+        XCTAssertEqual(configuration.length, length2)
+        XCTAssertFalse(configuration.ignoresURLs)
+        XCTAssertFalse(configuration.ignoresFunctionDeclarations)
+        XCTAssertFalse(configuration.ignoresComments)
     }
 
     func testLineLengthConfigurationCompares() {

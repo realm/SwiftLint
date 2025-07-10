@@ -32,7 +32,8 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
         } else if let configDict = configuration as? [String: Any?] {
-            if let warningValue = configDict[$warning.key] {
+            let warningValue = configDict[$warning.key]
+            if let warningValue {
                 if let warning = warningValue as? Int {
                     self.warning = warning
                 } else {
@@ -47,7 +48,7 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
                 } else {
                     throw Issue.invalidConfiguration(ruleID: Parent.identifier)
                 }
-            } else {
+            } else if warningValue != nil {
                 self.error = nil
             }
         } else {

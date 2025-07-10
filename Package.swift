@@ -32,13 +32,13 @@ let package = Package(
         .plugin(name: "SwiftLintCommandPlugin", targets: ["SwiftLintCommandPlugin"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.5.1")),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.6.1")),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "601.0.1"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMajor(from: "0.37.2")),
-        .package(url: "https://github.com/jpsim/Yams.git", .upToNextMajor(from: "6.0.1")),
+        .package(url: "https://github.com/jpsim/Yams.git", .upToNextMajor(from: "6.0.2")),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", .upToNextMajor(from: "0.9.0")),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", .upToNextMajor(from: "0.2.0")),
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.8.4")),
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.9.0")),
     ],
     targets: [
         .executableTarget(

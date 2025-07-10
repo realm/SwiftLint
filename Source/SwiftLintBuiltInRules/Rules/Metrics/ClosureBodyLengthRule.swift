@@ -22,7 +22,7 @@ struct ClosureBodyLengthRule: Rule {
 }
 
 private extension ClosureBodyLengthRule {
-    final class Visitor: BodyLengthVisitor<ClosureBodyLengthRule> {
+    final class Visitor: BodyLengthVisitor<ConfigurationType> {
         override func visitPost(_ node: ClosureExprSyntax) {
             registerViolations(
                 leftBrace: node.leftBrace,

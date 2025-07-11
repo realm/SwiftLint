@@ -78,7 +78,7 @@ private extension OrphanedDocCommentRule {
                 switch piece {
                 case .docLineComment(let comment), .docBlockComment(let comment):
                     // These patterns are often used for "file header" style comments
-                    if !comment.hasPrefix("////") && !comment.hasPrefix("/***") {
+                    if !comment.hasPrefix("////"), !comment.hasPrefix("/***") {
                         if isOrphanedDocComment(with: &iterator) {
                             let utf8Length = pieces[..<index].reduce(0) { $0 + $1.sourceLength.utf8Length }
                             violations.append(node.position.advanced(by: utf8Length))

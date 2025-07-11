@@ -23,7 +23,7 @@ private extension EmptyXCTestMethodRule {
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            if (node.modifiers.contains(keyword: .override) || node.isTestMethod) && node.hasEmptyBody {
+            if node.modifiers.contains(keyword: .override) || node.isTestMethod, node.hasEmptyBody {
                 violations.append(node.funcKeyword.positionAfterSkippingLeadingTrivia)
             }
         }

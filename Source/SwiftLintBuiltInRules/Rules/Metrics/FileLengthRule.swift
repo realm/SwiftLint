@@ -83,7 +83,7 @@ private extension FileLengthRule {
         ) {
             var currentPosition = startPosition
             for piece in trivia {
-                if !piece.isComment && !piece.isWhitespace {
+                if !piece.isComment, !piece.isWhitespace {
                     let startLocation = locationConverter.location(for: currentPosition)
                     let endLocation = locationConverter.location(for: currentPosition + piece.sourceLength)
                     addLinesInRange(from: startLocation.line, to: endLocation.line, to: &lines)
@@ -93,7 +93,7 @@ private extension FileLengthRule {
         }
 
         private func addLinesInRange(from startLine: Int, to endLine: Int, to lines: inout Set<Int>) {
-            guard startLine > 0 && startLine <= endLine else { return }
+            guard startLine > 0, startLine <= endLine else { return }
             for line in startLine...endLine {
                 lines.insert(line)
             }

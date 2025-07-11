@@ -61,7 +61,7 @@ struct IndentationWidthRule: OptInRule {
 
             // Determine indentation
             let indentation: Indentation
-            if tabCount != 0 && spaceCount != 0 {
+            if tabCount != 0, spaceCount != 0 {
                 // Catch mixed indentation
                 violations.append(
                     StyleViolation(

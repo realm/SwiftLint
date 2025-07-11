@@ -34,11 +34,11 @@ private extension DiscouragedObjectLiteralRule {
                 return
             }
 
-            if !configuration.imageLiteral && identifierText == "imageLiteral" {
+            if !configuration.imageLiteral, identifierText == "imageLiteral" {
                 return
             }
 
-            if !configuration.colorLiteral && identifierText == "colorLiteral" {
+            if !configuration.colorLiteral, identifierText == "colorLiteral" {
                 return
             }
 

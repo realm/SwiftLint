@@ -240,7 +240,7 @@ internal extension Configuration.FileGraph.FilePath {
         // Delete all cache folders except for the current version's folder
         let directoryWithoutVersionNum = directory.components(separatedBy: "/").dropLast().joined(separator: "/")
         try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum)).forEach {
-            if !$0.contains("/") && $0 != Configuration.FileGraph.FilePath.remoteCacheVersionNumber {
+            if !$0.contains("/"), $0 != Configuration.FileGraph.FilePath.remoteCacheVersionNumber {
                 try FileManager.default.removeItem(atPath:
                     $0.bridge().absolutePathRepresentation(rootDirectory: directoryWithoutVersionNum)
                 )

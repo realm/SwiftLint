@@ -70,7 +70,7 @@ private extension VerticalWhitespaceRule {
 
             func process(_ count: Int, _ offset: Int) {
                 for _ in 0..<(count + firstTokenAdditionalNewlines) {
-                    if consecutiveNewlines > configuration.maxEmptyLines && violationPosition == nil {
+                    if consecutiveNewlines > configuration.maxEmptyLines, violationPosition == nil {
                         violationPosition = currentPosition
                     }
                     consecutiveNewlines += 1

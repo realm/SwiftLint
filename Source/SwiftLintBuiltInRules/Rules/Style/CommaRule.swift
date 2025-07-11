@@ -105,7 +105,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
                 if current.tokenKind != .comma {
                     return nil
                 }
-                if !previous.trailingTrivia.isEmpty && !previous.trailingTrivia.containsBlockComments() {
+                if !previous.trailingTrivia.isEmpty, !previous.trailingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     let nextIsNewline = next.leadingTrivia.containsNewlines()

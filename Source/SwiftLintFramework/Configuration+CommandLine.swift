@@ -105,7 +105,7 @@ extension Configuration {
 
     private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws
         -> [Configuration: [SwiftLintFile]] {
-        if files.isEmpty && !visitor.allowZeroLintableFiles {
+        if files.isEmpty, !visitor.allowZeroLintableFiles {
             throw SwiftLintError.usageError(
                 description: "No lintable files found at paths: '\(visitor.options.paths.joined(separator: ", "))'"
             )
@@ -166,12 +166,12 @@ extension Configuration {
         let counter = CounterActor()
         let total = linters.filter(\.isCollecting).count
         let progress = ProgressBar(count: total)
-        if visitor.options.progress && total > 0 {
+        if visitor.options.progress, total > 0 {
             await progress.initialize()
         }
         let collect = { (linter: Linter) -> CollectedLinter? in
             let skipFile = visitor.shouldSkipFile(atPath: linter.file.path)
-            if !visitor.options.quiet && linter.isCollecting {
+            if !visitor.options.quiet, linter.isCollecting {
                 if visitor.options.progress {
                     await progress.printNext()
                 } else if let filePath = linter.file.path {

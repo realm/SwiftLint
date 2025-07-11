@@ -52,19 +52,19 @@ struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
                     return nil
                 }
 
-                if previous.trailingTrivia.isNotEmpty && !previous.trailingTrivia.containsBlockComments() {
+                if previous.trailingTrivia.isNotEmpty, !previous.trailingTrivia.containsBlockComments() {
                     let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
                     let end = ByteCount(current.endPosition)
                     return ByteRange(location: start, length: end - start)
                 }
-                if current.trailingTrivia != [.spaces(1)] && !next.leadingTrivia.containsNewlines() {
+                if current.trailingTrivia != [.spaces(1)], !next.leadingTrivia.containsNewlines() {
                     if case .spaces(1) = current.trailingTrivia.first {
                         return nil
                     }
 
                     let flexibleRightSpacing = configuration.flexibleRightSpacing ||
                         caseStatementPositions.contains(current.position)
-                    if flexibleRightSpacing && current.trailingTrivia.isNotEmpty {
+                    if flexibleRightSpacing, current.trailingTrivia.isNotEmpty {
                         return nil
                     }
 

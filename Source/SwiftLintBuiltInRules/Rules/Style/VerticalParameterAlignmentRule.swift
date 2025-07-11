@@ -40,7 +40,7 @@ private extension VerticalParameterAlignmentRule {
             var violations: [AbsolutePosition] = []
             for (index, paramLoc) in paramLocations.enumerated() where index > 0 && paramLoc.line > firstParamLoc.line {
                 let previousParamLoc = paramLocations[index - 1]
-                if previousParamLoc.line < paramLoc.line && firstParamLoc.column != paramLoc.column {
+                if previousParamLoc.line < paramLoc.line, firstParamLoc.column != paramLoc.column {
                     violations.append(paramLoc.position)
                 }
             }

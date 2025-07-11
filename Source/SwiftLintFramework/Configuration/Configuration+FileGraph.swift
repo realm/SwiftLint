@@ -146,7 +146,7 @@ package extension Configuration {
 
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references
-                if vertex.originatesFromRemote && !referencedVertex.originatesFromRemote {
+                if vertex.originatesFromRemote, !referencedVertex.originatesFromRemote {
                     throw Issue.genericWarning("Remote configs are not allowed to reference local configs.")
                 }
                 let existingVertex = findPossiblyExistingVertex(sameAs: referencedVertex)

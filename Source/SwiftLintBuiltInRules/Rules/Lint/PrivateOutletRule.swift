@@ -89,7 +89,7 @@ private extension PrivateOutletRule {
                 return
             }
 
-            if configuration.allowPrivateSet && decl.modifiers.containsPrivateOrFileprivate(setOnly: true) {
+            if configuration.allowPrivateSet, decl.modifiers.containsPrivateOrFileprivate(setOnly: true) {
                 return
             }
 

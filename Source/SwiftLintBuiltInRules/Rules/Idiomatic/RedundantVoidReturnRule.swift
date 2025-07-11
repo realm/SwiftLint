@@ -73,7 +73,7 @@ struct RedundantVoidReturnRule: Rule {
 private extension RedundantVoidReturnRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ReturnClauseSyntax) {
-            if !configuration.includeClosures && node.parent?.is(ClosureSignatureSyntax.self) == true {
+            if !configuration.includeClosures, node.parent?.is(ClosureSignatureSyntax.self) == true {
                 return
             }
 

@@ -175,7 +175,7 @@ private class OperatorUsageWhitespaceVisitor: SyntaxVisitor {
         let noSpacing = noSpacingBefore || noSpacingAfter
 
         let operatorText = operatorToken.text
-        if noSpacing && allowedNoSpaceOperators.contains(operatorText) {
+        if noSpacing, allowedNoSpaceOperators.contains(operatorText) {
             return nil
         }
 

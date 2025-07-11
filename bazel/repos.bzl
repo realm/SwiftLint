@@ -19,17 +19,17 @@ def swiftlint_repos(bzlmod = False):
 
         http_archive(
             name = "com_github_apple_swift_argument_parser",
-            url = "https://github.com/apple/swift-argument-parser/archive/refs/tags/1.5.0.tar.gz",
+            url = "https://github.com/apple/swift-argument-parser/archive/refs/tags/1.6.1.tar.gz",
             build_file = "@SwiftLint//bazel:SwiftArgumentParser.BUILD",
-            sha256 = "946a4cf7bdd2e4f0f8b82864c56332238ba3f0a929c6d1a15f55affdb10634e6",
-            strip_prefix = "swift-argument-parser-1.5.0",
+            sha256 = "d2fbb15886115bb2d9bfb63d4c1ddd4080cbb4bfef2651335c5d3b9dd5f3c8ba",
+            strip_prefix = "swift-argument-parser-1.6.1",
         )
 
         http_archive(
             name = "com_github_jpsim_yams",
-            url = "https://github.com/jpsim/Yams/releases/download/6.0.1/Yams-6.0.1.tar.gz",
-            sha256 = "76afe79db05acb0eda4910e0b9da6a8562ad6139ac317daa747cd829beb93b9e",
-            strip_prefix = "Yams-6.0.1",
+            url = "https://github.com/jpsim/Yams/archive/refs/tags/6.0.2.tar.gz",
+            sha256 = "a1ae9733755f77fd56e4b01081baea2a756d8cd4b6b7ec58dd971b249318df48",
+            strip_prefix = "Yams-6.0.2",
         )
 
         http_archive(
@@ -58,10 +58,10 @@ def swiftlint_repos(bzlmod = False):
 
     http_archive(
         name = "swiftlint_com_github_krzyzanowskim_cryptoswift",
-        sha256 = "69b23102ff453990d03aff4d3fabd172d0667b2b3ed95730021d60a0f8d50d14",
+        sha256 = "81b1ba186e2edcff47bcc2a3b6a242df083ba2f64bfb42209f79090cb8d7f889",
         build_file = "@SwiftLint//bazel:CryptoSwift.BUILD",
-        strip_prefix = "CryptoSwift-1.8.4",
-        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.8.4.tar.gz",
+        strip_prefix = "CryptoSwift-1.9.0",
+        url = "https://github.com/krzyzanowskim/CryptoSwift/archive/refs/tags/1.9.0.tar.gz",
     )
 
 def _swiftlint_repos_bzlmod(_):

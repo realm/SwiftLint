@@ -1198,6 +1198,7 @@ trailing_whitespace:
 type_body_length:
   warning: 250
   error: 350
+  excluded_types: [extension, protocol]
   meta:
     opt-in: false
     correctable: false

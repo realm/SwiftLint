@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantSetAccessControlRule.description)
+    }
+}
+
 final class RedundantStringEnumValueRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantStringEnumValueRule.description)
@@ -148,11 +154,5 @@ final class SwitchCaseAlignmentRuleGeneratedTests: SwiftLintTestCase {
 final class SwitchCaseOnNewlineRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseOnNewlineRule.description)
-    }
-}
-
-final class SyntacticSugarRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SyntacticSugarRule.description)
     }
 }

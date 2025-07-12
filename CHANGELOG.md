@@ -69,6 +69,11 @@
 * Improve `multiline_parameters` rule to correctly support  
   `max_number_of_single_line_parameters` and detect mixed formatting.  
   [GandaLF2006](https://github.com/GandaLF2006)
+  
+* Add new `prefer_condition_list` rule that triggers when a `guard`/`if`/`while`
+  condition is composed of multiple expressions connected by the `&&` operator.
+  It suggests to use a condition list instead, which is more idiomatic.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 * Add `ignore_coding_keys` parameter to `nesting` rule. Setting this to true prevents
   `CodingKey` enums from violating the rule.  

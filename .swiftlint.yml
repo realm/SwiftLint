@@ -37,6 +37,7 @@ disabled_rules:
   - no_grouping_extension
   - no_magic_numbers
   - one_declaration_per_file
+  - prefer_condition_list
   - prefer_key_path # Re-enable once we are on Swift 6.
   - prefer_nimble
   - prefixed_toplevel_constant

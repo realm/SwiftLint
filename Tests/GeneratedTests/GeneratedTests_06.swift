@@ -133,6 +133,12 @@ final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferConditionListRule.description)
+    }
+}
+
 final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
@@ -148,11 +154,5 @@ final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
 final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfInStaticReferencesRule.description)
-    }
-}
-
-final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
     }
 }

@@ -194,7 +194,7 @@ private extension SwiftLintFile {
         // with "related names", which appears to be similarly named declarations (i.e. overloads) that are
         // programmatically unrelated to the current cursor-info declaration. Those similarly named declarations
         // aren't in `key.related` so confirm that that one is also populated.
-        if cursorInfo?.value["key.related_decls"] != nil && indexEntity.value["key.related"] != nil {
+        if cursorInfo?.value["key.related_decls"] != nil, indexEntity.value["key.related"] != nil {
             return nil
         }
 

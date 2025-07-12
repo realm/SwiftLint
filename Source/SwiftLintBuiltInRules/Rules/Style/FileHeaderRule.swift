@@ -132,7 +132,7 @@ private extension FileHeaderRule {
                     continue
                 }
 
-                if piece.isComment && !piece.isDocComment {
+                if piece.isComment, !piece.isDocComment {
                     if firstStart == nil {
                         firstStart = pieceStart
                     }

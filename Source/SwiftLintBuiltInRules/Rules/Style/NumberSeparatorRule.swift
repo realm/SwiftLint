@@ -180,7 +180,7 @@ private extension NumberSeparatorValidator {
             defer { correctComponents.append(String(char)) }
             guard char.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains) else { continue }
 
-            if numerals.isMultiple(of: 3) && numerals > 0 && shouldAddSeparators {
+            if numerals.isMultiple(of: 3), numerals > 0, shouldAddSeparators {
                 correctComponents.append("_")
             }
             numerals += 1

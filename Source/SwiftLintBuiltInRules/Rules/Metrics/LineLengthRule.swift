@@ -72,16 +72,16 @@ private extension LineLengthRule {
                 }
 
                 // Apply ignore configurations
-                if configuration.ignoresFunctionDeclarations && functionDeclarationLines.contains(line.index) {
+                if configuration.ignoresFunctionDeclarations, functionDeclarationLines.contains(line.index) {
                     continue
                 }
-                if configuration.ignoresComments && commentOnlyLines.contains(line.index) {
+                if configuration.ignoresComments, commentOnlyLines.contains(line.index) {
                     continue
                 }
-                if configuration.ignoresInterpolatedStrings && interpolatedStringLines.contains(line.index) {
+                if configuration.ignoresInterpolatedStrings, interpolatedStringLines.contains(line.index) {
                     continue
                 }
-                if configuration.ignoresMultilineStrings && multilineStringLines.contains(line.index) {
+                if configuration.ignoresMultilineStrings, multilineStringLines.contains(line.index) {
                     continue
                 }
                 if configuration.excludedLinesPatterns.contains(where: {

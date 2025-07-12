@@ -54,7 +54,7 @@ extension SwitchCaseAlignmentRule {
             let switchKeywordPosition = node.switchKeyword.positionAfterSkippingLeadingTrivia
             let switchKeywordLocation = locationConverter.location(for: switchKeywordPosition)
 
-            if configuration.ignoreOneLiners && switchKeywordLocation.line == closingBraceLocation.line {
+            if configuration.ignoreOneLiners, switchKeywordLocation.line == closingBraceLocation.line {
                 return
             }
 

@@ -275,7 +275,7 @@ private func testCorrection(_ correction: (Example, Example),
     }
 
     config.assertCorrection(correction.0, expected: correction.1)
-    if testMultiByteOffsets && correction.0.testMultiByteOffsets {
+    if testMultiByteOffsets, correction.0.testMultiByteOffsets {
         config.assertCorrection(addEmoji(correction.0), expected: addEmoji(correction.1))
     }
 }

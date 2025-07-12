@@ -100,7 +100,7 @@ private extension SwiftLintFile {
 
         var unusedImports = imports.subtracting(usrFragments).subtracting(configuration.alwaysKeepImports)
         // Certain Swift attributes requires importing Foundation.
-        if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
+        if unusedImports.contains("Foundation"), containsAttributesRequiringFoundation() {
             unusedImports.remove("Foundation")
         }
 

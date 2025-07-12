@@ -150,7 +150,7 @@ private extension FunctionCallExprSyntax {
             }
 
             // Check container views with accessibility modifiers
-            if funcCall.isContainerView() && funcCall.hasAccessibilityModifiersInChain() {
+            if funcCall.isContainerView(), funcCall.hasAccessibilityModifiersInChain() {
                 return true
             }
 

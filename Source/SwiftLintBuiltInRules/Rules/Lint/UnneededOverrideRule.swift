@@ -25,7 +25,7 @@ private extension UnneededOverrideRule {
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            if configuration.affectInits && node.isUnneededOverride {
+            if configuration.affectInits, node.isUnneededOverride {
                 self.violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

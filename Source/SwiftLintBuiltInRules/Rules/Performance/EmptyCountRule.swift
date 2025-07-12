@@ -148,7 +148,7 @@ private extension EmptyCountRule {
 private extension ExprSyntax {
     func countCallPosition(onlyAfterDot: Bool) -> AbsolutePosition? {
         if let expr = self.as(MemberAccessExprSyntax.self) {
-            if expr.declName.argumentNames == nil && expr.declName.baseName.tokenKind == .identifier("count") {
+            if expr.declName.argumentNames == nil, expr.declName.baseName.tokenKind == .identifier("count") {
                 return expr.declName.baseName.positionAfterSkippingLeadingTrivia
             }
 

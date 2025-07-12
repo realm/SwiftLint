@@ -30,13 +30,13 @@ package final class RulesFilter {
             }
             let isRuleEnabled = enabledRule != nil
 
-            if excludingOptions.contains(.enabled) && isRuleEnabled {
+            if excludingOptions.contains(.enabled), isRuleEnabled {
                 return nil
             }
-            if excludingOptions.contains(.disabled) && !isRuleEnabled {
+            if excludingOptions.contains(.disabled), !isRuleEnabled {
                 return nil
             }
-            if excludingOptions.contains(.uncorrectable) && !(ruleType is any CorrectableRule.Type) {
+            if excludingOptions.contains(.uncorrectable), !(ruleType is any CorrectableRule.Type) {
                 return nil
             }
 

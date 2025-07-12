@@ -199,7 +199,7 @@ private extension StatementPositionRule {
             } else {
                 newLines = ""
             }
-            if !whitespace.hasPrefix("\n") && newLines != "\n" {
+            if !whitespace.hasPrefix("\n"), newLines != "\n" {
                 whitespace.insert("\n", at: whitespace.startIndex)
             }
             contents = contents.bridge().replacingCharacters(in: range2, with: whitespace)

@@ -203,8 +203,7 @@ package struct LintOrAnalyzeCommand {
     ) throws -> Int {
         let options = builder.options
         let configuration = builder.configuration
-        if isWarningThresholdBroken(configuration: configuration, violations: builder.violations)
-            && !options.lenient {
+        if isWarningThresholdBroken(configuration: configuration, violations: builder.violations), !options.lenient {
             builder.violations.append(
                 createThresholdViolation(threshold: configuration.warningThreshold!)
             )
@@ -325,7 +324,7 @@ package struct LintOrAnalyzeCommand {
                 }
 
                 let corrections = linter.correct(using: storage)
-                if !corrections.isEmpty && !options.quiet {
+                if !corrections.isEmpty, !options.quiet {
                     if options.useSTDIN {
                         queuedPrint(linter.file.contents)
                     } else {

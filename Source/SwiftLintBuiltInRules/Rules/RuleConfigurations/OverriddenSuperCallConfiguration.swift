@@ -45,7 +45,7 @@ struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
 
     var resolvedMethodNames: [String] {
         var names: [String] = []
-        if included.contains("*") && !excluded.contains("*") {
+        if included.contains("*"), !excluded.contains("*") {
             names += Self.defaultIncluded
         }
         names += included.filter { $0 != "*" }

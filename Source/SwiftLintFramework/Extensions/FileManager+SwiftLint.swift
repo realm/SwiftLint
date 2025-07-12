@@ -35,7 +35,7 @@ extension FileManager: LintableFileManager {
             .standardizingPath
 
         // if path is a file, it won't be returned in `enumerator(atPath:)`
-        if absolutePath.bridge().isSwiftFile() && absolutePath.isFile {
+        if absolutePath.bridge().isSwiftFile(), absolutePath.isFile {
             return [absolutePath]
         }
 

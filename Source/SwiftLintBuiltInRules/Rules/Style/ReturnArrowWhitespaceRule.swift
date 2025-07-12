@@ -87,7 +87,7 @@ private extension TokenSyntax {
         var end: AbsolutePosition?
         var correction = " -> "
 
-        if previousToken.trailingTrivia != .space && !leadingTrivia.containsNewlines() {
+        if previousToken.trailingTrivia != .space, !leadingTrivia.containsNewlines() {
             start = previousToken.endPositionBeforeTrailingTrivia
             end = endPosition
 
@@ -96,7 +96,7 @@ private extension TokenSyntax {
             }
         }
 
-        if trailingTrivia != .space && !nextToken.leadingTrivia.containsNewlines() {
+        if trailingTrivia != .space, !nextToken.leadingTrivia.containsNewlines() {
             if leadingTrivia.containsNewlines() {
                 start = positionAfterSkippingLeadingTrivia
                 correction = "-> "

@@ -48,8 +48,7 @@ private extension TrailingWhitespaceRule {
                 }
 
                 // Apply `ignoresEmptyLines` configuration
-                if configuration.ignoresEmptyLines &&
-                    line.trimmingCharacters(in: .whitespaces).isEmpty {
+                if configuration.ignoresEmptyLines, line.trimmingCharacters(in: .whitespaces).isEmpty {
                     continue
                 }
 
@@ -102,7 +101,7 @@ private extension TrailingWhitespaceRule {
                     let pieceStart = currentPos
                     currentPos += piece.sourceLength
 
-                    if piece.isComment && !piece.isBlockComment {
+                    if piece.isComment, !piece.isBlockComment {
                         let pieceStartLine = locationConverter.location(for: pieceStart).line
                         lineCommentRanges[pieceStartLine, default: []].append(pieceStart..<currentPos)
                     }
@@ -114,7 +113,7 @@ private extension TrailingWhitespaceRule {
                     let pieceStart = currentPos
                     currentPos += piece.sourceLength
 
-                    if piece.isComment && !piece.isBlockComment {
+                    if piece.isComment, !piece.isBlockComment {
                         let pieceStartLine = locationConverter.location(for: pieceStart).line
                         lineCommentRanges[pieceStartLine, default: []].append(pieceStart..<currentPos)
                     }
@@ -153,7 +152,7 @@ private extension TrailingWhitespaceRule {
             from line: String,
             removing trailingWhitespaceInfo: TrailingWhitespaceInfo
         ) -> String {
-            if trailingWhitespaceInfo.characterCount > 0 && line.count >= trailingWhitespaceInfo.characterCount {
+            if trailingWhitespaceInfo.characterCount > 0, line.count >= trailingWhitespaceInfo.characterCount {
                 return String(line.prefix(line.count - trailingWhitespaceInfo.characterCount))
             }
             return ""
@@ -179,7 +178,7 @@ private extension TrailingWhitespaceRule {
             // Check if this position falls within any comment range on this line
             if let ranges = lineCommentRanges[lineNumber] {
                 for range in ranges {
-                    if range.lowerBound <= lastNonWhitespacePos && lastNonWhitespacePos < range.upperBound {
+                    if range.lowerBound <= lastNonWhitespacePos, lastNonWhitespacePos < range.upperBound {
                         return true
                     }
                 }
@@ -236,7 +235,7 @@ private extension TrailingWhitespaceRule {
             var endLine = endLocation.line
 
             // If comment ends at column 1, it actually ended on the previous line
-            if endLocation.column == 1 && endLine > startLine {
+            if endLocation.column == 1, endLine > startLine {
                 endLine -= 1
             }
 
@@ -261,13 +260,13 @@ private extension TrailingWhitespaceRule {
                     let lastNonWhitespacePos = lineStartPos.advanced(by: byteOffsetToLastNonWS)
 
                     // Check if both first and last non-whitespace positions are within the comment
-                    if firstNonWhitespacePos >= blockCommentStart && lastNonWhitespacePos < blockCommentEnd {
+                    if firstNonWhitespacePos >= blockCommentStart, lastNonWhitespacePos < blockCommentEnd {
                         linesFullyCoveredByBlockComments.insert(lineNum)
                     }
                 } else {
                     // Line is all whitespace - check if it's within the comment bounds
                     let lineEndPos = lineStartPos.advanced(by: lineContent.utf8.count)
-                    if lineStartPos >= blockCommentStart && lineEndPos <= blockCommentEnd {
+                    if lineStartPos >= blockCommentStart, lineEndPos <= blockCommentEnd {
                         linesFullyCoveredByBlockComments.insert(lineNum)
                     }
                 }
@@ -294,7 +293,7 @@ private extension String {
         var charCount = 0
         var byteLen = 0
         for char in self.reversed() {
-            if char.isWhitespace && (char == " " || char == "\t") { // Only count spaces and tabs
+            if char.isWhitespace, char == " " || char == "\t" { // Only count spaces and tabs
                 charCount += 1
                 byteLen += char.utf8.count
             } else {

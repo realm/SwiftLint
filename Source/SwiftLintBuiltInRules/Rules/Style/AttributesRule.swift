@@ -86,7 +86,7 @@ private extension AttributesRule {
             }
 
             let hasMultipleNewlines = node.children(viewMode: .sourceAccurate).enumerated().contains { index, element in
-                if index > 0 && element.leadingTrivia.hasMultipleNewlines == true {
+                if index > 0, element.leadingTrivia.hasMultipleNewlines == true {
                     return true
                 }
                 return element.trailingTrivia.hasMultipleNewlines == true
@@ -162,7 +162,7 @@ private struct RuleHelper {
                     linesWithAttributes.contains(attributeStartLine)
                 linesWithAttributes.insert(attributeStartLine)
                 if hasViolation {
-                    if attributesWithArgumentsAlwaysOnNewLine && shouldBeOnSameLine {
+                    if attributesWithArgumentsAlwaysOnNewLine, shouldBeOnSameLine {
                         return .argumentsAlwaysOnNewLineViolation
                     }
                     return .violation

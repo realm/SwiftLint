@@ -150,13 +150,13 @@ private extension VerticalParameterAlignmentOnCallRule {
                     }
 
                     let (firstVisit, _) = visitedLines.insert(location.line)
-                    guard location.column != firstArgumentLocation.column && firstVisit else {
+                    guard location.column != firstArgumentLocation.column, firstVisit else {
                         return nil
                     }
 
                     // if this is the first element on a new line after a closure with multiple lines,
                     // we reset the reference position
-                    if previousArgumentWasMultiline && firstVisit {
+                    if previousArgumentWasMultiline, firstVisit {
                         firstArgumentLocation = location
                         return nil
                     }

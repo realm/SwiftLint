@@ -16,6 +16,8 @@ struct PreferConditionListRule: Rule {
             Example("if a && b || c {}"),
             Example("let result = a && b"),
             Example("repeat {} while a && b"),
+            Example("if (f {}) {}"),
+            Example("if f {} {}"),
         ],
         triggeringExamples: [
             Example("if a ↓&& b {}"),
@@ -26,6 +28,7 @@ struct PreferConditionListRule: Rule {
             Example("if a ↓&& (b && c) {}"),
             Example("guard a ↓&& b ↓&& c else {}"),
             Example("if (a ↓&& b) {}"),
+            Example("if (a ↓&& f {}) {}"),
         ],
         corrections: [
             Example("if a && b {}"):
@@ -53,6 +56,14 @@ struct PreferConditionListRule: Rule {
                 Example("if a, b, c {}"),
             Example("guard (a || b) ↓&& c {}"):
                 Example("guard a || b, c {}"),
+            Example("if a && (b || c) {}"):
+                Example("if a, b || c {}"),
+            Example("if (a ↓&& f {}) {}"):
+                Example("if a, (f {}) {}"),
+            Example("if a ↓&& (b || f {}) {}"):
+                Example("if a, b || (f {}) {}"),
+            Example("if a ↓&& !f {} {}"):
+                Example("if a, !(f {}) {}"),
         ]
     )
 }
@@ -78,6 +89,7 @@ private extension PreferConditionListRule {
     private final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ConditionElementListSyntax) -> ConditionElementListSyntax {
             var elements = Array(node)
+            var modifiedIndices = Set<Int>()
             var index = 0
 
             while index < elements.count {
@@ -90,11 +102,14 @@ private extension PreferConditionListRule {
                    let opToken = opExpr.operator.as(BinaryOperatorExprSyntax.self)?.operator,
                    opToken.text == "&&" {
                     numberOfCorrections += 1
+
                     elements[index] = ConditionElementSyntax(
                         condition: .expression(opExpr.leftOperand.with(\.trailingTrivia, [])),
                         trailingComma: .commaToken(),
                         trailingTrivia: opToken.trailingTrivia
                     )
+                    modifiedIndices.insert(index)
+
                     elements.insert(
                         ConditionElementSyntax(
                             condition: .expression(opExpr.rightOperand.with(\.trailingTrivia, [])),
@@ -103,16 +118,33 @@ private extension PreferConditionListRule {
                         ),
                         at: index + 1
                     )
+                    modifiedIndices.insert(index + 1)
                     // Don't increment the index to re-evaluate `elements[index]`.
                 } else if expr.is(TupleExprSyntax.self) {
                     // Unwrap parenthesized expression and repeat the loop for the inner expression (i.e. without
                     // incrementing the index).
-                    elements[index] = element.with(\.condition, .expression(expr.unwrap))
+                    let unwrappedExpr = expr.unwrap
+                    elements[index] = element.with(\.condition, .expression(unwrappedExpr))
+                    if unwrappedExpr != expr {
+                        modifiedIndices.insert(index)
+                    }
                 } else {
                     index += 1
                 }
             }
-
+            for (index, element) in elements.enumerated() where modifiedIndices.contains(index) {
+                if case let .expression(expr) = element.condition {
+                    // If the expression contains function calls with trailing closures, we need to wrap them in
+                    // parentheses. That might not be exactly how the author created the expression, but it is
+                    // necessary to ensure no compiler warning appears after the transformations.
+                    elements[index] = element.with(
+                        \.condition,
+                        .expression(ParenthesizedTrailingClosureRewriter().visit(expr))
+                            .with(\.leadingTrivia, expr.leadingTrivia)
+                            .with(\.trailingTrivia, expr.trailingTrivia)
+                    )
+                }
+            }
             return super.visit(ConditionElementListSyntax(elements))
         }
     }
@@ -120,6 +152,38 @@ private extension PreferConditionListRule {
 
 private extension ExprSyntax {
     var unwrap: ExprSyntax {
-        self.as(TupleExprSyntax.self)?.elements.onlyElement?.expression ?? self
+        `as`(TupleExprSyntax.self)?.elements.onlyElement?.expression
+            .with(\.leadingTrivia, leadingTrivia)
+            .with(\.trailingTrivia, trailingTrivia)
+        ?? self
+    }
+}
+
+private final class ParenthesizedTrailingClosureRewriter: SyntaxRewriter {
+    override func visitAny(_ node: Syntax) -> Syntax? {
+        if let opToken = node.as(InfixOperatorExprSyntax.self)?.operator.as(BinaryOperatorExprSyntax.self)?.operator,
+           ["&&", "||"].contains(opToken.text) {
+            nil
+        } else if let opToken = node.as(PrefixOperatorExprSyntax.self)?.operator,
+                  ["!"].contains(opToken.text) {
+            nil
+        } else if node.is(FunctionCallExprSyntax.self) {
+            nil
+        } else {
+            node
+        }
+    }
+
+    override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+        if node.trailingClosure != nil || node.additionalTrailingClosures.isNotEmpty {
+            return ExprSyntax(TupleExprSyntax(
+                elements: LabeledExprListSyntax([
+                    LabeledExprSyntax(label: nil, expression: node.with(\.trailingTrivia, []))
+                ])
+            ))
+            .with(\.leadingTrivia, node.leadingTrivia)
+            .with(\.trailingTrivia, node.trailingTrivia)
+        }
+        return super.visit(node)
     }
 }

@@ -83,6 +83,10 @@
 * Support deinitializers and subscripts in `function_body_length` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add `function_name_whitespace` rule to ensure exactly one space before
+  function name and no space after it. Supports autocorrection.  
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

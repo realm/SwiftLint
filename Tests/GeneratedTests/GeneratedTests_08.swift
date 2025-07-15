@@ -7,6 +7,18 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantSelfInClosureRule.description)
+    }
+}
+
+final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantSendableRule.description)
+    }
+}
+
 final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)
@@ -142,17 +154,5 @@ final class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
 final class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SuperfluousElseRule.description)
-    }
-}
-
-final class SwitchCaseAlignmentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseAlignmentRule.description)
-    }
-}
-
-final class SwitchCaseOnNewlineRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseOnNewlineRule.description)
     }
 }

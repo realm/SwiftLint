@@ -7,6 +7,18 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ForWhereRule.description)
+    }
+}
+
+final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ForceCastRule.description)
+    }
+}
+
 final class ForceTryRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceTryRule.description)
@@ -142,17 +154,5 @@ final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
 final class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstructorRule.description)
-    }
-}
-
-final class LegacyHashingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyHashingRule.description)
-    }
-}
-
-final class LegacyMultipleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyMultipleRule.description)
     }
 }

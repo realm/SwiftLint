@@ -7,6 +7,18 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NimbleOperatorRule.description)
+    }
+}
+
+final class NoEmptyBlockRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NoEmptyBlockRule.description)
+    }
+}
+
 final class NoExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NoExtensionAccessModifierRule.description)
@@ -142,17 +154,5 @@ final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
 final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
-    }
-}
-
-final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferNimbleRule.description)
-    }
-}
-
-final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferSelfInStaticReferencesRule.description)
     }
 }

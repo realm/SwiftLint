@@ -4,17 +4,9 @@ import TestHelpers
 @testable import SwiftLintCore
 
 final class ExplicitOptionalInitializationTests: SwiftLintTestCase {
-  func testExplicitOptionalInitializationAlways() {
+  func testExplicitOptionalInitialization() {
     verifyRule(
-      ExplicitOptionalInitializationRule.description,
-      ruleConfiguration: ["style": "always"]
-    )
-  }
-
-  func testExplicitOptionalInitializationNever() {
-    verifyRule(
-      ExplicitOptionalInitializationRule.description,
-      ruleConfiguration: ["style": "never"]
+      ExplicitOptionalInitializationRule.description
     )
   }
 }

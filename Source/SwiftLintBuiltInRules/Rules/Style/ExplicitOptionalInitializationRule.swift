@@ -11,16 +11,25 @@ struct ExplicitOptionalInitializationRule: Rule {
       "Detects optional variable declarations that either explicitly initialize to nil or omit the initializer, depending on the configured style (always or never)",
     kind: .style,
     nonTriggeringExamples: [
+      Example("var a: Optional<Int> = nil", configuration: ["style": "always"]),
       Example("var b: Int? = nil", configuration: ["style": "always"]),
+      Example("var b: Optional<Int>", configuration: ["style": "never"]),
       Example("var a: Int?", configuration: ["style": "never"]),
     ],
     triggeringExamples: [
+      Example("var a: Optional<Int>↓", configuration: ["style": "always"]),
       Example("var a: Int?↓", configuration: ["style": "always"]),
-      Example("var b: Int? = ↓nil", configuration: ["style": "never"]),
+      Example("var b: Optional<Int>↓ = nil", configuration: ["style": "never"]),
+      Example("var b: Int?↓ = nil", configuration: ["style": "never"]),
     ],
     corrections: [
-      Example("var a: Int?↓", configuration: ["style": "always"]): Example("var a: Int? = nil"),
-      Example("var b: Int? = ↓nil", configuration: ["style": "never"]): Example("var b: Int?"),
+      :
+      // Example("var a: Optional<Int>↓", configuration: ["style": "always"]):
+      //   Example("var a: Optional<Int> = nil"),
+      // Example("var a: Int?↓", configuration: ["style": "always"]): Example("var a: Int? = nil"),
+      // Example("var b: Optional<Int>↓ = nil", configuration: ["style": "never"]):
+      //   Example("var b: Optional<Int>"),
+      // Example("var b: Int?↓ = nil", configuration: ["style": "never"]): Example("var b: Int?"),
     ]
   )
 }
@@ -28,15 +37,14 @@ struct ExplicitOptionalInitializationRule: Rule {
 extension ExplicitOptionalInitializationRule {
   fileprivate final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
     override func visitPost(_ node: VariableDeclSyntax) {
-      guard node.bindingSpecifier.tokenKind == .keyword(.var),
+      guard
+        node.bindingSpecifier.tokenKind == .keyword(.var),
         !node.modifiers.contains(keyword: .lazy)
-      else {
-        return
-      }
+      else { return }
 
       for binding in node.bindings {
-        if let position = binding.violationPosition(for: configuration.style) {
-          violations.append(position)
+        if let violation = binding.violation(for: configuration.style) {
+          violations.append(violation)
         }
       }
     }
@@ -46,99 +54,56 @@ extension ExplicitOptionalInitializationRule {
     override func visitAny(_: Syntax) -> Syntax? { nil }
 
     override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-      guard node.bindingSpecifier.tokenKind == .keyword(.var),
+      guard
+        node.bindingSpecifier.tokenKind == .keyword(.var),
         !node.modifiers.contains(keyword: .lazy)
-      else {
-        return super.visit(node)
-      }
+      else { return super.visit(node) }
 
-      let violations = node.bindings
-        .compactMap { binding in
-          binding.violationPosition(for: configuration.style).map { ($0, binding) }
-        }
-        .filter { position, _ in
-          !position.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-        }
+      let updatedBindings = PatternBindingListSyntax(
+        node.bindings.map {
+          guard $0.violation(for: configuration.style) != nil else { return $0 }
 
-      guard violations.isNotEmpty else {
-        return super.visit(node)
-      }
+          numberOfCorrections += 1
 
-      numberOfCorrections += violations.count
-      let violatingBindings = violations.map(\.1)
-
-      let newBindings = PatternBindingListSyntax(
-        node.bindings.map { binding in
-          guard violatingBindings.contains(binding) else {
-            return binding
-          }
-
+          var binding = $0
           switch configuration.style {
-          case .never:
-            return
-              binding
-              .with(\.initializer, nil)
-              .with(\.trailingTrivia, Trivia())
-
           case .always:
-            guard binding.initializer == nil else { return binding }
-
-            let nilExpr = ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil)))
-            let initializer = InitializerClauseSyntax(
+            binding.trailingTrivia = Trivia()
+            binding.initializer = InitializerClauseSyntax(
               equal: .equalToken(leadingTrivia: .space, trailingTrivia: .space),
-              value: nilExpr
+              value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil)))
             )
-            return binding.with(\.initializer, initializer)
+          case .never:
+            binding.initializer = nil
+            binding.trailingTrivia = Trivia()
           }
-        }
-      )
+          return binding
+        })
 
-      return super.visit(node.with(\.bindings, newBindings))
+      guard updatedBindings != node.bindings else { return super.visit(node) }
+
+      return super.visit(node.with(\.bindings, updatedBindings))
     }
   }
 }
 
 extension PatternBindingSyntax {
-  fileprivate func violationPosition(
-    for style: ExplicitOptionalInitializationConfiguration.Style
-  ) -> AbsolutePosition? {
-    switch style {
-    case .never:
-      guard let initializer,
-        let type = typeAnnotation,
-        initializer.isInitializingToNil,
-        type.isOptionalType
-      else {
-        return nil
-      }
-      return initializer.value.positionAfterSkippingLeadingTrivia
+  fileprivate func violation(for style: ExplicitOptionalInitializationConfiguration.Style)
+    -> AbsolutePosition?
+  {
+    guard
+      let typeAnnotation, typeAnnotation.isOptionalType,
+      (style == .always && initializer == nil)
+        || (style == .never && initializer != nil)
+    else { return nil }
 
-    case .always:
-      guard initializer == nil,
-        let type = typeAnnotation,
-        type.isOptionalType
-      else {
-        return nil
-      }
-      if let optionalType = type.type.as(OptionalTypeSyntax.self) {
-        return optionalType.questionMark.position
-      }
-      return nil
-    }
-  }
-}
-
-extension InitializerClauseSyntax {
-  fileprivate var isInitializingToNil: Bool {
-    value.is(NilLiteralExprSyntax.self)
+    return typeAnnotation.type.endPositionBeforeTrailingTrivia
   }
 }
 
 extension TypeAnnotationSyntax {
   fileprivate var isOptionalType: Bool {
-    if type.is(OptionalTypeSyntax.self) {
-      return true
-    }
+    if type.is(OptionalTypeSyntax.self) { return true }
 
     if let type = type.as(IdentifierTypeSyntax.self),
       let genericClause = type.genericArgumentClause

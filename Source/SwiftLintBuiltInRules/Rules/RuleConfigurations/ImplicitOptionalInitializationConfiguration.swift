@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoConfigParser
-struct ImplicitOptionalInitializationConfiguration: SeverityBasedRuleConfiguration {
+struct ImplicitOptionalInitConfiguration: SeverityBasedRuleConfiguration {
   typealias Parent = ImplicitOptionalInitializationRule
 
   @AcceptableByConfigurationElement

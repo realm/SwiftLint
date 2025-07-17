@@ -3,10 +3,9 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
-import TestHelpers
-
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
+import TestHelpers
 
 final class EmptyParametersRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
@@ -59,12 +58,6 @@ final class ExplicitEnumRawValueRuleGeneratedTests: SwiftLintTestCase {
 final class ExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitInitRule.description)
-    }
-}
-
-final class ExplicitOptionalInitializationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitOptionalInitializationRule.description)
     }
 }
 
@@ -149,5 +142,17 @@ final class FirstWhereRuleGeneratedTests: SwiftLintTestCase {
 final class FlatMapOverMapReduceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)
+    }
+}
+
+final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ForWhereRule.description)
+    }
+}
+
+final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ForceCastRule.description)
     }
 }

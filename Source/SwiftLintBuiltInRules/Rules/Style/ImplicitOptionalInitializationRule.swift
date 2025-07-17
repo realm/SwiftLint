@@ -26,11 +26,14 @@ struct ImplicitOptionalInitializationRule: Rule {
         """
       ),
       Example("lazy var test: Int? = nil"),  // lazy variables need to be initialized
-      Example("let myVar: String? = nil"),  // let variables can be initialized with nil
+      Example("let myVar: String? = nil"),  // let variables need to be initialized
+      Example("var myVar: Int? { nil }"),  // computed properties should be ignored
+      Example("var x: Int? = 1"),  // initialized with a value
 
       // never style
-      Example("var myVar: Int? = nil", configuration: ["style": "never"]),
+      Example("private var myVar: Int? = nil", configuration: ["style": "never"]),
       Example("var myVar: Optional<Int> = nil", configuration: ["style": "never"]),
+      Example("var myVar: Int? { nil }, myOtherVar: Int? = nil", configuration: ["style": "never"]),
       Example(
         """
         var myVar: String? = nil {
@@ -45,8 +48,9 @@ struct ImplicitOptionalInitializationRule: Rule {
         """, configuration: ["style": "never"]),
 
       // always style
-      Example("var myVar: Int?", configuration: ["style": "always"]),
+      Example("public var myVar: Int?", configuration: ["style": "always"]),
       Example("var myVar: Optional<Int>", configuration: ["style": "always"]),
+      Example("var myVar: Int? { nil }, myOtherVar: Int?", configuration: ["style": "always"]),
       Example(
         """
         var myVar: String? {
@@ -64,7 +68,7 @@ struct ImplicitOptionalInitializationRule: Rule {
       // never style
       Example("var myVar: Int?↓ ", configuration: ["style": "never"]),
       Example("var myVar: Optional<Int>↓ ", configuration: ["style": "never"]),
-      Example("var myVar: Int?↓, myOtherVar = true", configuration: ["style": "never"]),
+      Example("var myVar: Int? = nil, myOtherVar: Int?↓ ", configuration: ["style": "never"]),
       Example(
         """
         var myVar: String?↓ {
@@ -82,7 +86,7 @@ struct ImplicitOptionalInitializationRule: Rule {
       // always style
       Example("var myVar: Int?↓ = nil", configuration: ["style": "always"]),
       Example("var myVar: Optional<Int>↓ = nil", configuration: ["style": "always"]),
-      Example("var myVar: Int?↓ = nil, myOtherVar = true", configuration: ["style": "always"]),
+      Example("var myVar: Int?, myOtherVar: Int?↓ = nil", configuration: ["style": "always"]),
       Example(
         """
         var myVar: String?↓ = nil {
@@ -171,56 +175,6 @@ extension ImplicitOptionalInitializationRule {
   }
 }
 
-extension VariableDeclSyntax {
-  fileprivate func violationPositions(
-    for style: ImplicitOptionalInitializationConfiguration.Style
-  ) -> [AbsolutePosition]? {
-    guard
-      bindingSpecifier.tokenKind == .keyword(.var),
-      !modifiers.contains(keyword: .lazy)
-    else { return nil }
-
-    let bindings = bindings.compactMap { $0.violationPosition(for: style) }
-
-    return bindings.isEmpty ? nil : bindings
-  }
-}
-
-extension PatternBindingSyntax {
-  fileprivate func violationPosition(
-    for style: ImplicitOptionalInitializationConfiguration.Style
-  ) -> AbsolutePosition? {
-    guard
-      let typeAnnotation: TypeAnnotationSyntax, typeAnnotation.isOptionalType
-    else { return nil }
-
-    if (style == .never && !initializer.isNil) || (style == .always && initializer.isNil) {
-      return typeAnnotation.endPositionBeforeTrailingTrivia
-    }
-
-    return nil
-  }
-}
-
-extension InitializerClauseSyntax? {
-  fileprivate var isNil: Bool {
-    self?.value.is(NilLiteralExprSyntax.self) ?? false
-  }
-}
-
-extension TypeAnnotationSyntax {
-  fileprivate var isOptionalType: Bool {
-    if type.is(OptionalTypeSyntax.self) { return true }
-
-    if let type = type.as(IdentifierTypeSyntax.self),
-      let genericClause = type.genericArgumentClause {
-      return genericClause.arguments.count == 1 && type.name.text == "Optional"
-    }
-
-    return false
-  }
-}
-
 extension ImplicitOptionalInitializationRule {
   fileprivate final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
     override func visitAny(_: Syntax) -> Syntax? { nil }
@@ -274,5 +228,70 @@ extension ImplicitOptionalInitializationRule {
             }))
       )
     }
+  }
+}
+
+extension VariableDeclSyntax {
+  fileprivate func violationPositions(
+    for style: ImplicitOptionalInitializationConfiguration.Style
+  ) -> [AbsolutePosition]? {
+    guard
+      bindingSpecifier.tokenKind == .keyword(.var),
+      !modifiers.contains(keyword: .lazy)
+    else { return nil }
+
+    let bindings = bindings.compactMap { $0.violationPosition(for: style) }
+
+    return bindings.isEmpty ? nil : bindings
+  }
+}
+
+extension PatternBindingSyntax {
+  fileprivate func violationPosition(
+    for style: ImplicitOptionalInitializationConfiguration.Style
+  ) -> AbsolutePosition? {
+    guard
+      let typeAnnotation, typeAnnotation.isOptionalType
+    else { return nil }
+
+    // ignore properties with accessors unless they have only willSet or didSet
+    if let accessorBlock {
+      if let accessors = accessorBlock.accessors.as(AccessorDeclListSyntax.self) {
+        if accessors.allSatisfy({
+          $0.accessorSpecifier.tokenKind != .keyword(.willSet)
+            && $0.accessorSpecifier.tokenKind != .keyword(.didSet)
+        }) {  // we have not only willSet or didSet
+          return nil
+        }
+      } else {  // we have not only willSet or didSet
+        return nil
+      }
+    }
+
+    if (style == .never && !initializer.isNil) || (style == .always && initializer.isNil) {
+      return typeAnnotation.endPositionBeforeTrailingTrivia
+    }
+
+    return nil
+  }
+}
+
+extension InitializerClauseSyntax? {
+  fileprivate var isNil: Bool {
+    self?.value.is(NilLiteralExprSyntax.self) ?? false
+  }
+}
+
+extension TypeAnnotationSyntax {
+  fileprivate var isOptionalType: Bool {
+    if type.is(OptionalTypeSyntax.self) { return true }
+
+    if let type = type.as(IdentifierTypeSyntax.self),
+      let genericClause = type.genericArgumentClause
+    {
+      return genericClause.arguments.count == 1 && type.name.text == "Optional"
+    }
+
+    return false
   }
 }

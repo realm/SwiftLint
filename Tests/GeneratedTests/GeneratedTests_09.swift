@@ -7,12 +7,6 @@
 @testable import SwiftLintCore
 import TestHelpers
 
-final class SwitchCaseOnNewlineRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseOnNewlineRule.description)
-    }
-}
-
 final class SyntacticSugarRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SyntacticSugarRule.description)
@@ -154,5 +148,11 @@ final class UnusedClosureParameterRuleGeneratedTests: SwiftLintTestCase {
 final class UnusedControlFlowLabelRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedControlFlowLabelRule.description)
+    }
+}
+
+final class UnusedDeclarationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedDeclarationRule.description)
     }
 }

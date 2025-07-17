@@ -13,5 +13,5 @@ struct ExplicitOptionalInitializationConfiguration: SeverityBasedRuleConfigurati
   @ConfigurationElement(key: "severity")
   private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
   @ConfigurationElement(key: "style")
-  private(set) var style: Style = .always
+  private(set) var style: Style = .never
 }

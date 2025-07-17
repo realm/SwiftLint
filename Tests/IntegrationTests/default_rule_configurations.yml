@@ -332,10 +332,10 @@ explicit_init:
     correctable: true
 explicit_optional_initialization:
   severity: warning
-  enforcement: never
+  style: always
   meta:
-    opt-in: true
-    correctable: false
+    opt-in: false
+    correctable: true
 explicit_self:
   severity: warning
   meta:

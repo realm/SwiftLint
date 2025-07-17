@@ -163,8 +163,8 @@ struct ImplicitOptionalInitializationRule: Rule {
   )
 }
 
-extension ImplicitOptionalInitializationRule {
-  fileprivate final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+private extension ImplicitOptionalInitializationRule {
+  final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
     override func visitPost(_ node: VariableDeclSyntax) {
       guard let violationPositions = node.violationPositions(for: configuration.style) else {
         return
@@ -175,8 +175,8 @@ extension ImplicitOptionalInitializationRule {
   }
 }
 
-extension ImplicitOptionalInitializationRule {
-  fileprivate final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+private extension ImplicitOptionalInitializationRule {
+  final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
     override func visitAny(_: Syntax) -> Syntax? { nil }
 
     override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
@@ -231,8 +231,8 @@ extension ImplicitOptionalInitializationRule {
   }
 }
 
-extension VariableDeclSyntax {
-  fileprivate func violationPositions(
+private extension VariableDeclSyntax {
+  func violationPositions(
     for style: ImplicitOptionalInitializationConfiguration.Style
   ) -> [AbsolutePosition]? {
     guard
@@ -246,8 +246,8 @@ extension VariableDeclSyntax {
   }
 }
 
-extension PatternBindingSyntax {
-  fileprivate func violationPosition(
+private extension PatternBindingSyntax {
+  func violationPosition(
     for style: ImplicitOptionalInitializationConfiguration.Style
   ) -> AbsolutePosition? {
     guard
@@ -276,14 +276,14 @@ extension PatternBindingSyntax {
   }
 }
 
-extension InitializerClauseSyntax? {
-  fileprivate var isNil: Bool {
+private extension InitializerClauseSyntax? {
+  var isNil: Bool {
     self?.value.is(NilLiteralExprSyntax.self) ?? false
   }
 }
 
-extension TypeAnnotationSyntax {
-  fileprivate var isOptionalType: Bool {
+private extension TypeAnnotationSyntax {
+  var isOptionalType: Bool {
     if type.is(OptionalTypeSyntax.self) { return true }
 
     if let type = type.as(IdentifierTypeSyntax.self),

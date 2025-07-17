@@ -1,14 +1,13 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
-struct ExplicitOptionalInitializationRule: Rule {
-  var configuration = ExplicitOptionalInitializationConfiguration()
+struct ImplicitOptionalInitializationRule: Rule {
+  var configuration = ImplicitOptionalInitializationConfiguration()
 
   static let description = RuleDescription(
-    identifier: "explicit_optional_initialization",
-    name: "Explicit Optional Initialization",
-    description:
-      "Always explicitly initialize an optional variable with nil (style: always) or never (style: never)",
+    identifier: "implicit_optional_initialization",
+    name: "Implicit Optional Initialization",
+    description: "Enforce implicit initialization of optional variables (always or never).",
     kind: .style,
     nonTriggeringExamples: [
       Example(  // properties with body should be ignored
@@ -29,86 +28,86 @@ struct ExplicitOptionalInitializationRule: Rule {
       Example("lazy var test: Int? = nil"),  // lazy variables need to be initialized
       Example("let myVar: String? = nil"),  // let variables can be initialized with nil
 
-      // always style
-      Example("var myVar: Int? = nil", configuration: ["style": "always"]),
-      Example("var myVar: Optional<Int> = nil", configuration: ["style": "always"]),
+      // never style
+      Example("var myVar: Int? = nil", configuration: ["style": "never"]),
+      Example("var myVar: Optional<Int> = nil", configuration: ["style": "never"]),
       Example(
         """
         var myVar: String? = nil {
           didSet { print("didSet") }
         }
-        """, configuration: ["style": "always"]),
+        """, configuration: ["style": "never"]),
       Example(
         """
         func funcName() {
             var myVar: String? = nil
         }
-        """, configuration: ["style": "always"]),
+        """, configuration: ["style": "never"]),
 
-      // never style
-      Example("var myVar: Int?", configuration: ["style": "never"]),
-      Example("var myVar: Optional<Int>", configuration: ["style": "never"]),
+      // always style
+      Example("var myVar: Int?", configuration: ["style": "always"]),
+      Example("var myVar: Optional<Int>", configuration: ["style": "always"]),
       Example(
         """
         var myVar: String? {
           didSet { print("didSet") }
         }
-        """, configuration: ["style": "never"]),
+        """, configuration: ["style": "always"]),
       Example(
         """
         func funcName() {
           var myVar: String?
         }
-        """, configuration: ["style": "never"]),
+        """, configuration: ["style": "always"]),
     ],
     triggeringExamples: [
-      // always style
-      Example("var myVar: Int?↓ ", configuration: ["style": "always"]),
-      Example("var myVar: Optional<Int>↓ ", configuration: ["style": "always"]),
-      Example("var myVar: Int?↓, myOtherVar = true", configuration: ["style": "always"]),
+      // never style
+      Example("var myVar: Int?↓ ", configuration: ["style": "never"]),
+      Example("var myVar: Optional<Int>↓ ", configuration: ["style": "never"]),
+      Example("var myVar: Int?↓, myOtherVar = true", configuration: ["style": "never"]),
       Example(
         """
         var myVar: String?↓ {
+          didSet { print("didSet") }
+        }
+        """, configuration: ["style": "never"]),
+      Example(
+        """
+        func funcName() {
+          var myVar: String?↓
+        }
+        """, configuration: ["style": "never"]
+      ),
+
+      // always style
+      Example("var myVar: Int?↓ = nil", configuration: ["style": "always"]),
+      Example("var myVar: Optional<Int>↓ = nil", configuration: ["style": "always"]),
+      Example("var myVar: Int?↓ = nil, myOtherVar = true", configuration: ["style": "always"]),
+      Example(
+        """
+        var myVar: String?↓ = nil {
           didSet { print("didSet") }
         }
         """, configuration: ["style": "always"]),
       Example(
         """
         func funcName() {
-          var myVar: String?↓
-        }
-        """, configuration: ["style": "always"]
-      ),
-
-      // never style
-      Example("var myVar: Int?↓ = nil", configuration: ["style": "never"]),
-      Example("var myVar: Optional<Int>↓ = nil", configuration: ["style": "never"]),
-      Example("var myVar: Int?↓ = nil, myOtherVar = true", configuration: ["style": "never"]),
-      Example(
-        """
-        var myVar: String?↓ = nil {
-          didSet { print("didSet") }
-        }
-        """, configuration: ["style": "never"]),
-      Example(
-        """
-        func funcName() {
             var myVar: String?↓ = nil
         }
-        """, configuration: ["style": "never"]),
+        """, configuration: ["style": "always"]),
     ],
     corrections: [
-      // always style
-      Example("var myVar: Int?↓ ", configuration: ["style": "always"]):
+      // never style
+      Example("var myVar: Int?↓ ", configuration: ["style": "never"]):
         Example("var myVar: Int? = nil "),
-      Example("var myVar: Optional<Int>↓ ", configuration: ["style": "always"]):
+      Example("var myVar: Optional<Int>↓ ", configuration: ["style": "never"]):
         Example("var myVar: Optional<Int> = nil "),
       Example(
         """
         var myVar: String?↓ {
           didSet { print("didSet") }
         }
-        """, configuration: ["style": "always"]):
+        """, configuration: ["style": "never"]):
         Example(
           """
           var myVar: String? = nil {
@@ -120,7 +119,7 @@ struct ExplicitOptionalInitializationRule: Rule {
         func funcName() {
           var myVar: String?↓
         }
-        """, configuration: ["style": "always"]
+        """, configuration: ["style": "never"]
       ): Example(
         """
         func funcName() {
@@ -128,16 +127,16 @@ struct ExplicitOptionalInitializationRule: Rule {
         }
         """),
 
-      Example("var myVar: Int?↓ = nil", configuration: ["style": "never"]):
+      Example("var myVar: Int?↓ = nil", configuration: ["style": "always"]):
         Example("var myVar: Int?"),
-      Example("var myVar: Optional<Int>↓ = nil", configuration: ["style": "never"]):
+      Example("var myVar: Optional<Int>↓ = nil", configuration: ["style": "always"]):
         Example("var myVar: Optional<Int>"),
       Example(
         """
         var myVar: String?↓ = nil {
           didSet { print("didSet") }
         }
-        """, configuration: ["style": "never"]):
+        """, configuration: ["style": "always"]):
         Example(
           """
           var myVar: String? {
@@ -149,7 +148,7 @@ struct ExplicitOptionalInitializationRule: Rule {
         func funcName() {
             var myVar: String?↓ = nil
         }
-        """, configuration: ["style": "never"]):
+        """, configuration: ["style": "always"]):
         Example(
           """
           func funcName() {
@@ -160,7 +159,7 @@ struct ExplicitOptionalInitializationRule: Rule {
   )
 }
 
-extension ExplicitOptionalInitializationRule {
+extension ImplicitOptionalInitializationRule {
   fileprivate final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
     override func visitPost(_ node: VariableDeclSyntax) {
       guard let violationPositions = node.violationPositions(for: configuration.style) else {
@@ -174,7 +173,7 @@ extension ExplicitOptionalInitializationRule {
 
 extension VariableDeclSyntax {
   fileprivate func violationPositions(
-    for style: ExplicitOptionalInitializationConfiguration.Style
+    for style: ImplicitOptionalInitializationConfiguration.Style
   ) -> [AbsolutePosition]? {
     guard
       bindingSpecifier.tokenKind == .keyword(.var),
@@ -188,14 +187,14 @@ extension VariableDeclSyntax {
 }
 
 extension PatternBindingSyntax {
-  fileprivate func violationPosition(for style: ExplicitOptionalInitializationConfiguration.Style)
-    -> AbsolutePosition?
-  {
+  fileprivate func violationPosition(
+    for style: ImplicitOptionalInitializationConfiguration.Style
+  ) -> AbsolutePosition? {
     guard
       let typeAnnotation: TypeAnnotationSyntax, typeAnnotation.isOptionalType
     else { return nil }
 
-    if (style == .always && !initializer.isNil) || (style == .never && initializer.isNil) {
+    if (style == .never && !initializer.isNil) || (style == .always && initializer.isNil) {
       return typeAnnotation.endPositionBeforeTrailingTrivia
     }
 
@@ -223,7 +222,7 @@ extension TypeAnnotationSyntax {
   }
 }
 
-extension ExplicitOptionalInitializationRule {
+extension ImplicitOptionalInitializationRule {
   fileprivate final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
     override func visitAny(_: Syntax) -> Syntax? { nil }
 
@@ -250,7 +249,7 @@ extension ExplicitOptionalInitializationRule {
               }
 
               switch configuration.style {
-              case .always:
+              case .never:
                 return
                   binding
                   .with(
@@ -263,7 +262,7 @@ extension ExplicitOptionalInitializationRule {
                       value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
                       trailingTrivia: binding.typeAnnotation?.trailingTrivia ?? Trivia()
                     ))
-              case .never:
+              case .always:
                 return
                   binding
                   .with(\.initializer, nil)

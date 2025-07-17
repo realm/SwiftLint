@@ -65,6 +65,7 @@ struct ExplicitOptionalInitializationRule: Rule {
       // always style
       Example("var myVar: Int?↓ ", configuration: ["style": "always"]),
       Example("var myVar: Optional<Int>↓ ", configuration: ["style": "always"]),
+      Example("var myVar: Int?↓, myOtherVar = true", configuration: ["style": "always"]),
       Example(
         """
         var myVar: String?↓ {
@@ -82,6 +83,7 @@ struct ExplicitOptionalInitializationRule: Rule {
       // never style
       Example("var myVar: Int?↓ = nil", configuration: ["style": "never"]),
       Example("var myVar: Optional<Int>↓ = nil", configuration: ["style": "never"]),
+      Example("var myVar: Int?↓ = nil, myOtherVar = true", configuration: ["style": "never"]),
       Example(
         """
         var myVar: String?↓ = nil {
@@ -98,16 +100,15 @@ struct ExplicitOptionalInitializationRule: Rule {
     corrections: [
       // always style
       Example("var myVar: Int?↓ ", configuration: ["style": "always"]):
-        Example("var myVar: Int? = nil"),
+        Example("var myVar: Int? = nil "),
       Example("var myVar: Optional<Int>↓ ", configuration: ["style": "always"]):
-        Example("var myVar: Optional<Int> = nil"),
+        Example("var myVar: Optional<Int> = nil "),
       Example(
         """
         var myVar: String?↓ {
           didSet { print("didSet") }
         }
-        """, configuration: ["style": "always"]
-      ).focused():
+        """, configuration: ["style": "always"]):
         Example(
           """
           var myVar: String? = nil {
@@ -125,8 +126,7 @@ struct ExplicitOptionalInitializationRule: Rule {
         func funcName() {
           var myVar: String? = nil
         }
-        """
-      ),
+        """),
 
       Example("var myVar: Int?↓ = nil", configuration: ["style": "never"]):
         Example("var myVar: Int?"),
@@ -168,58 +168,6 @@ extension ExplicitOptionalInitializationRule {
       }
 
       violations.append(contentsOf: violationPositions)
-    }
-  }
-
-  fileprivate final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-    override func visitAny(_: Syntax) -> Syntax? { nil }
-
-    override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-      guard let violationPositions = node.violationPositions(for: configuration.style) else {
-        return super.visit(node)
-      }
-
-      numberOfCorrections += violationPositions.count
-
-      return super.visit(
-        node
-          .with(
-            \.bindings,
-            PatternBindingListSyntax(
-              node.bindings.map { binding in
-                guard binding.violationPosition(for: configuration.style) != nil else {
-                  return binding
-                }
-
-                print(configuration.style, binding)
-
-                switch configuration.style {
-                case .always:
-                  return
-                    binding
-                    // .with(
-                    //   \.typeAnnotation, binding.typeAnnotation?.with(\.trailingTrivia, Trivia())
-                    // )
-                    .with(
-                      \.initializer,
-                      InitializerClauseSyntax(
-                        equal: .equalToken(leadingTrivia: .space, trailingTrivia: .space),
-                        value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
-                        trailingTrivia: binding.typeAnnotation?.trailingTrivia ?? Trivia()
-                      ))
-                case .never:
-                  return
-                    binding
-                    .with(\.initializer, nil)
-                    .with(
-                      \.typeAnnotation,
-                      binding.trailingComma != nil
-                        ? binding.typeAnnotation?.with(\.trailingTrivia, Trivia())
-                        : binding.typeAnnotation
-                    )
-                    .with(\.trailingTrivia, binding.initializer?.trailingTrivia ?? Trivia())
-                }
-              })))
     }
   }
 }
@@ -272,5 +220,61 @@ extension TypeAnnotationSyntax {
     }
 
     return false
+  }
+}
+
+extension ExplicitOptionalInitializationRule {
+  fileprivate final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+    override func visitAny(_: Syntax) -> Syntax? { nil }
+
+    override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
+      guard let violationPositions = node.violationPositions(for: configuration.style) else {
+        return super.visit(node)
+      }
+
+      numberOfCorrections +=
+        violationPositions.filter {
+          !$0.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+        }.count
+
+      return super.visit(
+        node.with(
+          \.bindings,
+          PatternBindingListSyntax(
+            node.bindings.map { binding in
+              guard let violationPosition = binding.violationPosition(for: configuration.style),
+                !violationPosition.isContainedIn(
+                  regions: disabledRegions, locationConverter: locationConverter)
+              else {
+                return binding
+              }
+
+              switch configuration.style {
+              case .always:
+                return
+                  binding
+                  .with(
+                    \.typeAnnotation, binding.typeAnnotation?.with(\.trailingTrivia, Trivia())
+                  )
+                  .with(
+                    \.initializer,
+                    InitializerClauseSyntax(
+                      equal: .equalToken(leadingTrivia: .space, trailingTrivia: .space),
+                      value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
+                      trailingTrivia: binding.typeAnnotation?.trailingTrivia ?? Trivia()
+                    ))
+              case .never:
+                return
+                  binding
+                  .with(\.initializer, nil)
+                  .with(
+                    \.trailingTrivia,
+                    binding.accessorBlock == nil
+                      ? binding.initializer?.trailingTrivia ?? Trivia()
+                      : binding.trailingTrivia)
+              }
+            }))
+      )
+    }
   }
 }

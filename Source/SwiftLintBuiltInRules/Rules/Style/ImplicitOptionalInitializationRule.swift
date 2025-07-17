@@ -7,7 +7,7 @@ struct ImplicitOptionalInitializationRule: Rule {
   static let description = RuleDescription(
     identifier: "implicit_optional_initialization",
     name: "Implicit Optional Initialization",
-    description: "Enforce implicit initialization of optional variables (always or never).",
+    description: "Enforce implicit initialization of optional variables (always or never)",
     kind: .style,
     nonTriggeringExamples: [
       Example(  // properties with body should be ignored
@@ -213,8 +213,7 @@ extension TypeAnnotationSyntax {
     if type.is(OptionalTypeSyntax.self) { return true }
 
     if let type = type.as(IdentifierTypeSyntax.self),
-      let genericClause = type.genericArgumentClause
-    {
+      let genericClause = type.genericArgumentClause {
       return genericClause.arguments.count == 1 && type.name.text == "Optional"
     }
 

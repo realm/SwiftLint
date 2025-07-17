@@ -2,7 +2,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct ImplicitOptionalInitializationRule: Rule {
-  var configuration = ImplicitOptionalInitializationConfiguration()
+  var configuration = ImplicitOptionalInitConfiguration()
 
   static let description = RuleDescription(
     identifier: "implicit_optional_initialization",
@@ -233,7 +233,7 @@ private extension ImplicitOptionalInitializationRule {
 
 private extension VariableDeclSyntax {
   func violationPositions(
-    for style: ImplicitOptionalInitializationConfiguration.Style
+    for style: ImplicitOptionalInitConfiguration.Style
   ) -> [AbsolutePosition]? {
     guard
       bindingSpecifier.tokenKind == .keyword(.var),
@@ -248,7 +248,7 @@ private extension VariableDeclSyntax {
 
 private extension PatternBindingSyntax {
   func violationPosition(
-    for style: ImplicitOptionalInitializationConfiguration.Style
+    for style: ImplicitOptionalInitConfiguration.Style
   ) -> AbsolutePosition? {
     guard
       let typeAnnotation, typeAnnotation.isOptionalType

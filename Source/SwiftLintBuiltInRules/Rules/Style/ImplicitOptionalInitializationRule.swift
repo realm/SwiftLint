@@ -287,8 +287,7 @@ private extension TypeAnnotationSyntax {
     if type.is(OptionalTypeSyntax.self) { return true }
 
     if let type = type.as(IdentifierTypeSyntax.self),
-      let genericClause = type.genericArgumentClause
-    {
+      let genericClause = type.genericArgumentClause {
       return genericClause.arguments.count == 1 && type.name.text == "Optional"
     }
 

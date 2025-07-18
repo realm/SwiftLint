@@ -4,6 +4,12 @@
 
 import Foundation
 
+/// Returns an array of file paths after removing the excluded paths as defined by this configuration.
+///
+/// - parameter fileManager: The lintable file manager to use to expand the excluded paths into all matching paths.
+/// - parameter paths:       The input paths to filter.
+///
+/// - returns: The input paths after removing the excluded paths.
 public struct ExcludeByPathsByExpandingSubPaths: ExcludeByStrategy {
     let excludedPaths: [String]
 

@@ -1,56 +1,67 @@
 @testable import SwiftLintFramework
 import TestHelpers
-import XCTest
+import Testing
 
-final class GlobTests: SwiftLintTestCase {
+@Suite
+struct GlobTests {
     private var mockPath: String {
         TestResources.path().stringByAppendingPathComponent("ProjectMock")
     }
 
+    @Test
     func testNonExistingDirectory() {
-        XCTAssertTrue(Glob.resolveGlob("./bar/**").isEmpty)
+        #expect(Glob.resolveGlob("./bar/**").isEmpty)
     }
 
+    @Test
     func testOnlyGlobForWildcard() {
         let files = Glob.resolveGlob("foo/bar.swift")
-        XCTAssertEqual(files, ["foo/bar.swift"])
+        #expect(files == ["foo/bar.swift"])
     }
 
+    @Test
     func testNoMatchReturnsEmpty() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("NoFile*.swift"))
-        XCTAssertTrue(files.isEmpty)
+        #expect(files.isEmpty)
     }
 
+    @Test
     func testMatchesFiles() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level*.swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        #expect(files == [mockPath.stringByAppendingPathComponent("Level0.swift")])
     }
 
+    @Test
     func testMatchesSingleCharacter() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level?.swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        #expect(files == [mockPath.stringByAppendingPathComponent("Level0.swift")])
     }
 
+    @Test
     func testMatchesOneCharacterInBracket() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[01].swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        #expect(files == [mockPath.stringByAppendingPathComponent("Level0.swift")])
     }
 
+    @Test
     func testNoMatchOneCharacterInBracket() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[ab].swift"))
-        XCTAssertTrue(files.isEmpty)
+        #expect(files.isEmpty)
     }
 
+    @Test
     func testMatchesCharacterInRange() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[0-9].swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        #expect(files == [mockPath.stringByAppendingPathComponent("Level0.swift")])
     }
 
+    @Test
     func testNoMatchCharactersInRange() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[a-z].swift"))
-        XCTAssertTrue(files.isEmpty)
+        #expect(files.isEmpty)
     }
 
+    @Test
     func testMatchesMultipleFiles() {
         let expectedFiles: Set = [
             mockPath.stringByAppendingPathComponent("Level0.swift"),
@@ -58,14 +69,16 @@ final class GlobTests: SwiftLintTestCase {
         ]
 
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("*.swift"))
-        XCTAssertEqual(files.sorted(), expectedFiles.sorted())
+        #expect(files.sorted() == expectedFiles.sorted())
     }
 
+    @Test
     func testMatchesNestedDirectory() {
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level1/*.swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level1/Level1.swift")])
+        #expect(files == [mockPath.stringByAppendingPathComponent("Level1/Level1.swift")])
     }
 
+    @Test
     func testGlobstarSupport() {
         let expectedFiles = Set(
             [
@@ -81,6 +94,6 @@ final class GlobTests: SwiftLintTestCase {
         )
 
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("**/*.swift"))
-        XCTAssertEqual(files.sorted(), expectedFiles.sorted())
+        #expect(files.sorted() == expectedFiles.sorted())
     }
 }

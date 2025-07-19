@@ -1,11 +1,13 @@
 import Foundation
 import SourceKittenFramework
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintFramework
-import TestHelpers
-import XCTest
 
-final class ReporterTests: SwiftLintTestCase {
+@Suite(.rulesRegistered)
+struct ReporterTests {
     private let violations = [
         StyleViolation(
             ruleDescription: LineLengthRule.description,
@@ -35,9 +37,10 @@ final class ReporterTests: SwiftLintTestCase {
         ),
     ]
 
-    func testReporterFromString() {
+    @Test
+    func reporterFromString() {
         for reporter in reportersList {
-            XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
+            #expect(reporter.identifier == reporterFrom(identifier: reporter.identifier).identifier)
         }
     }
 
@@ -45,28 +48,32 @@ final class ReporterTests: SwiftLintTestCase {
         SwiftLintFile(path: "\(TestResources.path())/\(filename)")!.contents
     }
 
-    func testXcodeReporter() throws {
+    @Test
+    func xcodeReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedXcodeReporterOutput.txt",
             reporterType: XcodeReporter.self
         )
     }
 
-    func testEmojiReporter() throws {
+    @Test
+    func emojiReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedEmojiReporterOutput.txt",
             reporterType: EmojiReporter.self
         )
     }
 
-    func testGitHubActionsLoggingReporter() throws {
+    @Test
+    func gitHubActionsLoggingReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedGitHubActionsLoggingReporterOutput.txt",
             reporterType: GitHubActionsLoggingReporter.self
         )
     }
 
-    func testGitLabJUnitReporter() throws {
+    @Test
+    func gitLabJUnitReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedGitLabJUnitReporterOutput.xml",
             reporterType: GitLabJUnitReporter.self
@@ -85,7 +92,8 @@ final class ReporterTests: SwiftLintTestCase {
         queuedFatalError("Unexpected value in JSON: \(result)")
     }
 
-    func testJSONReporter() throws {
+    @Test
+    func jSONReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedJSONReporterOutput.json",
             reporterType: JSONReporter.self,
@@ -93,49 +101,56 @@ final class ReporterTests: SwiftLintTestCase {
         )
     }
 
-    func testCSVReporter() throws {
+    @Test
+    func cSVReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedCSVReporterOutput.csv",
             reporterType: CSVReporter.self
         )
     }
 
-    func testCheckstyleReporter() throws {
+    @Test
+    func checkstyleReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedCheckstyleReporterOutput.xml",
             reporterType: CheckstyleReporter.self
         )
     }
 
-    func testCodeClimateReporter() throws {
+    @Test
+    func codeClimateReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedCodeClimateReporterOutput.json",
             reporterType: CodeClimateReporter.self
         )
     }
 
-    func testSARIFReporter() throws {
+    @Test
+    func sARIFReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedSARIFReporterOutput.json",
             reporterType: SARIFReporter.self
         )
     }
 
-    func testJunitReporter() throws {
+    @Test
+    func junitReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedJunitReporterOutput.xml",
             reporterType: JUnitReporter.self
         )
     }
 
-    func testHTMLReporter() throws {
+    @Test
+    func hTMLReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedHTMLReporterOutput.html",
             reporterType: HTMLReporter.self
         )
     }
 
-    func testSonarQubeReporter() throws {
+    @Test
+    func sonarQubeReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedSonarQubeReporterOutput.json",
             reporterType: SonarQubeReporter.self,
@@ -143,33 +158,38 @@ final class ReporterTests: SwiftLintTestCase {
         )
     }
 
-    func testMarkdownReporter() throws {
+    @Test
+    func markdownReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedMarkdownReporterOutput.md",
             reporterType: MarkdownReporter.self
         )
     }
 
-    func testRelativePathReporter() throws {
+    @Test
+    func relativePathReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedRelativePathReporterOutput.txt",
             reporterType: RelativePathReporter.self
         )
     }
 
-    func testRelativePathReporterPaths() {
+    @Test
+    func relativePathReporterPaths() {
         let relativePath = "filename"
         let absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
         let location = Location(file: absolutePath, line: 1, character: 2)
-        let violation = StyleViolation(ruleDescription: LineLengthRule.description,
-                                       location: location,
-                                       reason: "Violation Reason")
+        let violation = StyleViolation(
+            ruleDescription: LineLengthRule.description,
+            location: location,
+            reason: "Violation Reason")
         let result = RelativePathReporter.generateReport([violation])
-        XCTAssertFalse(result.contains(absolutePath))
-        XCTAssertTrue(result.contains(relativePath))
+        #expect(!result.contains(absolutePath))
+        #expect(result.contains(relativePath))
     }
 
-    func testSummaryReporter() {
+    @Test
+    func summaryReporter() {
         let expectedOutput = stringFromFile("CannedSummaryReporterOutput.txt")
             .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
         let correctableViolation = StyleViolation(
@@ -178,21 +198,24 @@ final class ReporterTests: SwiftLintTestCase {
             reason: "Violation Reason"
         )
         let result = SummaryReporter.generateReport(violations + [correctableViolation])
-        XCTAssertEqual(result, expectedOutput)
+        #expect(result == expectedOutput)
     }
 
-    func testSummaryReporterWithNoViolations() {
+    @Test
+    func summaryReporterWithNoViolations() {
         let expectedOutput = stringFromFile("CannedSummaryReporterNoViolationsOutput.txt")
             .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
         let result = SummaryReporter.generateReport([])
-        XCTAssertEqual(result, expectedOutput)
+        #expect(result == expectedOutput)
     }
 
-    private func assertEqualContent(referenceFile: String,
-                                    reporterType: any Reporter.Type,
-                                    stringConverter: (String) throws -> some Equatable = { $0 },
-                                    file: StaticString = #filePath,
-                                    line: UInt = #line) throws {
+    private func assertEqualContent(
+        referenceFile: String,
+        reporterType: any Reporter.Type,
+        stringConverter: (String) throws -> some Equatable = { $0 },
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         let reference = stringFromFile(referenceFile).replacingOccurrences(
@@ -222,6 +245,8 @@ final class ReporterTests: SwiftLintTestCase {
             )
             .write(to: referenceURL, atomically: true, encoding: .utf8)
         }
-        XCTAssertEqual(convertedReference, convertedReporterOutput, file: file, line: line)
+        #expect(
+            convertedReference == convertedReporterOutput,
+            sourceLocation: SourceLocation(fileID: #fileID, filePath: file.description, line: Int(line), column: 1))
     }
 }

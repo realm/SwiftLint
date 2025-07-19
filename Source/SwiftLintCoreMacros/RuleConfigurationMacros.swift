@@ -61,7 +61,8 @@ enum AutoConfigParser: MemberMacro {
                     """
                     do {
                         try \(raw: option).apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue as SwiftLintCore.Issue
+                            where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     """

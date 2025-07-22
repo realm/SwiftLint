@@ -1287,11 +1287,11 @@ unneeded_synthesized_initializer:
   meta:
     opt-in: false
     correctable: true
-unneeded_throws:
+unneeded_throws_rethrows:
   severity: warning
   meta:
     opt-in: true
-    correctable: false
+    correctable: true
 unowned_variable_capture:
   severity: warning
   meta:

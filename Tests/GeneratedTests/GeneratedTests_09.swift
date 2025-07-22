@@ -127,6 +127,12 @@ final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase 
     }
 }
 
+final class UnneededThrowsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededThrowsRule.description)
+    }
+}
+
 final class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)
@@ -148,11 +154,5 @@ final class UnusedClosureParameterRuleGeneratedTests: SwiftLintTestCase {
 final class UnusedControlFlowLabelRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnusedControlFlowLabelRule.description)
-    }
-}
-
-final class UnusedDeclarationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnusedDeclarationRule.description)
     }
 }

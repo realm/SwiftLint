@@ -8,7 +8,7 @@ struct UnneededThrowsRule: Rule {
     static let description = RuleDescription(
         identifier: "unneeded_throws_rethrows",
         name: "Unneeded (re)throws keyword",
-        description: "Non-throwing functions/variables should not be marked as `throws` or `rethrows`",
+        description: "Non-throwing functions/properties/closures should not be marked as `throws` or `rethrows`.",
         kind: .lint,
         nonTriggeringExamples: UnneededThrowsRuleExamples.nonTriggeringExamples,
         triggeringExamples: UnneededThrowsRuleExamples.triggeringExamples,
@@ -24,16 +24,12 @@ private extension UnneededThrowsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var scopes = Stack<Scope>()
 
-        override func visit(_: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
-        }
-
-        override func visit(_: EnumCaseDeclSyntax) -> SyntaxVisitorContinueKind {
-            .skipChildren
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
+            [
+                ProtocolDeclSyntax.self,
+                TypeAliasDeclSyntax.self,
+                EnumCaseDeclSyntax.self,
+            ]
         }
 
         override func visit(_: FunctionParameterClauseSyntax) -> SyntaxVisitorContinueKind {
@@ -47,9 +43,9 @@ private extension UnneededThrowsRule {
 
         override func visitPost(_: InitializerDeclSyntax) {
             if let closedScope = scopes.closeScope() {
-                validateScope(
-                    closedScope,
-                    reason: "The initializer does not throw any error"
+                validate(
+                    scope: closedScope,
+                    reason: "initializer does not throw any error"
                 )
             }
         }
@@ -61,9 +57,9 @@ private extension UnneededThrowsRule {
 
         override func visitPost(_: AccessorDeclSyntax) {
             if let closedScope = scopes.closeScope() {
-                validateScope(
-                    closedScope,
-                    reason: "The accessor does not throw any error"
+                validate(
+                    scope: closedScope,
+                    reason: "accessor does not throw any error"
                 )
             }
         }
@@ -75,9 +71,9 @@ private extension UnneededThrowsRule {
 
         override func visitPost(_: FunctionDeclSyntax) {
             if let closedScope = scopes.closeScope() {
-                validateScope(
-                    closedScope,
-                    reason: "The body of this function does not throw any error"
+                validate(
+                    scope: closedScope,
+                    reason: "body of this function does not throw any error"
                 )
             }
         }
@@ -91,9 +87,9 @@ private extension UnneededThrowsRule {
 
         override func visitPost(_: FunctionTypeSyntax) {
             if let closedScope = scopes.closeScope() {
-                validateScope(
-                    closedScope,
-                    reason: "The closure type does not throw any error"
+                validate(
+                    scope: closedScope,
+                    reason: "closure type does not throw any error"
                 )
             }
         }
@@ -123,19 +119,17 @@ private extension UnneededThrowsRule {
         }
 
         override func visitPost(_ node: DoStmtSyntax) {
-            let doesNotContainCatchClauseWithoutPattern = !node.catchClauses.contains { catchClause in
-                catchClause.catchItems.isEmpty
+            if node.catchClauses.contains(where: { $0.catchItems.isEmpty }) {
+                // All errors will be caught.
+                return
             }
-            if doesNotContainCatchClauseWithoutPattern {
-                scopes.markCurrentScopeAsThrowing()
-            }
+            scopes.markCurrentScopeAsThrowing()
         }
 
-        override func visit(_ node: ForStmtSyntax) -> SyntaxVisitorContinueKind {
+        override func visitPost(_ node: ForStmtSyntax) {
             if node.tryKeyword != nil {
                 scopes.markCurrentScopeAsThrowing()
             }
-            return .visitChildren
         }
 
         override func visitPost(_ node: TryExprSyntax) {
@@ -148,12 +142,12 @@ private extension UnneededThrowsRule {
             scopes.markCurrentScopeAsThrowing()
         }
 
-        private func validateScope(_ scope: Scope, reason: String) {
+        private func validate(scope: Scope, reason: String) {
             guard let throwsToken = scope.throwsClause?.throwsSpecifier else { return }
             violations.append(
                 ReasonedRuleViolation(
                     position: throwsToken.positionAfterSkippingLeadingTrivia,
-                    reason: reason,
+                    reason: "Superfluous 'throws'; " + reason,
                     correction: ReasonedRuleViolation.ViolationCorrection(
                         start: throwsToken.positionAfterSkippingLeadingTrivia,
                         end: throwsToken.endPosition,
@@ -192,9 +186,7 @@ private extension FunctionCallExprSyntax {
 
 private extension PatternBindingSyntax {
     var containsInitializerClause: Bool {
-        children(viewMode: .sourceAccurate).contains { child in
-            child.is(InitializerClauseSyntax.self)
-        }
+        initializer != nil
     }
 
     var functionTypeSyntax: FunctionTypeSyntax? {

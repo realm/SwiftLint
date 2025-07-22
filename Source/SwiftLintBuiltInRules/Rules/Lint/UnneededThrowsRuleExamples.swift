@@ -80,7 +80,7 @@ internal struct UnneededThrowsRuleExamples {
             }
             """),
         Example("""
-        func foo() throws{
+        func foo() throws {
             let bar = Bar()
 
             if bar.boolean {
@@ -103,7 +103,7 @@ internal struct UnneededThrowsRuleExamples {
         }
         """),
         Example("""
-        func foo() async rethrows {
+        func foo() async throws {
             for try await item in items {}
         }
         """),

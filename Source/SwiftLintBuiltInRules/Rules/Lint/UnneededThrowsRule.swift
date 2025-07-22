@@ -190,17 +190,25 @@ private extension PatternBindingSyntax {
     }
 
     var functionTypeSyntax: FunctionTypeSyntax? {
-        guard let typeAnnotation else { return nil }
+        typeAnnotation?.type.baseFunctionTypeSyntax
+    }
+}
 
-        var children = Set(typeAnnotation.children(viewMode: .sourceAccurate))
-
-        while let child = children.popFirst() {
-            if let functionType = child.as(FunctionTypeSyntax.self) {
-                return functionType
-            }
-            children.formUnion(child.children(viewMode: .sourceAccurate))
+private extension TypeSyntax {
+    var baseFunctionTypeSyntax: FunctionTypeSyntax? {
+        switch Syntax(self).as(SyntaxEnum.self) {
+        case .functionType(let function):
+            function
+        case .optionalType(let optional):
+            optional.wrappedType.baseFunctionTypeSyntax
+        case .attributedType(let attributed):
+            attributed.baseType.baseFunctionTypeSyntax
+        case .tupleType(let tuple):
+            tuple.elements
+                .compactMap { $0.type.baseFunctionTypeSyntax }
+                .first
+        default:
+            nil
         }
-
-        return nil
     }
 }

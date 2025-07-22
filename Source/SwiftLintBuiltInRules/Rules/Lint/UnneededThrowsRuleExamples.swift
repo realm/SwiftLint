@@ -140,7 +140,8 @@ internal struct UnneededThrowsRuleExamples {
             catch is SomeError { throw AnotherError } 
             catch is AnotherError {}
         }
-        """)
+        """),
+        Example("let s: S<() throws -> Void> = S()"),
     ]
 
     static let triggeringExamples = [

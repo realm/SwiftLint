@@ -143,14 +143,14 @@ private extension UnneededThrowsRule {
         }
 
         private func validate(scope: Scope, reason: String) {
-            guard let throwsToken = scope.throwsClause?.throwsSpecifier else { return }
+            guard let throwsClause = scope.throwsClause else { return }
             violations.append(
                 ReasonedRuleViolation(
-                    position: throwsToken.positionAfterSkippingLeadingTrivia,
+                    position: throwsClause.positionAfterSkippingLeadingTrivia,
                     reason: "Superfluous 'throws'; " + reason,
                     correction: ReasonedRuleViolation.ViolationCorrection(
-                        start: throwsToken.positionAfterSkippingLeadingTrivia,
-                        end: throwsToken.endPosition,
+                        start: throwsClause.positionAfterSkippingLeadingTrivia,
+                        end: throwsClause.endPosition,
                         replacement: ""
                     )
                 )

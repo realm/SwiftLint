@@ -11,6 +11,11 @@ internal struct UnneededThrowsRuleExamples {
             }
             """),
         Example("""
+            func foo() throws(Example) {
+                throw Example.failure
+            }
+            """),
+        Example("""
             func foo(_ bar: () throws -> T) rethrows -> Int {
                 try items.map { try bar() }
             }
@@ -156,6 +161,11 @@ internal struct UnneededThrowsRuleExamples {
             }
             """),
         Example("""
+            func foo() ↓throws(Example) {
+                bar()
+            }
+            """),
+        Example("""
             func foo() {
                 func bar() ↓throws {}
                 bar()
@@ -192,6 +202,12 @@ internal struct UnneededThrowsRuleExamples {
             """),
         Example("""
             func foo() ↓throws {
+                do {}
+                catch {}
+            }
+            """),
+        Example("""
+            func foo() ↓throws(Example) {
                 do {}
                 catch {}
             }
@@ -310,12 +326,41 @@ internal struct UnneededThrowsRuleExamples {
             }
             """),
         Example("""
+            var foo: Int {
+                get ↓throws(Example) {
+                    0
+                }
+            }
+            """): Example("""
+            var foo: Int {
+                get {
+                    0
+                }
+            }
+            """),
+        Example("""
             let foo: () ↓throws -> Void = {}
             """): Example("""
             let foo: () -> Void = {}
             """),
         Example("""
+            let foo: () ↓throws(Example) -> Void = {}
+            """): Example("""
+            let foo: () -> Void = {}
+            """),
+        Example("""
             func foo() ↓throws {
+                do {}
+                catch {}
+            }
+            """): Example("""
+            func foo() {
+                do {}
+                catch {}
+            }
+            """),
+        Example("""
+            func foo() ↓throws(Example) {
                 do {}
                 catch {}
             }

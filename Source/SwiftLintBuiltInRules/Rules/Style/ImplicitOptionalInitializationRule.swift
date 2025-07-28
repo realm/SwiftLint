@@ -159,7 +159,8 @@ struct ImplicitOptionalInitializationRule: Rule {
               var myVar: String?
           }
           """),
-    ]
+    ],
+    deprecatedAliases: ["redundant_optional_initialization"]
   )
 }
 

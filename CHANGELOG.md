@@ -16,12 +16,6 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6135](https://github.com/realm/SwiftLint/issues/6135)
 
-* Add `implicit_optional_initialization` rule to enforce implicit or explicit  
-  initialization of optional variables, configurable via `style: always | never`.  
-  Remove `redundant_optional_initialization` rule (breaking change).  
-  [@leolem](https://github.com/leolem)  
-  [#4943](https://github.com/realm/SwiftLint/issues/4943)
-
 ### Experimental
 
 * None.
@@ -103,6 +97,11 @@
   in addition to the existing equality operators (`==` and `!=`).  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5849](https://github.com/realm/SwiftLint/issues/5849)
+
+* Add `implicit_optional_initialization` rule to enforce implicit or explicit  
+  initialization of optional variables, configurable via `style: always | never`.   
+  [@leolem](https://github.com/leo-lem)  
+  [#4943](https://github.com/realm/SwiftLint/issues/4943)
 
 ### Bug Fixes
 

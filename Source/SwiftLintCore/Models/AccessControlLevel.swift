@@ -1,7 +1,7 @@
 /// The accessibility of a Swift source declaration.
 ///
 /// - SeeAlso: https://github.com/apple/swift/blob/main/docs/AccessControl.md
-public enum AccessControlLevel: String, CustomStringConvertible {
+public enum AccessControlLevel: String, CustomStringConvertible, Sendable {
     /// Accessible by the declaration's immediate lexical scope.
     case `private` = "source.lang.swift.accessibility.private"
     /// Accessible by the declaration's same file.

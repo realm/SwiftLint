@@ -22,6 +22,10 @@
 
 ### Enhancements
 
+* Add Sendable conformance to Rule.Type for building with Swift 6.  
+  [erikkerber](https://github.com/erikkerber)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
+
 * Fix false positives for `Actor`-conforming delegate protocols in the
   `class_delegate_protocol` rule.  
   [imsonalbajaj](https://github.com/imsonalbajaj)

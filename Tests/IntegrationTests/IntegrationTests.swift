@@ -23,7 +23,7 @@ final class IntegrationTests: SwiftLintTestCase {
         let swiftFiles = config.lintableFiles(
             inPath: "",
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths()))
+            excludeBy: ExcludeByPathsByExpandingSubPaths(configuration: config))
         XCTAssert(
             swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
             "current file should be included"
@@ -48,7 +48,7 @@ final class IntegrationTests: SwiftLintTestCase {
         let swiftFiles = config.lintableFiles(
             inPath: "",
             forceExclude: false,
-            excludeBy: .paths(excludedPaths: config.excludedPaths()))
+            excludeBy: ExcludeByPathsByExpandingSubPaths(configuration: config))
         let storage = RuleStorage()
         let corrections = swiftFiles.parallelMap {
             Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)

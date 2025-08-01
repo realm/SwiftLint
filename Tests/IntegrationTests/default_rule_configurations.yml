@@ -737,6 +737,7 @@ no_space_in_method_call:
     correctable: true
 non_optional_string_data_conversion:
   severity: warning
+  include_variables: false
   meta:
     opt-in: false
     correctable: false

@@ -22,6 +22,12 @@
 
 ### Enhancements
 
+* Add `include_variables` configuration option to `non_optional_string_data_conversion` rule.  
+  When enabled, the rule will trigger on variables, properties, and function calls in addition
+  to string literals. Defaults to `false` for backward compatibility.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6094](https://github.com/realm/SwiftLint/issues/6094)
+
 * Add Sendable conformance to Rule.Type for building with Swift 6.  
   [erikkerber](https://github.com/erikkerber)
   [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)

@@ -70,3 +70,7 @@ bin/
 # Danger
 osscheck/
 oss-check-summary.md
+
+
+# VS Code
+.vscode

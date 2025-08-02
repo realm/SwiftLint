@@ -497,6 +497,12 @@ implicit_getter:
   meta:
     opt-in: false
     correctable: false
+implicit_optional_initialization:
+  severity: warning
+  style: always
+  meta:
+    opt-in: true
+    correctable: true
 implicit_return:
   severity: warning
   included: [closure, function, getter, initializer, subscript]

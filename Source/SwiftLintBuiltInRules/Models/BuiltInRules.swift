@@ -87,6 +87,7 @@ public let builtInRules: [any Rule.Type] = [
     IdenticalOperandsRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
+    ImplicitOptionalInitializationRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
     InclusiveLanguageRule.self,

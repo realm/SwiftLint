@@ -87,6 +87,11 @@
 * Support deinitializers and subscripts in `function_body_length` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Add `implicit_optional_initialization` rule to enforce implicit or explicit  
+  initialization of optional variables, configurable via `style: always | never`.  
+  [@leolem](https://github.com/leo-lem)  
+  [#4943](https://github.com/realm/SwiftLint/issues/4943)
+
 ### Bug Fixes
 
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file

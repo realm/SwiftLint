@@ -27,12 +27,12 @@ struct OneDeclarationPerFileRule: Rule {
                     struct Bar {
                     }
                     """,
-                    configuration: ["allowed_types": ["enum", "struct"]]),
+                    configuration: ["ignored_types": ["enum", "struct"]]),
             Example("""
                     struct Foo {}
                     struct Bar {}
                     """,
-                    configuration: ["allowed_types": ["struct"]]),
+                    configuration: ["ignored_types": ["struct"]]),
         ],
         triggeringExamples: [
             Example("""
@@ -51,7 +51,7 @@ struct OneDeclarationPerFileRule: Rule {
                     struct Foo {}
                     ↓enum Bar {}
                     """,
-                    configuration: ["allowed_types": ["protocol"]]),
+                    configuration: ["ignored_types": ["protocol"]]),
         ]
     )
 }
@@ -63,7 +63,7 @@ private extension OneDeclarationPerFileRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override init(configuration: OneDeclarationPerFileConfiguration, file: SwiftLintFile) {
-            allowedTypes = Set(configuration.enabledTypes.map(\.rawValue))
+            allowedTypes = Set(configuration.allowedTypes.map(\.rawValue))
             super.init(configuration: configuration, file: file)
         }
 

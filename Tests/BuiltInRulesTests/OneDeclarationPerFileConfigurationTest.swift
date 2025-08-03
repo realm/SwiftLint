@@ -3,32 +3,32 @@ import TestHelpers
 import XCTest
 
 final class OneDeclarationPerFileConfigurationTest: SwiftLintTestCase {
-    func testOneDeclarationPerFileConfigurationCheckSettingAllowedTypes() throws {
-        let initial: [OneDeclarationPerFileConfiguration.AllowedType] = [
+    func testOneDeclarationPerFileConfigurationCheckSettingIgnoredTypes() throws {
+        let initial: [OneDeclarationPerFileConfiguration.IgnoredType] = [
             .actor, .class
         ]
-        let config = OneDeclarationPerFileConfiguration(severityConfiguration: .warning, allowedTypes: initial)
-        XCTAssertEqual(Set(initial), config.enabledTypes)
+        let configuration = OneDeclarationPerFileConfiguration(severityConfiguration: .warning, ignoredTypes: initial)
+        XCTAssertEqual(Set(initial), configuration.allowedTypes)
     }
 
     func testOneDeclarationPerFileConfigurationGoodConfig() throws {
-        let allowedTypes = OneDeclarationPerFileConfiguration.AllowedType.all
-        let allowedTypesString: [String] = allowedTypes.map(\.rawValue)
+        let ignoredTypes = OneDeclarationPerFileConfiguration.IgnoredType.all
+        let ignoredTypesString: [String] = ignoredTypes.map(\.rawValue)
             .sorted()
         let goodConfig: [String: Any] = [
             "severity": "error",
-            "allowed_types": allowedTypesString,
+            "ignored_types": ignoredTypesString,
         ]
         var configuration = OneDeclarationPerFileConfiguration()
         try configuration.apply(configuration: goodConfig)
         XCTAssertEqual(configuration.severityConfiguration.severity, .error)
-        XCTAssertEqual(configuration.enabledTypes, allowedTypes)
+        XCTAssertEqual(configuration.allowedTypes, ignoredTypes)
     }
 
     func testOneDeclarationPerFileConfigurationBadConfigWrongTypes() throws {
         let badConfig: [String: Any] = [
             "severity": "error",
-            "allowed_types": ["clas"],
+            "ignored_types": ["clas"],
         ]
         var configuration = OneDeclarationPerFileConfiguration()
         checkError(Issue.invalidConfiguration(ruleID: OneDeclarationPerFileRule.identifier)) {

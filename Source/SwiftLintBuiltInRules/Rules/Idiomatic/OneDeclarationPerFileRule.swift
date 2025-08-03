@@ -89,7 +89,7 @@ private extension OneDeclarationPerFileRule {
 
         func appendViolationIfNeeded(node: TokenSyntax) {
             defer { declarationVisited = true }
-            if declarationVisited && !allowedTypes.contains(node.text) {
+            if declarationVisited, !allowedTypes.contains(node.text) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

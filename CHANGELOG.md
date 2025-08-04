@@ -95,6 +95,12 @@
 
 ### Bug Fixes
 
+* Fix `no_extension_access_modifier` rule incorrectly triggering for `nonisolated extension`.
+  The rule now only flags actual access control modifiers (`private`, `public`, `open`,
+  `internal`, `fileprivate`) and ignores isolation modifiers like `nonisolated`.  
+  [copilot](https://github.com/copilot)
+  [#6168](https://github.com/realm/SwiftLint/issues/6168)
+
 * Improved error reporting when SwiftLint exits, because of an invalid configuration file
   or other error.  
   [Martin Redington](https://github.com/mildm8nnered)

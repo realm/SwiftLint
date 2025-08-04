@@ -14,11 +14,14 @@ runs:
         CI_BAZELRC_FILE_CONTENT: ${{ env.CI_BAZELRC_FILE_CONTENT }}
     - name: Apply patch
       shell: bash
-      run: git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
-    - name: Build SwiftLint with Bazel
+      run: |
+        git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
+        git update-index --assume-unchanged BUILD
+    - name: Update environment
       shell: bash
       run: |
-        export PATH="/usr/share/swift/usr/bin:$PATH"
-        bazel build --config release ${{ inputs.target }}
-      env:
-        CC: clang
+        echo "/usr/share/swift/usr/bin" >> $GITHUB_PATH
+        echo "CC=clang" >> $GITHUB_ENV
+    - name: Build SwiftLint with Bazel
+      shell: bash
+      run: bazel build --config release ${{ inputs.target }}

@@ -97,7 +97,7 @@
 
 * Fix `no_extension_access_modifier` rule incorrectly triggering for `nonisolated extension`.
   The rule now only flags actual access control modifiers (`private`, `public`, `open`,
-  `internal`, `fileprivate`) and ignores isolation modifiers like `nonisolated`.
+  `internal`, `fileprivate`) and ignores isolation modifiers like `nonisolated`.  
   [copilot](https://github.com/copilot)
   [#6168](https://github.com/realm/SwiftLint/issues/6168)
 

@@ -92,6 +92,9 @@
   
 * Support deinitializers and subscripts in `function_body_length` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* Add new `allowed_types` option to the `one_declaration_per_file` rule.  
+  [Alfons Hoogervorst](https://github.com/snofla)
+  [#6072](https://github.com/realm/SwiftLint/issues/6072)
 
 ### Bug Fixes
 

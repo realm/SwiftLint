@@ -788,6 +788,7 @@ object_literal:
     correctable: false
 one_declaration_per_file:
   severity: warning
+  allowed_types: []
   meta:
     opt-in: true
     correctable: false

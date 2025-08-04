@@ -21,7 +21,3 @@ jobs:
         name: Build SwiftLint with Bazel
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Update PATH
-        run: echo "/usr/share/swift/usr/bin" >> $GITHUB_PATH
-      - name: Ignore patched BUILD file
-        run: git update-index --assume-unchanged BUILD

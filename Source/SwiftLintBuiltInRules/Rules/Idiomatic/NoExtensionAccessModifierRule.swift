@@ -12,6 +12,7 @@ struct NoExtensionAccessModifierRule: Rule {
         nonTriggeringExamples: [
             Example("extension String {}"),
             Example("\n\n extension String {}"),
+            Example("nonisolated extension String {}"),
         ],
         triggeringExamples: [
             Example("↓private extension String {}"),
@@ -29,8 +30,8 @@ private extension NoExtensionAccessModifierRule {
 
         override func visitPost(_ node: ExtensionDeclSyntax) {
             let modifiers = node.modifiers
-            if modifiers.isNotEmpty {
-                violations.append(modifiers.positionAfterSkippingLeadingTrivia)
+            if let accessLevelModifier = modifiers.accessLevelModifier {
+                violations.append(accessLevelModifier.positionAfterSkippingLeadingTrivia)
             }
         }
     }

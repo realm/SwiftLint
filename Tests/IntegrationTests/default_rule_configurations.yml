@@ -864,6 +864,7 @@ prefer_condition_list:
 prefer_key_path:
   severity: warning
   restrict_to_standard_functions: true
+  ignore_identity_closures: false
   meta:
     opt-in: true
     correctable: true

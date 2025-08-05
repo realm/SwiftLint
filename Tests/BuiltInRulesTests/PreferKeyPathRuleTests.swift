@@ -30,6 +30,10 @@ final class PreferKeyPathRuleTests: SwiftLintTestCase {
                     Example("f.map(\\.self)"),
                 Example("f.g { $0 }", configuration: Self.extendedMode):
                     Example("f.g(\\.self)"),
+                Example("f { $0 }", configuration: Self.extendedModeAndIgnoreIdentity): // no change with option enabled
+                    Example("f { $0 }"),
+                Example("f.map { $0 }", configuration: Self.ignoreIdentity): // no change with option enabled
+                    Example("f.map { $0 }"),
             ])
 
         verifyRule(description)

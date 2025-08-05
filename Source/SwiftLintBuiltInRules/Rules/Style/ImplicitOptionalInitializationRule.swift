@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+@SwiftSyntaxRule(explicitRewriter: true)
 struct ImplicitOptionalInitializationRule: Rule {
   var configuration = ImplicitOptionalInitConfiguration()
 

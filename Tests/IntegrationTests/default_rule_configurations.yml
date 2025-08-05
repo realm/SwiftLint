@@ -501,7 +501,7 @@ implicit_optional_initialization:
   severity: warning
   style: always
   meta:
-    opt-in: true
+    opt-in: false
     correctable: true
 implicit_return:
   severity: warning
@@ -990,11 +990,6 @@ redundant_nil_coalescing:
     opt-in: true
     correctable: true
 redundant_objc_attribute:
-  severity: warning
-  meta:
-    opt-in: false
-    correctable: true
-redundant_optional_initialization:
   severity: warning
   meta:
     opt-in: false

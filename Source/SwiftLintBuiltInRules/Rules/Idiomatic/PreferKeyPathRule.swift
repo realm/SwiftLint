@@ -7,17 +7,13 @@ struct PreferKeyPathRule: Rule {
 
     private static let extendedMode = ["restrict_to_standard_functions": false]
     private static let ignoreIdentity = ["ignore_identity_closures": true]
-    private static let extendedModeAndIgnoreIdentity = [
-        "restrict_to_standard_functions": false,
-        "ignore_identity_closures": true,
-    ]
+    private static let extendedModeAndIgnoreIdentity = extendedMode.merging(ignoreIdentity, uniquingKeysWith: { $1 })
 
     static let description = RuleDescription(
         identifier: "prefer_key_path",
         name: "Prefer Key Path",
-        description: """
-            Use a key path argument instead of a closure with property access
-
+        description: "Use a key path argument instead of a closure with property access",
+        rationale: """
             Note: Swift 5 doesn't support identity key path conversion (`{ $0 }` -> `(\\.self)`), regardless of
             `ignore_identity_closures` parameter value
         """,
@@ -93,6 +89,10 @@ struct PreferKeyPathRule: Rule {
                 Example("f.drop(while: \\.a)"),
             Example("f.compactMap ↓{ $0.a.b.c.d }"):
                 Example("f.compactMap(\\.a.b.c.d)"),
+            Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity): // no change with option enabled
+                Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity),
+            Example("f.map { $0 }", configuration: ignoreIdentity): // no change with option enabled
+                Example("f.map { $0 }", configuration: ignoreIdentity),
         ]
     )
 }

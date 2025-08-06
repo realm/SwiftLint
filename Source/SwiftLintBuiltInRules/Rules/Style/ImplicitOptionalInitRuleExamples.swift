@@ -1,4 +1,4 @@
-enum ImplicitOptionalInitializationRuleExamples {
+enum ImplicitOptionalInitRuleExamples {
     static let nonTriggeringExamples = [
         Example(  // properties with body should be ignored
             """

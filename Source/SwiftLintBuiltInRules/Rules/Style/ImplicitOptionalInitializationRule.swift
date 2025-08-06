@@ -9,9 +9,9 @@ struct ImplicitOptionalInitializationRule: Rule {
         name: "Implicit Optional Initialization",
         description: "Optionals should be consistently initialised",
         kind: .style,
-        nonTriggeringExamples: ImplicitOptionalInitializationRuleExamples.nonTriggeringExamples,
-        triggeringExamples: ImplicitOptionalInitializationRuleExamples.triggeringExamples,
-        corrections: ImplicitOptionalInitializationRuleExamples.corrections,
+        nonTriggeringExamples: ImplicitOptionalInitRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ImplicitOptionalInitRuleExamples.triggeringExamples,
+        corrections: ImplicitOptionalInitRuleExamples.corrections,
         deprecatedAliases: ["redundant_optional_initialization"]
     )
 }

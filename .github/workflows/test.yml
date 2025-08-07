@@ -49,3 +49,17 @@ jobs:
           path: .build
       - name: Run tests
         run: make spm_test
+
+  bazel_linux_debug:
+    name: Bazel, Linux, Swift 6.1 (debug)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/bazel-linux-build
+        name: Build with Bazel
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+        with:
+          debug: 'true'
+      - name: Run tests
+        run: make bazel_test

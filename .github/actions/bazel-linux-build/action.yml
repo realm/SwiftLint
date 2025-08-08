@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.debug }}" = "true" ]; then
-          bazel build ${{ inputs.target }} --sandbox_debug --verbose_failures
+          bazel build ${{ inputs.target }} --verbose_failures --keep_going --jobs=1
         else
           bazel build ${{ inputs.target }} --config release
         fi

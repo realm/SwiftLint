@@ -1,23 +1,25 @@
-name: "Copilot Setup Steps"
+name: Copilot Setup Steps
 
 on:
   workflow_dispatch:
   push:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-  pull_request:
-    paths:
-      - .github/workflows/copilot-setup-steps.yml
 
 jobs:
   # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
   copilot-setup-steps:
+    name: Perform
     runs-on: ubuntu-24.04
+    container: swift:6.1-noble
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/bazel-linux-build
-        name: Build SwiftLint with Bazel
-        env:
-          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: ${{ runner.os }}-swift-spm-
+          path: .build
+      - name: Build everything
+        run: swift build --build-tests

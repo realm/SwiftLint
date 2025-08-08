@@ -18,10 +18,13 @@ jobs:
     container: swift:6.1-noble
     steps:
       - uses: actions/checkout@v4
+      - name: Get Swift version
+        id: swift_version
+        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\.[0-9]' -o | head -1)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
-          restore-keys: ${{ runner.os }}-swift-spm-
+          key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
           path: .build
       - name: Run tests
         uses: ./.github/actions/run-make
@@ -44,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
           restore-keys: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-
           path: .build
       - name: Run tests

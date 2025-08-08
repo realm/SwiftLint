@@ -22,10 +22,13 @@ jobs:
           target: "//:swiftlint @com_github_jpsim_sourcekitten//:sourcekitten"
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Get Swift version
+        id: swift_version
+        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\.[0-9]' -o | head -1)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-swift-spm-${{ hashFiles('Package.resolved') }}
-          restore-keys: ${{ runner.os }}-swift-spm-
+          key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
           path: .build
       - name: Generate documentation
         run: |

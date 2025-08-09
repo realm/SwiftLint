@@ -6,4 +6,8 @@ User-facing changes must be documented in the `CHANGELOG.md` file, which is orga
 
 All changes on configuration options must be reflected in `Tests/IntegrationTests/default_rule_configurations.yml`. This can be achieved by running `swift run swiftlint-dev rules register`. Running this command is also necessary when new rules got added or removed to (un-)register them from/in the list of built-in rules and tests verifying all examples in rule descriptions.
 
+For some rules, there are dedicated tests in `Tests/BuiltInRulesTests`. However, they are typically not required as all the examples in the rule descriptions are automatically tested. The examples in the rule descriptions are also used to generate documentation for the rules. If an example presents a very pathological case, that's helpful for testing but not for user documentation, you can add the `excludeFromDocumentation: true` parameter to the example initializer.
+
+The functionality of configurations does not need to be tested explicitly either. But all options should be verified in the provided examples with the `configuration:` parameter as well.
+
 All changes need to pass `swift test --parallel` as well as running SwiftLint on itself. The command `swift run swiftlint` run in the root directory of the project does that.

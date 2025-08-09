@@ -181,6 +181,56 @@ final class XCTSpecificMatcherRuleTests: SwiftLintTestCase {
         XCTAssert(noViolation(in: "XCTAssertTrue(foo(bar == baz), \"toto\")"))
     }
 
+    // MARK: - Identity Operator Tests
+
+    func testAssertIdentical() {
+        let example = Example("XCTAssert(foo === bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertIdentical' instead")
+    }
+
+    func testAssertNotIdentical() {
+        let example = Example("XCTAssert(foo !== bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotIdentical' instead")
+    }
+
+    func testAssertTrueIdentical() {
+        let example = Example("XCTAssertTrue(foo === bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertIdentical' instead")
+    }
+
+    func testAssertTrueNotIdentical() {
+        let example = Example("XCTAssertTrue(foo !== bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotIdentical' instead")
+    }
+
+    func testAssertFalseIdentical() {
+        let example = Example("XCTAssertFalse(foo === bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotIdentical' instead")
+    }
+
+    func testAssertFalseNotIdentical() {
+        let example = Example("XCTAssertFalse(foo !== bar)")
+        let violations = self.violations(example)
+
+        XCTAssertEqual(violations.count, 1)
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertIdentical' instead")
+    }
+
     private func violations(_ example: Example) -> [StyleViolation] {
         guard let config = makeConfig(nil, XCTSpecificMatcherRule.identifier) else { return [] }
         return TestHelpers.violations(example, config: config)

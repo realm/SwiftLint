@@ -8,7 +8,7 @@ struct XCTSpecificMatcherRule: Rule {
     static let description = RuleDescription(
         identifier: "xct_specific_matcher",
         name: "XCTest Specific Matcher",
-        description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`.",
+        description: "Prefer specific XCTest matchers over `XCTAssertEqual`, `XCTAssertNotEqual`, `XCTAssert`, and `XCTAssertTrue` for identical comparisons.",
         kind: .idiomatic,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
@@ -43,6 +43,8 @@ private enum OneArgXCTAssert: String {
     private enum Comparison: String {
         case equal = "=="
         case unequal = "!="
+        case identical = "==="
+        case notIdentical = "!=="
     }
 
     private func suggestion(for comparisonOperator: Comparison) -> String {
@@ -53,6 +55,12 @@ private enum OneArgXCTAssert: String {
         case (.true, .unequal):  return "XCTAssertNotEqual"
         case (.false, .equal):  return "XCTAssertNotEqual"
         case (.false, .unequal):  return "XCTAssertEqual"
+        case (.assert, .identical):  return "XCTAssertIdentical"
+        case (.true, .identical):  return "XCTAssertIdentical"
+        case (.assert, .notIdentical):  return "XCTAssertNotIdentical"
+        case (.true, .notIdentical):  return "XCTAssertNotIdentical"
+        case (.false, .identical):  return "XCTAssertNotIdentical"
+        case (.false, .notIdentical):  return "XCTAssertIdentical"
         }
     }
 

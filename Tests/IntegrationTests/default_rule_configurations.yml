@@ -448,7 +448,7 @@ function_default_parameter_at_end:
     correctable: false
 function_name_whitespace:
   severity: warning
-  generic_space: no_space
+  generic_spacing: no_space
   meta:
     opt-in: true
     correctable: true

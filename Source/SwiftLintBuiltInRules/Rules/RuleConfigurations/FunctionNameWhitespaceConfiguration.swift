@@ -6,35 +6,31 @@ struct FunctionNameWhitespaceConfiguration: SeverityBasedRuleConfiguration {
 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "generic_space")
-    private(set) var genericSpace = GenericSpaceType.noSpace
+    @ConfigurationElement(key: "generic_spacing")
+    private(set) var genericSpacing = GenericSpacingType.noSpace
 
     @AcceptableByConfigurationElement
-    enum GenericSpaceType: String {
+    enum GenericSpacingType: String {
         case noSpace = "no_space"
         case leadingSpace = "leading_space"
         case trailingSpace = "trailing_space"
         case leadingTrailingSpace = "leading_trailing_space"
 
-        var reasonForName: String {
+        var beforeGenericViolationReason: String {
             switch self {
-            case .noSpace:
-                return "Remove space after function name"
-            case .leadingSpace:
-                return "Insert a single space after function name"
-            case .trailingSpace:
-                return "Remove space after function name"
-            case .leadingTrailingSpace:
-                return "Insert a single space after function name"
+            case .noSpace, .trailingSpace:
+                "Superfluous space between function name and generic parameter(s)"
+            case .leadingSpace, .leadingTrailingSpace:
+                "Missing space between function name and generic parameter(s)"
             }
         }
 
-        var reasonForGenericAngleBracket: String {
+        var afterGenericViolationReason: String {
             switch self {
             case .noSpace, .leadingSpace:
-                return "Remove space after closing angle bracket"
+                "Superfluous space after generic parameter(s)"
             case .trailingSpace, .leadingTrailingSpace:
-                return "Insert a single space after closing angle bracket"
+                "Missing space after generic parameter(s)"
             }
         }
     }

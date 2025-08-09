@@ -98,6 +98,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5849](https://github.com/realm/SwiftLint/issues/5849)
 
+* Add `implicit_optional_initialization` rule to enforce implicit or explicit  
+  initialization of optional variables, configurable via `style: always | never`.  
+  [@leolem](https://github.com/leo-lem)  
+  [#4943](https://github.com/realm/SwiftLint/issues/4943)
+
 ### Bug Fixes
 
 * Fix `no_extension_access_modifier` rule incorrectly triggering for `nonisolated extension`.

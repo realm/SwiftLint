@@ -67,6 +67,12 @@ final class ImplicitGetterRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class ImplicitOptionalInitializationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ImplicitOptionalInitializationRule.description)
+    }
+}
+
 final class ImplicitReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitReturnRule.description)
@@ -148,11 +154,5 @@ final class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
 final class LegacyHashingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyHashingRule.description)
-    }
-}
-
-final class LegacyMultipleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyMultipleRule.description)
     }
 }

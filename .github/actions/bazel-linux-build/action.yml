@@ -4,6 +4,9 @@ inputs:
   target:
     description: The Bazel target to build
     default: //:swiftlint
+  debug:
+    description: Whether to build in debug mode
+    default: "false"
 runs:
   using: composite
   steps:
@@ -24,4 +27,9 @@ runs:
         echo "CC=clang" >> $GITHUB_ENV
     - name: Build SwiftLint with Bazel
       shell: bash
-      run: bazel build --config release ${{ inputs.target }}
+      run: |
+        if [ "${{ inputs.debug }}" = "true" ]; then
+          bazel build ${{ inputs.target }} --verbose_failures --keep_going --jobs=1
+        else
+          bazel build ${{ inputs.target }} --config release
+        fi

@@ -101,7 +101,7 @@
 * Add `function_name_whitespace` rule to enforce consistent spacing between the `func`
   keyword, function name, and its generic parameters. Ensures exactly one space between
   `func` and the function name, and configurable spacing around generics via
-  `generic_space`:
+  `generic_spacing`:
   * `no_space` (default): `func name<T>()`
   * `leading_space`: `func name <T>()`
   * `trailing_space`: `func name<T> ()`

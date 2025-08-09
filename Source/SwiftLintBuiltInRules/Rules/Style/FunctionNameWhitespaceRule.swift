@@ -18,7 +18,7 @@ struct FunctionNameWhitespaceRule: Rule {
 private extension FunctionNameWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard node.isNamedFunction else { return }
+            guard case .identifier = node.name.tokenKind else { return }
             validateFuncKeywordSpacing(for: node)
             correctSingleCommentTrivia(
                 after: node.name,
@@ -115,13 +115,6 @@ private extension FunctionNameWhitespaceRule {
                 )
             )
         }
-    }
-}
-
-private extension FunctionDeclSyntax {
-    var isNamedFunction: Bool {
-        guard case .identifier = name.tokenKind else { return false }
-        return true
     }
 }
 

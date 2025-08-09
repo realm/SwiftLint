@@ -11,7 +11,8 @@ jobs:
   copilot-setup-steps:
     name: Perform
     runs-on: ubuntu-24.04
-    container: swift:6.1-noble
+    # Swift containers don't work with Copilot
+    # container: swift:6.1-noble
     permissions:
       contents: read
     steps:

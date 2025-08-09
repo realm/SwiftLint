@@ -92,6 +92,11 @@
   
 * Support deinitializers and subscripts in `function_body_length` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Extend the `xct_specific_matcher` rule to support identity operators (`===` and `!==`)
+  in addition to the existing equality operators (`==` and `!=`).  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5849](https://github.com/realm/SwiftLint/issues/5849)
 
 ### Bug Fixes
 

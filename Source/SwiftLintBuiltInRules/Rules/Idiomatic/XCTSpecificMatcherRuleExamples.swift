@@ -64,6 +64,11 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("XCTAssert(foo.self == bar)"),
         Example("XCTAssertTrue(type(of: foo) != Int.self)"),
         Example("XCTAssertTrue(a == (1, 3, 5)"),
+
+        // Identity comparisons with valid usage
+        Example("XCTAssertIdentical(foo, bar)"),
+        Example("XCTAssertNotIdentical(foo, bar)"),
+        Example("XCTAssert(foo.self === bar.self)"),
     ]
 
     static let triggeringExamples = [
@@ -130,6 +135,18 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("↓XCTAssertTrue(   foo  !=   bar  )"),
         Example("↓XCTAssertFalse(1 != foo)"),
         Example("↓XCTAssert(foo != bar, \"toto\")"),
+
+        // Identity with `===`
+        Example("↓XCTAssert(foo === bar)"),
+        Example("↓XCTAssertTrue(   foo  ===   bar  )"),
+        Example("↓XCTAssertFalse(bar === foo)"),
+        Example("↓XCTAssert(foo === bar, \"toto\")"),
+
+        // Non-identity with `!==`
+        Example("↓XCTAssert(foo !== bar)"),
+        Example("↓XCTAssertTrue(   foo  !==   bar  )"),
+        Example("↓XCTAssertFalse(bar !== foo)"),
+        Example("↓XCTAssert(foo !== bar, \"toto\")"),
 
         // Comparison with `nil`
         Example("↓XCTAssert(  foo   ==  nil)"),

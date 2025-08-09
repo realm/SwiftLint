@@ -47,7 +47,7 @@ private extension FunctionNameWhitespaceRule {
             guard let replacement else { return }
             violations.append(
                 .init(
-                    position: node.name.positionAfterSkippingLeadingTrivia,
+                    position: node.name.endPositionBeforeTrailingTrivia,
                     reason: configuration.genericSpacing.beforeGenericViolationReason,
                     correction: .init(
                         start: node.name.endPositionBeforeTrailingTrivia,
@@ -62,7 +62,7 @@ private extension FunctionNameWhitespaceRule {
             guard node.funcKeyword.trailingTrivia.isNotSingleSpaceWithoutComments else { return }
             violations.append(
                 .init(
-                    position: node.name.positionAfterSkippingLeadingTrivia,
+                    position: node.funcKeyword.endPositionBeforeTrailingTrivia,
                     reason: "Too many spaces between 'func' and function name",
                     correction: .init(
                         start: node.funcKeyword.endPositionBeforeTrailingTrivia,
@@ -85,7 +85,7 @@ private extension FunctionNameWhitespaceRule {
             guard let replacement else { return }
             violations.append(
                 .init(
-                    position: node.positionAfterSkippingLeadingTrivia,
+                    position: node.endPositionBeforeTrailingTrivia,
                     reason: configuration.genericSpacing.afterGenericViolationReason,
                     correction: .init(
                         start: node.endPositionBeforeTrailingTrivia,
@@ -105,7 +105,7 @@ private extension FunctionNameWhitespaceRule {
 
             violations.append(
                 .init(
-                    position: node.positionAfterSkippingLeadingTrivia,
+                    position: node.endPositionBeforeTrailingTrivia,
                     reason: reason,
                     correction: .init(
                         start: node.endPositionBeforeTrailingTrivia,

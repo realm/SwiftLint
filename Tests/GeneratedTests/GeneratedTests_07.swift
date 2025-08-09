@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferSelfInStaticReferencesRule.description)
+    }
+}
+
 final class PreferSelfTypeOverTypeOfSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfTypeOverTypeOfSelfRule.description)
@@ -148,11 +154,5 @@ final class RedundantOptionalInitializationRuleGeneratedTests: SwiftLintTestCase
 final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSelfInClosureRule.description)
-    }
-}
-
-final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantSendableRule.description)
     }
 }

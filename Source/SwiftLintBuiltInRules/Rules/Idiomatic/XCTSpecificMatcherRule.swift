@@ -8,7 +8,17 @@ struct XCTSpecificMatcherRule: Rule {
     static let description = RuleDescription(
         identifier: "xct_specific_matcher",
         name: "XCTest Specific Matcher",
-        description: "Prefer specific XCTest matchers over `XCTAssertEqual`, `XCTAssertNotEqual`, `XCTAssert`, and `XCTAssertTrue` for identical comparisons.",
+        description: "Prefer specific XCTest matchers.",
+        rationale: """
+        Using specific matchers like `XCTAssertEqual`, `XCTAssertNotEqual`, `XCTAssertTrue`, `XCTAssertFalse`,
+        `XCTAssertIdentical` and `XCTAssertNotIdentical` improves code readability and clarity. They more clearly
+        state the intention of the assertion.
+
+        Consider for example `XCTAssertTrue(foo == bar)`, which requires two details to grasp: that `foo` and `bar`
+        are equal, and that the result of the comparison shall be true. Using `XCTAssertEqual(foo, bar)` makes it
+        clear that the intention is to check equality, without needing to understand the underlying logic of the
+        comparison.
+        """,
         kind: .idiomatic,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
@@ -49,18 +59,18 @@ private enum OneArgXCTAssert: String {
 
     private func suggestion(for comparisonOperator: Comparison) -> String {
         switch (self, comparisonOperator) {
-        case (.assert, .equal):  return "XCTAssertEqual"
-        case (.true, .equal):  return "XCTAssertEqual"
-        case (.assert, .unequal):  return "XCTAssertNotEqual"
-        case (.true, .unequal):  return "XCTAssertNotEqual"
-        case (.false, .equal):  return "XCTAssertNotEqual"
-        case (.false, .unequal):  return "XCTAssertEqual"
-        case (.assert, .identical):  return "XCTAssertIdentical"
-        case (.true, .identical):  return "XCTAssertIdentical"
-        case (.assert, .notIdentical):  return "XCTAssertNotIdentical"
-        case (.true, .notIdentical):  return "XCTAssertNotIdentical"
-        case (.false, .identical):  return "XCTAssertNotIdentical"
-        case (.false, .notIdentical):  return "XCTAssertIdentical"
+        case (.assert, .equal): "XCTAssertEqual"
+        case (.true, .equal): "XCTAssertEqual"
+        case (.assert, .unequal): "XCTAssertNotEqual"
+        case (.true, .unequal): "XCTAssertNotEqual"
+        case (.false, .equal): "XCTAssertNotEqual"
+        case (.false, .unequal): "XCTAssertEqual"
+        case (.assert, .identical): "XCTAssertIdentical"
+        case (.true, .identical): "XCTAssertIdentical"
+        case (.assert, .notIdentical): "XCTAssertNotIdentical"
+        case (.true, .notIdentical): "XCTAssertNotIdentical"
+        case (.false, .identical): "XCTAssertNotIdentical"
+        case (.false, .notIdentical): "XCTAssertIdentical"
         }
     }
 

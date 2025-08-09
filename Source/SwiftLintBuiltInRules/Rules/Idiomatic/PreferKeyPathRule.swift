@@ -6,11 +6,17 @@ struct PreferKeyPathRule: Rule {
     var configuration = PreferKeyPathConfiguration()
 
     private static let extendedMode = ["restrict_to_standard_functions": false]
+    private static let ignoreIdentity = ["ignore_identity_closures": true]
+    private static let extendedModeAndIgnoreIdentity = extendedMode.merging(ignoreIdentity, uniquingKeysWith: { $1 })
 
     static let description = RuleDescription(
         identifier: "prefer_key_path",
         name: "Prefer Key Path",
         description: "Use a key path argument instead of a closure with property access",
+        rationale: """
+            Note: Swift 5 doesn't support identity key path conversion (`{ $0 }` -> `(\\.self)`), regardless of
+            `ignore_identity_closures` parameter value
+        """,
         kind: .idiomatic,
         minSwiftVersion: .fiveDotTwo,
         nonTriggeringExamples: [
@@ -25,6 +31,8 @@ struct PreferKeyPathRule: Rule {
             Example("f { (a, b) in a.b }", configuration: extendedMode),
             Example("f { $0.a } g: { $0.b }", configuration: extendedMode),
             Example("[1, 2, 3].reduce(1) { $0 + $1 }", configuration: extendedMode),
+            Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity),
+            Example("f.map { $0 }", configuration: ignoreIdentity),
             Example("f.map(1) { $0.a }"),
             Example("f.filter({ $0.a }, x)"),
             Example("#Predicate { $0.a }"),
@@ -81,6 +89,10 @@ struct PreferKeyPathRule: Rule {
                 Example("f.drop(while: \\.a)"),
             Example("f.compactMap ↓{ $0.a.b.c.d }"):
                 Example("f.compactMap(\\.a.b.c.d)"),
+            Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity): // no change with option enabled
+                Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity),
+            Example("f.map { $0 }", configuration: ignoreIdentity): // no change with option enabled
+                Example("f.map { $0 }", configuration: ignoreIdentity),
         ]
     )
 }
@@ -92,8 +104,12 @@ private extension PreferKeyPathRule {
                 return
             }
             if let onlyStmt = node.onlyExprStmt,
-               SwiftVersion.current >= .six || !onlyStmt.is(DeclReferenceExprSyntax.self),
                onlyStmt.accesses(identifier: node.onlyParameter) {
+                if onlyStmt.is(DeclReferenceExprSyntax.self),
+                   configuration.ignoreIdentityClosures || SwiftVersion.current < .six {
+                    return
+                }
+
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -106,7 +122,7 @@ private extension PreferKeyPathRule {
                   !closure.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions),
                   let expr = closure.onlyExprStmt,
                   expr.accesses(identifier: closure.onlyParameter) == true,
-                  let replacement = expr.asKeyPath,
+                  let replacement = expr.asKeyPath(ignoreIdentityClosures: configuration.ignoreIdentityClosures),
                   let calleeName = node.calleeName else {
                 return super.visit(node)
             }
@@ -136,7 +152,7 @@ private extension PreferKeyPathRule {
             }
             if let expr = node.onlyExprStmt,
                expr.accesses(identifier: node.onlyParameter) == true,
-               let replacement = expr.asKeyPath {
+               let replacement = expr.asKeyPath(ignoreIdentityClosures: configuration.ignoreIdentityClosures) {
                 numberOfCorrections += 1
                 let node = replacement
                     .with(\.leadingTrivia, node.leadingTrivia)
@@ -226,7 +242,7 @@ private extension FunctionCallExprSyntax {
 }
 
 private extension ExprSyntax {
-    var asKeyPath: ExprSyntax? {
+    func asKeyPath(ignoreIdentityClosures: Bool) -> ExprSyntax? {
         if let memberAccess = `as`(MemberAccessExprSyntax.self) {
             var this = memberAccess.base
             var elements = [memberAccess.declName]
@@ -238,7 +254,8 @@ private extension ExprSyntax {
             }
             return "\\.\(raw: elements.reversed().map(\.baseName.text).joined(separator: "."))" as ExprSyntax
         }
-        if SwiftVersion.current >= .six, `is`(DeclReferenceExprSyntax.self) {
+
+        if !ignoreIdentityClosures, SwiftVersion.current >= .six, `is`(DeclReferenceExprSyntax.self) {
             return "\\.self"
         }
         return nil

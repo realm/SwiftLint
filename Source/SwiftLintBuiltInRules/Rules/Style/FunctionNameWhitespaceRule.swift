@@ -7,7 +7,7 @@ struct FunctionNameWhitespaceRule: Rule {
     static let description = RuleDescription(
         identifier: "function_name_whitespace",
         name: "Function Name Whitespace",
-        description: "Checks whitespace before and after function name and generics",
+        description: "Consistent whitespace before and after function names and generic parameters.",
         kind: .style,
         nonTriggeringExamples: FunctionNameWhitespaceRuleExamples.nonTriggeringExamples,
         triggeringExamples: FunctionNameWhitespaceRuleExamples.triggeringExamples,
@@ -19,61 +19,52 @@ private extension FunctionNameWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard node.isNamedFunction else { return }
-
             validateFuncKeywordSpacing(for: node)
-
-            correctSingleCommentTriviaIfNeeded(
-                trivia: node.name.trailingTrivia,
-                correctionStart: node.name.endPositionBeforeTrailingTrivia,
-                position: node.name.positionAfterSkippingLeadingTrivia,
-                reason: configuration.genericSpace.reasonForName
+            correctSingleCommentTrivia(
+                after: node.name,
+                reason: configuration.genericSpacing.beforeGenericViolationReason
             )
+            validateFunctionNameTrailingTrivia(node: node)
             if let genericParameterClause = node.genericParameterClause {
-                correctSingleCommentTriviaIfNeeded(
-                    trivia: genericParameterClause.rightAngle.trailingTrivia,
-                    correctionStart: genericParameterClause.endPositionBeforeTrailingTrivia,
-                    position: genericParameterClause.positionAfterSkippingLeadingTrivia,
-                    reason: configuration.genericSpace.reasonForGenericAngleBracket
+                correctSingleCommentTrivia(
+                    after: genericParameterClause,
+                    reason: configuration.genericSpacing.afterGenericViolationReason
                 )
+                validateGenericTrailingTrivia(node: genericParameterClause)
             }
+        }
 
-            validateGenericSpacing(node: node)
-            switch configuration.genericSpace {
-            case .noSpace:
-                violationAndCorrection(
-                    name: node.name,
-                    isNeeded: node.name.trailingTrivia.isNotEmptyWithoutComments,
-                    replacement: ""
+        private func validateFunctionNameTrailingTrivia(node: FunctionDeclSyntax) {
+            let nameTrailingTrivia = node.name.trailingTrivia
+            let replacement: String? = switch configuration.genericSpacing {
+                case .noSpace where nameTrailingTrivia.isNotEmptyWithoutComments: ""
+                case .leadingSpace where nameTrailingTrivia.isNotSingleSpaceWithoutComments: " "
+                case .trailingSpace where nameTrailingTrivia.isNotEmptyWithoutComments: ""
+                case .leadingTrailingSpace where nameTrailingTrivia.isNotSingleSpaceWithoutComments: " "
+                default: nil
+                }
+
+            guard let replacement else { return }
+            violations.append(
+                .init(
+                    position: node.name.positionAfterSkippingLeadingTrivia,
+                    reason: configuration.genericSpacing.beforeGenericViolationReason,
+                    correction: .init(
+                        start: node.name.endPositionBeforeTrailingTrivia,
+                        end: node.name.endPosition,
+                        replacement: replacement
+                    )
                 )
-            case .leadingSpace:
-                violationAndCorrection(
-                    name: node.name,
-                    isNeeded: node.name.trailingTrivia.isNotSingleSpaceWithoutComments,
-                    replacement: " "
-                )
-            case .trailingSpace:
-                violationAndCorrection(
-                    name: node.name,
-                    isNeeded: node.name.trailingTrivia.isNotEmptyWithoutComments,
-                    replacement: ""
-                )
-            case .leadingTrailingSpace:
-                violationAndCorrection(
-                    name: node.name,
-                    isNeeded: node.name.trailingTrivia.isNotSingleSpaceWithoutComments,
-                    replacement: " "
-                )
-            }
+            )
         }
 
         private func validateFuncKeywordSpacing(for node: FunctionDeclSyntax) {
             guard node.funcKeyword.trailingTrivia.isNotSingleSpaceWithoutComments else { return }
-
             violations.append(
-                ReasonedRuleViolation(
+                .init(
                     position: node.name.positionAfterSkippingLeadingTrivia,
-                    reason: "There should be no space before the function name",
-                    correction: ReasonedRuleViolation.ViolationCorrection(
+                    reason: "Too many spaces between 'func' and function name",
+                    correction: .init(
                         start: node.funcKeyword.endPositionBeforeTrailingTrivia,
                         end: node.name.positionAfterSkippingLeadingTrivia,
                         replacement: " "
@@ -82,108 +73,43 @@ private extension FunctionNameWhitespaceRule {
             )
         }
 
-        private func validateGenericSpacing(node: FunctionDeclSyntax) {
-            guard let genericTrailingTrivia = node.genericParameterClause?.rightAngle.trailingTrivia else { return }
-            switch configuration.genericSpace {
-            case .noSpace:
-                violationAndCorrection(
-                    genericParameterClause: node.genericParameterClause,
-                    isNeeded: genericTrailingTrivia.isNotEmptyWithoutComments,
-                    replacement: ""
-                )
-            case .leadingSpace:
-                violationAndCorrection(
-                    genericParameterClause: node.genericParameterClause,
-                    isNeeded: genericTrailingTrivia.isNotEmptyWithoutComments,
-                    replacement: ""
-                )
-            case .trailingSpace:
-                violationAndCorrection(
-                    genericParameterClause: node.genericParameterClause,
-                    isNeeded: genericTrailingTrivia.isNotSingleSpaceWithoutComments,
-                    replacement: " "
-                )
-            case .leadingTrailingSpace:
-                violationAndCorrection(
-                    genericParameterClause: node.genericParameterClause,
-                    isNeeded: genericTrailingTrivia.isNotSingleSpaceWithoutComments,
-                    replacement: " "
-                )
-            }
-        }
-
-        private func violationAndCorrection(
-            genericParameterClause: GenericParameterClauseSyntax?,
-            isNeeded: Bool,
-            replacement: String
-        ) {
-            guard let clause = genericParameterClause, isNeeded else { return }
-
-            let correctionStart = clause.endPositionBeforeTrailingTrivia
-            let correctionEnd = correctionStart.advanced(
-                by: clause.trailingTriviaLength.utf8Length
-            )
-
+        private func validateGenericTrailingTrivia(node: GenericParameterClauseSyntax) {
+            let genericTrailingTrivia = node.rightAngle.trailingTrivia
+            let replacement: String? = switch configuration.genericSpacing {
+                case .noSpace where genericTrailingTrivia.isNotEmptyWithoutComments: ""
+                case .leadingSpace where genericTrailingTrivia.isNotEmptyWithoutComments: ""
+                case .trailingSpace where genericTrailingTrivia.isNotSingleSpaceWithoutComments: " "
+                case .leadingTrailingSpace where genericTrailingTrivia.isNotSingleSpaceWithoutComments: " "
+                default: nil
+                }
+            guard let replacement else { return }
             violations.append(
-                ReasonedRuleViolation(
-                    position: clause.positionAfterSkippingLeadingTrivia,
-                    reason: configuration.genericSpace.reasonForGenericAngleBracket,
-                    correction: ReasonedRuleViolation.ViolationCorrection(
-                        start: correctionStart,
-                        end: correctionEnd,
+                .init(
+                    position: node.positionAfterSkippingLeadingTrivia,
+                    reason: configuration.genericSpacing.afterGenericViolationReason,
+                    correction: .init(
+                        start: node.endPositionBeforeTrailingTrivia,
+                        end: node.endPosition,
                         replacement: replacement
                     )
                 )
             )
         }
 
-        private func violationAndCorrection(
-            name: TokenSyntax,
-            isNeeded: Bool,
-            replacement: String
-        ) {
-            guard isNeeded else { return }
-
-            let correctionStart = name.endPositionBeforeTrailingTrivia
-            let correctionEnd = correctionStart.advanced(
-                by: name.trailingTriviaLength.utf8Length
-            )
-
-            violations.append(
-                ReasonedRuleViolation(
-                    position: name.positionAfterSkippingLeadingTrivia,
-                    reason: configuration.genericSpace.reasonForName,
-                    correction: ReasonedRuleViolation.ViolationCorrection(
-                        start: correctionStart,
-                        end: correctionEnd,
-                        replacement: replacement
-                    )
-                )
-            )
-        }
-
-        private func correctSingleCommentTriviaIfNeeded(
-            trivia: Trivia,
-            correctionStart: AbsolutePosition,
-            position: AbsolutePosition,
-            reason: String
-        ) {
+        private func correctSingleCommentTrivia(after node: some SyntaxProtocol, reason: String) {
+            let trivia = node.trailingTrivia
             guard trivia.containsComments else { return }
             guard let comment = trivia.singleComment else { return }
             let expectedTrivia = Trivia.surroundedBySpaces(comment: comment)
             guard trivia != expectedTrivia else { return }
 
-            let correctionEnd = correctionStart.advanced(
-                by: trivia.description.utf8.count
-            )
-
             violations.append(
-                ReasonedRuleViolation(
-                    position: position,
+                .init(
+                    position: node.positionAfterSkippingLeadingTrivia,
                     reason: reason,
-                    correction: ReasonedRuleViolation.ViolationCorrection(
-                        start: correctionStart,
-                        end: correctionEnd,
+                    correction: .init(
+                        start: node.endPositionBeforeTrailingTrivia,
+                        end: node.endPosition,
                         replacement: " \(comment) "
                     )
                 )

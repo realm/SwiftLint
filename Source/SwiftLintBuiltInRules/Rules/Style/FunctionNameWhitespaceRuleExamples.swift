@@ -3,47 +3,47 @@ internal struct FunctionNameWhitespaceRuleExamples {
         Example("func abc(lhs: Int, rhs: Int) -> Int {}"),
         Example(
             "func abc<T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ),
         Example(
             "func abc <T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_space"]
+            configuration: ["generic_spacing": "leading_space"]
         ),
         Example(
             "func abc<T> (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "trailing_space"]
+            configuration: ["generic_spacing": "trailing_space"]
         ),
         Example(
             "func abc <T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_space"]
+            configuration: ["generic_spacing": "leading_space"]
         ),
         Example(
             "func abc /* comment */ <T> /* comment */ (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_space"]
+            configuration: ["generic_spacing": "leading_space"]
         ),
 
         Example(
             "func abc /* comment */ <T> /* comment */ (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "trailing_space"]
+            configuration: ["generic_spacing": "trailing_space"]
         ),
         Example(
             "func abc <T> (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_trailing_space"]
+            configuration: ["generic_spacing": "leading_trailing_space"]
         ),
         Example("func /* comment */ abc(lhs: Int, rhs: Int) -> Int {}"),
         Example("func /* comment */  abc(lhs: Int, rhs: Int) -> Int {}"),
         Example("func abc /* comment */ (lhs: Int, rhs: Int) -> Int {}"),
         Example(
             "func abc /* comment */ <T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ),
         Example(
             "func abc<T> /* comment */ (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ),
         Example(
             "func abc /* comment */ <T> /* comment */ (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ),
 
         Example("""
@@ -55,7 +55,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ),
         Example("""
         func foo <
@@ -66,7 +66,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "leading_trailing_space"]
+                configuration: ["generic_spacing": "leading_trailing_space"]
                ),
         Example("""
         func foo /* comment */ <
@@ -77,7 +77,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "leading_trailing_space"]
+                configuration: ["generic_spacing": "leading_trailing_space"]
                ),
     ]
 
@@ -88,11 +88,11 @@ internal struct FunctionNameWhitespaceRuleExamples {
         Example("func ↓name <T>(lhs: Int, rhs: Int) -> Int {}"),
         Example(
             "func ↓name /* comment */  ↓<T>  /* comment */  (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ),
         Example(
             "func name /* comment */ /* comment */  ↓<T>  /* comment */  (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ),
         Example("""
         func foo↓<
@@ -103,7 +103,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ),
         Example("""
         func ↓foo <
@@ -114,7 +114,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ),
         Example("""
         func ↓foo ↓<
@@ -125,11 +125,11 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ),
         Example(
             "func abc ↓<T> (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_space"]
+            configuration: ["generic_spacing": "leading_space"]
         ),
         Example("""
         func foo ↓<
@@ -140,11 +140,11 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "leading_space"]
+                configuration: ["generic_spacing": "leading_space"]
                ),
         Example(
             "func ↓abc <T> (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "trailing_space"]
+            configuration: ["generic_spacing": "trailing_space"]
         ),
         Example("""
         func ↓foo <
@@ -155,19 +155,19 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "trailing_space"]
+                configuration: ["generic_spacing": "trailing_space"]
                ),
         Example(
             "func ↓abc<T> (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_trailing_space"]
+            configuration: ["generic_spacing": "leading_trailing_space"]
         ),
         Example(
             "func abc ↓<T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_trailing_space"]
+            configuration: ["generic_spacing": "leading_trailing_space"]
         ),
         Example(
             "func ↓abc↓<T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "leading_trailing_space"]
+            configuration: ["generic_spacing": "leading_trailing_space"]
         ),
         Example("""
         func ↓foo /* comment */  ↓<
@@ -178,20 +178,20 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "leading_trailing_space"]
+                configuration: ["generic_spacing": "leading_trailing_space"]
                ),
     ]
 
     static let corrections: [Example: Example] = [
         Example(
             "func name /* comment */  <T>  /* comment */  (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ): Example(
             "func name /* comment */ <T> /* comment */ (lhs: Int, rhs: Int) -> Int {}"
         ),
         Example(
             "func name /* comment */  <T>(lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "no_space"]
+            configuration: ["generic_spacing": "no_space"]
         ): Example(
             "func name /* comment */ <T>(lhs: Int, rhs: Int) -> Int {}"
         ),
@@ -205,7 +205,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ): Example("""
         func foo<
            T
@@ -224,7 +224,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ): Example("""
         func foo<
            T
@@ -243,7 +243,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param2: [String]
         ) { }
         """,
-                configuration: ["generic_space": "no_space"]
+                configuration: ["generic_spacing": "no_space"]
                ): Example("""
         func foo<
            T
@@ -260,7 +260,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
         Example("func name <T>(lhs: Int) -> Int {}"): Example("func name<T>(lhs: Int) -> Int {}"),
         Example(
             "func abc <T> (lhs1: Int, rhs1: Int) -> Int {}",
-            configuration: ["generic_space": "leading_space"]
+            configuration: ["generic_spacing": "leading_space"]
         ): Example(
             "func abc <T>(lhs1: Int, rhs1: Int) -> Int {}"
         ),
@@ -273,7 +273,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
            param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "leading_space"]
+                configuration: ["generic_spacing": "leading_space"]
                ): Example("""
         func foo <
            T
@@ -285,7 +285,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
         """),
         Example(
             "func abc <T> (lhs: Int, rhs: Int) -> Int {}",
-            configuration: ["generic_space": "trailing_space"]
+            configuration: ["generic_spacing": "trailing_space"]
         ): Example(
             "func abc<T> (lhs: Int, rhs: Int) -> Int {}"
         ),
@@ -298,7 +298,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "trailing_space"]
+                configuration: ["generic_spacing": "trailing_space"]
                ): Example("""
         func foo<
         T
@@ -317,7 +317,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
             param3: [String]
         ) { }
         """,
-                configuration: ["generic_space": "leading_trailing_space"]
+                configuration: ["generic_spacing": "leading_trailing_space"]
                ): Example("""
         func foo <
         T

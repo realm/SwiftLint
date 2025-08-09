@@ -3,7 +3,7 @@ import TestHelpers
 import XCTest
 
 final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
-    private typealias GenericSpaceType = FunctionNameWhitespaceConfiguration.GenericSpaceType
+    private typealias GenericSpacingType = FunctionNameWhitespaceConfiguration.GenericSpacingType
 
     // MARK: - Helper
 
@@ -32,93 +32,92 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
         return violations(example, config: config)
     }
 
-    ////
     // MARK: - func keyword spacing
 
-    func test_SpaceBetweenFuncKeywordAndName_ShouldReportReason() {
+    func testSpaceBetweenFuncKeywordAndName_ShouldReportReason() {
         assertReason(
             "func  abc(lhs: Int, rhs: Int) -> Int {}",
-            expected: "There should be no space before the function name"
+            expected: "Too many spaces between 'func' and function name"
         )
     }
 
-    // MARK: - generic_space = no_space
+    // MARK: - generic_spacing = no_space
 
-    func test_SpaceAfterFuncName_WhenNoSpaceConfigured_ShouldReport() {
+    func testSpaceAfterFuncName_WhenNoSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc (lhs: Int) {}",
-            configuration: ["generic_space": "no_space"],
-            expected: GenericSpaceType.noSpace.reasonForName
+            configuration: ["generic_spacing": "no_space"],
+            expected: GenericSpacingType.noSpace.beforeGenericViolationReason
         )
     }
 
-    func test_SpaceAfterGeneric_WhenNoSpaceConfigured_ShouldReport() {
+    func testSpaceAfterGeneric_WhenNoSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T> (lhs: Int) {}",
-            configuration: ["generic_space": "no_space"],
-            expected: GenericSpaceType.noSpace.reasonForGenericAngleBracket
+            configuration: ["generic_spacing": "no_space"],
+            expected: GenericSpacingType.noSpace.afterGenericViolationReason
         )
     }
 
-    // MARK: - generic_space = leading_space
+    // MARK: - generic_spacing = leading_space
 
-    func test_SpaceAfterFuncName_WhenLeadingSpaceConfigured_ShouldReport() {
+    func testSpaceAfterFuncName_WhenLeadingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc(lhs: Int) {}",
-            configuration: ["generic_space": "leading_space"],
-            expected: GenericSpaceType.leadingSpace.reasonForName
+            configuration: ["generic_spacing": "leading_space"],
+            expected: GenericSpacingType.leadingSpace.beforeGenericViolationReason
         )
     }
 
-    func test_SpaceBeforeGeneric_WhenLeadingSpaceConfigured_ShouldReport() {
+    func testSpaceBeforeGeneric_WhenLeadingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T>(lhs: Int) {}",
-            configuration: ["generic_space": "leading_space"],
-            expected: GenericSpaceType.leadingSpace.reasonForName
+            configuration: ["generic_spacing": "leading_space"],
+            expected: GenericSpacingType.leadingSpace.beforeGenericViolationReason
         )
     }
 
-    // MARK: - generic_space = trailing_space
+    // MARK: - generic_spacing = trailing_space
 
-    func test_SpaceAfterFuncName_WhenTrailingSpaceConfigured_ShouldReport() {
+    func testSpaceAfterFuncName_WhenTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc (lhs: Int) {}",
-            configuration: ["generic_space": "trailing_space"],
-            expected: GenericSpaceType.trailingSpace.reasonForName
+            configuration: ["generic_spacing": "trailing_space"],
+            expected: GenericSpacingType.trailingSpace.beforeGenericViolationReason
         )
     }
 
-    func test_SpaceAfterGeneric_WhenTrailingSpaceConfigured_ShouldReport() {
+    func testSpaceAfterGeneric_WhenTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T>(lhs: Int) {}",
-            configuration: ["generic_space": "trailing_space"],
-            expected: GenericSpaceType.trailingSpace.reasonForGenericAngleBracket
+            configuration: ["generic_spacing": "trailing_space"],
+            expected: GenericSpacingType.trailingSpace.afterGenericViolationReason
         )
     }
 
-    // MARK: - generic_space = leading_trailing_space
+    // MARK: - generic_spacing = leading_trailing_space
 
-    func test_SpaceAfterFuncName_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
+    func testSpaceAfterFuncName_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc(lhs: Int) {}",
-            configuration: ["generic_space": "leading_trailing_space"],
-            expected: GenericSpaceType.leadingTrailingSpace.reasonForName
+            configuration: ["generic_spacing": "leading_trailing_space"],
+            expected: GenericSpacingType.leadingTrailingSpace.beforeGenericViolationReason
         )
     }
 
-    func test_SpaceBeforeGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
+    func testSpaceBeforeGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc<T>(lhs: Int) {}",
-            configuration: ["generic_space": "leading_trailing_space"],
-            expected: GenericSpaceType.leadingTrailingSpace.reasonForName
+            configuration: ["generic_spacing": "leading_trailing_space"],
+            expected: GenericSpacingType.leadingTrailingSpace.beforeGenericViolationReason
         )
     }
 
-    func test_SpaceAfterGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
+    func testSpaceAfterGeneric_WhenLeadingTrailingSpaceConfigured_ShouldReport() {
         assertReason(
             "func abc <T>(lhs: Int) {}",
-            configuration: ["generic_space": "leading_trailing_space"],
-            expected: GenericSpaceType.leadingTrailingSpace.reasonForGenericAngleBracket
+            configuration: ["generic_spacing": "leading_trailing_space"],
+            expected: GenericSpacingType.leadingTrailingSpace.afterGenericViolationReason
         )
     }
 }

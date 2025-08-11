@@ -7,7 +7,7 @@ struct ImplicitOptionalInitializationRule: Rule {
     static let description = RuleDescription(
         identifier: "implicit_optional_initialization",
         name: "Implicit Optional Initialization",
-        description: "Optionals should be consistently initialised",
+        description: "Optionals should be consistently initialized, either with `= nil` or without.",
         kind: .style,
         nonTriggeringExamples: ImplicitOptionalInitRuleExamples.nonTriggeringExamples,
         triggeringExamples: ImplicitOptionalInitRuleExamples.triggeringExamples,
@@ -32,7 +32,7 @@ private extension ImplicitOptionalInitializationRule {
                 case .never: "implicitly initialized without nil"
                 }
 
-            return "Optionals should be \(recommendation) in variable declarations"
+            return "Optional should be \(recommendation)"
         }
     }
 }

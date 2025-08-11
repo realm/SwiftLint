@@ -60,50 +60,50 @@ enum ImplicitOptionalInitRuleExamples {
 
     static let triggeringExamples = [
         // never style
-        Example("var myVar↓: Int? ", configuration: ["style": "never"]),
-        Example("var myVar↓: Optional<Int> ", configuration: ["style": "never"]),
-        Example("var myVar: Int? = nil, myOtherVar↓: Int? ", configuration: ["style": "never"]),
+        Example("var ↓myVar: Int? ", configuration: ["style": "never"]),
+        Example("var ↓myVar: Optional<Int> ", configuration: ["style": "never"]),
+        Example("var myVar: Int? = nil, ↓myOtherVar: Int? ", configuration: ["style": "never"]),
         Example(
             """
-            var myVar↓: String? {
+            var ↓myVar: String? {
               didSet { print("didSet") }
             }
             """, configuration: ["style": "never"]),
         Example(
             """
             func funcName() {
-              var myVar↓: String?
+              var ↓myVar: String?
             }
             """, configuration: ["style": "never"]
         ),
 
         // always style
-        Example("var myVar↓: Int? = nil", configuration: ["style": "always"]),
-        Example("var myVar↓: Optional<Int> = nil", configuration: ["style": "always"]),
-        Example("var myVar: Int?, myOtherVar↓: Int? = nil", configuration: ["style": "always"]),
+        Example("var ↓myVar: Int? = nil", configuration: ["style": "always"]),
+        Example("var ↓myVar: Optional<Int> = nil", configuration: ["style": "always"]),
+        Example("var myVar: Int?, ↓myOtherVar: Int? = nil", configuration: ["style": "always"]),
         Example(
             """
-            var myVar↓: String? = nil {
+            var ↓myVar: String? = nil {
               didSet { print("didSet") }
             }
             """, configuration: ["style": "always"]),
         Example(
             """
             func funcName() {
-                var myVar↓: String? = nil
+                var ↓myVar: String? = nil
             }
             """, configuration: ["style": "always"]),
     ]
 
     static let corrections = [
         // never style
-        Example("var myVar↓: Int? ", configuration: ["style": "never"]):
+        Example("var ↓myVar: Int? ", configuration: ["style": "never"]):
             Example("var myVar: Int? = nil "),
-        Example("var myVar↓: Optional<Int> ", configuration: ["style": "never"]):
+        Example("var ↓myVar: Optional<Int> ", configuration: ["style": "never"]):
             Example("var myVar: Optional<Int> = nil "),
         Example(
             """
-            var myVar↓: String? {
+            var ↓myVar: String? {
               didSet { print("didSet") }
             }
             """, configuration: ["style": "never"]):
@@ -116,7 +116,7 @@ enum ImplicitOptionalInitRuleExamples {
         Example(
             """
             func funcName() {
-              var myVar↓: String?
+              var ↓myVar: String?
             }
             """, configuration: ["style": "never"]
         ): Example(
@@ -126,13 +126,13 @@ enum ImplicitOptionalInitRuleExamples {
             }
             """),
 
-        Example("var myVar↓: Int? = nil", configuration: ["style": "always"]):
+        Example("var ↓myVar: Int? = nil", configuration: ["style": "always"]):
             Example("var myVar: Int?"),
-        Example("var myVar↓: Optional<Int> = nil", configuration: ["style": "always"]):
+        Example("var ↓myVar: Optional<Int> = nil", configuration: ["style": "always"]):
             Example("var myVar: Optional<Int>"),
         Example(
             """
-            var myVar↓: String? = nil {
+            var ↓myVar: String? = nil {
               didSet { print("didSet") }
             }
             """, configuration: ["style": "always"]):
@@ -145,7 +145,7 @@ enum ImplicitOptionalInitRuleExamples {
         Example(
             """
             func funcName() {
-                var myVar↓: String? = nil
+                var ↓myVar: String? = nil
             }
             """, configuration: ["style": "always"]):
             Example(

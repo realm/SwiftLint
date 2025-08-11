@@ -18,95 +18,61 @@ struct ImplicitOptionalInitializationRule: Rule {
 
 private extension ImplicitOptionalInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: VariableDeclSyntax) {
-            violations.append(
-                contentsOf: node.violationPositions(for: configuration.style).map {
-                    ReasonedRuleViolation(position: $0, reason: reason)
-                })
+        override func visitPost(_ node: PatternBindingSyntax) {
+            guard let violationPosition = node.violationPosition(for: configuration.style) else { return }
+
+            violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
         }
 
         var reason: String {
-            let recommendation =
-                switch configuration.style {
-                case .always: "explicitly initialized to nil"
-                case .never: "implicitly initialized without nil"
-                }
+            "Optional should be \(recommendation)"
+        }
 
-            return "Optional should be \(recommendation)"
+        var recommendation: String {
+            switch configuration.style {
+            case .always: "implicitly initialized without nil"
+            case .never: "explicitly initialized to nil"
+            }
         }
     }
 }
 
 private extension ImplicitOptionalInitializationRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
-            let violationPositions = node.violationPositions(for: configuration.style)
-            guard !violationPositions.isEmpty else { return super.visit(node) }
+        override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
+            guard
+                let violationPosition = node.violationPosition(for: configuration.style),
+                !violationPosition.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+            else {
+                return super.visit(node)
+            }
 
-            numberOfCorrections +=
-                violationPositions.filter {
-                    !$0.isContainedIn(
-                        regions: disabledRegions, locationConverter: locationConverter)
-                }.count
+            self.numberOfCorrections += 1
 
-            return super.visit(
-                node.with(
-                    \.bindings,
-                    PatternBindingListSyntax(
-                        node.bindings.map { binding in
-                            guard
-                                let violationPosition = binding.violationPosition(
-                                    for: configuration.style),
-                                !violationPosition.isContainedIn(
-                                    regions: disabledRegions, locationConverter: locationConverter)
-                            else {
-                                return binding
-                            }
-
-                            switch configuration.style {
-                            case .never:
-                                return
-                                    binding
-                                    .with(
-                                        \.typeAnnotation,
-                                        binding.typeAnnotation?.with(\.trailingTrivia, Trivia())
-                                    )
-                                    .with(
-                                        \.initializer,
-                                        InitializerClauseSyntax(
-                                            equal: .equalToken(
-                                                leadingTrivia: .space, trailingTrivia: .space),
-                                            value: ExprSyntax(
-                                                NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
-                                            trailingTrivia: binding.typeAnnotation?.trailingTrivia
-                                                ?? Trivia()
-                                        ))
-                            case .always:
-                                return
-                                    binding
-                                    .with(\.initializer, nil)
-                                    .with(
-                                        \.trailingTrivia,
-                                        binding.accessorBlock == nil
-                                            ? binding.initializer?.trailingTrivia ?? Trivia()
-                                            : binding.trailingTrivia)
-                            }
-                        }))
-            )
+            return switch configuration.style {
+            case .never:
+                node
+                    .with(
+                        \.initializer,
+                         InitializerClauseSyntax(
+                            equal: .equalToken(
+                                leadingTrivia: (node.typeAnnotation?.trailingTrivia.isEmpty ?? true) ? .space : Trivia(),
+                                trailingTrivia: .space
+                            ),
+                            value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
+                            trailingTrivia: node.typeAnnotation?.trailingTrivia ?? Trivia()
+                         )
+                    )
+            case .always:
+                node
+                    .with(\.initializer, nil)
+                    .with(
+                        \.trailingTrivia,
+                         node.accessorBlock == nil
+                         ? node.initializer?.trailingTrivia ?? Trivia()
+                         : node.trailingTrivia)
+            }
         }
-    }
-}
-
-private extension VariableDeclSyntax {
-    func violationPositions(
-        for style: ImplicitOptionalInitConfiguration.Style
-    ) -> [AbsolutePosition] {
-        guard
-            bindingSpecifier.tokenKind == .keyword(.var),
-            !modifiers.contains(keyword: .lazy)
-        else { return [] }
-
-        return bindings.compactMap { $0.violationPosition(for: style) }
     }
 }
 
@@ -114,8 +80,13 @@ private extension PatternBindingSyntax {
     func violationPosition(
         for style: ImplicitOptionalInitConfiguration.Style
     ) -> AbsolutePosition? {
+
         guard
-            let typeAnnotation, typeAnnotation.isOptionalType
+            let parent = parent?.parent?.as(VariableDeclSyntax.self),
+            parent.bindingSpecifier.tokenKind == .keyword(.var),
+            !parent.modifiers.contains(keyword: .lazy),
+            let typeAnnotation,
+            typeAnnotation.isOptionalType
         else { return nil }
 
         // ignore properties with accessors unless they have only willSet or didSet
@@ -133,7 +104,7 @@ private extension PatternBindingSyntax {
         }
 
         if (style == .never && !initializer.isNil) || (style == .always && initializer.isNil) {
-            return pattern.endPositionBeforeTrailingTrivia
+            return positionAfterSkippingLeadingTrivia
         }
 
         return nil

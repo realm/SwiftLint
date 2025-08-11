@@ -2,37 +2,33 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct ImplicitOptionalInitializationRule: Rule {
-    var configuration = ImplicitOptionalInitConfiguration()
+    var configuration = ImplicitOptionalInitializationConfiguration()
 
     static let description = RuleDescription(
         identifier: "implicit_optional_initialization",
         name: "Implicit Optional Initialization",
         description: "Optionals should be consistently initialized, either with `= nil` or without.",
         kind: .style,
-        nonTriggeringExamples: ImplicitOptionalInitRuleExamples.nonTriggeringExamples,
-        triggeringExamples: ImplicitOptionalInitRuleExamples.triggeringExamples,
-        corrections: ImplicitOptionalInitRuleExamples.corrections,
+        nonTriggeringExamples: ImplicitOptionalInitializationRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ImplicitOptionalInitializationRuleExamples.triggeringExamples,
+        corrections: ImplicitOptionalInitializationRuleExamples.corrections,
         deprecatedAliases: ["redundant_optional_initialization"]
     )
 }
 
 private extension ImplicitOptionalInitializationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        var reason: String {
+            switch configuration.style {
+            case .always: "Optional should be implicitly initialized without nil"
+            case .never: "Optional should be explicitly initialized to nil"
+            }
+        }
+
         override func visitPost(_ node: PatternBindingSyntax) {
             guard let violationPosition = node.violationPosition(for: configuration.style) else { return }
 
             violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
-        }
-
-        var reason: String {
-            "Optional should be \(recommendation)"
-        }
-
-        var recommendation: String {
-            switch configuration.style {
-            case .always: "implicitly initialized without nil"
-            case .never: "explicitly initialized to nil"
-            }
         }
     }
 }
@@ -54,23 +50,26 @@ private extension ImplicitOptionalInitializationRule {
                 node
                     .with(
                         \.initializer,
-                         InitializerClauseSyntax(
+                        InitializerClauseSyntax(
                             equal: .equalToken(
-                                leadingTrivia: (node.typeAnnotation?.trailingTrivia.isEmpty ?? true) ? .space : Trivia(),
+                                leadingTrivia: (node.typeAnnotation?.trailingTrivia.isEmpty ?? true)
+                                ? .space
+                                : Trivia(),
                                 trailingTrivia: .space
                             ),
                             value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
                             trailingTrivia: node.typeAnnotation?.trailingTrivia ?? Trivia()
-                         )
+                        )
                     )
             case .always:
                 node
                     .with(\.initializer, nil)
                     .with(
                         \.trailingTrivia,
-                         node.accessorBlock == nil
-                         ? node.initializer?.trailingTrivia ?? Trivia()
-                         : node.trailingTrivia)
+                        node.accessorBlock == nil
+                        ? node.initializer?.trailingTrivia ?? Trivia()
+                        : node.trailingTrivia
+                    )
             }
         }
     }
@@ -78,9 +77,8 @@ private extension ImplicitOptionalInitializationRule {
 
 private extension PatternBindingSyntax {
     func violationPosition(
-        for style: ImplicitOptionalInitConfiguration.Style
+        for style: ImplicitOptionalInitializationConfiguration.Style
     ) -> AbsolutePosition? {
-
         guard
             let parent = parent?.parent?.as(VariableDeclSyntax.self),
             parent.bindingSpecifier.tokenKind == .keyword(.var),

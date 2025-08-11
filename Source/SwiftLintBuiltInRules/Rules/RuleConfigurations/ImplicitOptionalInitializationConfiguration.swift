@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoConfigParser
-struct ImplicitOptionalInitConfiguration: SeverityBasedRuleConfiguration {
+struct ImplicitOptionalInitializationConfiguration: SeverityBasedRuleConfiguration { // swiftlint:disable:this type_name
     typealias Parent = ImplicitOptionalInitializationRule
 
     @AcceptableByConfigurationElement

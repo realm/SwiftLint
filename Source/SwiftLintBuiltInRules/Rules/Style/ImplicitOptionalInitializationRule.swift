@@ -36,10 +36,7 @@ private extension ImplicitOptionalInitializationRule {
 private extension ImplicitOptionalInitializationRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
-            guard
-                let violationPosition = node.violationPosition(for: configuration.style),
-                !violationPosition.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
-            else {
+            guard node.violationPosition(for: configuration.style) != nil else {
                 return super.visit(node)
             }
 

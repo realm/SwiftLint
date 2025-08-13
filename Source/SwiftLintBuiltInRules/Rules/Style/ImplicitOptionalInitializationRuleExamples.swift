@@ -38,7 +38,6 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
                 var myVar: String? = nil
             }
             """, configuration: ["style": "never"]),
-
         Example("var x: Int? = nil // comment", configuration: ["style": "never"]),  // with comment after
 
         // always style
@@ -100,10 +99,10 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
 
     static let corrections = [
         // never style
-        Example("var ↓myVar: Int? ", configuration: ["style": "never"]):
-            Example("var myVar: Int? = nil "),
-        Example("var ↓myVar: Optional<Int> ", configuration: ["style": "never"]):
-            Example("var myVar: Optional<Int> = nil "),
+        Example("var ↓myVar: Int? // comment", configuration: ["style": "never"]):
+            Example("var myVar: Int? = nil // comment"),
+        Example("var ↓myVar: Optional<Int> // comment", configuration: ["style": "never"]):
+            Example("var myVar: Optional<Int> = nil // comment"),
         Example(
             """
             var ↓myVar: String? {
@@ -129,10 +128,10 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             }
             """),
 
-        Example("var ↓myVar: Int? = nil", configuration: ["style": "always"]):
-            Example("var myVar: Int?"),
-        Example("var ↓myVar: Optional<Int> = nil", configuration: ["style": "always"]):
-            Example("var myVar: Optional<Int>"),
+        Example("var ↓myVar: Int? = nil // comment", configuration: ["style": "always"]):
+            Example("var myVar: Int? // comment"),
+        Example("var ↓myVar: Optional<Int> = nil // comment", configuration: ["style": "always"]):
+            Example("var myVar: Optional<Int> // comment"),
         Example(
             """
             var ↓myVar: String? = nil {

@@ -49,15 +49,14 @@ private extension ImplicitOptionalInitializationRule {
                         \.initializer,
                         InitializerClauseSyntax(
                             equal: .equalToken(
-                                leadingTrivia: (node.typeAnnotation?.trailingTrivia.isEmpty ?? true)
-                                ? .space
-                                : Trivia(),
+                                leadingTrivia: .space,
                                 trailingTrivia: .space
                             ),
                             value: ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))),
                             trailingTrivia: node.typeAnnotation?.trailingTrivia ?? Trivia()
                         )
                     )
+                    .with(\.typeAnnotation, node.typeAnnotation?.with(\.trailingTrivia, Trivia()))
             case .always:
                 node
                     .with(\.initializer, nil)

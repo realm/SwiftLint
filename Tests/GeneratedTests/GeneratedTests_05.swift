@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class LegacyMultipleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyMultipleRule.description)
+    }
+}
+
 final class LegacyNSGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyNSGeometryFunctionsRule.description)
@@ -148,11 +154,5 @@ final class NestingRuleGeneratedTests: SwiftLintTestCase {
 final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)
-    }
-}
-
-final class NoEmptyBlockRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NoEmptyBlockRule.description)
     }
 }

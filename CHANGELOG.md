@@ -16,6 +16,14 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6135](https://github.com/realm/SwiftLint/issues/6135)
 
+* The `redundant_optional_initialization` rule has been replaced by the
+  `implicit_optional_initialization` rule that enforces implicit or explicit initialization
+  of optional variables. Its default style `always` mimics the behavior of the
+  `redundant_optional_initialization` rule by default. `redundant_optional_initialization`
+  is now an alias for `implicit_optional_initialization`.  
+  [leo-lem](https://github.com/leo-lem)  
+  [#1940](https://github.com/realm/SwiftLint/issues/1940)  
+
 ### Experimental
 
 * None.
@@ -98,10 +106,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5849](https://github.com/realm/SwiftLint/issues/5849)
 
-* Add `implicit_optional_initialization` rule to enforce implicit or explicit  
-  initialization of optional variables, configurable via `style: always | never`.  
-  [@leolem](https://github.com/leo-lem)  
-  [#4943](https://github.com/realm/SwiftLint/issues/4943)
+* Add new `implicit_optional_initialization` rule to enforce implicit or explicit  
+  initialization of optional variables, configurable via `style: always | never`.
+  It replaces the `redundant_optional_initialization` rule mimicking it with the
+  `style: always` option which is the default.  
+  [leo-lem](https://github.com/leo-lem)  
+  [#1940](https://github.com/realm/SwiftLint/issues/1940)
 
 ### Bug Fixes
 

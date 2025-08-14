@@ -73,27 +73,11 @@ jobs:
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
         platforms: linux/amd64, linux/arm64
         outputs: ${{ env.OUTPUT_TYPE }}
-    - name: Strip and move binary artifacts
-      if: contains(env.OUTPUT_TYPE, 'local')
-      run: |
-        strip artifacts/linux_amd64/usr/bin/swiftformat
-        mv artifacts/linux_amd64/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
-        aarch64-linux-gnu-strip artifacts/linux_arm64/usr/bin/swiftformat
-        mv artifacts/linux_arm64/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_arm64
-
-    - name: Upload AMD64 binary artifact
+    - name: Upload binary artifacts
       if: contains(env.OUTPUT_TYPE, 'local')
       uses: actions/upload-artifact@v4
       with:
-        name: swiftlint_linux_amd64
-        path: artifacts/usr/bin/swiftlint_linux_amd64
-        if-no-files-found: error
-        retention-days: 2
-    - name: Upload ARM64 binary artifact
-      if: contains(env.OUTPUT_TYPE, 'local')
-      uses: actions/upload-artifact@v4
-      with:
-        name: swiftlint_linux_arm64
-        path: artifacts/usr/bin/swiftlint_linux_arm64
+        name: swiftlint_linux
+        path: swiftlint_linux_*
         if-no-files-found: error
         retention-days: 2

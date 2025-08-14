@@ -5,23 +5,24 @@ ARG SWIFT_VERSION=6.1.2
 ARG SWIFT_SDK_VERSION=0.0.1
 ARG SWIFT_SDK_CHECKSUM=df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b
 ARG RUNTIME_IMAGE=ubuntu:noble
+
+# Builder image
 FROM swift:${SWIFT_VERSION}-noble AS builder
-
-LABEL org.opencontainers.image.source=https://github.com/realm/SwiftLint
-
-RUN apt-get update
-RUN apt-get install -y libcurl4-openssl-dev libxml2-dev
-RUN rm -r /var/lib/apt/lists/*
-
 WORKDIR /workspace
 COPY Plugins Plugins/
 COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 COPY tools/build-linux-release.sh tools/
-
 ARG TARGETPLATFORM
 RUN --mount=type=cache,target=/workspace/.build,id=build-$TARGETPLATFORM ./tools/build-linux-release.sh
+
+# Runtime image
+FROM ${RUNTIME_IMAGE} AS runtime
+LABEL org.opencontainers.image.source=https://github.com/realm/SwiftLint
+RUN apt-get update
+RUN apt-get install -y libcurl4-openssl-dev libxml2-dev
+RUN rm -r /var/lib/apt/lists/*
 
 COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
 COPY --from=builder /usr/lib/swift/host/libSwiftBasicFormat.so /usr/lib

@@ -53,7 +53,9 @@ COPY --from=builder /usr/lib/swift/linux/libswiftDispatch.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftGlibc.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftSynchronization.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftSwiftOnoneSupport.so /usr/lib
-COPY --from=builder /workspace/swiftlint_linux_* /usr/bin/
+COPY --from=builder /workspace/swiftlint_linux_* /usr/bin
+
+RUN ln -s /usr/bin/swiftlint_linux_* /usr/bin/swiftlint
 
 RUN swiftlint version
 RUN echo "_ = 0" | swiftlint --use-stdin

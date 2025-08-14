@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 
 # Base image and static SDK have to be updated together.
-ARG SWIFT_VERSION=6.1.2
+ARG SWIFT_VERSION=6.0.3
 ARG SWIFT_SDK_VERSION=0.0.1
-ARG SWIFT_SDK_CHECKSUM=df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b
+ARG SWIFT_SDK_CHECKSUM=67f765e0030e661a7450f7e4877cfe008db4f57f177d5a08a6e26fd661cdd0bd
 ARG RUNTIME_IMAGE=ubuntu:noble
 
 # Builder image

@@ -113,6 +113,14 @@
   [leo-lem](https://github.com/leo-lem)  
   [#1940](https://github.com/realm/SwiftLint/issues/1940)
 
+* Add new `ignore_identity_closures` parameter to `prefer_key_paths` rule to skip
+  conversion of identity closures (`{ $0 }`) to identity key paths (`\.self`).
+  Note that identity key paths are only supported from Swift 6 on, hence this option
+  will be implicitly ignored/set to `true` when SwiftLint detects a Swift <6 compiler
+  to avoid causing compilation errors.  
+  [p4checo](https://github.com/p4checo)
+  [#5965](https://github.com/realm/SwiftLint/issues/5965)
+
 ### Bug Fixes
 
 * Fix `no_extension_access_modifier` rule incorrectly triggering for `nonisolated extension`.

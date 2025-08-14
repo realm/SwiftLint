@@ -9,7 +9,7 @@ if [[ "$TARGETPLATFORM" = "linux/amd64" ]]; then
     STRIP_CMD="strip"
 elif [[ "$TARGETPLATFORM" = "linux/arm64" ]]; then
     ARCH="aarch64"
-    STRIP_CMD="aarch64-linux-gnu-strip"
+    STRIP_CMD="strip"
 else
     echo "Unsupported target platform: $TARGETPLATFORM"
     exit 1
@@ -18,7 +18,6 @@ fi
 BUILD_ARGS=(
     --product swiftlint
     --configuration release
-    --swift-sdk "${ARCH}-swift-linux-musl"
     -Xswiftc -I.
     -Xswiftc -static-stdlib
     -Xlinker -l_CFURLSessionInterface
@@ -27,7 +26,6 @@ BUILD_ARGS=(
     -Xlinker -lxml2
     -Xlinker -fuse-ld=lld
     -Xlinker -L/usr/lib/swift/linux
-    -Xlinker -S
 )
 
 swift build "${BUILD_ARGS[@]}"

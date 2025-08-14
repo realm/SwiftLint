@@ -20,10 +20,6 @@ COPY Tests Tests/
 COPY Package.* ./
 COPY tools/build-linux-release.sh tools/
 
-RUN swift sdk install \
-	https://download.swift.org/swift-${SWIFT_VERSION}-release/static-sdk/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE_static-linux-${SWIFT_SDK_VERSION}.artifactbundle.tar.gz \
-	--checksum ${SWIFT_SDK_CHECKSUM}
-
 ARG TARGETPLATFORM
 RUN --mount=type=cache,target=/workspace/.build,id=build-$TARGETPLATFORM ./tools/build-linux-release.sh
 

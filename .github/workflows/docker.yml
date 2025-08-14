@@ -16,6 +16,7 @@ on:
         description: 'Docker tag'
         required: true
         type: string
+  pull_request:
 
 permissions:
   contents: read
@@ -70,7 +71,7 @@ jobs:
     - uses: docker/build-push-action@v6
       with:
         context: .
-        tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
+        tags: ghcr.io/${{ env.REPOSITORY_LC }}:test
         platforms: linux/amd64, linux/arm64
         outputs: ${{ env.OUTPUT_TYPE }}
     - name: Upload binary artifacts

@@ -7,16 +7,19 @@ struct PreferKeyPathRule: Rule {
 
     private static let extendedMode = ["restrict_to_standard_functions": false]
     private static let ignoreIdentity = ["ignore_identity_closures": true]
-    private static let extendedModeAndIgnoreIdentity = extendedMode.merging(ignoreIdentity, uniquingKeysWith: { $1 })
+    private static let extendedModeAndIgnoreIdentity = [
+        "restrict_to_standard_functions": false,
+        "ignore_identity_closures": true,
+    ]
 
     static let description = RuleDescription(
         identifier: "prefer_key_path",
         name: "Prefer Key Path",
         description: "Use a key path argument instead of a closure with property access",
         rationale: """
-            Note: Swift 5 doesn't support identity key path conversion (`{ $0 }` -> `(\\.self)`), regardless of
-            `ignore_identity_closures` parameter value
-        """,
+            Note: Swift 5 doesn't support identity key path conversions (`{ $0 }` -> `(\\.self)`) and so
+            SwiftLint disregards `ignore_identity_closures: false` if it runs on a Swift <6 project.
+            """,
         kind: .idiomatic,
         minSwiftVersion: .fiveDotTwo,
         nonTriggeringExamples: [

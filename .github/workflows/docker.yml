@@ -16,6 +16,10 @@ on:
         required: true
         type: string
   pull_request:
+    paths: 
+      - '.github/workflows/docker.yml'
+      - 'Dockerfile'
+      - 'tools/build-linux-release.sh'
 
 permissions:
   contents: read
@@ -42,8 +46,16 @@ jobs:
           echo "DOCKER_TAG=${{ github.event.release.tag_name }}"
           echo "OUTPUT_TYPE=type=registry"
         } >> "$GITHUB_ENV"
+    - name: Define variables on pull request
+      if: github.event_name == 'pull_request'
+      run: |
+        {
+          echo "CHECKOUT_REF=${{ github.event.pull_request.head.ref }}"
+          echo "DOCKER_TAG=pr-${{ github.event.pull_request.number }}"
+          echo "OUTPUT_TYPE=type=local,dest=artifacts"
+        } >> "$GITHUB_ENV"
     - name: Define variables on workflow call
-      if: github.event_name != 'schedule' && github.event_name != 'release'
+      if: github.event_name != 'schedule' && github.event_name != 'release' && github.event_name != 'pull_request'
       run: |
         {
           echo "CHECKOUT_REF=${{ inputs.ref }}"
@@ -70,7 +82,7 @@ jobs:
     - uses: docker/build-push-action@v6
       with:
         context: .
-        tags: ghcr.io/${{ env.REPOSITORY_LC }}:test
+        tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
         platforms: linux/amd64, linux/arm64
         outputs: ${{ env.OUTPUT_TYPE }}
     - name: Move binary artifacts

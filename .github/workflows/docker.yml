@@ -1,4 +1,4 @@
-name: Docker Build
+name: Docker
 
 on:
   schedule:
@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   build:
-    name: Build Docker Image
+    name: Build Images
     runs-on: ubuntu-24.04
     steps:
     - name: Define variables on push to `main`

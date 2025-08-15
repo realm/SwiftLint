@@ -148,7 +148,7 @@ jobs:
       - name: Download binary artifact for Linux
         uses: actions/download-artifact@v4
         with:
-          name: swiftlint_linux_amd64
+          name: swiftlint_linux
           path: ${{ env.LINUX_BUILD_DIR }}
       - name: Move Bazel release
         run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .

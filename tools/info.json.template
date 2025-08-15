@@ -10,7 +10,7 @@
                     "supportedTriples": ["x86_64-apple-macosx", "arm64-apple-macosx"]
                 },
                 {
-                    "path": "swiftlint-__VERSION__-linux-gnu/bin/swiftlint",
+                    "path": "swiftlint-__VERSION__-linux-gnu/bin/swiftlint_amd64",
                     "supportedTriples": ["x86_64-unknown-linux-gnu"]
                 },
                 {

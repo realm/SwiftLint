@@ -127,24 +127,17 @@ spm_artifactbundle: $(SWIFTLINT_EXECUTABLE) $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) 
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin"
 	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
 	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin/swiftlint"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint_amd64"
 	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint_arm64"
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 
-zip_linux: docker_image $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64)
-	$(eval TMP_FOLDER := $(shell mktemp -d))
-	cp -f $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) "$(TMP_FOLDER)/swiftlint"
-	cp -f $(SWIFTLINT_EXECUTABLE_LINUX_ARM64) "$(TMP_FOLDER)/swiftlint_arm64"
-	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint_arm64" "LICENSE") > "./swiftlint_linux.zip"
-
 zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64)
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint_amd64"
 	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(TMP_FOLDER)/swiftlint_arm64"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint_arm64" "LICENSE") > "./swiftlint_linux.zip"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint_amd64" "swiftlint_arm64" "LICENSE") > "./swiftlint_linux.zip"
 
 package: $(SWIFTLINT_EXECUTABLE)
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  bazel_linux:
-    name: Bazel, Linux, Swift 6.1 # pre-installed
+  bazel_linux_amd64:
+    name: Bazel, Linux AMD64, Swift 6.1 # pre-installed
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -18,6 +18,24 @@ jobs:
         name: Build SwiftLint with Bazel
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+
+  bazel_linux_arm64:
+    name: Bazel, Linux ARM64, Swift 6.1 # pre-installed
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/bazel-linux-build
+        name: Build SwiftLint with Bazel
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Run SwiftLint
+        run: |
+          # export LINUX_SOURCEKIT_LIB_PATH=/usr/share/swift/usr/lib
+          bazel-bin/swiftlint lint
+      - name: Upload Bazel build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: bazel-bin/swiftlint
 
   plugins_linux:
     name: SPM plugins, Linux, Swift ${{ matrix.version }}

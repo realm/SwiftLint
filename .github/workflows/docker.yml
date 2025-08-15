@@ -1,9 +1,8 @@
 name: Docker Build
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 3 * * 3,6' # Every Wednesday and Saturday at 03:00 UTC
   release:
     types: published
   workflow_call:
@@ -28,7 +27,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Define variables on push to `main`
-      if: github.event_name == 'push'
+      if: github.event_name == 'schedule'
       run: |
         {
           echo "CHECKOUT_REF=main"
@@ -44,7 +43,7 @@ jobs:
           echo "OUTPUT_TYPE=type=registry"
         } >> "$GITHUB_ENV"
     - name: Define variables on workflow call
-      if: github.event_name != 'push' && github.event_name != 'release'
+      if: github.event_name != 'schedule' && github.event_name != 'release'
       run: |
         {
           echo "CHECKOUT_REF=${{ inputs.ref }}"

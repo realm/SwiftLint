@@ -74,11 +74,14 @@ jobs:
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:test
         platforms: linux/amd64, linux/arm64
         outputs: ${{ env.OUTPUT_TYPE }}
+    - name: Move binary artifacts
+      if: contains(env.OUTPUT_TYPE, 'local')
+      run: mv artifacts/linux_*/usr/bin/swiftlint_linux_* .
     - name: Upload binary artifacts
       if: contains(env.OUTPUT_TYPE, 'local')
       uses: actions/upload-artifact@v4
       with:
         name: swiftlint_linux
-        path: artifacts/linux_*/usr/bin/swiftlint_linux_*
+        path: swiftlint_linux_*
         if-no-files-found: error
         retention-days: 2

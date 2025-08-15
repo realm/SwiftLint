@@ -84,17 +84,45 @@ jobs:
         env:
           DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
 
-  build-docker:
-    name: Build Linux Binaries
+  build-linux-amd64:
+    name: Build Linux AMD64 Binary
     needs: prepare-release
-    uses: ./.github/workflows/docker.yml
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-      packages: write
-    secrets: inherit
-    with:
-      ref: release/${{ inputs.version }}
-      tag: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - uses: ./.github/actions/bazel-linux-build
+        name: Build SwiftLint with Bazel
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Upload Bazel build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint_linux_amd64
+          path: bazel-bin/swiftlint
+
+  build-linux-arm64:
+    name: Build Linux ARM64 Binary
+    needs: prepare-release
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - uses: ./.github/actions/bazel-linux-build
+        name: Build SwiftLint with Bazel
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Upload Bazel build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint_linux_arm64
+          path: bazel-bin/swiftlint
 
   build-macos:
     name: Build macOS Binaries
@@ -111,7 +139,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: swiftlint
+          name: swiftlint-macos
           path: |
             swiftlint
             bazel.tar.gz
@@ -124,7 +152,8 @@ jobs:
     needs:
       - setup-credentials
       - prepare-release
-      - build-docker
+      - build-linux-amd64
+      - build-linux-arm64
       - build-macos
     runs-on: macOS-14
     permissions:
@@ -140,18 +169,12 @@ jobs:
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Create build folders
         run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
-      - name: Download binary artifact for macOS
+      - name: Download binary artifacts
         uses: actions/download-artifact@v4
-        with:
-          name: swiftlint
-          path: ${{ env.MACOS_BUILD_DIR }}
-      - name: Download binary artifact for Linux
-        uses: actions/download-artifact@v4
-        with:
-          name: swiftlint_linux
-          path: ${{ env.LINUX_BUILD_DIR }}
-      - name: Move Bazel release
-        run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
+      - name: Move artifacts
+        run: |
+          mv -f swiftlint ${{ env.MACOS_BUILD_DIR }}
+          mv -f swiftlint_linux_* ${{ env.LINUX_BUILD_DIR }}
       - name: Make binaries executable
         run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_*
       - name: Create artifacts

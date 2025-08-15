@@ -2,12 +2,10 @@
 
 # Base image and static SDK have to be updated together.
 ARG SWIFT_VERSION=6.0.3
-ARG SWIFT_SDK_VERSION=0.0.1
-ARG SWIFT_SDK_CHECKSUM=67f765e0030e661a7450f7e4877cfe008db4f57f177d5a08a6e26fd661cdd0bd
-ARG RUNTIME_IMAGE=ubuntu:noble
+ARG UBUNTU_VERSION=noble
 
 # Builder image
-FROM swift:${SWIFT_VERSION}-noble AS builder
+FROM swift:${SWIFT_VERSION}-${UBUNTU_VERSION} AS builder
 WORKDIR /workspace
 COPY Plugins Plugins/
 COPY Source Source/
@@ -18,7 +16,7 @@ ARG TARGETPLATFORM
 RUN --mount=type=cache,target=/workspace/.build,id=build-$TARGETPLATFORM ./tools/build-linux-release.sh
 
 # Runtime image
-FROM ${RUNTIME_IMAGE} AS runtime
+FROM ubuntu:${UBUNTU_VERSION} AS runtime
 LABEL org.opencontainers.image.source=https://github.com/realm/SwiftLint
 RUN apt-get update
 RUN apt-get install -y libcurl4-openssl-dev libxml2-dev

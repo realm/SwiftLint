@@ -1043,5 +1043,5 @@ physical Mac mini machines to run our performance tests.
 
 ![MacStadium](https://raw.githubusercontent.com/realm/SwiftLint/main/assets/macstadium.png)
 
-We also thank Realm (now MongoDB) for their inital contributions and setup of
+We also thank Realm (now MongoDB) for their initial contributions and setup of
 the project.

@@ -22,13 +22,26 @@
   `redundant_optional_initialization` rule by default. `redundant_optional_initialization`
   is now an alias for `implicit_optional_initialization`.  
   [leo-lem](https://github.com/leo-lem)  
-  [#1940](https://github.com/realm/SwiftLint/issues/1940)  
+  [#1940](https://github.com/realm/SwiftLint/issues/1940)
+
+* The `x86_64`/`amd64` binary in the `swiftlint_linux.zip` release archive has been renamed to
+  `swiftlint_amd64` from just `swiftlint` to avoid confusion with the new `swiftlint_arm64` binary.  
+  [Bradley Mackey](https://github.com/bradleymackey)
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 
 * None.
 
 ### Enhancements
+
+* Support for ARM64 Linux binaries has been added. The `swiftlint_linux.zip` release archive
+  now contains both `swiftlint_amd64` and `swiftlint_arm64` binaries. The `swiftlint_amd64`
+  binary was formerly named `swiftlint`. `SwiftLintBinary.artifactbundle.zip` now also provides
+  the new binary, making the [binary plugins](https://github.com/SimplyDanny/SwiftLintPlugins)
+  work on ARM64 Linux as well.  
+  [Bradley Mackey](https://github.com/bradleymackey)
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 * Add `include_variables` configuration option to `non_optional_string_data_conversion` rule.  
   When enabled, the rule will trigger on variables, properties, and function calls in addition

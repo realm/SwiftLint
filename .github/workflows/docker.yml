@@ -1,15 +1,9 @@
 name: Docker
 
 on:
-  schedule:
-    - cron: '0 3 * * 3,6' # Every Wednesday and Saturday at 03:00 UTC
   push:
     branches:
       - main
-    paths:
-      - '.github/workflows/docker.yml'
-      - 'Dockerfile'
-      - 'tools/build-linux-release.sh'
   pull_request:
     paths:
       - '.github/workflows/docker.yml'
@@ -35,7 +29,7 @@ jobs:
     - name: Define variables
       id: vars
       run: |
-        if [[ "${{ github.event_name }}" == "schedule" || "${{ github.event_name }}" == "push" ]]; then
+        if [[ "${{ github.event_name }}" == "push" ]]; then
           {
             echo "checkout-ref=main"
             echo "docker-tag=latest"

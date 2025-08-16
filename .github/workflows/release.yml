@@ -153,7 +153,7 @@ jobs:
       - name: Move Bazel release
         run: mv -f ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz ${{ env.MACOS_BUILD_DIR }}/bazel.tar.gz.sha256 .
       - name: Make binaries executable
-        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
+        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_*
       - name: Create artifacts
         run: |
           make --debug spm_artifactbundle

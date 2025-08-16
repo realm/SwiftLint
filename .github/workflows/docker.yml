@@ -2,7 +2,7 @@ name: Docker
 
 on:
   schedule:
-    - cron: '0 3 * * 3' # Every Wednesday at 03:00 UTC
+    - cron: '0 3 * * 3,6' # Every Wednesday and Saturday at 03:00 UTC
   push:
     branches:
       - main
@@ -33,7 +33,6 @@ jobs:
     outputs:
       checkout-ref: ${{ steps.vars.outputs.checkout-ref }}
       docker-tag: ${{ steps.vars.outputs.docker-tag }}
-      output-type: ${{ steps.vars.outputs.output-type }}
       repository-lc: ${{ steps.vars.outputs.repository-lc }}
     steps:
     - name: Define variables
@@ -43,19 +42,16 @@ jobs:
           {
             echo "checkout-ref=main"
             echo "docker-tag=latest"
-            echo "output-type=type=registry"
           } >> "$GITHUB_OUTPUT"
         elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
           {
             echo "checkout-ref=pr"
             echo "docker-tag=pr-${{ github.event.pull_request.number }}"
-            echo "output-type=type=local,dest=artifacts"
           } >> "$GITHUB_OUTPUT"
         else
           {
             echo "checkout-ref=${{ inputs.tag }}"
             echo "docker-tag=${{ inputs.tag }}"
-            echo "output-type=type=registry"
           } >> "$GITHUB_OUTPUT"
         fi
         echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
@@ -76,7 +72,6 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to GitHub registry
-      if: contains(needs.set-context.outputs.output-type, 'registry')
       uses: docker/login-action@v3
       with:
         username: ${{ github.actor }}
@@ -88,20 +83,9 @@ jobs:
         context: .
         tags: ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}-amd64
         platforms: linux/amd64
-        outputs: ${{ needs.set-context.outputs.output-type }}
+        outputs: type=registry
         cache-from: type=gha,scope=amd64
         cache-to: type=gha,mode=max,scope=amd64
-    - name: Move binary artifacts
-      if: contains(needs.set-context.outputs.output-type, 'local')
-      run: mv artifacts/linux_amd64/usr/bin/swiftlint_linux_amd64 .
-    - name: Upload binary artifacts
-      if: contains(needs.set-context.outputs.output-type, 'local')
-      uses: actions/upload-artifact@v4
-      with:
-        name: swiftlint_linux_amd64
-        path: swiftlint_linux_amd64
-        if-no-files-found: error
-        retention-days: 2
 
   build-arm64:
     name: Build ARM64 Image
@@ -117,7 +101,6 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to GitHub registry
-      if: contains(needs.set-context.outputs.output-type, 'registry')
       uses: docker/login-action@v3
       with:
         username: ${{ github.actor }}
@@ -129,20 +112,9 @@ jobs:
         context: .
         tags: ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}-arm64
         platforms: linux/arm64
-        outputs: ${{ needs.set-context.outputs.output-type }}
+        outputs: type=registry
         cache-from: type=gha,scope=arm64
         cache-to: type=gha,mode=max,scope=arm64
-    - name: Move binary artifacts
-      if: contains(needs.set-context.outputs.output-type, 'local')
-      run: mv artifacts/linux_arm64/usr/bin/swiftlint_linux_arm64 .
-    - name: Upload binary artifacts
-      if: contains(needs.set-context.outputs.output-type, 'local')
-      uses: actions/upload-artifact@v4
-      with:
-        name: swiftlint_linux_arm64
-        path: swiftlint_linux_arm64
-        if-no-files-found: error
-        retention-days: 2
 
   create-manifest:
     name: Create Multi-Platform Manifest
@@ -151,7 +123,6 @@ jobs:
       - set-context
       - build-amd64
       - build-arm64
-    if: contains(needs.set-context.outputs.output-type, 'registry')
     steps:
     - name: Login to GitHub registry
       uses: docker/login-action@v3

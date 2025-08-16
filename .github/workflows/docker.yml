@@ -22,14 +22,11 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   set-context:
     name: Set Context
     runs-on: ubuntu-24.04
+    permissions: {}
     outputs:
       checkout-ref: ${{ steps.vars.outputs.checkout-ref }}
       docker-tag: ${{ steps.vars.outputs.docker-tag }}
@@ -59,8 +56,11 @@ jobs:
         REPOSITORY: ${{ github.repository }}
 
   build:
-    name: Build Images
+    name: Build ${ matrix.platform } Image
     runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+      packages: write
     needs: set-context
     strategy:
       matrix:
@@ -115,8 +115,10 @@ jobs:
         retention-days: 1
 
   merge:
-    name: Create Multi-Platform Manifest
+    name: Create Multi-Platform Image
     runs-on: ubuntu-24.04
+    permissions:
+      packages: write
     needs:
       - set-context
       - build

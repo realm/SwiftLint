@@ -2,7 +2,14 @@ name: Docker
 
 on:
   schedule:
-    - cron: '0 3 * * 3,6' # Every Wednesday and Saturday at 03:00 UTC
+    - cron: '0 3 * * 3' # Every Wednesday at 03:00 UTC
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/docker.yml'
+      - 'Dockerfile'
+      - 'tools/build-linux-release.sh'
   release:
     types: published
   workflow_call:
@@ -31,7 +38,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
     - name: Define variables on push to `main`
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' || github.event_name == 'push'
       run: |
         {
           echo "CHECKOUT_REF=main"

@@ -56,7 +56,7 @@ jobs:
         REPOSITORY: ${{ github.repository }}
 
   build:
-    name: Build ${ matrix.platform } Image
+    name: Build Image
     runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
@@ -141,5 +141,5 @@ jobs:
       working-directory: /tmp/digests
       run: >-
         docker buildx imagetools create
-        -t ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}
+        -t "ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}"
         $(printf 'ghcr.io/${{ needs.set-context.outputs.repository-lc }}@sha256:%s ' *)

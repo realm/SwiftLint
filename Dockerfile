@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1
 
-# Base image and static SDK have to be updated together.
 ARG SWIFT_VERSION=6.0.3
 ARG UBUNTU_VERSION=noble
 

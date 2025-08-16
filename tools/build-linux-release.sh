@@ -6,10 +6,8 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/.." > /dev/null
 
 if [[ "$TARGETPLATFORM" = "linux/amd64" ]]; then
     ARCH="x86_64"
-    STRIP_CMD="strip"
 elif [[ "$TARGETPLATFORM" = "linux/arm64" ]]; then
     ARCH="aarch64"
-    STRIP_CMD="strip"
 else
     echo "Unsupported target platform: $TARGETPLATFORM"
     exit 1
@@ -29,5 +27,7 @@ BUILD_ARGS=(
 )
 
 swift build "${BUILD_ARGS[@]}"
-mv ".build/release/swiftlint" "swiftlint_linux_${ARCH}"
-${STRIP_CMD} "swiftlint_linux_${ARCH}"
+mv "$(swift build "${BUILD_ARGS[@]}" --show-bin-path)/swiftlint" "swiftlint_linux_${ARCH}"
+strip "swiftlint_linux_${ARCH}"
+
+popd > /dev/null

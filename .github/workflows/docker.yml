@@ -10,23 +10,17 @@ on:
       - '.github/workflows/docker.yml'
       - 'Dockerfile'
       - 'tools/build-linux-release.sh'
-  release:
-    types: published
-  workflow_call:
-    inputs:
-      ref:
-        description: 'Git reference'
-        required: true
-        type: string
-      tag:
-        description: 'Docker tag'
-        required: true
-        type: string
   pull_request:
     paths:
       - '.github/workflows/docker.yml'
       - 'Dockerfile'
       - 'tools/build-linux-release.sh'
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Docker tag'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -45,14 +39,6 @@ jobs:
           echo "DOCKER_TAG=latest"
           echo "OUTPUT_TYPE=type=registry"
         } >> "$GITHUB_ENV"
-    - name: Define variables on release event
-      if: github.event_name == 'release'
-      run: |
-        {
-          echo "CHECKOUT_REF=${{ github.event.release.tag_name }}"
-          echo "DOCKER_TAG=${{ github.event.release.tag_name }}"
-          echo "OUTPUT_TYPE=type=registry"
-        } >> "$GITHUB_ENV"
     - name: Define variables on pull request
       if: github.event_name == 'pull_request'
       run: |
@@ -65,9 +51,9 @@ jobs:
       if: env.DOCKER_TAG == null
       run: |
         {
-          echo "CHECKOUT_REF=${{ inputs.ref }}"
+          echo "CHECKOUT_REF=${{ inputs.tag }}"
           echo "DOCKER_TAG=${{ inputs.tag }}"
-          echo "OUTPUT_TYPE=type=local,dest=artifacts"
+          echo "OUTPUT_TYPE=type=registry"
         } >> "$GITHUB_ENV"
     - uses: actions/checkout@v4
       if: env.CHECKOUT_REF == 'pr'

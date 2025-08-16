@@ -105,3 +105,14 @@ jobs:
         with:
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
           formulae: swiftlint
+
+  build-docker:
+    name: Build Docker Images
+    needs: merge-into-main
+    uses: ./.github/workflows/docker.yml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+    with:
+      tag: ${{ github.event.release.tag_name }}

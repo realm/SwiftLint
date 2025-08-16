@@ -1,9 +1,15 @@
-name: Docker Build
+name: Docker
 
 on:
+  schedule:
+    - cron: '0 3 * * 3' # Every Wednesday at 03:00 UTC
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/docker.yml'
+      - 'Dockerfile'
+      - 'tools/build-linux-release.sh'
   release:
     types: published
   workflow_call:
@@ -16,6 +22,11 @@ on:
         description: 'Docker tag'
         required: true
         type: string
+  pull_request:
+    paths:
+      - '.github/workflows/docker.yml'
+      - 'Dockerfile'
+      - 'tools/build-linux-release.sh'
 
 permissions:
   contents: read
@@ -23,11 +34,11 @@ permissions:
 
 jobs:
   build:
-    name: Build Docker Image
-    runs-on: ubuntu-24.04
+    name: Build Images
+    runs-on: ubuntu-24.04-arm
     steps:
     - name: Define variables on push to `main`
-      if: github.event_name == 'push'
+      if: github.event_name == 'schedule' || github.event_name == 'push'
       run: |
         {
           echo "CHECKOUT_REF=main"
@@ -42,8 +53,16 @@ jobs:
           echo "DOCKER_TAG=${{ github.event.release.tag_name }}"
           echo "OUTPUT_TYPE=type=registry"
         } >> "$GITHUB_ENV"
+    - name: Define variables on pull request
+      if: github.event_name == 'pull_request'
+      run: |
+        {
+          echo "CHECKOUT_REF=pr"
+          echo "DOCKER_TAG=pr-${{ github.event.pull_request.number }}"
+          echo "OUTPUT_TYPE=type=local,dest=artifacts"
+        } >> "$GITHUB_ENV"
     - name: Define variables on workflow call
-      if: github.event_name != 'push' && github.event_name != 'release'
+      if: env.DOCKER_TAG == null
       run: |
         {
           echo "CHECKOUT_REF=${{ inputs.ref }}"
@@ -51,12 +70,19 @@ jobs:
           echo "OUTPUT_TYPE=type=local,dest=artifacts"
         } >> "$GITHUB_ENV"
     - uses: actions/checkout@v4
+      if: env.CHECKOUT_REF == 'pr'
+    - uses: actions/checkout@v4
+      if: env.CHECKOUT_REF != 'pr'
       with:
         ref: ${{ env.CHECKOUT_REF }}
     - name: Set lowercase repository name
       run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> "$GITHUB_ENV"
       env:
         REPOSITORY: ${{ github.repository }}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: amd64
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to GitHub registry
@@ -69,16 +95,16 @@ jobs:
       with:
         context: .
         tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
-        platforms: linux/amd64
+        platforms: linux/amd64, linux/arm64
         outputs: ${{ env.OUTPUT_TYPE }}
-    - name: Rename binary artifact
+    - name: Move binary artifacts
       if: contains(env.OUTPUT_TYPE, 'local')
-      run: mv artifacts/usr/bin/swiftlint artifacts/usr/bin/swiftlint_linux_amd64
-    - name: Upload binary artifact
+      run: mv artifacts/linux_*/usr/bin/swiftlint_linux_* .
+    - name: Upload binary artifacts
       if: contains(env.OUTPUT_TYPE, 'local')
       uses: actions/upload-artifact@v4
       with:
-        name: swiftlint_linux_amd64
-        path: artifacts/usr/bin/swiftlint_linux_amd64
+        name: swiftlint_linux
+        path: swiftlint_linux_*
         if-no-files-found: error
         retention-days: 2

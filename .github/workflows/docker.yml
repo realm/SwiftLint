@@ -62,7 +62,7 @@ jobs:
           echo "OUTPUT_TYPE=type=local,dest=artifacts"
         } >> "$GITHUB_ENV"
     - name: Define variables on workflow call
-      if: github.event_name != 'schedule' && github.event_name != 'release' && github.event_name != 'pull_request'
+      if: env.DOCKER_TAG == null
       run: |
         {
           echo "CHECKOUT_REF=${{ inputs.ref }}"

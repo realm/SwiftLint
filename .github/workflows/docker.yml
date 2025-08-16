@@ -16,7 +16,7 @@ on:
         required: true
         type: string
   pull_request:
-    paths: 
+    paths:
       - '.github/workflows/docker.yml'
       - 'Dockerfile'
       - 'tools/build-linux-release.sh'
@@ -50,7 +50,7 @@ jobs:
       if: github.event_name == 'pull_request'
       run: |
         {
-          echo "CHECKOUT_REF=pr"
+          echo "CHECKOUT_REF=pull/${{ github.event.pull_request.number }}/merge"
           echo "DOCKER_TAG=pr-${{ github.event.pull_request.number }}"
           echo "OUTPUT_TYPE=type=local,dest=artifacts"
         } >> "$GITHUB_ENV"
@@ -63,9 +63,6 @@ jobs:
           echo "OUTPUT_TYPE=type=local,dest=artifacts"
         } >> "$GITHUB_ENV"
     - uses: actions/checkout@v4
-      if: env.CHECKOUT_REF == 'pr'
-    - uses: actions/checkout@v4
-      if: env.CHECKOUT_REF != 'pr'
       with:
         ref: ${{ env.CHECKOUT_REF }}
     - name: Set lowercase repository name

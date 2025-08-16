@@ -1,0 +1,58 @@
+name: Docker Build
+description: Common steps to build a Docker image for a specific platform
+inputs:
+  platform:
+    description: Target platform (e.g., amd64, arm64)
+    required: true
+  token:
+    description: GitHub token for authentication
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set lowercase repository name
+      run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> "$GITHUB_ENV"
+      shell: bash
+      env:
+        REPOSITORY: ${{ github.repository }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Login to GitHub registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ github.actor }}
+        password: ${{ inputs.token }}
+        registry: ghcr.io
+    - name: Build and push by digest
+      id: build
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        platforms: linux/${{ inputs.platform }}
+        outputs: >-
+          type=image,
+          name=ghcr.io/${{ env.REPOSITORY_LC }},
+          push-by-digest=true,
+          name-canonical=true,
+          push=true
+        cache-from: >-
+          type=gha,
+          scope=build-${{ inputs.platform }}
+        cache-to: >-
+          type=gha,
+          mode=max,
+          scope=build-${{ inputs.platform }}
+    - name: Export digest
+      shell: bash
+      run: |
+        mkdir -p /tmp/digests
+        digest="${{ steps.build.outputs.digest }}"
+        touch "/tmp/digests/${digest#sha256:}"
+    - name: Upload digest
+      uses: actions/upload-artifact@v4
+      with:
+        name: digests-${{ inputs.platform }}
+        path: /tmp/digests/*
+        if-no-files-found: error
+        retention-days: 1

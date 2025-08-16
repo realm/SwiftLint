@@ -63,45 +63,10 @@ jobs:
       if: needs.set-context.outputs.checkout-ref != 'pr'
       with:
         ref: ${{ needs.set-context.outputs.checkout-ref }}
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    - name: Login to GitHub registry
-      uses: docker/login-action@v3
+    - uses: ./.github/actions/docker-build
       with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: ghcr.io
-    - name: Build and push by digest
-      id: build
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        platforms: linux/amd64
-        outputs: >-
-          type=image,
-          name=ghcr.io/${{ needs.set-context.outputs.repository-lc }},
-          push-by-digest=true,
-          name-canonical=true,
-          push=true
-        cache-from: >-
-          type=gha,
-          scope=build-amd64
-        cache-to: >-
-          type=gha,
-          mode=max,
-          scope=build-amd64
-    - name: Export digest
-      run: |
-        mkdir -p /tmp/digests
-        digest="${{ steps.build.outputs.digest }}"
-        touch "/tmp/digests/${digest#sha256:}"
-    - name: Upload digest
-      uses: actions/upload-artifact@v4
-      with:
-        name: digests-amd64
-        path: /tmp/digests/*
-        if-no-files-found: error
-        retention-days: 1
+        platform: amd64
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   build-arm64:
     name: Build ARM64 Image
@@ -117,45 +82,10 @@ jobs:
       if: needs.set-context.outputs.checkout-ref != 'pr'
       with:
         ref: ${{ needs.set-context.outputs.checkout-ref }}
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    - name: Login to GitHub registry
-      uses: docker/login-action@v3
+    - uses: ./.github/actions/docker-build
       with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: ghcr.io
-    - name: Build and push by digest
-      id: build
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        platforms: linux/arm64
-        outputs: >-
-          type=image,
-          name=ghcr.io/${{ needs.set-context.outputs.repository-lc }},
-          push-by-digest=true,
-          name-canonical=true,
-          push=true
-        cache-from: >-
-          type=gha,
-          scope=build-arm64
-        cache-to: >-
-          type=gha,
-          mode=max,
-          scope=build-arm64
-    - name: Export digest
-      run: |
-        mkdir -p /tmp/digests
-        digest="${{ steps.build.outputs.digest }}"
-        touch "/tmp/digests/${digest#sha256:}"
-    - name: Upload digest
-      uses: actions/upload-artifact@v4
-      with:
-        name: digests-arm64
-        path: /tmp/digests/*
-        if-no-files-found: error
-        retention-days: 1
+        platform: arm64
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   merge:
     name: Create Multi-Platform Image

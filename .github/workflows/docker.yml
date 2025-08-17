@@ -1,15 +1,9 @@
 name: Docker
 
 on:
-  schedule:
-    - cron: '0 3 * * 3' # Every Wednesday at 03:00 UTC
   push:
     branches:
       - main
-    paths:
-      - '.github/workflows/docker.yml'
-      - 'Dockerfile'
-      - 'tools/build-linux-release.sh'
   pull_request:
     paths:
       - '.github/workflows/docker.yml'
@@ -22,53 +16,93 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
-  build:
-    name: Build Images
-    runs-on: ubuntu-24.04-arm
+  set-context:
+    name: Set Context
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      checkout-ref: ${{ steps.vars.outputs.checkout-ref }}
+      docker-tag: ${{ steps.vars.outputs.docker-tag }}
+      repository-lc: ${{ steps.vars.outputs.repository-lc }}
     steps:
-    - name: Define variables on push to `main`
-      if: github.event_name == 'schedule' || github.event_name == 'push'
+    - name: Define variables
+      id: vars
       run: |
-        {
-          echo "CHECKOUT_REF=main"
-          echo "DOCKER_TAG=latest"
-          echo "OUTPUT_TYPE=type=registry"
-        } >> "$GITHUB_ENV"
-    - name: Define variables on pull request
-      if: github.event_name == 'pull_request'
-      run: |
-        {
-          echo "CHECKOUT_REF=pr"
-          echo "DOCKER_TAG=pr-${{ github.event.pull_request.number }}"
-          echo "OUTPUT_TYPE=type=local,dest=artifacts"
-        } >> "$GITHUB_ENV"
-    - name: Define variables on workflow call
-      if: env.DOCKER_TAG == null
-      run: |
-        {
-          echo "CHECKOUT_REF=${{ inputs.tag }}"
-          echo "DOCKER_TAG=${{ inputs.tag }}"
-          echo "OUTPUT_TYPE=type=registry"
-        } >> "$GITHUB_ENV"
-    - uses: actions/checkout@v4
-      if: env.CHECKOUT_REF == 'pr'
-    - uses: actions/checkout@v4
-      if: env.CHECKOUT_REF != 'pr'
-      with:
-        ref: ${{ env.CHECKOUT_REF }}
-    - name: Set lowercase repository name
-      run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> "$GITHUB_ENV"
+        if [[ "${{ github.event_name }}" == "push" ]]; then
+          {
+            echo "checkout-ref=main"
+            echo "docker-tag=latest"
+          } >> "$GITHUB_OUTPUT"
+        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          {
+            echo "checkout-ref=pr"
+            echo "docker-tag=pr-${{ github.event.pull_request.number }}"
+          } >> "$GITHUB_OUTPUT"
+        else
+          {
+            echo "checkout-ref=${{ inputs.tag }}"
+            echo "docker-tag=${{ inputs.tag }}"
+          } >> "$GITHUB_OUTPUT"
+        fi
+        echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       env:
         REPOSITORY: ${{ github.repository }}
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
+
+  build-amd64:
+    name: Build AMD64 Image
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    needs: set-context
+    steps:
+    - uses: actions/checkout@v4
+      if: needs.set-context.outputs.checkout-ref == 'pr'
+    - uses: actions/checkout@v4
+      if: needs.set-context.outputs.checkout-ref != 'pr'
       with:
-        platforms: amd64
+        ref: ${{ needs.set-context.outputs.checkout-ref }}
+    - uses: ./.github/actions/docker-build
+      with:
+        platform: amd64
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-arm64:
+    name: Build ARM64 Image
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+      packages: write
+    needs: set-context
+    steps:
+    - uses: actions/checkout@v4
+      if: needs.set-context.outputs.checkout-ref == 'pr'
+    - uses: actions/checkout@v4
+      if: needs.set-context.outputs.checkout-ref != 'pr'
+      with:
+        ref: ${{ needs.set-context.outputs.checkout-ref }}
+    - uses: ./.github/actions/docker-build
+      with:
+        platform: arm64
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+  merge:
+    name: Create Multi-Platform Image
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    needs:
+      - set-context
+      - build-amd64
+      - build-arm64
+    steps:
+    - name: Download digests
+      uses: actions/download-artifact@v4
+      with:
+        path: /tmp/digests
+        pattern: digests-*
+        merge-multiple: true
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Login to GitHub registry
@@ -77,20 +111,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
-    - uses: docker/build-push-action@v6
-      with:
-        context: .
-        tags: ghcr.io/${{ env.REPOSITORY_LC }}:${{ env.DOCKER_TAG }}
-        platforms: linux/amd64, linux/arm64
-        outputs: ${{ env.OUTPUT_TYPE }}
-    - name: Move binary artifacts
-      if: contains(env.OUTPUT_TYPE, 'local')
-      run: mv artifacts/linux_*/usr/bin/swiftlint_linux_* .
-    - name: Upload binary artifacts
-      if: contains(env.OUTPUT_TYPE, 'local')
-      uses: actions/upload-artifact@v4
-      with:
-        name: swiftlint_linux
-        path: swiftlint_linux_*
-        if-no-files-found: error
-        retention-days: 2
+    - name: Create manifest list and push
+      working-directory: /tmp/digests
+      run: >-
+        docker buildx imagetools create
+        -t "ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}"
+        $(printf 'ghcr.io/${{ needs.set-context.outputs.repository-lc }}@sha256:%s ' *)

@@ -15,6 +15,11 @@ on:
         description: 'Docker tag'
         required: true
         type: string
+      ref:
+        description: 'Git reference'
+        required: false
+        default: ${{ inputs.tag }}
+        type: string
 
 jobs:
   set-context:
@@ -41,7 +46,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
         else
           {
-            echo "checkout-ref=${{ inputs.tag }}"
+            echo "checkout-ref=${{ inputs.ref }}"
             echo "docker-tag=${{ inputs.tag }}"
           } >> "$GITHUB_OUTPUT"
         fi

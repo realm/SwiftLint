@@ -84,45 +84,17 @@ jobs:
         env:
           DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
 
-  build-linux-amd64:
-    name: Build Linux AMD64 Binary
+  build-linux-binaries:
+    name: Build Linux Binaries
     needs: prepare-release
-    runs-on: ubuntu-24.04
+    uses: ./.github/workflows/docker.yml
     permissions:
       contents: read
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.RELEASE_BRANCH }}
-      - uses: ./.github/actions/bazel-linux-build
-        name: Build SwiftLint with Bazel
-        env:
-          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Upload Bazel build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: swiftlint_linux_amd64
-          path: bazel-bin/swiftlint
-
-  build-linux-arm64:
-    name: Build Linux ARM64 Binary
-    needs: prepare-release
-    runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.RELEASE_BRANCH }}
-      - uses: ./.github/actions/bazel-linux-build
-        name: Build SwiftLint with Bazel
-        env:
-          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Upload Bazel build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: swiftlint_linux_arm64
-          path: bazel-bin/swiftlint
+      packages: write
+    secrets: inherit
+    with:
+      tag: ${{ inputs.version }}
+      ref: release/${{ inputs.version }}
 
   build-macos:
     name: Build macOS Binaries
@@ -152,8 +124,7 @@ jobs:
     needs:
       - setup-credentials
       - prepare-release
-      - build-linux-amd64
-      - build-linux-arm64
+      - build-linux-binaries
       - build-macos
     runs-on: macOS-14
     permissions:
@@ -173,6 +144,8 @@ jobs:
         uses: actions/download-artifact@v4
       - name: Move artifacts
         run: |
+          ls -l
+          ls -l ./*
           mv -f swiftlint ${{ env.MACOS_BUILD_DIR }}
           mv -f swiftlint_linux_* ${{ env.LINUX_BUILD_DIR }}
       - name: Make binaries executable

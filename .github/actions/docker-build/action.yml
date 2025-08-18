@@ -30,12 +30,9 @@ runs:
       with:
         context: .
         platforms: linux/${{ inputs.platform }}
-        outputs: >-
-          type=image,
-          name=ghcr.io/${{ env.REPOSITORY_LC }},
-          push-by-digest=true,
-          name-canonical=true,
-          push=true
+        outputs:
+          - "type=registry, name=ghcr.io/${{ env.REPOSITORY_LC }}, push-by-digest=true, name-canonical=true"
+          - type=local,dest=artifacts
         cache-from: >-
           type=gha,
           scope=build-${{ inputs.platform }}
@@ -54,5 +51,15 @@ runs:
       with:
         name: digests-${{ inputs.platform }}
         path: /tmp/digests/*
+        if-no-files-found: error
+        retention-days: 1
+    - name: Move binary
+      run: mv artifacts/usr/bin/swiftlint_linux_${{ inputs.platform }} .
+      shell: bash
+    - name: Upload binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: swiftlint-linux-${{ inputs.platform }}
+        path: swiftlint_linux_${{ inputs.platform }}
         if-no-files-found: error
         retention-days: 1

@@ -49,6 +49,9 @@ test_tsan:
 	swift build --build-tests $(TSAN_SWIFT_BUILD_FLAGS)
 	DYLD_INSERT_LIBRARIES=$(TSAN_LIB) $(TSAN_XCTEST) $(TSAN_TEST_BUNDLE)
 
+spm_linux_build:
+	swift build -c release -Xswiftc -static-stdlib --product swiftlint
+
 spm_build_plugins:
 	swift build -c release --product SwiftLintCommandPlugin
 	swift build -c release --product SwiftLintBuildToolPlugin

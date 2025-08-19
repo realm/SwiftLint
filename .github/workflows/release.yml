@@ -94,15 +94,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_BRANCH }}
-      - uses: ./.github/actions/bazel-linux-build
-        name: Build SwiftLint with Bazel
-        env:
-          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Upload Bazel build artifacts
+      - name: Build binary
+        run: make --debug spm_linux_build
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: swiftlint_linux_amd64
-          path: bazel-bin/swiftlint
+          path: .build/release/swiftlint
 
   build-linux-arm64:
     name: Build Linux ARM64 Binary
@@ -114,15 +112,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_BRANCH }}
-      - uses: ./.github/actions/bazel-linux-build
-        name: Build SwiftLint with Bazel
-        env:
-          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Upload Bazel build artifacts
+      - name: Build binary
+        run: make --debug spm_linux_build
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: swiftlint_linux_arm64
-          path: bazel-bin/swiftlint
+          path: .build/release/swiftlint
 
   build-macos:
     name: Build macOS Binaries

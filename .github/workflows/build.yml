@@ -41,3 +41,41 @@ jobs:
         uses: ./.github/actions/run-make
         with:
           rule: spm_build_plugins
+
+  build-linux-amd64:
+    name: Build Linux AMD64 Binary
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - name: Install dependencies
+        run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
+      - name: Build binary
+        run: make --debug spm_linux_build
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint_linux_amd64
+          path: .build/release/swiftlint
+
+  build-linux-arm64:
+    name: Build Linux ARM64 Binary
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - name: Install dependencies
+        run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
+      - name: Build binary
+        run: make --debug spm_linux_build
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swiftlint_linux_arm64
+          path: .build/release/swiftlint

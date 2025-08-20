@@ -10,9 +10,9 @@ COPY Plugins Plugins/
 COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
-COPY tools/build-linux-release.sh tools/
 ARG TARGETPLATFORM
-RUN --mount=type=cache,target=/workspace/.build,id=build-$TARGETPLATFORM ./tools/build-linux-release.sh
+RUN swift build -c release --product swiftlint
+RUN mv $(swift build -c release --show-bin-path)/swiftlint .
 
 # Runtime image
 FROM ubuntu:${UBUNTU_VERSION} AS runtime
@@ -50,9 +50,7 @@ COPY --from=builder /usr/lib/swift/linux/libswiftDispatch.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftGlibc.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftSynchronization.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftSwiftOnoneSupport.so /usr/lib
-COPY --from=builder /workspace/swiftlint_linux_* /usr/bin
-
-RUN ln -s /usr/bin/swiftlint_linux_* /usr/bin/swiftlint
+COPY --from=builder /workspace/swiftlint /usr/bin
 
 RUN swiftlint version
 RUN echo "_ = 0" | swiftlint --use-stdin

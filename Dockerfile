@@ -17,6 +17,8 @@ RUN mv $(swift build -c release --show-bin-path)/swiftlint .
 # Runtime image
 FROM ubuntu:${UBUNTU_VERSION} AS runtime
 LABEL org.opencontainers.image.source=https://github.com/realm/SwiftLint
+LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.description="The SwiftLint command-line tool with all its runtime dependencies."
 RUN apt-get update
 RUN apt-get install -y libcurl4-openssl-dev libxml2-dev
 RUN rm -r /var/lib/apt/lists/*

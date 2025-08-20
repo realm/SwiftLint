@@ -101,7 +101,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: swiftlint_linux_amd64
+          name: swiftlint-linux-amd64
           path: .build/release/swiftlint
 
   build-linux-arm64:
@@ -121,7 +121,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: swiftlint_linux_arm64
+          name: swiftlint-linux-arm64
           path: .build/release/swiftlint
 
   build-macos:
@@ -173,8 +173,10 @@ jobs:
         uses: actions/download-artifact@v4
       - name: Move artifacts
         run: |
-          mv -f swiftlint ${{ env.MACOS_BUILD_DIR }}
-          mv -f swiftlint_linux_* ${{ env.LINUX_BUILD_DIR }}
+          mv -f swiftlint-macos/swiftlint ${{ env.MACOS_BUILD_DIR }}
+          mv -f swiftlint-macos/bazel.* .
+          mv -f swiftlint-linux-amd64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
+          mv -f swiftlint-linux-arm64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_arm64
       - name: Make binaries executable
         run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_*
       - name: Create artifacts

@@ -16,7 +16,8 @@ gh release create "$version" --title "$release_title" -F "$release_notes" --draf
     "bazel.tar.gz"                                                                              \
     "bazel.tar.gz.sha256"                                                                       \
     "portable_swiftlint.zip#Universal macOS Binary"                                             \
-    "swiftlint_linux.zip#AMD64 Linux Binary"                                                    \
+    "swiftlint_linux_amd64.zip#AMD64 Linux Binary"                                              \
+    "swiftlint_linux_arm64.zip#ARM64 Linux Binary"                                              \
     "SwiftLint.pkg#Universal macOS Installer"                                                   \
     "SwiftLintBinary.artifactbundle.zip"
 

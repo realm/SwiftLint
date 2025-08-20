@@ -137,10 +137,11 @@ spm_artifactbundle: $(SWIFTLINT_EXECUTABLE) $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) 
 
 zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64)
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint_amd64"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(TMP_FOLDER)/swiftlint_arm64"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint_amd64" "swiftlint_arm64" "LICENSE") > "./swiftlint_linux.zip"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_amd64.zip"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(TMP_FOLDER)/swiftlint"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_arm64.zip"
 
 package: $(SWIFTLINT_EXECUTABLE)
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

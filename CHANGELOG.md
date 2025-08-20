@@ -24,8 +24,8 @@
   [leo-lem](https://github.com/leo-lem)  
   [#1940](https://github.com/realm/SwiftLint/issues/1940)
 
-* The `x86_64`/`amd64` binary in the `swiftlint_linux.zip` release archive has been renamed to
-  `swiftlint_amd64` from just `swiftlint` to avoid confusion with the new `swiftlint_arm64` binary.  
+* The `swiftlint_linux.zip` release archive has been renamed to `swiftlint_linux_amd64.zip`
+  to avoid confusion with the new `swiftlint_linux_arm64.zip` archive.  
   [Bradley Mackey](https://github.com/bradleymackey)
   [SimplyDanny](https://github.com/SimplyDanny)
 
@@ -36,10 +36,10 @@
 ### Enhancements
 
 * Support for ARM64 Linux binaries has been added. The `swiftlint_linux.zip` release archive
-  now contains both `swiftlint_amd64` and `swiftlint_arm64` binaries. The `swiftlint_amd64`
-  binary was formerly named `swiftlint`. `SwiftLintBinary.artifactbundle.zip` now also provides
-  the new binary, making the [binary plugins](https://github.com/SimplyDanny/SwiftLintPlugins)
-  work on ARM64 Linux as well.  
+  has been renamed to `swiftlint_linux_amd64.zip`. Next to it, a new `swiftlint_linux_arm64.zip`
+  archive has been added. The `SwiftLintBinary.artifactbundle.zip` now contains both versions
+  of the Linux binary, so that the [binary plugins](https://github.com/SimplyDanny/SwiftLintPlugins)
+  can now be used on Linux and macOS running no both AMD64 and ARM64 architectures.  
   [Bradley Mackey](https://github.com/bradleymackey)
   [SimplyDanny](https://github.com/SimplyDanny)
 

@@ -51,6 +51,7 @@ test_tsan:
 
 spm_linux_build:
 	swift build -c release -Xswiftc -static-stdlib --product swiftlint
+	strip -s "$(shell swift build -c release --show-bin-path)/swiftlint"
 
 spm_build_plugins:
 	swift build -c release --product SwiftLintCommandPlugin

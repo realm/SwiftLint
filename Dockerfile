@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG SWIFT_VERSION=6.0.3
+ARG SWIFT_VERSION=6.1.2
 ARG UBUNTU_VERSION=noble
 
 # Builder image
@@ -17,39 +17,40 @@ RUN mv $(swift build -c release --show-bin-path)/swiftlint .
 # Runtime image
 FROM ubuntu:${UBUNTU_VERSION} AS runtime
 LABEL org.opencontainers.image.source=https://github.com/realm/SwiftLint
+LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.description="The SwiftLint command-line tool with all its runtime dependencies."
 RUN apt-get update
 RUN apt-get install -y libcurl4-openssl-dev libxml2-dev
 RUN rm -r /var/lib/apt/lists/*
 
 COPY --from=builder /usr/lib/libsourcekitdInProc.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftBasicFormat.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftCompilerPluginMessageHandling.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftDiagnostics.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftIDEUtils.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftOperators.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftParser.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftParserDiagnostics.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftRefactor.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftSyntax.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftSyntaxBuilder.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftSyntaxMacroExpansion.so /usr/lib
-COPY --from=builder /usr/lib/swift/host/libSwiftSyntaxMacros.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/lib_FoundationICU.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftBasicFormat.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftCompilerPluginMessageHandling.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftDiagnostics.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftIDEUtils.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftIfConfig.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftOperators.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftParser.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftParserDiagnostics.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftSyntax.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftSyntaxBuilder.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftSyntaxMacroExpansion.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftSyntaxMacros.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libBlocksRuntime.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libFoundation.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libFoundationInternationalization.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libFoundationEssentials.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libFoundationInternationalization.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libFoundationNetworking.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libFoundationXML.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libswift_Concurrency.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libswift_RegexParser.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libswift_StringProcessing.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/lib_FoundationICU.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libdispatch.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftCore.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftDispatch.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftGlibc.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftSynchronization.so /usr/lib
-COPY --from=builder /usr/lib/swift/linux/libswiftSwiftOnoneSupport.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswift_Concurrency.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswift_RegexParser.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswift_StringProcessing.so /usr/lib
 COPY --from=builder /workspace/swiftlint /usr/bin
 
 RUN swiftlint version

@@ -35,6 +35,9 @@
 
 ### Enhancements
 
+* The `private_swiftui_state` rule now applies to `ViewModifier` types.  
+  [mt00chikin](https://github.com/mt00chikin)
+
 * Support for ARM64 Linux binaries has been added. The `swiftlint_linux.zip` release archive
   has been renamed to `swiftlint_linux_amd64.zip`. Next to it, a new `swiftlint_linux_arm64.zip`
   archive has been added. The `SwiftLintBinary.artifactbundle.zip` now contains both versions

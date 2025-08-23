@@ -123,6 +123,7 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintCore",
+        "@SwiftSyntax//:SwiftLexicalLookup_opt",
     ],
 )
 

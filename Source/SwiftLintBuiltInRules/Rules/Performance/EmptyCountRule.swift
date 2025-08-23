@@ -1,3 +1,5 @@
+@_spi(Experimental)
+import SwiftLexicalLookup
 import SwiftLintCore
 import SwiftSyntax
 
@@ -22,6 +24,14 @@ struct EmptyCountRule: Rule {
             Example("order.discount == 0"),
             Example("let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }"),
             Example("#Rule(param1: \"param1\")", excludeFromDocumentation: true),
+            Example("func isEmpty(count: Int) -> Bool { count == 0 }"),
+            Example("""
+                var isEmpty: Bool {
+                    let count = 0
+                    return count == 0
+                }
+                """),
+            Example("{ count in count == 0 }()"),
         ],
         triggeringExamples: [
             Example("[Int]().↓count == 0"),
@@ -50,7 +60,18 @@ struct EmptyCountRule: Rule {
                     doSomething()
                     return $0.donations.↓count == 0
                 }
-            """, excludeFromDocumentation: true),
+                """, excludeFromDocumentation: true),
+            Example("""
+                extension E {
+                    var isEmpty: Bool { ↓count == 0 }
+                }
+                """, excludeFromDocumentation: true),
+            Example(
+                """
+                struct S {
+                    var isEmpty: Bool { ↓count == 0 }
+                }
+                """, excludeFromDocumentation: true),
         ],
         corrections: [
             Example("[].↓count == 0"):
@@ -146,19 +167,31 @@ private extension EmptyCountRule {
 }
 
 private extension ExprSyntax {
+    var isNonLocalCountIdentifier: Bool {
+        guard let declRef = self.as(DeclReferenceExprSyntax.self),
+              declRef.argumentNames == nil,
+              declRef.baseName.tokenKind == .identifier("count") else {
+            return false
+        }
+        let result = lookup(Identifier(canonicalName: "count"))
+        return result.isEmpty || !result.contains { result in
+            switch result {
+            case .fromScope: true
+            default: false
+            }
+        }
+    }
+
     func countCallPosition(onlyAfterDot: Bool) -> AbsolutePosition? {
         if let expr = self.as(MemberAccessExprSyntax.self) {
             if expr.declName.argumentNames == nil, expr.declName.baseName.tokenKind == .identifier("count") {
                 return expr.declName.baseName.positionAfterSkippingLeadingTrivia
             }
-
             return nil
         }
-
-        if !onlyAfterDot, let expr = self.as(DeclReferenceExprSyntax.self) {
-            return expr.baseName.tokenKind == .identifier("count") ? expr.positionAfterSkippingLeadingTrivia : nil
+        if !onlyAfterDot, isNonLocalCountIdentifier {
+            return positionAfterSkippingLeadingTrivia
         }
-
         return nil
     }
 }

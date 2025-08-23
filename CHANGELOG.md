@@ -39,6 +39,10 @@
   improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
   library.
 
+* Ignore locally defined `count` identifiers in `empty_count` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5326](https://github.com/realm/SwiftLint/issues/5326)
+
 * The `private_swiftui_state` rule now applies to `ViewModifier` types.  
   [mt00chikin](https://github.com/mt00chikin)
 

@@ -37,6 +37,10 @@ internal struct DuplicateImportsRuleExamples {
         import Foo
         @testable import struct Foo.Bar
         """),
+        Example("""
+        import CoreImage
+        import CoreImage.CIFilterBuiltins
+        """),
     ]
 
     static let triggeringExamples = Array(corrections.keys.sorted())
@@ -180,6 +184,12 @@ internal struct DuplicateImportsRuleExamples {
             """, excludeFromDocumentation: true): Example("""
                 import A
 
+                """),
+            Example("""
+            import CoreImage.CIFilterBuiltins
+            import CoreImage.CIFilterBuiltins
+            """, excludeFromDocumentation: true): Example("""
+                import CoreImage.CIFilterBuiltins
                 """),
         ]
 

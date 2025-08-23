@@ -102,6 +102,11 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
             @State private var isPlaying: Bool = false
         }
         """),
+        Example("""
+        struct ContentViewModifier: ViewModifier {
+            @State private var isPlaying = false
+        }
+        """),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -184,6 +189,11 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         Example("""
         struct ContentView: View {
             @State ↓fileprivate(set) public var isPlaying = false
+        """),
+        Example("""
+        struct ContentViewModifier: ViewModifier {
+            @State ↓var isPlaying = false
+        }
         """),
     ]
 

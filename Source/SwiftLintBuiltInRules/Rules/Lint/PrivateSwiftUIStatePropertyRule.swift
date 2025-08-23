@@ -177,7 +177,7 @@ private extension VariableDeclSyntax {
 }
 
 private extension InheritanceClauseSyntax? {
-    static let applicableSwiftUIProtocols: Set<String> = ["View", "App", "Scene"]
+    static let applicableSwiftUIProtocols: Set<String> = ["View", "ViewModifier", "App", "Scene"]
 
     var conformsToApplicableSwiftUIProtocol: Bool {
         self?.inheritedTypes.containsInheritedType(inheritedTypes: Self.applicableSwiftUIProtocols) ?? false

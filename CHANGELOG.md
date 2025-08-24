@@ -35,6 +35,10 @@
 
 ### Enhancements
 
+* Linting got up to 30% faster due to the praiseworthy performance
+  improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
+  library.
+
 * The `private_swiftui_state` rule now applies to `ViewModifier` types.  
   [mt00chikin](https://github.com/mt00chikin)
 
@@ -679,7 +683,7 @@
   [aryamansharda](https://github.com/aryamansharda)
   [#5667](https://github.com/realm/SwiftLint/issues/5667)
 
-* Linting got up to 30% faster due to the praisworthy performance
+* Linting got up to 30% faster due to the praiseworthy performance
   improvements done in the [SwiftSyntax](https://github.com/swiftlang/swift-syntax)
   library.
 

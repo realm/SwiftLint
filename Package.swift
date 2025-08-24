@@ -107,7 +107,10 @@ let package = Package(
         ),
         .target(
             name: "SwiftLintBuiltInRules",
-            dependencies: ["SwiftLintCore"],
+            dependencies: [
+                .product(name: "SwiftLexicalLookup", package: "swift-syntax"),
+                "SwiftLintCore",
+            ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),
         .target(

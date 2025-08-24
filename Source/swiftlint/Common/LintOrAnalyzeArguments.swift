@@ -39,6 +39,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var forceExclude = false
     @Flag(help: "Save benchmarks to `benchmark_files.txt` and `benchmark_rules.txt`.")
     var benchmark = false
+    @Flag(help: "Print coverage statistics.")
+    var reportCoverage = false
     @Option(help: "The reporter used to log errors and warnings.")
     var reporter: String?
     @Option(help: "The path to a baseline file, which will be used to filter out detected violations.")

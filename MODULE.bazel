@@ -14,12 +14,12 @@ bazel_dep(name = "rules_shell", version = "0.4.0", repo_name = "build_bazel_rule
 bazel_dep(name = "rules_swift", version = "2.8.1", max_compatibility_level = 3, repo_name = "build_bazel_rules_swift")
 bazel_dep(name = "sourcekitten", version = "0.37.2", repo_name = "com_github_jpsim_sourcekitten")
 bazel_dep(name = "swift_argument_parser", version = "1.6.1", repo_name = "com_github_apple_swift_argument_parser")
-bazel_dep(name = "swift-syntax", version = "601.0.1.1", repo_name = "SwiftSyntax")
 bazel_dep(name = "yams", version = "6.1.0", repo_name = "com_github_jpsim_yams")
 
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
     swiftlint_repos,
+    "SwiftSyntax",
     "swiftlint_com_github_johnsundell_collectionconcurrencykit",
     "swiftlint_com_github_krzyzanowskim_cryptoswift",
     "swiftlint_com_github_scottrhoyt_swifty_text_table",

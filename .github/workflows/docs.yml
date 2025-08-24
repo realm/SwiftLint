@@ -19,7 +19,7 @@ jobs:
       - name: Build SwiftLint and SourceKitten
         uses: ./.github/actions/bazel-linux-build
         with:
-          target: "//:swiftlint @com_github_jpsim_sourcekitten//:sourcekitten"
+          target: "//:swiftlint @SourceKittenFramework//:sourcekitten"
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Get Swift version

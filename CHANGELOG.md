@@ -68,6 +68,12 @@
   types as needed.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Exclude explicit system modules from `duplicate_imports` analysis, that is, modules
+  that are part of the system frameworks but need to be imported explicitly due to being
+  declared as `explicit module` in their module map.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6098](https://github.com/realm/SwiftLint/issues/6098)
+
 * Ignore various assignment operators like `=`, `+=`, `&=`, etc. with right-hand side
   ternary expressions otherwise violating the `void_function_in_ternary` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

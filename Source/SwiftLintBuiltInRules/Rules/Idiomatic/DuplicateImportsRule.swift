@@ -96,6 +96,86 @@ private struct ImportPathUsage: Hashable {
     let path: [String]
 }
 
+private let explicitSystemModules = Set([
+    "AddressBook.ABActions",
+    "AddressBook.ABPeoplePicker",
+    "AddressBook.ABPeoplePickerView",
+    "AddressBook.ABPersonPicker",
+    "AddressBook.ABPersonPickerDelegate",
+    "AddressBook.ABPersonView",
+    "AGL.Context",
+    "AGL.GLM",
+    "AGL.Macro",
+    "AGL.Renderers",
+    "AppKit.NSNibConnector",
+    "AppKit.NSNibControlConnector",
+    "AppKit.NSNibOutletConnector",
+    "AudioToolbox.AUCocoaUIView",
+    "AudioToolbox.AudioUnitCarbonView",
+    "AudioToolbox.DefaultAudioOutput",
+    "AudioUnit.AUCocoaUIView",
+    "AudioUnit.AudioUnitCarbonView",
+    "CoreAudio.AudioServerPlugIn",
+    "CoreData.CloudKit",
+    "CoreFoundation.CFPlugInCOM",
+    "CoreImage.CIFilterBuiltins",
+    "CoreMediaIO.CMIOHardwarePlugIn",
+    "CoreMediaIO.CMIOSampleBuffer",
+    "CoreVideo.CVHostTime",
+    "DirectoryService.DirServicesCustom",
+    "ForceFeedback.IOForceFeedbackLib",
+    "Foundation.NSDebug",
+    "GSS.krb5",
+    "IOKit.ata",
+    "IOKit.audio",
+    "IOKit.avc",
+    "IOKit.firewire",
+    "IOKit.graphics",
+    "IOKit.hid",
+    "IOKit.hidsystem",
+    "IOKit.i2c",
+    "IOKit.kext",
+    "IOKit.ndrvsupport",
+    "IOKit.network",
+    "IOKit.ps",
+    "IOKit.pwr_mgt",
+    "IOKit.sbp2",
+    "IOKit.scsi",
+    "IOKit.serial",
+    "IOKit.storage",
+    "IOKit.stream",
+    "IOKit.usb",
+    "IOKit.video",
+    "Kerberos.CredentialsCache2",
+    "Kerberos.locate_plugin",
+    "Kerberos.preauth_plugin",
+    "LDAP.lber",
+    "NetFS.NetFSPlugin",
+    "NetFS.NetFSUtil",
+    "Network.FoundationExtension",
+    "OpenGL.Ext",
+    "OpenGL.GL",
+    "OpenGL.GL3",
+    "OpenGL.GLU",
+    "OpenGL.IOSurface",
+    "OpenGL.Macro",
+    "SceneKit.ModelIO",
+    "Security.AuthorizationPlugin",
+    "Security.AuthSession",
+    "Security.CodeSigning",
+    "Security.eisl",
+    "Security.SecAsn1Coder",
+    "Security.SecAsn1Templates",
+    "Security.SecKey",
+    "Security.SecRandom",
+    "Security.SecureDownload",
+    "Security.SecureTransport",
+    "SecurityFoundation.SFAuthorization",
+    "SystemConfiguration.CaptiveNetwork",
+    "SystemConfiguration.DHCPClientPreferences",
+    "SystemConfiguration.SCDynamicStoreCopyDHCPInfo",
+].map { $0.split(separator: ".").map(String.init) })
+
 private extension SwiftLintFile {
     func duplicateImportsViolationPositions() -> [AbsolutePosition] {
         let importPaths = ImportPathVisitor(viewMode: .sourceAccurate)
@@ -142,7 +222,7 @@ private extension SwiftLintFile {
         }
 
         // Partial matches
-        for `import` in importPaths where !`import`.hasAttributes {
+        for `import` in importPaths where !`import`.hasAttributes && !explicitSystemModules.contains(`import`.path) {
             let path = `import`.path
             let position = `import`.position
             let violation = importPaths.contains { other in

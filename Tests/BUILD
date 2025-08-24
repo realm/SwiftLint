@@ -21,6 +21,7 @@ strict_concurrency_copts = [
     "-Xfrontend",
     "-strict-concurrency=complete",
 ]
+
 targeted_concurrency_copts = [
     "-Xfrontend",
     "-strict-concurrency=targeted",
@@ -30,14 +31,14 @@ targeted_concurrency_copts = [
 
 swift_library(
     name = "CLITests.library",
+    package_name = "SwiftLint",
     testonly = True,
     srcs = glob(["CLITests/**/*.swift"]),
+    copts = copts + strict_concurrency_copts,
     module_name = "CLITests",
-    package_name = "SwiftLint",
     deps = [
         "//:SwiftLintFramework",
     ],
-    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -52,12 +53,12 @@ swift_library(
     name = "MacroTests.library",
     testonly = True,
     srcs = glob(["MacroTests/**/*.swift"]),
+    copts = copts + strict_concurrency_copts,
     module_name = "MacroTests",
     deps = [
         "//:SwiftLintCoreMacrosLib",
         "@SwiftSyntax//:SwiftSyntaxMacrosTestSupport_opt",
     ],
-    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -70,20 +71,21 @@ swift_test(
 
 swift_library(
     name = "TestHelpers",
+    package_name = "SwiftLint",
     testonly = True,
     srcs = glob(["TestHelpers/**/*.swift"]),
+    copts = copts + strict_concurrency_copts,
     module_name = "TestHelpers",
-    package_name = "SwiftLint",
     deps = [
         "//:SwiftLintFramework",
     ],
-    copts = copts + strict_concurrency_copts,
 )
 
 # BuiltInRulesTests
 
 swift_library(
     name = "BuiltInRulesTests.library",
+    package_name = "SwiftLint",
     testonly = True,
     srcs = glob(
         ["BuiltInRulesTests/**/*.swift"],
@@ -93,12 +95,11 @@ swift_library(
             "BuiltInRulesTests/FileNameNoSpaceRuleTests.swift",
         ],
     ),
+    copts = copts + strict_concurrency_copts,
     module_name = "BuiltInRulesTests",
-    package_name = "SwiftLint",
     deps = [
         ":TestHelpers",
     ],
-    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -117,6 +118,7 @@ swift_test(
 
 swift_library(
     name = "FrameworkTests.library",
+    package_name = "SwiftLint",
     testonly = True,
     srcs = glob(
         ["FrameworkTests/**/*.swift"],
@@ -124,12 +126,11 @@ swift_library(
             "FrameworkTests/Resources/**",
         ],
     ),
+    copts = copts + strict_concurrency_copts,
     module_name = "FrameworkTests",
-    package_name = "SwiftLint",
     deps = [
         ":TestHelpers",
     ],
-    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(
@@ -159,21 +160,21 @@ filegroup(
 
 swift_library(
     name = "IntegrationTests.library",
+    package_name = "SwiftLint",
     testonly = True,
     srcs = ["IntegrationTests/IntegrationTests.swift"],
+    copts = copts + targeted_concurrency_copts,  # Set to strict once SwiftLintFramework is updated
     module_name = "IntegrationTests",
-    package_name = "SwiftLint",
     deps = [
         ":TestHelpers",
     ],
-    copts = copts + targeted_concurrency_copts, # Set to strict once SwiftLintFramework is updated
 )
 
 swift_test(
     name = "IntegrationTests",
     data = [
+        "IntegrationTests/default_rule_configurations.yml",
         "//:LintInputs",
-        "IntegrationTests/default_rule_configurations.yml"
     ],
     visibility = ["//visibility:public"],
     deps = [":IntegrationTests.library"],
@@ -193,6 +194,7 @@ XCTMain([testCase(ExtraRulesTests.allTests)])" >> $(OUTS)
 
 swift_library(
     name = "ExtraRulesTests.library",
+    package_name = "SwiftLint",
     testonly = True,
     srcs = [
         "ExtraRulesTests/ExtraRulesTests.swift",
@@ -200,12 +202,11 @@ swift_library(
         "@platforms//os:linux": [":ExtraRulesLinuxMain"],
         "//conditions:default": [],
     }),
+    copts = copts + strict_concurrency_copts,
     module_name = "ExtraRulesTests",
-    package_name = "SwiftLint",
     deps = [
         ":TestHelpers",
     ],
-    copts = copts + strict_concurrency_copts,
 )
 
 swift_test(

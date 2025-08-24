@@ -37,6 +37,10 @@ struct AttributeNameSpacingRule: Rule {
               (a: Int, b: Int) in
             }
             """),
+            Example("""
+            let closure1 = { @MainActor (a, b) in
+            }
+            """),
         ],
         triggeringExamples: [
             Example("private ↓(set) var foo: Bool = false"),
@@ -47,13 +51,9 @@ struct AttributeNameSpacingRule: Rule {
             Example("func funcWithEscapingClosure(_ x: @ ↓escaping () -> Int) {}"),
             Example("func funcWithEscapingClosure(_ x: @escaping↓() -> Int) {}"),
             Example("@available ↓(*, deprecated)"),
-            Example("@MyPropertyWrapper ↓(param: 2) "),
+            Example("@MyPropertyWrapper ↓(param: 2) let a = 1"),
             Example("nonisolated ↓(unsafe) var _value: X?"),
             Example("@MyProperty ↓() class Foo {}"),
-            Example("""
-            let closure1 = { @MainActor ↓(a, b) in
-            }
-            """),
         ],
         corrections: [
             Example("private↓ (set) var foo: Bool = false"): Example("private(set) var foo: Bool = false"),
@@ -65,16 +65,9 @@ struct AttributeNameSpacingRule: Rule {
             Example("func test(_ x: @↓ escaping () -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
             Example("func test(_ x: @escaping↓() -> Int) {}"): Example("func test(_ x: @escaping () -> Int) {}"),
             Example("@available↓ (*, deprecated)"): Example("@available(*, deprecated)"),
-            Example("@MyPropertyWrapper↓ (param: 2) "): Example("@MyPropertyWrapper(param: 2) "),
+            Example("@MyPropertyWrapper↓ (param: 2) let a = 1"): Example("@MyPropertyWrapper(param: 2) let a = 1"),
             Example("nonisolated↓ (unsafe) var _value: X?"): Example("nonisolated(unsafe) var _value: X?"),
-            Example("@MyProperty↓ ()"): Example("@MyProperty()"),
-            Example("""
-            let closure1 = { @MainActor↓ (a, b) in
-            }
-            """): Example("""
-            let closure1 = { @MainActor(a, b) in
-            }
-            """),
+            Example("@MyProperty↓ () let a = 1"): Example("@MyProperty() let a = 1"),
         ]
     )
 }

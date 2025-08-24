@@ -1,5 +1,6 @@
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
 load("@build_bazel_rules_apple//apple:apple.bzl", "apple_universal_binary")
+load("@build_bazel_rules_shell//shell:sh_test.bzl", "sh_test")
 load(
     "@build_bazel_rules_swift//swift:swift.bzl",
     "swift_binary",
@@ -8,7 +9,6 @@ load(
     "universal_swift_compiler_plugin",
 )
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
-load("@build_bazel_rules_shell//shell:sh_test.bzl", "sh_test")
 
 bool_flag(
     name = "universal_tools",

@@ -19,6 +19,7 @@ disabled_rules:
   - conditional_returns_on_newline
   - contrasted_opening_brace
   - convenience_type
+  - custom_rules
   - discouraged_optional_collection
   - explicit_acl
   - explicit_enum_raw_value
@@ -28,7 +29,9 @@ disabled_rules:
   - force_unwrapping
   - function_default_parameter_at_end
   - indentation_width
+  - literal_expression_end_indentation
   - missing_docs
+  - modifier_order
   - multiline_arguments
   - multiline_arguments_brackets
   - multiline_function_chains
@@ -40,6 +43,7 @@ disabled_rules:
   - prefer_key_path # Re-enable once we are on Swift 6.
   - prefer_nimble
   - prefixed_toplevel_constant
+  - quick_discouraged_call
   - required_deinit
   - sorted_enum_cases
   - strict_fileprivate

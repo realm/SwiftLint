@@ -123,29 +123,6 @@ extension SwiftLintFile {
         }
     }
 
-    public func swiftDeclarationKindsByLine() -> [[SwiftDeclarationKind]]? {
-        if sourcekitdFailed {
-            return nil
-        }
-        var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
-        var lineIterator = lines.makeIterator()
-        var structureIterator = structureDictionary.kinds().makeIterator()
-        var maybeLine = lineIterator.next()
-        var maybeStructure = structureIterator.next()
-        while let line = maybeLine, let structure = maybeStructure {
-            if line.byteRange.contains(structure.byteRange.location),
-               let swiftDeclarationKind = SwiftDeclarationKind(rawValue: structure.kind) {
-                results[line.index].append(swiftDeclarationKind)
-            }
-            if structure.byteRange.location >= line.byteRange.upperBound {
-                maybeLine = lineIterator.next()
-            } else {
-                maybeStructure = structureIterator.next()
-            }
-        }
-        return results
-    }
-
     public func syntaxTokensByLine() -> [[SwiftLintSyntaxToken]]? {
         if sourcekitdFailed {
             return nil

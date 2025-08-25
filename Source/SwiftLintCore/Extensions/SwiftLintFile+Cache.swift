@@ -139,6 +139,7 @@ extension SwiftLintFile {
     public var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
 
     public var structureDictionary: SourceKittenDictionary {
+        return SourceKittenDictionary([:])
         guard let structureDictionary = structureDictionaryCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -152,6 +153,7 @@ extension SwiftLintFile {
     public var syntaxClassifications: SyntaxClassifications { syntaxClassificationsCache.get(self) }
 
     public var syntaxMap: SwiftLintSyntaxMap {
+        return SwiftLintSyntaxMap(value: SyntaxMap(data: []))
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -173,6 +175,7 @@ extension SwiftLintFile {
     public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
 
     public var syntaxTokensByLines: [[SwiftLintSyntaxToken]] {
+        return []
         guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -184,6 +187,7 @@ extension SwiftLintFile {
     }
 
     public var syntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
+        return []
         guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()

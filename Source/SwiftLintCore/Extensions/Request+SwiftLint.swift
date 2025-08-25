@@ -2,7 +2,15 @@ import Foundation
 import SourceKittenFramework
 
 public extension Request {
-    static let disableSourceKit = ProcessInfo.processInfo.environment["SWIFTLINT_DISABLE_SOURCEKIT"] != nil
+    static let disableSourceKit = {
+        #if SWIFTLINT_DISABLE_SOURCEKIT
+        // Compile-time
+        true
+        #else
+        // Runtime
+        ProcessInfo.processInfo.environment["SWIFTLINT_DISABLE_SOURCEKIT"] != nil
+        #endif
+    }()
 
     func sendIfNotDisabled() throws -> [String: any SourceKitRepresentable] {
         // Skip safety checks if explicitly allowed (e.g., for testing or specific operations)
@@ -37,7 +45,7 @@ public extension Request {
         }
 
         guard !Self.disableSourceKit else {
-            throw Self.Error.connectionInterrupted("SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.")
+            queuedFatalError("SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.")
         }
         return try send()
     }

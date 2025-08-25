@@ -52,6 +52,7 @@ private extension Sequence where Element == Line {
     }
 }
 
+@DisabledWithoutSourceKit
 struct SortedImportsRule: CorrectableRule, OptInRule {
     var configuration = SortedImportsConfiguration()
 

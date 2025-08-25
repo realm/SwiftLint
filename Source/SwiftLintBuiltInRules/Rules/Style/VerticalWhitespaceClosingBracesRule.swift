@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
     var configuration = VerticalWhitespaceClosingBracesConfiguration()
 

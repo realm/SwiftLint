@@ -50,6 +50,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 
 // MARK: - CustomRules
 
+@DisabledWithoutSourceKit
 struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
     var cacheDescription: String {
         configuration.cacheDescription

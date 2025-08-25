@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

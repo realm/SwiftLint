@@ -31,6 +31,15 @@ public macro AcceptableByConfigurationElement() = #externalMacro(
     type: "AcceptableByConfigurationElement"
 )
 
+@attached(
+    extension,
+    names: named(notifyRuleDisabledOnce), named(postMessage)
+)
+public macro DisabledWithoutSourceKit() = #externalMacro(
+    module: "SwiftLintCoreMacros",
+    type: "DisabledWithoutSourceKit"
+)
+
 /// Deprecated. Use `AcceptableByConfigurationElement` instead.
 @available(*, deprecated, renamed: "AcceptableByConfigurationElement")
 @attached(

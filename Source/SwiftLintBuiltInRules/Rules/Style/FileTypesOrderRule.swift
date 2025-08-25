@@ -3,6 +3,7 @@ import SourceKittenFramework
 
 private typealias FileTypeOffset = (fileType: FileTypesOrderConfiguration.FileType, offset: ByteCount)
 
+@DisabledWithoutSourceKit
 struct FileTypesOrderRule: OptInRule {
     var configuration = FileTypesOrderConfiguration()
 

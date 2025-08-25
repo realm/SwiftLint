@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct IndentationWidthRule: OptInRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {

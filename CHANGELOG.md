@@ -4,7 +4,9 @@
 
 ### Breaking
 
-* None.
+* If `SWIFTLINT_DISABLE_SOURCEKIT` is set to prohibit loading `libsourcekitdInProc` at runtime,
+  rules requiring SourceKit will be disabled and a warning will be printed once per rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 
@@ -12,7 +14,12 @@
 
 ### Enhancements
 
-* None.
+* A fully statically linked Linux binary can now be built with the Swift SDK and
+  the compiler options `-Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT`. This binary does not
+  require `libsourcekitdInProc.so` or any other dynamic libraries to be present on the
+  system at runtime. Rules requiring SourceKit will be disabled and reported to the console
+  when running this binary.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

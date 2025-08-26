@@ -73,7 +73,7 @@ extension SwiftLintFile {
             .flatMap { $0.expand() }
     }
 
-    fileprivate func endOf(next command: Command?) -> Location {
+    private func endOf(next command: Command?) -> Location {
         guard let nextCommand = command else {
             return Location(file: path, line: .max, character: .max)
         }
@@ -99,88 +99,15 @@ extension SwiftLintFile {
             .map(\.0)
     }
 
-    public func matchesAndTokens(matching pattern: String,
-                                 range: NSRange? = nil) -> [(NSTextCheckingResult, [SwiftLintSyntaxToken])] {
+    public func match(pattern: String, range: NSRange? = nil, captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
         let contents = stringView
         let range = range ?? contents.range
         let syntax = syntaxMap
         return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
-            let matchByteRange = contents.NSRangeToByteRange(start: match.range.location, length: match.range.length)
-            return matchByteRange.map { (match, syntax.tokens(inByteRange: $0)) }
+            let matchByteRange = contents.NSRangeToByteRange(
+                start: match.range.location, length: match.range.length)
+            return matchByteRange.map { (match.range(at: captureGroup), syntax.tokens(inByteRange: $0).kinds) }
         }
-    }
-
-    public func matchesAndSyntaxKinds(matching pattern: String,
-                                      range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
-        matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
-            (textCheckingResult, tokens.kinds)
-        }
-    }
-
-    public func match(pattern: String, range: NSRange? = nil, captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
-        matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
-            (textCheckingResult.range(at: captureGroup), syntaxKinds)
-        }
-    }
-
-    public func swiftDeclarationKindsByLine() -> [[SwiftDeclarationKind]]? {
-        if sourcekitdFailed {
-            return nil
-        }
-        var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
-        var lineIterator = lines.makeIterator()
-        var structureIterator = structureDictionary.kinds().makeIterator()
-        var maybeLine = lineIterator.next()
-        var maybeStructure = structureIterator.next()
-        while let line = maybeLine, let structure = maybeStructure {
-            if line.byteRange.contains(structure.byteRange.location),
-               let swiftDeclarationKind = SwiftDeclarationKind(rawValue: structure.kind) {
-                results[line.index].append(swiftDeclarationKind)
-            }
-            if structure.byteRange.location >= line.byteRange.upperBound {
-                maybeLine = lineIterator.next()
-            } else {
-                maybeStructure = structureIterator.next()
-            }
-        }
-        return results
-    }
-
-    public func syntaxTokensByLine() -> [[SwiftLintSyntaxToken]]? {
-        if sourcekitdFailed {
-            return nil
-        }
-        var results = [[SwiftLintSyntaxToken]](repeating: [], count: lines.count + 1)
-        var tokenGenerator = syntaxMap.tokens.makeIterator()
-        var lineGenerator = lines.makeIterator()
-        var maybeLine = lineGenerator.next()
-        var maybeToken = tokenGenerator.next()
-        while let line = maybeLine, let token = maybeToken {
-            let tokenRange = token.range
-            if line.byteRange.contains(token.offset) ||
-                tokenRange.contains(line.byteRange.location) {
-                results[line.index].append(token)
-            }
-            let tokenEnd = tokenRange.upperBound
-            let lineEnd = line.byteRange.upperBound
-            if tokenEnd < lineEnd {
-                maybeToken = tokenGenerator.next()
-            } else if tokenEnd > lineEnd {
-                maybeLine = lineGenerator.next()
-            } else {
-                maybeLine = lineGenerator.next()
-                maybeToken = tokenGenerator.next()
-            }
-        }
-        return results
-    }
-
-    public func syntaxKindsByLine() -> [[SyntaxKind]]? {
-        guard !sourcekitdFailed, let tokens = syntaxTokensByLine() else {
-            return nil
-        }
-
-        return tokens.map(\.kinds)
     }
 
     /**

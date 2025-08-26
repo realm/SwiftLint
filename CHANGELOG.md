@@ -367,7 +367,12 @@
 
 ### Experimental
 
-* None.
+* Adds a new `--report-coverage` command line option for the `lint` and `analyze` subcommands, and an
+  equivalent `report_coverage` configuration file setting. Coverage is measured against enabled
+  rules (reflecting disablement of enabled rules via `swiftlint:disable`), and also against all linter
+  or analyzer rules (reflecting the actual usage of Swiftlint versus its potential).  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#5907](https://github.com/realm/SwiftLint/issues/5907)
 
 ### Enhancements
 

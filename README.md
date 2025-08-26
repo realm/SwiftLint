@@ -736,6 +736,9 @@ write_baseline: Baseline.json
 # If true, SwiftLint will check for updates after linting or analyzing.
 check_for_updates: true
 
+# If true, SwiftLint will report coverage statistics after linting or analyzing.
+report_coverage: true
+
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
 force_cast: warning # implicitly

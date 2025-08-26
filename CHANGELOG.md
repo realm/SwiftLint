@@ -97,6 +97,7 @@
   * `line_length`
   * `trailing_whitespace`
   * `vertical_whitespace`
+  * `vertical_whitespace_opening_braces`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [JP Simard](https://github.com/jpsim)
   [Matt Pennig](https://github.com/pennig)

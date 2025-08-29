@@ -685,7 +685,7 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations[1].location.character, 18)
     }
 
-    func testCustomRuleDefaultsToSwiftSyntaxWhenNoModeSpecified() throws {
+    func testCustomRuleDefaultsToSourceKitWhenNoModeSpecified() throws {
         // When NO execution mode is specified (neither default nor per-rule), it should default to swiftsyntax
         let customRules: [String: Any] = [
             "no_foo": [
@@ -713,8 +713,8 @@ final class CustomRulesTests: SwiftLintTestCase {
             return
         }
 
-        XCTAssertTrue(customRule.isEffectivelySourceKitFree,
-                      "Rule should be effectively SourceKit-free when defaulting to swiftsyntax")
+        XCTAssertFalse(customRule.isEffectivelySourceKitFree,
+                       "Rule depends on SourceKit")
     }
 
     func testCustomRuleWithMatchKindsUsesSwiftSyntaxWhenConfigured() throws {
@@ -740,8 +740,8 @@ final class CustomRulesTests: SwiftLintTestCase {
         XCTAssertEqual(violations[0].location.character, 23) // Position of 'foo' in comment
     }
 
-    func testCustomRuleWithKindFilteringDefaultsToSwiftSyntax() throws {
-        // When using kind filtering without specifying mode, it should default to swiftsyntax
+    func testCustomRuleWithKindFilteringDefaultsToSourceKit() throws {
+        // When using kind filtering without specifying mode, it should default to sourcekit
         let customRules: [String: Any] = [
             "no_keywords": [
                 "regex": "\\b\\w+\\b",
@@ -769,8 +769,8 @@ final class CustomRulesTests: SwiftLintTestCase {
             return
         }
 
-        XCTAssertTrue(customRule.isEffectivelySourceKitFree,
-                      "Rule with kind filtering should default to swiftsyntax mode")
+        XCTAssertFalse(customRule.isEffectivelySourceKitFree,
+                       "Rule with kind filtering should default to sourcekit mode")
     }
 
     func testCustomRuleWithExcludedMatchKindsUsesSwiftSyntaxWithDefaultMode() throws {

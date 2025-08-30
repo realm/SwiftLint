@@ -9,6 +9,10 @@ on:
       - '.github/workflows/docker.yml'
       - 'Dockerfile'
   workflow_call:
+    secrets:
+      GITHUB_TOKEN:
+        required: true
+        description: 'GitHub token with permissions to push Docker images'
     inputs:
       tag:
         description: 'Docker tag'

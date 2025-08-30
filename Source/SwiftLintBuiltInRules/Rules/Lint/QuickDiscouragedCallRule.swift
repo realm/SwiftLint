@@ -1,5 +1,6 @@
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct QuickDiscouragedCallRule: OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct StatementPositionRule: CorrectableRule {
     var configuration = StatementPositionConfiguration()
 

@@ -1,8 +1,8 @@
-/// A task-local value that holds the identifier of the currently executing rule.
-/// This allows SourceKit request handling to determine if the current rule
-/// is a SourceKitFreeRule without modifying function signatures throughout the codebase.
+/// This allows SourceKit request handling to determine certain properties without
+/// modifying function signatures throughout the codebase.
 public enum CurrentRule {
-    /// The Rule ID for the currently executing rule.
+    /// A task-local value that holds the identifier of the currently executing rule, e.g., to check whether the rule
+    /// is allowed to make SourceKit requests.
     @TaskLocal public static var identifier: String?
 
     /// Allows specific SourceKit requests to be made outside of rule execution context.

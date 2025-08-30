@@ -94,6 +94,10 @@ public protocol Rule: Sendable {
     ///
     /// - Returns: A boolean value indicating whether the rule is enabled in the given region.
     func isEnabled(in region: Region, for ruleID: String) -> Bool
+
+    /// Prints a warning to the console once about the rule being disabled due to SourceKit being unavailable. The
+    /// default implementation does nothing. Rules that depend on SourceKit should override this appropriately.
+    func notifyRuleDisabledOnce()
 }
 
 public extension Rule {
@@ -147,6 +151,10 @@ public extension Rule {
 
     func isEnabled(in region: Region, for ruleID: String) -> Bool {
         !Self.description.allIdentifiers.contains(ruleID) || region.isRuleEnabled(self)
+    }
+
+    func notifyRuleDisabledOnce() {
+        // Intentionally empty by default.
     }
 }
 

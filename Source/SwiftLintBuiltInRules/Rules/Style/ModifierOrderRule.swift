@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
     var configuration = ModifierOrderConfiguration()
 

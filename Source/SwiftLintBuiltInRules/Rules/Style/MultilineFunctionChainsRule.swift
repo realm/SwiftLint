@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
+@DisabledWithoutSourceKit
 struct MultilineFunctionChainsRule: ASTRule, OptInRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

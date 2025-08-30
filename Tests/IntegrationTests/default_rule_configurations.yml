@@ -446,6 +446,12 @@ function_default_parameter_at_end:
   meta:
     opt-in: true
     correctable: false
+function_name_whitespace:
+  severity: warning
+  generic_spacing: no_space
+  meta:
+    opt-in: true
+    correctable: true
 function_parameter_count:
   warning: 5
   error: 8

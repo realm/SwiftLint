@@ -17,6 +17,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Get Swift version
         id: swift_version
         run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\.[0-9]' -o | head -1)" >> "$GITHUB_OUTPUT"

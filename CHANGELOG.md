@@ -1,6 +1,6 @@
 # Changelog
 
-## Main
+## 0.60.0: Fresh Breeze
 
 ### Breaking
 

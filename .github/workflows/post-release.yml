@@ -118,7 +118,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    secrets: inherit
     with:
       tag: ${{ github.event.release.tag_name }}

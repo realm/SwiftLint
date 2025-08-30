@@ -13,7 +13,7 @@ jobs:
     name: Bazel, Linux, Swift 6.1 # pre-installed
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
       - uses: ./.github/actions/bazel-linux-build
@@ -38,7 +38,7 @@ jobs:
             version: '6.1'
     container: ${{ matrix.image }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
       - name: Build plugins

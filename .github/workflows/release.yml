@@ -36,7 +36,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: true
       - name: Checkout or create release branch
@@ -55,7 +55,7 @@ jobs:
           sed -i -e '3s/.*/    version = "${{ inputs.version }}",/' MODULE.bazel
           sed -i -e "s/^\(\s*s\.version\s*=\s*'\)[^']*'/\1${{ inputs.version }}'/" SwiftLint.podspec
       - name: Configure Git author
-        uses: Homebrew/actions/git-user-config@master
+        uses: Homebrew/actions/git-user-config@main
         with:
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Commit changes
@@ -71,11 +71,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
       - name: Set up Ruby and Bundler
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@44511735964dcb71245e7e55f72539531f7bc0eb # v1.257.0
         with:
           bundler-cache: true
       - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
@@ -95,7 +95,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
@@ -104,7 +104,7 @@ jobs:
       - name: Build binary
         run: make --debug spm_linux_build
       - name: Upload binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: swiftlint-linux-amd64
           path: .build/release/swiftlint
@@ -116,7 +116,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
@@ -125,7 +125,7 @@ jobs:
       - name: Build binary
         run: make --debug spm_linux_build
       - name: Upload binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: swiftlint-linux-arm64
           path: .build/release/swiftlint
@@ -137,14 +137,14 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
       - name: Build SwiftLint for macOS
         run: make --debug bazel_release
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: swiftlint-macos
           path: |
@@ -167,18 +167,18 @@ jobs:
       actions: read
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: true
       - name: Configure author
-        uses: Homebrew/actions/git-user-config@master
+        uses: Homebrew/actions/git-user-config@main
         with:
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Create build folders
         run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
       - name: Download binary artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       - name: Move artifacts
         run: |
           mv -f swiftlint-macos/swiftlint ${{ env.MACOS_BUILD_DIR }}

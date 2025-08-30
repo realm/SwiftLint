@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/bazel-linux-build
         name: Build SwiftLint with Bazel
         env:
@@ -37,6 +39,8 @@ jobs:
     container: ${{ matrix.image }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build plugins
         uses: ./.github/actions/run-make
         with:

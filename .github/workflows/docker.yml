@@ -59,10 +59,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       if: needs.set-context.outputs.checkout-ref == 'pr'
+      with:
+        persist-credentials: false
     - uses: actions/checkout@v4
       if: needs.set-context.outputs.checkout-ref != 'pr'
       with:
         ref: ${{ needs.set-context.outputs.checkout-ref }}
+        persist-credentials: false
     - uses: ./.github/actions/docker-build
       with:
         platform: amd64
@@ -78,10 +81,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       if: needs.set-context.outputs.checkout-ref == 'pr'
+      with:
+        persist-credentials: false
     - uses: actions/checkout@v4
       if: needs.set-context.outputs.checkout-ref != 'pr'
       with:
         ref: ${{ needs.set-context.outputs.checkout-ref }}
+        persist-credentials: false
     - uses: ./.github/actions/docker-build
       with:
         platform: arm64

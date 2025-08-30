@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Mark or close stale issues
         run: |
           ./tools/stale-issues.rb ${{ github.repository }}

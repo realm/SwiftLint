@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - name: Checkout or create release branch
         run: |
           if git ls-remote --exit-code --heads origin ${{ env.RELEASE_BRANCH }}; then
@@ -70,6 +72,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Set up Ruby and Bundler
         uses: ruby/setup-ruby@v1
         with:
@@ -94,6 +98,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_BRANCH }}
+          persist-credentials: false
       - name: Install dependencies
         run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
       - name: Build binary
@@ -114,6 +119,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_BRANCH }}
+          persist-credentials: false
       - name: Install dependencies
         run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
       - name: Build binary
@@ -134,6 +140,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_BRANCH }}
+          persist-credentials: false
       - name: Build SwiftLint for macOS
         run: make --debug bazel_release
       - name: Upload build artifacts
@@ -163,6 +170,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_BRANCH }}
+          persist-credentials: true
       - name: Configure author
         uses: Homebrew/actions/git-user-config@master
         with:

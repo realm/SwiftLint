@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Run file sync
         uses: BetaHuhn/repo-file-sync-action@v1
         with:

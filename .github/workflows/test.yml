@@ -18,6 +18,8 @@ jobs:
     container: swift:6.1-noble
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Get Swift version
         id: swift_version
         run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\.[0-9]' -o | head -1)" >> "$GITHUB_OUTPUT"
@@ -45,6 +47,8 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved', 'Package.swift') }}

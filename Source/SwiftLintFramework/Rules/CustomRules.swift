@@ -75,7 +75,7 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
     var isEffectivelySourceKitFree: Bool {
         configuration.customRuleConfigurations.allSatisfy { config in
             let effectiveMode = config.executionMode == .default
-                ? (configuration.defaultExecutionMode ?? .swiftsyntax)
+                ? (configuration.defaultExecutionMode ?? .sourcekit)
                 : config.executionMode
             return effectiveMode == .swiftsyntax
         }

@@ -40,13 +40,14 @@ jobs:
           } >> "$GITHUB_OUTPUT"
         else
           {
-            echo "checkout-ref=${{ inputs.tag }}"
-            echo "docker-tag=${{ inputs.tag }}"
+            echo "checkout-ref=${INPUTS_TAG}"
+            echo "docker-tag=${INPUTS_TAG}"
           } >> "$GITHUB_OUTPUT"
         fi
         echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       env:
         REPOSITORY: ${{ github.repository }}
+        INPUTS_TAG: ${{ inputs.tag }}
 
   build-amd64:
     name: Build AMD64 Image

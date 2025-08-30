@@ -24,4 +24,6 @@ runs:
         echo "CC=clang" >> $GITHUB_ENV
     - name: Build SwiftLint with Bazel
       shell: bash
-      run: bazel build --config release ${{ inputs.target }}
+      run: bazel build --config release ${INPUTS_TARGET}
+      env:
+        INPUTS_TARGET: ${{ inputs.target }}

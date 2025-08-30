@@ -31,10 +31,12 @@ jobs:
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
       - name: Merge release branch
         run: |
-          git fetch origin release/${{ github.event.release.tag_name }}
-          git merge --ff-only origin/release/${{ github.event.release.tag_name }}
+          git fetch origin "release/${TAG_NAME}"
+          git merge --ff-only "origin/release/${TAG_NAME}"
           git push origin main
-          git push origin --delete release/${{ github.event.release.tag_name }}
+          git push origin --delete "release/${TAG_NAME}"
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
 
   publish-pod:
     name: Publish Pod

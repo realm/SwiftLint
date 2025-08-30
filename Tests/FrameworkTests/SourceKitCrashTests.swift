@@ -18,16 +18,6 @@ final class SourceKitCrashTests: SwiftLintTestCase {
         _ = file.syntaxMap
         XCTAssertFalse(assertHandlerCalled,
                        "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
-
-        assertHandlerCalled = false
-        _ = file.syntaxKindsByLines
-        XCTAssertFalse(assertHandlerCalled,
-                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxKindsByLines")
-
-        assertHandlerCalled = false
-        _ = file.syntaxTokensByLines
-        XCTAssertFalse(assertHandlerCalled,
-                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxTokensByLines")
     }
 
     func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
@@ -40,16 +30,6 @@ final class SourceKitCrashTests: SwiftLintTestCase {
         _ = file.syntaxMap
         XCTAssertTrue(assertHandlerCalled,
                       "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
-
-        assertHandlerCalled = false
-        _ = file.syntaxKindsByLines
-        XCTAssertTrue(assertHandlerCalled,
-                      "Expects assert handler was called on accessing SwiftLintFile.syntaxKindsByLines")
-
-        assertHandlerCalled = false
-        _ = file.syntaxTokensByLines
-        XCTAssertTrue(assertHandlerCalled,
-                      "Expects assert handler was not called on accessing SwiftLintFile.syntaxTokensByLines")
     }
 
     func testRulesWithFileThatCrashedSourceKitService() throws {

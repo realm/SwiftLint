@@ -88,10 +88,20 @@ jobs:
         env:
           DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
 
-  build-linux-amd64:
-    name: Build Linux AMD64 Binary
+  build-linux:
+    name: Build Linux ${{ matrix.arch }} Binary
     needs: prepare-release
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: AMD64
+            runner: ubuntu-24.04
+            artifact_name: swiftlint-linux-amd64
+          - arch: ARM64
+            runner: ubuntu-24.04-arm
+            artifact_name: swiftlint-linux-arm64
     permissions:
       contents: read
     steps:
@@ -106,28 +116,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: swiftlint-linux-amd64
-          path: .build/release/swiftlint
-
-  build-linux-arm64:
-    name: Build Linux ARM64 Binary
-    needs: prepare-release
-    runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-        with:
-          ref: ${{ env.RELEASE_BRANCH }}
-          persist-credentials: false
-      - name: Install dependencies
-        run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
-      - name: Build binary
-        run: make --debug spm_linux_build
-      - name: Upload binary
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: swiftlint-linux-arm64
+          name: ${{ matrix.artifact_name }}
           path: .build/release/swiftlint
 
   build-macos:
@@ -159,8 +148,7 @@ jobs:
     needs:
       - setup-credentials
       - prepare-release
-      - build-linux-amd64
-      - build-linux-arm64
+      - build-linux
       - build-macos
     runs-on: macOS-14
     permissions:

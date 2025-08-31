@@ -141,7 +141,6 @@ public let builtInRules: [any Rule.Type] = [
     ObjectLiteralRule.self,
     OneDeclarationPerFileRule.self,
     OpeningBraceRule.self,
-    OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
     OptionalDataStringConversionRule.self,
     OptionalEnumCaseMatchingRule.self,

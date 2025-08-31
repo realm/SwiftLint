@@ -7,6 +7,12 @@
 * If `SWIFTLINT_DISABLE_SOURCEKIT` is set to prohibit loading `libsourcekitdInProc` at runtime,
   rules requiring SourceKit will be disabled and a warning will be printed once per rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* The `operator_whitespace` rule has been removed and its functionality merged into the
+  `function_name_whitespace` rule. The latter now also checks spacing around the `func`
+  keyword, the function name/operator and its generic parameters while respecting comments.
+  On top of that, it supports autocorrection.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 
@@ -31,6 +37,12 @@
   * `leading_trailing_space`: `func name <T> ()`
   Supports autocorrection.  
   [GandaLF2006](https://github.com/GandaLF2006)
+
+* The `operator_whitespace` rule now supports autocorrection and better respects comments in
+  function declarations. The rule has been deprecated in favor of the new `function_name_whitespace`
+  rule. You can still refer to it by its identifier, but get checking for normal function names
+  on top.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

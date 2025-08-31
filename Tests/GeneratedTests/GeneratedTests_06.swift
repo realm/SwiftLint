@@ -91,12 +91,6 @@ final class OpeningBraceRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class OperatorFunctionWhitespaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(OperatorFunctionWhitespaceRule.description)
-    }
-}
-
 final class OperatorUsageWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(OperatorUsageWhitespaceRule.description)
@@ -154,5 +148,11 @@ final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
 final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
+    }
+}
+
+final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferNimbleRule.description)
     }
 }

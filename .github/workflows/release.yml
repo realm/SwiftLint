@@ -14,8 +14,6 @@ on:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_16.2.app
-  MACOS_BUILD_DIR: .build/universal
-  LINUX_BUILD_DIR: .build/linux
   RELEASE_BRANCH: release/${{ inputs.version }}
 
 jobs:
@@ -199,20 +197,17 @@ jobs:
         uses: Homebrew/actions/git-user-config@main
         with:
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
-      - name: Create build folders
-        run: mkdir -p ${{ env.MACOS_BUILD_DIR }} ${{ env.LINUX_BUILD_DIR }}
       - name: Download binary artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
       - name: Move artifacts
         run: |
-          mv -f swiftlint-macos/swiftlint ${{ env.MACOS_BUILD_DIR }}
-          mv -f swiftlint-macos/bazel.* .
-          mv -f swiftlint-linux-amd64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
-          mv -f swiftlint-linux-arm64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_arm64
-          mv -f swiftlint-static-amd64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_static_amd64
-          mv -f swiftlint-static-arm64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_static_arm64
+          mv -f swiftlint-macos/* .
+          mv -f swiftlint-linux-amd64/swiftlint swiftlint_linux_amd64
+          mv -f swiftlint-linux-arm64/swiftlint swiftlint_linux_arm64
+          mv -f swiftlint-static-amd64/swiftlint swiftlint_static_amd64
+          mv -f swiftlint-static-arm64/swiftlint swiftlint_static_arm64
       - name: Make binaries executable
-        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_* ${{ env.LINUX_BUILD_DIR }}/swiftlint_static_*
+        run: chmod +x swiftlint*
       - name: Create artifacts
         run: |
           make --debug spm_artifactbundle

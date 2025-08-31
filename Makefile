@@ -3,18 +3,11 @@ PREFIX?=/usr/local
 BUILD_TOOL?=xcodebuild
 
 XCODEFLAGS=-scheme 'swiftlint' \
+	-destination 'platform=macOS' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
 SWIFT_BUILD_FLAGS=--configuration release -Xlinker -dead_strip
-
-SWIFTLINT_EXECUTABLE_PARENT=.build/universal
-SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
-SWIFTLINT_EXECUTABLE_LINUX_PARENT=.build/linux
-SWIFTLINT_EXECUTABLE_LINUX_AMD64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_linux_amd64
-SWIFTLINT_EXECUTABLE_LINUX_ARM64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_linux_arm64
-SWIFTLINT_EXECUTABLE_STATIC_AMD64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_static_amd64
-SWIFTLINT_EXECUTABLE_STATIC_ARM64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_static_arm64
 
 ARTIFACT_BUNDLE_PATH=$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle
 
@@ -25,15 +18,13 @@ TSAN_XCTEST=$(shell xcrun --find xctest)
 
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
-LICENSE_PATH="$(shell pwd)/LICENSE"
-
 OUTPUT_PACKAGE=SwiftLint.pkg
 
 VERSION_STRING=$(shell ./tools/get-version)
 
-.PHONY: all clean install package test uninstall docs register
+.PHONY: all clean install package test uninstall docs register bazel_register test_tsan spm_linux_build spm_build_plugins spm_test write_xcodebuild_log analyze analyze_autocorrect clean_xcode build_with_disable_sandbox installables prefix_install portable_zip spm_artifactbundle zip_linux_release bazel_test bazel_test_tsan bazel_release docker_image docker_test docker_htop display_compilation_time formula_bump bundle_install oss_scan pod_publish pod_lint docs_linux get_version
 
-all: $(SWIFTLINT_EXECUTABLE)
+all: swiftlint
 
 register:
 	swift run swiftlint-dev rules register
@@ -46,6 +37,9 @@ bazel_register:
 
 test: clean_xcode
 	$(BUILD_TOOL) $(XCODEFLAGS) test
+
+clean_xcode:
+	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
 test_tsan:
 	swift build --build-tests $(TSAN_SWIFT_BUILD_FLAGS)
@@ -76,81 +70,65 @@ clean:
 	rm -rf "$(TEMPORARY_FOLDER)"
 	rm -rf rule_docs/ docs/ .build/
 	rm -f ./*.{zip,pkg} bazel.tar.gz bazel.tar.gz.sha256
+	rm -f swiftlint swiftlint_{linux,static}_{amd64,arm64}
 	swift package clean
+	bazel clean --expunge
+	bazel shutdown
 
-clean_xcode:
-	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
-
-$(SWIFTLINT_EXECUTABLE):
-	mkdir -p "$(SWIFTLINT_EXECUTABLE_PARENT)"
+swiftlint:
 	bazel build --config release universal_swiftlint
 	$(eval SWIFTLINT_BINARY := $(shell bazel cquery --config release --output=files universal_swiftlint))
-	mv "$(SWIFTLINT_BINARY)" "$(SWIFTLINT_EXECUTABLE)"
-	chmod +w "$(SWIFTLINT_EXECUTABLE)"
-	strip -rSTX "$(SWIFTLINT_EXECUTABLE)"
-
-$(SWIFTLINT_EXECUTABLE_LINUX_AMD64):
-	mkdir -p "$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)"
-	docker run --platform linux/amd64 "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)"
-	chmod +x "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)"
-
-$(SWIFTLINT_EXECUTABLE_LINUX_ARM64):
-	mkdir -p "$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)"
-	docker run --platform linux/arm64 "ghcr.io/realm/swiftlint:$(VERSION_STRING)" cat /usr/bin/swiftlint > "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)"
-	chmod +x "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)"
+	mv "$(SWIFTLINT_BINARY)" swiftlint
+	chmod +w swiftlint
+	strip -rSTX swiftlint
 
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)
 
-install: $(SWIFTLINT_EXECUTABLE)
+install: swiftlint
 	install -d "$(BINARIES_FOLDER)"
-	install "$(SWIFTLINT_EXECUTABLE)" "$(BINARIES_FOLDER)"
+	install swiftlint "$(BINARIES_FOLDER)"
 
 uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
-installables: $(SWIFTLINT_EXECUTABLE)
+installables: swiftlint
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
-	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
-
-installables_linux: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64)
-	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
-	install "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
-	install "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
+	install swiftlint "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
 prefix_install: build_with_disable_sandbox
 	install -d "$(PREFIX)/bin/"
-	install "$(SWIFTLINT_EXECUTABLE)" "$(PREFIX)/bin/"
+	install swiftlint "$(PREFIX)/bin/"
 
 portable_zip: installables
 	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(TEMPORARY_FOLDER)"
-	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
+	cp -f LICENSE "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
-spm_artifactbundle: $(SWIFTLINT_EXECUTABLE) $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64)
+spm_artifactbundle: swiftlint swiftlint_linux_amd64 swiftlint_linux_arm64
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin"
 	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin"
 	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
-	cp -f "$(SWIFTLINT_EXECUTABLE)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin/swiftlint"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint_amd64"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint_arm64"
-	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
+	cp -f swiftlint "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-macos/bin/swiftlint"
+	cp -f swiftlint_linux_amd64 "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint_amd64"
+	cp -f swiftlint_linux_arm64 "$(ARTIFACT_BUNDLE_PATH)/swiftlint-$(VERSION_STRING)-linux-gnu/bin/swiftlint_arm64"
+	cp -f LICENSE "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 
-zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64) $(SWIFTLINT_EXECUTABLE_STATIC_AMD64) $(SWIFTLINT_EXECUTABLE_STATIC_ARM64)
+zip_linux_release: swiftlint_linux_amd64 swiftlint_linux_arm64 swiftlint_static_amd64 swiftlint_static_arm64
 	$(eval TMP_FOLDER := $(shell mktemp -d))
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
-	cp -f "$(SWIFTLINT_EXECUTABLE_STATIC_AMD64)" "$(TMP_FOLDER)/swiftlint-static"
-	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
+	cp -f swiftlint_linux_amd64 "$(TMP_FOLDER)/swiftlint"
+	cp -f swiftlint_static_amd64 "$(TMP_FOLDER)/swiftlint-static"
+	cp -f LICENSE "$(TMP_FOLDER)"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE") > "./swiftlint_linux_amd64.zip"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(TMP_FOLDER)/swiftlint"
-	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint-static"
+	cp -f swiftlint_linux_arm64 "$(TMP_FOLDER)/swiftlint"
+	cp -f swiftlint_static_arm64 "$(TMP_FOLDER)/swiftlint-static"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE") > "./swiftlint_linux_arm64.zip"
 
-package: $(SWIFTLINT_EXECUTABLE)
+package: swiftlint
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))
-	cp "$(SWIFTLINT_EXECUTABLE)" "$(PACKAGE_ROOT)"
+	cp swiftlint "$(PACKAGE_ROOT)"
 	pkgbuild \
 		--identifier "io.realm.swiftlint" \
 		--install-location "/usr/local/bin" \
@@ -164,9 +142,9 @@ bazel_test:
 bazel_test_tsan:
 	bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
 
-bazel_release: $(SWIFTLINT_EXECUTABLE)
+bazel_release: swiftlint
 	bazel build :release
-	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 $(SWIFTLINT_EXECUTABLE) .
+	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 bazel-bin/swiftlint .
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .

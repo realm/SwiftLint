@@ -187,29 +187,5 @@ docs_linux: bundle_install
 get_version:
 	@echo "$(VERSION_STRING)"
 
-release:
-ifneq ($(strip $(shell git status --untracked-files=no --porcelain 2>/dev/null)),)
-	$(error git state is not clean)
-endif
-	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
-	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
-	@sed -i '' 's/## Main/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
-	@sed 's/__VERSION__/$(NEW_VERSION)/g' tools/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
-	@sed -e '3s/.*/    version = "$(NEW_VERSION)",/' -i '' MODULE.bazel
-	make clean
-	make package
-	make bazel_release
-	make portable_zip
-	make spm_artifactbundle
-	./tools/update-artifact-bundle.sh "$(NEW_VERSION)"
-	git commit -a -m "Release $(NEW_VERSION)"
-	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
-	git push origin HEAD
-	git push origin $(NEW_VERSION)
-	./tools/create-github-release.sh "$(NEW_VERSION)"
-	./tools/add-new-changelog-section.sh
-	git commit -a -m "Add new changelog section"
-	git push origin HEAD
-
 %:
 	@:

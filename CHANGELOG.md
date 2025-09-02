@@ -101,6 +101,13 @@
 * Rewrite `quick_discouraged_call` rule with SwiftSyntax.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* `multiline_parameters`: add optional checks for **function call arguments**.
+  When `check_calls` is enabled, the rule enforces that call arguments are either
+  all on one line (subject to `max_number_of_single_line_parameters`) or
+  one per line, mirroring the behavior for function/initializer declarations.
+  Trailing closures are ignored by default.
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ### Bug Fixes
 
 * Ensure that header matched against always end in a newline in `file_header` rule.  

@@ -50,6 +50,17 @@ internal struct ClosureEndIndentationRuleExamples {
             })
         """),
         Example("(-variable).foo()"),
+        Example("""
+        let var1 = var2
+            .prop?.method {
+            }
+            .prop!.method {
+            }
+            .prop[0].method {
+            }
+            .prop().method {
+            }
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

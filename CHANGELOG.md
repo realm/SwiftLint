@@ -42,7 +42,10 @@
 
 ### Bug Fixes
 
-* None.
+* Fix `closure_end_indentation` rule reporting violations when the called base
+  involves chained optional expressions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6216](https://github.com/realm/SwiftLint/issues/6216)
 
 ## 0.60.0: Fresh Breeze
 

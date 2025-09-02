@@ -119,6 +119,41 @@ jobs:
           name: ${{ matrix.artifact_name }}
           path: .build/release/swiftlint
 
+  build-static-linux:
+    name: Build Static Linux ${{ matrix.arch }} Binary
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: ARM64
+            runner: ubuntu-24.04-arm
+            swift_sdk: aarch64-swift-linux-musl
+            artifact_name: swiftlint-static-arm64
+          - arch: AMD64
+            runner: ubuntu-24.04
+            swift_sdk: x86_64-swift-linux-musl
+            artifact_name: swiftlint-static-amd64
+    permissions:
+      contents: read
+    env:
+      BINARY_PATH: .build/${{ matrix.swift_sdk }}/release/swiftlint
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          persist-credentials: false
+      - name: Install SDK
+        run: swift sdk install https://download.swift.org/swift-6.1.2-release/static-sdk/swift-6.1.2-RELEASE/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b
+      - name: Build static binary
+        run: swift build -c release --product swiftlint --swift-sdk ${{ matrix.swift_sdk }} -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT
+      - name: Strip binary
+        run: strip -s "$BINARY_PATH"
+      - name: Upload artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ env.BINARY_PATH }}
+
   build-macos:
     name: Build macOS Binaries
     needs: prepare-release
@@ -149,6 +184,7 @@ jobs:
       - setup-credentials
       - prepare-release
       - build-linux
+      - build-static-linux
       - build-macos
     runs-on: macOS-14
     permissions:
@@ -173,8 +209,10 @@ jobs:
           mv -f swiftlint-macos/bazel.* .
           mv -f swiftlint-linux-amd64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_amd64
           mv -f swiftlint-linux-arm64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_arm64
+          mv -f swiftlint-static-amd64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_static_amd64
+          mv -f swiftlint-static-arm64/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_static_arm64
       - name: Make binaries executable
-        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_*
+        run: chmod +x ${{ env.MACOS_BUILD_DIR }}/swiftlint ${{ env.LINUX_BUILD_DIR }}/swiftlint_linux_* ${{ env.LINUX_BUILD_DIR }}/swiftlint_static_*
       - name: Create artifacts
         run: |
           make --debug spm_artifactbundle

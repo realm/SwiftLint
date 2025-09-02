@@ -13,6 +13,8 @@ SWIFTLINT_EXECUTABLE=$(SWIFTLINT_EXECUTABLE_PARENT)/swiftlint
 SWIFTLINT_EXECUTABLE_LINUX_PARENT=.build/linux
 SWIFTLINT_EXECUTABLE_LINUX_AMD64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_linux_amd64
 SWIFTLINT_EXECUTABLE_LINUX_ARM64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_linux_arm64
+SWIFTLINT_EXECUTABLE_STATIC_AMD64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_static_amd64
+SWIFTLINT_EXECUTABLE_STATIC_ARM64=$(SWIFTLINT_EXECUTABLE_LINUX_PARENT)/swiftlint_static_arm64
 
 ARTIFACT_BUNDLE_PATH=$(TEMPORARY_FOLDER)/SwiftLintBinary.artifactbundle
 
@@ -136,13 +138,15 @@ spm_artifactbundle: $(SWIFTLINT_EXECUTABLE) $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) 
 	cp -f "$(LICENSE_PATH)" "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 
-zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64)
+zip_linux_release: $(SWIFTLINT_EXECUTABLE_LINUX_AMD64) $(SWIFTLINT_EXECUTABLE_LINUX_ARM64) $(SWIFTLINT_EXECUTABLE_STATIC_AMD64) $(SWIFTLINT_EXECUTABLE_STATIC_ARM64)
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint"
+	cp -f "$(SWIFTLINT_EXECUTABLE_STATIC_AMD64)" "$(TMP_FOLDER)/swiftlint-static"
 	cp -f "$(LICENSE_PATH)" "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_amd64.zip"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE") > "./swiftlint_linux_amd64.zip"
 	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_ARM64)" "$(TMP_FOLDER)/swiftlint"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_arm64.zip"
+	cp -f "$(SWIFTLINT_EXECUTABLE_LINUX_AMD64)" "$(TMP_FOLDER)/swiftlint-static"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE") > "./swiftlint_linux_arm64.zip"
 
 package: $(SWIFTLINT_EXECUTABLE)
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

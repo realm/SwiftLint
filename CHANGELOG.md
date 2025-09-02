@@ -10,7 +10,15 @@
 
 ### Experimental
 
-* None.
+* Both Linux release archives (for AMD64 and ARM64) now contain two binaries:
+  * A dynamically linked binary that requires `libsourcekitdInProc.so` together with its
+    transitive dependencies to be present on the system at runtime. It is named `swiftlint`
+    and the same binary as before. It supports all built-in rules.
+  * A fully statically linked binary named `swiftlint-static` that does not require
+    any dynamic libraries at runtime. Rules requiring SourceKit will be disabled and
+    reported to the console when running this binary.
+  <!-- Keep empty line to have the contributors on a separate line. -->
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Enhancements
 

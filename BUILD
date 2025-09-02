@@ -237,6 +237,8 @@ filegroup(
         "//:DyldWarningWorkaroundSources",
         "//:LintInputs",
         "//Tests:BUILD",
+        "//Tests:generated_tests.bzl",
+        "//Tests:test_macros.bzl",
         "//bazel:release_files",
     ],
 )

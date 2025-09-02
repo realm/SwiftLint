@@ -5,6 +5,11 @@ import XCTest
 final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
     private typealias GenericSpacingType = FunctionNameWhitespaceConfiguration.GenericSpacingType
 
+    private static let operatorWhitespaceViolationReason =
+        "Operators should be surrounded by a single whitespace when defining them"
+    private static let funcKeywordSpacingViolationReason =
+        "Too many spaces between 'func' and function name"
+
     // MARK: - Helper
 
     private func assertReason(
@@ -37,7 +42,44 @@ final class FunctionNameWhitespaceRuleTests: SwiftLintTestCase {
     func testSpaceBetweenFuncKeywordAndName_ShouldReportReason() {
         assertReason(
             "func  abc(lhs: Int, rhs: Int) -> Int {}",
-            expected: "Too many spaces between 'func' and function name"
+            expected: Self.funcKeywordSpacingViolationReason
+        )
+    }
+
+    // MARK: - operator functions
+
+    func testOperatorFunctionSpacing_WhenNoSpaceAfterOperator_ShouldReportOperatorMessage() {
+        assertReason(
+            "func <|(lhs: Int, rhs: Int) -> Int {}",
+            expected: Self.operatorWhitespaceViolationReason
+        )
+    }
+
+    func testOperatorFunctionSpacing_WhenTooManySpacesAfterOperator_ShouldReportOperatorMessage() {
+        assertReason(
+            "func <|  (lhs: Int, rhs: Int) -> Int {}",
+            expected: Self.operatorWhitespaceViolationReason
+        )
+    }
+
+    func testOperatorFunctionWithGenerics_WhenNoSpaceAfterOperator_ShouldReportOperatorMessage() {
+        assertReason(
+            "func <|<<A>(lhs: A, rhs: A) -> A {}",
+            expected: Self.operatorWhitespaceViolationReason
+        )
+    }
+
+    func testOperatorFunctionSpacing_WhenMultipleViolations_ShouldReportOperatorMessage() {
+        assertReason(
+            "func  <| (lhs: Int, rhs: Int) -> Int {}",
+            expected: Self.operatorWhitespaceViolationReason
+        )
+    }
+
+    func testOperatorFunctionSpacing_WhenTooManySpacesBeforeAndAfter_ShouldReportOperatorMessage() {
+        assertReason(
+            "func  <|  (lhs: Int, rhs: Int) -> Int {}",
+            expected: Self.operatorWhitespaceViolationReason
         )
     }
 

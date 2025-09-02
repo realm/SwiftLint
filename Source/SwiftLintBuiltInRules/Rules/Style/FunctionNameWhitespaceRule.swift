@@ -1,24 +1,24 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(correctable: true, optIn: true)
+@SwiftSyntaxRule(correctable: true)
 struct FunctionNameWhitespaceRule: Rule {
     var configuration = FunctionNameWhitespaceConfiguration()
 
     static let description = RuleDescription(
         identifier: "function_name_whitespace",
         name: "Function Name Whitespace",
-        description: "Consistent whitespace before and after function names and generic parameters.",
+        description: "There should be consistent whitespace before and after function names and generic parameters.",
         kind: .style,
         nonTriggeringExamples: FunctionNameWhitespaceRuleExamples.nonTriggeringExamples,
         triggeringExamples: FunctionNameWhitespaceRuleExamples.triggeringExamples,
-        corrections: FunctionNameWhitespaceRuleExamples.corrections
+        corrections: FunctionNameWhitespaceRuleExamples.corrections,
+        deprecatedAliases: ["operator_whitespace"]
     )
 }
 
 private extension FunctionNameWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            guard case .identifier = node.name.tokenKind else { return }
             validateFuncKeywordSpacing(for: node)
             correctSingleCommentTrivia(
                 after: node.name,
@@ -36,19 +36,26 @@ private extension FunctionNameWhitespaceRule {
 
         private func validateFunctionNameTrailingTrivia(node: FunctionDeclSyntax) {
             let nameTrailingTrivia = node.name.trailingTrivia
-            let replacement: String? = switch configuration.genericSpacing {
-                case .noSpace where nameTrailingTrivia.isNotEmptyWithoutComments: ""
-                case .leadingSpace where nameTrailingTrivia.isNotSingleSpaceWithoutComments: " "
-                case .trailingSpace where nameTrailingTrivia.isNotEmptyWithoutComments: ""
-                case .leadingTrailingSpace where nameTrailingTrivia.isNotSingleSpaceWithoutComments: " "
-                default: nil
+            let replacement: String? =
+                if node.isOperatorDeclaration {
+                    nameTrailingTrivia.isNotSingleSpaceWithoutComments ? " " : nil
+                } else {
+                    switch configuration.genericSpacing {
+                    case .noSpace where nameTrailingTrivia.isNotEmptyWithoutComments: ""
+                    case .leadingSpace where nameTrailingTrivia.isNotSingleSpaceWithoutComments: " "
+                    case .trailingSpace where nameTrailingTrivia.isNotEmptyWithoutComments: ""
+                    case .leadingTrailingSpace where nameTrailingTrivia.isNotSingleSpaceWithoutComments: " "
+                    default: nil
+                    }
                 }
 
             guard let replacement else { return }
             violations.append(
                 .init(
                     position: node.name.endPositionBeforeTrailingTrivia,
-                    reason: configuration.genericSpacing.beforeGenericViolationReason,
+                    reason: node.isOperatorDeclaration
+                        ? "Operators should be surrounded by a single whitespace when defining them"
+                        : configuration.genericSpacing.beforeGenericViolationReason,
                     correction: .init(
                         start: node.name.endPositionBeforeTrailingTrivia,
                         end: node.name.endPosition,
@@ -63,7 +70,9 @@ private extension FunctionNameWhitespaceRule {
             violations.append(
                 .init(
                     position: node.funcKeyword.endPositionBeforeTrailingTrivia,
-                    reason: "Too many spaces between 'func' and function name",
+                    reason: node.isOperatorDeclaration
+                        ? "Operators should be surrounded by a single whitespace when defining them"
+                        : "Too many spaces between 'func' and function name",
                     correction: .init(
                         start: node.funcKeyword.endPositionBeforeTrailingTrivia,
                         end: node.name.positionAfterSkippingLeadingTrivia,
@@ -114,6 +123,15 @@ private extension FunctionNameWhitespaceRule {
                     )
                 )
             )
+        }
+    }
+}
+
+private extension FunctionDeclSyntax {
+    var isOperatorDeclaration: Bool {
+        switch name.tokenKind {
+        case .binaryOperator: true
+        default: false
         }
     }
 }

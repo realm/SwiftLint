@@ -450,7 +450,7 @@ function_name_whitespace:
   severity: warning
   generic_spacing: no_space
   meta:
-    opt-in: true
+    opt-in: false
     correctable: true
 function_parameter_count:
   warning: 5
@@ -820,11 +820,6 @@ operator_usage_whitespace:
   meta:
     opt-in: true
     correctable: true
-operator_whitespace:
-  severity: warning
-  meta:
-    opt-in: false
-    correctable: false
 optional_data_string_conversion:
   severity: warning
   meta:

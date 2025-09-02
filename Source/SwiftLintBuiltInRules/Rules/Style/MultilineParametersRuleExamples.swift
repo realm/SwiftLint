@@ -213,6 +213,20 @@ internal struct MultilineParametersRuleExamples {
             param3: [String]
         ) { }
         """, configuration: ["max_number_of_single_line_parameters": 2]),
+        Example("""
+        foo(
+            param1: "param1",
+            param2: false,
+            param3: []
+        )
+        """, configuration: ["max_number_of_single_line_parameters": 2]),
+        Example("""
+        foo(param1: 1,
+            param2: false,
+            param3: [])
+        """, configuration: ["max_number_of_single_line_parameters": 1]),
+        Example("foo(param1: 1, param2: false)",
+                configuration: ["max_number_of_single_line_parameters": 2]),
     ]
 
     static let triggeringExamples: [Example] = [
@@ -360,6 +374,27 @@ internal struct MultilineParametersRuleExamples {
        """, configuration: ["max_number_of_single_line_parameters": 3]),
         Example("""
         func ↓foo(param1: Int, param2: Bool, param3: [String]) { }
-        """, configuration: ["max_number_of_single_line_parameters": 2]),
+        """, configuration: [
+            "max_number_of_single_line_parameters": 2,
+            "check_calls": true,
+        ]),
+        Example("↓foo(param1: 1, param2: false, param3: [])",
+                configuration: [
+                    "max_number_of_single_line_parameters": 2,
+                    "check_calls": true,
+                ]),
+        Example("""
+        func ↓foo(param1: Int,
+                  param2: Bool, param3: [String]) { }
+       """, configuration: [
+        "max_number_of_single_line_parameters": 3,
+        "check_calls": true,
+       ]),
+        Example("""
+        ↓foo(param1: Int, param2: Bool, param3: [String])
+        """, configuration: [
+            "max_number_of_single_line_parameters": 2,
+            "check_calls": true,
+        ]),
     ]
 }

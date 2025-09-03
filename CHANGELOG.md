@@ -53,9 +53,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * In `line_length` rule, treat strings with opening and closing quotes in the same line as
-  single-line strings no matter if they are enclosed by triple quotes or not.  
+  single-line strings no matter if they are enclosed by triple quotes or not. Furthermore,
+  improve detection of comment-only lines.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6220](https://github.com/realm/SwiftLint/issues/6220)
+  [#6219](https://github.com/realm/SwiftLint/issues/6219)
 
 ### Bug Fixes
 

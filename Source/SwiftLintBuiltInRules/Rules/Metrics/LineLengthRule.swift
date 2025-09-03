@@ -224,17 +224,15 @@ private final class MultilineStringLiteralVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: StringLiteralExprSyntax) {
-        guard node.openingQuote.tokenKind == .multilineStringQuote ||
-                (node.openingPounds != nil && node.openingQuote.tokenKind == .stringQuote) else {
+        guard node.openingQuote.tokenKind == .multilineStringQuote else {
             return
         }
-
         let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
         let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
-
-        for line in startLocation.line...endLocation.line {
-            linesSpanned.insert(line)
+        guard startLocation.line < endLocation.line else {
+            return
         }
+        linesSpanned.formUnion(startLocation.line...endLocation.line)
     }
 }
 

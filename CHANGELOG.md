@@ -52,6 +52,11 @@
   on top.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* In `line_length` rule, treat strings with opening and closing quotes in the same line as
+  single-line strings no matter if they are enclosed by triple quotes or not.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6220](https://github.com/realm/SwiftLint/issues/6220)
+
 ### Bug Fixes
 
 * Fix `closure_end_indentation` rule reporting violations when the called base

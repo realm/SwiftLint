@@ -23,7 +23,10 @@ struct FileLengthRule: Rule {
 private extension FileLengthRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SourceFileSyntax) {
-            let lineCount = configuration.ignoreCommentOnlyLines ? countNonCommentLines(in: node) : file.lines.count
+            let lineCount = configuration.ignoreCommentOnlyLines
+                ? CommentLinesVisitor(locationConverter: locationConverter)
+                    .walk(tree: node, handler: \.linesWithCode).count
+                : file.lines.count
 
             let severity: ViolationSeverity, upperBound: Int
             if let error = configuration.severityConfiguration.error, lineCount > error {
@@ -51,52 +54,6 @@ private extension FileLengthRule {
                 severity: severity
             )
             violations.append(violation)
-        }
-
-        private func countNonCommentLines(in node: SourceFileSyntax) -> Int {
-            var linesWithActualContent = Set<Int>()
-
-            for token in node.tokens(viewMode: .sourceAccurate) {
-                addTokenContentLines(token, to: &linesWithActualContent)
-
-                // Process leading trivia
-                addTriviaLines(token.leadingTrivia, startingAt: token.position, to: &linesWithActualContent)
-            }
-            return linesWithActualContent.count
-        }
-
-        private func addTokenContentLines(_ token: TokenSyntax, to lines: inout Set<Int>) {
-            // Skip tokens whose text is empty or only whitespace
-            // (e.g., EOF token, or an unlikely malformed token).
-            guard !token.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-
-            let startLocation = locationConverter.location(for: token.positionAfterSkippingLeadingTrivia)
-            let endLocation = locationConverter.location(for: token.endPositionBeforeTrailingTrivia)
-
-            addLinesInRange(from: startLocation.line, to: endLocation.line, to: &lines)
-        }
-
-        private func addTriviaLines(
-            _ trivia: Trivia,
-            startingAt startPosition: AbsolutePosition,
-            to lines: inout Set<Int>
-        ) {
-            var currentPosition = startPosition
-            for piece in trivia {
-                if !piece.isComment, !piece.isWhitespace {
-                    let startLocation = locationConverter.location(for: currentPosition)
-                    let endLocation = locationConverter.location(for: currentPosition + piece.sourceLength)
-                    addLinesInRange(from: startLocation.line, to: endLocation.line, to: &lines)
-                }
-                currentPosition += piece.sourceLength
-            }
-        }
-
-        private func addLinesInRange(from startLine: Int, to endLine: Int, to lines: inout Set<Int>) {
-            guard startLine > 0, startLine <= endLine else { return }
-            for line in startLine...endLine {
-                lines.insert(line)
-            }
         }
     }
 }

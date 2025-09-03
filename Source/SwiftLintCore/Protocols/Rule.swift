@@ -166,6 +166,9 @@ public extension Rule {
 /// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
 
+/// A rule that has been deprecated, and that will be removed in a future release.
+public protocol DeprecatedRule: Rule {}
+
 /// A rule that can correct violations.
 public protocol CorrectableRule: Rule {
     /// Attempts to correct the violations to this rule in the specified file.

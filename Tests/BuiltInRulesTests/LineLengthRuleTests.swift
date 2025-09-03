@@ -24,6 +24,10 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     private let multilineString = Example("let multilineString = \"\"\"\n" +
         String(repeating: "A", count: 121) + "\n" +
         "\"\"\"\n")
+    private let tripleStringSingleLine = Example("let tripleString = \"\"\""
+        + String(repeating: "A", count: 121) + "\"\"\"\n")
+    private let poundStringSingleLine = Example("let poundString = #\""
+        + String(repeating: "A", count: 121) + "\"#\n")
     private let multilineStringWithExpression = Example("let multilineString = \"\"\"\n" +
         String(repeating: "A", count: 121) + "\n\n\"\"\"; let a = 1")
     private let multilineStringWithNewlineExpression = Example("let multilineString = \"\"\"\n" +
@@ -94,7 +98,11 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     }
 
     func testLineLengthWithIgnoreMultilineStringsTrue() {
-        let triggeringLines = [multilineStringFail]
+        let triggeringLines = [
+            multilineStringFail,
+            tripleStringSingleLine,
+            poundStringSingleLine,
+        ]
         let nonTriggeringLines = [
             multilineString,
             multilineStringWithExpression,

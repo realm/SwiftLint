@@ -172,11 +172,18 @@ private extension ClosureEndIndentationRule {
 
                 return baseAnchor
             }
-
-            if let functionCall = expression.as(FunctionCallExprSyntax.self) {
-                return anchor(for: functionCall.calledExpression)
+            if let functionCallExpr = expression.as(FunctionCallExprSyntax.self) {
+                return anchor(for: functionCallExpr.calledExpression)
             }
-
+            if let subscriptExpr = expression.as(SubscriptCallExprSyntax.self) {
+                return anchor(for: subscriptExpr.calledExpression)
+            }
+            if let optionalChainingExpr = expression.as(OptionalChainingExprSyntax.self) {
+                return anchor(for: optionalChainingExpr.expression)
+            }
+            if let forceUnwrapExpr = expression.as(ForceUnwrapExprSyntax.self) {
+                return anchor(for: forceUnwrapExpr.expression)
+            }
             return expression.positionAfterSkippingLeadingTrivia
         }
 

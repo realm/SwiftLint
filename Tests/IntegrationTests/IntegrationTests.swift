@@ -1,5 +1,5 @@
 import Foundation
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import TestHelpers
 import XCTest
 

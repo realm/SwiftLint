@@ -255,7 +255,8 @@ extension Configuration {
 
             let scriptInputPaths = files.compactMap(\.path)
 
-            let excludeBy = ExcludeByStrategyFactory.createExcludeByStrategy(options: options, configuration: self)
+            let excludeByType = ExcludeByStrategyType.createExcludeByStrategy(options: options, configuration: self)
+            let excludeBy = excludeByType.strategy
             return excludeBy.filterExcludedPaths(in: scriptInputPaths)
                 .map(SwiftLintFile.init(pathDeferringReading:))
         }
@@ -270,7 +271,7 @@ extension Configuration {
             queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
         }
 
-        let excludeBy = ExcludeByStrategyFactory.createExcludeByStrategy(options: options, configuration: self)
+        let excludeBy = ExcludeByStrategyType.createExcludeByStrategy(options: options, configuration: self).strategy
 
         return options.paths.flatMap {
             self.lintableFiles(

@@ -13,7 +13,7 @@ extension Configuration {
     /// - returns: Files to lint.
     public func lintableFiles(inPath path: String,
                               forceExclude: Bool,
-                              excludeBy: any ExcludeByStrategy) -> [SwiftLintFile] {
+                              excludeBy: some ExcludeByStrategy) -> [SwiftLintFile] {
         lintablePaths(inPath: path, forceExclude: forceExclude, excludeBy: excludeBy)
             .parallelCompactMap {
                 SwiftLintFile(pathDeferringReading: $0)

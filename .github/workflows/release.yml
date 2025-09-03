@@ -119,6 +119,7 @@ jobs:
 
   build-static-linux:
     name: Build Static Linux ${{ matrix.arch }} Binary
+    needs: prepare-release
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -139,6 +140,7 @@ jobs:
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
+          ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
       - name: Install SDK
         run: swift sdk install https://download.swift.org/swift-6.1.2-release/static-sdk/swift-6.1.2-RELEASE/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b

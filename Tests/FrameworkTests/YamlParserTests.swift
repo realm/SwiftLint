@@ -1,4 +1,5 @@
 @testable import SwiftLintFramework
+import TestHelpers
 import XCTest
 
 final class YamlParserTests: SwiftLintTestCase {

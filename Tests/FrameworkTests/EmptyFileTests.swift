@@ -1,4 +1,5 @@
 import SwiftLintFramework
+import TestHelpers
 import XCTest
 
 // swiftlint:disable:next balanced_xctest_lifecycle

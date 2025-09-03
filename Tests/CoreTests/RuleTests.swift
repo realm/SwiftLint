@@ -1,23 +1,6 @@
 import SwiftLintCore
+import TestHelpers
 import XCTest
-
-struct RuleWithLevelsMock: Rule {
-    var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
-
-    static let description = RuleDescription(identifier: "severity_level_mock",
-                                             name: "",
-                                             description: "",
-                                             kind: .style,
-                                             deprecatedAliases: ["mock"])
-
-    init() { /* conformance for test */ }
-    init(configuration: Any) throws {
-        self.init()
-        try self.configuration.apply(configuration: configuration)
-    }
-
-    func validate(file _: SwiftLintFile) -> [StyleViolation] { [] }
-}
 
 final class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock1: Rule {

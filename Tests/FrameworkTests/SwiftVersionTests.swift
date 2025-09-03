@@ -1,4 +1,5 @@
 import SwiftLintFramework
+import TestHelpers
 import XCTest
 
 final class SwiftVersionTests: SwiftLintTestCase {

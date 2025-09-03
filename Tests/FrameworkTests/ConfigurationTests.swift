@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintFramework
+import TestHelpers
 import XCTest
 
 // swiftlint:disable file_length

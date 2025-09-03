@@ -114,6 +114,35 @@ swift_test(
     deps = [":BuiltInRulesTests.library"],
 )
 
+# CoreTests
+
+swift_library(
+    name = "CoreTests.library",
+    package_name = "SwiftLint",
+    testonly = True,
+    srcs = glob(
+        ["CoreTests/**/*.swift"],
+        exclude = [
+            "CoreTests/Resources/**",
+        ],
+    ),
+    copts = copts + strict_concurrency_copts,
+    module_name = "CoreTests",
+    deps = [
+        ":TestHelpers",
+    ],
+)
+
+swift_test(
+    name = "CoreTests",
+    data = glob(
+        ["CoreTests/Resources/**"],
+        allow_empty = True,
+    ),
+    visibility = ["//visibility:public"],
+    deps = [":CoreTests.library"],
+)
+
 # FrameworkTests
 
 swift_library(

@@ -1,6 +1,7 @@
 import SourceKittenFramework
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
+import TestHelpers
 import XCTest
 
 final class RuleConfigurationTests: SwiftLintTestCase {

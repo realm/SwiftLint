@@ -3,6 +3,7 @@ import Foundation
 import SourceKittenFramework
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintFramework
+import TestHelpers
 import XCTest
 
 private extension Command {

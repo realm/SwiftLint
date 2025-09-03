@@ -1,4 +1,5 @@
-import SwiftLintFramework
+import SwiftLintCore
+import TestHelpers
 import XCTest
 
 final class ExampleTests: SwiftLintTestCase {

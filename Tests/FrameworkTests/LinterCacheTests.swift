@@ -1,5 +1,6 @@
 import Foundation
 @testable import SwiftLintFramework
+import TestHelpers
 import XCTest
 
 private struct CacheTestHelper {

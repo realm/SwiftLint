@@ -17,6 +17,9 @@ final class LineLengthRuleTests: SwiftLintTestCase {
 
     private let longComment = Example(String(repeating: "/", count: 121) + "\n")
     private let longBlockComment = Example("/*" + String(repeating: " ", count: 121) + "*/\n")
+    private let longRealBlockComment = Example("/*\n" +
+        String(repeating: "a", count: 121) + "\n" +
+        "*/\n")
     private let declarationWithTrailingLongComment = Example("let foo = 1 " + String(repeating: "/", count: 121) + "\n")
     private let interpolatedString = Example("print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
     private let plainString = Example("print(\"" + String(repeating: "A", count: 121) + ")\"\n")
@@ -54,7 +57,7 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     func testLineLengthWithIgnoreCommentsEnabled() {
         let baseDescription = LineLengthRule.description
         let triggeringExamples = longFunctionDeclarations + [declarationWithTrailingLongComment]
-        let nonTriggeringExamples = [longComment, longBlockComment]
+        let nonTriggeringExamples = [longComment, longBlockComment, longRealBlockComment]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)

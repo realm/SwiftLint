@@ -53,7 +53,8 @@ private extension LineLengthRule {
 
             // Populate commentOnlyLines if ignores_comments is true
             if configuration.ignoresComments {
-                commentOnlyLines = findCommentOnlyLines(in: node, file: file, locationConverter: locationConverter)
+                let commentVisitor = CommentLinesVisitor(locationConverter: locationConverter)
+                commentOnlyLines = commentVisitor.walk(tree: node, handler: \.commentOnlyLines)
             }
 
             return .skipChildren // We'll do the main processing in visitPost
@@ -129,45 +130,6 @@ private extension LineLengthRule {
                 }
             }
             return modifiedString
-        }
-
-        private func findCommentOnlyLines(
-            in node: SourceFileSyntax,
-            file: SwiftLintFile,
-            locationConverter: SourceLocationConverter
-        ) -> Set<Int> {
-            var commentOnlyLines = Set<Int>()
-
-            // For each line, check if it contains only comments and whitespace
-            for line in file.lines {
-                let lineContent = line.content.trimmingCharacters(in: .whitespaces)
-
-                // Skip empty lines
-                if lineContent.isEmpty { continue }
-
-                // Check if line starts with comment markers
-                if lineContent.hasPrefix("//") || lineContent.hasPrefix("/*") ||
-                    (lineContent.hasPrefix("*/") && lineContent.count == 2) {
-                    // Now verify using SwiftSyntax that this line doesn't contain any tokens
-                    var hasNonCommentContent = false
-
-                    for token in node.tokens(viewMode: .sourceAccurate) {
-                        if token.tokenKind == .endOfFile { continue }
-
-                        let tokenLine = locationConverter.location(for: token.position).line
-                        if tokenLine == line.index {
-                            hasNonCommentContent = true
-                            break
-                        }
-                    }
-
-                    if !hasNonCommentContent {
-                        commentOnlyLines.insert(line.index)
-                    }
-                }
-            }
-
-            return commentOnlyLines
         }
     }
 }

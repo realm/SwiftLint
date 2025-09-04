@@ -1,4 +1,5 @@
 import SourceKittenFramework
+import TestHelpers
 import XCTest
 
 final class StringViewExtensionTests: SwiftLintTestCase {

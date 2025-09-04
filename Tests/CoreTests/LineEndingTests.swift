@@ -1,4 +1,5 @@
-@testable import SwiftLintBuiltInRules
+import SwiftLintCore
+import TestHelpers
 import XCTest
 
 final class LineEndingTests: SwiftLintTestCase {

@@ -147,6 +147,17 @@ let package = Package(
             swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
+            name: "CoreTests",
+            dependencies: [
+                "SwiftLintCore",
+                "TestHelpers",
+            ],
+            exclude: [
+                "Resources",
+            ],
+            swiftSettings: swiftFeatures + strictConcurrency
+        ),
+        .testTarget(
             name: "ExtraRulesTests",
             dependencies: [
                 "SwiftLintFramework",

@@ -1,4 +1,5 @@
 import SwiftLintFramework
+import TestHelpers
 
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable nesting identifier_name

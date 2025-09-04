@@ -1,4 +1,5 @@
 @testable import SwiftLintBuiltInRules
+import TestHelpers
 import XCTest
 
 final class ModifierOrderTests: SwiftLintTestCase {
@@ -388,7 +389,6 @@ final class ModifierOrderTests: SwiftLintTestCase {
             XCTFail("Failed to create configuration")
             return
         }
-
         let allViolations = violations(Example("final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {

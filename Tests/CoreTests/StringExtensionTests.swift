@@ -1,3 +1,4 @@
+import TestHelpers
 import XCTest
 
 final class StringExtensionTests: SwiftLintTestCase {

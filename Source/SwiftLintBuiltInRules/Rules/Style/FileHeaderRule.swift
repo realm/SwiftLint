@@ -151,6 +151,8 @@ private extension FileHeaderRule {
             )
 
             return file.stringView.substringWithByteRange(headerByteRange)
+                .map { $0 + "\n" } // Ensure there's a newline at the end since YAML will always add it to the regex
+                                   // when a `|` block is used to define the pattern.
         }
 
         private func checkForbiddenPattern(in headerContent: String, startingAt headerStart: AbsolutePosition) {

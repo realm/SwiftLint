@@ -1,7 +1,11 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 load(":generated_tests.bzl", "generated_tests")
 
-exports_files(["BUILD"])
+exports_files([
+    "BUILD",
+    "generated_tests.bzl",
+    "test_macros.bzl",
+])
 
 copts = [
     "-warnings-as-errors",

@@ -200,4 +200,71 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
         XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration).count, 1)
         XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
     }
+
+    func testSimplePattern() {
+        let description = FileHeaderRule.description
+            .with(nonTriggeringExamples: [
+                Example("""
+                    // Test
+
+                    enum Test {}
+                    """),
+                Example("""
+                    // Test
+                    """),
+                Example("""
+                    // Test
+
+                    """),
+            ])
+            .with(triggeringExamples: [])
+
+        verifyRule(
+            description,
+            ruleConfiguration: [
+                "required_pattern": #"""
+                    \/\/ Test
+
+                    """#, // The empty line at the end is important since YAML adds it as well in `|` blocks.
+            ],
+            skipCommentTests: true,
+            testMultiByteOffsets: false
+        )
+    }
+
+    func testPattern() {
+        let description = FileHeaderRule.description
+            .with(nonTriggeringExamples: [
+                Example("""
+                    //
+                    //  Test.swift
+                    //  Dummy App
+                    //
+                    //  Created by Alice Bob on 3.9.2025.
+                    //  Copyright © 2025 Dummy Corporation. All rights reserved.
+                    //
+
+                    enum Test {}
+                    """),
+            ])
+            .with(triggeringExamples: [])
+
+        verifyRule(
+            description,
+            ruleConfiguration: [
+                "required_pattern": #"""
+                    \/\/
+                    \/\/  Test\.swift
+                    \/\/  .*?
+                    \/\/
+                    \/\/  Created by .*? on \d{1,2}[\.\/]\d{1,2}[\.\/]\d{2,4}\.
+                    \/\/  Copyright © \d{4} Dummy Corporation\. All rights reserved\.
+                    \/\/
+
+                    """#, // The empty line at the end is important since YAML adds it as well in `|` blocks.
+            ],
+            skipCommentTests: true,
+            testMultiByteOffsets: false
+        )
+    }
 }

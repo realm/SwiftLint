@@ -65,6 +65,10 @@
 
 ### Bug Fixes
 
+* Ensure that header matched against always end in a newline in `file_header` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6227](https://github.com/realm/SwiftLint/issues/6227)
+
 * Fix `closure_end_indentation` rule reporting violations when the called base
   involves chained optional expressions.  
   [SimplyDanny](https://github.com/SimplyDanny)

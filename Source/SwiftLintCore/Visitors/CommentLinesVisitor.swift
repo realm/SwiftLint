@@ -5,7 +5,9 @@ public final class CommentLinesVisitor: SyntaxVisitor {
     private let locationConverter: SourceLocationConverter
 
     private var linesWithComments = Set<Int>()
-    private var linesWithCode = Set<Int>()
+
+    /// Lines that contain actual code (not comments).
+    public private(set) var linesWithCode = Set<Int>()
 
     /// Lines that contain only comments (and whitespace).
     public var commentOnlyLines: Set<Int> {

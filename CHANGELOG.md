@@ -59,6 +59,10 @@
   [#6220](https://github.com/realm/SwiftLint/issues/6220)
   [#6219](https://github.com/realm/SwiftLint/issues/6219)
 
+* Improve detection of comment-only lines in `file_length` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6219](https://github.com/realm/SwiftLint/issues/6219)
+
 ### Bug Fixes
 
 * Fix `closure_end_indentation` rule reporting violations when the called base

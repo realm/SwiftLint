@@ -13,6 +13,9 @@
   keyword, the function name/operator and its generic parameters while respecting comments.
   On top of that, it supports autocorrection.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Expose only `TestHelpers` and `ExtraRulesTests` as part of Bazel releases.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 

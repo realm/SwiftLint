@@ -9,6 +9,7 @@ load(
     "universal_swift_compiler_plugin",
 )
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:copts.bzl", "STRICT_COPTS", "TARGETED_COPTS")
 
 bool_flag(
     name = "universal_tools",
@@ -22,38 +23,12 @@ config_setting(
     },
 )
 
-copts = [
-    "-warnings-as-errors",
-    "-enable-upcoming-feature",
-    "ExistentialAny",
-    "-enable-upcoming-feature",
-    "ConciseMagicFile",
-    "-enable-upcoming-feature",
-    "ImportObjcForwardDeclarations",
-    "-enable-upcoming-feature",
-    "ForwardTrailingClosures",
-    "-enable-upcoming-feature",
-    "ImplicitOpenExistentials",
-    "-Xfrontend",
-    "-warn-implicit-overrides",
-]
-
-strict_concurrency_copts = [
-    "-Xfrontend",
-    "-strict-concurrency=complete",
-]
-
-targeted_concurrency_copts = [
-    "-Xfrontend",
-    "-strict-concurrency=targeted",
-]
-
 # Targets
 
 swift_library(
     name = "SwiftLintCoreMacrosLib",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "SwiftLintCoreMacros",
     visibility = ["//visibility:public"],
     deps = [
@@ -65,7 +40,7 @@ swift_library(
 swift_compiler_plugin(
     name = "SwiftLintCoreMacros.underlying",
     srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "SwiftLintCoreMacros",
     deps = [
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
@@ -82,7 +57,7 @@ swift_library(
     name = "SwiftLintCore",
     package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintCore/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "SwiftLintCore",
     plugins = select({
         ":universal_tools_config": [":SwiftLintCoreMacros"],
@@ -108,7 +83,6 @@ swift_library(
     name = "Yams.wrapper",
     srcs = ["Source/YamsWrapper/Empty.swift"],
     module_name = "YamsWrapper",
-    visibility = ["//visibility:private"],
     deps = [
         "@Yams",
     ],
@@ -118,7 +92,7 @@ swift_library(
     name = "SwiftLintBuiltInRules",
     package_name = "SwiftLint",
     srcs = glob(["Source/SwiftLintBuiltInRules/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "SwiftLintBuiltInRules",
     visibility = ["//visibility:public"],
     deps = [
@@ -134,7 +108,7 @@ swift_library(
         "Source/SwiftLintExtraRules/Exports.swift",
         "@swiftlint_extra_rules//:extra_rules",
     ],
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "SwiftLintExtraRules",
     visibility = ["//visibility:public"],
     deps = [
@@ -148,7 +122,7 @@ swift_library(
     srcs = glob(
         ["Source/SwiftLintFramework/**/*.swift"],
     ),
-    copts = copts + targeted_concurrency_copts,
+    copts = TARGETED_COPTS,
     module_name = "SwiftLintFramework",
     visibility = ["//visibility:public"],
     deps = [
@@ -163,7 +137,7 @@ swift_binary(
     name = "swiftlint",
     package_name = "SwiftLint",
     srcs = glob(["Source/swiftlint/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
@@ -176,7 +150,7 @@ swift_binary(
     name = "swiftlint-dev",
     package_name = "SwiftLint",
     srcs = glob(["Source/swiftlint-dev/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     visibility = ["//visibility:public"],
     deps = [
         ":SwiftLintFramework",
@@ -236,9 +210,8 @@ filegroup(
         "MODULE.bazel",
         "//:DyldWarningWorkaroundSources",
         "//:LintInputs",
-        "//Tests:BUILD",
-        "//Tests:generated_tests.bzl",
-        "//Tests:test_macros.bzl",
+        "//Tests/ExtraRulesTests:BUILD",
+        "//Tests/TestHelpers:BUILD",
         "//bazel:release_files",
     ],
 )

@@ -148,15 +148,12 @@ private extension SwiftLintDev.Rules.Register {
         #"""
         # GENERATED FILE. DO NOT EDIT!
 
+        """Generated test targets for SwiftLint rules."""
+
         load(":test_macros.bzl", "generated_test_shard")
 
-        def generated_tests(copts, strict_concurrency_copts):
-            """Creates all generated test targets for SwiftLint rules.
-
-            Args:
-                copts: Common compiler options
-                strict_concurrency_copts: Strict concurrency compiler options
-            """
+        def generated_tests():
+            """Creates all generated test targets for SwiftLint rules."""
         \#(macroInvocations)
 
         """#
@@ -216,7 +213,7 @@ private extension SwiftLintDev.Rules.Register {
 
         // Generate macro calls for each shard
         let macroInvocationsString = rulesContext.shardNumbers.map {
-            #"    generated_test_shard("\#($0)", copts, strict_concurrency_copts)"#
+            #"    generated_test_shard("\#($0)")"#
         }.joined(separator: "\n")
 
         let bzlFile = testsParentDirectory.appendingPathComponent(

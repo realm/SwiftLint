@@ -144,7 +144,7 @@ bazel_test_tsan:
 
 bazel_release: swiftlint
 	bazel build :release
-	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 bazel-bin/swiftlint .
+	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
 
 docker_image:
 	docker build --platform linux/amd64 --force-rm --tag swiftlint .

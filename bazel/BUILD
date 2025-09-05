@@ -6,6 +6,17 @@ load(
 
 # Xcode Integration
 
+TEST_TARGETS = [
+    "//Tests:BuiltInRulesTests",
+    "//Tests:CLITests",
+    "//Tests:CoreTests",
+    "//Tests:ExtraRulesTests",
+    "//Tests:FrameworkTests",
+    "//Tests:GeneratedTests",
+    "//Tests:IntegrationTests",
+    "//Tests:MacroTests",
+]
+
 xcodeproj(
     name = "xcodeproj",
     install_directory = "",
@@ -19,27 +30,10 @@ xcodeproj(
                     "--progress",
                 ],
             ),
-            test_action = xcode_schemes.test_action([
-                "//Tests:BuiltInRulesTests",
-                "//Tests:CLITests",
-                "//Tests:ExtraRulesTests",
-                "//Tests:FrameworkTests",
-                "//Tests:GeneratedTests",
-                "//Tests:IntegrationTests",
-                "//Tests:MacroTests",
-            ]),
+            test_action = xcode_schemes.test_action(TEST_TARGETS),
         ),
     ],
-    top_level_targets = [
-        "//:swiftlint",
-        "//Tests:BuiltInRulesTests",
-        "//Tests:CLITests",
-        "//Tests:ExtraRulesTests",
-        "//Tests:FrameworkTests",
-        "//Tests:GeneratedTests",
-        "//Tests:IntegrationTests",
-        "//Tests:MacroTests",
-    ],
+    top_level_targets = ["//:swiftlint"] + TEST_TARGETS,
 )
 
 # Release Files

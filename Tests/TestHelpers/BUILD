@@ -1,7 +1,11 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
 load("//bazel:copts.bzl", "STRICT_COPTS")
 
-exports_files(["BUILD"])
+filegroup(
+    name = "TestSources",
+    srcs = ["BUILD"] + glob(["*.swift"]),
+    visibility = ["//visibility:public"],
+)
 
 swift_library(
     name = "TestHelpers",

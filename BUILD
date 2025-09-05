@@ -188,11 +188,20 @@ cc_library(
 # Linting
 
 filegroup(
-    name = "LintInputs",
+    name = "SourceFiles",
     srcs = glob([
-        "Plugins/**/*.swift",
         "Source/**/*.swift",
-    ]) + [
+    ]),
+    visibility = ["//Tests:__subpackages__"],
+)
+
+filegroup(
+    name = "LintInputs",
+    srcs = glob(
+        ["Plugins/**/*.swift"],
+        allow_empty = True
+    ) + [
+        ":SourceFiles",
         ".swiftlint.yml",
         "Package.swift",
         "//Tests:TestSources",
@@ -205,13 +214,13 @@ filegroup(
 filegroup(
     name = "release_files",
     srcs = [
+        ":SourceFiles",
         "BUILD",
         "LICENSE",
         "MODULE.bazel",
         "//:DyldWarningWorkaroundSources",
-        "//:LintInputs",
-        "//Tests/ExtraRulesTests:BUILD",
-        "//Tests/TestHelpers:BUILD",
+        "//Tests/ExtraRulesTests:TestSources",
+        "//Tests/TestHelpers:TestSources",
         "//bazel:release_files",
     ],
 )

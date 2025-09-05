@@ -1,6 +1,8 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 load("//bazel:copts.bzl", "STRICT_COPTS")
 
+exports_files(["BUILD"])
+
 genrule(
     name = "ExtraRulesLinuxMain",
     outs = ["main.swift"],

@@ -1,6 +1,8 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
 load("//bazel:copts.bzl", "STRICT_COPTS")
 
+exports_files(["BUILD"])
+
 swift_library(
     name = "TestHelpers",
     package_name = "SwiftLint",

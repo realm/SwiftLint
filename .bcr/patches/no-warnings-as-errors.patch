@@ -1,11 +1,11 @@
-diff --git a/BUILD b/BUILD
-index e862723d1..40aba4d51 100644
---- a/BUILD
-+++ b/BUILD
-@@ -23,7 +23,6 @@ config_setting(
- )
+diff --git a/bazel/copts.bzl b/bazel/copts.bzl
+index 31552d693..8ba63b0c0 100644
+--- a/bazel/copts.bzl
++++ b/bazel/copts.bzl
+@@ -2,7 +2,6 @@
 
- copts = [
+ # Shared compiler options
+ COPTS = [
 -    "-warnings-as-errors",
      "-enable-upcoming-feature",
      "ExistentialAny",

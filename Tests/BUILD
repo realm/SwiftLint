@@ -1,35 +1,6 @@
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
+load("//bazel:copts.bzl", "STRICT_COPTS", "TARGETED_COPTS")
 load(":generated_tests.bzl", "generated_tests")
-
-exports_files([
-    "BUILD",
-    "generated_tests.bzl",
-    "test_macros.bzl",
-])
-
-copts = [
-    "-warnings-as-errors",
-    "-enable-upcoming-feature",
-    "ExistentialAny",
-    "-enable-upcoming-feature",
-    "ConciseMagicFile",
-    "-enable-upcoming-feature",
-    "ImportObjcForwardDeclarations",
-    "-enable-upcoming-feature",
-    "ForwardTrailingClosures",
-    "-enable-upcoming-feature",
-    "ImplicitOpenExistentials",
-]
-
-strict_concurrency_copts = [
-    "-Xfrontend",
-    "-strict-concurrency=complete",
-]
-
-targeted_concurrency_copts = [
-    "-Xfrontend",
-    "-strict-concurrency=targeted",
-]
 
 # CLITests
 
@@ -38,7 +9,7 @@ swift_library(
     package_name = "SwiftLint",
     testonly = True,
     srcs = glob(["CLITests/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "CLITests",
     deps = [
         "//:SwiftLintFramework",
@@ -47,7 +18,6 @@ swift_library(
 
 swift_test(
     name = "CLITests",
-    visibility = ["//visibility:public"],
     deps = [":CLITests.library"],
 )
 
@@ -57,7 +27,7 @@ swift_library(
     name = "MacroTests.library",
     testonly = True,
     srcs = glob(["MacroTests/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "MacroTests",
     deps = [
         "//:SwiftLintCoreMacrosLib",
@@ -67,22 +37,7 @@ swift_library(
 
 swift_test(
     name = "MacroTests",
-    visibility = ["//visibility:public"],
     deps = [":MacroTests.library"],
-)
-
-# TestHelpers
-
-swift_library(
-    name = "TestHelpers",
-    package_name = "SwiftLint",
-    testonly = True,
-    srcs = glob(["TestHelpers/**/*.swift"]),
-    copts = copts + strict_concurrency_copts,
-    module_name = "TestHelpers",
-    deps = [
-        "//:SwiftLintFramework",
-    ],
 )
 
 # BuiltInRulesTests
@@ -99,10 +54,10 @@ swift_library(
             "BuiltInRulesTests/FileNameNoSpaceRuleTests.swift",
         ],
     ),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "BuiltInRulesTests",
     deps = [
-        ":TestHelpers",
+        "//Tests/TestHelpers",
     ],
 )
 
@@ -114,7 +69,6 @@ swift_test(
         # Bazel doesn't support paths with spaces in them
         exclude = ["BuiltInRulesTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),
-    visibility = ["//visibility:public"],
     deps = [":BuiltInRulesTests.library"],
 )
 
@@ -130,10 +84,10 @@ swift_library(
             "CoreTests/Resources/**",
         ],
     ),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "CoreTests",
     deps = [
-        ":TestHelpers",
+        "//Tests/TestHelpers",
     ],
 )
 
@@ -143,7 +97,6 @@ swift_test(
         ["CoreTests/Resources/**"],
         allow_empty = True,
     ),
-    visibility = ["//visibility:public"],
     deps = [":CoreTests.library"],
 )
 
@@ -159,10 +112,10 @@ swift_library(
             "FrameworkTests/Resources/**",
         ],
     ),
-    copts = copts + strict_concurrency_copts,
+    copts = STRICT_COPTS,
     module_name = "FrameworkTests",
     deps = [
-        ":TestHelpers",
+        "//Tests/TestHelpers",
     ],
 )
 
@@ -172,13 +125,12 @@ swift_test(
         ["FrameworkTests/Resources/**"],
         allow_empty = True,
     ),
-    visibility = ["//visibility:public"],
     deps = [":FrameworkTests.library"],
 )
 
 # GeneratedTests
 
-generated_tests(copts, strict_concurrency_copts)
+generated_tests()
 
 # IntegrationTests
 
@@ -196,10 +148,10 @@ swift_library(
     package_name = "SwiftLint",
     testonly = True,
     srcs = ["IntegrationTests/IntegrationTests.swift"],
-    copts = copts + targeted_concurrency_copts,  # Set to strict once SwiftLintFramework is updated
+    copts = TARGETED_COPTS,  # Set to strict once SwiftLintFramework is updated
     module_name = "IntegrationTests",
     deps = [
-        ":TestHelpers",
+        "//Tests/TestHelpers",
     ],
 )
 
@@ -211,41 +163,4 @@ swift_test(
     ],
     visibility = ["//visibility:public"],
     deps = [":IntegrationTests.library"],
-)
-
-# ExtraRulesTests
-
-genrule(
-    name = "ExtraRulesLinuxMain",
-    outs = ["main.swift"],
-    cmd = """
-echo "import XCTest
-
-XCTMain([testCase(ExtraRulesTests.allTests)])" >> $(OUTS)
-""",
-)
-
-swift_library(
-    name = "ExtraRulesTests.library",
-    package_name = "SwiftLint",
-    testonly = True,
-    srcs = [
-        "ExtraRulesTests/ExtraRulesTests.swift",
-    ] + select({
-        "@platforms//os:linux": [":ExtraRulesLinuxMain"],
-        "//conditions:default": [],
-    }),
-    copts = copts + strict_concurrency_copts,
-    module_name = "ExtraRulesTests",
-    deps = [
-        ":TestHelpers",
-    ],
-)
-
-swift_test(
-    name = "ExtraRulesTests",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":ExtraRulesTests.library",
-    ],
 )

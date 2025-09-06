@@ -4,7 +4,18 @@
 
 ### Breaking
 
-* None.
+* The structure of `SwiftLintBinary.artifactbundle.zip` is now simpler. Internal paths no
+  longer contain version numbers, especially. So in an Xcode Run Script build phase,
+  you can refer to the `swiftlint` binary like this:
+
+  ```bash
+  SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+  SWIFTLINT_CMD="$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/macos/swiftlint"
+  ```
+  
+  All other consumers of the artifact bundle do not need to change anything. Swift Package
+  Manager resolves the new paths automatically.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 

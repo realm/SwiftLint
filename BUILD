@@ -225,7 +225,6 @@ filegroup(
     ],
 )
 
-# TODO: Use rules_pkg
 genrule(
     name = "release",
     srcs = [":release_files"],
@@ -233,17 +232,17 @@ genrule(
         "bazel.tar.gz",
         "bazel.tar.gz.sha256",
     ],
-    cmd = """\
-set -euo pipefail
+    cmd = """
+        set -euo pipefail
 
-outs=($(OUTS))
+        outs=($(OUTS))
 
-COPYFILE_DISABLE=1 tar czvfh "$${outs[0]}" \
-  --exclude ^bazel-out/ \
-  --exclude ^external/ \
-  *
-shasum -a 256 "$${outs[0]}" > "$${outs[1]}"
+        export COPYFILE_DISABLE=1
+        tar -czf "$${outs[0]}" --exclude=bazel-out --exclude=external .
+
+        "$(location @bazel_tools//tools/build_defs/hash:sha256)" $${outs[0]} $${outs[1]}
     """,
+    tools = ["@bazel_tools//tools/build_defs/hash:sha256"],
 )
 
 # Analyze

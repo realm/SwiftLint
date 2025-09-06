@@ -143,7 +143,7 @@ bazel_test_tsan:
 	bazel test --test_output=errors --build_tests_only --features=tsan --test_timeout=1000 //Tests/...
 
 bazel_release: swiftlint
-	bazel build :release
+	bazel build :release --verbose_failures
 	mv -f bazel-bin/bazel.tar.gz bazel-bin/bazel.tar.gz.sha256 .
 
 docker_image:

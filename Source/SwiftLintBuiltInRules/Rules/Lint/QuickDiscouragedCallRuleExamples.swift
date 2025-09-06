@@ -151,10 +151,9 @@ internal struct QuickDiscouragedCallRuleExamples {
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
-                   fit("does something") {
-                       let foo = Foo()
-                       foo.toto()
-                   }
+                   #if os(iOS)
+                   let foo = 1
+                   #endif
                }
            }
         }
@@ -265,7 +264,9 @@ internal struct QuickDiscouragedCallRuleExamples {
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
+                   #if os(iOS)
                    ↓foo()
+                   #endif
                }
            }
         }
@@ -289,6 +290,26 @@ internal struct QuickDiscouragedCallRuleExamples {
         }
         """),
         Example("""
+        #if os(macOS)
+        class TotoTests: QuickSpec {
+           override func spec() {
+               sharedExamples("foo") {
+                   ↓foo()
+               }
+           }
+        }
+        #endif
+        """),
+        Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               sharedExamples("foo") {
+                   bar = ↓foo()
+               }
+           }
+        }
+        """),
+        Example("""
         class TotoTests: QuickSpec {
            override func spec() {
                xdescribe("foo") {
@@ -307,7 +328,7 @@ internal struct QuickDiscouragedCallRuleExamples {
                    let foo = ↓Foo()
                }
                fcontext("foo") {
-                   let foo = ↓Foo()
+                   let foo = ↓f() + g()
                }
            }
         }
@@ -319,7 +340,7 @@ internal struct QuickDiscouragedCallRuleExamples {
                    let foo = ↓Foo()
                }
                fcontext("foo") {
-                   let foo = ↓Foo()
+                   let foo = ↓{}()
                }
            }
         }

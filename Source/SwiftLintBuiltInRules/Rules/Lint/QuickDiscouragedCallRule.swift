@@ -1,7 +1,7 @@
-import SourceKittenFramework
+import SwiftSyntax
 
-@DisabledWithoutSourceKit
-struct QuickDiscouragedCallRule: OptInRule {
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
+struct QuickDiscouragedCallRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -12,93 +12,94 @@ struct QuickDiscouragedCallRule: OptInRule {
         nonTriggeringExamples: QuickDiscouragedCallRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let dict = file.structureDictionary
-        let testClasses = dict.substructure.filter {
-            $0.inheritedTypes.isNotEmpty &&
-                $0.declarationKind == .class
+private typealias ScopeElement = (kind: QuickCallKind, blockId: SyntaxIdentifier)?
+
+private extension QuickDiscouragedCallRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var quickScope = Stack<ScopeElement>()
+
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
+            .allExcept(ClassDeclSyntax.self, FunctionDeclSyntax.self, VariableDeclSyntax.self)
         }
 
-        let specDeclarations = testClasses.flatMap { classDict in
-            classDict.substructure.filter { structure in
-                   structure.name == "spec()"
-                && structure.enclosedVarParameters.isEmpty
-                && [.functionMethodInstance, .functionMethodStatic].contains(structure.declarationKind)
-                && structure.enclosedSwiftAttributes.contains(.override)
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.inheritanceClause?.inheritedTypes.isNotEmpty == true {
+                return .visitChildren
             }
+            return .skipChildren
         }
 
-        return specDeclarations.flatMap {
-            validate(file: file, dictionary: $0)
-        }
-    }
-
-    private func validate(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        dictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            return validate(file: file, kind: kind, dictionary: subDict)
-        }
-    }
-
-    private func validate(file: SwiftLintFile,
-                          kind: SwiftExpressionKind,
-                          dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        // is it a call to a restricted method?
-        guard kind == .call,
-              let name = dictionary.name,
-              let kindName = QuickCallKind(rawValue: name),
-              QuickCallKind.restrictiveKinds.contains(kindName) else {
-            return []
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.name.text == "spec",
+               node.signature.parameterClause.parameters.isEmpty,
+               node.signature.returnClause == nil {
+                return .visitChildren
+            }
+            return .skipChildren
         }
 
-        return violationOffsets(in: dictionary.enclosedArguments).map {
-            StyleViolation(ruleDescription: Self.description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0),
-                           reason: "Discouraged call inside a '\(name)' block")
-        }
-    }
-
-    private func violationOffsets(in substructure: [SourceKittenDictionary]) -> [ByteCount] {
-        substructure.flatMap { dictionary -> [ByteCount] in
-            let substructure = dictionary.substructure.flatMap { dict -> [SourceKittenDictionary] in
-                if dict.expressionKind == .closure {
-                    return dict.substructure
+        override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+            if let calledName = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text {
+                if let kind = QuickCallKind(rawValue: calledName) {
+                    if let closure = node.trailingClosure {
+                        quickScope.push((kind, closure.statements.id))
+                        return .visitChildren
+                    }
+                    quickScope.push(nil)
+                    return .skipChildren
                 }
-                return [dict]
             }
-
-            return substructure.flatMap(toViolationOffsets)
-        }
-    }
-
-    private func toViolationOffsets(dictionary: SourceKittenDictionary) -> [ByteCount] {
-        guard dictionary.kind != nil,
-              let offset = dictionary.offset else {
-            return []
+            if let scope = quickScope.lastSuspiciousScope(node) {
+                violations.append(.violation(at: node.positionAfterSkippingLeadingTrivia, kind: scope.kind))
+                return .skipChildren
+            }
+            quickScope.push(nil)
+            return .visitChildren
         }
 
-        if dictionary.expressionKind == .call,
-           let name = dictionary.name, QuickCallKind(rawValue: name) == nil {
-            return [offset]
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            for binding in node.bindings {
+                if let scope = quickScope.lastSuspiciousScope(node),
+                   let initializer = binding.initializer,
+                   FunctionCallFinder(viewMode: .sourceAccurate).walk(tree: initializer.value, handler: \.found) {
+                    violations.append(.violation(
+                        at: initializer.value.positionAfterSkippingLeadingTrivia,
+                        kind: scope.kind
+                    ))
+                }
+            }
+            return .skipChildren
         }
 
-        guard dictionary.expressionKind != .call else {
-            return []
+        override func visit(_ node: InfixOperatorExprSyntax) -> SyntaxVisitorContinueKind {
+            guard let scope = quickScope.lastSuspiciousScope(node),
+                  node.operator.is(AssignmentExprSyntax.self),
+                  node.leftOperand.is(DeclReferenceExprSyntax.self) || node.leftOperand.is(MemberAccessExprSyntax.self),
+                  let call = node.rightOperand.as(FunctionCallExprSyntax.self) else {
+                return .visitChildren
+            }
+            violations.append(.violation(at: call.positionAfterSkippingLeadingTrivia, kind: scope.kind))
+            return .skipChildren
         }
 
-        return dictionary.substructure.compactMap(toViolationOffset)
-    }
-
-    private func toViolationOffset(dictionary: SourceKittenDictionary) -> ByteCount? {
-        guard let name = dictionary.name,
-              let offset = dictionary.offset,
-              dictionary.expressionKind == .call,
-              QuickCallKind(rawValue: name) == nil else {
-            return nil
+        override func visitPost(_: FunctionCallExprSyntax) {
+            quickScope.pop()
         }
-        return offset
+
+        override func visit(_ node: IfConfigClauseSyntax) -> SyntaxVisitorContinueKind {
+            if let elements = node.elements?.as(CodeBlockItemListSyntax.self) {
+                if let scope = quickScope.peek(), let scope {
+                    quickScope.push((kind: scope.kind, blockId: elements.id))
+                } else {
+                    quickScope.push(nil)
+                }
+                walk(elements)
+                quickScope.pop()
+            }
+            return .skipChildren
+        }
     }
 }
 
@@ -127,4 +128,31 @@ private enum QuickCallKind: String {
     static let restrictiveKinds: Set<QuickCallKind> = [
         .describe, .fdescribe, .xdescribe, .context, .fcontext, .xcontext, .sharedExamples
     ]
+}
+
+private extension Stack where Element == ScopeElement {
+    func lastSuspiciousScope(_ node: any SyntaxProtocol) -> ScopeElement {
+        if let scope = peek(), let scope,
+           QuickCallKind.restrictiveKinds.contains(scope.kind),
+           node.parent?.is(CodeBlockItemSyntax.self) == true,
+           node.parent?.parent?.id == scope.blockId {
+            return scope
+        }
+        return nil
+    }
+}
+
+private extension ReasonedRuleViolation {
+    static func violation(at position: AbsolutePosition, kind: QuickCallKind) -> Self {
+        .init(position: position, reason: "Discouraged call inside a '\(kind)' block")
+    }
+}
+
+private final class FunctionCallFinder: SyntaxVisitor {
+    private(set) var found = false
+
+    override func visit(_: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
+        found = true
+        return .skipChildren
+    }
 }

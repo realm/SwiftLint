@@ -65,6 +65,9 @@
 * Improve detection of comment-only lines in `file_length` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6219](https://github.com/realm/SwiftLint/issues/6219)
+  
+* Rewrite `quick_discouraged_call` rule with SwiftSyntax.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

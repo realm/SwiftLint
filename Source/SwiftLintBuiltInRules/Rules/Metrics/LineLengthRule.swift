@@ -147,6 +147,18 @@ private final class FunctionLineVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
+        collectLines(from: node)
+    }
+
+    override func visitPost(_ node: InitializerDeclSyntax) {
+        collectLines(from: node)
+    }
+
+    override func visitPost(_ node: SubscriptDeclSyntax) {
+        collectLines(from: node)
+    }
+
+    private func collectLines(from node: any SyntaxProtocol) {
         let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
         let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
         for line in startLocation.line...endLocation.line {

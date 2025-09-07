@@ -16,7 +16,10 @@
 
 ### Bug Fixes
 
-* None.
+* Ignore function, initializer and subscript declarations alike when the
+  `ignores_function_declarations` option is enabled in the `line_length` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6241](https://github.com/realm/SwiftLint/issues/6241)
 
 ## 0.61.0: Even Fresher Breeze
 

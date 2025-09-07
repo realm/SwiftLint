@@ -7,12 +7,35 @@ final class LineLengthRuleTests: SwiftLintTestCase {
             "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
             "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
             "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
-            "x: String, y: String, z: String) {\n"),
+            "x: String, y: String, z: String) {}\n"),
         Example("func superDuperLongFunctionDeclaration(a: String, b: String, " +
             "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
             "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
             "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
-            "x: String, y: String, z: String) {\n"),
+            "x: String, y: String, z: String) {}\n"),
+        Example("""
+            struct S {
+                public init(a: String, b: String, c: String, d: String, e: String, f: String, \
+                            g: String, h: String, i: String, j: String, k: String, l: String, \
+                            m: String, n: String, o: String, p: String, q: String, r: String, \
+                            s: String, t: String, u: String, v: String, w: String, x: String, \
+                            y: String, z: String) throws {
+                    // ...
+                }
+            }
+            """),
+        Example("""
+            struct S {
+                subscript(a: String, b: String, c: String, d: String, e: String, f: String, \
+                          g: String, h: String, i: String, j: String, k: String, l: String, \
+                          m: String, n: String, o: String, p: String, q: String, r: String, \
+                          s: String, t: String, u: String, v: String, w: String, x: String, \
+                          y: String, z: String) -> Int {
+                    // ...
+                    return 0
+                }
+            }
+            """),
     ]
 
     private let longComment = Example(String(repeating: "/", count: 121) + "\n")
@@ -50,8 +73,12 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + longFunctionDeclarations
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_function_declarations": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_function_declarations": true],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false
+        )
     }
 
     func testLineLengthWithIgnoreCommentsEnabled() {

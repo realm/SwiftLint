@@ -370,5 +370,7 @@ internal struct UnneededThrowsRuleExamples {
                 catch {}
             }
             """),
+        Example("func f() ↓throws /* comment */ {}"): Example("func f() /* comment */ {}"),
+        Example("func f() /* comment */ ↓throws /* comment */ {}"): Example("func f() /* comment */ /* comment */ {}"),
     ]
 }

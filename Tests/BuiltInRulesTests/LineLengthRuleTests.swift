@@ -2,6 +2,8 @@
 import TestHelpers
 
 final class LineLengthRuleTests: SwiftLintTestCase {
+    private static let longString = String(repeating: "a", count: 121)
+
     private let longFunctionDeclarations = [
         Example("""
             public func superDuperLongFunctionDeclaration(a: String, b: String, \
@@ -48,45 +50,45 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     private let longBlockComment = Example("/*" + String(repeating: " ", count: 121) + "*/\n")
     private let longRealBlockComment = Example("""
         /*
-        \(String(repeating: "a", count: 121))
+        \(LineLengthRuleTests.longString)
         */
 
         """)
     private let declarationWithTrailingLongComment = Example("let foo = 1 " + String(repeating: "/", count: 121) + "\n")
     private let interpolatedString = Example("print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
-    private let plainString = Example("print(\"" + String(repeating: "A", count: 121) + ")\"\n")
+    private let plainString = Example("print(\"" + LineLengthRuleTests.longString + ")\"\n")
 
     private let multilineString = Example("""
         let multilineString = \"\"\"
-        \(String(repeating: "A", count: 121))
+        \(LineLengthRuleTests.longString)
         \"\"\"
 
         """)
-    private let tripleStringSingleLine = Example("let tripleString = \"\"\""
-        + String(repeating: "A", count: 121) + "\"\"\"\n")
-    private let poundStringSingleLine = Example("let poundString = #\""
-        + String(repeating: "A", count: 121) + "\"#\n")
+    private let tripleStringSingleLine = Example(
+        "let tripleString = \"\"\"" + LineLengthRuleTests.longString + "\"\"\"\n"
+    )
+    private let poundStringSingleLine = Example("let poundString = #\"" + LineLengthRuleTests.longString + "\"#\n")
     private let multilineStringWithExpression = Example("""
         let multilineString = \"\"\"
-        \(String(repeating: "A", count: 121))
+        \(LineLengthRuleTests.longString)
 
         \"\"\"; let a = 1
         """)
     private let multilineStringWithNewlineExpression = Example("""
         let multilineString = \"\"\"
-        \(String(repeating: "A", count: 121))
+        \(LineLengthRuleTests.longString)
 
         \"\"\"
         ; let a = 1
         """)
     private let multilineStringFail = Example("""
         let multilineString = "A" +
-        "\(String(repeating: "A", count: 121))"
+        "\(LineLengthRuleTests.longString)"
 
         """)
     private let multilineStringWithFunction = Example("""
         let multilineString = \"\"\"
-        \(String(repeating: "A", count: 121))
+        \(LineLengthRuleTests.longString)
         \"\"\".functionCall()
         """)
 

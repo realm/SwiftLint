@@ -339,13 +339,13 @@ following way:
 
 ```bash
 SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
-SWIFTLINT_CMD=$(ls "$SWIFT_PACKAGE_DIR"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*-macos/bin/swiftlint | head -n 1)
+SWIFTLINT_CMD="$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/macos/swiftlint"
 
 if test -f "$SWIFTLINT_CMD" 2>&1
 then
     "$SWIFTLINT_CMD"
 else
-    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions."
+    echo "warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#xcode-run-script-build-phase for installation instructions."
 fi
 ```
 

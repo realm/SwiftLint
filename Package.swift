@@ -14,14 +14,6 @@ let swiftFeatures: [SwiftSetting] = [
 let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=complete")]
 let targetedConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=targeted")]
 
-let swiftLintPluginDependencies: [Target.Dependency]
-
-#if os(macOS)
-swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
-#else
-swiftLintPluginDependencies = [.target(name: "swiftlint")]
-#endif
-
 let package = Package(
     name: "SwiftLint",
     platforms: [.macOS(.v13)],
@@ -72,7 +64,7 @@ let package = Package(
         .plugin(
             name: "SwiftLintBuildToolPlugin",
             capability: .buildTool(),
-            dependencies: swiftLintPluginDependencies,
+            dependencies: [.target(name: "SwiftLintBinary")],
             packageAccess: false
         ),
         .plugin(
@@ -85,7 +77,7 @@ let package = Package(
                     ),
                 ]
             ),
-            dependencies: swiftLintPluginDependencies,
+            dependencies: [.target(name: "SwiftLintBinary")],
             packageAccess: false
         ),
         .target(
@@ -212,15 +204,10 @@ let package = Package(
             path: "Tests/TestHelpers",
             swiftSettings: swiftFeatures + strictConcurrency
         ),
+        .binaryTarget(
+            name: "SwiftLintBinary",
+            url: "https://github.com/realm/SwiftLint/releases/download/0.61.0/SwiftLintBinary.artifactbundle.zip",
+            checksum: "b765105fa5c5083fbcd35260f037b9f0d70e33992d0a41ba26f5f78a17dc65e7"
+        ),
     ]
 )
-
-#if os(macOS)
-package.targets.append(
-    .binaryTarget(
-        name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.61.0/SwiftLintBinary.artifactbundle.zip",
-        checksum: "b765105fa5c5083fbcd35260f037b9f0d70e33992d0a41ba26f5f78a17dc65e7"
-    )
-)
-#endif

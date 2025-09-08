@@ -65,9 +65,9 @@ final class LineLengthRuleTests: SwiftLintTestCase {
 
         """)
     private let tripleStringSingleLine = Example(
-        "let tripleString = \"\"\"" + LineLengthRuleTests.longString + "\"\"\"\n"
+        "let tripleString = \"\"\"\(LineLengthRuleTests.longString)\"\"\"\n"
     )
-    private let poundStringSingleLine = Example("let poundString = #\"" + LineLengthRuleTests.longString + "\"#\n")
+    private let poundStringSingleLine = Example("let poundString = #\"\(LineLengthRuleTests.longString)\"#\n")
     private let multilineStringWithExpression = Example("""
         let multilineString = \"\"\"
         \(LineLengthRuleTests.longString)

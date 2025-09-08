@@ -149,8 +149,9 @@ private extension UnneededThrowsRule {
                     position: throwsClause.positionAfterSkippingLeadingTrivia,
                     reason: "Superfluous 'throws'; " + reason,
                     correction: ReasonedRuleViolation.ViolationCorrection(
-                        start: throwsClause.positionAfterSkippingLeadingTrivia,
-                        end: throwsClause.endPosition,
+                        // Move start position back by 1 to include the space before the throwsClause
+                        start: throwsClause.positionAfterSkippingLeadingTrivia.advanced(by: -1),
+                        end: throwsClause.endPositionBeforeTrailingTrivia,
                         replacement: ""
                     )
                 )

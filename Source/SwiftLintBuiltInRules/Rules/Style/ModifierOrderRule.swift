@@ -1,8 +1,8 @@
-import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
-@DisabledWithoutSourceKit
-struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct ModifierOrderRule: Rule {
     var configuration = ModifierOrderConfiguration()
 
     static let description = RuleDescription(
@@ -13,162 +13,179 @@ struct ModifierOrderRule: ASTRule, OptInRule, CorrectableRule {
         nonTriggeringExamples: ModifierOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: ModifierOrderRuleExamples.triggeringExamples
     )
+}
 
-    func validate(file: SwiftLintFile,
-                  kind _: SwiftDeclarationKind,
-                  dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        guard let offset = dictionary.offset else {
-            return []
-        }
-
-        let violatingModifiers = self.violatingModifiers(dictionary: dictionary)
-
-        if let first = violatingModifiers.first {
-            let preferredModifier = first.0
-            let declaredModifier = first.1
-            let reason = "\(preferredModifier.keyword) modifier should come before \(declaredModifier.keyword)"
-            return [
-                StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: reason
-                ),
-            ]
-        }
-        return []
-    }
-
-    func correct(file: SwiftLintFile) -> Int {
-        file.structureDictionary.traverseDepthFirst { subDict in
-            guard subDict.declarationKind != nil else {
-                return [0]
-            }
-            return [correct(file: file, dictionary: subDict)]
-        }.reduce(0, +)
-    }
-    private func correct(file: SwiftLintFile, dictionary: SourceKittenDictionary) -> Int {
-        guard dictionary.offset != nil else {
-            return 0
-        }
-        let originalContents = file.stringView
-        let violatingRanges = violatingModifiers(dictionary: dictionary)
-            .compactMap { preferred, declared -> (NSRange, NSRange)? in
-                guard
-                    let preferredRange = originalContents.byteRangeToNSRange(
-                        preferred.range
-                    ).flatMap({ file.ruleEnabled(violatingRange: $0, for: self) }),
-                    let declaredRange = originalContents.byteRangeToNSRange(
-                        declared.range
-                    ).flatMap({ file.ruleEnabled(violatingRange: $0, for: self) })
-                else {
-                    return nil
-                }
-                return (preferredRange, declaredRange)
-            }
-        if violatingRanges.isEmpty {
-            return 0
-        }
-        var correctedContents = originalContents.nsString
-        violatingRanges.reversed().forEach { arg in
-            let (preferredModifierRange, declaredModifierRange) = arg
-            correctedContents = correctedContents.replacingCharacters(
-                in: declaredModifierRange,
-                with: originalContents.substring(with: preferredModifierRange)
-            ).bridge()
-        }
-        file.write(correctedContents.bridge())
-        return violatingRanges.count
-    }
-
-    private func violatableModifiers(declaredModifiers: [ModifierDescription]) -> [ModifierDescription] {
-        let preferredModifierGroups = ([.atPrefixed] + configuration.preferredModifierOrder)
-        return declaredModifiers.filter { preferredModifierGroups.contains($0.group) }
-    }
-
-    private func prioritizedModifiers(
-        violatableModifiers: [ModifierDescription]
-    ) -> [(priority: Int, modifier: ModifierDescription)] {
-        let prioritizedPreferredModifierGroups = ([.atPrefixed] + configuration.preferredModifierOrder).enumerated()
-        return violatableModifiers.reduce(
-            into: [(priority: Int, modifier: ModifierDescription)]()
-        ) { prioritizedModifiers, modifier in
-            guard let priority = prioritizedPreferredModifierGroups.first(
-                where: { _, group in modifier.group == group }
-            )?.offset else {
+private extension ModifierOrderRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: DeclModifierListSyntax) {
+            guard let parent = node.parent else {
                 return
             }
-            prioritizedModifiers.append((priority: priority, modifier: modifier))
+
+            let introducer: TokenSyntax? = parent.asProtocol((any DeclGroupSyntax).self)?.introducer
+                ?? parent.as(FunctionDeclSyntax.self)?.funcKeyword
+                ?? parent.as(InitializerDeclSyntax.self)?.initKeyword
+                ?? parent.as(SubscriptDeclSyntax.self)?.subscriptKeyword
+                ?? parent.as(VariableDeclSyntax.self)?.bindingSpecifier
+
+            guard let introducer else {
+                return
+            }
+
+            let violatingModifiers = violatingModifiers(
+                node.modifierDescriptions,
+                preferredModifierOrder: configuration.preferredModifierOrder
+            )
+            if let (preferredModifier, declaredModifier) = violatingModifiers.first {
+                violations.append(.init(
+                    position: introducer.positionAfterSkippingLeadingTrivia,
+                    reason: "\(preferredModifier.keyword) modifier should come before \(declaredModifier.keyword)"
+                ))
+            }
         }
     }
 
-    private func violatingModifiers(
-        dictionary: SourceKittenDictionary
-    ) -> [(preferredModifier: ModifierDescription, declaredModifier: ModifierDescription)] {
-        let violatableModifiers = self.violatableModifiers(declaredModifiers: dictionary.modifierDescriptions)
-        let prioritizedModifiers = self.prioritizedModifiers(violatableModifiers: violatableModifiers)
-        let sortedByPriorityModifiers = prioritizedModifiers
-            .sorted { $0.priority < $1.priority }
-            .map(\.modifier)
-
-        return zip(sortedByPriorityModifiers, violatableModifiers).filter { $0 != $1 }
+    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
+        override func visit(_ node: DeclModifierListSyntax) -> DeclModifierListSyntax {
+            let orderedModifiers = node.modifierDescriptions
+                .sorted { first, second in
+                    let firstIndex = configuration.preferredModifierOrder.firstIndex(of: first.group)
+                    let secondIndex = configuration.preferredModifierOrder.firstIndex(of: second.group)
+                    if let firstIndex, let secondIndex {
+                        return firstIndex < secondIndex
+                    }
+                    return true
+                }
+                .map { $0.modifier.with(\.leadingTrivia, []).with(\.trailingTrivia, .space) }
+            let newNode = DeclModifierListSyntax(orderedModifiers)
+                .with(\.leadingTrivia, node.leadingTrivia)
+                .with(\.trailingTrivia, node.trailingTrivia)
+            return super.visit(newNode)
+        }
     }
 }
 
-private extension SourceKittenDictionary {
-    var modifierDescriptions: [ModifierDescription] {
-        let staticKinds = [SwiftDeclarationKind.functionMethodClass, .functionMethodStatic, .varClass, .varStatic]
-        let staticKindsAndOffsets = kindsAndOffsets(in: staticKinds).map { [$0] } ?? []
-        return (swiftAttributes + staticKindsAndOffsets)
-            .sorted {
-                guard let rhsOffset = $0.offset, let lhsOffset = $1.offset else {
-                    return false
-                }
-                return rhsOffset < lhsOffset
-            }
-            .compactMap {
-                guard let offset = $0.offset else { return nil }
-                if let attribute = $0.attribute,
-                   let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawAttribute: attribute),
-                   let length = $0.length {
-                    return ModifierDescription(
-                        keyword: attribute.lastComponentAfter("."),
-                        group: modifierGroup,
-                        offset: offset,
-                        length: length
-                    )
-                }
-                if let kind = $0.kind {
-                    let keyword = kind.lastComponentAfter(".")
-                    return ModifierDescription(
-                        keyword: keyword,
-                        group: .typeMethods,
-                        offset: offset,
-                        length: ByteCount(keyword.lengthOfBytes(using: .utf8))
-                    )
-                }
-                return nil
-            }
-    }
+private func violatableModifiers(
+    _ declaredModifiers: [ModifierDescription],
+    preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup]
+) -> [ModifierDescription] {
+    let preferredModifierGroups = [.atPrefixed] + preferredModifierOrder
+    return declaredModifiers.filter { preferredModifierGroups.contains($0.group) }
+}
 
-    private func kindsAndOffsets(in declarationKinds: [SwiftDeclarationKind]) -> SourceKittenDictionary? {
-        guard let offset, let declarationKind, declarationKinds.contains(declarationKind) else {
+private func prioritizedModifiers(
+    violatableModifiers: [ModifierDescription],
+    preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup]
+) -> [(priority: Int, modifier: ModifierDescription)] {
+    let prioritizedPreferredModifierGroups = ([.atPrefixed] + preferredModifierOrder).enumerated()
+    return violatableModifiers.reduce(
+        into: [(priority: Int, modifier: ModifierDescription)]()
+    ) { prioritizedModifiers, modifier in
+        guard let priority = prioritizedPreferredModifierGroups.first(
+            where: { _, group in modifier.group == group }
+        )?.offset else {
+            return
+        }
+        prioritizedModifiers.append((priority: priority, modifier: modifier))
+    }
+}
+
+private func violatingModifiers(
+    _ declaredModifiers: [ModifierDescription],
+    preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup]
+) -> [(preferredModifier: ModifierDescription, declaredModifier: ModifierDescription)] {
+    let violatableModifiers = violatableModifiers(declaredModifiers, preferredModifierOrder: preferredModifierOrder)
+    let prioritizedModifiers = prioritizedModifiers(violatableModifiers: violatableModifiers, preferredModifierOrder: preferredModifierOrder)
+    let sortedByPriorityModifiers = prioritizedModifiers
+        .sorted { $0.priority < $1.priority }
+        .map(\.modifier)
+
+    return zip(sortedByPriorityModifiers, violatableModifiers).filter { $0 != $1 }
+}
+
+private extension DeclModifierListSyntax {
+    var modifierDescriptions: [ModifierDescription] {
+        var descriptions: [ModifierDescription] = []
+
+        for modifier in self {
+            let keyword = modifier.name.text
+            let position = modifier.positionAfterSkippingLeadingTrivia
+
+            // Handle setter access modifiers like `private(set)``.
+            if let detail = modifier.detail?.detail.tokenKind,
+               case .identifier(let detailText) = detail,
+               detailText == "set" {
+                guard let group = SwiftDeclarationAttributeKind.ModifierGroup(setterModifierKeyword: keyword) else {
+                    continue
+                }
+                descriptions.append(.init(
+                    keyword: "\(keyword)(set)",
+                    modifier: modifier,
+                    group: group,
+                    position: position
+                ))
+                continue
+            }
+
+            // Handle regular modifiers.
+            guard let group = SwiftDeclarationAttributeKind.ModifierGroup(modifierKeyword: keyword) else {
+                continue
+            }
+
+            descriptions.append(.init(
+                keyword: keyword,
+                modifier: modifier,
+                group: group,
+                position: position
+            ))
+        }
+
+        return descriptions
+    }
+}
+
+private extension SwiftDeclarationAttributeKind.ModifierGroup {
+    init?(modifierKeyword: String) { // swiftlint:disable:this cyclomatic_complexity
+        switch modifierKeyword {
+        case "override":
+            self = .override
+        case "weak":
+            self = .owned
+        case "final":
+            self = .final
+        case "required":
+            self = .required
+        case "convenience":
+            self = .convenience
+        case "lazy":
+            self = .lazy
+        case "dynamic":
+            self = .dynamic
+        case "private", "fileprivate", "internal", "public", "open":
+            self = .acl
+        case "mutating", "nonmutating":
+            self = .mutators
+        case "static", "class":
+            self = .typeMethods
+        case _ where modifierKeyword.hasPrefix("@"):
+            self = .atPrefixed
+        default:
             return nil
         }
-        return SourceKittenDictionary(["key.kind": declarationKind.rawValue, "key.offset": Int64(offset.value)])
     }
-}
 
-private extension String {
-    func lastComponentAfter(_ character: String) -> String {
-        components(separatedBy: character).last ?? ""
+    init?(setterModifierKeyword: String) {
+        if ["private", "fileprivate", "internal", "public", "open"].contains(setterModifierKeyword) {
+            self = .setterACL
+        } else {
+            return nil
+        }
     }
 }
 
 private struct ModifierDescription: Equatable {
     let keyword: String
+    let modifier: DeclModifierSyntax
     let group: SwiftDeclarationAttributeKind.ModifierGroup
-    let offset: ByteCount
-    let length: ByteCount
-    var range: ByteRange { ByteRange(location: offset, length: length) }
+    let position: AbsolutePosition
 }

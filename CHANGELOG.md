@@ -28,7 +28,10 @@
 
 ### Enhancements
 
-* None.
+* Rewrite the following rules with SwiftSyntax:
+  * `modifier_order`
+  <!-- Keep empty line to have the contributors on a separate line. -->
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

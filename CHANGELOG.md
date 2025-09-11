@@ -86,6 +86,12 @@
   rule. You can still refer to it by its identifier, but get checking for normal function names
   on top.  
   [SimplyDanny](https://github.com/SimplyDanny)
+* `multiline_parameters`: add optional checks for **function call arguments**.
+  When `check_calls` is enabled, the rule enforces that call arguments are either
+  all on one line (subject to `max_number_of_single_line_parameters`) or
+  one per line, mirroring the behavior for function/initializer declarations.
+  Trailing closures are ignored by default.
+  [GandaLF2006](https://github.com/GandaLF2006)
 
 * In `line_length` rule, treat strings with opening and closing quotes in the same line as
   single-line strings no matter if they are enclosed by triple quotes or not. Furthermore,

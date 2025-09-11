@@ -45,7 +45,7 @@ private extension UnneededThrowsRule {
             if let closedScope = scopes.closeScope() {
                 validate(
                     scope: closedScope,
-                    reason: "initializer does not throw any error"
+                    construct: "initializer"
                 )
             }
         }
@@ -59,7 +59,7 @@ private extension UnneededThrowsRule {
             if let closedScope = scopes.closeScope() {
                 validate(
                     scope: closedScope,
-                    reason: "accessor does not throw any error"
+                    construct: "accessor"
                 )
             }
         }
@@ -73,7 +73,7 @@ private extension UnneededThrowsRule {
             if let closedScope = scopes.closeScope() {
                 validate(
                     scope: closedScope,
-                    reason: "body of this function does not throw any error"
+                    construct: "body of this function"
                 )
             }
         }
@@ -89,7 +89,7 @@ private extension UnneededThrowsRule {
             if let closedScope = scopes.closeScope() {
                 validate(
                     scope: closedScope,
-                    reason: "closure type does not throw any error"
+                    construct: "closure type"
                 )
             }
         }
@@ -142,12 +142,12 @@ private extension UnneededThrowsRule {
             scopes.markCurrentScopeAsThrowing()
         }
 
-        private func validate(scope: Scope, reason: String) {
+        private func validate(scope: Scope, construct: String) {
             guard let throwsClause = scope.throwsClause else { return }
             violations.append(
                 ReasonedRuleViolation(
                     position: throwsClause.positionAfterSkippingLeadingTrivia,
-                    reason: "Superfluous 'throws'; " + reason,
+                    reason: "Superfluous 'throws'; \(construct) does not throw any error",
                     correction: ReasonedRuleViolation.ViolationCorrection(
                         // Move start position back by 1 to include the space before the throwsClause
                         start: throwsClause.positionAfterSkippingLeadingTrivia.advanced(by: -1),

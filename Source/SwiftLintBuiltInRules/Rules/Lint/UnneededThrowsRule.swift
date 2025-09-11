@@ -205,9 +205,12 @@ private extension TypeSyntax {
         case .attributedType(let attributed):
             attributed.baseType.baseFunctionTypeSyntax
         case .tupleType(let tuple):
-            tuple.elements
-                .compactMap { $0.type.baseFunctionTypeSyntax }
-                .first
+            // It's hard to check for the necessity of throws keyword in multi-element tuples
+            if tuple.elements.count == 1 {
+                tuple.elements.first?.type.baseFunctionTypeSyntax
+            } else {
+                nil
+            }
         default:
             nil
         }

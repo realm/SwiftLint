@@ -147,12 +147,16 @@ internal struct UnneededThrowsRuleExamples {
         }
         """),
         Example("let s: S<() throws -> Void> = S()"),
+        Example("let foo: (() throws -> Void, Int) = ({}, 1)"),
+        Example("let foo: (Int, () throws -> Void) = (1, {})"),
+        Example("let foo: (Int, Int, () throws -> Void) = (1, 1, {})"),
     ]
 
     static let triggeringExamples = [
         Example("func foo() ↓throws {}"),
         Example("let foo: () ↓throws -> Void = {}"),
         Example("let foo: (() ↓throws -> Void)? = {}"),
+        Example("let foo: @Sendable () ↓throws -> Void = {}"),
         Example("func foo(bar: () throws -> Void) ↓rethrows {}"),
         Example("init() ↓throws {}"),
         Example("""

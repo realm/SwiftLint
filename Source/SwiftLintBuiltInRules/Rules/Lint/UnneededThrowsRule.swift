@@ -85,12 +85,14 @@ private extension UnneededThrowsRule {
             return .visitChildren
         }
 
-        override func visitPost(_: FunctionTypeSyntax) {
-            if let closedScope = scopes.closeScope() {
-                validate(
-                    scope: closedScope,
-                    construct: "closure type"
-                )
+        override func visitPost(_ node: PatternBindingSyntax) {
+            if node.containsInitializerClause, node.functionTypeSyntax != nil {
+                if let closedScope = scopes.closeScope() {
+                    validate(
+                        scope: closedScope,
+                        construct: "closure type"
+                    )
+                }
             }
         }
 

@@ -132,8 +132,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         let customRules = [customRuleIdentifier: ["name": "A name for this custom rule", "regex": "this is illegal"]]
 
         let config = try Configuration(dict: ["only_rules": only, "custom_rules": customRules])
-        guard let resultingCustomRules = config.rules.customRules
-        else {
+        guard let resultingCustomRules = config.rules.customRules else {
             XCTFail("Custom rules are expected to be present")
             return
         }
@@ -154,14 +153,14 @@ final class ConfigurationTests: SwiftLintTestCase {
             customRuleIdentifier2: ["name": "Another custom rule", "regex": "this is also illegal"],
         ]
 
-        let config = try Configuration(
+        let configuration = try Configuration(
             dict: [
                 "only_rules": only,
                 "custom_rules": customRules,
             ],
             onlyRule: [customRuleIdentifier]
         )
-        let resultingCustomRules = config.rules.customRules
+        let resultingCustomRules = configuration.rules.customRules
         XCTAssertNotNil(resultingCustomRules)
 
         let enabledCustomRuleIdentifiers =

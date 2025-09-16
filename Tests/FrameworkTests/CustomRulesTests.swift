@@ -708,7 +708,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "custom_rules": customRules,
         ])
 
-        guard let customRule = configuration.rules.first(where: { $0 is CustomRules }) as? CustomRules else {
+        guard let customRule = configuration.rules.customRules else {
             XCTFail("Expected CustomRules in configuration")
             return
         }
@@ -764,7 +764,7 @@ final class CustomRulesTests: SwiftLintTestCase {
             "custom_rules": customRules,
         ])
 
-        guard let customRule = configuration.rules.first(where: { $0 is CustomRules }) as? CustomRules else {
+        guard let customRule = configuration.rules.customRules else {
             XCTFail("Expected CustomRules in configuration")
             return
         }

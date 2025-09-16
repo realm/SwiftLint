@@ -132,7 +132,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         let customRules = [customRuleIdentifier: ["name": "A name for this custom rule", "regex": "this is illegal"]]
 
         let config = try Configuration(dict: ["only_rules": only, "custom_rules": customRules])
-        guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        guard let resultingCustomRules = config.rules.customRules
         else {
             XCTFail("Custom rules are expected to be present")
             return
@@ -161,13 +161,11 @@ final class ConfigurationTests: SwiftLintTestCase {
             ],
             onlyRule: [customRuleIdentifier]
         )
-        guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
-        else {
-            XCTFail("Custom rules are expected to be present")
-            return
-        }
+        let resultingCustomRules = config.rules.customRules
+        XCTAssertNotNil(resultingCustomRules)
+
         let enabledCustomRuleIdentifiers =
-            resultingCustomRules.configuration.customRuleConfigurations.map { rule in
+            resultingCustomRules?.configuration.customRuleConfigurations.map { rule in
                 rule.identifier
             }
         XCTAssertEqual(enabledCustomRuleIdentifiers, [customRuleIdentifier])
@@ -632,6 +630,12 @@ extension ConfigurationTests {
 
         XCTAssertEqual(configuration1.cachePath, "cache/path/1")
         XCTAssertEqual(configuration2.cachePath, "cache/path/1")
+    }
+}
+
+extension [any Rule] {
+    var customRules: CustomRules? {
+        first(where: { $0 is CustomRules }) as? CustomRules
     }
 }
 

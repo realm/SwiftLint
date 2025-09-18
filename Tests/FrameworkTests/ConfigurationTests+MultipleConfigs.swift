@@ -102,7 +102,7 @@ extension ConfigurationTests {
             withChild: Mock.Config._2CustomRules,
             rootDirectory: ""
         )
-        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
             XCTFail("Custom rules are expected to be present")
             return
@@ -120,7 +120,7 @@ extension ConfigurationTests {
             withChild: Mock.Config._2CustomRulesDisabled,
             rootDirectory: ""
         )
-        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
             XCTFail("Custom rules are expected to be present")
             return
@@ -141,7 +141,7 @@ extension ConfigurationTests {
             withChild: Mock.Config._2CustomRules,
             rootDirectory: ""
         )
-        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
             XCTFail("Custom rules are expected to be present")
             return
@@ -163,7 +163,7 @@ extension ConfigurationTests {
             withChild: Mock.Config._2CustomRulesOnly,
             rootDirectory: ""
         )
-        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
             XCTFail("Custom rules are expected to be present")
             return
@@ -182,7 +182,7 @@ extension ConfigurationTests {
             withChild: Mock.Config._2CustomRulesReconfig,
             rootDirectory: ""
         )
-        guard let mergedCustomRules = mergedConfiguration.rules.first(where: { $0 is CustomRules }) as? CustomRules
+        guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
             XCTFail("Custom rules are expected to be present")
             return

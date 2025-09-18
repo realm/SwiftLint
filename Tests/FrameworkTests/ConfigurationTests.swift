@@ -8,6 +8,7 @@ import XCTest
 
 private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map(\.0)
 
+// swiftlint:disable:next type_body_length
 final class ConfigurationTests: SwiftLintTestCase {
     // MARK: Setup & Teardown
     private var previousWorkingDir: String! // swiftlint:disable:this implicitly_unwrapped_optional
@@ -131,8 +132,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         let customRules = [customRuleIdentifier: ["name": "A name for this custom rule", "regex": "this is illegal"]]
 
         let config = try Configuration(dict: ["only_rules": only, "custom_rules": customRules])
-        guard let resultingCustomRules = config.rules.first(where: { $0 is CustomRules }) as? CustomRules
-        else {
+        guard let resultingCustomRules = config.rules.customRules else {
             XCTFail("Custom rules are expected to be present")
             return
         }
@@ -141,6 +141,33 @@ final class ConfigurationTests: SwiftLintTestCase {
                 $0.identifier == customRuleIdentifier
             }
         )
+    }
+
+    func testOnlyRulesWithSpecificCustomRules() throws {
+        // Individual custom rules can be specified on the command line without specifying `custom_rules` as well.
+        let customRuleIdentifier = "my_custom_rule"
+        let customRuleIdentifier2 = "my_custom_rule2"
+        let only = ["custom_rules"]
+        let customRules = [
+            customRuleIdentifier: ["name": "A custom rule", "regex": "this is illegal"],
+            customRuleIdentifier2: ["name": "Another custom rule", "regex": "this is also illegal"],
+        ]
+
+        let configuration = try Configuration(
+            dict: [
+                "only_rules": only,
+                "custom_rules": customRules,
+            ],
+            onlyRule: [customRuleIdentifier]
+        )
+        let resultingCustomRules = configuration.rules.customRules
+        XCTAssertNotNil(resultingCustomRules)
+
+        let enabledCustomRuleIdentifiers =
+            resultingCustomRules?.configuration.customRuleConfigurations.map { rule in
+                rule.identifier
+            }
+        XCTAssertEqual(enabledCustomRuleIdentifiers, [customRuleIdentifier])
     }
 
     func testWarningThreshold_value() throws {
@@ -602,6 +629,12 @@ extension ConfigurationTests {
 
         XCTAssertEqual(configuration1.cachePath, "cache/path/1")
         XCTAssertEqual(configuration2.cachePath, "cache/path/1")
+    }
+}
+
+extension [any Rule] {
+    var customRules: CustomRules? {
+        first(where: { $0 is CustomRules }) as? CustomRules
     }
 }
 

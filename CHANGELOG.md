@@ -32,6 +32,14 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6241](https://github.com/realm/SwiftLint/issues/6241)
 
+* Individual `custom_rules` can now be specified in the `only_rule` configuration
+  setting and the `--only-rule` command line option without having to specify
+  `custom_rules` as well. Additionally, violations of custom rules are now reported
+  in a deterministic order, sorted by the rule's identifier.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#6029](https://github.com/realm/SwiftLint/issues/6029)
+  [#6058](https://github.com/realm/SwiftLint/issues/6058)
+
 ## 0.61.0: Even Fresher Breeze
 
 ### Breaking

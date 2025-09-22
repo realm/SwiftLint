@@ -9,6 +9,10 @@ struct ContainsOverRangeNilComparisonRule: Rule {
         name: "Contains over Range Comparison to Nil",
         description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`",
         kind: .performance,
+        rationale: """
+        `filter` always needs to scan the entire collection, whereas `contains` can exit early as 
+        soon as a match is found.
+        """,
         nonTriggeringExamples: [
             Example("let range = myString.range(of: \"Test\")"),
             Example("myString.contains(\"Test\")"),

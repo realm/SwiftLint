@@ -8,6 +8,10 @@ struct ContainsOverFilterIsEmptyRule: Rule {
         identifier: "contains_over_filter_is_empty",
         name: "Contains over Filter is Empty",
         description: "Prefer `contains` over using `filter(where:).isEmpty`",
+        rationale: """
+        `filter` always needs to scan the entire collection, whereas `contains` can exit early as 
+        soon as a match is found.
+        """,
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             [

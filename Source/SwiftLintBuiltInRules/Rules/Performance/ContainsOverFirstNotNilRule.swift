@@ -8,6 +8,10 @@ struct ContainsOverFirstNotNilRule: Rule {
         identifier: "contains_over_first_not_nil",
         name: "Contains over First not Nil",
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
+        rationale: """
+        `filter` always needs to scan the entire collection, whereas `contains` can exit early as 
+        soon as a match is found.
+        """,
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in
             [

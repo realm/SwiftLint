@@ -36,6 +36,8 @@ jobs:
             version: '6.0'
           - image: swift:6.1-noble
             version: '6.1'
+          - image: swift:6.2-noble
+            version: '6.2'
     container: ${{ matrix.image }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0

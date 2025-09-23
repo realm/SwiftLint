@@ -13,16 +13,16 @@ env:
 
 jobs:
   spm_linux:
-    name: SPM, Linux, Swift 6.1
+    name: SPM, Linux, Swift 6.2
     runs-on: ubuntu-24.04
-    container: swift:6.1-noble
+    container: swift:6.2-noble
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
       - name: Get Swift version
         id: swift_version
-        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\.[0-9]' -o | head -1)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}

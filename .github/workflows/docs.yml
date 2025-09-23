@@ -26,7 +26,7 @@ jobs:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Get Swift version
         id: swift_version
-        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\.[0-9]' -o | head -1)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
           key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}

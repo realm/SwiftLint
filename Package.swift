@@ -155,6 +155,9 @@ let package = Package(
                 "SwiftLintFramework",
                 "TestHelpers",
             ],
+            exclude: [
+                "BUILD",
+            ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
@@ -202,6 +205,9 @@ let package = Package(
                 "SwiftLintFramework"
             ],
             path: "Tests/TestHelpers",
+            exclude: [
+                "BUILD",
+            ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),
         .binaryTarget(

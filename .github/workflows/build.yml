@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: swift:5.9-focal
+          - image: swift:5.9-jammy
             version: '5.9'
           - image: swift:5.10-noble
             version: '5.10'

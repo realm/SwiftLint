@@ -9,8 +9,8 @@ runs:
   using: composite
   steps:
     - run: |
-        awk '
-          $0 ~ "${INPUTS_RULE}:" { in_rule = 1; next }
+        awk -v rule_name="${RULE_NAME}" '
+          $0 ~ rule_name":" { in_rule = 1; next }
           in_rule && /^\t/ { print $0 }
           in_rule && !/^\t/ { in_rule = 0 }
         ' Makefile | while IFS= read -r command; do
@@ -18,4 +18,4 @@ runs:
         done
       shell: bash
       env:
-        INPUTS_RULE: ${{ inputs.rule }}
+        RULE_NAME: ${{ inputs.rule }}

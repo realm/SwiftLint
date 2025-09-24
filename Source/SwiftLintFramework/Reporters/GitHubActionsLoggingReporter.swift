@@ -20,8 +20,8 @@ struct GitHubActionsLoggingReporter: Reporter {
         [
             "::\(violation.severity.rawValue) ",
             "file=\(violation.location.relativeFile ?? ""),",
-            "line=\(violation.location.line ?? 1),",
-            "col=\(violation.location.character ?? 1)::",
+            "line=\((violation.location.line ?? 0) + 1),",
+            "col=\((violation.location.character ?? 0) + 1)::",
             violation.reason,
             " (\(violation.ruleIdentifier))",
         ].joined()

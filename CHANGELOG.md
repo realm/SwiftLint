@@ -40,6 +40,12 @@
   [#6029](https://github.com/realm/SwiftLint/issues/6029)
   [#6058](https://github.com/realm/SwiftLint/issues/6058)
 
+* Ignore `redundant_discardable_let` rule violations in nested SwiftUI scopes as well
+  when `ignore_swiftui_view_bodies` is enabled.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#3855](https://github.com/realm/SwiftLint/issues/3855)
+  [#6255](https://github.com/realm/SwiftLint/issues/6255)
+
 ## 0.61.0: Even Fresher Breeze
 
 ### Breaking

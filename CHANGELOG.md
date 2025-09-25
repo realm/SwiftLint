@@ -45,6 +45,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#3855](https://github.com/realm/SwiftLint/issues/3855)
   [#6255](https://github.com/realm/SwiftLint/issues/6255)
+  
+* Exclude function types from `async_without_await` rule analysis. Higher-order function
+  objects can be `async` without containing an `await` when assigning to them.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6253](https://github.com/realm/SwiftLint/issues/6235)
 
 ## 0.61.0: Even Fresher Breeze
 

@@ -19,6 +19,9 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 var body: some View {
                     let _ = foo()
+                    if cond {
+                        let _ = bar()
+                    }
                     return Text("Hello, World!")
                 }
                 """, configuration: ["ignore_swiftui_view_bodies": true]),
@@ -38,6 +41,11 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 static var previews: some View {
                     let _ = foo()
+                    #if DEBUG
+                    let _ = bar()
+                    #else
+                    let _ = baz()
+                    #endif
                     Text("Hello, World!")
                 }
                 """, configuration: ["ignore_swiftui_view_bodies": true]),
@@ -48,6 +56,9 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 var body: some View {
                     ↓let _ = foo()
+                    if cond {
+                        ↓let _ = bar()
+                    }
                     Text("Hello, World!")
                 }
                 """),
@@ -79,6 +90,9 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 var body: some NotView {
                     ↓let _ = foo()
+                    if cond {
+                        ↓let _ = bar()
+                    }
                     Text("Hello, World!")
                 }
                 """, configuration: ["ignore_swiftui_view_bodies": true], excludeFromDocumentation: true),
@@ -89,11 +103,21 @@ struct RedundantDiscardableLetRule: Rule {
             Example("""
                 var body: some View {
                     ↓let _ = foo()
+                    #if DEBUG
+                    ↓let _ = bar()
+                    #else
+                    ↓let _ = baz()
+                    #endif
                     Text("Hello, World!")
                 }
                 """): Example("""
                     var body: some View {
                         _ = foo()
+                        #if DEBUG
+                        _ = bar()
+                        #else
+                        _ = baz()
+                        #endif
                         Text("Hello, World!")
                     }
                     """),
@@ -142,11 +166,20 @@ private extension RedundantDiscardableLetRule {
         }
 
         override func visit(_ node: CodeBlockSyntax) -> SyntaxVisitorContinueKind {
-            codeBlockScopes.push(node.isViewBuilderFunctionBody ? .view : .normal)
+            codeBlockScopes.push(node.isViewBuilderFunctionBody || codeBlockScopes.peek() == .view ? .view : .normal)
             return .visitChildren
         }
 
         override func visitPost(_: CodeBlockSyntax) {
+            codeBlockScopes.pop()
+        }
+
+        override func visit(_: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
+            codeBlockScopes.push(codeBlockScopes.peek() == .view ? .view : .normal)
+            return .visitChildren
+        }
+
+        override func visitPost(_: CodeBlockItemListSyntax) {
             codeBlockScopes.pop()
         }
 

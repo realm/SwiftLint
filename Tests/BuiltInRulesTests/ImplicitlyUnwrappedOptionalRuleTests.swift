@@ -1,15 +1,19 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
-    func testImplicitlyUnwrappedOptionalRuleDefaultConfiguration() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ImplicitlyUnwrappedOptionalRuleTests {
+    @Test
+    func implicitlyUnwrappedOptionalRuleDefaultConfiguration() {
         let rule = ImplicitlyUnwrappedOptionalRule()
-        XCTAssertEqual(rule.configuration.mode, .allExceptIBOutlets)
-        XCTAssertEqual(rule.configuration.severity, .warning)
+        #expect(rule.configuration.mode == .allExceptIBOutlets)
+        #expect(rule.configuration.severity == .warning)
     }
 
-    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
+    @Test
+    func implicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
             Example("@IBOutlet private var label: UILabel!"),
@@ -25,7 +29,8 @@ final class ImplicitlyUnwrappedOptionalRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInWeakMode() {
+    @Test
+    func implicitlyUnwrappedOptionalRuleWarnsOnOutletsInWeakMode() {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
         let triggeringExamples = [
             Example("private weak var label: ↓UILabel!"),

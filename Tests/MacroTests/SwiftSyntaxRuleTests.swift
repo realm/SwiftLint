@@ -1,13 +1,16 @@
-@testable import SwiftLintCoreMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
+
+@testable import SwiftLintCoreMacros
 
 private let macros = [
     "SwiftSyntaxRule": SwiftSyntaxRule.self
 ]
 
-final class SwiftSyntaxRuleTests: XCTestCase {
-    func testNoArguments() {
+@Suite
+struct SwiftSyntaxRuleTests {
+    @Test
+    func noArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule
@@ -26,7 +29,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
         )
     }
 
-    func testFalseArguments() {
+    @Test
+    func falseArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(foldExpressions: false, explicitRewriter: false, correctable: false, optIn: false)
@@ -45,7 +49,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
         )
     }
 
-    func testTrueArguments() {
+    @Test
+    func trueArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true, correctable: true, optIn: true)
@@ -79,7 +84,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
         )
     }
 
-    func testCorrectableWithoutExplcitRewriter() {
+    @Test
+    func correctableWithoutExplcitRewriter() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(correctable: true)
@@ -101,7 +107,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
         )
     }
 
-    func testArbitraryArguments() {
+    @Test
+    func arbitraryArguments() {
         // Fail with a diagnostic because the macro definition explicitly requires bool arguments.
         assertMacroExpansion(
             """

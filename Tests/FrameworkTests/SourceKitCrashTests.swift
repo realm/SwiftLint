@@ -1,15 +1,11 @@
 @testable import SwiftLintFramework
 import TestHelpers
-import XCTest
+import Testing
 
-final class SourceKitCrashTests: SwiftLintTestCase {
-    override func invokeTest() {
-        CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
-            super.invokeTest()
-        }
-    }
-
-    func testAssertHandlerIsNotCalledOnNormalFile() {
+@Suite(.sourceKitRequestsWithoutRule)
+struct SourceKitCrashTests {
+    @Test
+    func assertHandlerIsNotCalledOnNormalFile() {
         let file = SwiftLintFile(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false
 
@@ -17,11 +13,12 @@ final class SourceKitCrashTests: SwiftLintTestCase {
         file.assertHandler = { assertHandlerCalled = true }
 
         _ = file.syntaxMap
-        XCTAssertFalse(assertHandlerCalled,
+        #expect(!assertHandlerCalled,
                        "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
     }
 
-    func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
+    @Test
+    func assertHandlerIsCalledOnFileThatCrashedSourceKitService() {
         let file = SwiftLintFile(contents: "A file crashed SourceKitService")
         file.sourcekitdFailed = true
 
@@ -29,15 +26,16 @@ final class SourceKitCrashTests: SwiftLintTestCase {
         file.assertHandler = { assertHandlerCalled = true }
 
         _ = file.syntaxMap
-        XCTAssertTrue(assertHandlerCalled,
+        #expect(assertHandlerCalled,
                       "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
     }
 
-    func testRulesWithFileThatCrashedSourceKitService() throws {
-        let file = try XCTUnwrap(SwiftLintFile(path: "\(TestResources.path())/ProjectMock/Level0.swift"))
+    @Test
+    func rulesWithFileThatCrashedSourceKitService() throws {
+        let file = try #require(SwiftLintFile(path: "\(TestResources.path())/ProjectMock/Level0.swift"))
         file.sourcekitdFailed = true
         file.assertHandler = {
-            XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")
+            Issue.record("If this called, rule's SourceKitFreeRule is not properly configured")
         }
         let configuration = Configuration(rulesMode: .onlyConfiguration(allRuleIdentifiers))
         let storage = RuleStorage()

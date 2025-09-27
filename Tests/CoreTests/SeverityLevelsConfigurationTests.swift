@@ -1,6 +1,6 @@
 @testable import SwiftLintCore
 import TestHelpers
-import XCTest
+import Testing
 
 struct MockSeverityLevelsRule: Rule {
     static let identifier = "test_severity_levels"
@@ -18,149 +18,166 @@ struct MockSeverityLevelsRule: Rule {
     }
 }
 
-final class SeverityLevelsConfigurationTests: SwiftLintTestCase {
-    func testInitializationWithWarningOnly() {
+@Suite
+struct SeverityLevelsConfigurationTests {
+    @Test
+    func initializationWithWarningOnly() {
         let config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 10)
-        XCTAssertEqual(config.warning, 10)
-        XCTAssertNil(config.error)
+        #expect(config.warning == 10)
+        #expect(config.error == nil)
 
         let params = config.params
-        XCTAssertEqual(params.count, 1)
-        XCTAssertEqual(params[0].severity, .warning)
-        XCTAssertEqual(params[0].value, 10)
+        #expect(params.count == 1)
+        #expect(params[0].severity == .warning)
+        #expect(params[0].value == 10)
     }
 
-    func testInitializationWithWarningAndError() {
+    @Test
+    func initializationWithWarningAndError() {
         let config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 10, error: 20)
-        XCTAssertEqual(config.warning, 10)
-        XCTAssertEqual(config.error, 20)
+        #expect(config.warning == 10)
+        #expect(config.error == 20)
 
         let params = config.params
-        XCTAssertEqual(params.count, 2)
-        XCTAssertEqual(params[0].severity, .error)
-        XCTAssertEqual(params[0].value, 20)
-        XCTAssertEqual(params[1].severity, .warning)
-        XCTAssertEqual(params[1].value, 10)
+        #expect(params.count == 2)
+        #expect(params[0].severity == .error)
+        #expect(params[0].value == 20)
+        #expect(params[1].severity == .warning)
+        #expect(params[1].value == 10)
     }
 
-    func testApplyConfigurationWithSingleElementArray() throws {
+    @Test
+    func applyConfigurationWithSingleElementArray() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 0, error: 0)
 
         try config.apply(configuration: [15])
 
-        XCTAssertEqual(config.warning, 15)
-        XCTAssertNil(config.error)
+        #expect(config.warning == 15)
+        #expect(config.error == nil)
     }
 
-    func testApplyConfigurationWithTwoElementArray() throws {
+    @Test
+    func applyConfigurationWithTwoElementArray() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 0, error: 0)
 
         try config.apply(configuration: [10, 25])
 
-        XCTAssertEqual(config.warning, 10)
-        XCTAssertEqual(config.error, 25)
+        #expect(config.warning == 10)
+        #expect(config.error == 25)
     }
 
-    func testApplyConfigurationWithMultipleElementArray() throws {
+    @Test
+    func applyConfigurationWithMultipleElementArray() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 0, error: 0)
 
         try config.apply(configuration: [10, 25, 50])
 
-        XCTAssertEqual(config.warning, 10)
-        XCTAssertEqual(config.error, 25) // Only first two elements are used
+        #expect(config.warning == 10)
+        #expect(config.error == 25)  // Only first two elements are used // Only first two elements are used
     }
 
-    func testApplyConfigurationWithEmptyArray() {
+    @Test
+    func applyConfigurationWithEmptyArray() {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: nil)
 
-        checkError(Issue.nothingApplied(ruleID: MockSeverityLevelsRule.identifier)) {
+        #expect(throws: Issue.nothingApplied(ruleID: MockSeverityLevelsRule.identifier)) {
             try config.apply(configuration: [] as [Int])
         }
     }
 
-    func testApplyConfigurationWithInvalidArrayType() {
+    @Test
+    func applyConfigurationWithInvalidArrayType() {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: nil)
 
-        checkError(Issue.nothingApplied(ruleID: MockSeverityLevelsRule.identifier)) {
+        #expect(throws: Issue.nothingApplied(ruleID: MockSeverityLevelsRule.identifier)) {
             try config.apply(configuration: ["invalid"])
         }
     }
 
-    func testApplyConfigurationWithWarningOnlyDictionary() throws {
+    @Test
+    func applyConfigurationWithWarningOnlyDictionary() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 0, error: 0)
 
         try config.apply(configuration: ["warning": 15])
 
-        XCTAssertEqual(config.warning, 15)
-        XCTAssertNil(config.error)
+        #expect(config.warning == 15)
+        #expect(config.error == nil)
     }
 
-    func testApplyConfigurationWithWarningAndErrorDictionary() throws {
+    @Test
+    func applyConfigurationWithWarningAndErrorDictionary() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 0, error: 0)
 
         try config.apply(configuration: ["warning": 10, "error": 25])
 
-        XCTAssertEqual(config.warning, 10)
-        XCTAssertEqual(config.error, 25)
+        #expect(config.warning == 10)
+        #expect(config.error == 25)
     }
 
-    func testApplyConfigurationWithErrorOnlyDictionary() throws {
+    @Test
+    func applyConfigurationWithErrorOnlyDictionary() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: nil)
 
         try config.apply(configuration: ["error": 25])
 
-        XCTAssertEqual(config.warning, 12) // Should remain unchanged
-        XCTAssertEqual(config.error, 25)
+        #expect(config.warning == 12)  // Should remain unchanged // Should remain unchanged
+        #expect(config.error == 25)
     }
 
-    func testApplyConfigurationWithNilErrorDictionary() throws {
+    @Test
+    func applyConfigurationWithNilErrorDictionary() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 10, error: 20)
 
         try config.apply(configuration: ["error": nil as Int?])
 
-        XCTAssertEqual(config.warning, 10)
-        XCTAssertNil(config.error)
+        #expect(config.warning == 10)
+        #expect(config.error == nil)
     }
 
-    func testApplyConfigurationWithWarningSetToNilError() throws {
+    @Test
+    func applyConfigurationWithWarningSetToNilError() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 10, error: 20)
 
         try config.apply(configuration: ["warning": 15])
 
-        XCTAssertEqual(config.warning, 15)
-        XCTAssertNil(config.error) // Should be set to nil when warning is specified without error
+        #expect(config.warning == 15)
+        #expect(config.error == nil)  // Should be set to nil when warning is specified without error
     }
 
-    func testApplyConfigurationWithInvalidWarningType() {
+    @Test
+    func applyConfigurationWithInvalidWarningType() {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: nil)
 
-        checkError(Issue.invalidConfiguration(ruleID: MockSeverityLevelsRule.identifier)) {
+        #expect(throws: Issue.invalidConfiguration(ruleID: MockSeverityLevelsRule.identifier)) {
             try config.apply(configuration: ["warning": "invalid"])
         }
     }
 
-    func testApplyConfigurationWithInvalidErrorType() {
+    @Test
+    func applyConfigurationWithInvalidErrorType() {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: nil)
 
-        checkError(Issue.invalidConfiguration(ruleID: MockSeverityLevelsRule.identifier)) {
+        #expect(throws: Issue.invalidConfiguration(ruleID: MockSeverityLevelsRule.identifier)) {
             try config.apply(configuration: ["error": "invalid"])
         }
     }
 
-    func testApplyConfigurationWithInvalidConfigurationType() {
+    @Test
+    func applyConfigurationWithInvalidConfigurationType() {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: nil)
 
-        checkError(Issue.nothingApplied(ruleID: MockSeverityLevelsRule.identifier)) {
+        #expect(throws: Issue.nothingApplied(ruleID: MockSeverityLevelsRule.identifier)) {
             try config.apply(configuration: "invalid")
         }
     }
 
-    func testApplyConfigurationWithEmptyDictionary() throws {
+    @Test
+    func applyConfigurationWithEmptyDictionary() throws {
         var config = SeverityLevelsConfiguration<MockSeverityLevelsRule>(warning: 12, error: 15)
 
         try config.apply(configuration: [:] as [String: Any])
 
-        XCTAssertEqual(config.warning, 12)
-        XCTAssertEqual(config.error, 15) // Should remain unchanged when nothing is applied
+        #expect(config.warning == 12)
+        #expect(config.error == 15)  // Should remain unchanged when nothing is applied
     }
 }

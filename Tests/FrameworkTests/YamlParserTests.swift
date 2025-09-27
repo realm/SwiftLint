@@ -1,61 +1,71 @@
+import Testing
+
 @testable import SwiftLintFramework
-import TestHelpers
-import XCTest
 
-final class YamlParserTests: SwiftLintTestCase {
-    func testParseEmptyString() {
-        XCTAssertEqual((try YamlParser.parse("", env: [:])).count, 0,
-                       "Parsing empty YAML string should succeed")
+@Suite
+struct YamlParserTests {
+    @Test
+    func parseEmptyString() throws {
+        let result = try YamlParser.parse("", env: [:])
+        #expect(result.isEmpty, "Parsing empty YAML string should succeed")
     }
 
-    func testParseValidString() {
-        XCTAssertEqual(try YamlParser.parse("a: 1\nb: 2", env: [:]).count, 2,
-                       "Parsing valid YAML string should succeed")
+    @Test
+    func parseValidString() throws {
+        let result = try YamlParser.parse("a: 1\nb: 2", env: [:])
+        #expect(result.count == 2, "Parsing valid YAML string should succeed")
     }
 
-    func testParseReplacesEnvVar() throws {
+    @Test
+    func parseReplacesEnvVar() throws {
         let env = ["PROJECT_NAME": "SwiftLint"]
         let string = "excluded:\n  - ${PROJECT_NAME}/Extensions"
         let result = try YamlParser.parse(string, env: env)
 
-        XCTAssertEqual(result["excluded"] as? [String] ?? [], ["SwiftLint/Extensions"])
+        #expect(result["excluded"] as? [String] ?? [] == ["SwiftLint/Extensions"])
     }
 
-    func testParseTreatNoAsString() throws {
+    @Test
+    func parseTreatNoAsString() throws {
         let string = "excluded:\n  - no"
         let result = try YamlParser.parse(string, env: [:])
 
-        XCTAssertEqual(result["excluded"] as? [String] ?? [], ["no"])
+        #expect(result["excluded"] as? [String] ?? [] == ["no"])
     }
 
-    func testParseTreatYesAsString() throws {
+    @Test
+    func parseTreatYesAsString() throws {
         let string = "excluded:\n  - yes"
         let result = try YamlParser.parse(string, env: [:])
 
-        XCTAssertEqual(result["excluded"] as? [String] ?? [], ["yes"])
+        #expect(result["excluded"] as? [String] ?? [] == ["yes"])
     }
 
-    func testParseTreatOnAsString() throws {
+    @Test
+    func parseTreatOnAsString() throws {
         let string = "excluded:\n  - on"
         let result = try YamlParser.parse(string, env: [:])
 
-        XCTAssertEqual(result["excluded"] as? [String] ?? [], ["on"])
+        #expect(result["excluded"] as? [String] ?? [] == ["on"])
     }
 
-    func testParseTreatOffAsString() throws {
+    @Test
+    func parseTreatOffAsString() throws {
         let string = "excluded:\n  - off"
         let result = try YamlParser.parse(string, env: [:])
 
-        XCTAssertEqual(result["excluded"] as? [String] ?? [], ["off"])
+        #expect(result["excluded"] as? [String] ?? [] == ["off"])
     }
 
-    func testParseInvalidStringThrows() {
-        checkError(Issue.yamlParsing("2:1: error: parser: did not find expected <document start>:\na\n^")) {
+    @Test
+    func parseInvalidStringThrows() {
+        #expect(throws: Issue.yamlParsing("2:1: error: parser: did not find expected <document start>:\na\n^")) {
             _ = try YamlParser.parse("|\na", env: [:])
         }
     }
 
-    func testTreatAllEnvVarsAsStringsWithoutCasting() throws {
+    @Test
+    func treatAllEnvVarsAsStringsWithoutCasting() throws {
         let env = [
             "INT": "1",
             "FLOAT": "1.0",
@@ -71,13 +81,14 @@ final class YamlParserTests: SwiftLintTestCase {
 
         let result = try YamlParser.parse(string, env: env)
 
-        XCTAssertEqual(result["int"] as? String, "1")
-        XCTAssertEqual(result["float"] as? String, "1.0")
-        XCTAssertEqual(result["bool"] as? String, "true")
-        XCTAssertEqual(result["string"] as? String, "string")
+        #expect(result["int"] as? String == "1")
+        #expect(result["float"] as? String == "1.0")
+        #expect(result["bool"] as? String == "true")
+        #expect(result["string"] as? String == "string")
     }
 
-    func testRespectCastsOnEnvVars() throws {
+    @Test
+    func respectCastsOnEnvVars() throws {
         let env = [
             "INT": "1",
             "FLOAT": "1.0",
@@ -93,9 +104,9 @@ final class YamlParserTests: SwiftLintTestCase {
 
         let result = try YamlParser.parse(string, env: env)
 
-        XCTAssertEqual(result["int"] as? Int, 1)
-        XCTAssertEqual(result["float"] as? Double, 1.0)
-        XCTAssertEqual(result["bool"] as? Bool, true)
-        XCTAssertEqual(result["string"] as? String, "string")
+        #expect(result["int"] as? Int == 1)
+        #expect(result["float"] as? Double == 1.0)
+        #expect(result["bool"] as? Bool == true)
+        #expect(result["string"] as? String == "string")
     }
 }

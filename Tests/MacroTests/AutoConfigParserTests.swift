@@ -1,13 +1,16 @@
-@testable import SwiftLintCoreMacros
 import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
+
+@testable import SwiftLintCoreMacros
 
 private let macros = [
     "AutoConfigParser": AutoConfigParser.self
 ]
 
-final class AutoConfigParserTests: XCTestCase {
-    func testAttachToClass() {
+@Suite
+struct AutoConfigParserTests {
+    @Test
+    func attachToClass() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -25,7 +28,8 @@ final class AutoConfigParserTests: XCTestCase {
             macros: macros)
     }
 
-    func testNoConfigurationElements() {
+    @Test
+    func noConfigurationElements() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -52,7 +56,8 @@ final class AutoConfigParserTests: XCTestCase {
         )
     }
 
-    func testConfigurationElementsWithoutKeys() {
+    @Test
+    func configurationElementsWithoutKeys() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -99,7 +104,8 @@ final class AutoConfigParserTests: XCTestCase {
         )
     }
 
-    func testInlinedConfigurationElements() {
+    @Test
+    func inlinedConfigurationElements() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -131,7 +137,8 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     do {
                         try eB.apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue as SwiftLintCore.Issue
+                            where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {
@@ -155,7 +162,8 @@ final class AutoConfigParserTests: XCTestCase {
         )
     }
 
-    func testSeverityBasedConfigurationWithoutSeverityProperty() {
+    @Test
+    func severityBasedConfigurationWithoutSeverityProperty() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -188,7 +196,8 @@ final class AutoConfigParserTests: XCTestCase {
             macros: macros)
     }
 
-    func testSeverityAppliedTwice() {
+    @Test
+    func severityAppliedTwice() {
         assertMacroExpansion(
             """
             @AutoConfigParser
@@ -216,7 +225,8 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     do {
                         try severityConfiguration.apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue as SwiftLintCore.Issue
+                            where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {

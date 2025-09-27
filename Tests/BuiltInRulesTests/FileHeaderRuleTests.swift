@@ -1,21 +1,25 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
+
+@testable import SwiftLintBuiltInRules
 
 private let fixturesDirectory = "\(TestResources.path())/FileHeaderRuleFixtures"
 
-final class FileHeaderRuleTests: SwiftLintTestCase {
+@Suite(.rulesRegistered)
+struct FileHeaderRuleTests {
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule = try FileHeaderRule(configuration: configuration)
         return rule.validate(file: file)
     }
 
-    func testFileHeaderWithDefaultConfiguration() {
+    @Test
+    func fileHeaderWithDefaultConfiguration() {
         verifyRule(FileHeaderRule.description, skipCommentTests: true)
     }
 
-    func testFileHeaderWithRequiredString() {
+    @Test
+    func fileHeaderWithRequiredString() {
         let nonTriggeringExamples = [
             Example("// **Header"),
             Example("//\n// **Header"),
@@ -37,7 +41,8 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
                    testShebang: false)
     }
 
-    func testFileHeaderWithRequiredPattern() {
+    @Test
+    func fileHeaderWithRequiredPattern() {
         let nonTriggeringExamples = [
             Example("// Copyright © 2016 Realm"),
             Example("//\n// Copyright © 2016 Realm)"),
@@ -56,7 +61,8 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
                    testMultiByteOffsets: false)
     }
 
-    func testFileHeaderWithRequiredStringAndURLComment() {
+    @Test
+    func fileHeaderWithRequiredStringAndURLComment() {
         let nonTriggeringExamples = [
             Example("/* Check this url: https://github.com/realm/SwiftLint */")
         ]
@@ -73,7 +79,8 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
                    testMultiByteOffsets: false)
     }
 
-    func testFileHeaderWithForbiddenString() {
+    @Test
+    func fileHeaderWithForbiddenString() {
         let nonTriggeringExamples = [
             Example("// Copyright\n"),
             Example("let foo = \"**All rights reserved.\""),
@@ -93,7 +100,8 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
                    skipCommentTests: true)
     }
 
-    func testFileHeaderWithForbiddenPattern() {
+    @Test
+    func fileHeaderWithForbiddenPattern() {
         let nonTriggeringExamples = [
             Example("// Copyright\n"),
             Example("// FileHeaderRuleTests.m\n"),
@@ -113,7 +121,8 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
                    skipCommentTests: true)
     }
 
-    func testFileHeaderWithForbiddenPatternAndDocComment() {
+    @Test
+    func fileHeaderWithForbiddenPatternAndDocComment() {
         let nonTriggeringExamples = [
             Example("/// This is great tool with tests.\nclass GreatTool {}"),
             Example("class GreatTool {}"),
@@ -130,78 +139,84 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
                    skipCommentTests: true, testMultiByteOffsets: false)
     }
 
-    func testFileHeaderWithRequiredStringUsingFilenamePlaceholder() {
+    @Test
+    func fileHeaderWithRequiredStringUsingFilenamePlaceholder() throws {
         let configuration = ["required_string": "// SWIFTLINT_CURRENT_FILENAME"]
 
         // Non triggering tests
-        XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).isEmpty)
+        try #expect(validate(fileName: "FileNameMatchingSimple.swift", using: configuration).isEmpty)
 
         // Triggering tests
-        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
+        try #expect(validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count == 1)
+        try #expect(validate(fileName: "FileNameMismatch.swift", using: configuration).count == 1)
+        try #expect(validate(fileName: "FileNameMissing.swift", using: configuration).count == 1)
     }
 
-    func testFileHeaderWithForbiddenStringUsingFilenamePlaceholder() {
+    @Test
+    func fileHeaderWithForbiddenStringUsingFilenamePlaceholder() throws {
         let configuration = ["forbidden_string": "// SWIFTLINT_CURRENT_FILENAME"]
 
         // Non triggering tests
-        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration).isEmpty)
+        try #expect(validate(fileName: "FileNameCaseMismatch.swift", using: configuration).isEmpty)
+        try #expect(validate(fileName: "FileNameMismatch.swift", using: configuration).isEmpty)
+        try #expect(validate(fileName: "FileNameMissing.swift", using: configuration).isEmpty)
 
         // Triggering tests
-        XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).count, 1)
+        #expect(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).count == 1)
     }
 
-    func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
+    @Test
+    func fileHeaderWithRequiredPatternUsingFilenamePlaceholder() throws {
         let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
         let configuration2 = [
-            "required_pattern": "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\"",
+            "required_pattern": "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""
         ]
 
         // Non triggering tests
-        XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).isEmpty)
+        try #expect(validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)
+        try #expect(validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).isEmpty)
 
         // Triggering tests
-        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration1).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration1).count, 1)
+        try #expect(validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).count == 1)
+        try #expect(validate(fileName: "FileNameMismatch.swift", using: configuration1).count == 1)
+        try #expect(validate(fileName: "FileNameMissing.swift", using: configuration1).count == 1)
     }
 
-    func testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder() {
+    @Test
+    func fileHeaderWithForbiddenPatternUsingFilenamePlaceholder() throws {
         let configuration1 = ["forbidden_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
         let configuration2 = ["forbidden_pattern": "//.*(\\s|\")SWIFTLINT_CURRENT_FILENAME(\\s|\").*"]
 
         // Non triggering tests
-        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration1).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration1).isEmpty)
+        try #expect(validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).isEmpty)
+        try #expect(validate(fileName: "FileNameMismatch.swift", using: configuration1).isEmpty)
+        try #expect(validate(fileName: "FileNameMissing.swift", using: configuration1).isEmpty)
 
-        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration2).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration2).isEmpty)
-        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration2).isEmpty)
+        try #expect(validate(fileName: "FileNameCaseMismatch.swift", using: configuration2).isEmpty)
+        try #expect(validate(fileName: "FileNameMismatch.swift", using: configuration2).isEmpty)
+        try #expect(validate(fileName: "FileNameMissing.swift", using: configuration2).isEmpty)
 
         // Triggering tests
-        XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).count, 1)
+        try #expect(validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).count == 1)
+        try #expect(validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).count == 1)
     }
 
-    func testFileHeaderShouldBeEmpty() {
+    @Test
+    func fileHeaderShouldBeEmpty() throws {
         let configuration = ["forbidden_pattern": "."]
 
         // Non triggering tests
-        XCTAssert(try validate(fileName: "FileHeaderEmpty.swift", using: configuration).isEmpty)
-        XCTAssert(try validate(fileName: "DocumentedType.swift", using: configuration).isEmpty)
+        try #expect(validate(fileName: "FileHeaderEmpty.swift", using: configuration).isEmpty)
+        try #expect(validate(fileName: "DocumentedType.swift", using: configuration).isEmpty)
 
         // Triggering tests
-        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration).count, 1)
-        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
+        try #expect(validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count == 1)
+        try #expect(validate(fileName: "FileNameMismatch.swift", using: configuration).count == 1)
+        try #expect(validate(fileName: "FileNameMissing.swift", using: configuration).count == 1)
     }
 
-    func testSimplePattern() {
+    @Test
+    func simplePattern() {
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: [
                 Example("""
@@ -232,7 +247,8 @@ final class FileHeaderRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testPattern() {
+    @Test
+    func pattern() {
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: [
                 Example("""

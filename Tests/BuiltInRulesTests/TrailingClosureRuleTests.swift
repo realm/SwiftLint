@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class TrailingClosureRuleTests: SwiftLintTestCase {
-    func testWithOnlySingleMutedParameterEnabled() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TrailingClosureRuleTests {
+    @Test
+    func withOnlySingleMutedParameterEnabled() {
         let originalDescription = TrailingClosureRule.description
         let description = originalDescription
             .with(nonTriggeringExamples: originalDescription.nonTriggeringExamples + [

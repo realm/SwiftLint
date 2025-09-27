@@ -1,62 +1,67 @@
-import SwiftLintCore
-import TestHelpers
-import XCTest
+import SwiftLintFramework
+import Testing
 
-final class ExampleTests: SwiftLintTestCase {
-    func testEquatableDoesNotLookAtFile() {
+@Suite
+struct ExampleTests {
+    @Test
+    func equatableDoesNotLookAtFile() {
         let first = Example("foo", file: "a", line: 1)
         let second = Example("foo", file: "b", line: 1)
-        XCTAssertEqual(first, second)
+        #expect(first == second)
     }
 
-    func testEquatableDoesNotLookAtLine() {
+    @Test
+    func equatableDoesNotLookAtLine() {
         let first = Example("foo", file: "a", line: 1)
         let second = Example("foo", file: "a", line: 2)
-        XCTAssertEqual(first, second)
+        #expect(first == second)
     }
 
-    func testEquatableLooksAtCode() {
+    @Test
+    func equatableLooksAtCode() {
         let first = Example("a", file: "a", line: 1)
         let second = Example("a", file: "x", line: 2)
         let third = Example("c", file: "y", line: 2)
-        XCTAssertEqual(first, second)
-        XCTAssertNotEqual(first, third)
+        #expect(first == second)
+        #expect(first != third)
     }
 
-    func testTestMultiByteOffsets() {
-        XCTAssertTrue(Example("").testMultiByteOffsets)
-        XCTAssertTrue(Example("", testMultiByteOffsets: true).testMultiByteOffsets)
-        XCTAssertFalse(Example("", testMultiByteOffsets: false).testMultiByteOffsets)
+    @Test
+    func testMultiByteOffsets() {
+        #expect(Example("").testMultiByteOffsets)
+        #expect(Example("", testMultiByteOffsets: true).testMultiByteOffsets)
+        #expect(!Example("", testMultiByteOffsets: false).testMultiByteOffsets)
     }
 
-    func testTestOnLinux() {
-        XCTAssertTrue(Example("").testOnLinux)
-        XCTAssertTrue(Example("", testOnLinux: true).testOnLinux)
-        XCTAssertFalse(Example("", testOnLinux: false).testOnLinux)
+    @Test
+    func testOnLinux() {
+        #expect(Example("").testOnLinux)
+        #expect(Example("", testOnLinux: true).testOnLinux)
+        #expect(!Example("", testOnLinux: false).testOnLinux)
     }
 
-    func testRemovingViolationMarkers() {
+    @Test
+    func removingViolationMarkers() {
         let example = Example("↓T↓E↓S↓T")
-        XCTAssertEqual(example.removingViolationMarkers(), Example("TEST"))
+        #expect(example.removingViolationMarkers() == Example("TEST"))
     }
 
-    func testComparable() {
-        XCTAssertLessThan(Example("a"), Example("b"))
+    @Test
+    func comparable() {
+        #expect(Example("a") < Example("b"))
     }
 
-    func testWithCode() {
+    @Test
+    func withCode() {
         let original = Example("original code")
-        XCTAssertNotNil(original.file)
-        XCTAssertNotNil(original.line)
+        #expect(original.code == "original code")
 
         let new = original.with(code: "new code")
-        XCTAssertEqual(new.code, "new code")
-        XCTAssertNotNil(new.file)
-        XCTAssertNotNil(new.line)
+        #expect(new.code == "new code")
 
         // When modifying the code, it's important that the file and line
         // numbers remain intact
-        XCTAssertEqual(new.file.description, original.file.description)
-        XCTAssertEqual(new.line, original.line)
+        #expect(new.file.description == original.file.description)
+        #expect(new.line == original.line)
     }
 }

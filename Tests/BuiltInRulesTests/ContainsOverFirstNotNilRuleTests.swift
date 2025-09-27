@@ -1,22 +1,26 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class ContainsOverFirstNotNilRuleTests: SwiftLintTestCase {
-    func testFirstReason() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ContainsOverFirstNotNilRuleTests {
+    @Test
+    func firstReason() {
         let example = Example("↓myList.first { $0 % 2 == 0 } != nil")
         let violations = self.violations(example)
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer `contains` over `first(where:) != nil`")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "Prefer `contains` over `first(where:) != nil`")
     }
 
-    func testFirstIndexReason() {
+    @Test
+    func firstIndexReason() {
         let example = Example("↓myList.firstIndex { $0 % 2 == 0 } != nil")
         let violations = self.violations(example)
 
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer `contains` over `firstIndex(where:) != nil`")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "Prefer `contains` over `firstIndex(where:) != nil`")
     }
 
     // MARK: - Private
@@ -25,7 +29,6 @@ final class ContainsOverFirstNotNilRuleTests: SwiftLintTestCase {
         guard let config = makeConfig(config, ContainsOverFirstNotNilRule.identifier) else {
             return []
         }
-
         return TestHelpers.violations(example, config: config)
     }
 }

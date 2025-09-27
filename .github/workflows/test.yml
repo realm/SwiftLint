@@ -39,8 +39,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - macOS: '14'
-            xcode: '15.4'
           - macOS: '15'
             xcode: '16.4'
           - macOS: '26'

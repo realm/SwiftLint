@@ -65,6 +65,7 @@ closure_body_length:
 empty_xctest_method: *unit_test_configuration
 file_name:
   excluded:
+    - ConfigurationTests+Constants.swift
     - Exports.swift
     - GeneratedTests.swift
     - Macros.swift
@@ -74,6 +75,7 @@ file_name:
     - RuleConfigurationMacros.swift
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
+    - Traits.swift
   excluded_paths:
     - Tests/GeneratedTests/GeneratedTests_\d\d\.swift
 final_test_case: *unit_test_configuration

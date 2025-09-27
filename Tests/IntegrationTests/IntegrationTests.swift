@@ -1,7 +1,7 @@
 import Foundation
 import SwiftLintFramework
 import TestHelpers
-import XCTest
+import Testing
 
 private let config: Configuration = {
     let bazelWorkspaceDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"]
@@ -13,18 +13,19 @@ private let config: Configuration = {
     return Configuration(configurationFiles: [Configuration.defaultFileName])
 }()
 
-final class IntegrationTests: SwiftLintTestCase {
-    func testSwiftLintLints() throws {
-        try XCTSkipUnless(
-            ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
-            "Will be covered by separate linting job"
-        )
+@Suite(.rulesRegistered)
+struct IntegrationTests {
+    @Test(.enabled(
+        if: ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
+        "Will be covered by separate linting job"
+    ))
+    func lint() throws {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(
             inPath: "",
             forceExclude: false,
             excludeBy: .paths(excludedPaths: config.excludedPaths()))
-        XCTAssert(
+        try #require(
             swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
             "current file should be included"
         )
@@ -33,18 +34,25 @@ final class IntegrationTests: SwiftLintTestCase {
         let violations = swiftFiles.parallelFlatMap {
             Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
-        violations.forEach { violation in
-            violation.location.file!.withStaticString {
-                XCTFail(violation.reason, file: $0, line: UInt(violation.location.line!))
-            }
+        for violation in violations {
+            #expect(
+                Bool(false),
+                Comment(rawValue: violation.reason),
+                sourceLocation: SourceLocation(
+                    fileID: #fileID,
+                    filePath: violation.location.file!,
+                    line: Int(violation.location.line!),
+                    column: Int(violation.location.character!)
+                )
+            )
         }
     }
 
-    func testSwiftLintAutoCorrects() throws {
-        try XCTSkipUnless(
-            ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
-            "Corrections are not verified in CI"
-        )
+    @Test(.enabled(
+        if: ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
+        "Corrections are not verified in CI"
+    ))
+    func correct() throws {
         let swiftFiles = config.lintableFiles(
             inPath: "",
             forceExclude: false,
@@ -53,40 +61,6 @@ final class IntegrationTests: SwiftLintTestCase {
         let corrections = swiftFiles.parallelMap {
             Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
         }
-        XCTAssert(corrections.allSatisfy { $0.isEmpty }, "Unexpected corrections have been applied")
-    }
-}
-
-private struct StaticStringImitator {
-    let string: String
-
-    func withStaticString(_ closure: (StaticString) -> Void) {
-        let isASCII = string.utf8.allSatisfy { $0 < 0x7f }
-        string.utf8CString.dropLast().withUnsafeBytes {
-            let imitator = Imitator(startPtr: $0.baseAddress!, utf8CodeUnitCount: $0.count, isASCII: isASCII)
-            closure(imitator.staticString)
-        }
-    }
-
-    struct Imitator {
-        let startPtr: UnsafeRawPointer
-        let utf8CodeUnitCount: Int
-        let flags: Int8
-
-        init(startPtr: UnsafeRawPointer, utf8CodeUnitCount: Int, isASCII: Bool) {
-            self.startPtr = startPtr
-            self.utf8CodeUnitCount = utf8CodeUnitCount
-            flags = isASCII ? 0x2 : 0x0
-        }
-
-        var staticString: StaticString {
-            unsafeBitCast(self, to: StaticString.self)
-        }
-    }
-}
-
-private extension String {
-    func withStaticString(_ closure: (StaticString) -> Void) {
-        StaticStringImitator(string: self).withStaticString(closure)
+        try #require(corrections.allSatisfy { $0.isEmpty }, "Unexpected corrections have been applied")
     }
 }

@@ -55,7 +55,7 @@ private let swiftSyntaxTokensCache = Cache { file -> [SwiftLintSyntaxToken]? in
 package typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
-package nonisolated(unsafe) var parserDiagnosticsDisabledForTests = false
+@TaskLocal package var parserDiagnosticsDisabledForTests = false
 
 private let assertHandlerCache = Cache { (_: SwiftLintFile) -> AssertHandler? in nil }
 
@@ -124,9 +124,9 @@ extension SwiftLintFile {
         }
     }
 
-    public var parserDiagnostics: [String]? {
+    public var parserDiagnostics: [String] {
         if parserDiagnosticsDisabledForTests {
-            return nil
+            return []
         }
 
         return ParseDiagnosticsGenerator.diagnostics(for: syntaxTree)

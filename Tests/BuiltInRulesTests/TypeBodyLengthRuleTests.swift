@@ -1,9 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class TypeBodyLengthRuleTests: SwiftLintTestCase {
-    func testWarning() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TypeBodyLengthRuleTests {
+    @Test
+    func warning() {
         let example = Example("""
             actor A {
                 let x = 0
@@ -12,9 +15,8 @@ final class TypeBodyLengthRuleTests: SwiftLintTestCase {
             }
             """)
 
-        XCTAssertEqual(
-            self.violations(example, configuration: ["warning": 2, "error": 4]),
-            [
+        #expect(
+            self.violations(example, configuration: ["warning": 2, "error": 4]) == [
                 StyleViolation(
                     ruleDescription: TypeBodyLengthRule.description,
                     severity: .warning,
@@ -28,7 +30,8 @@ final class TypeBodyLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testError() {
+    @Test
+    func error() {
         let example = Example("""
             class C {
                 let x = 0
@@ -37,9 +40,8 @@ final class TypeBodyLengthRuleTests: SwiftLintTestCase {
             }
             """)
 
-        XCTAssertEqual(
-            self.violations(example, configuration: ["warning": 1, "error": 2]),
-            [
+        #expect(
+            self.violations(example, configuration: ["warning": 1, "error": 2]) == [
                 StyleViolation(
                     ruleDescription: TypeBodyLengthRule.description,
                     severity: .error,
@@ -53,16 +55,16 @@ final class TypeBodyLengthRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testViolationMessages() {
+    @Test
+    func violationMessages() {
         let types = TypeBodyLengthRule.description.triggeringExamples.flatMap {
-            self.violations($0, configuration: ["warning": 2])
+            violations($0, configuration: ["warning": 2])
         }.compactMap {
             $0.reason.split(separator: " ", maxSplits: 1).first
         }
 
-        XCTAssertEqual(
-            types,
-            ["Actor", "Class", "Enum", "Extension", "Protocol", "Struct"]
+        #expect(
+            types == ["Actor", "Class", "Enum", "Extension", "Protocol", "Struct"]
         )
     }
 

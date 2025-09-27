@@ -59,7 +59,6 @@ internal struct AsyncWithoutAwaitRuleExamples {
         }
         """),
         Example("""
-        let x: (() async -> Void)? = nil
         let x: () -> Void = { test() }
         """),
         Example("""
@@ -148,7 +147,19 @@ internal struct AsyncWithoutAwaitRuleExamples {
             baz: () -> Void = {}
         ) { { } }
         """),
-        Example("func foo(bar: () async -> Void = {}) { }"),
+        Example("func foo(bar: () async -> Void = {}) {}"),
+        Example("var foo: (() async -> Void)? = nil"),
+        Example("var foo: ((Int) async throws -> Int)? { f }"),
+        Example("let foo: ((Int) async throws -> Int)? = { await f($0) }"),
+        Example("let foo: () async throws -> ()"),
+        Example("""
+        func f() async throws -> Int {
+            try await g {
+                let b: Int
+                b = 2
+            }
+        }
+        """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -188,7 +199,6 @@ internal struct AsyncWithoutAwaitRuleExamples {
             }
         }
         """),
-        Example("let x: (() ↓async -> Void)? = { test() }"),
         Example("""
         var test: Int {
             get ↓async throws {
@@ -204,19 +214,10 @@ internal struct AsyncWithoutAwaitRuleExamples {
             }
         }
         """),
-        Example("""
-        var test: Int {
-            get throws {
-                func foo() {}
-                let bar: () ↓async -> Void = { foo() }
-            }
-        }
-        """),
         Example("init() ↓async {}"),
         Example("""
         init() ↓async {
             func foo() ↓async {}
-            let bar: () ↓async -> Void = { foo() }
         }
         """),
         Example("""
@@ -236,6 +237,9 @@ internal struct AsyncWithoutAwaitRuleExamples {
             while let foo = bar() {}
         }
         """),
+        Example("let x: () ↓async -> Void = { }"),
+        Example("let x: () ↓async -> Void = { test() }"),
+        Example("let x: (() ↓async -> Void)? = nil"),
     ]
 
     static let corrections = [
@@ -289,8 +293,6 @@ internal struct AsyncWithoutAwaitRuleExamples {
               let bar = { await foo() }
             }
             """),
-        Example("let x: () ↓async -> Void = { test() }"):
-            Example("let x: () -> Void = { test() }"),
         Example("""
         var test: Int {
             get ↓async throws {
@@ -308,18 +310,6 @@ internal struct AsyncWithoutAwaitRuleExamples {
             }
             """),
         Example("init() ↓async {}"): Example("init() {}"),
-        Example("""
-        init() ↓async {
-            func foo() ↓async {}
-            let bar: () ↓async -> Void = { foo() }
-        }
-        """):
-            Example("""
-            init() {
-                func foo() {}
-                let bar: () -> Void = { foo() }
-            }
-            """),
         Example("""
         subscript(row: Int) -> Double {
             get ↓async {

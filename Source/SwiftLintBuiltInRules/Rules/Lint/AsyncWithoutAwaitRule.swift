@@ -19,10 +19,6 @@ private extension AsyncWithoutAwaitRule {
     private struct FuncInfo {
         var containsAwait = false
         let asyncToken: TokenSyntax?
-
-        init(asyncToken: TokenSyntax?) {
-            self.asyncToken = asyncToken
-        }
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
@@ -49,7 +45,6 @@ private extension AsyncWithoutAwaitRule {
         override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             functionScopes.push(.init(asyncToken: pendingAsync))
             pendingAsync = nil
-
             return .visitChildren
         }
 
@@ -58,15 +53,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visitPost(_: AwaitExprSyntax) {
-            functionScopes.modifyLast {
-                $0.containsAwait = true
-            }
-        }
-
-        override func visitPost(_ node: FunctionTypeSyntax) {
-            if let asyncNode = node.effectSpecifiers?.asyncSpecifier {
-                pendingAsync = asyncNode
-            }
+            functionScopes.modifyLast { $0.containsAwait = true }
         }
 
         override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -86,10 +73,6 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visitPost(_: PatternBindingSyntax) {
-            pendingAsync = nil
-        }
-
         override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
             guard node.body != nil else {
                 return .visitChildren
@@ -107,33 +90,37 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visitPost(_: TypeAliasDeclSyntax) {
-            pendingAsync = nil
-        }
-
         override func visitPost(_ node: ForStmtSyntax) {
             if node.awaitKeyword != nil {
-                functionScopes.modifyLast {
-                    $0.containsAwait = true
-                }
+                functionScopes.modifyLast { $0.containsAwait = true }
             }
         }
 
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.bindingSpecifier.tokenKind == .keyword(.let) {
+                pendingAsync = node.bindings.onlyElement?.typeAnnotation?.type.asyncToken
+            }
+            return .visitChildren
+        }
+
         override func visitPost(_ node: VariableDeclSyntax) {
-            if node.bindingSpecifier.tokenKind == .keyword(.let),
-               node.modifiers.contains(keyword: .async) {
-                functionScopes.modifyLast {
-                    $0.containsAwait = true
+            guard node.bindingSpecifier.tokenKind == .keyword(.let) else {
+                return
+            }
+            if node.modifiers.contains(keyword: .async) {
+                functionScopes.modifyLast { $0.containsAwait = true }
+            }
+            if pendingAsync == node.bindings.onlyElement?.typeAnnotation?.type.asyncToken {
+                if node.bindings.onlyElement?.initializer != nil {
+                    functionScopes.push(.init(asyncToken: pendingAsync))
+                    checkViolation()
                 }
+                pendingAsync = nil
             }
         }
 
         override func visit(_: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {
             .skipChildren
-        }
-
-        override func visitPost(_: ReturnClauseSyntax) {
-            pendingAsync = nil
         }
 
         private func checkViolation() {
@@ -152,5 +139,20 @@ private extension AsyncWithoutAwaitRule {
                 )
             )
         }
+    }
+}
+
+private extension TypeSyntax {
+    var asyncToken: TokenSyntax? {
+        if let functionType = `as`(FunctionTypeSyntax.self) {
+            return functionType.effectSpecifiers?.asyncSpecifier
+        }
+        if let optionalType = `as`(OptionalTypeSyntax.self) {
+            return optionalType.wrappedType.asyncToken
+        }
+        if let tupleType = `as`(TupleTypeSyntax.self) {
+            return tupleType.elements.onlyElement?.type.asyncToken
+        }
+        return nil
     }
 }

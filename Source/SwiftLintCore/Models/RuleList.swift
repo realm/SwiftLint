@@ -40,13 +40,14 @@ public struct RuleList {
 
     // MARK: - Internal
 
-    package func allRulesWrapped(configurationDict: [String: Any] = [:]) throws -> [ConfigurationRuleWrapper] {
+    package func allRulesWrapped(configurationDict: [String: Any] = [:])
+            throws(RuleListError) -> [ConfigurationRuleWrapper] {
         var rules = [String: ConfigurationRuleWrapper]()
 
         // Add rules where configuration exists
         for (key, configuration) in configurationDict {
             guard let identifier = identifier(for: key), let ruleType = list[identifier] else { continue }
-            guard rules[identifier] == nil else { throw RuleListError.duplicatedConfigurations(rule: ruleType) }
+            guard rules[identifier] == nil else { throw .duplicatedConfigurations(rule: ruleType) }
             do {
                 let configuredRule = try ruleType.init(configuration: configuration)
                 let isConfigured = (configuration as? [String: Any])?.isEmpty == false

@@ -11,7 +11,7 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "max_number_of_single_line_parameters")
     private(set) var maxNumberOfSingleLineParameters: Int?
 
-    func validate() throws {
+    func validate() throws(Issue) {
         guard let maxNumberOfSingleLineParameters else {
             return
         }

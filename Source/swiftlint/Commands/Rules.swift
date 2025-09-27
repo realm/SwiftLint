@@ -22,11 +22,11 @@ extension SwiftLint {
         @Argument(help: "The rule identifier to display description for")
         var ruleID: String?
 
-        func run() throws {
+        func run() throws(SwiftLintError) {
             let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
             if let ruleID {
                 guard let rule = RuleRegistry.shared.rule(forID: ruleID) else {
-                    throw SwiftLintError.usageError(description: "No rule with identifier: \(ruleID)")
+                    throw .usageError(description: "No rule with identifier: \(ruleID)")
                 }
                 printDescription(for: rule, with: configuration)
                 return

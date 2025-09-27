@@ -36,9 +36,9 @@ final class AutoConfigParserTests: XCTestCase {
             """
             struct S {
 
-                mutating func apply(configuration: Any) throws {
+                mutating func apply(configuration: Any) throws(Issue) {
                     guard let configuration = configuration as? [String: Any] else {
-                        throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                        throw .invalidConfiguration(ruleID: Parent.identifier)
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
@@ -71,7 +71,7 @@ final class AutoConfigParserTests: XCTestCase {
                 @ConfigurationElement(key: "name")
                 var eB = 2
 
-                mutating func apply(configuration: Any) throws {
+                mutating func apply(configuration: Any) throws(Issue) {
                     if $eA.key.isEmpty {
                         $eA.key = "e_a"
                     }
@@ -79,7 +79,7 @@ final class AutoConfigParserTests: XCTestCase {
                         $eB.key = "e_b"
                     }
                     guard let configuration = configuration as? [String: Any] else {
-                        throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                        throw .invalidConfiguration(ruleID: Parent.identifier)
                     }
                     if let value = configuration[$eA.key] {
                         try eA.apply(value, ruleID: Parent.identifier)
@@ -122,7 +122,7 @@ final class AutoConfigParserTests: XCTestCase {
                 @ConfigurationElement(inline: false)
                 var eC = 3
 
-                mutating func apply(configuration: Any) throws {
+                mutating func apply(configuration: Any) throws(Issue) {
                     if $eA.key.isEmpty {
                         $eA.key = "e_a"
                     }
@@ -131,7 +131,7 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     do {
                         try eB.apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {
@@ -166,9 +166,9 @@ final class AutoConfigParserTests: XCTestCase {
             """
             struct S: SeverityBasedRuleConfiguration {
 
-                mutating func apply(configuration: Any) throws {
+                mutating func apply(configuration: Any) throws(Issue) {
                     guard let configuration = configuration as? [String: Any] else {
-                        throw Issue.invalidConfiguration(ruleID: Parent.identifier)
+                        throw .invalidConfiguration(ruleID: Parent.identifier)
                     }
                     if !supportedKeys.isSuperset(of: configuration.keys) {
                         let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
@@ -207,7 +207,7 @@ final class AutoConfigParserTests: XCTestCase {
                 @ConfigurationElement
                 var foo = 2
 
-                mutating func apply(configuration: Any) throws {
+                mutating func apply(configuration: Any) throws(Issue) {
                     if $severityConfiguration.key.isEmpty {
                         $severityConfiguration.key = "severity_configuration"
                     }
@@ -216,7 +216,7 @@ final class AutoConfigParserTests: XCTestCase {
                     }
                     do {
                         try severityConfiguration.apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue as Issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     guard let configuration = configuration as? [String: Any] else {

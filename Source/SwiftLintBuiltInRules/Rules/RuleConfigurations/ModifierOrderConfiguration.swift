@@ -24,11 +24,11 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration {
 }
 
 extension SwiftDeclarationAttributeKind.ModifierGroup: AcceptableByConfigurationElement {
-    public init(fromAny value: Any, context ruleID: String) throws {
+    public init(fromAny value: Any, context ruleID: String) throws(Issue) {
         if let value = value as? String, let newSelf = Self(rawValue: value), newSelf != .atPrefixed {
             self = newSelf
         } else {
-            throw Issue.invalidConfiguration(ruleID: ruleID)
+            throw .invalidConfiguration(ruleID: ruleID)
         }
     }
 

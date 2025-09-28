@@ -39,6 +39,14 @@
   * `sorted_imports`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [SimplyDanny](https://github.com/SimplyDanny)
+* Add new `prefer_asset_symbols` rule that suggests using asset symbols over 
+  string-based image initialization to avoid typos and enable compile-time 
+  checking. This rule detects `UIImage(named:)` and `SwiftUI.Image(_:)` calls 
+  with string literals and suggests using asset symbols instead.  
+  [417-72KI](https://github.com/417-72KI)
+  [#5939](https://github.com/realm/SwiftLint/issues/5939)
+
+* None.
 
 ### Bug Fixes
 

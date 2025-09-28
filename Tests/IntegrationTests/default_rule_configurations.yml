@@ -857,6 +857,11 @@ period_spacing:
   meta:
     opt-in: true
     correctable: true
+prefer_asset_symbols:
+  severity: warning
+  meta:
+    opt-in: false
+    correctable: false
 prefer_condition_list:
   severity: warning
   meta:

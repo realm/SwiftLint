@@ -55,6 +55,12 @@ final class LegacyRandomRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class LegacyUIGraphicsFunctionRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyUIGraphicsFunctionRule.description)
+    }
+}
+
 final class LetVarWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
@@ -148,11 +154,5 @@ final class MultilineParametersRuleGeneratedTests: SwiftLintTestCase {
 final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultipleClosuresWithTrailingClosureRule.description)
-    }
-}
-
-final class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSLocalizedStringKeyRule.description)
     }
 }

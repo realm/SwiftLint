@@ -56,7 +56,8 @@
 
 * Add new default `invisible_character` rule that detects invisible characters
   like zero-width space (U+200B), zero-width non-joiner (U+200C),
-  and FEFF formatting character (U+FEFF) in string literals, which can cause hard-to-debug issues.  
+  and FEFF formatting character (U+FEFF) in string literals, which can cause
+  hard-to-debug issues.  
   [kapitoshka438](https://github.com/kapitoshka438)
   [#6045](https://github.com/realm/SwiftLint/issues/6045)
 
@@ -64,6 +65,12 @@
   an identifier from an outer scope.  
   [nadeemnali](https://github.com/nadeemnali)
   [#6228](https://github.com/realm/SwiftLint/issues/6228)
+  
+* Add `legacy_uigraphics_functions` rule to encourage the use of modern
+  `UIGraphicsImageRenderer` instead of the legacy `UIGraphics{Begin|End}ImageContext`.
+  The modern replacement is safer, cleaner, Retina-aware and more performant.  
+  [Dimitri Dupuis-Latour](https://github.com/DimDL)
+  [#6268](https://github.com/realm/SwiftLint/issues/6268)
 
 ### Bug Fixes
 

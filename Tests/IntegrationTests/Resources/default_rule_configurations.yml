@@ -628,6 +628,11 @@ legacy_random:
   meta:
     opt-in: false
     correctable: false
+legacy_uigraphics_function:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: false
 let_var_whitespace:
   severity: warning
   meta:

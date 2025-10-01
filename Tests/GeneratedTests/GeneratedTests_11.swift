@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class XCTFailMessageRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(XCTFailMessageRule.description)
+    }
+}
+
 final class XCTSpecificMatcherRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTSpecificMatcherRule.description)

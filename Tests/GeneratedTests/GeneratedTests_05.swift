@@ -37,6 +37,12 @@ final class LegacyRandomRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class LegacyUIGraphicsFunctionsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyUIGraphicsFunctionsRule.description)
+    }
+}
+
 final class LetVarWhitespaceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
@@ -148,11 +154,5 @@ final class NSNumberInitAsFunctionReferenceRuleGeneratedTests: SwiftLintTestCase
 final class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSObjectPreferIsEqualRule.description)
-    }
-}
-
-final class NestingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NestingRule.description)
     }
 }

@@ -28,7 +28,11 @@
 
 ### Enhancements
 
-* None.
+* Add `legacy_uigraphics_functions` rule to encourage the use of modern
+  UIGraphicsImageRenderer instead of legacy UIGraphics{Begin|End}ImageContext.
+  The modern replacement is safer, cleaner, Retina-aware and more performant.  
+  [Dimitri Dupuis-Latour](https://github.com/DimDL)
+  [#6268](https://github.com/realm/SwiftLint/issues/6268)
 
 ### Bug Fixes
 

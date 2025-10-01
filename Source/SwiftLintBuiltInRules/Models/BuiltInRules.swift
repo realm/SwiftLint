@@ -107,6 +107,7 @@ public let builtInRules: [any Rule.Type] = [
     LegacyNSGeometryFunctionsRule.self,
     LegacyObjcTypeRule.self,
     LegacyRandomRule.self,
+    LegacyUIGraphicsFunctionsRule.self,
     LetVarWhitespaceRule.self,
     LineLengthRule.self,
     LiteralExpressionEndIndentationRule.self,

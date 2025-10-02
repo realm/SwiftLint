@@ -17,7 +17,7 @@ struct LegacyUIGraphicsFunctionsRule: Rule {
                 myUIView.drawHierarchy(in: bounds, afterScreenUpdates: true)
             }
             """),
-            
+
             Example("""
             let renderer = UIGraphicsImageRenderer(size: newSize)
             let combined = renderer.image { _ in
@@ -25,12 +25,12 @@ struct LegacyUIGraphicsFunctionsRule: Rule {
                 watermark.draw(in: CGRect(origin: .zero, size: watermarkSize))
             }
             """),
-            
+
             Example("""
             let format = UIGraphicsImageRendererFormat()
             format.scale = 1.0
             format.opaque = true
-            
+
             let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
             return renderer.image { _ in
                 image.draw(in: CGRect(origin: .zero, size: newSize))
@@ -44,7 +44,7 @@ struct LegacyUIGraphicsFunctionsRule: Rule {
             let optionalScreenshot = ↓UIGraphicsGetImageFromCurrentImageContext()
             ↓UIGraphicsEndImageContext()
             """),
-            
+
             Example("""
             ↓UIGraphicsBeginImageContext(newSize)
             background.draw(in: CGRect(origin: .zero, size: newSize))
@@ -52,7 +52,7 @@ struct LegacyUIGraphicsFunctionsRule: Rule {
             let optionalOutput = ↓UIGraphicsGetImageFromCurrentImageContext()
             ↓UIGraphicsEndImageContext()
             """),
-            
+
             Example("""
             ↓UIGraphicsBeginImageContextWithOptions(newSize, true, 1.0)
             image.draw(in: CGRect(origin: .zero, size: newSize))

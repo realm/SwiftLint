@@ -1,4 +1,7 @@
-struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
+import SwiftLintCore
+
+@SwiftSyntaxRule(explicitRewriter: true)
+struct LegacyNSGeometryFunctionsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -76,7 +79,7 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
         ]
     )
 
-    private static let legacyFunctions: [String: LegacyFunctionRuleHelper.RewriteStrategy] = [
+    private static let legacyFunctions: [String: LegacyFunctionRewriteStrategy] = [
         "NSHeight": .property(name: "height"),
         "NSIntegralRect": .property(name: "integral"),
         "NSIsEmptyRect": .property(name: "isEmpty"),
@@ -99,20 +102,18 @@ struct LegacyNSGeometryFunctionsRule: SwiftSyntaxCorrectableRule {
         "NSIntersectionRect": .function(name: "intersection", argumentLabels: [""]),
         "NSPointInRect": .function(name: "contains", argumentLabels: [""], reversed: true),
     ]
+}
 
-    func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
-        LegacyFunctionRuleHelper.Visitor(
-            configuration: configuration,
-            file: file,
-            legacyFunctions: Self.legacyFunctions
-        )
+private extension LegacyNSGeometryFunctionsRule {
+    final class Visitor: LegacyFunctionVisitor<ConfigurationType> {
+        init(configuration: ConfigurationType, file: SwiftLintFile) {
+            super.init(configuration: configuration, file: file, legacyFunctions: legacyFunctions)
+        }
     }
 
-    func makeRewriter(file: SwiftLintFile) -> ViolationsSyntaxRewriter<ConfigurationType>? {
-        LegacyFunctionRuleHelper.Rewriter(
-            legacyFunctions: Self.legacyFunctions,
-            configuration: configuration,
-            file: file
-        )
+    final class Rewriter: LegacyFunctionRewriter<ConfigurationType> {
+        init(configuration: ConfigurationType, file: SwiftLintFile) {
+            super.init(configuration: configuration, file: file, legacyFunctions: legacyFunctions)
+        }
     }
 }

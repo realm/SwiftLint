@@ -141,13 +141,6 @@ let package = Package(
             swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
-            name: "CLITests",
-            dependencies: [
-                "SwiftLintFramework",
-            ],
-            swiftSettings: swiftFeatures + strictConcurrency
-        ),
-        .testTarget(
             name: "CoreTests",
             dependencies: [
                 "SwiftLintCore",
@@ -166,6 +159,18 @@ let package = Package(
             ],
             exclude: [
                 "BUILD",
+            ],
+            swiftSettings: swiftFeatures + strictConcurrency
+        ),
+        .testTarget(
+            name: "FileSystemAccessTests",
+            dependencies: [
+                "SwiftLintFramework",
+                "TestHelpers",
+                "SwiftLintCoreMacros",
+            ],
+            exclude: [
+                "Resources",
             ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),

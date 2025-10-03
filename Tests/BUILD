@@ -2,23 +2,25 @@ load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library", "swift_test")
 load("//bazel:copts.bzl", "STRICT_COPTS", "TARGETED_COPTS")
 load(":generated_tests.bzl", "generated_tests")
 
-# CLITests
+# FileSystemAccessTests
 
 swift_library(
-    name = "CLITests.library",
+    name = "FileSystemAccessTests.library",
     package_name = "SwiftLint",
     testonly = True,
-    srcs = glob(["CLITests/**/*.swift"]),
+    srcs = glob(["FileSystemAccessTests/*.swift"], exclude = ["FileSystemAccessTests/Resources/**"]),
     copts = STRICT_COPTS,
-    module_name = "CLITests",
+    module_name = "FileSystemAccessTests",
     deps = [
         "//:SwiftLintFramework",
+        "//Tests/TestHelpers",
     ],
 )
 
 swift_test(
-    name = "CLITests",
-    deps = [":CLITests.library"],
+    name = "FileSystemAccessTests",
+    data = glob(["FileSystemAccessTests/Resources/**"], allow_empty = True),
+    deps = [":FileSystemAccessTests.library"],
 )
 
 # MacroTests

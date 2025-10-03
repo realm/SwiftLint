@@ -1,8 +1,9 @@
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import TestHelpers
 import XCTest
+
+@testable import SwiftLintFramework
 
 // swiftlint:disable file_length
 
@@ -629,12 +630,6 @@ extension ConfigurationTests {
 
         XCTAssertEqual(configuration1.cachePath, "cache/path/1")
         XCTAssertEqual(configuration2.cachePath, "cache/path/1")
-    }
-}
-
-extension [any Rule] {
-    var customRules: CustomRules? {
-        first(where: { $0 is CustomRules }) as? CustomRules
     }
 }
 

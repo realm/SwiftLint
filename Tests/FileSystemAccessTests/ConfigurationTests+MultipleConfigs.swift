@@ -1,6 +1,8 @@
+import TestHelpers
+import XCTest
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintFramework
-import XCTest
 
 // swiftlint:disable file_length
 

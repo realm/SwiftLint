@@ -1,6 +1,7 @@
 @testable import SwiftLintBuiltInRules
-@testable import SwiftLintCore
 import XCTest
+
+@testable import SwiftLintCore
 
 private var temporaryDirectoryPath: String {
     let result = URL(

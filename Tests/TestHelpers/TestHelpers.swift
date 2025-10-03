@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
-import SwiftLintFramework
 import XCTest
+
+@testable import SwiftLintFramework
 
 // swiftlint:disable file_length
 
@@ -578,5 +579,11 @@ private struct FocusedRuleDescription {
 private extension RuleDescription {
     func focused() -> FocusedRuleDescription {
         FocusedRuleDescription(rule: self)
+    }
+}
+
+public extension [any Rule] {
+    var customRules: CustomRules? {
+        first(where: { $0 is CustomRules }) as? CustomRules
     }
 }

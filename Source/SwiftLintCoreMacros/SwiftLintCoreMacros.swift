@@ -10,5 +10,7 @@ struct SwiftLintCoreMacros: CompilerPlugin {
         AcceptableByConfigurationElement.self,
         DisabledWithoutSourceKit.self,
         SwiftSyntaxRule.self,
+        TemporaryDirectory.self,
+        WorkingDirectory.self,
     ]
 }

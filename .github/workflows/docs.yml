@@ -36,12 +36,30 @@ jobs:
         run: |
           export PATH="/usr/share/swift/usr/bin:$PATH"
           make docs_linux
-      - name: Validate documentation coverage
+      - name: Process documentation violations
         run: |
-          if ruby -rjson -e "j = JSON.parse(File.read('docs/undocumented.json')); exit j['warnings'].length != 0"; then
-            echo "Undocumented declarations:"
-            cat docs/undocumented.json
-            exit 1
+          if [ -f "docs/undocumented.json" ]; then
+            violation_count=$(ruby -rjson -e "puts JSON.parse(File.read('docs/undocumented.json'))['warnings'].length")
+
+            if [ "$violation_count" -gt 0 ]; then
+              echo "⚠️ Found $violation_count documentation violations"
+
+              # Create GitHub annotations for each violation
+              ruby -rjson -e "
+                data = JSON.parse(File.read('docs/undocumented.json'))
+                data['warnings'].each do |warning|
+                  # Convert absolute path to relative path for the annotation
+                  file_path = warning['file'].gsub('/home/runner/work/SwiftLint/SwiftLint/', '')
+                  puts \"::error file=#{file_path},line=#{warning['line']}::Undocumented #{warning['symbol_kind'].split('.').last}: #{warning['symbol']}\"
+                end
+              "
+
+              exit 1
+            else
+              echo "✅ No documentation violations found"
+            fi
+          else
+            echo "❌ undocumented.json file not found"
           fi
       - name: Upload documentation
         if: github.event_name == 'push'

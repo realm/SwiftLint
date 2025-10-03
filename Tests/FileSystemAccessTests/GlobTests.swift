@@ -1,6 +1,7 @@
-@testable import SwiftLintFramework
 import TestHelpers
 import XCTest
+
+@testable import SwiftLintFramework
 
 final class GlobTests: SwiftLintTestCase {
     private var mockPath: String {

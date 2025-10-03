@@ -6,7 +6,7 @@ included:
   - Package.swift
 excluded:
   - Tests/BuiltInRulesTests/Resources
-  - Tests/FrameworkTests/Resources
+  - Tests/FileSystemAccessTests/Resources
 
 # Enabled/disabled rules
 analyzer_rules:
@@ -66,7 +66,6 @@ empty_xctest_method: *unit_test_configuration
 file_name:
   excluded:
     - Exports.swift
-    - GeneratedTests.swift
     - Macros.swift
     - Reporters+Register.swift
     - Rules+Register.swift
@@ -76,6 +75,7 @@ file_name:
     - TestHelpers.swift
   excluded_paths:
     - Tests/GeneratedTests/GeneratedTests_\d\d\.swift
+    - Tests/FileSystemAccessTests/.+\.swift
 final_test_case: *unit_test_configuration
 function_body_length: 60
 identifier_name:

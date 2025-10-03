@@ -8,9 +8,9 @@ load(
 
 TEST_TARGETS = [
     "//Tests:BuiltInRulesTests",
-    "//Tests:CLITests",
     "//Tests:CoreTests",
     "//Tests:ExtraRulesTests",
+    "//Tests:FileSystemAccessTests",
     "//Tests:FrameworkTests",
     "//Tests:GeneratedTests",
     "//Tests:IntegrationTests",

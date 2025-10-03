@@ -31,6 +31,7 @@ swift_library(
     module_name = "MacroTests",
     deps = [
         "//:SwiftLintCoreMacrosLib",
+        "//Tests/TestHelpers",
         "@SwiftSyntax//:SwiftSyntaxMacrosTestSupport_opt",
     ],
 )

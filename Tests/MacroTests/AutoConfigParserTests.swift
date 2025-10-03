@@ -1,9 +1,12 @@
-@testable import SwiftLintCoreMacros
+import SwiftSyntaxMacroExpansion
+import SwiftSyntaxMacrosGenericTestSupport
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
+@testable import SwiftLintCoreMacros
+
 private let macros = [
-    "AutoConfigParser": AutoConfigParser.self
+    "AutoConfigParser": MacroSpec(type: AutoConfigParser.self)
 ]
 
 final class AutoConfigParserTests: XCTestCase {
@@ -22,7 +25,9 @@ final class AutoConfigParserTests: XCTestCase {
             diagnostics: [
                 DiagnosticSpec(message: SwiftLintCoreMacroError.notStruct.message, line: 1, column: 1)
             ],
-            macros: macros)
+            macroSpecs: macros,
+            failureHandler: failureHandler
+        )
     }
 
     func testNoConfigurationElements() {
@@ -48,7 +53,8 @@ final class AutoConfigParserTests: XCTestCase {
                 }
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 
@@ -95,7 +101,8 @@ final class AutoConfigParserTests: XCTestCase {
                 }
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 
@@ -151,8 +158,8 @@ final class AutoConfigParserTests: XCTestCase {
                 }
             }
             """,
-            macros: macros
-        )
+            macroSpecs: macros,
+            failureHandler: failureHandler)
     }
 
     func testSeverityBasedConfigurationWithoutSeverityProperty() {
@@ -185,7 +192,9 @@ final class AutoConfigParserTests: XCTestCase {
                     column: 8
                 ),
             ],
-            macros: macros)
+            macroSpecs: macros,
+            failureHandler: failureHandler
+        )
     }
 
     func testSeverityAppliedTwice() {
@@ -236,7 +245,8 @@ final class AutoConfigParserTests: XCTestCase {
                 }
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 }

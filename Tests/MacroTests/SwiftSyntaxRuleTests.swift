@@ -1,9 +1,12 @@
-@testable import SwiftLintCoreMacros
+import SwiftSyntaxMacroExpansion
+import SwiftSyntaxMacrosGenericTestSupport
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
+@testable import SwiftLintCoreMacros
+
 private let macros = [
-    "SwiftSyntaxRule": SwiftSyntaxRule.self
+    "SwiftSyntaxRule": MacroSpec(type: SwiftSyntaxRule.self)
 ]
 
 final class SwiftSyntaxRuleTests: XCTestCase {
@@ -22,7 +25,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 }
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 
@@ -41,7 +45,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 }
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 
@@ -75,7 +80,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             extension Hello: OptInRule {
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 
@@ -97,7 +103,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             extension Hello: SwiftSyntaxCorrectableRule {
             }
             """,
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 
@@ -123,7 +130,8 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 76),
                 DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 88),
             ],
-            macros: macros
+            macroSpecs: macros,
+            failureHandler: failureHandler
         )
     }
 }

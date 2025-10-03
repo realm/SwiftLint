@@ -16,3 +16,20 @@ def generated_tests():
     generated_test_shard("08")
     generated_test_shard("09")
     generated_test_shard("10")
+
+    native.test_suite(
+        name = "GeneratedTests",
+        tests = [
+        ":GeneratedTests_01",
+        ":GeneratedTests_02",
+        ":GeneratedTests_03",
+        ":GeneratedTests_04",
+        ":GeneratedTests_05",
+        ":GeneratedTests_06",
+        ":GeneratedTests_07",
+        ":GeneratedTests_08",
+        ":GeneratedTests_09",
+        ":GeneratedTests_10"
+        ],
+        visibility = ["//visibility:public"],
+    )

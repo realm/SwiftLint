@@ -27,7 +27,11 @@ config_setting(
 
 swift_library(
     name = "SwiftLintCoreMacrosLib",
-    srcs = glob(["Source/SwiftLintCoreMacros/*.swift"]),
+    srcs = glob(
+        ["Source/SwiftLintCoreMacros/*.swift"],
+        # Contains the `@main` declaration which causes linker errors if used as a library in tests.
+        exclude = ["Source/SwiftLintCoreMacros/SwiftLintCoreMacros.swift"]
+    ),
     copts = STRICT_COPTS,
     module_name = "SwiftLintCoreMacros",
     visibility = ["//visibility:public"],

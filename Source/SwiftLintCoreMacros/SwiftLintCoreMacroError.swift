@@ -9,6 +9,8 @@ enum SwiftLintCoreMacroError: String, DiagnosticMessage {
     case notEnum = "Attribute can only be applied to enums"
     case noStringRawType = "Attribute can only be applied to enums with a 'String' raw type"
     case noBooleanLiteral = "Macro argument must be a boolean literal"
+    case noBody = "Macro can only be applied to functions with a body"
+    case missingPathArgument = "Missing required 'path' argument"
 
     var message: String {
         rawValue

@@ -57,40 +57,19 @@ enum SwiftSyntaxRule: ExtensionMacro {
 
 private extension AttributeSyntax {
     func foldArgument(_ context: some MacroExpansionContext) -> Bool {
-        findArgument(withName: "foldExpressions", in: context)
+        isArgumentTrue(withName: "foldExpressions", in: context)
     }
 
     func explicitRewriterArgument(_ context: some MacroExpansionContext) -> Bool {
-        findArgument(withName: "explicitRewriter", in: context)
+        isArgumentTrue(withName: "explicitRewriter", in: context)
     }
 
     func correctableArgument(_ context: some MacroExpansionContext) -> Bool {
-        findArgument(withName: "correctable", in: context)
+        isArgumentTrue(withName: "correctable", in: context)
     }
 
     func optInArgument(_ context: some MacroExpansionContext) -> Bool {
-        findArgument(withName: "optIn", in: context)
-    }
-
-    private func findArgument(withName name: String, in context: some MacroExpansionContext) -> Bool {
-        if case let .argumentList(args) = arguments, let first = args.first(where: { $0.label?.text == name }) {
-            let expr = first.expression
-            if expr.isBooleanLiteral {
-                return expr.isTrueLiteral
-            }
-            context.diagnose(SwiftLintCoreMacroError.noBooleanLiteral.diagnose(at: expr))
-        }
-        return false
-    }
-}
-
-private extension ExprSyntax {
-    var isBooleanLiteral: Bool {
-        `is`(BooleanLiteralExprSyntax.self)
-    }
-
-    var isTrueLiteral: Bool {
-        `as`(BooleanLiteralExprSyntax.self)?.literal.text == "true"
+        isArgumentTrue(withName: "optIn", in: context)
     }
 }
 

@@ -1,9 +1,12 @@
-@testable import SwiftLintCoreMacros
+import SwiftSyntaxMacroExpansion
+import SwiftSyntaxMacrosGenericTestSupport
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
+@testable import SwiftLintCoreMacros
+
 private let macros = [
-    "AcceptableByConfigurationElement": AcceptableByConfigurationElement.self
+    "AcceptableByConfigurationElement": MacroSpec(type: AcceptableByConfigurationElement.self)
 ]
 
 final class AcceptableByConfigurationElementTests: XCTestCase {
@@ -22,7 +25,9 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             diagnostics: [
                 DiagnosticSpec(message: SwiftLintCoreMacroError.notEnum.message, line: 1, column: 1)
             ],
-            macros: macros)
+            macroSpecs: macros,
+            failureHandler: failureHandler
+        )
     }
 
     func testNoStringRawType() {
@@ -40,7 +45,9 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             diagnostics: [
                 DiagnosticSpec(message: SwiftLintCoreMacroError.noStringRawType.message, line: 1, column: 1)
             ],
-            macros: macros)
+            macroSpecs: macros,
+            failureHandler: failureHandler
+        )
     }
 
     func testPrivateEnum() {
@@ -68,7 +75,9 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 }
             }
             """,
-            macros: macros)
+            macroSpecs: macros,
+            failureHandler: failureHandler
+        )
     }
 
     func testPublicEnum() {
@@ -96,6 +105,8 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 }
             }
             """,
-            macros: macros)
+            macroSpecs: macros,
+            failureHandler: failureHandler
+        )
     }
 }

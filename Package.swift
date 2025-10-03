@@ -204,6 +204,7 @@ let package = Package(
             name: "MacroTests",
             dependencies: [
                 "SwiftLintCoreMacros",
+                "TestHelpers",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ],
             swiftSettings: swiftFeatures + strictConcurrency

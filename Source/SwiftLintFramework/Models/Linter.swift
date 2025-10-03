@@ -408,11 +408,11 @@ public struct CollectedLinter {
             return [:]
         }
 
-        if let parserDiagnostics = file.parserDiagnostics, parserDiagnostics.isNotEmpty {
+        if file.parserDiagnostics.isNotEmpty {
             queuedPrintError(
                 "warning: Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
             )
-            queuedPrintError(toJSON(["diagnostics": parserDiagnostics]))
+            queuedPrintError(toJSON(["diagnostics": file.parserDiagnostics]))
             return [:]
         }
 

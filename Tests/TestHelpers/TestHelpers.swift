@@ -439,23 +439,23 @@ public extension XCTestCase {
                            parserDiagnosticsDisabledForTests: Bool = true) {
         let ruleDescription = ruleDescription.focused()
 
-        SwiftLintCore.parserDiagnosticsDisabledForTests = parserDiagnosticsDisabledForTests
+        SwiftLintCore.$parserDiagnosticsDisabledForTests.withValue(parserDiagnosticsDisabledForTests) {
+            // corrections
+            ruleDescription.corrections.forEach {
+                testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
+            }
+            // make sure strings that don't trigger aren't corrected
+            ruleDescription.nonTriggeringExamples.forEach {
+                testCorrection(($0, $0), configuration: config, testMultiByteOffsets: testMultiByteOffsets)
+            }
 
-        // corrections
-        ruleDescription.corrections.forEach {
-            testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
-        }
-        // make sure strings that don't trigger aren't corrected
-        ruleDescription.nonTriggeringExamples.forEach {
-            testCorrection(($0, $0), configuration: config, testMultiByteOffsets: testMultiByteOffsets)
-        }
-
-        // "disable" commands do not correct
-        ruleDescription.corrections.forEach { before, _ in
-            for command in disableCommands {
-                let beforeDisabled = command + before.code
-                let expectedCleaned = before.with(code: cleanedContentsAndMarkerOffsets(from: beforeDisabled).0)
-                config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+            // "disable" commands do not correct
+            ruleDescription.corrections.forEach { before, _ in
+                for command in disableCommands {
+                    let beforeDisabled = command + before.code
+                    let expectedCleaned = before.with(code: cleanedContentsAndMarkerOffsets(from: beforeDisabled).0)
+                    config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+                }
             }
         }
     }

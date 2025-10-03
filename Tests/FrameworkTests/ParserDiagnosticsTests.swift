@@ -5,8 +5,9 @@ import XCTest
 
 final class ParserDiagnosticsTests: SwiftLintTestCase {
     func testFileWithParserErrorDiagnostics() {
-        parserDiagnosticsDisabledForTests = false
-        XCTAssertNotNil(SwiftLintFile(contents: "importz Foundation").parserDiagnostics)
+        $parserDiagnosticsDisabledForTests.withValue(false) {
+            XCTAssertNotNil(SwiftLintFile(contents: "importz Foundation").parserDiagnostics)
+        }
     }
 
     func testFileWithParserErrorDiagnosticsDoesntAutocorrect() throws {
@@ -24,7 +25,6 @@ final class ParserDiagnosticsTests: SwiftLintTestCase {
     }
 
     func testFileWithParserWarningDiagnostics() throws {
-        parserDiagnosticsDisabledForTests = false
         // extraneous duplicate parameter name; 'bar' already has an argument label
         let original = """
         func foo(bar bar: String) ->   Int { 0 }
@@ -34,7 +34,9 @@ final class ParserDiagnosticsTests: SwiftLintTestCase {
         func foo(bar bar: String) -> Int { 0 }
         """
 
-        XCTAssertEqual(SwiftLintFile(contents: original).parserDiagnostics, [])
+        $parserDiagnosticsDisabledForTests.withValue(false) {
+            XCTAssertEqual(SwiftLintFile(contents: original).parserDiagnostics, [])
+        }
 
         let ruleDescription = ReturnArrowWhitespaceRule.description
             .with(corrections: [Example(original): Example(corrected)])
@@ -45,7 +47,8 @@ final class ParserDiagnosticsTests: SwiftLintTestCase {
     }
 
     func testFileWithoutParserDiagnostics() {
-        parserDiagnosticsDisabledForTests = false
-        XCTAssertEqual(SwiftLintFile(contents: "import Foundation").parserDiagnostics, [])
+        $parserDiagnosticsDisabledForTests.withValue(false) {
+            XCTAssertEqual(SwiftLintFile(contents: "import Foundation").parserDiagnostics, [])
+        }
     }
 }

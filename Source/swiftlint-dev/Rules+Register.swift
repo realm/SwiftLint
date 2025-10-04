@@ -164,6 +164,10 @@ private extension SwiftLintDev.Rules.Register {
                 visibility = ["//visibility:public"],
             )
 
+        GENERATED_TEST_TARGETS = [
+                \#(testTargets)
+        ]
+
         """#
     }
 
@@ -226,7 +230,7 @@ private extension SwiftLintDev.Rules.Register {
 
         // Generate test targets list for test_suite
         let testTargetsString = rulesContext.shardNumbers.map {
-            #"":GeneratedTests_\#($0)""#
+            #""//Tests:GeneratedTests_\#($0)""#
         }.joined(separator: ",\n        ")
 
         let bzlFile = testsParentDirectory.appendingPathComponent(

@@ -1,8 +1,10 @@
 load(
     "@rules_xcodeproj//xcodeproj:defs.bzl",
-    "xcode_schemes",
+    "xcschemes",
     "xcodeproj",
 )
+
+load("//Tests:generated_tests.bzl", "GENERATED_TEST_TARGETS")
 
 # Xcode Integration
 
@@ -12,25 +14,28 @@ TEST_TARGETS = [
     "//Tests/ExtraRulesTests:ExtraRulesTests",
     "//Tests:FileSystemAccessTests",
     "//Tests:FrameworkTests",
-    "//Tests:GeneratedTests",
     "//Tests:IntegrationTests",
     "//Tests:MacroTests",
-]
+] + GENERATED_TEST_TARGETS
 
 xcodeproj(
     name = "xcodeproj",
     install_directory = "",
     project_name = "SwiftLint",
-    schemes = [
-        xcode_schemes.scheme(
+    xcschemes = [
+        xcschemes.scheme(
             name = "SwiftLint",
-            launch_action = xcode_schemes.launch_action(
-                "//:swiftlint",
+            run = xcschemes.run(
+                launch_target = xcschemes.launch_target(
+                    "//:swiftlint",
+                ),
                 args = [
-                    "--progress",
+                    xcschemes.arg("--progress"),
                 ],
             ),
-            test_action = xcode_schemes.test_action(TEST_TARGETS),
+            test = xcschemes.test(
+                test_targets = TEST_TARGETS,
+            ),
         ),
     ],
     top_level_targets = ["//:swiftlint"] + TEST_TARGETS,

@@ -290,7 +290,6 @@ final class ModifierOrderTests: SwiftLintTestCase {
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
     }
 
-    // swiftlint:disable:next function_body_length
     func testCorrectionsAreNotAppliedToIrrelevantModifier() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
@@ -312,7 +311,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 """):
                 Example("""
                 class Foo {
-                    final weak static var bar: UIView?
+                    final static weak var bar: UIView?
                 }
                 """),
                 Example("""
@@ -328,21 +327,13 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 Example("""
                 class Foo {
                     @objc
-                    private
-                    private(set)
-                    class
-                    final
-                    var bar: UIView?
+                    private private(set) class final var bar: UIView?
                 }
                 """):
                 Example("""
                 class Foo {
                     @objc
-                    final
-                    private(set)
-                    private
-                    class
-                    var bar: UIView?
+                    final private private(set) class var bar: UIView?
                 }
                 """),
                 Example("""

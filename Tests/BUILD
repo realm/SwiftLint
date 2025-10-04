@@ -21,6 +21,7 @@ swift_test(
     name = "FileSystemAccessTests",
     data = glob(["FileSystemAccessTests/Resources/**"], allow_empty = True),
     deps = [":FileSystemAccessTests.library"],
+    visibility = ["//visibility:public"],
 )
 
 # MacroTests
@@ -41,6 +42,7 @@ swift_library(
 swift_test(
     name = "MacroTests",
     deps = [":MacroTests.library"],
+    visibility = ["//visibility:public"],
 )
 
 # BuiltInRulesTests
@@ -73,6 +75,7 @@ swift_test(
         exclude = ["BuiltInRulesTests/Resources/FileNameNoSpaceRuleFixtures/**"],
     ),
     deps = [":BuiltInRulesTests.library"],
+    visibility = ["//visibility:public"],
 )
 
 # CoreTests
@@ -101,6 +104,7 @@ swift_test(
         allow_empty = True,
     ),
     deps = [":CoreTests.library"],
+    visibility = ["//visibility:public"],
 )
 
 # FrameworkTests
@@ -129,6 +133,7 @@ swift_test(
         allow_empty = True,
     ),
     deps = [":FrameworkTests.library"],
+    visibility = ["//visibility:public"],
 )
 
 # GeneratedTests

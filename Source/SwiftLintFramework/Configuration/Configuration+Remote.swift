@@ -58,11 +58,6 @@ internal extension Configuration.FileGraph.FilePath {
         if let mockedValue = Configuration.FileGraph.FilePath.mockedNetworkResults[urlString] {
             configString = mockedValue
         } else {
-            // Handle missing network
-            guard Reachability.connectivityStatus != .disconnected else {
-                return try handleMissingNetwork(urlString: urlString, cachedFilePath: cachedFilePath)
-            }
-
             // Handle wrong url format
             guard let url = URL(string: urlString) else {
                 throw Issue.genericWarning("Invalid configuration entry: \"\(urlString)\" isn't a valid url.")
@@ -115,21 +110,6 @@ internal extension Configuration.FileGraph.FilePath {
         // Handle success
         self = .existing(path: filePath)
         return filePath
-    }
-
-    private mutating func handleMissingNetwork(urlString: String, cachedFilePath: String?) throws -> String {
-        if let cachedFilePath {
-            queuedPrintError(
-                "warning: No internet connectivity: Unable to load remote config from \"\(urlString)\". "
-                    + "Using cached version as a fallback."
-            )
-            self = .existing(path: cachedFilePath)
-            return cachedFilePath
-        }
-        throw Issue.genericWarning(
-            "No internet connectivity: Unable to load remote config from \"\(urlString)\". "
-                + "Also didn't found cached version to fallback to."
-        )
     }
 
     private mutating func handleWrongData(

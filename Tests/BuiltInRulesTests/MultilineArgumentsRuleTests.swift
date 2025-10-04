@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class MultilineArgumentsRuleTests: SwiftLintTestCase {
-    func testMultilineArgumentsWithWithNextLine() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct MultilineArgumentsRuleTests {
+    @Test
+    func multilineArgumentsWithWithNextLine() {
         let nonTriggeringExamples = [
             Example("foo()"),
             Example("foo(0)"),
@@ -27,7 +31,8 @@ final class MultilineArgumentsRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["first_argument_location": "next_line"])
     }
 
-    func testMultilineArgumentsWithWithSameLine() {
+    @Test
+    func multilineArgumentsWithWithSameLine() {
         let nonTriggeringExamples = [
             Example("foo()"),
             Example("foo(0)"),
@@ -54,7 +59,8 @@ final class MultilineArgumentsRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["first_argument_location": "same_line"])
     }
 
-    func testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
+    @Test
+    func multilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
         let nonTriggeringExamples: [Example] = [
             Example("foo()"),
             Example("foo(0)"),

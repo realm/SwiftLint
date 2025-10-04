@@ -49,7 +49,7 @@ enum AutoConfigParser: MemberMacro {
             }
         }
         return [
-            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws(Issue)") {
+            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws(SwiftLintCore.Issue)") {
                 for option in nonInlinedOptions {
                     """
                     if $\(raw: option).key.isEmpty {
@@ -61,7 +61,7 @@ enum AutoConfigParser: MemberMacro {
                     """
                     do {
                         try \(raw: option).apply(configuration, ruleID: Parent.identifier)
-                    } catch let issue where issue == Issue.nothingApplied(ruleID: Parent.identifier) {
+                    } catch let issue where issue == SwiftLintCore.Issue.nothingApplied(ruleID: Parent.identifier) {
                         // Acceptable. Continue.
                     }
                     """
@@ -83,7 +83,10 @@ enum AutoConfigParser: MemberMacro {
                 """
                 if !supportedKeys.isSuperset(of: configuration.keys) {
                     let unknownKeys = Set(configuration.keys).subtracting(supportedKeys)
-                    Issue.invalidConfigurationKeys(ruleID: Parent.identifier, keys: unknownKeys).print()
+                    SwiftLintCore.Issue.invalidConfigurationKeys(
+                        ruleID: Parent.identifier,
+                        keys: unknownKeys
+                    ).print()
                 }
                 """
                 """
@@ -115,7 +118,7 @@ enum AcceptableByConfigurationElement: ExtensionMacro {
             try ExtensionDeclSyntax("""
                 extension \(type): AcceptableByConfigurationElement {
                     \(raw: accessLevel)func asOption() -> OptionType { .symbol(rawValue) }
-                    \(raw: accessLevel)init(fromAny value: Any, context ruleID: String) throws(Issue) {
+                    \(raw: accessLevel)init(fromAny value: Any, context ruleID: String) throws(SwiftLintCore.Issue) {
                         if let value = value as? String, let newSelf = Self(rawValue: value) {
                             self = newSelf
                         } else {

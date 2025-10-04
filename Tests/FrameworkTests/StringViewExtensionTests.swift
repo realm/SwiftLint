@@ -1,23 +1,25 @@
 import SourceKittenFramework
-import TestHelpers
-import XCTest
+import Testing
 
-final class StringViewExtensionTests: SwiftLintTestCase {
-    func testByteOffsetInvalidCases() {
+@Suite
+struct StringViewExtensionTests {
+    @Test
+    func byteOffsetInvalidCases() {
         let view = StringView("")
 
-        XCTAssertNil(view.byteOffset(forLine: 0, bytePosition: 1))
-        XCTAssertNil(view.byteOffset(forLine: 1, bytePosition: 0))
-        XCTAssertNil(view.byteOffset(forLine: -10, bytePosition: 1))
-        XCTAssertNil(view.byteOffset(forLine: 0, bytePosition: -11))
-        XCTAssertNil(view.byteOffset(forLine: 2, bytePosition: 1))
+        #expect(view.byteOffset(forLine: 0, bytePosition: 1) == nil)
+        #expect(view.byteOffset(forLine: 1, bytePosition: 0) == nil)
+        #expect(view.byteOffset(forLine: -10, bytePosition: 1) == nil)
+        #expect(view.byteOffset(forLine: 0, bytePosition: -11) == nil)
+        #expect(view.byteOffset(forLine: 2, bytePosition: 1) == nil)
     }
 
-    func testByteOffsetFromLineAndBytePosition() {
-        XCTAssertEqual(StringView("").byteOffset(forLine: 1, bytePosition: 1), 0)
-        XCTAssertEqual(StringView("a").byteOffset(forLine: 1, bytePosition: 1), 0)
-        XCTAssertEqual(StringView("aaa").byteOffset(forLine: 1, bytePosition: 3), 2)
-        XCTAssertEqual(StringView("a🍰a").byteOffset(forLine: 1, bytePosition: 6), 5)
-        XCTAssertEqual(StringView("a🍰a\na").byteOffset(forLine: 2, bytePosition: 1), 7)
+    @Test
+    func byteOffsetFromLineAndBytePosition() {
+        #expect(StringView("").byteOffset(forLine: 1, bytePosition: 1) == 0)
+        #expect(StringView("a").byteOffset(forLine: 1, bytePosition: 1) == 0)
+        #expect(StringView("aaa").byteOffset(forLine: 1, bytePosition: 3) == 2)
+        #expect(StringView("a🍰a").byteOffset(forLine: 1, bytePosition: 6) == 5)
+        #expect(StringView("a🍰a\na").byteOffset(forLine: 2, bytePosition: 1) == 7)
     }
 }

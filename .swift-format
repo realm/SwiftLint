@@ -1,0 +1,9 @@
+{
+    "indentation" : {
+        "spaces" : 4
+    },
+    "lineLength": 120,
+    "rules" : {
+        "NoAccessLevelOnExtensionDeclaration": false
+    }
+}

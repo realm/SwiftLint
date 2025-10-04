@@ -1,27 +1,39 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class RulesTests: SwiftLintTestCase {
-    func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
-                   testMultiByteOffsets: false, testShebang: false)
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct RulesTests {
+    @Test
+    func leadingWhitespace() {
+        verifyRule(
+            LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+            testMultiByteOffsets: false, testShebang: false
+        )
     }
 
-    func testMark() {
+    @Test
+    func mark() {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
-    func testRequiredEnumCase() {
+    @Test
+    func requiredEnumCase() {
         let configuration = ["NetworkResponsable": ["notConnected": "error"]]
         verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
     }
 
-    func testTrailingNewline() {
-        verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
-                   stringDoesntViolate: false)
+    @Test
+    func trailingNewline() {
+        verifyRule(
+            TrailingNewlineRule.description, commentDoesntViolate: false,
+            stringDoesntViolate: false
+        )
     }
 
-    func testOrphanedDocComment() {
+    @Test
+    func orphanedDocComment() {
         verifyRule(OrphanedDocCommentRule.description, commentDoesntViolate: false, skipCommentTests: true)
     }
 }

@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
-    func testLocalVars() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ExplicitTypeInterfaceRuleTests {
+    @Test
+    func localVars() {
         let nonTriggeringExamples = [
             Example("func foo() {\nlet intVal: Int = 1\n}"),
             Example("""
@@ -30,7 +34,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description)
     }
 
-    func testExcludeLocalVars() {
+    @Test
+    func excludeLocalVars() {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("func foo() {\nlet intVal = 1\n}")
         ]
@@ -42,7 +47,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
     }
 
-    func testExcludeClassVars() {
+    @Test
+    func excludeClassVars() {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             Example("class Foo {\n  static var myStaticVar = 0\n}\n"),
             Example("class Foo {\n  static let myStaticLet = 0\n}\n"),
@@ -59,7 +65,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
     }
 
-    func testAllowRedundancy() {
+    @Test
+    func allowRedundancy() {
         let nonTriggeringExamples: [Example] = [
             Example("class Foo {\n  var myVar: Int? = 0\n}\n"),
             Example("class Foo {\n  let myVar: Int? = 0\n}\n"),
@@ -90,7 +97,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
     }
 
-    func testEmbeddedInStatements() {
+    @Test
+    func embeddedInStatements() {
         let nonTriggeringExamples = [
             Example("""
             func foo() {
@@ -117,7 +125,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description)
     }
 
-    func testCaptureGroup() {
+    @Test
+    func captureGroup() {
         let nonTriggeringExamples = [
             Example("""
             var k: Int = 0
@@ -150,7 +159,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description)
     }
 
-    func testFastEnumerationDeclaration() {
+    @Test
+    func fastEnumerationDeclaration() {
         let nonTriggeringExamples = [
             Example("""
             func foo() {
@@ -173,7 +183,8 @@ final class ExplicitTypeInterfaceRuleTests: SwiftLintTestCase {
         verifyRule(description)
     }
 
-    func testSwitchCaseDeclarations() {
+    @Test
+    func switchCaseDeclarations() {
         let nonTriggeringExamples = [
             Example("""
             enum Foo {

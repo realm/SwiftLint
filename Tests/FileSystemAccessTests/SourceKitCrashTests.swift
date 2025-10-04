@@ -1,16 +1,13 @@
+import Foundation
 import TestHelpers
-import XCTest
+import Testing
 
 @testable import SwiftLintFramework
 
-final class SourceKitCrashTests: SwiftLintTestCase {
-    override func invokeTest() {
-        CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
-            super.invokeTest()
-        }
-    }
-
-    func testAssertHandlerIsNotCalledOnNormalFile() {
+extension FileSystemAccessTestSuite.SourceKitCrashTests {
+    @Test(.sourceKitRequestsWithoutRule)
+    @TemporaryDirectory
+    func assertHandlerIsNotCalledOnNormalFile() {
         let file = SwiftLintFile(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false
 
@@ -18,11 +15,12 @@ final class SourceKitCrashTests: SwiftLintTestCase {
         file.assertHandler = { assertHandlerCalled = true }
 
         _ = file.syntaxMap
-        XCTAssertFalse(assertHandlerCalled,
-                       "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
+        #expect(!assertHandlerCalled, "Expects assert handler was not called on accessing SwiftLintFile.syntaxMap")
     }
 
-    func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
+    @Test(.sourceKitRequestsWithoutRule)
+    @TemporaryDirectory
+    func assertHandlerIsCalledOnFileThatCrashedSourceKitService() {
         let file = SwiftLintFile(contents: "A file crashed SourceKitService")
         file.sourcekitdFailed = true
 
@@ -30,15 +28,16 @@ final class SourceKitCrashTests: SwiftLintTestCase {
         file.assertHandler = { assertHandlerCalled = true }
 
         _ = file.syntaxMap
-        XCTAssertTrue(assertHandlerCalled,
-                      "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
+        #expect(assertHandlerCalled, "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
     }
 
-    func testRulesWithFileThatCrashedSourceKitService() throws {
-        let file = try XCTUnwrap(SwiftLintFile(path: "\(TestResources.path())/ProjectMock/Level0.swift"))
+    @Test(.sourceKitRequestsWithoutRule)
+    @WorkingDirectory(path: Constants.Dir.level0)
+    func rulesWithFileThatCrashedSourceKitService() throws {
+        let file = try #require(SwiftLintFile(path: "Level0.swift"))
         file.sourcekitdFailed = true
         file.assertHandler = {
-            XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")
+            Issue.record("If this called, rule's SourceKitFreeRule is not properly configured")
         }
         let configuration = Configuration(rulesMode: .onlyConfiguration(allRuleIdentifiers))
         let storage = RuleStorage()

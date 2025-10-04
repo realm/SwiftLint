@@ -134,9 +134,11 @@ private extension SwiftLintDev.Rules.Register {
         // swiftlint:disable:next blanket_disable_command superfluous_disable_command
         // swiftlint:disable single_test_class type_name
 
+        import TestHelpers
+        import Testing
+
         @testable import SwiftLintBuiltInRules
         @testable import SwiftLintCore
-        import TestHelpers
 
         \(testClassesString)
 
@@ -189,8 +191,10 @@ private extension SwiftLintDev.Rules.Register {
             let shardRules = rulesContext.shardRules(forIndex: shardIndex)
 
             let testClasses = shardRules.map { testName in """
-                final class \(testName)GeneratedTests: SwiftLintTestCase {
-                    func testWithDefaultConfiguration() {
+                @Suite(.rulesRegistered)
+                struct \(testName)GeneratedTests {
+                    @Test
+                    func withDefaultConfiguration() {
                         verifyRule(\(testName).description)
                     }
                 }

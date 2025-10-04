@@ -1,35 +1,41 @@
-@testable import SwiftLintCore
-import XCTest
+import SwiftLintCore
+import Testing
 
-final class CommentLinesVisitorTests: XCTestCase {
-    func testEmptyFile() {
-        XCTAssertEqual(commentOnlyLines(in: ""), [])
+@Suite
+struct CommentLinesVisitorTests {
+    @Test
+    func emptyFile() {
+        #expect(commentOnlyLines(in: "").isEmpty)
     }
 
-    func testSingleLineComment() {
-        XCTAssertEqual(commentOnlyLines(in: "// This is a comment"), [1])
+    @Test
+    func singleLineComment() {
+        #expect(commentOnlyLines(in: "// This is a comment") == [1])
     }
 
-    func testMultipleSingleLineComments() {
+    @Test
+    func multipleSingleLineComments() {
         let contents = """
             // First comment
             // Second comment
             // Third comment
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 2, 3])
+        #expect(commentOnlyLines(in: contents) == [1, 2, 3])
     }
 
-    func testBlockComment() {
+    @Test
+    func blockComment() {
         let contents = """
             /*
             * This is a block comment
             * spanning multiple lines
             */
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 2, 3, 4])
+        #expect(commentOnlyLines(in: contents) == [1, 2, 3, 4])
     }
 
-    func testMixedCommentsAndCode() {
+    @Test
+    func mixedCommentsAndCode() {
         let contents = """
             // Comment at the top
             import Foundation
@@ -41,29 +47,32 @@ final class CommentLinesVisitorTests: XCTestCase {
             }
             // Final comment
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 4, 6, 9])
+        #expect(commentOnlyLines(in: contents) == [1, 4, 6, 9])
     }
 
-    func testCommentsWithWhitespace() {
+    @Test
+    func commentsWithWhitespace() {
         let contents = """
                 // Comment with leading spaces
             \t// Comment with leading tab
             \t  // Comment with mixed whitespace
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 2, 3])
+        #expect(commentOnlyLines(in: contents) == [1, 2, 3])
     }
 
-    func testEmptyLinesIgnored() {
+    @Test
+    func emptyLinesIgnored() {
         let contents = """
             // First comment
 
 
             // Second comment after empty lines
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 4])
+        #expect(commentOnlyLines(in: contents) == [1, 4])
     }
 
-    func testDocumentationComments() {
+    @Test
+    func documentationComments() {
         let contents = """
             /// This is a documentation comment
             /// for a function
@@ -72,26 +81,29 @@ final class CommentLinesVisitorTests: XCTestCase {
             */
             func test() {}
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 2, 3, 4, 5])
+        #expect(commentOnlyLines(in: contents) == [1, 2, 3, 4, 5])
     }
 
-    func testInlineCommentsNotCounted() {
+    @Test
+    func inlineCommentsNotCounted() {
         let contents = """
             let x = 5 // This comment is on the same line as code
             print("test") /* inline block comment */
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [])
+        #expect(commentOnlyLines(in: contents).isEmpty)
     }
 
-    func testCommentBlockStartedOnCodeLine() {
+    @Test
+    func commentBlockStartedOnCodeLine() {
         let contents = """
             print("test") /* block
                              comment */
             """
-        XCTAssertEqual(commentOnlyLines(in: contents), [2])
+        #expect(commentOnlyLines(in: contents) == [2])
     }
 
-    func testComplexExample() {
+    @Test
+    func complexExample() {
         let contents = """
             // Header comment
             /*
@@ -118,10 +130,11 @@ final class CommentLinesVisitorTests: XCTestCase {
             // Trailing comment
             """
 
-        XCTAssertEqual(commentOnlyLines(in: contents), [1, 2, 3, 4, 5, 9, 11, 14, 15, 16, 17, 19, 23])
+        #expect(commentOnlyLines(in: contents) == [1, 2, 3, 4, 5, 9, 11, 14, 15, 16, 17, 19, 23])
     }
 
-    func testLineNumberAccuracy() {
+    @Test
+    func lineNumberAccuracy() {
         let contents = """
             let x = 1
             // Line 2 comment
@@ -132,7 +145,7 @@ final class CommentLinesVisitorTests: XCTestCase {
             let z = 3 // Line 7 inline
             """
 
-        XCTAssertEqual(commentOnlyLines(in: contents), [2, 4, 5, 6])
+        #expect(commentOnlyLines(in: contents) == [2, 4, 5, 6])
     }
 
     private func commentOnlyLines(in contents: String) -> [Int] {

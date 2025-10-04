@@ -1,9 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class TypeContentsOrderRuleTests: SwiftLintTestCase {
-    // swiftlint:disable:next function_body_length
-    func testTypeContentsOrderReversedOrder() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TypeContentsOrderRuleTests {
+    @Test
+    func typeContentsOrderReversedOrder() { // swiftlint:disable:this function_body_length
         // Test with reversed `order` entries
         let nonTriggeringExamples = [
             Example([
@@ -164,8 +167,8 @@ final class TypeContentsOrderRuleTests: SwiftLintTestCase {
         )
     }
 
-    // swiftlint:disable:next function_body_length
-    func testTypeContentsOrderGroupedOrder() {
+    @Test
+    func typeContentsOrderGroupedOrder() { // swiftlint:disable:this function_body_length
         // Test with grouped `order` entries
         let nonTriggeringExamples = [
             Example("""

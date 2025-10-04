@@ -1,44 +1,51 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class TodoRuleTests: SwiftLintTestCase {
-    func testTodo() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TodoRuleTests {
+    @Test
+    func todo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
-    func testTodoMessage() {
+    @Test
+    func todoMessage() {
         let example = Example("fatalError() // TODO: Implement")
         let violations = self.violations(example)
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement)")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "TODOs should be resolved (Implement)")
     }
 
-    func testFixMeMessage() {
+    @Test
+    func fixMeMessage() {
         let example = Example("fatalError() // FIXME: Implement")
         let violations = self.violations(example)
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement)")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "FIXMEs should be resolved (Implement)")
     }
 
-    func testOnlyFixMe() {
+    @Test
+    func onlyFixMe() {
         let example = Example("""
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
-        """)
+            """)
         let violations = self.violations(example, config: ["only": ["FIXME"]])
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement fixme)")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "FIXMEs should be resolved (Implement fixme)")
     }
 
-    func testOnlyTodo() {
+    @Test
+    func onlyTodo() {
         let example = Example("""
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
-        """)
+            """)
         let violations = self.violations(example, config: ["only": ["TODO"]])
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement todo)")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "TODOs should be resolved (Implement todo)")
     }
 
     private func violations(_ example: Example, config: Any? = nil) -> [StyleViolation] {

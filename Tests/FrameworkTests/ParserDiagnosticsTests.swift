@@ -1,54 +1,55 @@
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
-import XCTest
 
-final class ParserDiagnosticsTests: SwiftLintTestCase {
-    func testFileWithParserErrorDiagnostics() {
-        $parserDiagnosticsDisabledForTests.withValue(false) {
-            XCTAssertNotNil(SwiftLintFile(contents: "importz Foundation").parserDiagnostics)
-        }
+@Suite(.parserDiagnosticsEnabled(true))
+struct ParserDiagnosticsTests {
+    @Test
+    func fileWithParserErrorDiagnostics() {
+        #expect(SwiftLintFile(contents: "importz Foundation").parserDiagnostics.isNotEmpty)
     }
 
-    func testFileWithParserErrorDiagnosticsDoesntAutocorrect() throws {
-        let contents = """
-        print(CGPointZero))
-        """
-        XCTAssertEqual(SwiftLintFile(contents: contents).parserDiagnostics, ["extraneous code \')\' at top level"])
+    @Test
+    func fileWithParserErrorDiagnosticsDoesntAutocorrect() throws {
+        let contents = "print(CGPointZero))"
+        #expect(SwiftLintFile(contents: contents).parserDiagnostics == ["extraneous code \')\' at top level"])
 
         let ruleDescription = LegacyConstantRule.description
             .with(corrections: [Example(contents): Example(contents)])
 
-        let config = try XCTUnwrap(makeConfig(nil, ruleDescription.identifier, skipDisableCommandTests: true))
-        verifyCorrections(ruleDescription, config: config, disableCommands: [],
-                          testMultiByteOffsets: false, parserDiagnosticsDisabledForTests: false)
+        verifyCorrections(
+            ruleDescription,
+            config: try #require(makeConfig(nil, ruleDescription.identifier, skipDisableCommandTests: true)),
+            disableCommands: [],
+            testMultiByteOffsets: false,
+            parserDiagnosticsDisabledForTests: false
+        )
     }
 
-    func testFileWithParserWarningDiagnostics() throws {
+    @Test
+    func fileWithParserWarningDiagnostics() throws {
         // extraneous duplicate parameter name; 'bar' already has an argument label
-        let original = """
-        func foo(bar bar: String) ->   Int { 0 }
-        """
+        let original = "func foo(bar bar: String) ->   Int { 0 }"
+        let corrected = "func foo(bar bar: String) -> Int { 0 }"
 
-        let corrected = """
-        func foo(bar bar: String) -> Int { 0 }
-        """
-
-        $parserDiagnosticsDisabledForTests.withValue(false) {
-            XCTAssertEqual(SwiftLintFile(contents: original).parserDiagnostics, [])
-        }
+        #expect(SwiftLintFile(contents: original).parserDiagnostics.isEmpty)
 
         let ruleDescription = ReturnArrowWhitespaceRule.description
             .with(corrections: [Example(original): Example(corrected)])
 
-        let config = try XCTUnwrap(makeConfig(nil, ruleDescription.identifier, skipDisableCommandTests: true))
-        verifyCorrections(ruleDescription, config: config, disableCommands: [],
-                          testMultiByteOffsets: false, parserDiagnosticsDisabledForTests: false)
+        verifyCorrections(
+            ruleDescription,
+            config: try #require(makeConfig(nil, ruleDescription.identifier, skipDisableCommandTests: true)),
+            disableCommands: [],
+            testMultiByteOffsets: false,
+            parserDiagnosticsDisabledForTests: false
+        )
     }
 
-    func testFileWithoutParserDiagnostics() {
-        $parserDiagnosticsDisabledForTests.withValue(false) {
-            XCTAssertEqual(SwiftLintFile(contents: "import Foundation").parserDiagnostics, [])
-        }
+    @Test
+    func fileWithoutParserDiagnostics() throws {
+        #expect(SwiftLintFile(contents: "import Foundation").parserDiagnostics.isEmpty)
     }
 }

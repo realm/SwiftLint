@@ -1,10 +1,13 @@
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
-import XCTest
 
-final class IndentationWidthRuleTests: SwiftLintTestCase {
-    func testInvalidIndentation() async throws {
+@Suite(.rulesRegistered)
+struct IndentationWidthRuleTests {
+    @Test
+    func invalidIndentation() async throws {
         let defaultValue = IndentationWidthConfiguration().indentationWidth
 
         for indentation in [0, -1, -5] {
@@ -13,17 +16,17 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
                 try testee.apply(configuration: ["indentation_width": indentation])
 
                 // Value remains the default.
-                XCTAssertEqual(testee.indentationWidth, defaultValue)
+                #expect(testee.indentationWidth == defaultValue)
             }
-            XCTAssertEqual(
-                console,
-                "warning: Invalid configuration for 'indentation_width' rule. Falling back to default."
+            #expect(
+                console == "warning: Invalid configuration for 'indentation_width' rule. Falling back to default."
             )
         }
     }
 
     /// It's not okay to have the first line indented.
-    func testFirstLineIndentation() {
+    @Test
+    func firstLineIndentation() {
         assert1Violation(in: "    firstLine")
         assert1Violation(in: "   firstLine")
         assert1Violation(in: " firstLine")
@@ -33,28 +36,32 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
     }
 
     /// It's not okay to indent using both tabs and spaces in one line.
-    func testMixedTabSpaceIndentation() {
+    @Test
+    func mixedTabSpaceIndentation() {
         // Expect 2 violations as secondLine is also indented by 8 spaces (which isn't valid)
         assertViolations(in: "firstLine\n\t    secondLine", equals: 2)
         assertViolations(in: "firstLine\n    \tsecondLine", equals: 2)
     }
 
     /// It's okay to indent using either tabs or spaces in different lines.
-    func testMixedTabsAndSpacesIndentation() {
+    @Test
+    func mixedTabsAndSpacesIndentation() {
         assertNoViolation(in: "firstLine\n\tsecondLine\n        thirdLine")
         assertNoViolation(in: "firstLine\n    secondLine\n\t\tthirdLine")
         assertNoViolation(in: "firstLine\n\tsecondLine\n        thirdLine\n\t\t\tfourthLine")
     }
 
     /// It's okay to keep the same indentation.
-    func testKeepingIndentation() {
+    @Test
+    func keepingIndentation() {
         assertNoViolation(in: "firstLine\nsecondLine")
         assertNoViolation(in: "firstLine    \nsecondLine\n    thirdLine")
         assertNoViolation(in: "firstLine\t\nsecondLine\n\tthirdLine")
     }
 
     /// It's only okay to indent using one tab or indentationWidth spaces.
-    func testIndentationLength() {
+    @Test
+    func indentationLength() {
         assert1Violation(in: "firstLine\n        secondLine", indentationWidth: 1)
         assert1Violation(in: "firstLine\n        secondLine", indentationWidth: 2)
         assert1Violation(in: "firstLine\n        secondLine", indentationWidth: 3)
@@ -78,7 +85,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
     }
 
     /// It's okay to unindent indentationWidth * (1, 2, 3, ...) - x iff x == 0.
-    func testUnindentation() {
+    @Test
+    func unindentation() {
         assert1Violation(in: "firstLine\n    secondLine\n        thirdLine\n fourthLine")
         assert1Violation(in: "firstLine\n    secondLine\n        thirdLine\n  fourthLine")
         assert1Violation(in: "firstLine\n    secondLine\n        thirdLine\n   fourthLine")
@@ -90,7 +98,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
     }
 
     /// It's okay to have empty lines between iff the following indentations obey the rules.
-    func testEmptyLinesBetween() {
+    @Test
+    func emptyLinesBetween() {
         assertNoViolation(in: "firstLine\n\tsecondLine\n\n\tfourthLine")
         assertNoViolation(in: "firstLine\n\tsecondLine\n \n\tfourthLine")
         assertNoViolation(in: "firstLine\n\tsecondLine\n           \n\tfourthLine")
@@ -106,7 +115,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         assert1Violation(in: "firstLine\n\tsecondLine\n           \n            fourthLine")
     }
 
-    func testsBrackets() {
+    @Test
+    func sBrackets() {
         assertNoViolation(
             in: "firstLine\n    [\n        .thirdLine\n    ]\nfifthLine",
             includeComments: true
@@ -129,7 +139,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
     }
 
     /// It's okay to have comments not following the indentation pattern iff the configuration allows this.
-    func testCommentLines() {
+    @Test
+    func commentLines() {
         assert1Violation(
             in: "firstLine\n\tsecondLine\n\t\tthirdLine\n//test\n\t\tfourthLine",
             includeComments: true
@@ -160,7 +171,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
     }
 
     /// Duplicate warnings for one actual indentation issue should be avoided.
-    func testDuplicateWarningAvoidanceMechanism() {
+    @Test
+    func duplicateWarningAvoidanceMechanism() {
         // thirdLine is indented correctly, yet not in-line with the badly indented secondLine. This should be allowed.
         assert1Violation(in: "firstLine\n secondLine\nthirdLine")
 
@@ -181,7 +193,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         assertViolations(in: "firstLine\n     secondLine\n     thirdLine\n    fourthLine\n     fifthLine", equals: 2)
     }
 
-    func testIgnoredCompilerDirectives() {
+    @Test
+    func ignoredCompilerDirectives() {
         assertNoViolation(in: """
             struct S {
                             #if os(iOS)
@@ -215,7 +228,8 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
             """, includeCompilerDirectives: true)
     }
 
-    func testIncludeMultilineStrings() {
+    @Test
+    func includeMultilineStrings() {
         let example0 = #"""
             let x = """
                 string1
@@ -274,9 +288,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         indentationWidth: Int? = nil,
         includeComments: Bool = true,
         includeCompilerDirectives: Bool = true,
-        includeMultilineStrings: Bool = true,
-        file: StaticString = #filePath,
-        line: UInt = #line
+        includeMultilineStrings: Bool = true
     ) -> Int {
         var configDict: [String: Any] = [:]
         if let indentationWidth {
@@ -287,7 +299,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         configDict["include_multiline_strings"] = includeMultilineStrings
 
         guard let config = makeConfig(configDict, IndentationWidthRule.identifier) else {
-            XCTFail("Unable to create rule configuration.", file: (file), line: line)
+            Testing.Issue.record("Unable to create rule configuration.")
             return 0
         }
 
@@ -304,19 +316,20 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        XCTAssertEqual(
+        #expect(
             countViolations(
                 in: Example(string, file: (file), line: line),
                 indentationWidth: indentationWidth,
                 includeComments: includeComments,
                 includeCompilerDirectives: includeCompilerDirectives,
-                includeMultilineStrings: includeMultilineStrings,
-                file: file,
-                line: line
-            ),
-            expectedCount,
-            file: (file),
-            line: line
+                includeMultilineStrings: includeMultilineStrings
+            ) == expectedCount,
+            sourceLocation: SourceLocation(
+                fileID: #fileID,
+                filePath: String(describing: file),
+                line: Int(line),
+                column: 1
+            )
         )
     }
 

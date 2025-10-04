@@ -1,22 +1,20 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class CompilerProtocolInitRuleTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct CompilerProtocolInitRuleTests {
     private let ruleID = CompilerProtocolInitRule.identifier
 
-    func testViolationMessageForExpressibleByIntegerLiteral() throws {
-        let config = try XCTUnwrap(makeConfig(nil, ruleID))
+    @Test
+    func violationMessageForExpressibleByIntegerLiteral() throws {
+        let config = try #require(makeConfig(nil, ruleID))
         let allViolations = violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
-
-        let compilerProtocolInitViolation = allViolations.first { $0.ruleIdentifier == ruleID }
-        let violation = try XCTUnwrap(
-            compilerProtocolInitViolation,
-            "A compiler protocol init violation should have been triggered!"
-        )
-        XCTAssertEqual(
-            violation.reason,
-            "Initializers declared in compiler protocol ExpressibleByIntegerLiteral shouldn't be called directly"
+        let violation = try #require(allViolations.first { $0.ruleIdentifier == ruleID })
+        #expect(
+            violation.reason
+                == "Initializers declared in compiler protocol ExpressibleByIntegerLiteral shouldn't be called directly"
         )
     }
 }

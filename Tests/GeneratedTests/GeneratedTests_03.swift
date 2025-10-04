@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class EmptyParametersRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyParametersRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyParametersRule.description)
     }
 }
 
-final class EmptyParenthesesWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyParenthesesWithTrailingClosureRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 }
 
-final class EmptyStringRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyStringRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyStringRule.description)
     }
 }
 
-final class EmptyXCTestMethodRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EmptyXCTestMethodRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EmptyXCTestMethodRule.description)
     }
 }
 
-final class EnumCaseAssociatedValuesLengthRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct EnumCaseAssociatedValuesLengthRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(EnumCaseAssociatedValuesLengthRule.description)
     }
 }
 
-final class ExpiringTodoRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExpiringTodoRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExpiringTodoRule.description)
     }
 }
 
-final class ExplicitACLRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitACLRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExplicitACLRule.description)
     }
 }
 
-final class ExplicitEnumRawValueRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitEnumRawValueRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExplicitEnumRawValueRule.description)
     }
 }
 
-final class ExplicitInitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitInitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExplicitInitRule.description)
     }
 }
 
-final class ExplicitSelfRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitSelfRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExplicitSelfRule.description)
     }
 }
 
-final class ExplicitTopLevelACLRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitTopLevelACLRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExplicitTopLevelACLRule.description)
     }
 }
 
-final class ExplicitTypeInterfaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExplicitTypeInterfaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 }
 
-final class ExtensionAccessModifierRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ExtensionAccessModifierRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ExtensionAccessModifierRule.description)
     }
 }
 
-final class FallthroughRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FallthroughRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FallthroughRule.description)
     }
 }
 
-final class FatalErrorMessageRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FatalErrorMessageRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FatalErrorMessageRule.description)
     }
 }
 
-final class FileHeaderRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FileHeaderRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FileHeaderRule.description)
     }
 }
 
-final class FileLengthRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FileLengthRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FileLengthRule.description)
     }
 }
 
-final class FileNameNoSpaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FileNameNoSpaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FileNameNoSpaceRule.description)
     }
 }
 
-final class FileNameRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FileNameRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FileNameRule.description)
     }
 }
 
-final class FileTypesOrderRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FileTypesOrderRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FileTypesOrderRule.description)
     }
 }
 
-final class FinalTestCaseRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FinalTestCaseRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FinalTestCaseRule.description)
     }
 }
 
-final class FirstWhereRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FirstWhereRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FirstWhereRule.description)
     }
 }
 
-final class FlatMapOverMapReduceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct FlatMapOverMapReduceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)
     }
 }
 
-final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ForWhereRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ForWhereRule.description)
     }
 }
 
-final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ForceCastRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ForceCastRule.description)
     }
 }

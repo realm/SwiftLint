@@ -1,8 +1,10 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class PreferKeyPathRuleTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct PreferKeyPathRuleTests {
     private static let extendedMode = ["restrict_to_standard_functions": false]
     private static let ignoreIdentity = ["ignore_identity_closures": true]
     private static let extendedModeAndIgnoreIdentity = [
@@ -10,9 +12,8 @@ final class PreferKeyPathRuleTests: SwiftLintTestCase {
         "ignore_identity_closures": true,
     ]
 
-    func testIdentityExpressionInSwift6() throws {
-        try XCTSkipIf(SwiftVersion.current < .six)
-
+    @Test(.disabled(if: SwiftVersion.current < .six))
+    func identityExpressionInSwift6() throws {
         let description = PreferKeyPathRule.description
             .with(nonTriggeringExamples: [
                 Example("f.filter { a in b }"),

@@ -1,58 +1,65 @@
 import SourceKittenFramework
-import SwiftIDEUtils
+import Testing
+
 @testable import SwiftLintCore
-import SwiftSyntax
-import TestHelpers
-import XCTest
 
-final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
-    func testBasicKeywordMapping() {
+@Suite
+struct SwiftSyntaxKindBridgeTests {
+    @Test
+    func basicKeywordMapping() {
         // Test basic keyword mappings
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.keyword), .keyword)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.keyword) == .keyword)
     }
 
-    func testIdentifierMapping() {
+    @Test
+    func identifierMapping() {
         // Test identifier mappings
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.identifier), .identifier)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.dollarIdentifier), .identifier)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.identifier) == .identifier)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.dollarIdentifier) == .identifier)
     }
 
-    func testCommentMapping() {
+    @Test
+    func commentMapping() {
         // Test comment mappings
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.lineComment), .comment)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.blockComment), .comment)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.docLineComment), .docComment)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.docBlockComment), .docComment)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.lineComment) == .comment)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.blockComment) == .comment)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.docLineComment) == .docComment)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.docBlockComment) == .docComment)
     }
 
-    func testLiteralMapping() {
+    @Test
+    func literalMapping() {
         // Test literal mappings
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.stringLiteral), .string)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.integerLiteral), .number)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.floatLiteral), .number)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.stringLiteral) == .string)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.integerLiteral) == .number)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.floatLiteral) == .number)
     }
 
-    func testOperatorAndTypeMapping() {
+    @Test
+    func operatorAndTypeMapping() {
         // Test operator and type mappings
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.operator), .operator)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.type), .typeidentifier)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.operator) == .operator)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.type) == .typeidentifier)
     }
 
-    func testSpecialCaseMapping() {
+    @Test
+    func specialCaseMapping() {
         // Test special case mappings
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.attribute), .attributeID)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.editorPlaceholder), .placeholder)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.ifConfigDirective), .poundDirectiveKeyword)
-        XCTAssertEqual(SwiftSyntaxKindBridge.mapClassification(.argumentLabel), .argument)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.attribute) == .attributeID)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.editorPlaceholder) == .placeholder)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.ifConfigDirective) == .poundDirectiveKeyword)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.argumentLabel) == .argument)
     }
 
-    func testUnmappedClassifications() {
+    @Test
+    func unmappedClassifications() {
         // Test classifications that have no mapping
-        XCTAssertNil(SwiftSyntaxKindBridge.mapClassification(.none))
-        XCTAssertNil(SwiftSyntaxKindBridge.mapClassification(.regexLiteral))
+        #expect(SwiftSyntaxKindBridge.mapClassification(.none) == nil)
+        #expect(SwiftSyntaxKindBridge.mapClassification(.regexLiteral) == nil)
     }
 
-    func testSourceKittenSyntaxKindsGeneration() {
+    @Test
+    func sourceKittenSyntaxKindsGeneration() {
         // Test that we can generate SourceKitten-compatible tokens from a simple Swift file
         let contents = """
             // This is a comment
@@ -64,17 +71,18 @@ final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
         let tokens = SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
 
         // Verify we got some tokens
-        XCTAssertFalse(tokens.isEmpty)
+        #expect(!tokens.isEmpty)
 
         // Check that we have expected token types
         let tokenTypes = Set(tokens.map { $0.value.type })
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.comment.rawValue))
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.keyword.rawValue))
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.identifier.rawValue))
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.number.rawValue))
+        #expect(tokenTypes.contains(SyntaxKind.comment.rawValue))
+        #expect(tokenTypes.contains(SyntaxKind.keyword.rawValue))
+        #expect(tokenTypes.contains(SyntaxKind.identifier.rawValue))
+        #expect(tokenTypes.contains(SyntaxKind.number.rawValue))
     }
 
-    func testTokenOffsetAndLength() {
+    @Test
+    func tokenOffsetAndLength() {
         // Test that token offsets and lengths are correct
         let contents = "let x = 42"
         let file = SwiftLintFile(contents: contents)
@@ -93,19 +101,20 @@ final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
             }
             return false
         }
-        XCTAssertNotNil(letToken)
-        XCTAssertEqual(letToken?.value.offset.value, 0)
-        XCTAssertEqual(letToken?.value.length.value, 3)
+        #expect(letToken != nil)
+        #expect(letToken?.value.offset.value == 0)
+        #expect(letToken?.value.length.value == 3)
 
         // Find the number token
         let numberToken = tokens.first { $0.value.type == SyntaxKind.number.rawValue }
-        XCTAssertNotNil(numberToken)
+        #expect(numberToken != nil)
         // "42" starts at offset 8 and has length 2
-        XCTAssertEqual(numberToken?.value.offset.value, 8)
-        XCTAssertEqual(numberToken?.value.length.value, 2)
+        #expect(numberToken?.value.offset.value == 8)
+        #expect(numberToken?.value.length.value == 2)
     }
 
-    func testComplexCodeStructure() {
+    @Test
+    func complexCodeStructure() {
         // Test with more complex Swift code
         let contents = """
             import Foundation
@@ -128,16 +137,17 @@ final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
 
         // Verify we have various token types
         let tokenTypes = Set(tokens.map { $0.value.type })
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.keyword.rawValue))        // import, class, var, let, func
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.identifier.rawValue))     // Foundation, MyClass, name, etc.
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.docComment.rawValue))     // /// A sample class
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.comment.rawValue))        // // Properties
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.attributeID.rawValue))    // @objc
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.typeidentifier.rawValue)) // String, UUID
-        XCTAssertTrue(tokenTypes.contains(SyntaxKind.string.rawValue))         // "test", "Hello, \\(name)!"
+        #expect(tokenTypes.contains(SyntaxKind.keyword.rawValue))        // import, class, var, let, func
+        #expect(tokenTypes.contains(SyntaxKind.identifier.rawValue))     // Foundation, MyClass, name, etc.
+        #expect(tokenTypes.contains(SyntaxKind.docComment.rawValue))     // /// A sample class
+        #expect(tokenTypes.contains(SyntaxKind.comment.rawValue))        // // Properties
+        #expect(tokenTypes.contains(SyntaxKind.attributeID.rawValue))    // @objc    // @objc
+        #expect(tokenTypes.contains(SyntaxKind.typeidentifier.rawValue)) // String, UUID
+        #expect(tokenTypes.contains(SyntaxKind.string.rawValue))         // "test", "Hello, \\(name)!"
     }
 
-    func testNoSourceKitCallsAreMade() {
+    @Test
+    func noSourceKitCallsAreMade() {
         // This test verifies that the bridge doesn't make any SourceKit calls
         // If it did, the validation system would fatal error in test mode
 
@@ -151,21 +161,23 @@ final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
 
         // This should succeed without any fatal errors from the validation system
         let tokens = SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
-        XCTAssertFalse(tokens.isEmpty)
+        #expect(!tokens.isEmpty)
     }
 
-    func testEmptyFileHandling() {
+    @Test
+    func emptyFileHandling() {
         // Test that empty files are handled gracefully
         let file = SwiftLintFile(contents: "")
         let tokens = SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
-        XCTAssertTrue(tokens.isEmpty)
+        #expect(tokens.isEmpty)
     }
 
-    func testWhitespaceOnlyFile() {
+    @Test
+    func whitespaceOnlyFile() {
         // Test files with only whitespace
         let file = SwiftLintFile(contents: "   \n\n  \t  \n")
         let tokens = SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
         // Whitespace is not classified, so we should get no tokens
-        XCTAssertTrue(tokens.isEmpty)
+        #expect(tokens.isEmpty)
     }
 }

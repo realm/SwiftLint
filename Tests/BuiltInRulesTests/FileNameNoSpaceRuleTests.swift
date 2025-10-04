@@ -1,11 +1,13 @@
 import SourceKittenFramework
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
+
+@testable import SwiftLintBuiltInRules
 
 private let fixturesDirectory = "\(TestResources.path())/FileNameNoSpaceRuleFixtures"
 
-final class FileNameNoSpaceRuleTests: SwiftLintTestCase {
+@Suite(.rulesRegistered)
+struct FileNameNoSpaceRuleTests {
     private func validate(fileName: String, excludedOverride: [String]? = nil) throws -> [StyleViolation] {
         let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameNoSpaceRule
@@ -18,24 +20,33 @@ final class FileNameNoSpaceRuleTests: SwiftLintTestCase {
         return rule.validate(file: file)
     }
 
-    func testFileNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "File.swift").isEmpty)
+    @Test
+    func fileNameDoesntTrigger() throws {
+        try #expect(validate(fileName: "File.swift").isEmpty)
     }
 
-    func testFileWithSpaceDoesTrigger() {
-        XCTAssertEqual(try validate(fileName: "File Name.swift").count, 1)
+    @Test
+    func fileWithSpaceDoesTrigger() throws {
+        try #expect(validate(fileName: "File Name.swift").count == 1)
     }
 
-    func testExtensionNameDoesntTrigger() {
-        XCTAssert(try validate(fileName: "File+Extension.swift").isEmpty)
+    @Test
+    func extensionNameDoesntTrigger() throws {
+        try #expect(validate(fileName: "File+Extension.swift").isEmpty)
     }
 
-    func testExtensionWithSpaceDoesTrigger() {
-        XCTAssertEqual(try validate(fileName: "File+Test Extension.swift").count, 1)
+    @Test
+    func extensionWithSpaceDoesTrigger() throws {
+        try #expect(validate(fileName: "File+Test Extension.swift").count == 1)
     }
 
-    func testCustomExcludedList() {
-        XCTAssert(try validate(fileName: "File+Test Extension.swift",
-                               excludedOverride: ["File+Test Extension.swift"]).isEmpty)
+    @Test
+    func customExcludedList() throws {
+        try #expect(
+            validate(
+                fileName: "File+Test Extension.swift",
+                excludedOverride: ["File+Test Extension.swift"]
+            ).isEmpty
+        )
     }
 }

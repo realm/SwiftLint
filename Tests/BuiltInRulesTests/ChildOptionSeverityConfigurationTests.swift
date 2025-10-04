@@ -1,33 +1,42 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class ChildOptionSeverityConfigurationTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ChildOptionSeverityConfigurationTests {
     typealias TesteeType = ChildOptionSeverityConfiguration<RuleMock>
 
-    func testSeverity() {
-        XCTAssertNil(TesteeType.off.severity)
-        XCTAssertEqual(TesteeType.warning.severity, .warning)
-        XCTAssertEqual(TesteeType.error.severity, .error)
+    @Test
+    func severity() {
+        #expect(TesteeType.off.severity == nil)
+        #expect(TesteeType.warning.severity == .warning)
+        #expect(TesteeType.error.severity == .error)
     }
 
-    func testFromConfig() throws {
+    @Test
+    func fromConfig() throws {
         var testee = TesteeType.off
 
         try testee.apply(configuration: "warning")
-        XCTAssertEqual(testee, .warning)
+        #expect(testee == .warning)
 
         try testee.apply(configuration: "error")
-        XCTAssertEqual(testee, .error)
+        #expect(testee == .error)
 
         try testee.apply(configuration: "off")
-        XCTAssertEqual(testee, .off)
+        #expect(testee == .off)
     }
 
-    func testInvalidConfig() {
+    @Test
+    func invalidConfig() {
         var testee = TesteeType.off
 
-        XCTAssertThrowsError(try testee.apply(configuration: "no"))
-        XCTAssertThrowsError(try testee.apply(configuration: 1))
+        #expect(throws: (any Error).self) {
+            try testee.apply(configuration: "no")
+        }
+        #expect(throws: (any Error).self) {
+            try testee.apply(configuration: 1)
+        }
     }
 }

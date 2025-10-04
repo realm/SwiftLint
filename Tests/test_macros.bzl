@@ -24,4 +24,5 @@ def generated_test_shard(shard_number):
     swift_test(
         name = "GeneratedTests_{}".format(shard_number),
         deps = [":GeneratedTests_{}.library".format(shard_number)],
+        visibility = ["//visibility:public"],
     )

@@ -20,16 +20,29 @@ def generated_tests():
     native.test_suite(
         name = "GeneratedTests",
         tests = [
-        ":GeneratedTests_01",
-        ":GeneratedTests_02",
-        ":GeneratedTests_03",
-        ":GeneratedTests_04",
-        ":GeneratedTests_05",
-        ":GeneratedTests_06",
-        ":GeneratedTests_07",
-        ":GeneratedTests_08",
-        ":GeneratedTests_09",
-        ":GeneratedTests_10"
+        "//Tests:GeneratedTests_01",
+        "//Tests:GeneratedTests_02",
+        "//Tests:GeneratedTests_03",
+        "//Tests:GeneratedTests_04",
+        "//Tests:GeneratedTests_05",
+        "//Tests:GeneratedTests_06",
+        "//Tests:GeneratedTests_07",
+        "//Tests:GeneratedTests_08",
+        "//Tests:GeneratedTests_09",
+        "//Tests:GeneratedTests_10"
         ],
         visibility = ["//visibility:public"],
     )
+
+GENERATED_TEST_TARGETS = [
+        "//Tests:GeneratedTests_01",
+        "//Tests:GeneratedTests_02",
+        "//Tests:GeneratedTests_03",
+        "//Tests:GeneratedTests_04",
+        "//Tests:GeneratedTests_05",
+        "//Tests:GeneratedTests_06",
+        "//Tests:GeneratedTests_07",
+        "//Tests:GeneratedTests_08",
+        "//Tests:GeneratedTests_09",
+        "//Tests:GeneratedTests_10"
+]

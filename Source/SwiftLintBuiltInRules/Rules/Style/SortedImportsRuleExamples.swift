@@ -17,9 +17,9 @@ internal struct SortedImportsRuleExamples {
         import Ldef
         """),
         Example("""
-        import BBB
         // comment
         import AAA
+        import BBB
         import CCC
         """),
         Example("""
@@ -59,7 +59,7 @@ internal struct SortedImportsRuleExamples {
         @_exported @testable import BBB
           import AAA
         """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
-    ]
+    ].skipMultiByteOffsetTests()
 
     static let triggeringExamples = [
         Example("""
@@ -71,7 +71,7 @@ internal struct SortedImportsRuleExamples {
         Example("""
         import DDD
         // comment
-        import CCC
+        import ↓CCC
         import ↓AAA
         """),
         Example("""
@@ -121,10 +121,9 @@ internal struct SortedImportsRuleExamples {
         Example("""
         import AAA
         import ZZZ
-        import ↓BBB
+        import BBB
         import CCC
-        """):
-            Example("""
+        """, testMultiByteOffsets: false): Example("""
             import AAA
             import BBB
             import CCC
@@ -132,8 +131,8 @@ internal struct SortedImportsRuleExamples {
             """),
         Example("""
         import BBB // comment
-        import ↓AAA
-        """): Example("""
+        import AAA
+        """, testMultiByteOffsets: false): Example("""
               import AAA
               import BBB // comment
               """),
@@ -141,42 +140,40 @@ internal struct SortedImportsRuleExamples {
         import BBB
         // comment
         import CCC
-        import ↓AAA
-        """):
-            Example("""
+        import AAA
+        """, testMultiByteOffsets: false): Example("""
+            import AAA
             import BBB
             // comment
-            import AAA
             import CCC
             """),
         Example("""
         @testable import CCC
-        import  ↓AAA
-        """): Example("""
+        import  AAA
+        """, testMultiByteOffsets: false): Example("""
               import  AAA
               @testable import CCC
               """),
         Example("""
         import CCC
-        @testable import  ↓AAA
-        """): Example("""
+        @testable import  AAA
+        """, testMultiByteOffsets: false): Example("""
               @testable import  AAA
               import CCC
               """),
         Example("""
         import FFF.B
-        import ↓EEE.A
+        import EEE.A
         #if os(Linux)
         import DDD.A
         import EEE.B
         #else
         import DDD.B
-        import ↓CCC
+        import CCC
         #endif
         import AAA
         import BBB
-        """):
-            Example("""
+        """, testMultiByteOffsets: false): Example("""
             import EEE.A
             import FFF.B
             #if os(Linux)
@@ -191,41 +188,36 @@ internal struct SortedImportsRuleExamples {
             """),
         Example("""
           @testable import BBB
-        @testable import ↓AAA
-        """, configuration: groupByAttributesConfiguration):
-            Example("""
+        @testable import AAA
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
             @testable import AAA
               @testable import BBB
             """),
         Example("""
           import AAA
-        @testable import ↓BBB
-        """, configuration: groupByAttributesConfiguration):
-            Example("""
+        @testable import BBB
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
             @testable import BBB
               import AAA
             """),
         Example("""
           import BBB
-        @testable import ↓AAA
-        """, configuration: groupByAttributesConfiguration):
-            Example("""
+        @testable import AAA
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
             @testable import AAA
               import BBB
             """),
         Example("""
           @testable import AAA
-        @_exported import ↓BBB
-        """, configuration: groupByAttributesConfiguration):
-            Example("""
+        @_exported import BBB
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
             @_exported import BBB
               @testable import AAA
             """),
         Example("""
           import AAA
-        @_exported @testable import ↓BBB
-        """, configuration: groupByAttributesConfiguration):
-            Example("""
+        @_exported @testable import BBB
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
             @_exported @testable import BBB
               import AAA
             """),

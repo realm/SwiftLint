@@ -21,6 +21,12 @@
   [Swift Package Manager plugins](https://github.com/SimplyDanny/SwiftLintPlugins) continue
   to work with all versions down to Swift 5.9.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* `sorted_imports` rule's behavior changed in that it now treats imports directly adjacent
+  to each other as a group that is sorted together. Imports separated by at least one
+  non-import statement or empty line(s) are treated as separate groups. Comments are
+  considered part of the import group they are attached to and do not break it.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 
@@ -30,6 +36,7 @@
 
 * Rewrite the following rules with SwiftSyntax:
   * `modifier_order`
+  * `sorted_imports`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [SimplyDanny](https://github.com/SimplyDanny)
 

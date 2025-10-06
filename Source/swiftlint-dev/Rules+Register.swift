@@ -152,21 +152,19 @@ private extension SwiftLintDev.Rules.Register {
 
         load(":test_macros.bzl", "generated_test_shard")
 
+        GENERATED_TEST_TARGETS = [
+            \#(testTargets)
+        ]
+
         def generated_tests():
             """Creates all generated test targets for SwiftLint rules."""
         \#(macroInvocations)
 
             native.test_suite(
                 name = "GeneratedTests",
-                tests = [
-                \#(testTargets)
-                ],
+                tests = GENERATED_TEST_TARGETS,
                 visibility = ["//visibility:public"],
             )
-
-        GENERATED_TEST_TARGETS = [
-                \#(testTargets)
-        ]
 
         """#
     }
@@ -231,7 +229,7 @@ private extension SwiftLintDev.Rules.Register {
         // Generate test targets list for test_suite
         let testTargetsString = rulesContext.shardNumbers.map {
             #""//Tests:GeneratedTests_\#($0)""#
-        }.joined(separator: ",\n        ")
+        }.joined(separator: ",\n    ")
 
         let bzlFile = testsParentDirectory.appendingPathComponent(
             "generated_tests.bzl",

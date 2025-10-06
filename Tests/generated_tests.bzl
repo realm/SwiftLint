@@ -4,6 +4,19 @@
 
 load(":test_macros.bzl", "generated_test_shard")
 
+GENERATED_TEST_TARGETS = [
+    "//Tests:GeneratedTests_01",
+    "//Tests:GeneratedTests_02",
+    "//Tests:GeneratedTests_03",
+    "//Tests:GeneratedTests_04",
+    "//Tests:GeneratedTests_05",
+    "//Tests:GeneratedTests_06",
+    "//Tests:GeneratedTests_07",
+    "//Tests:GeneratedTests_08",
+    "//Tests:GeneratedTests_09",
+    "//Tests:GeneratedTests_10"
+]
+
 def generated_tests():
     """Creates all generated test targets for SwiftLint rules."""
     generated_test_shard("01")
@@ -16,3 +29,9 @@ def generated_tests():
     generated_test_shard("08")
     generated_test_shard("09")
     generated_test_shard("10")
+
+    native.test_suite(
+        name = "GeneratedTests",
+        tests = GENERATED_TEST_TARGETS,
+        visibility = ["//visibility:public"],
+    )

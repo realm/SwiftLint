@@ -144,7 +144,7 @@ private extension SwiftLintDev.Rules.Register {
     }
 
     /// Generate content for Bazel .bzl files
-    private func generateBzlFileContent(macroInvocations: String) -> String {
+    private func generateBzlFileContent(macroInvocations: String, testTargets: String) -> String {
         #"""
         # GENERATED FILE. DO NOT EDIT!
 
@@ -152,9 +152,19 @@ private extension SwiftLintDev.Rules.Register {
 
         load(":test_macros.bzl", "generated_test_shard")
 
+        GENERATED_TEST_TARGETS = [
+            \#(testTargets)
+        ]
+
         def generated_tests():
             """Creates all generated test targets for SwiftLint rules."""
         \#(macroInvocations)
+
+            native.test_suite(
+                name = "GeneratedTests",
+                tests = GENERATED_TEST_TARGETS,
+                visibility = ["//visibility:public"],
+            )
 
         """#
     }
@@ -216,12 +226,20 @@ private extension SwiftLintDev.Rules.Register {
             #"    generated_test_shard("\#($0)")"#
         }.joined(separator: "\n")
 
+        // Generate test targets list for test_suite
+        let testTargetsString = rulesContext.shardNumbers.map {
+            #""//Tests:GeneratedTests_\#($0)""#
+        }.joined(separator: ",\n    ")
+
         let bzlFile = testsParentDirectory.appendingPathComponent(
             "generated_tests.bzl",
             isDirectory: false
         )
 
-        let fileContent = generateBzlFileContent(macroInvocations: macroInvocationsString)
+        let fileContent = generateBzlFileContent(
+            macroInvocations: macroInvocationsString,
+            testTargets: testTargetsString
+        )
         try fileContent.write(to: bzlFile, atomically: true, encoding: .utf8)
     }
 

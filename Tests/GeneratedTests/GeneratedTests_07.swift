@@ -25,6 +25,12 @@ final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferUnknownDefaultRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferUnknownDefaultRule.description)
+    }
+}
+
 final class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)
@@ -148,11 +154,5 @@ final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
 final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSelfInClosureRule.description)
-    }
-}
-
-final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantSendableRule.description)
     }
 }

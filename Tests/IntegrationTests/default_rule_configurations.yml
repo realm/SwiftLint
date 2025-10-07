@@ -889,6 +889,11 @@ prefer_type_checking:
   meta:
     opt-in: false
     correctable: true
+prefer_unknown_default:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: true
 prefer_zero_over_explicit_init:
   severity: warning
   meta:

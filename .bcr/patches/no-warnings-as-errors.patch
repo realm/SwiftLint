@@ -8,5 +8,5 @@ index 31552d693..8ba63b0c0 100644
  COPTS = [
 -    "-warnings-as-errors",
      "-enable-upcoming-feature",
-     "ExistentialAny",
+     "ConciseMagicFile",
      "-enable-upcoming-feature",

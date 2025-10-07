@@ -9,6 +9,7 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("GlobalActorIsolatedTypesUsability"),
     .enableUpcomingFeature("ImplicitOpenExistentials"),
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+    .enableUpcomingFeature("InferIsolatedConformances"),
     .enableUpcomingFeature("InferSendableFromCaptures"),
 ]
 let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=complete")]

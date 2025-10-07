@@ -1,3 +1,5 @@
+import Foundation
+
 /// A detailed description for a SwiftLint rule. Used for both documentation and testing purposes.
 public struct RuleDescription: Equatable, Sendable {
     /// The rule's unique identifier, to be used in configuration files and SwiftLint commands.

@@ -1,4 +1,5 @@
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)
 struct PreferSelfTypeOverTypeOfSelfRule: Rule {

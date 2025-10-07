@@ -1,3 +1,4 @@
+import SourceKittenFramework
 import SwiftSyntax
 
 @SwiftSyntaxRule

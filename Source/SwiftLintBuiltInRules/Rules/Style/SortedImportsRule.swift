@@ -1,3 +1,5 @@
+import Foundation
+import SourceKittenFramework
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)

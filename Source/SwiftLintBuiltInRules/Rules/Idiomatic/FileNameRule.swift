@@ -1,3 +1,5 @@
+import Foundation
+import SourceKittenFramework
 import SwiftSyntax
 
 struct FileNameRule: OptInRule, SourceKitFreeRule {

@@ -1,4 +1,5 @@
 import ArgumentParser
+import Foundation
 import SwiftLintFramework
 
 enum LeniencyOptions: String, EnumerableFlag {

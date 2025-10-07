@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 import SwiftSyntax
 
@@ -194,7 +195,7 @@ public extension EnumDeclSyntax {
         }
     }
 
-    /// True if this enum is a `CodingKey`. For that, it has to be named `CodingKeys` 
+    /// True if this enum is a `CodingKey`. For that, it has to be named `CodingKeys`
     /// and must conform to the `CodingKey` protocol.
     var definesCodingKeys: Bool {
         guard let inheritedTypeCollection = inheritanceClause?.inheritedTypes,

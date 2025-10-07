@@ -1,7 +1,9 @@
-@testable import SwiftLintBuiltInRules
 import SwiftParser
+import SwiftSyntax
 import TestHelpers
 import XCTest
+
+@testable import SwiftLintBuiltInRules
 
 final class NumberSeparatorRuleTests: SwiftLintTestCase {
     func testNumberSeparatorWithMinimumLength() {

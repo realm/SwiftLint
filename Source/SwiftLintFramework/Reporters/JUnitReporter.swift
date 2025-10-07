@@ -1,3 +1,5 @@
+import Foundation
+
 /// Reports violations as JUnit XML.
 struct JUnitReporter: Reporter {
     // MARK: - Reporter Conformance

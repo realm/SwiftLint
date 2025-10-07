@@ -1,5 +1,7 @@
 // swiftlint:disable file_length
 
+import Foundation
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true, optIn: true)

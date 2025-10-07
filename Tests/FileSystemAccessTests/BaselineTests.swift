@@ -1,6 +1,7 @@
-@testable import SwiftLintBuiltInRules
+import TestHelpers
 import XCTest
 
+@testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
 
 private var temporaryDirectoryPath: String {

@@ -1,3 +1,5 @@
+import Foundation
+
 struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
     typealias Parent = DeploymentTargetRule
 

@@ -11,7 +11,9 @@
 // See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 //
 
+import Foundation
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct UnneededSynthesizedInitializerRule: Rule {

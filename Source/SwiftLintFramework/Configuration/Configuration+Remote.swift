@@ -1,4 +1,5 @@
 import Foundation // swiftlint:disable:this file_name
+import SourceKittenFramework
 
 #if canImport(FoundationNetworking)
 import FoundationNetworking

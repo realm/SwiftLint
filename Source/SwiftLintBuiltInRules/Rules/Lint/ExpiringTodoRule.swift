@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)

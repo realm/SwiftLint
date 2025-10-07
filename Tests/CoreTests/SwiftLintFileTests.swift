@@ -1,6 +1,8 @@
-@testable import SwiftLintCore
+import SwiftLintFramework
 import TestHelpers
 import XCTest
+
+@testable import SwiftLintCore
 
 final class SwiftLintFileTests: SwiftLintTestCase {
     private let tempFile = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

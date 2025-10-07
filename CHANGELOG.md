@@ -66,6 +66,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6253](https://github.com/realm/SwiftLint/issues/6235)
 
+* Exclude @concurrent function from `async_without_await` rule analysis.
+  @concurrent function requires aysnc in any case
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6283](https://github.com/realm/SwiftLint/issues/6283)
+
 ## 0.61.0: Even Fresher Breeze
 
 ### Breaking

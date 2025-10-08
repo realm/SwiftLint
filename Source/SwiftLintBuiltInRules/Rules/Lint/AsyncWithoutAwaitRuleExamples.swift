@@ -160,6 +160,34 @@ internal struct AsyncWithoutAwaitRuleExamples {
             }
         }
         """, excludeFromDocumentation: true),
+        Example("""
+        @concurrent
+        func concurrentFunction() async {
+            performWork()
+        }
+        """),
+        Example("""
+        struct S: Sendable {
+            @concurrent
+            func alwaysSwitch() async {
+                // This is valid - @concurrent functions require async even without await
+            }
+        }
+        """),
+        Example("""
+        struct ConcurrentInitExample {
+            @concurrent
+            init() async {
+                setup()
+            }
+            func setup() {}
+        }
+        """),
+        Example("""
+        struct ConcurrentClosureExample {
+            let c: () async -> Int = { @concurrent in 1 }
+        }
+        """),
     ]
 
     static let triggeringExamples = [

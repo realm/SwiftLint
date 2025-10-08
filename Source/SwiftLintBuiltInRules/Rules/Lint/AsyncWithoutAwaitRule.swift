@@ -30,7 +30,9 @@ private extension AsyncWithoutAwaitRule {
                 return .visitChildren
             }
 
-            let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
+            // @concurrent functions require the async keyword even without await calls
+            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
+                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
             functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
@@ -42,8 +44,11 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            functionScopes.push(.init(asyncToken: pendingAsync))
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            // @concurrent closures require the async keyword even without await calls
+            let asyncToken = (node.signature?.attributes.contains(attributeNamed: "concurrent") ?? false)
+                ? nil : pendingAsync
+            functionScopes.push(.init(asyncToken: asyncToken))
             pendingAsync = nil
             return .visitChildren
         }
@@ -78,7 +83,9 @@ private extension AsyncWithoutAwaitRule {
                 return .visitChildren
             }
 
-            let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
+            // @concurrent can be applied to initializers
+            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
+                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
             functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren

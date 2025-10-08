@@ -19,7 +19,6 @@ private extension AsyncWithoutAwaitRule {
     private struct FuncInfo {
         var containsAwait = false
         let asyncToken: TokenSyntax?
-        let isConcurrent: Bool
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
@@ -31,10 +30,10 @@ private extension AsyncWithoutAwaitRule {
                 return .visitChildren
             }
 
-            let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
             // @concurrent functions require the async keyword even without await calls
-            let isConcurrent = node.attributes.contains(attributeNamed: "concurrent")
-            functionScopes.push(.init(asyncToken: asyncToken, isConcurrent: isConcurrent))
+            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
+                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+            functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
@@ -45,8 +44,11 @@ private extension AsyncWithoutAwaitRule {
             }
         }
 
-        override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            functionScopes.push(.init(asyncToken: pendingAsync, isConcurrent: false))
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            // @concurrent closures require the async keyword even without await calls
+            let asyncToken = (node.signature?.attributes.contains(attributeNamed: "concurrent") ?? false)
+                ? nil : pendingAsync
+            functionScopes.push(.init(asyncToken: asyncToken))
             pendingAsync = nil
             return .visitChildren
         }
@@ -65,7 +67,7 @@ private extension AsyncWithoutAwaitRule {
             }
 
             let asyncToken = node.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken, isConcurrent: false))
+            functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
@@ -81,10 +83,10 @@ private extension AsyncWithoutAwaitRule {
                 return .visitChildren
             }
 
-            let asyncToken = node.signature.effectSpecifiers?.asyncSpecifier
             // @concurrent can be applied to initializers
-            let isConcurrent = node.attributes.contains(attributeNamed: "concurrent")
-            functionScopes.push(.init(asyncToken: asyncToken, isConcurrent: isConcurrent))
+            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
+                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+            functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
         }
@@ -117,7 +119,7 @@ private extension AsyncWithoutAwaitRule {
             }
             if pendingAsync == node.bindings.onlyElement?.typeAnnotation?.type.asyncToken {
                 if node.bindings.onlyElement?.initializer != nil {
-                    functionScopes.push(.init(asyncToken: pendingAsync, isConcurrent: false))
+                    functionScopes.push(.init(asyncToken: pendingAsync))
                     checkViolation()
                 }
                 pendingAsync = nil
@@ -131,8 +133,7 @@ private extension AsyncWithoutAwaitRule {
         private func checkViolation() {
             guard let info = functionScopes.pop(),
                   let asyncToken = info.asyncToken,
-                  !info.containsAwait,
-                  !info.isConcurrent else {
+                  !info.containsAwait else {
                 return
             }
 

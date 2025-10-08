@@ -175,9 +175,17 @@ internal struct AsyncWithoutAwaitRuleExamples {
         }
         """),
         Example("""
-        @concurrent
-        init() async {
-            setup()
+        struct ConcurrentInitExample {
+            @concurrent
+            init() async {
+                setup()
+            }
+            func setup() {}
+        }
+        """),
+        Example("""
+        struct ConcurrentClosureExample {
+            let c: () async -> Int = { @concurrent in 1 }
         }
         """),
     ]

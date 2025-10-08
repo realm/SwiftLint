@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 
 /// An interface for enumerating files that can be linted by SwiftLint.
 public protocol LintableFileManager {

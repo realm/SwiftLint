@@ -1,3 +1,5 @@
+import Foundation
+
 extension String {
     func escapedForXML() -> String {
         // & needs to go first, otherwise other replacements will be replaced again

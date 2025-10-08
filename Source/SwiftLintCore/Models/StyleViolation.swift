@@ -1,3 +1,6 @@
+import Foundation
+import SourceKittenFramework
+
 /// A value describing an instance of Swift source code that is considered invalid by a SwiftLint rule.
 public struct StyleViolation: CustomStringConvertible, Codable, Hashable {
     /// The identifier of the rule that generated this violation.

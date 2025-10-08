@@ -1,4 +1,5 @@
 import Foundation // swiftlint:disable:this file_name
+import SourceKittenFramework
 
 internal extension Configuration.FileGraph {
     // MARK: - FilePath

@@ -19,6 +19,8 @@ COPTS = [
     "InferIsolatedConformances",
     "-enable-upcoming-feature",
     "InferSendableFromCaptures",
+    "-enable-upcoming-feature",
+    "MemberImportVisibility",
     "-Xfrontend",
     "-warn-implicit-overrides",
 ]

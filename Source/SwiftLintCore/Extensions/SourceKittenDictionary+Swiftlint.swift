@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 
 public extension SourceKittenDictionary {

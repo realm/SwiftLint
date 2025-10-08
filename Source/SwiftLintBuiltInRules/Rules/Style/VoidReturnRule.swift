@@ -1,5 +1,6 @@
 import SwiftLintCore
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct VoidReturnRule: Rule {

@@ -1,3 +1,5 @@
+import Foundation
+import SourceKittenFramework
 import SwiftLintCore
 import SwiftSyntax
 

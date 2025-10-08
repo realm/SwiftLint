@@ -11,6 +11,7 @@ let swiftFeatures: [SwiftSetting] = [
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
     .enableUpcomingFeature("InferIsolatedConformances"),
     .enableUpcomingFeature("InferSendableFromCaptures"),
+    .enableUpcomingFeature("MemberImportVisibility"),
 ]
 let strictConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=complete")]
 let targetedConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurrency=targeted")]

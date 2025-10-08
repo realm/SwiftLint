@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 import SwiftSyntax
 
 /// A SwiftLint CorrectableRule that performs its corrections using a SwiftSyntax `SyntaxRewriter`.

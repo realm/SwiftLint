@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import SwiftLintCore
 
 extension SwiftLintDev.Reporters {
     struct Register: AsyncParsableCommand {

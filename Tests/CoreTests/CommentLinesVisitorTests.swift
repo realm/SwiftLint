@@ -1,5 +1,7 @@
-@testable import SwiftLintCore
+import SwiftSyntax
 import XCTest
+
+@testable import SwiftLintCore
 
 final class CommentLinesVisitorTests: XCTestCase {
     func testEmptyFile() {

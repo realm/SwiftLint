@@ -2,6 +2,7 @@
 import SwiftLexicalLookup
 import SwiftLintCore
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true, optIn: true)
 struct EmptyCountRule: Rule {

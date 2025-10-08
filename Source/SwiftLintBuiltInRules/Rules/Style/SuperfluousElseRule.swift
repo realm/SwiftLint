@@ -1,3 +1,4 @@
+import SwiftBasicFormat
 import SwiftLintCore
 import SwiftSyntax
 

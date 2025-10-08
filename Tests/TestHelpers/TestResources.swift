@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 
 public enum TestResources {
     public static func path(_ calleePath: String = #filePath) -> String {

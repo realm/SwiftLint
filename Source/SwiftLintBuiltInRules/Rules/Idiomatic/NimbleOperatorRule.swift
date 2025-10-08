@@ -1,5 +1,6 @@
 import SwiftLintCore
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)
 struct NimbleOperatorRule: Rule {

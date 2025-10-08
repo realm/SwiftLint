@@ -1,6 +1,8 @@
-@testable import SwiftLintFramework
+import SwiftLintFramework
 import TestHelpers
 import XCTest
+
+@testable import SourceKittenFramework
 
 final class CollectingRuleTests: SwiftLintTestCase {
     func testCollectsIntoStorage() {

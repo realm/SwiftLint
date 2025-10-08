@@ -1,3 +1,4 @@
+import SwiftBasicFormat
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)

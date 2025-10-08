@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 import SwiftSyntax
 
 private let attributeNamesImplyingObjc: Set<String> = [

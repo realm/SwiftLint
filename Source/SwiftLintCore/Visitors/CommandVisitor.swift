@@ -1,3 +1,4 @@
+import Foundation
 import SwiftSyntax
 
 // MARK: - CommandVisitor

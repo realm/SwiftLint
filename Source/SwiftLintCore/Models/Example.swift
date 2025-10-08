@@ -1,3 +1,5 @@
+import Foundation
+
 /// Captures code and context information for an example of a triggering or
 /// non-triggering style
 public struct Example: Sendable {

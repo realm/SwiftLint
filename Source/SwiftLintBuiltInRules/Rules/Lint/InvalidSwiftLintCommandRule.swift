@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 
 struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)

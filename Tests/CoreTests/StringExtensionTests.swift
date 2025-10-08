@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import XCTest
 

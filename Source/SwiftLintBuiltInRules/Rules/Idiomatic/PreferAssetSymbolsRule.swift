@@ -8,10 +8,10 @@ struct PreferAssetSymbolsRule: Rule {
     static let description = RuleDescription(
         identifier: "prefer_asset_symbols",
         name: "Prefer Asset Symbols",
-        description: "Prefer using asset symbols over string-based image initialization to avoid typos and enable compile-time checking",
+        description: "Prefer using asset symbols over string-based image initialization",
         rationale: """
-            UIKit.UIImage(named:) and SwiftUI.Image(_:) contain the risk of bugs due to typos. \
-            Since Xcode 15, Xcode generates codes for images in the Asset Catalog and it can avoid typos by providing compile-time checking.
+            `UIKit.UIImage(named:)` and `SwiftUI.Image(_:)` bear the risk of bugs due to typos in their string arguments.
+            Since Xcode 15, Xcode generates codes for images in the Asset Catalog. Usage of these codes and system icons from SF Symbols avoid typos and allow for compile-time checking.
             """,
         kind: .idiomatic,
         minSwiftVersion: .fiveDotNine,
@@ -47,21 +47,19 @@ struct PreferAssetSymbolsRule: Rule {
 private extension PreferAssetSymbolsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            let calledExpression = node.calledExpression.trimmedDescription
-            
             // Check for UIImage(named:) calls
-            if isUIImageNamedInit(node: node, name: calledExpression) {
+            if isUIImageNamedInit(node: node) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
             // Check for SwiftUI Image(_:) calls
-            else if isSwiftUIImageInit(node: node, name: calledExpression) {
+            else if isSwiftUIImageInit(node: node) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
         
-        private func isUIImageNamedInit(node: FunctionCallExprSyntax, name: String) -> Bool {
-            // Check if this is a UIImage or UIImage.init call
-            guard uiImageInits().contains(name) else {
+        private func isUIImageNamedInit(node: FunctionCallExprSyntax) -> Bool {
+            // Check if this is a UIImage or UIImage.init call using syntax tree matching
+            guard isUIImageCall(node.calledExpression) else {
                 return false
             }
             
@@ -77,9 +75,9 @@ private extension PreferAssetSymbolsRule {
             return argumentLabels == ["named"]
         }
         
-        private func isSwiftUIImageInit(node: FunctionCallExprSyntax, name: String) -> Bool {
-            // Check if this is an Image or Image.init call
-            guard swiftUIImageInits().contains(name) else {
+        private func isSwiftUIImageInit(node: FunctionCallExprSyntax) -> Bool {
+            // Check if this is an Image or Image.init call using syntax tree matching
+            guard isImageCall(node.calledExpression) else {
                 return false
             }
             
@@ -96,18 +94,38 @@ private extension PreferAssetSymbolsRule {
             return argumentLabels.isEmpty || (argumentLabels.count == 1 && argumentLabels.first == nil)
         }
         
-        private func uiImageInits() -> [String] {
-            return [
-                "UIImage",
-                "UIImage.init"
-            ]
+        private func isUIImageCall(_ expression: ExprSyntax) -> Bool {
+            // Match UIImage directly
+            if let identifierExpr = expression.as(DeclReferenceExprSyntax.self) {
+                return identifierExpr.baseName.text == "UIImage"
+            }
+            
+            // Match UIImage.init
+            if let memberAccessExpr = expression.as(MemberAccessExprSyntax.self),
+               let baseExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
+               baseExpr.baseName.text == "UIImage",
+               memberAccessExpr.declName.baseName.text == "init" {
+                return true
+            }
+            
+            return false
         }
         
-        private func swiftUIImageInits() -> [String] {
-            return [
-                "Image", 
-                "Image.init"
-            ]
+        private func isImageCall(_ expression: ExprSyntax) -> Bool {
+            // Match Image directly
+            if let identifierExpr = expression.as(DeclReferenceExprSyntax.self) {
+                return identifierExpr.baseName.text == "Image"
+            }
+            
+            // Match Image.init
+            if let memberAccessExpr = expression.as(MemberAccessExprSyntax.self),
+               let baseExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
+               baseExpr.baseName.text == "Image",
+               memberAccessExpr.declName.baseName.text == "init" {
+                return true
+            }
+            
+            return false
         }
     }
 }

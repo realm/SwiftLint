@@ -66,9 +66,10 @@ private extension PreferAssetSymbolsRule {
                 return false
             }
             
-            // Check if there's a "named" parameter with a string literal
-            guard let namedArgument = node.arguments.first(where: { $0.label?.text == "named" }),
-                  let stringLiteral = namedArgument.expression.as(StringLiteralExprSyntax.self),
+            // Check if the first argument has "named" label and is a string literal
+            guard let firstArgument = node.arguments.first,
+                  firstArgument.label?.text == "named",
+                  let stringLiteral = firstArgument.expression.as(StringLiteralExprSyntax.self),
                   stringLiteral.isConstantString else {
                 return false
             }

@@ -63,16 +63,15 @@ private extension PreferAssetSymbolsRule {
                 return false
             }
             
-            // Check if it has a "named" parameter with a string literal
-            guard let namedArgument = node.arguments.first(where: { $0.label?.text == "named" }),
-                  let stringLiteral = namedArgument.expression.as(StringLiteralExprSyntax.self),
+            // Check if there's exactly one argument with "named" label and a string literal
+            guard let onlyArgument = node.arguments.onlyElement,
+                  onlyArgument.label?.text == "named",
+                  let stringLiteral = onlyArgument.expression.as(StringLiteralExprSyntax.self),
                   stringLiteral.isConstantString else {
                 return false
             }
             
-            // Don't trigger if there are additional parameters like "in:" (bundle parameter)
-            let argumentLabels = node.arguments.compactMap(\.label?.text)
-            return argumentLabels == ["named"]
+            return true
         }
         
         private func isSwiftUIImageInit(node: FunctionCallExprSyntax) -> Bool {
@@ -81,17 +80,15 @@ private extension PreferAssetSymbolsRule {
                 return false
             }
             
-            // For SwiftUI Image, the first parameter is unlabeled for the image name
-            guard let firstArgument = node.arguments.first,
-                  firstArgument.label == nil,
-                  let stringLiteral = firstArgument.expression.as(StringLiteralExprSyntax.self),
+            // Check if there's exactly one unlabeled argument with a string literal
+            guard let onlyArgument = node.arguments.onlyElement,
+                  onlyArgument.label == nil,
+                  let stringLiteral = onlyArgument.expression.as(StringLiteralExprSyntax.self),
                   stringLiteral.isConstantString else {
                 return false
             }
             
-            // Don't trigger if there are additional parameters like "bundle:"
-            let argumentLabels = node.arguments.compactMap(\.label?.text)
-            return argumentLabels.isEmpty || (argumentLabels.count == 1 && argumentLabels.first == nil)
+            return true
         }
         
         private func isUIImageCall(_ expression: ExprSyntax) -> Bool {

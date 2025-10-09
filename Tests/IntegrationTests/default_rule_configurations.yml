@@ -860,7 +860,7 @@ period_spacing:
 prefer_asset_symbols:
   severity: warning
   meta:
-    opt-in: false
+    opt-in: true
     correctable: false
 prefer_condition_list:
   severity: warning

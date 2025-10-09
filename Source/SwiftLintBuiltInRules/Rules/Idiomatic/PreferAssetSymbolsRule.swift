@@ -1,7 +1,7 @@
 import SwiftLintCore
 import SwiftSyntax
 
-@SwiftSyntaxRule(optIn: false)
+@SwiftSyntaxRule(optIn: true)
 struct PreferAssetSymbolsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

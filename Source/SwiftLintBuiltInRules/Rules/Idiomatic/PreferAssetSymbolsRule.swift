@@ -10,8 +10,9 @@ struct PreferAssetSymbolsRule: Rule {
         name: "Prefer Asset Symbols",
         description: "Prefer using asset symbols over string-based image initialization",
         rationale: """
-            `UIKit.UIImage(named:)` and `SwiftUI.Image(_:)` bear the risk of bugs due to typos in their string arguments.
-            Since Xcode 15, Xcode generates codes for images in the Asset Catalog. Usage of these codes and system icons from SF Symbols avoid typos and allow for compile-time checking.
+            `UIKit.UIImage(named:)` and `SwiftUI.Image(_:)` bear the risk of bugs due to typos in their string \
+            arguments. Since Xcode 15, Xcode generates codes for images in the Asset Catalog. Usage of these codes \
+            and system icons from SF Symbols avoid typos and allow for compile-time checking.
             """,
         kind: .idiomatic,
         minSwiftVersion: .fiveDotNine,
@@ -59,13 +60,13 @@ private extension PreferAssetSymbolsRule {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
-        
+
         private func isUIImageNamedInit(node: FunctionCallExprSyntax) -> Bool {
             // Check if this is a UIImage or UIImage.init call using syntax tree matching
             guard isUIImageCall(node.calledExpression) else {
                 return false
             }
-            
+
             // Check if the first argument has "named" label and is a string literal
             guard let firstArgument = node.arguments.first,
                   firstArgument.label?.text == "named",
@@ -73,16 +74,16 @@ private extension PreferAssetSymbolsRule {
                   stringLiteral.isConstantString else {
                 return false
             }
-            
+
             return true
         }
-        
+
         private func isSwiftUIImageInit(node: FunctionCallExprSyntax) -> Bool {
             // Check if this is an Image or Image.init call using syntax tree matching
             guard isImageCall(node.calledExpression) else {
                 return false
             }
-            
+
             // Check if the first argument is an unlabeled string literal
             guard let firstArgument = node.arguments.first,
                   firstArgument.label == nil,
@@ -90,16 +91,16 @@ private extension PreferAssetSymbolsRule {
                   stringLiteral.isConstantString else {
                 return false
             }
-            
+
             return true
         }
-        
+
         private func isUIImageCall(_ expression: ExprSyntax) -> Bool {
             // Match UIImage directly
             if let identifierExpr = expression.as(DeclReferenceExprSyntax.self) {
                 return identifierExpr.baseName.text == "UIImage"
             }
-            
+
             // Match UIImage.init
             if let memberAccessExpr = expression.as(MemberAccessExprSyntax.self),
                let baseExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
@@ -107,16 +108,16 @@ private extension PreferAssetSymbolsRule {
                memberAccessExpr.declName.baseName.text == "init" {
                 return true
             }
-            
+
             return false
         }
-        
+
         private func isImageCall(_ expression: ExprSyntax) -> Bool {
             // Match Image directly
             if let identifierExpr = expression.as(DeclReferenceExprSyntax.self) {
                 return identifierExpr.baseName.text == "Image"
             }
-            
+
             // Match Image.init
             if let memberAccessExpr = expression.as(MemberAccessExprSyntax.self),
                let baseExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
@@ -124,7 +125,7 @@ private extension PreferAssetSymbolsRule {
                memberAccessExpr.declName.baseName.text == "init" {
                 return true
             }
-            
+
             return false
         }
     }

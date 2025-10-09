@@ -27,19 +27,22 @@ struct PreferAssetSymbolsRule: Rule {
             Example("UIImage(named: \"image_\\(suffix)\")"),
             Example("Image(imageName)"),
             Example("Image(\"image_\\(suffix)\")"),
-            // Bundle-specific initializers
-            Example("UIImage(named: \"someImage\", in: Bundle.main, compatibleWith: nil)"),
-            Example("Image(\"someImage\", bundle: Bundle.main)"),
         ],
         triggeringExamples: [
             // UIKit examples
             Example("↓UIImage(named: \"some_image\")"),
             Example("↓UIImage(named: \"some image\")"),
             Example("↓UIImage.init(named: \"someImage\")"),
+            // UIKit with bundle parameters
+            Example("↓UIImage(named: \"someImage\", in: Bundle.main, compatibleWith: nil)"),
+            Example("↓UIImage(named: \"someImage\", in: .main)"),
             // SwiftUI examples  
             Example("↓Image(\"some_image\")"),
             Example("↓Image(\"some image\")"),
             Example("↓Image.init(\"someImage\")"),
+            // SwiftUI with bundle parameters
+            Example("↓Image(\"someImage\", bundle: Bundle.main)"),
+            Example("↓Image(\"someImage\", bundle: .main)"),
         ]
     )
 }
@@ -63,10 +66,9 @@ private extension PreferAssetSymbolsRule {
                 return false
             }
             
-            // Check if there's exactly one argument with "named" label and a string literal
-            guard let onlyArgument = node.arguments.onlyElement,
-                  onlyArgument.label?.text == "named",
-                  let stringLiteral = onlyArgument.expression.as(StringLiteralExprSyntax.self),
+            // Check if there's a "named" parameter with a string literal
+            guard let namedArgument = node.arguments.first(where: { $0.label?.text == "named" }),
+                  let stringLiteral = namedArgument.expression.as(StringLiteralExprSyntax.self),
                   stringLiteral.isConstantString else {
                 return false
             }
@@ -80,10 +82,10 @@ private extension PreferAssetSymbolsRule {
                 return false
             }
             
-            // Check if there's exactly one unlabeled argument with a string literal
-            guard let onlyArgument = node.arguments.onlyElement,
-                  onlyArgument.label == nil,
-                  let stringLiteral = onlyArgument.expression.as(StringLiteralExprSyntax.self),
+            // Check if the first argument is an unlabeled string literal
+            guard let firstArgument = node.arguments.first,
+                  firstArgument.label == nil,
+                  let stringLiteral = firstArgument.expression.as(StringLiteralExprSyntax.self),
                   stringLiteral.isConstantString else {
                 return false
             }

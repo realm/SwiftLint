@@ -81,6 +81,16 @@ private extension IdentifierNameRule {
             )
         }
 
+        override func visitPost(_ node: GenericParameterSyntax) {
+            guard node.specifier?.tokenKind == .keyword(.let) else {
+                return
+            }
+            collectViolations(
+                from: .variable(name: node.name.text, isStatic: false, isPrivate: false),
+                on: node.name
+            )
+        }
+
         override func visitPost(_ node: IdentifierPatternSyntax) {
             let varDecl = node.enclosingVarDecl
             if varDecl?.modifiers.contains(keyword: .override) ?? false {

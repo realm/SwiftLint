@@ -47,6 +47,11 @@
   [danglingP0inter](https://github.com/danglingP0inter)
   [#5939](https://github.com/realm/SwiftLint/issues/5939)
 
+* Exclude integer generic parameters from `generic_type_name` rule.
+  Include integer generic parameters in the `identifier_name` rule for validation.  
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6213](https://github.com/realm/SwiftLint/issues/6213)
+
 ### Bug Fixes
 
 * Ignore function, initializer and subscript declarations alike when the

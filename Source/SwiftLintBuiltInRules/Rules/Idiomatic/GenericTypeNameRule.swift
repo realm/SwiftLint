@@ -29,6 +29,8 @@ struct GenericTypeNameRule: Rule {
             Example("typealias StringDictionary<T> = Dictionary<String, T>"),
             Example("typealias BackwardTriple<T1, T2, T3> = (T3, T2, T1)"),
             Example("typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>"),
+            Example("struct Foo<let count: Int> {}"),
+            Example("struct Bar<let size: Int, T> {}"),
         ],
         triggeringExamples: [
             Example("func foo<↓T_Foo>() {}"),
@@ -54,7 +56,11 @@ private extension GenericTypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: GenericParameterSyntax) {
             let name = node.name.text
-            guard !name.isEmpty, !configuration.shouldExclude(name: name) else { return }
+            guard !name.isEmpty,
+                  !configuration.shouldExclude(name: name),
+                  node.specifier?.tokenKind != .keyword(.let) else {
+                return
+            }
 
             if !configuration.containsOnlyAllowedCharacters(name: name) {
                 violations.append(

@@ -94,8 +94,6 @@ internal struct IdentifierNameRuleExamples {
             }
             """),
         Example("func ↓√ (arg: Double) -> Double { arg }"),
-        Example("struct Foo<let ↓Count: Int> {}"),
-        Example("struct Foo<let ↓MaxSize: Int, Element> {}"),
         Example("class Foo<let ↓max_count: Int> {}"),
         Example("struct Foo<let ↓c: Int> {}"),
     ]

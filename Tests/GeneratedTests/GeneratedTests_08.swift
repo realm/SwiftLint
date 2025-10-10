@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantSendableRule.description)
+    }
+}
+
 final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)
@@ -148,11 +154,5 @@ final class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
 final class SwitchCaseAlignmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseAlignmentRule.description)
-    }
-}
-
-final class SwitchCaseOnNewlineRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SwitchCaseOnNewlineRule.description)
     }
 }

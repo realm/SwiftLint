@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferKeyPathRule.description)
+    }
+}
+
 final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferNimbleRule.description)
@@ -148,11 +154,5 @@ final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
 final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantObjcAttributeRule.description)
-    }
-}
-
-final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantSelfInClosureRule.description)
     }
 }

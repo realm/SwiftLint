@@ -526,6 +526,12 @@ inclusive_language:
   meta:
     opt-in: false
     correctable: false
+incompatible_concurrency_annotation:
+  severity: warning
+  global_actors: ["MainActor"]
+  meta:
+    opt-in: true
+    correctable: true
 indentation_width:
   severity: warning
   indentation_width: 4

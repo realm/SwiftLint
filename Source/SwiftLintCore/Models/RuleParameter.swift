@@ -1,4 +1,5 @@
 /// A configuration parameter for rules.
+@preconcurrency
 public struct RuleParameter<T: Equatable>: Equatable, Sendable where T: Sendable {
     /// The severity that should be assigned to the violation of this parameter's value is met.
     public let severity: ViolationSeverity

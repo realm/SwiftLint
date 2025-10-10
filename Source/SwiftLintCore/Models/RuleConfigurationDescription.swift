@@ -458,6 +458,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - deprecationNotice: An optional deprecation notice in case an option is outdated and/or has been replaced by
     ///                        an alternative.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
+    @preconcurrency
     public init(wrappedValue value: T,
                 key: String,
                 deprecationNotice: DeprecationNotice? = nil,

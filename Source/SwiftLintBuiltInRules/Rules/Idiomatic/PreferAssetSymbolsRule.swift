@@ -51,25 +51,22 @@ struct PreferAssetSymbolsRule: Rule {
 private extension PreferAssetSymbolsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            // Check for UIImage(named:) calls
-            if isUIImageNamedInit(node: node) {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
-            }
-            // Check for SwiftUI Image(_:) calls
-            else if isSwiftUIImageInit(node: node) {
+            // Check for UIImage(named:) or SwiftUI Image(_:) calls
+            if isImageInit(node: node, className: "UIImage", argumentLabel: "named") ||
+               isImageInit(node: node, className: "Image", argumentLabel: nil) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
-        private func isUIImageNamedInit(node: FunctionCallExprSyntax) -> Bool {
-            // Check if this is a UIImage or UIImage.init call using syntax tree matching
-            guard isUIImageCall(node.calledExpression) else {
+        private func isImageInit(node: FunctionCallExprSyntax, className: String, argumentLabel: String?) -> Bool {
+            // Check if this is the specified class or class.init call using syntax tree matching
+            guard isImageCall(node.calledExpression, className: className) else {
                 return false
             }
 
-            // Check if the first argument has "named" label and is a string literal
+            // Check if the first argument has the expected label and is a string literal
             guard let firstArgument = node.arguments.first,
-                  firstArgument.label?.text == "named",
+                  firstArgument.label?.text == argumentLabel,
                   let stringLiteral = firstArgument.expression.as(StringLiteralExprSyntax.self),
                   stringLiteral.isConstantString else {
                 return false
@@ -78,50 +75,16 @@ private extension PreferAssetSymbolsRule {
             return true
         }
 
-        private func isSwiftUIImageInit(node: FunctionCallExprSyntax) -> Bool {
-            // Check if this is an Image or Image.init call using syntax tree matching
-            guard isImageCall(node.calledExpression) else {
-                return false
-            }
-
-            // Check if the first argument is an unlabeled string literal
-            guard let firstArgument = node.arguments.first,
-                  firstArgument.label == nil,
-                  let stringLiteral = firstArgument.expression.as(StringLiteralExprSyntax.self),
-                  stringLiteral.isConstantString else {
-                return false
-            }
-
-            return true
-        }
-
-        private func isUIImageCall(_ expression: ExprSyntax) -> Bool {
-            // Match UIImage directly
+        private func isImageCall(_ expression: ExprSyntax, className: String) -> Bool {
+            // Match ClassName directly
             if let identifierExpr = expression.as(DeclReferenceExprSyntax.self) {
-                return identifierExpr.baseName.text == "UIImage"
+                return identifierExpr.baseName.text == className
             }
 
-            // Match UIImage.init
+            // Match ClassName.init
             if let memberAccessExpr = expression.as(MemberAccessExprSyntax.self),
                let baseExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
-               baseExpr.baseName.text == "UIImage",
-               memberAccessExpr.declName.baseName.text == "init" {
-                return true
-            }
-
-            return false
-        }
-
-        private func isImageCall(_ expression: ExprSyntax) -> Bool {
-            // Match Image directly
-            if let identifierExpr = expression.as(DeclReferenceExprSyntax.self) {
-                return identifierExpr.baseName.text == "Image"
-            }
-
-            // Match Image.init
-            if let memberAccessExpr = expression.as(MemberAccessExprSyntax.self),
-               let baseExpr = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self),
-               baseExpr.baseName.text == "Image",
+               baseExpr.baseName.text == className,
                memberAccessExpr.declName.baseName.text == "init" {
                 return true
             }

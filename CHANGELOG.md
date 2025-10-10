@@ -40,6 +40,11 @@
   <!-- Keep empty line to have the contributors on a separate line. -->
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Exclude integer generic parameters from `generic_type_name` rule.
+  Include integer generic parameters in the `identifier_name` rule for validation.  
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6213](https://github.com/realm/SwiftLint/issues/6213)
+
 ### Bug Fixes
 
 * Ignore function, initializer and subscript declarations alike when the
@@ -70,11 +75,6 @@
   `@concurrent` functions requires `aysnc` in any case.  
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6283](https://github.com/realm/SwiftLint/issues/6283)
-
-* Exclude integer generic parameters from `generic_type_name` rule.
-  Include integer generic parameters in the `identifier_name` rule for validation.  
-  [nandhinisubbu](https://github.com/nandhinisubbu)
-  [#6213](https://github.com/realm/SwiftLint/issues/6213)
 
 ## 0.61.0: Even Fresher Breeze
 

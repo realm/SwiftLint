@@ -71,6 +71,11 @@
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6283](https://github.com/realm/SwiftLint/issues/6283)
 
+* Exclude integer generic parameters from `generic_type_name` rule.
+  Include integer generic parameters in the `identifier_name` rule for validation.  
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6213](https://github.com/realm/SwiftLint/issues/6213)
+
 ## 0.61.0: Even Fresher Breeze
 
 ### Breaking

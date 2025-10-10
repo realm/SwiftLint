@@ -30,6 +30,9 @@ internal struct IdentifierNameRuleExamples {
                 }
                 """),
         Example("func √ (arg: Double) -> Double { arg }", configuration: ["additional_operators": "√"]),
+        Example("struct Foo<let count: Int> {}"),
+        Example("struct Foo<let maxSize: Int, Element> {}"),
+        Example("class Foo<let capacity: Int> {}"),
     ]
 
     static let triggeringExamples = [
@@ -91,5 +94,9 @@ internal struct IdentifierNameRuleExamples {
             }
             """),
         Example("func ↓√ (arg: Double) -> Double { arg }"),
+        Example("struct Foo<let ↓Count: Int> {}"),
+        Example("struct Foo<let ↓MaxSize: Int, Element> {}"),
+        Example("class Foo<let ↓max_count: Int> {}"),
+        Example("struct Foo<let ↓c: Int> {}"),
     ]
 }

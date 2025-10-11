@@ -156,6 +156,7 @@ public let builtInRules: [any Rule.Type] = [
     PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
     PreferTypeCheckingRule.self,
+    PreferUnknownDefaultRule.self,
     PreferZeroOverExplicitInitRule.self,
     PrefixedTopLevelConstantRule.self,
     PrivateActionRule.self,

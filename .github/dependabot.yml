@@ -4,11 +4,14 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    labels: []
   - package-ecosystem: swift
     directory: /
     schedule:
       interval: weekly
+    labels: []
   - package-ecosystem: bundler
     directory: /
     schedule:
       interval: weekly
+    labels: []

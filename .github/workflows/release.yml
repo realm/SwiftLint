@@ -145,7 +145,13 @@ jobs:
       - name: Install SDK
         run: swift sdk install https://download.swift.org/swift-6.1.2-release/static-sdk/swift-6.1.2-RELEASE/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b
       - name: Build static binary
-        run: swift build -c release --product swiftlint --swift-sdk ${{ matrix.swift_sdk }} -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT
+        run: |
+          swift build \
+            -c release \
+            --product swiftlint \
+            --swift-sdk ${{ matrix.swift_sdk }} \
+            -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT \
+            -Xlinker -z -Xlinker stack-size=0x80000 # 512KiB
       - name: Strip binary
         run: strip -s "$BINARY_PATH"
       - name: Upload artifact

@@ -86,7 +86,7 @@
 * `swiftlint-static`, the experimental fully-static Linux binary, now uses 512 KiB
   as thread stack size matching Darwin’s size to prevent stack exhaustion.  
   [ainame](https://github.com/ainame)
-  [#6291](https://github.com/realm/SwiftLint/pull/6291)
+  [#6287](https://github.com/realm/SwiftLint/pull/6287)
 
 ## 0.61.0: Even Fresher Breeze
 

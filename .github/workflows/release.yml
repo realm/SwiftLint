@@ -163,7 +163,7 @@ jobs:
   build-macos:
     name: Build macOS Binaries
     needs: prepare-release
-    runs-on: macOS-14
+    runs-on: macOS-26
     permissions:
       contents: read
     steps:
@@ -192,7 +192,7 @@ jobs:
       - build-linux
       - build-static-linux
       - build-macos
-    runs-on: macOS-14
+    runs-on: macOS-26
     permissions:
       actions: read
       contents: write

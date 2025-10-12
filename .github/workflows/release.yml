@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_16.2.app
+  DEVELOPER_DIR: /Applications/Xcode_26.0.1.app
   RELEASE_BRANCH: release/${{ inputs.version }}
 
 jobs:

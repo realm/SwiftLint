@@ -1,4 +1,4 @@
-import SwiftSyntax
+eimport SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct ImplicitOptionalInitializationRule: Rule {
@@ -28,12 +28,19 @@ private extension ImplicitOptionalInitializationRule {
         override func visitPost(_ node: PatternBindingSyntax) {
             guard let violationPosition = node.violationPosition(for: configuration.style) else { return }
 
-            violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
+  //           // violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
+    override func visitPost(_ node: PatternBindingSyntax) {
+if let variableDecl = node.parent?.as(VariableDeclSyntax.self),
+           let attrs = variableDecl.attributes,
+           attrs.contains(where: { attr in
+               guard let attribute = attr.as(AttributeSyntax.self) else { return false }
+            return attribute.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "Parameter"           }) {
+            return
         }
+        guard let violationPosition = node.violationPosition(for: configuration.style) else { return }
+        violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
     }
-}
-
-private extension ImplicitOptionalInitializationRule {
+ {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
             guard node.violationPosition(for: configuration.style) != nil else {

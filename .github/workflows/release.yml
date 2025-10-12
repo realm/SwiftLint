@@ -143,7 +143,7 @@ jobs:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
       - name: Install SDK
-        run: swift sdk install https://download.swift.org/swift-6.1.2-release/static-sdk/swift-6.1.2-RELEASE/swift-6.1.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum df0b40b9b582598e7e3d70c82ab503fd6fbfdff71fd17e7f1ab37115a0665b3b
+        run: swift sdk install https://download.swift.org/swift-6.2-release/static-sdk/swift-6.2-RELEASE/swift-6.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum d2225840e592389ca517bbf71652f7003dbf45ac35d1e57d98b9250368769378
       - name: Build static binary
         run: |
           swift build \

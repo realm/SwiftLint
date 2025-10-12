@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   bazel_linux:
-    name: Bazel, Linux, Swift 6.1 # pre-installed
+    name: Bazel, Linux, Swift 6.2 # pre-installed
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0

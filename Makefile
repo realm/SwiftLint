@@ -107,7 +107,7 @@ portable_zip: installables
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 
 spm_artifactbundle: swiftlint swiftlint_linux_amd64 swiftlint_linux_arm64
-	mkdir -p "$(ARTIFACT_BUNDLE_PATH)/macos" "$(ARTIFACT_BUNDLE_PATH)/linux/{amd,arm}64"
+	mkdir -p $(ARTIFACT_BUNDLE_PATH)/macos $(ARTIFACT_BUNDLE_PATH)/linux/{amd,arm}64
 	sed 's/__VERSION__/$(VERSION_STRING)/g' tools/info.json.template > "$(ARTIFACT_BUNDLE_PATH)/info.json"
 	cp -f swiftlint "$(ARTIFACT_BUNDLE_PATH)/macos/swiftlint"
 	cp -f swiftlint_linux_amd64 "$(ARTIFACT_BUNDLE_PATH)/linux/amd64/swiftlint"

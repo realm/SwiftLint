@@ -16,7 +16,8 @@
 
 ### Bug Fixes
 
-* None.
+* Remove trailing comma making the code base again compilable with at least Swift 6.0.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ## 0.62.0: Generous Drum Volume
 

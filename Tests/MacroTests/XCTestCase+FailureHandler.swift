@@ -8,7 +8,7 @@ extension XCTestCase {
             XCTFail(
                 spec.message,
                 file: filePath,
-                line: UInt(spec.location.line),
+                line: UInt(spec.location.line)
             )
         }
     }

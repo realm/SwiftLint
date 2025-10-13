@@ -175,7 +175,7 @@ private struct Import: Comparable {
             importDecl: importDecl,
             line: startLine,
             offset: locationConverter.location(for: importDecl.path.endPositionBeforeTrailingTrivia).line - startLine,
-            attributes: attributes.joined(),
+            attributes: attributes.joined()
         )
     }
 

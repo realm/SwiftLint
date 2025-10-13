@@ -1,5 +1,23 @@
 # Changelog
 
+## Main
+
+### Breaking
+
+* None.
+
+### Experimental
+
+* None.
+
+### Enhancements
+
+* None.
+
+### Bug Fixes
+
+* None.
+
 ## 0.62.0: Generous Drum Volume
 
 ### Breaking

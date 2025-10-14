@@ -216,7 +216,7 @@ let package = Package(
             ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),
-        .target(
+        .testTarget(
             name: "TestHelpers",
             dependencies: [
                 "SwiftLintFramework"

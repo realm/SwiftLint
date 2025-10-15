@@ -103,6 +103,11 @@ private extension ClosureEndIndentationRule {
                 return anchor(for: ExprSyntax(functionCall))
             }
 
+            // Case: Macro expansion expression. e.g., `#Preview { ... }`
+            if let macroExpansionExpr = parent.as(MacroExpansionExprSyntax.self) {
+                return anchor(for: ExprSyntax(macroExpansionExpr))
+            }
+
             // Case: Closure as a labeled argument. e.g., `function(label: { ... })`
             if let labeledExpr = parent.as(LabeledExprSyntax.self) {
                 // Check if this is part of a function call where the first argument is on a new line

@@ -108,8 +108,13 @@ private func preconcurrencyRequired(for syntax: some WithModifiersSyntax & WithA
         guard syntax.isPublic, !syntax.isPreconcurrency else {
             return false
         }
+
+        // Check attributes for global actors.
         let attributeNames = syntax.attributes.compactMap { $0.as(AttributeSyntax.self)?.attributeNameText }
         var required = globalActors.intersection(attributeNames).isNotEmpty
+        if required { return true }
+
+        // Check generic type constraints for `@Sendable`.
         if let whereClause = syntax.asProtocol((any WithGenericParametersSyntax).self)?.genericWhereClause {
             required = required || whereClause.requirements.contains { requirement in
                 if case let .conformanceRequirement(conformance) = requirement.requirement {
@@ -117,34 +122,26 @@ private func preconcurrencyRequired(for syntax: some WithModifiersSyntax & WithA
                 }
                 return false
             }
+            if required { return true }
         }
-        if let function = syntax.as(FunctionDeclSyntax.self) {
-            required = required || preconcurrencyRequired(for: function.signature.parameterClause, with: globalActors)
-        } else if let initializer = syntax.as(InitializerDeclSyntax.self) {
-            required = required || preconcurrencyRequired(
-                for: initializer.signature.parameterClause,
-                with: globalActors
-            )
-        } else if let subscriptDecl = syntax.as(SubscriptDeclSyntax.self) {
-            required = required || preconcurrencyRequired(for: subscriptDecl.parameterClause, with: globalActors)
+
+        // Check parameters for `@Sendable`, `sending` and global actors.
+        let parameterClause = syntax.as(FunctionDeclSyntax.self)?.signature.parameterClause
+            ?? syntax.as(InitializerDeclSyntax.self)?.signature.parameterClause
+            ?? syntax.as(SubscriptDeclSyntax.self)?.parameterClause
+        let visitor = SendableTypeVisitor(globalActors: globalActors)
+        if let parameterClause {
+            required = required || parameterClause.parameters.contains { visitor.walk(tree: $0, handler: \.found) }
+            if required { return true }
+        }
+
+        // Check return types for `@Sendable`, `sending` and global actors.
+        let returnType = syntax.as(FunctionDeclSyntax.self)?.signature.returnClause?.type
+            ?? syntax.as(SubscriptDeclSyntax.self)?.returnClause.type
+        if let returnType {
+            required = required || visitor.walk(tree: returnType, handler: \.found)
         }
         return required
-}
-
-private func preconcurrencyRequired(for parameters: FunctionParameterClauseSyntax,
-                                    with globalActors: Set<String>) -> Bool {
-    parameters.parameters.contains { parameter in
-        guard let type = parameter.type.as(AttributedTypeSyntax.self) else {
-            return false
-        }
-        return type.attributes.contains { attribute in
-            if let attributeSyntax = attribute.as(AttributeSyntax.self) {
-                let attributeName = attributeSyntax.attributeNameText
-                return attributeName == "Sendable" || globalActors.contains(attributeName)
-            }
-            return false
-        }
-    }
 }
 
 private extension WithAttributesSyntax where Self: WithModifiersSyntax {
@@ -176,5 +173,32 @@ private extension TypeSyntax {
             return compositeType.elements.contains { $0.type.isSendable }
         }
         return false
+    }
+}
+
+private final class SendableTypeVisitor: SyntaxVisitor {
+    private(set) var found = false
+
+    private let globalActors: Set<String>
+
+    init(globalActors: Set<String>) {
+        self.globalActors = globalActors
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: AttributedTypeSyntax) {
+        if found {
+            return
+        }
+        found = found || node.attributes.contains {
+            if let attribute = $0.as(AttributeSyntax.self) {
+                let name = attribute.attributeNameText
+                return name == "Sendable" || globalActors.contains(name)
+            }
+            return false
+        }
+        found = found || node.specifiers.contains {
+            $0.as(SimpleTypeSpecifierSyntax.self)?.specifier.text == "sending"
+        }
     }
 }

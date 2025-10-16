@@ -93,6 +93,7 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         """)
 
     // Regex literal examples
+    // swiftlint:disable line_length
     private let regexLiteral = Example("""
         let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^\(LineLengthRuleTests.longString)$/
 
@@ -105,6 +106,7 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let complexRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^very\\.long\\.regex\\.pattern\\.here\\.with\\.many\\.dots\\.and\\.extra\\.text$/
 
         """)
+    // swiftlint:enable line_length
     private let regexLiteralFail = Example("""
         let longRegexString = "\(LineLengthRuleTests.longString)"
 

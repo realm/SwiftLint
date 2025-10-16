@@ -16,7 +16,9 @@
 
 ### Bug Fixes
 
-* None.
+* Fix false positive in closure_end_indentation rule with #Preview macro
+  [gibachan](https://github.com/gibachan)
+  [#6306](https://github.com/realm/SwiftLint/pull/6306)
 
 ## 0.62.1: Generous Drum Volume
 

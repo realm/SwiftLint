@@ -16,6 +16,8 @@ struct LineLengthConfiguration: RuleConfiguration {
     private(set) var ignoresInterpolatedStrings = false
     @ConfigurationElement(key: "ignores_multiline_strings")
     private(set) var ignoresMultilineStrings = false
+    @ConfigurationElement(key: "ignores_regex_literals")
+    private(set) var ignoresRegexLiterals = false
     @ConfigurationElement(key: "excluded_lines_patterns")
     private(set) var excludedLinesPatterns: Set<String> = []
 

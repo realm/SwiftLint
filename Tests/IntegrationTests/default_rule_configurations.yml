@@ -620,6 +620,7 @@ line_length:
   ignores_comments: false
   ignores_interpolated_strings: false
   ignores_multiline_strings: false
+  ignores_regex_literals: false
   excluded_lines_patterns: []
   meta:
     opt-in: false

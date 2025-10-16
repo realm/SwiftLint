@@ -32,6 +32,7 @@ private extension LineLengthRule {
         private var commentOnlyLines = Set<Int>()
         private var interpolatedStringLines = Set<Int>()
         private var multilineStringLines = Set<Int>()
+        private var regexLiteralLines = Set<Int>()
 
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
             // Populate functionDeclarationLines if ignores_function_declarations is true
@@ -56,6 +57,12 @@ private extension LineLengthRule {
             if configuration.ignoresComments {
                 let commentVisitor = CommentLinesVisitor(locationConverter: locationConverter)
                 commentOnlyLines = commentVisitor.walk(tree: node, handler: \.commentOnlyLines)
+            }
+
+            // Populate regexLiteralLines if ignores_regex_literals is true
+            if configuration.ignoresRegexLiterals {
+                let regexVisitor = RegexLiteralVisitor(locationConverter: locationConverter)
+                regexLiteralLines = regexVisitor.walk(tree: node, handler: \.lines)
             }
 
             return .skipChildren // We'll do the main processing in visitPost
@@ -84,6 +91,9 @@ private extension LineLengthRule {
                     continue
                 }
                 if configuration.ignoresMultilineStrings, multilineStringLines.contains(line.index) {
+                    continue
+                }
+                if configuration.ignoresRegexLiterals, regexLiteralLines.contains(line.index) {
                     continue
                 }
                 if configuration.excludedLinesPatterns.contains(where: {
@@ -208,6 +218,25 @@ private final class MultilineStringLiteralVisitor: SyntaxVisitor {
             return
         }
         linesSpanned.formUnion(startLocation.line...endLocation.line)
+    }
+}
+
+// Visitor to find lines with regex literals
+private final class RegexLiteralVisitor: SyntaxVisitor {
+    let locationConverter: SourceLocationConverter
+    var lines = Set<Int>()
+
+    init(locationConverter: SourceLocationConverter) {
+        self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: RegexLiteralExprSyntax) {
+        let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
+        let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
+        for line in startLocation.line...endLocation.line {
+            lines.insert(line)
+        }
     }
 }
 

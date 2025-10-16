@@ -93,6 +93,11 @@
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6213](https://github.com/realm/SwiftLint/issues/6213)
 
+* Add new option `ignores_regex_literals` to `line_length` rule.
+  It allows to ignore regex literals.  
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6304](https://github.com/realm/SwiftLint/issues/6304)
+
 ### Bug Fixes
 
 * Ignore function, initializer and subscript declarations alike when the

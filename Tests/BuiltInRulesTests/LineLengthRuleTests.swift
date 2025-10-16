@@ -92,6 +92,24 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         \"\"\".functionCall()
         """)
 
+    // Regex literal examples
+    private let regexLiteral = Example("""
+        let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^\(LineLengthRuleTests.longString)$/
+
+        """)
+    private let regexLiteralWithCapture = Example("""
+        let urlRegex = /^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})(\\/\(LineLengthRuleTests.longString))?$/
+
+        """)
+    private let regexLiteralMultiline = Example("""
+        let complexRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^very\\.long\\.regex\\.pattern\\.here\\.with\\.many\\.dots\\.and\\.extra\\.text$/
+
+        """)
+    private let regexLiteralFail = Example("""
+        let longRegexString = "\(LineLengthRuleTests.longString)"
+
+        """)
+
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
     }
@@ -229,5 +247,29 @@ final class LineLengthRuleTests: SwiftLintTestCase {
             commentDoesntViolate: false,
             stringDoesntViolate: false
         )
+    }
+
+    func testLineLengthWithIgnoreRegexLiteralsTrue() {
+        let triggeringLines = [
+            regexLiteralFail,
+            plainString,
+        ]
+        let nonTriggeringLines = [
+            regexLiteral,
+            regexLiteralWithCapture,
+            regexLiteralMultiline,
+        ]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines
+        let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description,
+                   ruleConfiguration: ["ignores_regex_literals": true],
+                   commentDoesntViolate: false,
+                   stringDoesntViolate: false)
     }
 }

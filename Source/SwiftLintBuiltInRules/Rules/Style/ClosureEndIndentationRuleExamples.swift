@@ -61,6 +61,12 @@ internal struct ClosureEndIndentationRuleExamples {
             .prop().method {
             }
         """, excludeFromDocumentation: true),
+        Example("""
+        #Preview("foo",
+                 traits: .landscapeLeft) {
+            ZStack {}
+        }
+        """),
     ]
 
     static let triggeringExamples = [

@@ -19,7 +19,8 @@
 
 ### Bug Fixes
 
-* None.
+* Fix false positive with `#Preview` macro in `closure_end_indentation` rule.  
+  [gibachan](https://github.com/gibachan)
 
 ## 0.62.1: Generous Drum Volume
 

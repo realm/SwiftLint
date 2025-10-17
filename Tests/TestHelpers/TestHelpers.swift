@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 import XCTest
 
-@testable import SwiftLintFramework
+import SwiftLintFramework
 
 // swiftlint:disable file_length
 
@@ -582,7 +582,7 @@ private extension RuleDescription {
     }
 }
 
-public extension [any Rule] {
+package extension [any Rule] {
     var customRules: CustomRules? {
         first(where: { $0 is CustomRules }) as? CustomRules
     }

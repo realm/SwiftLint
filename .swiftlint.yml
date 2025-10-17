@@ -110,7 +110,7 @@ custom_rules:
   fatal_error:
     name: Fatal Error
     excluded: "Tests/*"
-    message: Prefer using `queuedFatalError` over `fatalError` to avoid leaking compiler host machine paths.
+    message: Prefer `queuedFatalError` over `fatalError` to avoid leaking compiler host machine paths
     regex: \bfatalError\b
     match_kinds:
       - identifier
@@ -120,4 +120,10 @@ custom_rules:
     name: Rule Test Function
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
+    severity: error
+  testable_import:
+    included: Tests/TestHelpers/.+\.swift
+    name: Testable Import
+    message: Do not use @testable imports
+    regex: ^\s*@testable\s+import\s+\w+
     severity: error

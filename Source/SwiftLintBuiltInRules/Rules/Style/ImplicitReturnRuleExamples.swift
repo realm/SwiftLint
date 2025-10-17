@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 struct ImplicitReturnRuleExamples {
     struct ClosureExamples {
         static let nonTriggeringExamples = [

@@ -12,10 +12,7 @@
 
 ### Enhancements
 
-* Declare `TestHelpers` as a test target in `Package.swift` to avoid building
-  and linking it in release mode.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#6299](https://github.com/realm/SwiftLint/issues/6299)
+* None.
 
 ### Bug Fixes
 

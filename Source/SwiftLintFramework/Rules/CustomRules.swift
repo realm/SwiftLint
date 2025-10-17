@@ -2,11 +2,11 @@ import Foundation
 
 // MARK: - CustomRulesConfiguration
 
-struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
-    typealias Parent = CustomRules
+package struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
+    package typealias Parent = CustomRules
 
-    var parameterDescription: RuleConfigurationDescription? { RuleConfigurationOption.noOptions }
-    var cacheDescription: String {
+    package var parameterDescription: RuleConfigurationDescription? { RuleConfigurationOption.noOptions }
+    package var cacheDescription: String {
         let configsDescription = customRuleConfigurations
             .sorted { $0.identifier < $1.identifier }
             .map(\.cacheDescription)
@@ -20,7 +20,7 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
     var customRuleConfigurations = [RegexConfiguration<Parent>]()
     var defaultExecutionMode: RegexConfiguration<Parent>.ExecutionMode?
 
-    mutating func apply(configuration: Any) throws(Issue) {
+    package mutating func apply(configuration: Any) throws(Issue) {
         guard let configurationDict = configuration as? [String: Any] else {
             throw .invalidConfiguration(ruleID: Parent.identifier)
         }
@@ -52,8 +52,12 @@ struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProvider {
 // MARK: - CustomRules
 
 @DisabledWithoutSourceKit
-struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
-    var cacheDescription: String {
+package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
+    package init() {
+        // Nothing to initialize.
+    }
+
+    package var cacheDescription: String {
         configuration.cacheDescription
     }
 
@@ -61,7 +65,7 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
         configuration.customRuleConfigurations.map(\.identifier)
     }
 
-    static let description = RuleDescription(
+    package static let description = RuleDescription(
         identifier: "custom_rules",
         name: "Custom Rules",
         description: """
@@ -71,10 +75,10 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
             """,
         kind: .style)
 
-    var configuration = CustomRulesConfiguration()
+    package var configuration = CustomRulesConfiguration()
 
     /// Returns true if all configured custom rules use SwiftSyntax mode, making this rule effectively SourceKit-free.
-    var isEffectivelySourceKitFree: Bool {
+    package var isEffectivelySourceKitFree: Bool {
         configuration.customRuleConfigurations.allSatisfy { config in
             let effectiveMode = config.executionMode == .default
                 ? (configuration.defaultExecutionMode ?? .sourcekit)
@@ -83,7 +87,7 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
         }
     }
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
+    package func validate(file: SwiftLintFile) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         guard configurations.isNotEmpty else {
@@ -114,7 +118,7 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
         }
     }
 
-    func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool {
+    package func canBeDisabled(violation: StyleViolation, by ruleID: RuleIdentifier) -> Bool {
         switch ruleID {
         case let .single(identifier: id):
             id == Self.identifier
@@ -125,7 +129,7 @@ struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceKitFree {
         }
     }
 
-    func isEnabled(in region: Region, for ruleID: String) -> Bool {
+    package func isEnabled(in region: Region, for ruleID: String) -> Bool {
         if !Self.description.allIdentifiers.contains(ruleID),
            !customRuleIdentifiers.contains(ruleID),
            Self.identifier != ruleID {

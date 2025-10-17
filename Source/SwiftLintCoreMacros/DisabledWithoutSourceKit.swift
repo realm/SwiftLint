@@ -14,12 +14,15 @@ enum DisabledWithoutSourceKit: ExtensionMacro {
             context.diagnose(SwiftLintCoreMacroError.notStruct.diagnose(at: declaration))
             return []
         }
+        let acl = declaration.modifiers.first {
+            ["public", "internal", "package", "fileprivate", "private"].contains($0.name.text)
+        }?.name.text ?? "internal"
         let message = #"""
         "Skipping enabled rule '\(Self.identifier)' because it requires SourceKit and SourceKit access is prohibited."
         """#
         return [
             try ExtensionDeclSyntax("""
-                extension \(type) {
+                \(raw: acl) extension \(type) {
                     private static let postMessage: Void = {
                         Issue.genericWarning(\(raw: message)).print()
                     }()

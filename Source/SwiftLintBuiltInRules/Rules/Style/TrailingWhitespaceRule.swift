@@ -21,7 +21,8 @@ struct TrailingWhitespaceRule: Rule {
         ],
         triggeringExamples: [
             Example("let name: String↓ \n"), Example("/* */ let name: String↓ \n"),
-            Example("let codeWithSpace = 123↓    \n", configuration: ["ignores_literals": true]),
+            Example("let codeWithSpace = 123↓    \n", configuration: ["ignores_literals": true],
+                    testWrappingInComment: false),
         ],
         corrections: [
             Example("let name: String↓ \n"): Example("let name: String\n"),

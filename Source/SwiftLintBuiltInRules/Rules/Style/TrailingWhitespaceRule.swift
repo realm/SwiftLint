@@ -16,7 +16,7 @@ struct TrailingWhitespaceRule: Rule {
             Example("let name: String\n"), Example("//\n"), Example("// \n"),
             Example("let name: String //\n"), Example("let name: String // \n"),
             Example("let stringWithSpace = \"hello \"   \n", configuration: ["ignores_literals": true]),
-            Example("let multiline = \"\"\"\n    line with spaces    \n    \"\"\"   \n", 
+            Example("let multiline = \"\"\"\n    line with spaces    \n    \"\"\"   \n",
                     configuration: ["ignores_literals": true]),
         ],
         triggeringExamples: [

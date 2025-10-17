@@ -98,6 +98,11 @@
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6304](https://github.com/realm/SwiftLint/issues/6304)
 
+* Update `implicit_return` rule to trigger violation for if/switch statements with
+  single return expression in all branches.   
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6167](https://github.com/realm/SwiftLint/issues/6167)
+
 ### Bug Fixes
 
 * Ignore function, initializer and subscript declarations alike when the

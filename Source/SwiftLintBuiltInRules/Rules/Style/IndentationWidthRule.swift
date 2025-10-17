@@ -10,8 +10,8 @@ struct IndentationWidthRule: OptInRule {
 
         func spacesEquivalent(indentationWidth: Int) -> Int {
             switch self {
-            case let .tabs(tabs): return tabs * indentationWidth
-            case let .spaces(spaces): return spaces
+            case let .tabs(tabs): tabs * indentationWidth
+            case let .spaces(spaces): spaces
             }
         }
     }

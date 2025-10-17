@@ -5,10 +5,10 @@ public extension SyntaxClassification {
     var isComment: Bool {
         switch self {
         case .lineComment, .docLineComment, .blockComment, .docBlockComment:
-            return true
+            true
         case .none, .keyword, .identifier, .type, .operator, .dollarIdentifier, .integerLiteral, .argumentLabel,
              .floatLiteral, .stringLiteral, .ifConfigDirective, .attribute, .editorPlaceholder, .regexLiteral:
-            return false
+            false
         }
     }
 }

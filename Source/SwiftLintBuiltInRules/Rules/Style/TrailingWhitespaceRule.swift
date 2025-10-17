@@ -321,9 +321,9 @@ private extension TriviaPiece {
     var isBlockComment: Bool {
         switch self {
         case .blockComment, .docBlockComment:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

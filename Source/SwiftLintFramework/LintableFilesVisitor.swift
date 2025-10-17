@@ -203,15 +203,15 @@ private enum CompileCommandsLoadError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case let .nonExistentFile(path):
-            return "Could not read compile commands file at '\(path)'"
+            "Could not read compile commands file at '\(path)'"
         case let .malformedCommands(path):
-            return "Compile commands file at '\(path)' isn't in the correct format"
+            "Compile commands file at '\(path)' isn't in the correct format"
         case let .malformedFile(path, index):
-            return "Missing or invalid (must be a string) 'file' key in \(path) at index \(index)"
+            "Missing or invalid (must be a string) 'file' key in \(path) at index \(index)"
         case let .malformedArguments(path, index):
-            return "Missing or invalid (must be an array of strings) 'arguments' key in \(path) at index \(index)"
+            "Missing or invalid (must be an array of strings) 'arguments' key in \(path) at index \(index)"
         case let .missingFileInArguments(path, index, arguments):
-            return "Entry in \(path) at index \(index) has 'arguments' which do not contain the 'file': \(arguments)"
+            "Entry in \(path) at index \(index) has 'arguments' which do not contain the 'file': \(arguments)"
         }
     }
 }

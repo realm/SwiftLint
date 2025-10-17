@@ -126,9 +126,9 @@ public extension DeclModifierSyntax {
         switch name.tokenKind {
         case .keyword(.open), .keyword(.public), .keyword(.package), .keyword(.internal),
              .keyword(.fileprivate), .keyword(.private):
-            return name.tokenKind
+            name.tokenKind
         default:
-            return nil
+            nil
         }
     }
 
@@ -325,9 +325,9 @@ public extension TriviaPiece {
     var isHorizontalWhitespace: Bool {
         switch self {
         case .spaces, .tabs:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

@@ -220,10 +220,10 @@ private extension Trivia {
         contains { (element: TriviaPiece) in
             switch element {
             case .blockComment, .docLineComment, .docBlockComment, .lineComment:
-                return true
+                true
             case .backslashes, .carriageReturnLineFeeds, .carriageReturns, .formfeeds, .newlines, .pounds,
                  .spaces, .tabs, .unexpectedText, .verticalTabs:
-                return false
+                false
             }
         }
     }

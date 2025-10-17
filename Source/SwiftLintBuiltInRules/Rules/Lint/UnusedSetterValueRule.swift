@@ -190,9 +190,9 @@ private extension Either<SubscriptDeclSyntax, VariableDeclSyntax> {
     var modifiers: DeclModifierListSyntax? {
         switch self {
         case .left(let left):
-            return left.modifiers
+            left.modifiers
         case .right(let right):
-            return right.modifiers
+            right.modifiers
         }
     }
 }

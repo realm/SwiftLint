@@ -11,33 +11,33 @@ public enum SwiftSyntaxKindBridge {
         // swiftlint:disable:previous cyclomatic_complexity
         switch classification {
         case .attribute:
-            return .attributeID
+            .attributeID
         case .blockComment, .lineComment:
-            return .comment
+            .comment
         case .docBlockComment, .docLineComment:
-            return .docComment
+            .docComment
         case .dollarIdentifier, .identifier:
-            return .identifier
+            .identifier
         case .editorPlaceholder:
-            return .placeholder
+            .placeholder
         case .floatLiteral, .integerLiteral:
-            return .number
+            .number
         case .ifConfigDirective:
-            return .poundDirectiveKeyword
+            .poundDirectiveKeyword
         case .keyword:
-            return .keyword
+            .keyword
         case .none, .regexLiteral:
-            return nil
+            nil
         case .operator:
-            return .operator
+            .operator
         case .stringLiteral:
-            return .string
+            .string
         case .type:
-            return .typeidentifier
+            .typeidentifier
         case .argumentLabel:
-            return .argument
+            .argument
         @unknown default:
-            return nil
+            nil
         }
     }
 

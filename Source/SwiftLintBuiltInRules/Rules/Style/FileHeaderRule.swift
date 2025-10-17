@@ -215,9 +215,9 @@ private extension TriviaPiece {
     var isDocComment: Bool {
         switch self {
         case .docLineComment, .docBlockComment:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 
@@ -225,9 +225,9 @@ private extension TriviaPiece {
         switch self {
         case .lineComment(let text), .blockComment(let text),
              .docLineComment(let text), .docBlockComment(let text):
-            return text
+            text
         default:
-            return nil
+            nil
         }
     }
 }

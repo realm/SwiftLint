@@ -20,9 +20,9 @@ private enum ViolationKind {
     var violationDescription: String {
         switch self {
         case .subscript:
-            return "Computed read-only subscripts should avoid using the get keyword"
+            "Computed read-only subscripts should avoid using the get keyword"
         case .property:
-            return "Computed read-only properties should avoid using the get keyword"
+            "Computed read-only properties should avoid using the get keyword"
         }
     }
 }

@@ -83,11 +83,11 @@ internal extension Configuration {
         lazy var disabledRuleIdentifiers: [String] = {
             switch mode {
             case let .defaultConfiguration(disabled, _):
-                return validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
+                validate(ruleIds: disabled, valid: validRuleIdentifiers, silent: true)
                     .sorted(by: <)
 
             case let .onlyConfiguration(onlyRules), let .onlyCommandLine(onlyRules):
-                return validate(
+                validate(
                     ruleIds: Set(allRulesWrapped
                         .map { type(of: $0.rule).identifier }
                         .filter { !onlyRules.contains($0) }),
@@ -96,7 +96,7 @@ internal extension Configuration {
                 ).sorted(by: <)
 
             case .allCommandLine:
-                return []
+                []
             }
         }()
 

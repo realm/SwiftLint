@@ -98,9 +98,9 @@ private extension FunctionDeclSyntax {
     var isOperator: Bool {
         switch name.tokenKind {
         case .binaryOperator:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

@@ -99,19 +99,19 @@ public extension Configuration {
         internal func applied(aliasResolver: (String) -> String) -> Self {
             switch self {
             case let .defaultConfiguration(disabled, optIn):
-                return .defaultConfiguration(
+                .defaultConfiguration(
                     disabled: Set(disabled.map(aliasResolver)),
                     optIn: Set(optIn.map(aliasResolver))
                 )
 
             case let .onlyConfiguration(onlyRules):
-                return .onlyConfiguration(Set(onlyRules.map(aliasResolver)))
+                .onlyConfiguration(Set(onlyRules.map(aliasResolver)))
 
             case let .onlyCommandLine(onlyRules):
-                return .onlyCommandLine(Set(onlyRules.map(aliasResolver)))
+                .onlyCommandLine(Set(onlyRules.map(aliasResolver)))
 
             case .allCommandLine:
-                return .allCommandLine
+                .allCommandLine
             }
         }
 

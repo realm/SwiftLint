@@ -64,9 +64,9 @@ struct StatementPositionRule: CorrectableRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         switch configuration.statementMode {
         case .default:
-            return defaultValidate(file: file)
+            defaultValidate(file: file)
         case .uncuddledElse:
-            return uncuddledValidate(file: file)
+            uncuddledValidate(file: file)
         }
     }
 

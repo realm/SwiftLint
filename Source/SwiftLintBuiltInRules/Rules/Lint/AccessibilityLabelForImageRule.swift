@@ -204,11 +204,11 @@ private extension FunctionCallExprSyntax {
     func isDirectAccessibilityModifier(_ name: String) -> Bool {
         switch name {
         case "accessibilityHidden":
-            return arguments.first?.expression.as(BooleanLiteralExprSyntax.self)?.literal.tokenKind == .keyword(.true)
+            arguments.first?.expression.as(BooleanLiteralExprSyntax.self)?.literal.tokenKind == .keyword(.true)
         case "accessibilityLabel", "accessibilityValue", "accessibilityHint":
-            return true
+            true
         case "accessibility":
-            return arguments.contains { arg in
+            arguments.contains { arg in
                 guard let label = arg.label?.text else { return false }
                 if ["label", "value", "hint"].contains(label) { return true }
                 if label == "hidden" {
@@ -217,7 +217,7 @@ private extension FunctionCallExprSyntax {
                 return false
             }
         default:
-            return false
+            false
         }
     }
 

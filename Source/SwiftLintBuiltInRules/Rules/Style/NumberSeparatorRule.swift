@@ -80,22 +80,22 @@ private enum NumberSeparatorViolation {
 
     var reason: String {
         switch self {
-        case .missingSeparator: return NumberSeparatorRule.missingSeparatorsReason
-        case .misplacedSeparator: return NumberSeparatorRule.misplacedSeparatorsReason
+        case .missingSeparator: NumberSeparatorRule.missingSeparatorsReason
+        case .misplacedSeparator: NumberSeparatorRule.misplacedSeparatorsReason
         }
     }
 
     var position: AbsolutePosition {
         switch self {
-        case let .missingSeparator(position, _): return position
-        case let .misplacedSeparator(position, _): return position
+        case let .missingSeparator(position, _): position
+        case let .misplacedSeparator(position, _): position
         }
     }
 
     var correction: String {
         switch self {
-        case let .missingSeparator(_, correction): return correction
-        case let .misplacedSeparator(_, correction): return correction
+        case let .missingSeparator(_, correction): correction
+        case let .misplacedSeparator(_, correction): correction
         }
     }
 }

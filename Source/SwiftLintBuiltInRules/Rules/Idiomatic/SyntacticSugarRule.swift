@@ -61,20 +61,20 @@ private enum SugaredType: String {
     var sugaredExample: String {
         switch self {
         case .optional:
-            return "Int?"
+            "Int?"
         case .array:
-            return "[Int]"
+            "[Int]"
         case .dictionary:
-            return "[String: Int]"
+            "[String: Int]"
         }
     }
 
     var desugaredExample: String {
         switch self {
         case .optional, .array:
-            return "\(rawValue)<Int>"
+            "\(rawValue)<Int>"
         case .dictionary:
-            return "\(rawValue)<String, Int>"
+            "\(rawValue)<String, Int>"
         }
     }
 

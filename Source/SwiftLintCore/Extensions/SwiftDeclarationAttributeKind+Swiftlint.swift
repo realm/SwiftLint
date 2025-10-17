@@ -43,7 +43,7 @@ public extension SwiftDeclarationAttributeKind {
         public var swiftDeclarationAttributeKinds: Set<SwiftDeclarationAttributeKind> {
             switch self {
             case .acl:
-                return [
+                [
                     .private,
                     .fileprivate,
                     .internal,
@@ -51,7 +51,7 @@ public extension SwiftDeclarationAttributeKind {
                     .open,
                 ]
             case .setterACL:
-                return [
+                [
                     .setterPrivate,
                     .setterFilePrivate,
                     .setterInternal,
@@ -59,28 +59,28 @@ public extension SwiftDeclarationAttributeKind {
                     .setterOpen,
                 ]
             case .mutators:
-                return [
+                [
                     .mutating,
                     .nonmutating,
                 ]
             case .override:
-                return [.override]
+                [.override]
             case .owned:
-                return [.weak]
+                [.weak]
             case .final:
-                return [.final]
+                [.final]
             case .typeMethods:
-                return []
+                []
             case .required:
-                return [.required]
+                [.required]
             case .convenience:
-                return [.convenience]
+                [.convenience]
             case .lazy:
-                return [.lazy]
+                [.lazy]
             case .dynamic:
-                return [.dynamic]
+                [.dynamic]
             case .atPrefixed:
-                return [
+                [
                     .objc,
                     .nonobjc,
                     .objcMembers,

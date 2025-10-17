@@ -30,8 +30,8 @@ struct NestingConfiguration: RuleConfiguration {
 
     func threshold(with config: Severity, for severity: ViolationSeverity) -> Int {
         switch severity {
-        case .error: return config.error ?? config.warning
-        case .warning: return config.warning
+        case .error: config.error ?? config.warning
+        case .warning: config.warning
         }
     }
 }

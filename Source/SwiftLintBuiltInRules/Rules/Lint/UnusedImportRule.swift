@@ -49,9 +49,9 @@ struct UnusedImportRule: CorrectableRule, AnalyzerRule {
         let missingImports = importUsages.compactMap { importUsage -> String? in
             switch importUsage {
             case .unused:
-                return nil
+                nil
             case .missing(let module):
-                return module
+                module
             }
         }
 

@@ -179,9 +179,9 @@ private extension ExtensionAccessModifierRule {
         static func from(tokenKind: TokenKind?) -> Self {
             switch tokenKind {
             case nil:
-                return .implicit
+                .implicit
             case let value?:
-                return .explicit(value)
+                .explicit(value)
             }
         }
 
@@ -238,12 +238,12 @@ private extension MemberBlockSyntax {
     func expandingIfConfigs() -> [DeclSyntax] {
         members.flatMap { member in
             if let ifConfig = member.decl.as(IfConfigDeclSyntax.self) {
-                return ifConfig.clauses.flatMap { clause in
+                return ifConfig.clauses.flatMap { clause -> [DeclSyntax] in
                     switch clause.elements {
                     case .decls(let decls):
-                        return decls.map(\.decl)
+                        decls.map(\.decl)
                     default:
-                        return []
+                        []
                     }
                 }
             }

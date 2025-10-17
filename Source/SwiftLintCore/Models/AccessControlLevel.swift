@@ -39,12 +39,12 @@ public enum AccessControlLevel: String, CustomStringConvertible, Sendable {
 
     public var description: String {
         switch self {
-        case .private: return "private"
-        case .fileprivate: return "fileprivate"
-        case .internal: return "internal"
-        case .package: return "package"
-        case .public: return "public"
-        case .open: return "open"
+        case .private: "private"
+        case .fileprivate: "fileprivate"
+        case .internal: "internal"
+        case .package: "package"
+        case .public: "public"
+        case .open: "open"
         }
     }
 }
@@ -52,12 +52,12 @@ public enum AccessControlLevel: String, CustomStringConvertible, Sendable {
 extension AccessControlLevel: Comparable {
     private var priority: Int {
         switch self {
-        case .private: return 1
-        case .fileprivate: return 2
-        case .internal: return 3
-        case .package: return 4
-        case .public: return 5
-        case .open: return 6
+        case .private: 1
+        case .fileprivate: 2
+        case .internal: 3
+        case .package: 4
+        case .public: 5
+        case .open: 6
         }
     }
 

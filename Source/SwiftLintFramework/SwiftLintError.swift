@@ -6,7 +6,7 @@ package enum SwiftLintError: LocalizedError {
     package var errorDescription: String? {
         switch self {
         case .usageError(let description):
-            return description
+            description
         }
     }
 }

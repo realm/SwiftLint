@@ -33,10 +33,10 @@ internal extension Configuration.FileGraph.FilePath {
     ) throws -> String {
         switch self {
         case let .existing(path):
-            return path
+            path
 
         case let .promised(urlString):
-            return try resolve(
+            try resolve(
                 urlString: urlString,
                 remoteConfigTimeout: remoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCached

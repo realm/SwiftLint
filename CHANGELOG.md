@@ -13,7 +13,7 @@
 ### Enhancements
 
 * Refactor GitHub workflow files to use YAML anchors for common patterns,
-  reducing duplication and improving maintainability.  
+  reducing duplication and improving maintainability.
   [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes

@@ -95,11 +95,11 @@ private extension Optional where Wrapped: Comparable {
     static func < (lhs: Optional, rhs: Optional) -> Bool {
         switch (lhs, rhs) {
         case let (lhs?, rhs?):
-            return lhs < rhs
+            lhs < rhs
         case (nil, _?):
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

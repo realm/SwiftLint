@@ -119,11 +119,11 @@ public enum Issue: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .genericError:
-            return "error: \(message)"
+            "error: \(message)"
         case .genericWarning:
-            return "warning: \(message)"
+            "warning: \(message)"
         default:
-            return Self.genericWarning(message).errorDescription
+            Self.genericWarning(message).errorDescription
         }
     }
 

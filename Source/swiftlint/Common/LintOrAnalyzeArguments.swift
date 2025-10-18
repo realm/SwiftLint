@@ -8,9 +8,9 @@ enum LeniencyOptions: String, EnumerableFlag {
     static func help(for value: Self) -> ArgumentHelp? {
         switch value {
         case .strict:
-            return "Upgrades warnings to serious violations (errors)."
+            "Upgrades warnings to serious violations (errors)."
         case .lenient:
-            return "Downgrades serious violations to warnings, warning threshold is disabled."
+            "Downgrades serious violations to warnings, warning threshold is disabled."
         }
     }
 }

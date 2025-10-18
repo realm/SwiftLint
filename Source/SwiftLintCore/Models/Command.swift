@@ -15,9 +15,9 @@ public struct Command: Equatable {
         ///            state prior to the current action.
         package func inverse() -> Self {
             switch self {
-            case .enable: return .disable
-            case .disable: return .enable
-            case .invalid: return .invalid
+            case .enable: .disable
+            case .disable: .enable
+            case .invalid: .invalid
             }
         }
     }

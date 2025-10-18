@@ -23,9 +23,9 @@ private extension PreferSelfInStaticReferencesRule {
 
         var parentName: String? {
             switch self {
-            case let .likeClass(name): return name
-            case let .likeStruct(name): return name
-            case .skipReferences: return nil
+            case let .likeClass(name): name
+            case let .likeStruct(name): name
+            case .skipReferences: nil
             }
         }
     }

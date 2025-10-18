@@ -134,9 +134,9 @@ private extension TriviaPiece {
     var isComment: Bool {
         switch self {
         case .lineComment, .blockComment, .docLineComment, .docBlockComment:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

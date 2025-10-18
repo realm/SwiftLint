@@ -201,9 +201,9 @@ private extension TokenSyntax {
     var binaryOperator: String? {
         switch tokenKind {
         case .binaryOperator(let str):
-            return str
+            str
         default:
-            return nil
+            nil
         }
     }
 }

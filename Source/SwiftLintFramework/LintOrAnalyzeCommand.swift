@@ -12,18 +12,18 @@ package enum LintOrAnalyzeMode {
     package var imperative: String {
         switch self {
         case .lint:
-            return "lint"
+            "lint"
         case .analyze:
-            return "analyze"
+            "analyze"
         }
     }
 
     package var verb: String {
         switch self {
         case .lint:
-            return "linting"
+            "linting"
         case .analyze:
-            return "analyzing"
+            "analyzing"
         }
     }
 }

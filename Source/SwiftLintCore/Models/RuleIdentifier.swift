@@ -18,10 +18,10 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral, Comparable, Se
     public var stringRepresentation: String {
         switch self {
         case .all:
-            return Self.allStringRepresentation
+            Self.allStringRepresentation
 
         case .single(let identifier):
-            return identifier
+            identifier
         }
     }
 

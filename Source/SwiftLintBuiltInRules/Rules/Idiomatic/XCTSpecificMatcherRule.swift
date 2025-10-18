@@ -112,13 +112,13 @@ private enum TwoArgsXCTAssert: String {
 
     private func suggestion(for protectedArgument: String, hasOptional: Bool) -> String? {
         switch (self, protectedArgument, hasOptional) {
-        case (.equal, "true", false): return "XCTAssertTrue"
-        case (.equal, "false", false): return "XCTAssertFalse"
-        case (.equal, "nil", _): return "XCTAssertNil"
-        case (.notEqual, "true", false): return "XCTAssertFalse"
-        case (.notEqual, "false", false): return "XCTAssertTrue"
-        case (.notEqual, "nil", _): return "XCTAssertNotNil"
-        default: return nil
+        case (.equal, "true", false): "XCTAssertTrue"
+        case (.equal, "false", false): "XCTAssertFalse"
+        case (.equal, "nil", _): "XCTAssertNil"
+        case (.notEqual, "true", false): "XCTAssertFalse"
+        case (.notEqual, "false", false): "XCTAssertTrue"
+        case (.notEqual, "nil", _): "XCTAssertNotNil"
+        default: nil
         }
     }
 

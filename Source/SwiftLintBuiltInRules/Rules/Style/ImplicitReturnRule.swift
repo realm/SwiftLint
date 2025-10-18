@@ -62,9 +62,105 @@ private extension ImplicitReturnRule {
         }
 
         private func collectViolation(in itemList: CodeBlockItemListSyntax) {
-            guard let returnStmt = itemList.onlyElement?.item.as(ReturnStmtSyntax.self) else {
+            guard let onlyItem = itemList.onlyElement else {
                 return
             }
+
+            // Case 1: Direct return statement
+            if let returnStmt = onlyItem.item.as(ReturnStmtSyntax.self) {
+                addViolation(for: returnStmt)
+                return
+            }
+
+            // Case 2: Expression statement containing if or switch
+            if let exprStmt = onlyItem.item.as(ExpressionStmtSyntax.self) {
+                analyzeExpressionForImplicitReturns(exprStmt.expression)
+            }
+        }
+
+        private func analyzeExpressionForImplicitReturns(_ expr: ExprSyntax) {
+            if let ifExpr = expr.as(IfExprSyntax.self) {
+                analyzeIfExpression(ifExpr)
+            } else if let switchExpr = expr.as(SwitchExprSyntax.self) {
+                analyzeSwitchExpression(switchExpr)
+            }
+        }
+
+        private func analyzeIfExpression(_ ifExpr: IfExprSyntax) {
+            guard checkIfAllBranchesCanUseImplicitReturn(ifExpr) else { return }
+
+            let returnStatements = extractAllReturnStatements(from: ifExpr)
+            returnStatements.forEach { addViolation(for: $0) }
+        }
+
+        private func analyzeSwitchExpression(_ switchExpr: SwitchExprSyntax) {
+            guard checkIfAllCasesCanUseImplicitReturn(switchExpr) else { return }
+
+            let returnStatements = extractAllReturnStatements(from: switchExpr)
+            returnStatements.forEach { addViolation(for: $0) }
+        }
+
+        private func extractAllReturnStatements(from ifExpr: IfExprSyntax) -> [ReturnStmtSyntax] {
+            var statements: [ReturnStmtSyntax] = []
+
+            // Extract from main if body
+            if let returnStmt = getSingleReturnStatement(from: ifExpr.body.statements) {
+                statements.append(returnStmt)
+            }
+
+            // Extract from else body (recursively handle nested if-else)
+            if let elseBody = ifExpr.elseBody {
+                switch elseBody {
+                case .codeBlock(let codeBlock):
+                    if let returnStmt = getSingleReturnStatement(from: codeBlock.statements) {
+                        statements.append(returnStmt)
+                    }
+                case .ifExpr(let nestedIfExpr):
+                    statements.append(contentsOf: extractAllReturnStatements(from: nestedIfExpr))
+                }
+            }
+
+            return statements
+        }
+
+        private func extractAllReturnStatements(from switchExpr: SwitchExprSyntax) -> [ReturnStmtSyntax] {
+            switchExpr.cases.compactMap { caseItem in
+                guard let switchCase = caseItem.as(SwitchCaseSyntax.self) else { return nil }
+                return getSingleReturnStatement(from: switchCase.statements)
+            }
+        }
+
+        private func checkIfAllBranchesCanUseImplicitReturn(_ ifExpr: IfExprSyntax) -> Bool {
+            guard isSingleReturnStatement(ifExpr.body.statements),
+                  let elseBody = ifExpr.elseBody else {
+                return false
+            }
+
+            switch elseBody {
+            case .codeBlock(let codeBlock):
+                return isSingleReturnStatement(codeBlock.statements)
+            case .ifExpr(let nestedIfExpr):
+                return checkIfAllBranchesCanUseImplicitReturn(nestedIfExpr)
+            }
+        }
+
+        private func checkIfAllCasesCanUseImplicitReturn(_ switchExpr: SwitchExprSyntax) -> Bool {
+            !switchExpr.cases.isEmpty &&
+            switchExpr.cases.allSatisfy { caseItem in
+                guard let switchCase = caseItem.as(SwitchCaseSyntax.self) else { return false }
+                return isSingleReturnStatement(switchCase.statements)
+            }
+        }
+
+        private func isSingleReturnStatement(_ statements: CodeBlockItemListSyntax) -> Bool {
+            getSingleReturnStatement(from: statements) != nil
+        }
+
+        private func getSingleReturnStatement(from statements: CodeBlockItemListSyntax) -> ReturnStmtSyntax? {
+            statements.onlyElement?.item.as(ReturnStmtSyntax.self)
+        }
+
+        private func addViolation(for returnStmt: ReturnStmtSyntax) {
             let returnKeyword = returnStmt.returnKeyword
             violations.append(
                 at: returnKeyword.positionAfterSkippingLeadingTrivia,

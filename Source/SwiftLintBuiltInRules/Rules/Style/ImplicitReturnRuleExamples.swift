@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+// swiftlint:disable:next type_body_length
 struct ImplicitReturnRuleExamples {
     struct ClosureExamples {
         static let nonTriggeringExamples = [
@@ -103,6 +105,24 @@ struct ImplicitReturnRuleExamples {
                 func g() -> Int { 4 }
             }
             """),
+            Example("""
+            func f(condition: Bool) -> Int {
+                if condition {
+                    let x = 1
+                    return x
+                } else {
+                    return 2
+                }
+            }
+            """),
+            Example("""
+            func f(condition: Bool) -> Int? {
+                if condition {
+                    return 1
+                }
+                return nil
+            }
+            """),
         ]
 
         static let triggeringExamples = [
@@ -118,6 +138,27 @@ struct ImplicitReturnRuleExamples {
             """),
             Example("""
             func f() { ↓return }
+            """),
+            Example("""
+            func f(condition: Bool) -> Int {
+                if condition {
+                    ↓return 1
+                } else {
+                    ↓return 2
+                }
+            }
+            """),
+            Example("""
+            func f(value: Int) -> String {
+                switch value {
+                case 0:
+                    ↓return "zero"
+                case 1:
+                    ↓return "one"
+                default:
+                    ↓return "other"
+                }
+            }
             """),
         ]
 

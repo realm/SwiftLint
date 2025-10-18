@@ -25,11 +25,11 @@ private enum AvailabilityType {
     var displayString: String {
         switch self {
         case .condition:
-            return "condition"
+            "condition"
         case .attribute:
-            return "attribute"
+            "attribute"
         case .negativeCondition:
-            return "negative condition"
+            "negative condition"
         }
     }
 }

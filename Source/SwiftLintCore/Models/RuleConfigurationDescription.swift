@@ -193,13 +193,13 @@ extension OptionType: Documentable {
     public func markdown() -> String {
         switch self {
         case .empty, .flag, .symbol, .integer, .float, .severity:
-            return yaml()
+            yaml()
         case let .string(value):
-            return "&quot;" + value + "&quot;"
+            "&quot;" + value + "&quot;"
         case let .list(options):
-            return "[" + options.map { $0.markdown() }.joined(separator: ", ") + "]"
+            "[" + options.map { $0.markdown() }.joined(separator: ", ") + "]"
         case let .nested(value):
-            return value.markdown()
+            value.markdown()
         }
     }
 

@@ -99,7 +99,7 @@
   [#6304](https://github.com/realm/SwiftLint/issues/6304)
 
 * Add `ignores_literals` configuration for `trailing_whitespace` rule.
-  It allows to ignore literals on multiline strings.  
+  It allows to ignore trailing whitespace in multiline strings.  
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6194](https://github.com/realm/SwiftLint/issues/6194)
 

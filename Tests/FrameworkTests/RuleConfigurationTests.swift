@@ -137,7 +137,8 @@ final class RuleConfigurationTests: SwiftLintTestCase {
     func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
         let config = "unknown"
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                            ignoresComments: true, ignoresLiterals: false)
+                                                            ignoresComments: true,
+                                                            ignoresLiterals: false)
         checkError(Issue.invalidConfiguration(ruleID: TrailingWhitespaceRule.identifier)) {
             try configuration.apply(configuration: config)
         }
@@ -145,27 +146,32 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines() {
         let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                             ignoresComments: true, ignoresLiterals: false)
+                                                             ignoresComments: true,
+                                                             ignoresLiterals: false)
         XCTAssertFalse(configuration1.ignoresEmptyLines)
 
         let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
-                                                             ignoresComments: true, ignoresLiterals: false)
+                                                             ignoresComments: true,
+                                                             ignoresLiterals: false)
         XCTAssertTrue(configuration2.ignoresEmptyLines)
     }
 
     func testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments() {
         let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                             ignoresComments: true, ignoresLiterals: false)
+                                                             ignoresComments: true,
+                                                             ignoresLiterals: false)
         XCTAssertTrue(configuration1.ignoresComments)
 
         let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                             ignoresComments: false, ignoresLiterals: false)
+                                                             ignoresComments: false,
+                                                             ignoresLiterals: false)
         XCTAssertFalse(configuration2.ignoresComments)
     }
 
     func testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines() {
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                            ignoresComments: true, ignoresLiterals: false)
+                                                            ignoresComments: true,
+                                                            ignoresLiterals: false)
         do {
             let config1 = ["ignores_empty_lines": true]
             try configuration.apply(configuration: config1)
@@ -181,7 +187,8 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments() {
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                            ignoresComments: true, ignoresLiterals: false)
+                                                            ignoresComments: true,
+                                                            ignoresLiterals: false)
         do {
             let config1 = ["ignores_comments": true]
             try configuration.apply(configuration: config1)
@@ -197,22 +204,27 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testTrailingWhitespaceConfigurationCompares() {
         let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                             ignoresComments: true, ignoresLiterals: false)
+                                                             ignoresComments: true,
+                                                             ignoresLiterals: false)
         let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
-                                                             ignoresComments: true, ignoresLiterals: false)
+                                                             ignoresComments: true,
+                                                             ignoresLiterals: false)
         XCTAssertNotEqual(configuration1, configuration2)
 
         let configuration3 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
-                                                             ignoresComments: true, ignoresLiterals: false)
+                                                             ignoresComments: true,
+                                                             ignoresLiterals: false)
         XCTAssertEqual(configuration2, configuration3)
 
         let configuration4 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                             ignoresComments: false, ignoresLiterals: false)
+                                                             ignoresComments: false,
+                                                             ignoresLiterals: false)
 
         XCTAssertNotEqual(configuration1, configuration4)
 
         let configuration5 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
-                                                             ignoresComments: false, ignoresLiterals: false)
+                                                             ignoresComments: false,
+                                                             ignoresLiterals: false)
 
         XCTAssertNotEqual(configuration1, configuration5)
     }

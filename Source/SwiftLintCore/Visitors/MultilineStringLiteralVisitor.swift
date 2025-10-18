@@ -7,7 +7,7 @@ import SwiftSyntax
 /// apply different behavior to content inside multiline string literals.
 public final class MultilineStringLiteralVisitor: SyntaxVisitor {
     /// The location converter to use for mapping positions to line numbers.
-    public let locationConverter: SourceLocationConverter
+    private let locationConverter: SourceLocationConverter
 
     /// Line numbers that are covered by multiline string literals.
     public private(set) var linesSpanned = Set<Int>()

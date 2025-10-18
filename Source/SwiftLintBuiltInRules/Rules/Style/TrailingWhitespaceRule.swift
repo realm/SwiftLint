@@ -114,7 +114,9 @@ private extension TrailingWhitespaceRule {
 
         /// Pre-computes string literal information in a single pass for better performance
         private func precomputeStringLiteralInformation(_ node: SourceFileSyntax) {
-            collectLinesWithStringLiterals(node)
+            // Collects line numbers that contain multiline string literals
+            let stringLiteralVisitor = MultilineStringLiteralVisitor(locationConverter: locationConverter)
+            stringLiteralLines = stringLiteralVisitor.walk(tree: node, handler: \.linesSpanned)
         }
 
         /// Collects ranges of line comments organized by line number
@@ -298,12 +300,6 @@ private extension TrailingWhitespaceRule {
                     }
                 }
             }
-        }
-
-        /// Collects line numbers that contain multiline string literals
-        private func collectLinesWithStringLiterals(_ node: SourceFileSyntax) {
-            let stringLiteralVisitor = MultilineStringLiteralVisitor(locationConverter: locationConverter)
-            stringLiteralLines = stringLiteralVisitor.walk(tree: node, handler: \.linesSpanned)
         }
     }
 }

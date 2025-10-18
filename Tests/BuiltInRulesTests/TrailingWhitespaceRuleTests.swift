@@ -32,10 +32,9 @@ final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
 
     func testWithIgnoresLiteralsEnabled() {
         // Perform additional tests with the ignores_literals setting enabled.
+        // This setting only ignores trailing whitespace inside multiline string literals.
         let baseDescription = TrailingWhitespaceRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            Example("let stringWithSpace = \"hello \"   \n"),
-            Example("print(\"test\")   \n"),
             Example("let multiline = \"\"\"\n    content   \n    \"\"\"\n"),
         ]
         let triggeringExamples = baseDescription.triggeringExamples + [

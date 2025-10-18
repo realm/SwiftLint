@@ -15,7 +15,7 @@ struct TrailingWhitespaceRule: Rule {
         nonTriggeringExamples: [
             Example("let name: String\n"), Example("//\n"), Example("// \n"),
             Example("let name: String //\n"), Example("let name: String // \n"),
-            Example("let stringWithSpace = \"hello \"   \n", configuration: ["ignores_literals": true]),
+            Example("let stringWithSpace = \"hello \"\n"),
             Example("let multiline = \"\"\"\n    line with spaces    \n    \"\"\"   \n",
                     configuration: ["ignores_literals": true]),
         ],
@@ -300,35 +300,11 @@ private extension TrailingWhitespaceRule {
             }
         }
 
-        /// Collects line numbers that contain string literals
+        /// Collects line numbers that contain multiline string literals
         private func collectLinesWithStringLiterals(_ node: SourceFileSyntax) {
-            let stringLiteralVisitor = StringLiteralLineVisitor(locationConverter: locationConverter)
-            stringLiteralVisitor.walk(node)
-            stringLiteralLines = stringLiteralVisitor.stringLiteralLines
+            let stringLiteralVisitor = MultilineStringLiteralVisitor(locationConverter: locationConverter)
+            stringLiteralLines = stringLiteralVisitor.walk(tree: node, handler: \.linesSpanned)
         }
-    }
-}
-
-/// Helper visitor to collect string literal line numbers
-private final class StringLiteralLineVisitor: SyntaxVisitor {
-    private let locationConverter: SourceLocationConverter
-    private(set) var stringLiteralLines = Set<Int>()
-
-    init(locationConverter: SourceLocationConverter) {
-        self.locationConverter = locationConverter
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visit(_ node: StringLiteralExprSyntax) -> SyntaxVisitorContinueKind {
-        let startLocation = locationConverter.location(for: node.position)
-        let endLocation = locationConverter.location(for: node.endPosition)
-
-        // Mark all lines that this string literal spans
-        for lineNumber in startLocation.line...endLocation.line {
-            stringLiteralLines.insert(lineNumber)
-        }
-
-        return .visitChildren
     }
 }
 

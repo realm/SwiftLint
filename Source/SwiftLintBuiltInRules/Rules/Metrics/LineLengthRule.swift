@@ -198,29 +198,6 @@ private final class InterpolatedStringLineVisitor: SyntaxVisitor {
     }
 }
 
-// Visitor to find line ranges covered by multiline string literals
-private final class MultilineStringLiteralVisitor: SyntaxVisitor {
-    let locationConverter: SourceLocationConverter
-    var linesSpanned = Set<Int>()
-
-    init(locationConverter: SourceLocationConverter) {
-        self.locationConverter = locationConverter
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visitPost(_ node: StringLiteralExprSyntax) {
-        guard node.openingQuote.tokenKind == .multilineStringQuote else {
-            return
-        }
-        let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
-        let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
-        guard startLocation.line < endLocation.line else {
-            return
-        }
-        linesSpanned.formUnion(startLocation.line...endLocation.line)
-    }
-}
-
 // Visitor to find lines with regex literals
 private final class RegexLiteralVisitor: SyntaxVisitor {
     let locationConverter: SourceLocationConverter

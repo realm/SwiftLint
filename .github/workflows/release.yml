@@ -16,6 +16,21 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_26.0.1.app
   RELEASE_BRANCH: release/${{ inputs.version }}
 
+# Common reusable configurations
+x-checkout-step: &checkout-step
+  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  with:
+    persist-credentials: false
+
+x-checkout-release-branch: &checkout-release-branch
+  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  with:
+    ref: ${{ env.RELEASE_BRANCH }}
+    persist-credentials: false
+
+x-upload-artifact: &upload-artifact
+  uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+
 jobs:
   setup-credentials:
     name: Setup Actor Credentials
@@ -69,9 +84,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+        <<: *checkout-step
       - name: Set up Ruby and Bundler
         uses: ruby/setup-ruby@ab177d40ee5483edb974554986f56b33477e21d0 # v1.265.0
         with:
@@ -103,16 +116,13 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          ref: ${{ env.RELEASE_BRANCH }}
-          persist-credentials: false
+      - <<: *checkout-release-branch
       - name: Install dependencies
         run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
       - name: Build binary
         run: make --debug spm_linux_build
       - name: Upload binary
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        <<: *upload-artifact
         with:
           name: ${{ matrix.artifact_name }}
           path: .build/release/swiftlint
@@ -138,10 +148,7 @@ jobs:
     env:
       BINARY_PATH: .build/${{ matrix.swift_sdk }}/release/swiftlint
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          ref: ${{ env.RELEASE_BRANCH }}
-          persist-credentials: false
+      - <<: *checkout-release-branch
       - name: Install SDK
         run: swift sdk install https://download.swift.org/swift-6.2-release/static-sdk/swift-6.2-RELEASE/swift-6.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum d2225840e592389ca517bbf71652f7003dbf45ac35d1e57d98b9250368769378
       - name: Build static binary
@@ -155,7 +162,7 @@ jobs:
       - name: Strip binary
         run: strip -s "$BINARY_PATH"
       - name: Upload artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        <<: *upload-artifact
         with:
           name: ${{ matrix.artifact_name }}
           path: ${{ env.BINARY_PATH }}
@@ -167,14 +174,11 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          ref: ${{ env.RELEASE_BRANCH }}
-          persist-credentials: false
+      - <<: *checkout-release-branch
       - name: Build SwiftLint for macOS
         run: make --debug bazel_release
       - name: Upload build artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        <<: *upload-artifact
         with:
           name: swiftlint-macos
           path: |

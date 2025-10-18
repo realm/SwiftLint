@@ -5,6 +5,24 @@ on:
     branches: [main]
   pull_request:
 
+# Common reusable configurations
+x-checkout-step: &checkout-step
+  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  with:
+    persist-credentials: false
+
+x-swift-version-step: &swift-version-step
+  name: Get Swift version
+  id: swift_version
+  run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
+
+x-cache-step-linux: &cache-step-linux
+  uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+  with:
+    key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+    restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
+    path: .build
+
 jobs:
   create-docs:
     name: Create
@@ -12,9 +30,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+      - *checkout-step
       - uses: ruby/setup-ruby@ab177d40ee5483edb974554986f56b33477e21d0 # v1.265.0
         with:
           bundler-cache: true
@@ -24,14 +40,8 @@ jobs:
           target: "//:swiftlint @SourceKittenFramework//:sourcekitten"
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Get Swift version
-        id: swift_version
-        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
-          restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
-          path: .build
+      - *swift-version-step
+      - *cache-step-linux
       - name: Generate documentation
         run: |
           export PATH="/usr/share/swift/usr/bin:$PATH"

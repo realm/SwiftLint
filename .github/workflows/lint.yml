@@ -7,14 +7,18 @@ permissions:
   contents: read
   pull-requests: write
 
+# Common reusable configurations
+x-checkout-step: &checkout-step
+  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  with:
+    persist-credentials: false
+
 jobs:
   lint-swift:
     name: Swift
     runs-on: ubuntu-24.04 # "Noble Numbat"
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+      - *checkout-step
       - uses: ./.github/actions/bazel-linux-build
         name: Build SwiftLint with Bazel
         env:
@@ -25,9 +29,7 @@ jobs:
     name: Markdown
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+      - *checkout-step
       - name: Lint
         uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v20.0.0
         with:
@@ -39,9 +41,7 @@ jobs:
     name: Actions
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+      - *checkout-step
       - name: Register problem matcher
         run: |
           curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/main/.github/actionlint-matcher.json > actionlint-matcher.json

@@ -11,15 +11,19 @@ on:
 permissions:
   contents: read
 
+# Common reusable configurations
+x-checkout-step: &checkout-step
+  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  with:
+    persist-credentials: false
+
 jobs:
   sync:
     name: Sync Plugins Folder
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+        <<: *checkout-step
       - name: Run file sync
         uses: BetaHuhn/repo-file-sync-action@8b92be3375cf1d1b0cd579af488a9255572e4619 # v1.21.1
         with:

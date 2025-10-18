@@ -1207,6 +1207,7 @@ trailing_whitespace:
   severity: warning
   ignores_empty_lines: false
   ignores_comments: true
+  ignores_literals: false
   meta:
     opt-in: false
     correctable: true

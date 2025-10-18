@@ -29,4 +29,22 @@ final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
                    ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)
     }
+
+    func testWithIgnoresLiteralsEnabled() {
+        // Perform additional tests with the ignores_literals setting enabled.
+        // This setting only ignores trailing whitespace inside multiline string literals.
+        let baseDescription = TrailingWhitespaceRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            Example("let multiline = \"\"\"\n    content   \n    \"\"\"\n"),
+        ]
+        let triggeringExamples = baseDescription.triggeringExamples + [
+            Example("let codeWithSpace = 123    \n"),
+            Example("var number = 42   \n"),
+        ]
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description,
+                   ruleConfiguration: ["ignores_literals": true])
+    }
 }

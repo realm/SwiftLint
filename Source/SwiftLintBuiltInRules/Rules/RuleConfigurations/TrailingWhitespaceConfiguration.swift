@@ -10,4 +10,6 @@ struct TrailingWhitespaceConfiguration: SeverityBasedRuleConfiguration {
     private(set) var ignoresEmptyLines = false
     @ConfigurationElement(key: "ignores_comments")
     private(set) var ignoresComments = true
+    @ConfigurationElement(key: "ignores_literals")
+    private(set) var ignoresLiterals = false
 }

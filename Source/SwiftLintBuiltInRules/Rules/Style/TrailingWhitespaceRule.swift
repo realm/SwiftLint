@@ -15,9 +15,14 @@ struct TrailingWhitespaceRule: Rule {
         nonTriggeringExamples: [
             Example("let name: String\n"), Example("//\n"), Example("// \n"),
             Example("let name: String //\n"), Example("let name: String // \n"),
+            Example("let stringWithSpace = \"hello \"\n"),
+            Example("let multiline = \"\"\"\n    line with spaces    \n    \"\"\"   \n",
+                    configuration: ["ignores_literals": true]),
         ],
         triggeringExamples: [
-            Example("let name: String↓ \n"), Example("/* */ let name: String↓ \n")
+            Example("let name: String↓ \n"), Example("/* */ let name: String↓ \n"),
+            Example("let codeWithSpace = 123↓    \n", configuration: ["ignores_literals": true],
+                    testWrappingInComment: false),
         ],
         corrections: [
             Example("let name: String↓ \n"): Example("let name: String\n"),
@@ -32,10 +37,18 @@ private extension TrailingWhitespaceRule {
         private var linesFullyCoveredByBlockComments = Set<Int>()
         private var linesEndingWithComment = Set<Int>()
 
+        // Pre-computed string literal information for performance
+        private var stringLiteralLines = Set<Int>()
+
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
             // Pre-compute all comment information in a single pass if needed
             if configuration.ignoresComments {
                 precomputeCommentInformation(node)
+            }
+
+            // Pre-compute string literal information if needed
+            if configuration.ignoresLiterals {
+                precomputeStringLiteralInformation(node)
             }
 
             // Process each line for trailing whitespace violations
@@ -66,6 +79,14 @@ private extension TrailingWhitespaceRule {
                     }
                 }
 
+                // Apply `ignoresLiterals` configuration
+                if configuration.ignoresLiterals {
+                    // Check if line contains string literals
+                    if stringLiteralLines.contains(lineNumber) {
+                        continue
+                    }
+                }
+
                 // Calculate violation position
                 let lineStartPos = locationConverter.position(ofLine: lineNumber, column: 1)
                 let violationStartOffset = line.utf8.count - trailingWhitespaceInfo.byteLength
@@ -89,6 +110,13 @@ private extension TrailingWhitespaceRule {
             // Then, collect line comment ranges and determine which lines end with comments
             let lineCommentRanges = collectLineCommentRanges(from: node)
             determineLineEndingComments(using: lineCommentRanges)
+        }
+
+        /// Pre-computes string literal information in a single pass for better performance
+        private func precomputeStringLiteralInformation(_ node: SourceFileSyntax) {
+            // Collects line numbers that contain multiline string literals
+            let stringLiteralVisitor = MultilineStringLiteralVisitor(locationConverter: locationConverter)
+            stringLiteralLines = stringLiteralVisitor.walk(tree: node, handler: \.linesSpanned)
         }
 
         /// Collects ranges of line comments organized by line number

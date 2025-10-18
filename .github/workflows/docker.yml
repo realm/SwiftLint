@@ -25,29 +25,29 @@ jobs:
       docker-tag: ${{ steps.vars.outputs.docker-tag }}
       repository-lc: ${{ steps.vars.outputs.repository-lc }}
     steps:
-    - name: Define variables
-      id: vars
-      run: |
-        if [[ "${{ github.event_name }}" == "push" ]]; then
-          {
-            echo "checkout-ref=main"
-            echo "docker-tag=latest"
-          } >> "$GITHUB_OUTPUT"
-        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          {
-            echo "checkout-ref=pr"
-            echo "docker-tag=pr-${{ github.event.pull_request.number }}"
-          } >> "$GITHUB_OUTPUT"
-        else
-          {
-            echo "checkout-ref=${INPUTS_TAG}"
-            echo "docker-tag=${INPUTS_TAG}"
-          } >> "$GITHUB_OUTPUT"
-        fi
-        echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
-      env:
-        REPOSITORY: ${{ github.repository }}
-        INPUTS_TAG: ${{ inputs.tag }}
+      - name: Define variables
+        id: vars
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            {
+              echo "checkout-ref=main"
+              echo "docker-tag=latest"
+            } >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            {
+              echo "checkout-ref=pr"
+              echo "docker-tag=pr-${{ github.event.pull_request.number }}"
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "checkout-ref=${INPUTS_TAG}"
+              echo "docker-tag=${INPUTS_TAG}"
+            } >> "$GITHUB_OUTPUT"
+          fi
+          echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+        env:
+          REPOSITORY: ${{ github.repository }}
+          INPUTS_TAG: ${{ inputs.tag }}
 
   build-amd64:
     name: Build AMD64 Image
@@ -57,19 +57,21 @@ jobs:
       packages: write
     needs: set-context
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      if: needs.set-context.outputs.checkout-ref == 'pr'
-      with:
-        persist-credentials: false
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      if: needs.set-context.outputs.checkout-ref != 'pr'
-      with:
-        ref: ${{ needs.set-context.outputs.checkout-ref }}
-        persist-credentials: false
-    - uses: ./.github/actions/docker-build
-      with:
-        platform: amd64
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - &checkout-step-pr
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        if: needs.set-context.outputs.checkout-ref == 'pr'
+        with:
+          persist-credentials: false
+      - &checkout-step-ref
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        if: needs.set-context.outputs.checkout-ref != 'pr'
+        with:
+          ref: ${{ needs.set-context.outputs.checkout-ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/docker-build
+        with:
+          platform: amd64
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   build-arm64:
     name: Build ARM64 Image
@@ -79,19 +81,12 @@ jobs:
       packages: write
     needs: set-context
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      if: needs.set-context.outputs.checkout-ref == 'pr'
-      with:
-        persist-credentials: false
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      if: needs.set-context.outputs.checkout-ref != 'pr'
-      with:
-        ref: ${{ needs.set-context.outputs.checkout-ref }}
-        persist-credentials: false
-    - uses: ./.github/actions/docker-build
-      with:
-        platform: arm64
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - *checkout-step-pr
+      - *checkout-step-ref
+      - uses: ./.github/actions/docker-build
+        with:
+          platform: arm64
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   merge:
     name: Create Multi-Platform Image

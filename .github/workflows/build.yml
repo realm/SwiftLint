@@ -8,18 +8,15 @@ on:
 permissions:
   contents: read
 
-# Common reusable configurations
-x-checkout-step: &checkout-step
-  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-  with:
-    persist-credentials: false
-
 jobs:
   bazel_linux:
     name: Bazel, Linux, Swift 6.2 # pre-installed
     runs-on: ubuntu-24.04
     steps:
-      - *checkout-step
+      - &checkout-step
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/bazel-linux-build
         name: Build SwiftLint with Bazel
         env:

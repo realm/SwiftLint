@@ -15,20 +15,6 @@ on:
         required: true
         type: string
 
-# Common reusable configurations
-x-checkout-step-pr: &checkout-step-pr
-  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-  if: needs.set-context.outputs.checkout-ref == 'pr'
-  with:
-    persist-credentials: false
-
-x-checkout-step-ref: &checkout-step-ref
-  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-  if: needs.set-context.outputs.checkout-ref != 'pr'
-  with:
-    ref: ${{ needs.set-context.outputs.checkout-ref }}
-    persist-credentials: false
-
 jobs:
   set-context:
     name: Set Context
@@ -71,12 +57,21 @@ jobs:
       packages: write
     needs: set-context
     steps:
-    - *checkout-step-pr
-    - *checkout-step-ref
-    - uses: ./.github/actions/docker-build
-      with:
-        platform: amd64
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - &checkout-step-pr
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        if: needs.set-context.outputs.checkout-ref == 'pr'
+        with:
+          persist-credentials: false
+      - &checkout-step-ref
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        if: needs.set-context.outputs.checkout-ref != 'pr'
+        with:
+          ref: ${{ needs.set-context.outputs.checkout-ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/docker-build
+        with:
+          platform: amd64
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   build-arm64:
     name: Build ARM64 Image

@@ -11,33 +11,24 @@ permissions:
 env:
   SKIP_INTEGRATION_TESTS: 'true'
 
-# Common reusable configurations
-x-checkout-step: &checkout-step
-  uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-  with:
-    persist-credentials: false
-
-x-swift-version-step: &swift-version-step
-  name: Get Swift version
-  id: swift_version
-  run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
-
-x-cache-step-linux: &cache-step-linux
-  uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-  with:
-    key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
-    restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
-    path: .build
-
 jobs:
   spm_linux:
     name: SPM, Linux, Swift 6.2
     runs-on: ubuntu-24.04
     container: swift:6.2-noble
     steps:
-      - *checkout-step
-      - *swift-version-step
-      - *cache-step-linux
+      - &checkout-step
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Get Swift version
+        id: swift_version
+        run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
+          path: .build
       - name: Run tests
         uses: ./.github/actions/run-make
         with:

@@ -139,6 +139,16 @@ package struct LintOrAnalyzeCommand {
         }
     }
 
+    package static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws -> [StyleViolation] {
+        let builder = LintOrAnalyzeResultBuilder(options)
+        _ = try await collectViolations(builder: builder)
+        let report = builder.reporter.generateReport(builder.violations)
+        if !report.isEmpty {
+            queuedPrint(report)
+        }
+        return builder.violations
+    }
+
     private static func lintOrAnalyze(_ options: LintOrAnalyzeOptions) async throws {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)

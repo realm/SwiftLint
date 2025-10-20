@@ -133,6 +133,12 @@ final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase 
     }
 }
 
+final class UnneededThrowsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededThrowsRule.description)
+    }
+}
+
 final class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)

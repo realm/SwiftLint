@@ -86,8 +86,6 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
         Example("public struct S { public ↓func sendableClosure(_ block: @Sendable () -> Void) }"),
         Example("public ↓init(_ block: @Sendable () -> Void)"),
         Example("public ↓init(param: @MainActor () -> Void)"),
-        Example("public ↓func sendingParameter(_ value: sending MyClass)"),
-        Example("public ↓func closureWithSendingArgument(_ handler: (_ value: sending MyClass) -> Void)"),
         Example("""
             public ↓func tupleParameter(
                 _ handlers: (@Sendable () -> Void, @MainActor () -> Void)
@@ -110,7 +108,6 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
         Example("public ↓func returnsSendableClosure() -> @Sendable () -> Void"),
         Example("public ↓func returnsActorClosure() -> @MainActor () -> Void"),
         Example("public ↓func returnsClosureTuple() -> (@Sendable () -> Void, @MainActor () -> Void)"),
-        Example("public ↓func returnsClosureWithSendingArgument() -> (_ value: sending MyClass) -> Void"),
 
         // Custom global actors with configuration
         Example(
@@ -206,18 +203,6 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
                 public func globalActorClosure(_ block: @MainActor () -> Void) {}
                 """),
 
-        Example("public func sendingParameter(_ value: sending MyClass) {}"):
-            Example("""
-                @preconcurrency
-                public func sendingParameter(_ value: sending MyClass) {}
-                """),
-
-        Example("public func closureWithSendingArgument(_ handler: (_ value: sending MyClass) -> Void) {}"):
-            Example("""
-                @preconcurrency
-                public func closureWithSendingArgument(_ handler: (_ value: sending MyClass) -> Void) {}
-                """),
-
         Example("public func tupleParameter(_ handlers: (@Sendable () -> Void, @MainActor () -> Void)) {}"):
             Example("""
                 @preconcurrency
@@ -278,12 +263,6 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
             Example("""
                 @preconcurrency
                 public func returnsClosureTuple() -> (@Sendable () -> Void, @MainActor () -> Void) {}
-                """),
-
-        Example("public func returnsClosureWithSendingArgument() -> (_ value: sending MyClass) -> Void {}"):
-            Example("""
-                @preconcurrency
-                public func returnsClosureWithSendingArgument() -> (_ value: sending MyClass) -> Void {}
                 """),
 
         // Custom global actors with configuration

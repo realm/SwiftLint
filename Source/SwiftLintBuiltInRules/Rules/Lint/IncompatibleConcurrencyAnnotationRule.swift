@@ -125,7 +125,7 @@ private func preconcurrencyRequired(for syntax: some WithModifiersSyntax & WithA
             if required { return true }
         }
 
-        // Check parameters for `@Sendable`, `sending` and global actors.
+        // Check parameters for `@Sendable` and global actors.
         let parameterClause = syntax.as(FunctionDeclSyntax.self)?.signature.parameterClause
             ?? syntax.as(InitializerDeclSyntax.self)?.signature.parameterClause
             ?? syntax.as(SubscriptDeclSyntax.self)?.parameterClause
@@ -135,7 +135,7 @@ private func preconcurrencyRequired(for syntax: some WithModifiersSyntax & WithA
             if required { return true }
         }
 
-        // Check return types for `@Sendable`, `sending` and global actors.
+        // Check return types for `@Sendable` and global actors.
         let returnType = syntax.as(FunctionDeclSyntax.self)?.signature.returnClause?.type
             ?? syntax.as(SubscriptDeclSyntax.self)?.returnClause.type
         if let returnType {
@@ -196,9 +196,6 @@ private final class SendableTypeVisitor: SyntaxVisitor {
                 return name == "Sendable" || globalActors.contains(name)
             }
             return false
-        }
-        found = found || node.specifiers.contains {
-            $0.as(SimpleTypeSpecifierSyntax.self)?.specifier.text == "sending"
         }
     }
 }

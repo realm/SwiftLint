@@ -97,6 +97,12 @@ final class InclusiveLanguageRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class IncompatibleConcurrencyAnnotationRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IncompatibleConcurrencyAnnotationRule.description)
+    }
+}
+
 final class IndentationWidthRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IndentationWidthRule.description)
@@ -148,11 +154,5 @@ final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
 final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstantRule.description)
-    }
-}
-
-final class LegacyConstructorRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyConstructorRule.description)
     }
 }

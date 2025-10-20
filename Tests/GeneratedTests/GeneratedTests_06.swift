@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class NestingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NestingRule.description)
+    }
+}
+
 final class NimbleOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NimbleOperatorRule.description)
@@ -148,11 +154,5 @@ final class PreferAssetSymbolsRuleGeneratedTests: SwiftLintTestCase {
 final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferConditionListRule.description)
-    }
-}
-
-final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferKeyPathRule.description)
     }
 }

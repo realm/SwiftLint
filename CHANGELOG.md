@@ -12,7 +12,13 @@
 
 ### Enhancements
 
-* None.
+* Add new `incompatible_concurrency_annotation` rule that triggers when a declaration
+  isolated to a global actor, `@Sendable` closure arguments and/or generic sendable
+  constraints is not annotated with `@preconcurrency` in order to maintain compatibility
+  with Swift 5.  
+  [mattmassicotte](https://github.com/mattmassicotte)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5987](https://github.com/realm/SwiftLint/issues/5987)
 
 ### Bug Fixes
 

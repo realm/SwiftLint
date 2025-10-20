@@ -31,6 +31,12 @@ final class PreferTypeCheckingRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferUnknownDefaultRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferUnknownDefaultRule.description)
+    }
+}
+
 final class PreferZeroOverExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferZeroOverExplicitInitRule.description)

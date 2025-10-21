@@ -662,7 +662,7 @@ missing_docs:
     correctable: false
 modifier_order:
   severity: warning
-  preferred_modifier_order: [override, acl, setterACL, dynamic, mutators, lazy, final, required, convenience, typeMethods, owned]
+  preferred_modifier_order: [override, acl, setterACL, isolation, dynamic, mutators, lazy, final, required, convenience, typeMethods, owned]
   meta:
     opt-in: true
     correctable: true

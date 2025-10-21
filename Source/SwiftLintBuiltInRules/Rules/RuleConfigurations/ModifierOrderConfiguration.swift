@@ -12,6 +12,7 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration {
         .override,
         .acl,
         .setterACL,
+        .isolation,
         .dynamic,
         .mutators,
         .lazy,

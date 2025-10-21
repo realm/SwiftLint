@@ -2,6 +2,8 @@
 import TestHelpers
 import XCTest
 
+// swiftlint:disable file_length
+
 final class ModifierOrderTests: SwiftLintTestCase {
     func testAttributeTypeMethod() {
         let descriptionOverride = ModifierOrderRule.description
@@ -387,5 +389,93 @@ final class ModifierOrderTests: SwiftLintTestCase {
         } else {
             XCTFail("A modifier order violation should have been triggered!")
         }
+    }
+
+    func testIsolationModifierOrder() {
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [
+                Example("""
+                @MainActor
+                class Foo {
+                    public nonisolated func bar() {}
+                }
+                """),
+                Example("""
+                actor MyActor: CustomStringConvertible {
+                    nonisolated var description: String {
+                        "MyActor instance"
+                    }
+                }
+                """),
+                Example("""
+                class RegularClass {
+                    @MainActor public func bar() {}
+                }
+                """),
+            ])
+            .with(triggeringExamples: [
+                Example("""
+                @MainActor
+                class Foo {
+                    nonisolated public func bar() {}
+                }
+                """),
+                Example("""
+                @MainActor
+                class RegularClass {
+                    nonisolated private func heavyWork() {}
+                }
+                """),
+            ])
+            .with(corrections: [:])
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "isolation", "final"]])
+    }
+
+    func testIsolationModifierCorrections() {
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [], triggeringExamples: [])
+            .with(corrections: [
+                Example("""
+                @MainActor
+                class Foo {
+                    nonisolated public func bar() {}
+                }
+                """):
+                Example("""
+                @MainActor
+                class Foo {
+                    public nonisolated func bar() {}
+                }
+                """),
+            ])
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "isolation", "final"]])
+    }
+
+    func testIsolationModifierCustomOrder() {
+        let descriptionOverride = ModifierOrderRule.description
+            .with(nonTriggeringExamples: [
+                Example("""
+                @MainActor
+                class Foo {
+                    nonisolated public final func bar() {}
+                }
+                """),
+            ])
+            .with(triggeringExamples: [
+                Example("""
+                @MainActor
+                class Foo {
+                    public nonisolated func bar() {}
+                }
+                """),
+            ])
+            .with(corrections: [:])
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "isolation", "acl", "final"]])
     }
 }

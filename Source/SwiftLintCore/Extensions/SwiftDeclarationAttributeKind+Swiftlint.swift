@@ -22,12 +22,13 @@ public extension SwiftDeclarationAttributeKind {
         case `convenience`
         case `lazy`
         case `dynamic`
+        case isolation
         case atPrefixed
 
         public init?(rawAttribute: String) {
             let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
                 .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,
-                .required, .convenience, .lazy,
+                .required, .convenience, .lazy, .isolation,
             ]
             let modifierGroup = allModifierGroups.first {
                 $0.swiftDeclarationAttributeKinds.contains(where: { $0.rawValue == rawAttribute })
@@ -79,6 +80,8 @@ public extension SwiftDeclarationAttributeKind {
                 return [.lazy]
             case .dynamic:
                 return [.dynamic]
+            case .isolation:
+                return [.nonisolated]
             case .atPrefixed:
                 return [
                     .objc,

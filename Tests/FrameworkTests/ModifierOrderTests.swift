@@ -3,7 +3,7 @@ import TestHelpers
 import XCTest
 
 // swiftlint:disable file_length
-
+// swiftlint:disable:next type_body_length
 final class ModifierOrderTests: SwiftLintTestCase {
     func testAttributeTypeMethod() {
         let descriptionOverride = ModifierOrderRule.description

@@ -397,7 +397,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 Example("""
                 @MainActor
                 class Foo {
-                    public nonisolated func bar() {}
+                    nonisolated public func bar() {}
                 }
                 """),
                 Example("""
@@ -417,25 +417,53 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 Example("""
                 @MainActor
                 class Foo {
-                    nonisolated public func bar() {}
+                    public nonisolated func bar() {}
                 }
                 """),
                 Example("""
                 @MainActor
                 class RegularClass {
-                    nonisolated private func heavyWork() {}
+                    private nonisolated func heavyWork() {}
                 }
                 """),
             ])
-            .with(corrections: [:])
+            .with(corrections: [
+                Example("""
+                @MainActor
+                class Foo {
+                    public nonisolated func bar() {}
+                }
+                """):
+                Example("""
+                @MainActor
+                class Foo {
+                    nonisolated public func bar() {}
+                }
+                """),
+            ])
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "isolation", "final"]])
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "isolation", "acl", "final"]])
     }
 
-    func testIsolationModifierCorrections() {
+    func testIsolationModifierCustomOrder() {
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [], triggeringExamples: [])
+            .with(nonTriggeringExamples: [
+                Example("""
+                @MainActor
+                class Foo {
+                    public nonisolated final func bar() {}
+                }
+                """),
+            ])
+            .with(triggeringExamples: [
+                Example("""
+                @MainActor
+                class Foo {
+                    nonisolated public func bar() {}
+                }
+                """),
+            ])
             .with(corrections: [
                 Example("""
                 @MainActor
@@ -453,29 +481,5 @@ final class ModifierOrderTests: SwiftLintTestCase {
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "isolation", "final"]])
-    }
-
-    func testIsolationModifierCustomOrder() {
-        let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
-                @MainActor
-                class Foo {
-                    nonisolated public final func bar() {}
-                }
-                """),
-            ])
-            .with(triggeringExamples: [
-                Example("""
-                @MainActor
-                class Foo {
-                    public nonisolated func bar() {}
-                }
-                """),
-            ])
-            .with(corrections: [:])
-
-        verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["override", "isolation", "acl", "final"]])
     }
 }

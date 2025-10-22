@@ -20,6 +20,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5987](https://github.com/realm/SwiftLint/issues/5987)
 
+* Add `isolation` modifier group to `modifier_order` rule configuration.
+  This allows configuring the position of `nonisolated` modifiers.  
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6164](https://github.com/realm/SwiftLint/issues/6164)
+
 ### Bug Fixes
 
 * Fix false positive with `#Preview` macro in `closure_end_indentation` rule.  

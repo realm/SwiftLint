@@ -57,7 +57,7 @@ final class BaselineTests: XCTestCase {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
-    private nonisolated(unsafe) static var currentDirectoryPath: String?
+    nonisolated(unsafe) private static var currentDirectoryPath: String?
 
     override static func setUp() {
         super.setUp()

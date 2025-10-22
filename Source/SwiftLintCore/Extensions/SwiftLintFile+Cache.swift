@@ -61,7 +61,7 @@ package typealias AssertHandler = () -> Void
 private let assertHandlerCache = Cache { (_: SwiftLintFile) -> AssertHandler? in nil }
 
 private final class Cache<T>: Sendable {
-    private nonisolated(unsafe) var values = [FileCacheKey: T]()
+    nonisolated(unsafe) private var values = [FileCacheKey: T]()
     private let factory: @Sendable (SwiftLintFile) -> T
     private let lock = PlatformLock()
 
@@ -208,7 +208,7 @@ extension SwiftLintFile {
 
 private final class PlatformLock: Sendable {
 #if canImport(Darwin)
-    private nonisolated(unsafe) let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
+    nonisolated(unsafe) private let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
 #else
     private let primitiveLock = NSLock()
 #endif

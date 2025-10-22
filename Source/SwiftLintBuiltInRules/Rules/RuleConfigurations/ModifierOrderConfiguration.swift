@@ -10,9 +10,9 @@ struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "preferred_modifier_order")
     private(set) var preferredModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = [
         .override,
+        .isolation,
         .acl,
         .setterACL,
-        .isolation,
         .dynamic,
         .mutators,
         .lazy,

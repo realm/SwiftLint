@@ -13,7 +13,7 @@ struct LegacyNSGeometryFunctionsRule: Rule {
         is a typealias for CGRect), and are supported on all Swift platforms.
 
         The legacy functions are only supported on macOS and Mac Catalyst.
-        """
+        """,
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("rect.width"),

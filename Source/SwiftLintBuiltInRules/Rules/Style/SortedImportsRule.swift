@@ -34,7 +34,7 @@ private extension SortedImportsRule {
             var importBlocks = [[Import]]()
             for `import` in imports {
                 if let lastBlock = importBlocks.last, let lastImport = lastBlock.last {
-                    if `import`.isDirectlyAfter(other: lastImport, in: file) {
+                    if `import`.isDirectlyAfter(previous: lastImport, in: file) {
                         importBlocks[importBlocks.count - 1].append(`import`)
                     } else {
                         importBlocks.append([`import`])
@@ -80,7 +80,7 @@ private extension SortedImportsRule {
                         grouping: configuration.grouping,
                         locationConverter: locationConverter
                     )
-                    if let lastImport = imports.last, !`import`.isDirectlyAfter(other: lastImport, in: file) {
+                    if let lastImport = imports.last, !`import`.isDirectlyAfter(previous: lastImport, in: file) {
                         rewrittenStatements.append(contentsOf: sort(imports))
                         imports = [`import`]
                         continue
@@ -112,6 +112,26 @@ private extension SortedImportsRule {
         }
 
         private func sort(_ imports: [Import]) -> [CodeBlockItemSyntax] {
+            guard imports.count > 1, let firstImport = imports.first else {
+                return imports.map(\.importDecl.asCodeBlockItem)
+            }
+            let leadingTrivia = firstImport.importDecl.leadingTrivia.splitBlocks
+            if leadingTrivia.foundSplit {
+                // Comment with extra newlines before first import.
+                let firstImportWithoutComment = Import.from(
+                    importDecl: firstImport.importDecl.with(\.leadingTrivia, leadingTrivia.second),
+                    grouping: configuration.grouping,
+                    locationConverter: locationConverter
+                )
+                let imports = [firstImportWithoutComment] + imports.dropFirst()
+                let sorted = imports.sorted(by: { $0 < $1 })
+                numberOfCorrections += imports.difference(from: sorted).count
+                let first = sorted.first!.importDecl
+                let firstWithTrivia = firstImportWithoutComment == sorted.first
+                    ? first.with(\.leadingTrivia, firstImport.importDecl.leadingTrivia)
+                    : first.with(\.leadingTrivia, leadingTrivia.first + first.leadingTrivia)
+                return [firstWithTrivia.asCodeBlockItem] + sorted.dropFirst().map(\.importDecl.asCodeBlockItem)
+            }
             let sorted = imports.sorted(by: { $0 < $1 })
             numberOfCorrections += imports.difference(from: sorted).count
             return sorted.map(\.importDecl.asCodeBlockItem)
@@ -128,6 +148,24 @@ private extension Trivia {
         } else {
             self
         }
+    }
+
+    var splitBlocks: (first: Trivia, second: Trivia, foundSplit: Bool) {
+        var leading = [TriviaPiece]()
+        var trailing = [TriviaPiece]()
+        var foundSplit = false
+
+        for piece in pieces {
+            if case let .newlines(count) = piece, count > 1 {
+                leading.append(.newlines(count - 1))
+                foundSplit = true
+            } else if foundSplit {
+                trailing.append(piece)
+            } else {
+                leading.append(piece)
+            }
+        }
+        return (Trivia(pieces: leading), Trivia(pieces: trailing), foundSplit)
     }
 }
 private extension ImportDeclSyntax {
@@ -164,13 +202,7 @@ private struct Import: Comparable {
             } else {
                 []
             }
-        let startPosition =
-            if importDecl.leadingTrivia.containsComments {
-                importDecl.position
-            } else {
-                importDecl.positionAfterSkippingLeadingTrivia
-            }
-        let startLine = locationConverter.location(for: startPosition).line
+        let startLine = locationConverter.location(for: importDecl.positionAfterSkippingLeadingTrivia).line
         return Self(
             importDecl: importDecl,
             line: startLine,
@@ -179,16 +211,13 @@ private struct Import: Comparable {
         )
     }
 
-    func isDirectlyAfter(other: Self, in file: SwiftLintFile) -> Bool {
-        let lineAfterOther = other.line + other.offset
-        if line == lineAfterOther {
-            return true
-        }
-        // Check for empty lines or comment-only lines between imports.
-        return !(lineAfterOther..<line).contains { line in
-            let content = file.lines[line - 1].content
-            return content.isEmpty || content.starts(with: "#")
-        }
+    func isDirectlyAfter(previous: Self, in file: SwiftLintFile) -> Bool {
+        let lineAfterPrevious = previous.line + previous.offset + 1
+
+        // Import is either directly after the previous import ...
+        return lineAfterPrevious == line
+            // ... or there are only comment lines between them.
+            || file.commentLines.isSuperset(of: lineAfterPrevious..<line)
     }
 
     static func < (lhs: Self, rhs: Self) -> Bool {

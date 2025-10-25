@@ -52,6 +52,7 @@ private let swiftSyntaxTokensCache = Cache { file -> [SwiftLintSyntaxToken]? in
     // Use SwiftSyntaxKindBridge to derive SourceKitten-compatible tokens from SwiftSyntax
     SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
 }
+private let emptyLinesCache = Cache { EmptyLinesVisitor.emptyLines(in: $0) }
 
 package typealias AssertHandler = () -> Void
 // Re-enable once all parser diagnostics in tests have been addressed.
@@ -175,6 +176,8 @@ extension SwiftLintFile {
         swiftSyntaxTokensCache.get(self)
     }
 
+    public var emptyLines: Set<Int> { emptyLinesCache.get(self) }
+
     /// Invalidates all cached data for this file.
     public func invalidateCache() {
         file.clearCaches()
@@ -189,6 +192,7 @@ extension SwiftLintFile {
         locationConverterCache.invalidate(self)
         commandsCache.invalidate(self)
         linesWithTokensCache.invalidate(self)
+        emptyLinesCache.invalidate(self)
     }
 
     package static func clearCaches() {
@@ -203,6 +207,7 @@ extension SwiftLintFile {
         locationConverterCache.clear()
         commandsCache.clear()
         linesWithTokensCache.clear()
+        emptyLinesCache.clear()
     }
 }
 

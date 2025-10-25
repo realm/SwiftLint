@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<testsuites failures="1" errors="3">
-	<testsuite failures="1" errors="3">
+<testsuites failures="1" errors="3" tests="4">
+	<testsuite failures="1" errors="3" tests="4">
 		<testcase classname='Formatting Test' name='filename'>
 			<failure message='Violation Reason 1'>Warning:Line:1</failure>
 		</testcase>

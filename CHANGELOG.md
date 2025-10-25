@@ -25,6 +25,10 @@
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6164](https://github.com/realm/SwiftLint/issues/6164)
 
+* Add test count to JUnit reporter.  
+  [nandhinisubbu](https://github.com/nandhinisubbu)
+  [#6161](https://github.com/realm/SwiftLint/issues/6161)
+
 ### Bug Fixes
 
 * Fix false positive with `#Preview` macro in `closure_end_indentation` rule.  

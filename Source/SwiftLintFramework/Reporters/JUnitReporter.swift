@@ -11,11 +11,12 @@ struct JUnitReporter: Reporter {
     static func generateReport(_ violations: [StyleViolation]) -> String {
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
+        let testCount = violations.count
 
         return """
             <?xml version="1.0" encoding="utf-8"?>
-            <testsuites failures="\(warningCount)" errors="\(errorCount)">
-            \t<testsuite failures="\(warningCount)" errors="\(errorCount)">
+            <testsuites failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
+            \t<testsuite failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
             \(violations.map(testCase(for:)).joined(separator: "\n"))
             \t</testsuite>
             </testsuites>

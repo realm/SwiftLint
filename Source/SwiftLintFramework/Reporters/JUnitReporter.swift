@@ -11,7 +11,7 @@ struct JUnitReporter: Reporter {
     static func generateReport(_ violations: [StyleViolation]) -> String {
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
-        let testCount = violations.count
+        let testCount = warningCount + errorCount
 
         return """
             <?xml version="1.0" encoding="utf-8"?>

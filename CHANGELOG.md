@@ -34,6 +34,11 @@
 * Fix false positive with `#Preview` macro in `closure_end_indentation` rule.  
   [gibachan](https://github.com/gibachan)
 
+* Fix correction of `sorted_imports` rule when comments (with a distance) are present before
+  the first import.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6317](https://github.com/realm/SwiftLint/issues/6317)
+
 ## 0.62.1: Generous Drum Volume
 
 ### Breaking

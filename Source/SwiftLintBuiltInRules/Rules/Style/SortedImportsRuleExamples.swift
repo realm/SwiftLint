@@ -44,6 +44,25 @@ internal struct SortedImportsRuleExamples {
         import BBB
         """),
         Example("""
+        // header
+
+        import DDD
+        import SSS
+
+        // some comment
+        import FFF // a comment
+        """, excludeFromDocumentation: true),
+        Example("""
+        // header
+
+        import DDD
+        import FFF
+
+        // some comment
+        import AAA // a comment
+        import NNN
+        """, excludeFromDocumentation: true),
+        Example("""
         @testable import AAA
           @testable import BBB
         """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
@@ -185,6 +204,75 @@ internal struct SortedImportsRuleExamples {
             #endif
             import AAA
             import BBB
+            """),
+        Example("""
+          // comment
+
+          import BBB
+          import AAA
+        """): Example("""
+              // comment
+
+              import AAA
+              import BBB
+            """),
+        Example("""
+        // header
+
+        import DDD
+        import SSS
+
+        // some comment
+        import FFF // a comment
+        """): Example("""
+            // header
+
+            import DDD
+            import SSS
+
+            // some comment
+            import FFF // a comment
+            """),
+        Example("""
+        // header
+
+        // comment
+        import BBB
+        // another comment
+        import AAA
+        """): Example("""
+            // header
+
+            // another comment
+            import AAA
+            // comment
+            import BBB
+            """),
+        Example("""
+        // header
+
+        import class CCC
+        import BBB
+        import LLL
+        """): Example("""
+            // header
+
+            import BBB
+            import class CCC
+            import LLL
+            """),
+        Example("""
+        // header
+
+        import AAA
+        import class CCC2.View
+        import CCC1
+        """): Example("""
+            // header
+
+            import AAA
+            import CCC1
+            import class CCC2.View
             """),
         Example("""
           @testable import BBB

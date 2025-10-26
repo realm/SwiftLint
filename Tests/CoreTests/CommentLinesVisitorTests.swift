@@ -138,9 +138,6 @@ final class CommentLinesVisitorTests: XCTestCase {
     }
 
     private func commentOnlyLines(in contents: String) -> [Int] {
-        let file = SwiftLintFile(contents: contents)
-        let visitor = CommentLinesVisitor(locationConverter: file.locationConverter)
-        visitor.walk(file.syntaxTree)
-        return Array(visitor.commentOnlyLines).sorted()
+        CommentLinesVisitor.commentLines(in: SwiftLintFile(contents: contents)).sorted()
     }
 }

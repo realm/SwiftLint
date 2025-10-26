@@ -52,6 +52,7 @@ private let swiftSyntaxTokensCache = Cache { file -> [SwiftLintSyntaxToken]? in
     // Use SwiftSyntaxKindBridge to derive SourceKitten-compatible tokens from SwiftSyntax
     SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
 }
+private let commentLinesCache = Cache { CommentLinesVisitor.commentLines(in: $0) }
 private let emptyLinesCache = Cache { EmptyLinesVisitor.emptyLines(in: $0) }
 
 package typealias AssertHandler = () -> Void
@@ -176,6 +177,7 @@ extension SwiftLintFile {
         swiftSyntaxTokensCache.get(self)
     }
 
+    public var commentLines: Set<Int> { commentLinesCache.get(self) }
     public var emptyLines: Set<Int> { emptyLinesCache.get(self) }
 
     /// Invalidates all cached data for this file.
@@ -192,6 +194,7 @@ extension SwiftLintFile {
         locationConverterCache.invalidate(self)
         commandsCache.invalidate(self)
         linesWithTokensCache.invalidate(self)
+        commentLinesCache.invalidate(self)
         emptyLinesCache.invalidate(self)
     }
 
@@ -207,6 +210,7 @@ extension SwiftLintFile {
         locationConverterCache.clear()
         commandsCache.clear()
         linesWithTokensCache.clear()
+        commentLinesCache.clear()
         emptyLinesCache.clear()
     }
 }

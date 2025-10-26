@@ -22,6 +22,15 @@ public final class CommentLinesVisitor: SyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
 
+    /// Compute all comment-only lines in the given file.
+    ///
+    /// - Parameter file: The SwiftLint file to analyze.
+    /// - Returns: A set of line numbers that contain only comments.
+    public static func commentLines(in file: SwiftLintFile) -> Set<Int> {
+        CommentLinesVisitor(locationConverter: file.locationConverter)
+            .walk(tree: file.syntaxTree, handler: \.commentOnlyLines)
+    }
+
     override public func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
         processTrivia(token.leadingTrivia, endingAt: token.positionAfterSkippingLeadingTrivia)
 

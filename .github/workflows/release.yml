@@ -144,14 +144,30 @@ jobs:
           persist-credentials: false
       - name: Install SDK
         run: swift sdk install https://download.swift.org/swift-6.2-release/static-sdk/swift-6.2-RELEASE/swift-6.2-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum d2225840e592389ca517bbf71652f7003dbf45ac35d1e57d98b9250368769378
+      - name: Build mimalloc object
+        run: |
+          set -euxo pipefail
+          MIMALLOC_VERSION=3.0.10
+          curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v${MIMALLOC_VERSION}.tar.gz" | tar xz
+          export CC=clang
+          cmake -S "mimalloc-${MIMALLOC_VERSION}" -B mimalloc-build \
+            -DMI_BUILD_SHARED=OFF \
+            -DMI_BUILD_STATIC=OFF \
+            -DMI_BUILD_OBJECT=ON \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build mimalloc-build --target mimalloc-obj
+          cp mimalloc-build/CMakeFiles/mimalloc-obj.dir/src/static.c.o mimalloc.o
       - name: Build static binary
         run: |
+          # To improve performance with musl, increase the stack size to 512KiB and
+          # replace musl's default alloactor with mimalloc.
           swift build \
             -c release \
             --product swiftlint \
             --swift-sdk ${{ matrix.swift_sdk }} \
             -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT \
-            -Xlinker -z -Xlinker stack-size=0x80000 # 512KiB
+            -Xlinker -z -Xlinker stack-size=0x80000 \
+            -Xlinker mimalloc.o
       - name: Strip binary
         run: strip -s "$BINARY_PATH"
       - name: Upload artifact

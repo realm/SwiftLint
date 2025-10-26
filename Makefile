@@ -1,7 +1,7 @@
 TEMPORARY_FOLDER?=/tmp/SwiftLint.dst
 PREFIX?=/usr/local
 BUILD_TOOL?=xcodebuild
-MIMALLOC_LICENSE=THIRD_PARTY_LICENSES/mimalloc-LICENSE
+MIMALLOC_LICENSE=third_party_licenses/mimalloc-LICENSE
 
 XCODEFLAGS=-scheme 'swiftlint' \
 	-destination 'platform=macOS' \

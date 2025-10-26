@@ -168,7 +168,7 @@ jobs:
             -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT \
             -Xlinker -z -Xlinker stack-size=0x80000 \
             -Xlinker --whole-archive \
-            -Xlinker $(pwd)/libmimalloc.a \
+            -Xlinker ./libmimalloc.a \
             -Xlinker --no-whole-archive
       - name: Strip binary
         run: strip -s "$BINARY_PATH"

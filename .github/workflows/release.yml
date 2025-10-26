@@ -152,22 +152,24 @@ jobs:
           export CC=clang
           cmake -S "mimalloc-${MIMALLOC_VERSION}" -B mimalloc-build \
             -DMI_BUILD_SHARED=OFF \
-            -DMI_BUILD_STATIC=OFF \
-            -DMI_BUILD_OBJECT=ON \
+            -DMI_BUILD_STATIC=ON \
+            -DMI_BUILD_OBJECT=OFF \
             -DCMAKE_BUILD_TYPE=Release
-          cmake --build mimalloc-build --target mimalloc-obj
-          cp mimalloc-build/CMakeFiles/mimalloc-obj.dir/src/static.c.o mimalloc.o
+          cmake --build mimalloc-build --target mimalloc-static
+          cp mimalloc-build/libmimalloc.a libmimalloc.a
       - name: Build static binary
         run: |
           # To improve performance with musl, increase the stack size to 512KiB and
-          # replace musl's default alloactor with mimalloc.
+          # replace musl's default allocator with mimalloc.
           swift build \
             -c release \
             --product swiftlint \
             --swift-sdk ${{ matrix.swift_sdk }} \
             -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT \
             -Xlinker -z -Xlinker stack-size=0x80000 \
-            -Xlinker mimalloc.o
+            -Xlinker --whole-archive \
+            -Xlinker $(pwd)/libmimalloc.a \
+            -Xlinker --no-whole-archive
       - name: Strip binary
         run: strip -s "$BINARY_PATH"
       - name: Upload artifact

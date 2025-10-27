@@ -156,7 +156,6 @@ jobs:
             -DMI_BUILD_OBJECT=OFF \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build mimalloc-build --target mimalloc-static
-          cp mimalloc-build/libmimalloc.a libmimalloc.a
       - name: Build static binary
         run: |
           # To improve performance with musl, increase the stack size to 512KiB and
@@ -168,7 +167,7 @@ jobs:
             -Xswiftc -DSWIFTLINT_DISABLE_SOURCEKIT \
             -Xlinker -z -Xlinker stack-size=0x80000 \
             -Xlinker --whole-archive \
-            -Xlinker ./libmimalloc.a \
+            -Xlinker ./mimalloc-build/libmimalloc.a \
             -Xlinker --no-whole-archive
       - name: Strip binary
         run: strip -s "$BINARY_PATH"

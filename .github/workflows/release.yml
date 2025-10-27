@@ -15,6 +15,7 @@ on:
 env:
   DEVELOPER_DIR: /Applications/Xcode_26.0.1.app
   RELEASE_BRANCH: release/${{ inputs.version }}
+  MIMALLOC_VERSION: 3.0.10
 
 jobs:
   setup-credentials:
@@ -147,7 +148,6 @@ jobs:
       - name: Build mimalloc object
         run: |
           set -euxo pipefail
-          MIMALLOC_VERSION=3.0.10
           curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v${MIMALLOC_VERSION}.tar.gz" | tar xz
           export CC=clang
           cmake -S "mimalloc-${MIMALLOC_VERSION}" -B mimalloc-build \

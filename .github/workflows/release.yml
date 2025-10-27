@@ -75,7 +75,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Set up Ruby and Bundler
-        uses: ruby/setup-ruby@ab177d40ee5483edb974554986f56b33477e21d0 # v1.265.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 # v1.267.0
         with:
           bundler-cache: true
       - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.

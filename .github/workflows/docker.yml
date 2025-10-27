@@ -25,29 +25,29 @@ jobs:
       docker-tag: ${{ steps.vars.outputs.docker-tag }}
       repository-lc: ${{ steps.vars.outputs.repository-lc }}
     steps:
-    - name: Define variables
-      id: vars
-      run: |
-        if [[ "${{ github.event_name }}" == "push" ]]; then
-          {
-            echo "checkout-ref=main"
-            echo "docker-tag=latest"
-          } >> "$GITHUB_OUTPUT"
-        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          {
-            echo "checkout-ref=pr"
-            echo "docker-tag=pr-${{ github.event.pull_request.number }}"
-          } >> "$GITHUB_OUTPUT"
-        else
-          {
-            echo "checkout-ref=${INPUTS_TAG}"
-            echo "docker-tag=${INPUTS_TAG}"
-          } >> "$GITHUB_OUTPUT"
-        fi
-        echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
-      env:
-        REPOSITORY: ${{ github.repository }}
-        INPUTS_TAG: ${{ inputs.tag }}
+      - name: Define variables
+        id: vars
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            {
+              echo "checkout-ref=main"
+              echo "docker-tag=latest"
+            } >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            {
+              echo "checkout-ref=pr"
+              echo "docker-tag=pr-${{ github.event.pull_request.number }}"
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "checkout-ref=${INPUTS_TAG}"
+              echo "docker-tag=${INPUTS_TAG}"
+            } >> "$GITHUB_OUTPUT"
+          fi
+          echo "repository-lc=${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+        env:
+          REPOSITORY: ${{ github.repository }}
+          INPUTS_TAG: ${{ inputs.tag }}
 
   build-amd64:
     name: Build AMD64 Image
@@ -57,19 +57,21 @@ jobs:
       packages: write
     needs: set-context
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      if: needs.set-context.outputs.checkout-ref == 'pr'
-      with:
-        persist-credentials: false
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      if: needs.set-context.outputs.checkout-ref != 'pr'
-      with:
-        ref: ${{ needs.set-context.outputs.checkout-ref }}
-        persist-credentials: false
-    - uses: ./.github/actions/docker-build
-      with:
-        platform: amd64
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - &checkout-step-pr
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        if: needs.set-context.outputs.checkout-ref == 'pr'
+        with:
+          persist-credentials: false
+      - &checkout-step-ref
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        if: needs.set-context.outputs.checkout-ref != 'pr'
+        with:
+          ref: ${{ needs.set-context.outputs.checkout-ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/docker-build
+        with:
+          platform: amd64
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   build-arm64:
     name: Build ARM64 Image
@@ -79,19 +81,12 @@ jobs:
       packages: write
     needs: set-context
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      if: needs.set-context.outputs.checkout-ref == 'pr'
-      with:
-        persist-credentials: false
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      if: needs.set-context.outputs.checkout-ref != 'pr'
-      with:
-        ref: ${{ needs.set-context.outputs.checkout-ref }}
-        persist-credentials: false
-    - uses: ./.github/actions/docker-build
-      with:
-        platform: arm64
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - *checkout-step-pr
+      - *checkout-step-ref
+      - uses: ./.github/actions/docker-build
+        with:
+          platform: arm64
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   merge:
     name: Create Multi-Platform Image
@@ -103,23 +98,23 @@ jobs:
       - build-amd64
       - build-arm64
     steps:
-    - name: Download digests
-      uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
-      with:
-        path: /tmp/digests
-        pattern: digests-*
-        merge-multiple: true
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
-    - name: Login to GitHub registry
-      uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
-      with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: ghcr.io
-    - name: Create manifest list and push
-      working-directory: /tmp/digests
-      run: >-
-        docker buildx imagetools create
-        -t "ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}"
-        $(printf 'ghcr.io/${{ needs.set-context.outputs.repository-lc }}@sha256:%s ' *)
+      - name: Download digests
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+      - name: Login to GitHub registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: >-
+          docker buildx imagetools create
+          -t "ghcr.io/${{ needs.set-context.outputs.repository-lc }}:${{ needs.set-context.outputs.docker-tag }}"
+          $(printf 'ghcr.io/${{ needs.set-context.outputs.repository-lc }}@sha256:%s ' *)

@@ -29,6 +29,11 @@
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6161](https://github.com/realm/SwiftLint/issues/6161)
 
+* Adopt [mimalloc](https://github.com/microsoft/mimalloc) for static Linux binary
+  to improve performance.  
+  [ainame](https://github.com/ainame)
+  [#6298](https://github.com/realm/SwiftLint/issues/6298)
+
 ### Bug Fixes
 
 * Fix false positive with `#Preview` macro in `closure_end_indentation` rule.  

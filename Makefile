@@ -119,11 +119,11 @@ zip_linux_release: swiftlint_linux_amd64 swiftlint_linux_arm64 swiftlint_static_
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	cp -f swiftlint_linux_amd64 "$(TMP_FOLDER)/swiftlint"
 	cp -f swiftlint_static_amd64 "$(TMP_FOLDER)/swiftlint-static"
-	cp -f LICENSE "$(TMP_FOLDER)"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE") > "./swiftlint_linux_amd64.zip"
+	cp -f LICENSE LICENSE.mimalloc "$(TMP_FOLDER)"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "LICENSE.mimalloc") > "./swiftlint_linux_amd64.zip"
 	cp -f swiftlint_linux_arm64 "$(TMP_FOLDER)/swiftlint"
 	cp -f swiftlint_static_arm64 "$(TMP_FOLDER)/swiftlint-static"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE") > "./swiftlint_linux_arm64.zip"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "LICENSE.mimalloc") > "./swiftlint_linux_arm64.zip"
 
 package: swiftlint
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

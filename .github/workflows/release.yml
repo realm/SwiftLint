@@ -148,15 +148,15 @@ jobs:
       - name: Build mimalloc object
         run: |
           set -euxo pipefail
-          curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v${{ MIMALLOC_VERSION }}.tar.gz" | tar xz
+          curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v${{ env.MIMALLOC_VERSION }}.tar.gz" | tar xz
           export CC=clang
-          cmake -S "mimalloc-${{ MIMALLOC_VERSION }}" -B mimalloc-build \
+          cmake -S "mimalloc-${{ env.MIMALLOC_VERSION }}" -B mimalloc-build \
             -DMI_BUILD_SHARED=OFF \
             -DMI_BUILD_STATIC=ON \
             -DMI_BUILD_OBJECT=OFF \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build mimalloc-build --target mimalloc-static
-          cp mimalloc-${{ MIMALLOC_VERSION }}/LICENSE LICENSE.mimalloc
+          cp mimalloc-${{ env.MIMALLOC_VERSION }}/LICENSE LICENSE.mimalloc
       - name: Build static binary
         run: |
           # To improve performance with musl, increase the stack size to 512KiB and

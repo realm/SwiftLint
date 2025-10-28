@@ -18,7 +18,7 @@ on:
 jobs:
   set-context:
     name: Set Context
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions: {}
     outputs:
       checkout-ref: ${{ steps.vars.outputs.checkout-ref }}

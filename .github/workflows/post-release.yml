@@ -17,7 +17,7 @@ jobs:
   merge-into-main:
     name: Merge into main
     needs: setup-credentials
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions:
       contents: write
     steps:
@@ -61,7 +61,7 @@ jobs:
   dispatch-plugins:
     name: Dispatch Plugins Repository
     needs: merge-into-main
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions:
       contents: read
     steps:

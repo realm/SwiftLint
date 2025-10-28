@@ -69,7 +69,7 @@ jobs:
 
   deploy-docs:
     name: Deploy
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     needs: create-docs
     if: github.event_name == 'push'
     permissions:

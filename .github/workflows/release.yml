@@ -148,14 +148,15 @@ jobs:
       - name: Build mimalloc object
         run: |
           set -euxo pipefail
-          curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v${MIMALLOC_VERSION}.tar.gz" | tar xz
+          curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v${{ MIMALLOC_VERSION }}.tar.gz" | tar xz
           export CC=clang
-          cmake -S "mimalloc-${MIMALLOC_VERSION}" -B mimalloc-build \
+          cmake -S "mimalloc-${{ MIMALLOC_VERSION }}" -B mimalloc-build \
             -DMI_BUILD_SHARED=OFF \
             -DMI_BUILD_STATIC=ON \
             -DMI_BUILD_OBJECT=OFF \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build mimalloc-build --target mimalloc-static
+          cp mimalloc-${{ MIMALLOC_VERSION }}/LICENSE LICENSE.mimalloc
       - name: Build static binary
         run: |
           # To improve performance with musl, increase the stack size to 512KiB and
@@ -169,15 +170,16 @@ jobs:
             -Xlinker --whole-archive \
             -Xlinker ./mimalloc-build/libmimalloc.a \
             -Xlinker --no-whole-archive
+          cp "${{ env.BINARY_PATH }}" .
       - name: Strip binary
-        run: strip -s "$BINARY_PATH"
+        run: strip -s swiftlint
       - name: Upload artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: ${{ matrix.artifact_name }}
           path: |
-            ${{ env.BINARY_PATH }}
-            mimalloc-build/LICENSE
+            swiftlint
+            LICENSE.mimalloc
 
   build-macos:
     name: Build macOS Binaries
@@ -235,7 +237,7 @@ jobs:
           mv -f swiftlint-static-arm64/swiftlint swiftlint_static_arm64
 
           # Just pick one of the licenses.
-          mv -f swiftlint-static-amd64/LICENSE LICENSE.mimalloc
+          mv -f swiftlint-static-amd64/LICENSE.mimalloc .
       - name: Make binaries executable
         run: chmod +x swiftlint*
       - name: Create artifacts

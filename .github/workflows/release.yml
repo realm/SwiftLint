@@ -175,7 +175,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ matrix.artifact_name }}
-          path: ${{ env.BINARY_PATH }}
+          path: |
+            ${{ env.BINARY_PATH }}
+            mimalloc-build/LICENSE
 
   build-macos:
     name: Build macOS Binaries
@@ -231,6 +233,9 @@ jobs:
           mv -f swiftlint-linux-arm64/swiftlint swiftlint_linux_arm64
           mv -f swiftlint-static-amd64/swiftlint swiftlint_static_amd64
           mv -f swiftlint-static-arm64/swiftlint swiftlint_static_arm64
+
+          # Just pick one of the licenses.
+          mv -f swiftlint-static-amd64/LICENSE LICENSE.mimalloc
       - name: Make binaries executable
         run: chmod +x swiftlint*
       - name: Create artifacts

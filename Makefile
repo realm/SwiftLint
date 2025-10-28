@@ -1,7 +1,6 @@
 TEMPORARY_FOLDER?=/tmp/SwiftLint.dst
 PREFIX?=/usr/local
 BUILD_TOOL?=xcodebuild
-MIMALLOC_VERSION?=3.0.10
 
 XCODEFLAGS=-scheme 'swiftlint' \
 	-destination 'platform=macOS' \
@@ -120,12 +119,11 @@ zip_linux_release: swiftlint_linux_amd64 swiftlint_linux_arm64 swiftlint_static_
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	cp -f swiftlint_linux_amd64 "$(TMP_FOLDER)/swiftlint"
 	cp -f swiftlint_static_amd64 "$(TMP_FOLDER)/swiftlint-static"
-	cp -f LICENSE "$(TMP_FOLDER)"
-	curl -sSfL "https://github.com/microsoft/mimalloc/archive/refs/tags/v$(MIMALLOC_VERSION).tar.gz" | tar xzO "mimalloc-$(MIMALLOC_VERSION)/LICENSE" > "$(TMP_FOLDER)/mimalloc-LICENSE"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "mimalloc-LICENSE") > "./swiftlint_linux_amd64.zip"
+	cp -f LICENSE LICENSE.mimalloc "$(TMP_FOLDER)"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "LICENSE.mimalloc") > "./swiftlint_linux_amd64.zip"
 	cp -f swiftlint_linux_arm64 "$(TMP_FOLDER)/swiftlint"
 	cp -f swiftlint_static_arm64 "$(TMP_FOLDER)/swiftlint-static"
-	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "mimalloc-LICENSE") > "./swiftlint_linux_arm64.zip"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "LICENSE.mimalloc") > "./swiftlint_linux_arm64.zip"
 
 package: swiftlint
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

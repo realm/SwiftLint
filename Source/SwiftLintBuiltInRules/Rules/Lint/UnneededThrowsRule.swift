@@ -7,7 +7,7 @@ struct UnneededThrowsRule: Rule {
 
     static let description = RuleDescription(
         identifier: "unneeded_throws_rethrows",
-        name: "Unneeded (re)throws keyword",
+        name: "Unneeded (Re)Throws Keyword",
         description: "Non-throwing functions/properties/closures should not be marked as `throws` or `rethrows`.",
         kind: .lint,
         nonTriggeringExamples: UnneededThrowsRuleExamples.nonTriggeringExamples,

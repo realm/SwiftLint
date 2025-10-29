@@ -302,6 +302,13 @@ internal struct UnneededThrowsRuleExamples {
             catch {}
         }
         """),
+        Example("""
+        func foo() throws {
+            bar(1) {
+                try baz()
+            }
+        }
+        """),
     ]
 
     static let corrections = [

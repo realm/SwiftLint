@@ -79,14 +79,14 @@ private extension UnneededThrowsRule {
         }
 
         override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
-            if node.containsInitializerClause, let functionTypeSyntax = node.functionTypeSyntax {
+            if node.containsNonDeclReferenceInitializerClause, let functionTypeSyntax = node.functionTypeSyntax {
                 scopes.openScope(with: functionTypeSyntax.effectSpecifiers?.throwsClause)
             }
             return .visitChildren
         }
 
         override func visitPost(_ node: PatternBindingSyntax) {
-            if node.containsInitializerClause, node.functionTypeSyntax != nil {
+            if node.containsNonDeclReferenceInitializerClause, node.functionTypeSyntax != nil {
                 if let closedScope = scopes.closeScope() {
                     validate(
                         scope: closedScope,
@@ -188,8 +188,15 @@ private extension FunctionCallExprSyntax {
 }
 
 private extension PatternBindingSyntax {
-    var containsInitializerClause: Bool {
-        initializer != nil
+    var containsNonDeclReferenceInitializerClause: Bool {
+        children(viewMode: .sourceAccurate).contains { child in
+            guard let initializer = child.as(InitializerClauseSyntax.self) else {
+                return false
+            }
+            let containsDeclReference = initializer.children(viewMode: .sourceAccurate)
+                .contains { $0.as(DeclReferenceExprSyntax.self) != nil }
+            return !containsDeclReference
+        }
     }
 
     var functionTypeSyntax: FunctionTypeSyntax? {

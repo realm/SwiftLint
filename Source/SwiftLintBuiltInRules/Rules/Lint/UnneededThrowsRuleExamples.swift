@@ -151,6 +151,7 @@ internal struct UnneededThrowsRuleExamples {
         Example("let foo: (Int, () throws -> Void) = (1, {})"),
         Example("let foo: (Int, Int, () throws -> Void) = (1, 1, {})"),
         Example("let foo: () throws -> Void = { try bar() }"),
+        Example("let foo: () throws -> Void = bar"),
     ]
 
     static let triggeringExamples = [

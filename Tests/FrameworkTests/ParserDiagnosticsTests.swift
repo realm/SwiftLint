@@ -14,7 +14,7 @@ final class ParserDiagnosticsTests: SwiftLintTestCase {
         let contents = """
         print(CGPointZero))
         """
-        XCTAssertEqual(SwiftLintFile(contents: contents).parserDiagnostics, ["extraneous code \')\' at top level"])
+        XCTAssertEqual(SwiftLintFile(contents: contents).parserDiagnostics, ["unexpected code \')\' in source file"])
 
         let ruleDescription = LegacyConstantRule.description
             .with(corrections: [Example(contents): Example(contents)])

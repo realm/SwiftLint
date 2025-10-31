@@ -23,7 +23,7 @@ extension SwiftLint {
         var ruleID: String?
 
         func run() throws(SwiftLintError) {
-            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
+            let configuration = Configuration(configurationFiles: [config].compactMap(\.self))
             if let ruleID {
                 guard let rule = RuleRegistry.shared.rule(forID: ruleID) else {
                     throw .usageError(description: "No rule with identifier: \(ruleID)")

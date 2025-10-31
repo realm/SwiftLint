@@ -17,7 +17,7 @@ struct GitLabJUnitReporter: Reporter {
                 let rule = violation.ruleIdentifier
                 let reason = violation.reason.escapedForXML()
 
-                let location = [fileName, line].compactMap { $0 }.joined(separator: ":")
+                let location = [fileName, line].compactMap(\.self).joined(separator: ":")
                 let message = "\(severity): \(rule) in \(location)"
                 let body = """
                 Severity: \(severity)

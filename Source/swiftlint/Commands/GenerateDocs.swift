@@ -16,7 +16,7 @@ extension SwiftLint {
         var rulesFilterOptions: RulesFilterOptions
 
         func run() throws {
-            let configuration = Configuration(configurationFiles: [config].compactMap({ $0 }))
+            let configuration = Configuration(configurationFiles: [config].compactMap(\.self))
             let rulesFilter = RulesFilter(enabledRules: configuration.rules)
             let rules = rulesFilter.getRules(excluding: rulesFilterOptions.excludingOptions)
 

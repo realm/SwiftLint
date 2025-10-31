@@ -77,7 +77,7 @@ extension Configuration {
         _ excludedPaths: [String],
         in paths: [String]...
     ) -> [String] {
-        let allPaths = paths.flatMap { $0 }
+        let allPaths = paths.flatMap(\.self)
         #if os(Linux)
         let result = NSMutableOrderedSet(capacity: allPaths.count)
         result.addObjects(from: allPaths)
@@ -97,7 +97,7 @@ extension Configuration {
     ///
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
-        let allPaths = paths.flatMap { $0 }
+        let allPaths = paths.flatMap(\.self)
         let excludedPaths = self.excludedPaths
             .parallelFlatMap { @Sendable in Glob.resolveGlob($0) }
             .map { $0.absolutePathStandardized() }

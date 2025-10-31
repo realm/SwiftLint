@@ -215,7 +215,7 @@ struct LetVarWhitespaceRule: Rule {
 private extension LetVarWhitespaceRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: MemberBlockItemListSyntax) {
-            collectViolations(from: node, using: { $0.decl }) // swiftlint:disable:this prefer_key_path
+            collectViolations(from: node, using: \.decl)
         }
 
         override func visitPost(_ node: CodeBlockItemListSyntax) {

@@ -154,7 +154,7 @@ private extension WithAttributesSyntax where Self: WithModifiersSyntax {
     }
 
     var withPreconcurrencyPrepended: Self {
-        let leadingWhitespace = Trivia(pieces: leadingTrivia.reversed().prefix { $0.isSpaceOrTab }.reversed())
+        let leadingWhitespace = Trivia(pieces: leadingTrivia.reversed().prefix(while: \.isSpaceOrTab).reversed())
         let attribute = AttributeListSyntax.Element.attribute("@preconcurrency")
             .with(\.leadingTrivia, leadingTrivia)
             .with(\.trailingTrivia, .newlines(1))
@@ -170,7 +170,7 @@ private extension TypeSyntax {
             return identifierType.name.text == "Sendable"
         }
         if let compositeType = self.as(CompositionTypeSyntax.self) {
-            return compositeType.elements.contains { $0.type.isSendable }
+            return compositeType.elements.contains(where: \.type.isSendable)
         }
         return false
     }

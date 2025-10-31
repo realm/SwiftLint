@@ -165,9 +165,7 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertNotNil(resultingCustomRules)
 
         let enabledCustomRuleIdentifiers =
-            resultingCustomRules?.configuration.customRuleConfigurations.map { rule in
-                rule.identifier
-            }
+            resultingCustomRules?.configuration.customRuleConfigurations.map(\.identifier)
         XCTAssertEqual(enabledCustomRuleIdentifiers, [customRuleIdentifier])
     }
 

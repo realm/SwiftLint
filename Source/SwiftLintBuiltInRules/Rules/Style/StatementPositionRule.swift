@@ -98,7 +98,7 @@ private extension StatementPositionRule {
     func defaultViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
         file.match(pattern: pattern).filter { _, syntaxKinds in
             syntaxKinds.starts(with: [.keyword])
-        }.compactMap { $0.0 }
+        }.compactMap(\.0)
     }
 
     func defaultCorrect(file: SwiftLintFile) -> Int {

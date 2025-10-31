@@ -191,7 +191,7 @@ final class ReporterTests: SwiftLintTestCase {
 
     private func assertEqualContent(referenceFile: String,
                                     reporterType: any Reporter.Type,
-                                    stringConverter: (String) throws -> some Equatable = { $0 },
+                                    stringConverter: (String) throws -> some Equatable = \.self,
                                     file: StaticString = #filePath,
                                     line: UInt = #line) throws {
         let dateFormatter = DateFormatter()

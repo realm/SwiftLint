@@ -67,7 +67,7 @@ final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
         XCTAssertFalse(tokens.isEmpty)
 
         // Check that we have expected token types
-        let tokenTypes = Set(tokens.map { $0.value.type })
+        let tokenTypes = Set(tokens.map(\.value.type))
         XCTAssertTrue(tokenTypes.contains(SyntaxKind.comment.rawValue))
         XCTAssertTrue(tokenTypes.contains(SyntaxKind.keyword.rawValue))
         XCTAssertTrue(tokenTypes.contains(SyntaxKind.identifier.rawValue))
@@ -127,7 +127,7 @@ final class SwiftSyntaxKindBridgeTests: SwiftLintTestCase {
         let tokens = SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
 
         // Verify we have various token types
-        let tokenTypes = Set(tokens.map { $0.value.type })
+        let tokenTypes = Set(tokens.map(\.value.type))
         XCTAssertTrue(tokenTypes.contains(SyntaxKind.keyword.rawValue))        // import, class, var, let, func
         XCTAssertTrue(tokenTypes.contains(SyntaxKind.identifier.rawValue))     // Foundation, MyClass, name, etc.
         XCTAssertTrue(tokenTypes.contains(SyntaxKind.docComment.rawValue))     // /// A sample class

@@ -123,7 +123,7 @@ public extension Array {
     ///
     /// - returns: The result of applying `transform` on every element and flattening the results.
     func parallelFlatMap<T>(transform: @Sendable (Element) -> [T]) -> [T] {
-        parallelMap(transform: transform).flatMap { $0 }
+        parallelMap(transform: transform).flatMap(\.self)
     }
 
     /// Same as `compactMap` but spreads the work in the `transform` block in parallel using GCD's `concurrentPerform`.
@@ -132,7 +132,7 @@ public extension Array {
     ///
     /// - returns: The result of applying `transform` on every element and discarding the `nil` ones.
     func parallelCompactMap<T>(transform: @Sendable (Element) -> T?) -> [T] {
-        parallelMap(transform: transform).compactMap { $0 }
+        parallelMap(transform: transform).compactMap(\.self)
     }
 
     /// Same as `map` but spreads the work in the `transform` block in parallel using GCD's `concurrentPerform`.

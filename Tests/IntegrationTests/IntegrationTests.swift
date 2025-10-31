@@ -55,6 +55,6 @@ final class IntegrationTests: SwiftLintTestCase {
         let corrections = swiftFiles.parallelMap {
             Linter(file: $0, configuration: config).collect(into: storage).correct(using: storage)
         }
-        XCTAssert(corrections.allSatisfy { $0.isEmpty }, "Unexpected corrections have been applied")
+        XCTAssert(corrections.allSatisfy(\.isEmpty), "Unexpected corrections have been applied")
     }
 }

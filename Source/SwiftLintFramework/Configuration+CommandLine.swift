@@ -100,7 +100,7 @@ extension Configuration {
                 await visit(linters: linters, visitor: visitor, duplicateFileNames: duplicateFileNames)
             }
         }
-        return result.flatMap { $0 }
+        return result.flatMap(\.self)
     }
 
     private func groupFiles(_ files: [SwiftLintFile], visitor: LintableFilesVisitor) throws(SwiftLintError)

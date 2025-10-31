@@ -73,7 +73,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
                             }
                     }
             }
-            .flatMap { $0 }
+            .flatMap(\.self)
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

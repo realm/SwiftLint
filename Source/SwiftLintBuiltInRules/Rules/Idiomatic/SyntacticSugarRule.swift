@@ -250,7 +250,7 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
                               leftEnd: generic.leftAngle.endPosition,
                               rightStart: lastGenericType.endPositionBeforeTrailingTrivia,
                               rightEnd: generic.rightAngle.endPositionBeforeTrailingTrivia),
-            children: [firstInnerViolation, secondInnerViolation].compactMap { $0 }
+            children: [firstInnerViolation, secondInnerViolation].compactMap(\.self)
         )
     }
 }

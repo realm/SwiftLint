@@ -106,7 +106,7 @@ public extension String {
         while true {
             let sharedRootDir = rootDirComps.joined(separator: "/")
             if normalizedSelf == sharedRootDir || normalizedSelf.hasPrefix(sharedRootDir + "/") {
-                let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap { $0 }
+                let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap(\.self)
                     + String(normalizedSelf.dropFirst(sharedRootDir.count))
                 return String(path.dropFirst()) // Remove leading '/'
             }

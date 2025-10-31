@@ -145,7 +145,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
                             }
                     }
             }
-            .flatMap { $0 }
+            .flatMap(\.self)
     }
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

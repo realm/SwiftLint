@@ -51,7 +51,7 @@ enum SwiftSyntaxRule: ExtensionMacro {
                     """
                 )
             ),
-        ].compactMap { $0 }
+        ].compactMap(\.self)
     }
 }
 

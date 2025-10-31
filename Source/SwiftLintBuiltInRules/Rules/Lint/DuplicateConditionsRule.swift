@@ -208,7 +208,7 @@ private extension DuplicateConditionsRule {
         private func addViolations(_ positionsByCondition: [[AbsolutePosition]]) {
             let duplicatedPositions = positionsByCondition
                 .filter { $0.count > 1 }
-                .flatMap { $0 }
+                .flatMap(\.self)
 
             violations.append(contentsOf: duplicatedPositions)
         }

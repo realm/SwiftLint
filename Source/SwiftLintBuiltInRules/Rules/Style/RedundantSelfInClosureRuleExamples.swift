@@ -201,12 +201,12 @@ struct RedundantSelfInClosureRuleExamples {
                     }
                     f { [weak self] in
                         self?.x = 1
-                        if let self = self else { ↓self.x = 1 }
+                        if let self = self { ↓self.x = 1 }
                         self?.x = 1
                     }
                     f { [weak self] in
                         self?.x = 1
-                        while let self else { ↓self.x = 1 }
+                        while let self { ↓self.x = 1 }
                         self?.x = 1
                     }
                 }

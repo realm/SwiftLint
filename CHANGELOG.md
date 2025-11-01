@@ -12,11 +12,17 @@
 
 ### Enhancements
 
-* None.
+* Rewrite the following rules with SwiftSyntax:
+  * `vertical_whitespace_between_cases`
+  <!-- Keep empty line to have the contributors on a separate line. -->
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 
-* None.
+* Fix false positives in `vertical_whitespace_between_cases` rule when cases are
+  interleaved with compiler directives like `#if`/`#else`/`#endif`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6332](https://github.com/realm/SwiftLint/issues/6332)
 
 ## 0.62.2: Generous Drum Volume
 

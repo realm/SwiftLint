@@ -1,213 +1,91 @@
-import Foundation
-import SourceKittenFramework
+import SwiftBasicFormat
+import SwiftSyntax
 
-private extension SwiftLintFile {
-    func violatingRanges(for pattern: String) -> [NSRange] {
-        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentKinds)
-    }
-}
-
-@DisabledWithoutSourceKit
+@SwiftSyntaxRule(correctable: true, optIn: true)
 struct VerticalWhitespaceBetweenCasesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    private static let nonTriggeringExamples: [Example] = [
-        Example("""
-            switch x {
-
-            case 0..<5:
-                print("x is low")
-
-            case 5..<10:
-                print("x is high")
-
-            default:
-                print("x is invalid")
-
-            @unknown default:
-                print("x is out of this world")
-            }
-            """),
-        Example("""
-            switch x {
-            case 0..<5:
-                print("x is low")
-
-            case 5..<10:
-                print("x is high")
-
-            default:
-                print("x is invalid")
-            }
-            """),
-        Example("""
-            switch x {
-            case 0..<5: print("x is low")
-            case 5..<10: print("x is high")
-            default: print("x is invalid")
-            @unknown default: print("x is out of this world")
-            }
-            """),
-        // Testing handling of trailing spaces: do not convert to """ style
-        Example([
-            "switch x {    \n",
-            "case 1:    \n",
-            "    print(\"one\")    \n",
-            "    \n",
-            "default:    \n",
-            "    print(\"not one\")    \n",
-            "}    ",
-        ].joined()),
-    ]
-
-    private static let violatingToValidExamples: [Example: Example] = [
-        Example("""
-            switch x {
-            case 0..<5:
-                return "x is valid"
-            ↓default:
-                return "x is invalid"
-            ↓@unknown default:
-                print("x is out of this world")
-            }
-            """): Example("""
-                switch x {
-                case 0..<5:
-                    return "x is valid"
-
-                default:
-                    return "x is invalid"
-
-                @unknown default:
-                    print("x is out of this world")
-                }
-                """),
-        Example("""
-            switch x {
-            case 0..<5:
-                print("x is valid")
-            ↓default:
-                print("x is invalid")
-            }
-            """): Example("""
-                switch x {
-                case 0..<5:
-                    print("x is valid")
-
-                default:
-                    print("x is invalid")
-                }
-                """),
-        Example("""
-            switch x {
-            case .valid:
-                print("x is valid")
-            ↓case .invalid:
-                print("x is invalid")
-            }
-            """): Example("""
-                switch x {
-                case .valid:
-                    print("x is valid")
-
-                case .invalid:
-                    print("x is invalid")
-                }
-                """),
-        Example("""
-            switch x {
-            case .valid:
-                print("multiple ...")
-                print("... lines")
-            ↓case .invalid:
-                print("multiple ...")
-                print("... lines")
-            }
-            """): Example("""
-                switch x {
-                case .valid:
-                    print("multiple ...")
-                    print("... lines")
-
-                case .invalid:
-                    print("multiple ...")
-                    print("... lines")
-                }
-                """),
-    ]
-
-    private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default|@unknown default):[ \\t]*\\n)"
-
-    private func violationRanges(in file: SwiftLintFile) -> [NSRange] {
-        file.violatingRanges(for: pattern).filter {
-            !isFalsePositive(in: file, range: $0)
-        }
-    }
-
-    private func isFalsePositive(in file: SwiftLintFile, range: NSRange) -> Bool {
-        // Regex incorrectly flags blank lines that contain trailing whitespace (#2538)
-        let patternRegex = regex(pattern)
-        let substring = file.contents.substring(from: range.location, length: range.length)
-        guard let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substring.fullNSRange),
-              matchResult.numberOfRanges > 1 else {
-            return false
-        }
-
-        let matchFirstRange = matchResult.range(at: 1)
-        let matchFirstString = substring.substring(from: matchFirstRange.location, length: matchFirstRange.length)
-        return matchFirstString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-}
-
-extension VerticalWhitespaceBetweenCasesRule: OptInRule {
     static let description = RuleDescription(
         identifier: "vertical_whitespace_between_cases",
         name: "Vertical Whitespace Between Cases",
         description: "Include a single empty line between switch cases",
         kind: .style,
-        nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
-        triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
-        corrections: violatingToValidExamples.removingViolationMarkers()
+        nonTriggeringExamples: VerticalWhitespaceBetweenCasesRuleExamples.violatingToValidExamples.values.sorted() +
+                               VerticalWhitespaceBetweenCasesRuleExamples.nonTriggeringExamples,
+        triggeringExamples: Array(VerticalWhitespaceBetweenCasesRuleExamples.violatingToValidExamples.keys.sorted()),
+        corrections: VerticalWhitespaceBetweenCasesRuleExamples.violatingToValidExamples.removingViolationMarkers()
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let patternRegex = regex(pattern)
-        return violationRanges(in: file).compactMap { violationRange in
-            let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
-            guard let matchResult = patternRegex.firstMatch(in: substring, options: [],
-                                                            range: substring.fullNSRange) else {
-                return nil
+private extension VerticalWhitespaceBetweenCasesRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var emptyLines = EmptyLinesVisitor.emptyLines(in: file)
+
+        override func visitPost(_ cases: SwitchCaseListSyntax) {
+            for index in cases.indices.dropLast() {
+                let nextIndex = cases.index(after: index)
+                let element = cases[index]
+                let nextElement = cases[nextIndex]
+                if let currentCase = element.as(SwitchCaseSyntax.self),
+                   let nextCase = nextElement.as(SwitchCaseSyntax.self),
+                   shouldSkipCasePair(currentCase, nextCase) {
+                    continue
+                }
+                let endLineOfCurrentCase = locationConverter.location(for: element.endPosition).line
+                let startLineOfNextCase = locationConverter.location(
+                    for: nextElement.positionAfterSkippingLeadingTrivia
+                ).line
+                guard !emptyLines.contains(endLineOfCurrentCase + 1), !emptyLines.contains(startLineOfNextCase - 1),
+                      let commentIndentation = nextElement.leadingTrivia.indentation(isOnNewline: true),
+                      let caseIndentation = nextElement.indentation.indentation(isOnNewline: true) else {
+                    continue
+                }
+                let correctionPosition =
+                    if commentIndentation == caseIndentation {
+                        // Comment is probably attached to the next case.
+                        element.endPosition
+                    } else {
+                        // Comment is probably part of the previous case block.
+                        nextElement.positionAfterSkippingLeadingTrivia.advanced(
+                            by: -caseIndentation.sourceLength.utf8Length
+                        )
+                    }
+                violations.append(.init(
+                    position: nextElement.positionAfterSkippingLeadingTrivia,
+                    correction: .init(
+                        start: correctionPosition,
+                        end: correctionPosition,
+                        replacement: "\n"
+                    )
+                ))
             }
+        }
 
-            let violatingSubrange = matchResult.range(at: 2)
-            let characterOffset = violationRange.location + violatingSubrange.location
+        private func shouldSkipCasePair(_ currentCase: SwitchCaseSyntax, _ nextCase: SwitchCaseSyntax) -> Bool {
+            let currentCaseStartLine = locationConverter.location(
+                for: currentCase.positionAfterSkippingLeadingTrivia
+            ).line
+            let currentCaseEndLine = locationConverter.location(
+                for: currentCase.statements.last?.endPosition ?? currentCase.endPosition
+            ).line
+            let nextCaseStartLine = locationConverter.location(
+                for: nextCase.positionAfterSkippingLeadingTrivia
+            ).line
+            let nextCaseEndLine = locationConverter.location(
+                for: nextCase.statements.last?.endPosition ?? nextCase.endPosition
+            ).line
 
-            return StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: characterOffset)
-            )
+            let currentIsOneLiner = currentCaseStartLine == currentCaseEndLine
+            let nextIsOneLiner = nextCaseStartLine == nextCaseEndLine
+
+            // Skip if both are one-liners on consecutive lines.
+            return currentIsOneLiner && nextIsOneLiner && nextCaseStartLine == currentCaseStartLine + 1
         }
     }
 }
 
-extension VerticalWhitespaceBetweenCasesRule: CorrectableRule {
-    func correct(file: SwiftLintFile) -> Int {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        guard violatingRanges.isNotEmpty else {
-            return 0
-        }
-        let patternRegex = regex(pattern)
-        var fileContents = file.contents
-        for violationRange in violatingRanges.reversed() {
-            fileContents = patternRegex.stringByReplacingMatches(
-                in: fileContents,
-                options: [],
-                range: violationRange,
-                withTemplate: "$1\n$2"
-            )
-        }
-        file.write(fileContents)
-        return violatingRanges.count
+private extension SyntaxProtocol {
+    var indentation: Trivia {
+        Trivia(pieces: leadingTrivia.reversed().prefix(while: \.isSpaceOrTab).reversed())
     }
 }

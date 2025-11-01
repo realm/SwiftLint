@@ -253,7 +253,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .a:
                     print("a")
                     // Comment
-                ↓case .b:
+            ↓    case .b:
                     print("b")
                 }
             """): Example("""
@@ -330,7 +330,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     print("a")
                 // Comment 1
                 // Comment 2
-                ↓case .b:
+            ↓    case .b:
                     print("b")
                 }
             """): Example("""

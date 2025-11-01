@@ -51,7 +51,7 @@ private extension VerticalWhitespaceBetweenCasesRule {
                         )
                     }
                 violations.append(.init(
-                    position: nextElement.positionAfterSkippingLeadingTrivia,
+                    position: locationConverter.position(ofLine: startLineOfNextCase, column: 1),
                     correction: .init(
                         start: correctionPosition,
                         end: correctionPosition,

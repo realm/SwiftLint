@@ -12,6 +12,13 @@
 
 ### Enhancements
 
+* Add a `separation` configuration option to the `vertical_whitespace_between_cases` rule
+  to allow customizing blank line separation between switch cases. The default value is
+  `always` (require at least one blank line). Setting it to `never` enforces no blank
+  lines between cases.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6326](https://github.com/realm/SwiftLint/issues/6326)
+
 * Rewrite the following rules with SwiftSyntax:
   * `vertical_whitespace_between_cases`
   <!-- Keep empty line to have the contributors on a separate line. -->

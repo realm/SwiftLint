@@ -1,5 +1,8 @@
-// swiftlint:disable:next type_name
+// swiftlint:disable file_length
+// swiftlint:disable:next type_body_length type_name
 internal struct VerticalWhitespaceBetweenCasesRuleExamples {
+    private static let noSeparation = ["separation": "never"]
+
     static let nonTriggeringExamples = [
         Example("""
             switch x {
@@ -104,6 +107,48 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
 
             case .b:
                 print("b")
+            }
+            """),
+        // separation: never - no blank lines
+        Example("""
+            switch x {
+            case .a:
+                print("a")
+            case .b:
+                print("b")
+            case .c:
+                print("c")
+            }
+            """, configuration: noSeparation),
+        // separation: never - no blank lines with comments
+        Example("""
+            switch x {
+            case .a:
+                print("a")
+            // Comment
+            case .b:
+                print("b")
+            }
+            """, configuration: noSeparation),
+        // separation: always (default) - one blank line with comments
+        Example("""
+            switch x {
+            case .a:
+                print("a")
+
+            /// Documentation
+            case .b:
+                print("b")
+            }
+            """),
+        Example("""
+            switch x {
+            case .gamma:
+                print("gamma")
+
+
+            case .delta:
+                print("delta")
             }
             """),
     ]
@@ -247,25 +292,6 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     print("c")
                 }
                 """),
-        // Line comment without blank line (checking correct indentation)
-        Example("""
-                switch x {
-                case .a:
-                    print("a")
-                    // Comment
-                ↓case .b:
-                    print("b")
-                }
-            """): Example("""
-                    switch x {
-                    case .a:
-                        print("a")
-                        // Comment
-
-                    case .b:
-                        print("b")
-                    }
-                """),
         // Block comment without blank line
         Example("""
             switch x {
@@ -323,6 +349,25 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     print("b")
                 }
                 """),
+        // Line comment without blank line (checking correct indentation)
+        Example("""
+                switch x {
+                case .a:
+                    print("a")
+                    // Comment
+                ↓case .b:
+                    print("b")
+                }
+            """): Example("""
+                    switch x {
+                    case .a:
+                        print("a")
+                        // Comment
+
+                    case .b:
+                        print("b")
+                    }
+                """),
         // Multiple comments without blank line (checking correct indentation)
         Example("""
                 switch x {
@@ -371,5 +416,62 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     #endif
                     }
                     """),
+        // separation: never - remove blank lines
+        Example("""
+            switch x {
+            case .first:
+                print("first")
+
+            ↓case .second:
+                print("second")
+            }
+            """, configuration: noSeparation): Example("""
+                switch x {
+                case .first:
+                    print("first")
+                case .second:
+                    print("second")
+                }
+                """, configuration: noSeparation),
+        // separation: never - two blank lines should be reduced to zero
+        Example("""
+            switch x {
+            case .a:
+                print("a")
+
+
+            // Comment
+            ↓case .b:
+                print("b")
+                // Another Comment
+
+
+            ↓case .c:
+                print("c")
+
+            /*
+             * Comment block
+             */
+
+            ↓↓case .d:
+                print("d")
+            }
+            """, configuration: noSeparation): Example("""
+                switch x {
+                case .a:
+                    print("a")
+                // Comment
+                case .b:
+                    print("b")
+                    // Another Comment
+                case .c:
+                    print("c")
+                /*
+                 * Comment block
+                 */
+                case .d:
+                    print("d")
+                }
+                """, configuration: noSeparation),
     ]
 }

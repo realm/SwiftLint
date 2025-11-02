@@ -1366,6 +1366,7 @@ vertical_whitespace:
     correctable: true
 vertical_whitespace_between_cases:
   severity: warning
+  separation: always
   meta:
     opt-in: true
     correctable: true

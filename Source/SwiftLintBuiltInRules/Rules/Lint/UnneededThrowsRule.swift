@@ -121,7 +121,7 @@ private extension UnneededThrowsRule {
         }
 
         override func visitPost(_ node: DoStmtSyntax) {
-            if node.catchClauses.contains(where: { $0.catchItems.isEmpty }) {
+            if node.catchClauses.contains(where: \.catchItems.isEmpty) {
                 // All errors will be caught.
                 return
             }

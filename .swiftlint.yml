@@ -46,7 +46,6 @@ disabled_rules:
   - todo
   - trailing_closure
   - type_contents_order
-  - unneeded_throws_rethrows
   - vertical_whitespace_between_cases
 
 # Configurations

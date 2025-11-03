@@ -4,7 +4,7 @@ import XCTest
 import Yams
 
 final class YamlSwiftLintTests: SwiftLintTestCase {
-    func testFlattenYaml() throws {
+    func testFlattenYaml() {
         do {
             guard let yamlDict = try Yams.load(yaml: try getTestYaml()) as? [String: Any] else {
                 XCTFail("Failed to load YAML from file")

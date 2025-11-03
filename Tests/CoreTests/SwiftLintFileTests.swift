@@ -33,7 +33,7 @@ final class SwiftLintFileTests: SwiftLintTestCase {
         XCTAssertEqual(file.contents, "let j = 22")
     }
 
-    func testFileUpdate() throws {
+    func testFileUpdate() {
         let file = SwiftLintFile(path: tempFile.path)!
 
         XCTAssertFalse(file.isVirtual)
@@ -51,7 +51,7 @@ final class SwiftLintFileTests: SwiftLintTestCase {
         XCTAssertEqual(FileManager.default.contents(atPath: tempFile.path), Data("let j = 22".utf8))
     }
 
-    func testFileNotTouchedIfNothingAppended() throws {
+    func testFileNotTouchedIfNothingAppended() {
         let file = SwiftLintFile(path: tempFile.path)!
         let initialModificationData = FileManager.default.modificationDate(forFileAtPath: tempFile.path)
 
@@ -60,7 +60,7 @@ final class SwiftLintFileTests: SwiftLintTestCase {
         XCTAssertEqual(initialModificationData, FileManager.default.modificationDate(forFileAtPath: tempFile.path))
     }
 
-    func testFileNotTouchedIfNothingNewWritten() throws {
+    func testFileNotTouchedIfNothingNewWritten() {
         let file = SwiftLintFile(path: tempFile.path)!
         let initialModificationData = FileManager.default.modificationDate(forFileAtPath: tempFile.path)
 

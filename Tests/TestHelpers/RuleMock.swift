@@ -13,7 +13,7 @@ public struct RuleMock: Rule {
     )
 
     public init() { /* conformance for test */ }
-    public init(configuration _: Any) throws { self.init() }
+    public init(configuration _: Any) { self.init() }
 
     public func validate(file _: SwiftLintFile) -> [StyleViolation] { [] }
 }

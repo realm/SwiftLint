@@ -11,7 +11,7 @@ extension SwiftLint {
         @Argument(help: "The identifier of the rule to open the documentation for")
         var ruleID: String?
 
-        func run() throws {
+        func run() {
             var subPage = ""
             if let ruleID {
                 if RuleRegistry.shared.rule(forID: ruleID) == nil {

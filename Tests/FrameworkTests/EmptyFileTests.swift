@@ -16,13 +16,13 @@ final class EmptyFileTests: SwiftLintTestCase {
         collectedLinter = linter.collect(into: ruleStorage)
     }
 
-    func testShouldLintEmptyFileRespectedDuringLint() throws {
+    func testShouldLintEmptyFileRespectedDuringLint() {
         let styleViolations = collectedLinter.styleViolations(using: ruleStorage)
         XCTAssertEqual(styleViolations.count, 1)
         XCTAssertEqual(styleViolations.first?.ruleIdentifier, "rule_mock<LintEmptyFiles>")
     }
 
-    func testShouldLintEmptyFileRespectedDuringCorrect() throws {
+    func testShouldLintEmptyFileRespectedDuringCorrect() {
         let corrections = collectedLinter.correct(using: ruleStorage)
         XCTAssertEqual(corrections, ["rule_mock<LintEmptyFiles>": 1])
     }

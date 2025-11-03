@@ -74,7 +74,7 @@ final class RuleConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testSeverityConfigurationThrowsNothingApplied() throws {
+    func testSeverityConfigurationThrowsNothingApplied() {
         let config = 17
         var severityConfig = SeverityConfiguration<RuleMock>(.error)
         checkError(Issue.nothingApplied(ruleID: RuleMock.identifier)) {

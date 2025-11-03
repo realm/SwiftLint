@@ -144,5 +144,5 @@ extension MockCollectingRule {
         Configuration(rulesMode: .onlyConfiguration([identifier]), ruleList: RuleList(rules: self))
     }
 
-    init(configuration _: Any) throws { self.init() }
+    init(configuration _: Any) { self.init() }
 }

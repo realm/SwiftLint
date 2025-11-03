@@ -123,7 +123,7 @@ final class ExpiringTodoRuleTests: SwiftLintTestCase {
         XCTAssertEqual(violations[0].location.line, 2)
     }
 
-    func testBadExpiryTodoFormat() throws {
+    func testBadExpiryTodoFormat() {
         let ruleConfig = ExpiringTodoConfiguration(
             dateFormat: "dd/yyyy/MM"
         )

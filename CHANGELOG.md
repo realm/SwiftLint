@@ -23,6 +23,10 @@
   * `vertical_whitespace_between_cases`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Add new opt-in `unneeded_throws_rethrows` rule that triggers when declarations
+  marked `throws`/`rethrows` never actually throw or call any throwing code.  
+  [Tony Ngo](https://github.com/tonyskansf)
 
 ### Bug Fixes
 
@@ -422,10 +426,6 @@
   to avoid causing compilation errors.  
   [p4checo](https://github.com/p4checo)
   [#5965](https://github.com/realm/SwiftLint/issues/5965)
-
-* Add opt-in `unneeded_throws_rethrows` rule that triggers when declarations
-  marked `throws`/`rethrows` never actually throw or call any throwing code.  
-  [Tony Ngo](https://github.com/tonyskansf)
 
 ### Bug Fixes
 

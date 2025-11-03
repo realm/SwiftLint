@@ -28,7 +28,6 @@ private extension UnneededThrowsRule {
             [
                 ProtocolDeclSyntax.self,
                 TypeAliasDeclSyntax.self,
-                EnumCaseDeclSyntax.self,
             ]
         }
 
@@ -79,20 +78,36 @@ private extension UnneededThrowsRule {
         }
 
         override func visit(_ node: PatternBindingSyntax) -> SyntaxVisitorContinueKind {
-            if node.hasNonReferenceInitializer, let functionTypeSyntax = node.functionTypeSyntax {
-                scopes.openScope(with: functionTypeSyntax.effectSpecifiers?.throwsClause)
+            if let lintableFunctionType = node.lintableFunctionType {
+                scopes.openScope(with: lintableFunctionType.effectSpecifiers?.throwsClause)
             }
             return .visitChildren
         }
 
         override func visitPost(_ node: PatternBindingSyntax) {
-            if node.hasNonReferenceInitializer, node.functionTypeSyntax != nil {
+            if node.lintableFunctionType != nil {
                 if let closedScope = scopes.closeScope() {
                     validate(
                         scope: closedScope,
                         construct: "closure type"
                     )
                 }
+            }
+        }
+
+        override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+            if let throwsClause = node.signature?.effectSpecifiers?.throwsClause {
+                scopes.openScope(with: throwsClause)
+            }
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: ClosureExprSyntax) {
+            if node.signature?.effectSpecifiers?.throwsClause != nil, let closedScope = scopes.closeScope() {
+                validate(
+                    scope: closedScope,
+                    construct: "body of this closure"
+                )
             }
         }
 
@@ -147,11 +162,11 @@ private extension UnneededThrowsRule {
         private func validate(scope: Scope, construct: String) {
             guard let throwsClause = scope.throwsClause else { return }
             violations.append(
-                ReasonedRuleViolation(
+                .init(
                     position: throwsClause.positionAfterSkippingLeadingTrivia,
                     reason: "Superfluous 'throws'; \(construct) does not throw any error",
-                    correction: ReasonedRuleViolation.ViolationCorrection(
-                        // Move start position back by 1 to include the space before the throwsClause
+                    correction: .init(
+                        // Move start position back by 1 to include the space before the keyword.
                         start: throwsClause.positionAfterSkippingLeadingTrivia.advanced(by: -1),
                         end: throwsClause.endPositionBeforeTrailingTrivia,
                         replacement: ""
@@ -181,26 +196,26 @@ private extension Stack where Element == UnneededThrowsRule.Scope {
 
 private extension FunctionCallExprSyntax {
     var containsClosureDeclaration: Bool {
-        children(viewMode: .sourceAccurate).contains { child in
-            child.as(ClosureExprSyntax.self.self) != nil
-        }
+        children(viewMode: .sourceAccurate).contains { $0.is(ClosureExprSyntax.self) }
     }
 }
 
 private extension PatternBindingSyntax {
-    var hasNonReferenceInitializer: Bool {
-        children(viewMode: .sourceAccurate).contains { child in
-            guard let initializer = child.as(InitializerClauseSyntax.self) else {
-                return false
-            }
-            let containsDeclReference = initializer.children(viewMode: .sourceAccurate)
-                .contains { $0.as(DeclReferenceExprSyntax.self) != nil }
-            return !containsDeclReference
-        }
+    private var hasNonReferenceInitializer: Bool {
+        ![.declReferenceExpr, .memberAccessExpr, .functionCallExpr, nil].contains(initializer?.value.kind)
     }
 
-    var functionTypeSyntax: FunctionTypeSyntax? {
-        typeAnnotation?.type.baseFunctionTypeSyntax
+    private var isLetBinding: Bool {
+        parent?.as(PatternBindingListSyntax.self)?
+            .parent?.as(VariableDeclSyntax.self)?
+            .bindingSpecifier.tokenKind == .keyword(.let)
+    }
+
+    var lintableFunctionType: FunctionTypeSyntax? {
+        guard isLetBinding, hasNonReferenceInitializer else {
+            return nil
+        }
+        return typeAnnotation?.type.baseFunctionTypeSyntax
     }
 }
 
@@ -214,7 +229,7 @@ private extension TypeSyntax {
         case .attributedType(let attributed):
             attributed.baseType.baseFunctionTypeSyntax
         case .tupleType(let tuple):
-            // It's hard to check for the necessity of throws keyword in multi-element tuples
+            // It's hard to check for the necessity of throws keyword in multi-element tuples.
             if tuple.elements.count == 1 {
                 tuple.elements.first?.type.baseFunctionTypeSyntax
             } else {

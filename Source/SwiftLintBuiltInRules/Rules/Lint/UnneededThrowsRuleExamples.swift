@@ -152,6 +152,8 @@ internal struct UnneededThrowsRuleExamples {
         Example("let foo: (Int, Int, () throws -> Void) = (1, 1, {})"),
         Example("let foo: () throws -> Void = { try bar() }"),
         Example("let foo: () throws -> Void = bar"),
+        Example("var foo: () throws -> Void = {}"),
+        Example("let x = { () throws -> Void in try baz() }"),
     ]
 
     static let triggeringExamples = [
@@ -304,12 +306,13 @@ internal struct UnneededThrowsRuleExamples {
         }
         """),
         Example("""
-        func foo() throws {
+        func foo() ↓throws {
             bar(1) {
                 try baz()
             }
         }
         """),
+        Example("let x = { () ↓throws -> Void in baz() }"),
     ]
 
     static let corrections = [
@@ -386,5 +389,6 @@ internal struct UnneededThrowsRuleExamples {
             """),
         Example("func f() ↓throws /* comment */ {}"): Example("func f() /* comment */ {}"),
         Example("func f() /* comment */ ↓throws /* comment */ {}"): Example("func f() /* comment */ /* comment */ {}"),
+        Example("let foo: @Sendable () ↓throws -> Void = {}"): Example("let foo: @Sendable () -> Void = {}"),
     ]
 }

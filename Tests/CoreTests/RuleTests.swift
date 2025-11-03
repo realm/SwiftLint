@@ -10,7 +10,7 @@ final class RuleTests: SwiftLintTestCase {
                                                  description: "", kind: .style)
 
         init() { /* conformance for test */ }
-        init(configuration _: Any) throws { self.init() }
+        init(configuration _: Any) { self.init() }
 
         func validate(file _: SwiftLintFile) -> [StyleViolation] {
             []
@@ -24,7 +24,7 @@ final class RuleTests: SwiftLintTestCase {
                                                  description: "", kind: .style)
 
         init() { /* conformance for test */ }
-        init(configuration _: Any) throws { self.init() }
+        init(configuration _: Any) { self.init() }
 
         func validate(file _: SwiftLintFile) -> [StyleViolation] {
             []

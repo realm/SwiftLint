@@ -38,7 +38,7 @@ extension SwiftLint {
 
         func run() throws {
             let savedBaseline = try SwiftLintCore.Baseline(fromPath: options.baseline)
-            try report(savedBaseline.violations, using: reportingOptions.reporter, to: reportingOptions.output)
+            report(savedBaseline.violations, using: reportingOptions.reporter, to: reportingOptions.output)
         }
     }
 
@@ -63,12 +63,12 @@ extension SwiftLint {
         func run() throws {
             let baseline = try SwiftLintCore.Baseline(fromPath: options.baseline)
             let otherBaseline = try SwiftLintCore.Baseline(fromPath: otherBaseline)
-            try report(baseline.compare(otherBaseline), using: reportingOptions.reporter, to: reportingOptions.output)
+            report(baseline.compare(otherBaseline), using: reportingOptions.reporter, to: reportingOptions.output)
         }
     }
 }
 
-private func report(_ violations: [StyleViolation], using reporterIdentifier: String?, to output: String?) throws {
+private func report(_ violations: [StyleViolation], using reporterIdentifier: String?, to output: String?) {
     let reporter = reporterFrom(identifier: reporterIdentifier)
     let report = reporter.generateReport(violations)
     if report.isNotEmpty {

@@ -70,7 +70,7 @@ final class TypeBodyLengthConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(config.excludedTypes, Set([.extension]))
     }
 
-    func testInvalidExcludedTypeConfiguration() throws {
+    func testInvalidExcludedTypeConfiguration() {
         var config = TypeBodyLengthConfiguration()
         checkError(Issue.invalidConfiguration(ruleID: TypeBodyLengthRule.identifier)) {
             try config.apply(

@@ -9,11 +9,9 @@ private let pathPrefix = ""
 #endif
 
 enum TemporaryDirectory: BodyMacro {
-    static func expansion(
-        of _: AttributeSyntax,
-        providingBodyFor declaration: some DeclSyntaxProtocol & WithOptionalCodeBlockSyntax,
-        in context: some MacroExpansionContext
-    ) throws -> [CodeBlockItemSyntax] {
+    static func expansion(of _: AttributeSyntax,
+                          providingBodyFor declaration: some DeclSyntaxProtocol & WithOptionalCodeBlockSyntax,
+                          in context: some MacroExpansionContext) -> [CodeBlockItemSyntax] {
         guard let body = declaration.body else {
             context.diagnose(SwiftLintCoreMacroError.noBody.diagnose(at: declaration))
             return []

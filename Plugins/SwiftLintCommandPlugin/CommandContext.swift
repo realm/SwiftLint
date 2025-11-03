@@ -79,7 +79,7 @@ extension XcodePluginContext: CommandContext {
         "target"
     }
 
-    func targets(named names: [String]) throws -> [(paths: [String], name: String)] {
+    func targets(named names: [String]) -> [(paths: [String], name: String)] {
         if names.isEmpty {
             return [(paths: [xcodeProject.directory.string], name: xcodeProject.displayName)]
         }

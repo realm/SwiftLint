@@ -6,7 +6,7 @@ extension SwiftLint {
     struct Reporters: ParsableCommand {
         static let configuration = CommandConfiguration(abstract: "Display the list of reporters and their identifiers")
 
-        func run() throws {
+        func run() {
             print(TextTable(reporters: reportersList).render())
         }
     }

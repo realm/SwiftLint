@@ -137,7 +137,7 @@ private struct RuleMock1: Rule {
                                              description: "", kind: .style)
 
     init() { /* conformance for test */ }
-    init(configuration _: Any) throws { self.init() }
+    init(configuration _: Any) { self.init() }
 
     func validate(file _: SwiftLintFile) -> [StyleViolation] {
         []
@@ -152,7 +152,7 @@ private struct RuleMock2: Rule {
                                              description: "", kind: .style)
 
     init() { /* conformance for test */ }
-    init(configuration _: Any) throws { self.init() }
+    init(configuration _: Any) { self.init() }
 
     func validate(file _: SwiftLintFile) -> [StyleViolation] {
         []
@@ -167,7 +167,7 @@ private struct CorrectableRuleMock: CorrectableRule {
                                              description: "", kind: .style)
 
     init() { /* conformance for test */ }
-    init(configuration _: Any) throws { self.init() }
+    init(configuration _: Any) { self.init() }
 
     func validate(file _: SwiftLintFile) -> [StyleViolation] {
         []

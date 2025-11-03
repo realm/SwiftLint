@@ -3,11 +3,9 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 enum WorkingDirectory: BodyMacro {
-    static func expansion(
-        of attributes: AttributeSyntax,
-        providingBodyFor declaration: some DeclSyntaxProtocol & WithOptionalCodeBlockSyntax,
-        in context: some MacroExpansionContext
-    ) throws -> [CodeBlockItemSyntax] {
+    static func expansion(of attributes: AttributeSyntax,
+                          providingBodyFor declaration: some DeclSyntaxProtocol & WithOptionalCodeBlockSyntax,
+                          in context: some MacroExpansionContext) -> [CodeBlockItemSyntax] {
         guard let body = declaration.body else {
             context.diagnose(SwiftLintCoreMacroError.noBody.diagnose(at: declaration))
             return []

@@ -121,6 +121,12 @@ final class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class UnneededEscapingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededEscapingRule.description)
+    }
+}
+
 final class UnneededOverrideRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededOverrideRule.description)
@@ -148,11 +154,5 @@ final class UnneededThrowsRuleGeneratedTests: SwiftLintTestCase {
 final class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnownedVariableCaptureRule.description)
-    }
-}
-
-final class UntypedErrorInCatchRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UntypedErrorInCatchRule.description)
     }
 }

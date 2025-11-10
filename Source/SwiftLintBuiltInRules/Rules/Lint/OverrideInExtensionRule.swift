@@ -26,6 +26,13 @@ struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
                 override var description: String { return "" }
             }
             """),
+            Example("""
+            @objc
+            @implementation
+            extension Person {
+                override func celebrateBirthday() {}
+            }
+            """),
         ],
         triggeringExamples: [
             Example("extension Person {\n  override ↓var age: Int { return 42 }\n}"),
@@ -74,6 +81,11 @@ private extension OverrideInExtensionRule {
         override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
             guard let type = node.extendedType.as(IdentifierTypeSyntax.self),
                   !allowedExtensions.contains(type.name.text) else {
+                return .skipChildren
+            }
+
+            // `@objc @implementation` methods may often use `override`.
+            if node.attributes.contains(attributeNamed: "implementation") {
                 return .skipChildren
             }
 

@@ -94,7 +94,7 @@ let package = Package(
         .target(
             name: "SwiftLintCore",
             dependencies: [
-                .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux])),
+                .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux, .windows])),
                 .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
                 .product(name: "SwiftIDEUtils", package: "swift-syntax"),

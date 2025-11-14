@@ -9,6 +9,10 @@ import func Musl.glob
 #endif
 #endif
 
+#if os(Windows)
+import WinSDK
+#endif
+
 // Adapted from https://gist.github.com/efirestone/ce01ae109e08772647eb061b3bb387c3
 
 struct Glob {
@@ -20,6 +24,28 @@ struct Glob {
 
         return expandGlobstar(pattern: pattern)
             .reduce(into: [String]()) { paths, pattern in
+#if os(Windows)
+                URL(fileURLWithPath: pattern).withUnsafeFileSystemRepresentation {
+                    var ffd: WIN32_FIND_DATAW = WIN32_FIND_DATAW()
+
+                    let hDirectory: HANDLE = String(cString: $0!).withCString(encodedAs: UTF16.self) {
+                        FindFirstFileW($0, &ffd)
+                    }
+                    if hDirectory == INVALID_HANDLE_VALUE { return }
+                    defer { FindClose(hDirectory) }
+
+                    repeat {
+                        let path: String = withUnsafePointer(to: &ffd.cFileName) {
+                            $0.withMemoryRebound(to: UInt16.self, capacity: MemoryLayout.size(ofValue: $0) / MemoryLayout<WCHAR>.size) {
+                                String(decodingCString: $0, as: UTF16.self)
+                            }
+                        }
+                        if path != "." && path != ".." {
+                            paths.append(path)
+                        }
+                    } while FindNextFileW(hDirectory, &ffd)
+                }
+#else
                 var globResult = glob_t()
                 defer { globfree(&globResult) }
 
@@ -31,6 +57,7 @@ struct Glob {
                 if glob(pattern, flags, nil, &globResult) == 0 {
                     paths.append(contentsOf: populateFiles(globResult: globResult))
                 }
+#endif
             }
             .unique
             .sorted()
@@ -92,6 +119,7 @@ struct Glob {
         return isDirectory && isDirectoryBool.boolValue
     }
 
+#if !os(Windows)
     private static func populateFiles(globResult: glob_t) -> [String] {
 #if os(Linux)
         let matchCount = globResult.gl_pathc
@@ -102,4 +130,5 @@ struct Glob {
             globResult.gl_pathv[index].flatMap { String(validatingUTF8: $0) }
         }
     }
+#endif
 }

@@ -52,7 +52,7 @@ actor ProgressBar {
     }
 }
 
-#if os(Linux)
+#if os(Linux) || os(Windows)
 // swiftlint:disable:next identifier_name
 private let NSEC_PER_SEC = 1_000_000_000
 #endif

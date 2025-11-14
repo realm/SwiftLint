@@ -1,3 +1,4 @@
+import SwiftLexicalLookup
 import SwiftLintCore
 import SwiftSyntax
 
@@ -15,16 +16,24 @@ struct UnneededEscapingRule: Rule {
             func outer(completion: @escaping () -> Void) { inner(completion: completion) }
             """),
             Example("""
-            func apply(_ work: @escaping () -> Void) -> () -> Void { return work }
+            func returning(_ work: @escaping () -> Void) -> () -> Void { return work }
             """),
             Example("""
-            func f(g: @escaping () -> Void) -> () -> Void { g }
+            func implicitlyReturning(g: @escaping () -> Void) -> () -> Void { g }
             """),
             Example("""
-            func store(completion: @escaping () -> Void) { self.c = completion }
+            struct S {
+                var closure: (() -> Void)?
+                mutating func setClosure(_ newValue: @escaping () -> Void) {
+                    closure = newValue
+                }
+                mutating func setToSelf(_ newValue: @escaping () -> Void) {
+                    self.closure = newValue
+                }
+            }
             """),
             Example("""
-            func async(completion: @escaping () -> Void) {
+            func closure(completion: @escaping () -> Void) {
                 DispatchQueue.main.async { completion() }
             }
             """),
@@ -34,6 +43,65 @@ struct UnneededEscapingRule: Rule {
                 closure()
             }
             """),
+            Example("""
+            func reassignLocal(completion: @escaping () -> Void) -> () -> Void {
+                var local = { print("initial") }
+                local = completion
+                return local
+            }
+            """),
+            Example("""
+            func global(completion: @escaping () -> Void) {
+                Global.completion = completion
+            }
+            """),
+            Example("""
+            func chain(c: @escaping () -> Void) -> () -> Void {
+                let c1 = c
+                if condition {
+                    let c2 = c1
+                    return c2
+                }
+                let c3 = c1
+                return c3
+            }
+            """),
+            Example("""
+            var arrayOfCompletions = [() -> Void]()
+            func array(completion: @escaping () -> Void) {
+                var completions = [() -> Void]()
+                completions[0] = completion
+                arrayOfCompletions = completions
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            var arrayOfCompletions = [() -> Void]()
+            func array(completion: @escaping () -> Void) {
+                arrayOfCompletions[0] = completion
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            var _testSuiteFailedCallback: (() -> Void)?
+            public func _setTestSuiteFailedCallback(_ callback: @escaping () -> Void) {
+                _testSuiteFailedCallback = callback
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            func f(c: @escaping () -> Void) {
+                var cs = [() -> Void]()
+                cs[0] = c
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            func f(c: @escaping () -> Void) {
+                var cs = [c]
+            }
+            """, excludeFromDocumentation: true),
+            Example("""
+            func f(c: @escaping () -> Void) {
+                var cs = [1: c]
+            }
+            """, excludeFromDocumentation: true),
         ],
         triggeringExamples: [
             Example("""
@@ -67,6 +135,19 @@ struct UnneededEscapingRule: Rule {
             Example("""
             subscript(transform: ↓@escaping (Int) -> String) -> String {
                 transform(42)
+            }
+            """),
+            Example("""
+            func assignToLocal(completion: ↓@escaping () -> Void) {
+                let local = completion
+                local()
+            }
+            """),
+            Example("""
+            func reassignLocal(completion: ↓@escaping () -> Void) {
+                var local = { print(\"initial\") }
+                local = completion
+                local()
             }
             """),
         ],
@@ -162,37 +243,52 @@ private extension UnneededEscapingRule {
 }
 
 private final class EscapeChecker: SyntaxVisitor {
-    let paramName: String
+    var taintedVariables = Set<String>()
     var doesEscape = false
     var inClosureContext = false
 
     init(paramName: String) {
-        self.paramName = paramName
+        taintedVariables.insert(paramName)
         super.init(viewMode: .sourceAccurate)
     }
 
     override func visitPost(_ node: CodeBlockItemListSyntax) {
-        if case let .expr(returnExpr) = node.onlyElement?.item, referencesParameter(returnExpr) {
+        if case let .expr(returnExpr) = node.onlyElement?.item, isTainted(returnExpr) {
             doesEscape = true
         }
     }
 
+    override func visitPost(_ node: VariableDeclSyntax) {
+        for binding in node.bindings {
+            if let initializer = binding.initializer,
+               isTainted(initializer.value),
+               let pattern = binding.pattern.as(IdentifierPatternSyntax.self) {
+                taintedVariables.insert(pattern.identifier.text)
+            }
+        }
+    }
+
     override func visitPost(_ node: InfixOperatorExprSyntax) {
-        if node.operator.is(AssignmentExprSyntax.self),
-           node.leftOperand.is(DeclReferenceExprSyntax.self) || node.leftOperand.is(MemberAccessExprSyntax.self),
-           referencesParameter(node.rightOperand) {
+        guard node.operator.is(AssignmentExprSyntax.self), isTainted(node.rightOperand) else {
+            return
+        }
+        if node.leftOperand.isLocalVariable {
+            if let leftName = node.leftOperand.baseNameToken?.text {
+                taintedVariables.insert(leftName)
+            }
+        } else {
             doesEscape = true
         }
     }
 
     override func visitPost(_ node: ReturnStmtSyntax) {
-        if let expr = node.expression, referencesParameter(expr) {
+        if let expr = node.expression, isTainted(expr) {
             doesEscape = true
         }
     }
 
     override func visitPost(_ node: FunctionCallExprSyntax) {
-        for argument in node.arguments where referencesParameter(argument.expression) {
+        for argument in node.arguments where isTainted(argument.expression) {
             doesEscape = true
         }
     }
@@ -207,18 +303,21 @@ private final class EscapeChecker: SyntaxVisitor {
     }
 
     override func visitPost(_ node: DeclReferenceExprSyntax) {
-        if inClosureContext, referencesParameter(ExprSyntax(node)) {
+        guard isTainted(ExprSyntax(node)) else {
+            return
+        }
+        if inClosureContext || [.arrayElement, .dictionaryElement].contains(node.parent?.kind) {
             doesEscape = true
         }
     }
 
-    private func referencesParameter(_ expr: ExprSyntax) -> Bool {
+    private func isTainted(_ expr: ExprSyntax) -> Bool {
         if let declRef = expr.as(DeclReferenceExprSyntax.self) {
-            return declRef.baseName.text == paramName
+            return taintedVariables.contains(declRef.baseName.text)
         }
         if let optChain = expr.as(OptionalChainingExprSyntax.self),
            let declRef = optChain.expression.as(DeclReferenceExprSyntax.self) {
-            return declRef.baseName.text == paramName
+            return taintedVariables.contains(declRef.baseName.text)
         }
         return false
     }
@@ -235,5 +334,25 @@ private extension TypeSyntax {
             return optionalType.wrappedType.as(TupleTypeSyntax.self)?.elements.first?.type.escapingAttribute
         }
         return nil
+    }
+}
+
+private extension ExprSyntax {
+    var baseNameToken: TokenSyntax? {
+           `as`(DeclReferenceExprSyntax.self)?.baseName
+        ?? `as`(MemberAccessExprSyntax.self)?.base?.baseNameToken
+    }
+
+    var isLocalVariable: Bool {
+        if let baseNameToken {
+            let results = lookup(.init(baseNameToken))
+            return results.isNotEmpty && results.allSatisfy {
+                switch $0 {
+                case .fromScope: true
+                default: false
+                }
+            }
+        }
+        return false
     }
 }

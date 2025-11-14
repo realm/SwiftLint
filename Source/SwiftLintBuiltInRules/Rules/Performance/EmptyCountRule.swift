@@ -1,4 +1,3 @@
-@_spi(Experimental)
 import SwiftLexicalLookup
 import SwiftLintCore
 import SwiftSyntax

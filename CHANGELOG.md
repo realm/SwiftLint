@@ -27,6 +27,10 @@
 * Add new opt-in `unneeded_throws_rethrows` rule that triggers when declarations
   marked `throws`/`rethrows` never actually throw or call any throwing code.  
   [Tony Ngo](https://github.com/tonyskansf)
+  
+* Add new `unneeded_escaping` rule that detects closure parameters marked with
+  `@escaping` that are never stored or captured escapingly.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

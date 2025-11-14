@@ -1270,6 +1270,11 @@ unneeded_break_in_switch:
   meta:
     opt-in: false
     correctable: true
+unneeded_escaping:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: true
 unneeded_override:
   severity: warning
   affect_initializers: false

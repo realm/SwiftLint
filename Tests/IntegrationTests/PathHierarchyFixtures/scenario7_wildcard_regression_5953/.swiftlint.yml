@@ -1,0 +1,6 @@
+excluded:
+  - "ThirdParty/**"
+  - "*/ThirdParty/**"
+  - "**/ThirdParty/**"
+  - "Generated"
+  - "**/Package.swift"

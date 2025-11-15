@@ -35,7 +35,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6332](https://github.com/realm/SwiftLint/issues/6332)
 
-* `override_in_extension` no longer triggers inside `@objc @implementation` extensions.
+* `override_in_extension` no longer triggers inside `@objc @implementation` extensions.  
   [JaredGrubb](https://github.com/jaredgrubb)
 
 ## 0.62.2: Generous Drum Volume

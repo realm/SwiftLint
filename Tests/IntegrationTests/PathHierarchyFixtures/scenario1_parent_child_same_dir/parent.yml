@@ -1,0 +1,9 @@
+included:
+  - Sources
+
+excluded:
+  - Sources/Generated
+
+line_length: 100
+
+child_config: child.yml

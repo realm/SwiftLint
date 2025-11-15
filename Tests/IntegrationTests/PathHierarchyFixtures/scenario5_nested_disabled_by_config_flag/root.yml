@@ -1,0 +1,5 @@
+included:
+  - ModuleA
+
+disabled_rules:
+  - line_length

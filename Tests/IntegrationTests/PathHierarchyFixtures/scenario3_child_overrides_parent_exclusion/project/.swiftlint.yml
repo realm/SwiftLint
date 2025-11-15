@@ -1,0 +1,4 @@
+parent_config: ../base/.swiftlint.yml
+
+included:
+  - Vendor/Critical

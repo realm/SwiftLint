@@ -1,4 +1,7 @@
 {
-    "$schema": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/refs/heads/release/6.1/config.schema.json",
-    "backgroundIndexing": false
+    "$schema": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/refs/heads/release/6.2.1/config.schema.json",
+    "backgroundIndexing": false,
+    "swiftPM": {
+        "scratchPath": ".build-vscode"
+    }
 }

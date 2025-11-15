@@ -6,10 +6,9 @@ SwiftLint enforces the style guide rules that are generally accepted by the
 Swift community. These rules are well described in popular style guides like
 [Kodeco's Swift Style Guide](https://github.com/kodecocodes/swift-style-guide).
 
-SwiftLint hooks into [Clang](http://clang.llvm.org) and
-[SourceKit](http://www.jpsim.com/uncovering-sourcekit) to use the
-[AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
-of your source files for more accurate results.
+SwiftLint rules are predominantly based on [SwiftSyntax](https://github.com/swiftlang/swift-syntax).
+Some rules still hook into [Clang](http://clang.llvm.org) and
+[SourceKit](http://www.jpsim.com/uncovering-sourcekit) to access type information.
 
 [![Supported Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frealm%2FSwiftLint%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/realm/SwiftLint)
 [![Supported Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frealm%2FSwiftLint%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/realm/SwiftLint)
@@ -22,7 +21,7 @@ This project adheres to the
 By participating, you are expected to uphold this code.
 
 > Switch Language:
-> [中文](https://github.com/realm/SwiftLint/blob/main/README_CN.md)
+> [中文](https://github.com/realm/SwiftLint/blob/main/README_CN.md),
 > [한국어](https://github.com/realm/SwiftLint/blob/main/README_KR.md)
 
 ## Video Introduction

@@ -5,6 +5,7 @@ included:
   - Tests
   - Package.swift
 excluded:
+  - assets
   - Tests/BuiltInRulesTests/Resources
   - Tests/FileSystemAccessTests/Resources
 

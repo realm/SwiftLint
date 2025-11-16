@@ -269,6 +269,7 @@ private extension SwiftLintDev.Rules.Register {
             .write(
                 to: testsParentDirectory
                     .appendingPathComponent("IntegrationTests", isDirectory: true)
+                    .appendingPathComponent("Resources", isDirectory: true)
                     .appendingPathComponent("default_rule_configurations.yml", isDirectory: false),
                 atomically: true,
                 encoding: .utf8

@@ -8,7 +8,7 @@ excluded:
   - assets
   - Tests/BuiltInRulesTests/Resources
   - Tests/FileSystemAccessTests/Resources
-  - Tests/IntegrationTests/PathHierarchyFixtures
+  - Tests/IntegrationTests/Resources
 
 # Enabled/disabled rules
 analyzer_rules:

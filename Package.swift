@@ -207,8 +207,7 @@ let package = Package(
                 "TestHelpers",
             ],
             exclude: [
-                "default_rule_configurations.yml",
-                "PathHierarchyFixtures",
+                "Resources",
             ],
             swiftSettings: swiftFeatures + targetedConcurrency // Set to strict once SwiftLintFramework is updated
         ),

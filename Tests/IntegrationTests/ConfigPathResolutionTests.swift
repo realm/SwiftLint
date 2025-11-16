@@ -3,11 +3,11 @@ import SwiftLintFramework
 import TestHelpers
 import XCTest
 
-final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
+final class ConfigPathResolutionTests: SwiftLintTestCase {
     private func fixturePath(_ scenario: String) -> String {
         #filePath.bridge()
             .deletingLastPathComponent
-            .stringByAppendingPathComponent("PathHierarchyFixtures")
+            .stringByAppendingPathComponent("Resources")
             .stringByAppendingPathComponent(scenario)
     }
 
@@ -33,7 +33,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
 
     func testParentChildSameDirectory() {
         XCTAssertEqual(
-            lintableFilePaths(in: "scenario1_parent_child_same_dir", configFile: "parent.yml"),
+            lintableFilePaths(in: "_1_parent_child_same_dir", configFile: "parent.yml"),
             ["Sources/CoreFile.swift"]
         )
     }
@@ -41,7 +41,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
     func testParentChildDifferentDirectories() {
         XCTAssertEqual(
             lintableFilePaths(
-                in: "scenario2_parent_child_different_dirs",
+                in: "_2_parent_child_different_dirs",
                 configFile: "project/.swiftlint.yml",
                 inPath: "project"
             ),
@@ -52,7 +52,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
     func testChildOverridesParentExclusion() {
         XCTAssertEqual(
             lintableFilePaths(
-                in: "scenario3_child_overrides_parent_exclusion",
+                in: "_3_child_overrides_parent_exclusion",
                 configFile: "project/.swiftlint.yml",
                 inPath: "project"
             ),
@@ -62,14 +62,14 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
 
     func testParentIncludesChildExcludes() {
         XCTAssertEqual(
-            lintableFilePaths(in: "scenario1_parent_child_same_dir", configFile: "parent.yml"),
+            lintableFilePaths(in: "_1_parent_child_same_dir", configFile: "parent.yml"),
             ["Sources/CoreFile.swift"]
         )
     }
 
     func testNestedConfigurationBasic() {
         XCTAssertEqual(
-            lintableFilePaths(in: "scenario4_nested_basic", configFile: ".swiftlint.yml"),
+            lintableFilePaths(in: "_4_nested_basic", configFile: ".swiftlint.yml"),
             ["ModuleA/File.swift", "ModuleA/Generated/File.swift", "ModuleB/File.swift"]
         )
     }
@@ -77,7 +77,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
     func testWildcardPatternCount() {
         XCTAssertEqual(
             lintableFilePaths(
-                in: "scenario6_wildcard_patterns",
+                in: "_5_wildcard_patterns",
                 configFile: "project/.swiftlint.yml",
                 inPath: "project"
             ),
@@ -88,7 +88,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
     func testLintChildFolder() {
         XCTAssertEqual(
             lintableFilePaths(
-                in: "scenario2_parent_child_different_dirs",
+                in: "_2_parent_child_different_dirs",
                 configFile: "project/.swiftlint.yml",
                 inPath: "project"
             ),
@@ -99,7 +99,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
     func testEmptyIncludedDefaultsToAll() {
         XCTAssertEqual(
             lintableFilePaths(
-                in: "scenario7_wildcard_regression_5953",
+                in: "_6_wildcards_from_nested_folder",
                 configFile: ".swiftlint-exclude-thirdparty.yml"
             ),
             [
@@ -113,25 +113,25 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
 
     func testMultipleLevelsOfExclusion() {
         XCTAssertEqual(
-            lintableFilePaths(in: "scenario1_parent_child_same_dir", configFile: "parent.yml"),
+            lintableFilePaths(in: "_1_parent_child_same_dir", configFile: "parent.yml"),
             ["Sources/CoreFile.swift"]
         )
     }
 
     func testConfigFromParentFolder() {
         XCTAssertEqual(
-            lintableFilePaths(in: "scenario7_wildcard_regression_5953", configFile: ".swiftlint.yml"),
+            lintableFilePaths(in: "_6_wildcards_from_nested_folder", configFile: ".swiftlint.yml"),
             ["MyProject/Sources/App.swift"]
         )
 
         XCTAssertEqual(
-            lintableFilePaths(in: "scenario7_wildcard_regression_5953/MyProject", configFile: "../.swiftlint.yml"),
+            lintableFilePaths(in: "_6_wildcards_from_nested_folder/MyProject", configFile: "../.swiftlint.yml"),
             ["Sources/App.swift"]
         )
     }
 
     func testNestedConfigurationAppliesOnlyToSubdirectory() {
-        let scenarioPath = fixturePath("scenario4_nested_basic")
+        let scenarioPath = fixturePath("_4_nested_basic")
         let config = Configuration(configurationFiles: [])
 
         let moduleAFile = SwiftLintFile(
@@ -155,7 +155,7 @@ final class ConfigHierarchyPathResolutionTests: SwiftLintTestCase {
     }
 
     func testNestedConfigurationDisabledByConfigFlag() {
-        let scenarioPath = fixturePath("scenario4_nested_basic")
+        let scenarioPath = fixturePath("_4_nested_basic")
         let configFile = scenarioPath.stringByAppendingPathComponent("root.yml")
 
         let moduleAFile = SwiftLintFile(

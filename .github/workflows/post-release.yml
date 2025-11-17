@@ -74,7 +74,7 @@ jobs:
         id: parse_checksum
         run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> "$GITHUB_OUTPUT"
       - name: Dispatch release of plugins package
-        uses: peter-evans/repository-dispatch@5fc4efd1a4797ddb68ffd0714a238564e4cc0e6f # v4.0.0
+        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
           token: ${{ secrets.SIMPLYDANNY_PLUGINS_SYNC }}
           repository: SimplyDanny/SwiftLintPlugins

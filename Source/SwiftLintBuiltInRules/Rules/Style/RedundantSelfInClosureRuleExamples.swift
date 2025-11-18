@@ -194,11 +194,11 @@ struct RedundantSelfInClosureRuleExamples {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
                 func g() {
-                    f { [weak self] in
+                    f({ [weak self] in
                         self?.x = 1
                         guard let self else { return }
                         ↓self.x = 1
-                    }
+                    })
                     f { [weak self] in
                         self?.x = 1
                         if let self = self { ↓self.x = 1 }
@@ -212,6 +212,23 @@ struct RedundantSelfInClosureRuleExamples {
                 }
             }
             """),
+        Example("""
+            class C {
+                var x = 0
+                private lazy var c1: Int = {
+                    ↓self.x = 1
+                    let f = { self.x = 2 }
+                    let g = { [self] in ↓self.x = 3 }
+                    return 2
+                }()
+                private lazy var c2: Int = { [weak self] in
+                    guard let self else { return 0 }
+                    ↓self.x = 1
+                    let f = { self.x = 2 }
+                    return 2
+                }()
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let corrections = [

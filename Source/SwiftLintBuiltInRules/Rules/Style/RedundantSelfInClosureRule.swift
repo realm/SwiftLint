@@ -1,3 +1,6 @@
+@_spi(Diagnostics)
+import SwiftParser
+@_spi(RawSyntax)
 import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
@@ -16,26 +19,21 @@ struct RedundantSelfInClosureRule: Rule {
 }
 
 private enum TypeDeclarationKind {
-    case likeStruct
-    case likeClass
+    case likeStruct, likeClass
 }
 
-private enum FunctionCallType {
-    case anonymousClosure
-    case function
+private enum ClosureExprType {
+    case anonymousCall, functionArgument
 }
 
 private enum SelfCaptureKind {
-    case strong
-    case weak
-    case uncaptured
+    case strong, weak, uncaptured
 }
 
 private extension RedundantSelfInClosureRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
         private var typeDeclarations = Stack<TypeDeclarationKind>()
-        private var functionCalls = Stack<FunctionCallType>()
-        private var selfCaptures = Stack<SelfCaptureKind>()
+        private var closureExprScopes = Stack<(ClosureExprType, SelfCaptureKind)>()
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
@@ -58,30 +56,24 @@ private extension RedundantSelfInClosureRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if let selfItem = node.signature?.capture?.items.first(where: \.capturesSelf) {
-                selfCaptures.push(selfItem.capturesWeakly ? .weak : .strong)
-            } else {
-                selfCaptures.push(.uncaptured)
-            }
+            let captureType: SelfCaptureKind =
+                if let selfItem = node.signature?.capture?.items.first(where: \.capturesSelf) {
+                    selfItem.capturesWeakly ? .weak : .strong
+                } else {
+                    .uncaptured
+                }
+            let exprType: ClosureExprType =
+                if node.keyPathInParent == \FunctionCallExprSyntax.calledExpression {
+                    .anonymousCall
+                } else {
+                    .functionArgument
+                }
+            closureExprScopes.push((exprType, captureType))
             return .visitChildren
         }
 
-        override func visitPost(_ node: ClosureExprSyntax) {
-            guard let activeTypeDeclarationKind = typeDeclarations.peek(),
-                  let activeFunctionCallType = functionCalls.peek(),
-                  let activeSelfCaptureKind = selfCaptures.peek() else {
-                return
-            }
-            let localViolationCorrections = ExplicitSelfVisitor(
-                configuration: configuration,
-                file: file,
-                typeDeclarationKind: activeTypeDeclarationKind,
-                functionCallType: activeFunctionCallType,
-                selfCaptureKind: activeSelfCaptureKind,
-                scope: scope
-            ).walk(tree: node.statements, handler: \.violations)
-            violations.append(contentsOf: localViolationCorrections)
-            selfCaptures.pop()
+        override func visitPost(_: ClosureExprSyntax) {
+            closureExprScopes.pop()
         }
 
         override func visit(_: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -93,17 +85,23 @@ private extension RedundantSelfInClosureRule {
             typeDeclarations.pop()
         }
 
-        override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
-            if node.calledExpression.is(ClosureExprSyntax.self) {
-                functionCalls.push(.anonymousClosure)
-            } else {
-                functionCalls.push(.function)
+        override func visitPost(_ node: MemberAccessExprSyntax) {
+            if closureExprScopes.isNotEmpty, !isSelfRedundant {
+                return
             }
-            return .visitChildren
-        }
-
-        override func visitPost(_: FunctionCallExprSyntax) {
-            functionCalls.pop()
+            let declName = node.declName.baseName.text
+            if !hasSeenDeclaration(for: declName), node.isBaseSelf, declName != "init" {
+                violations.append(
+                    at: node.positionAfterSkippingLeadingTrivia,
+                    correction: .init(
+                        start: node.positionAfterSkippingLeadingTrivia,
+                        end: node.endPositionBeforeTrailingTrivia,
+                        replacement: node.declName.baseName.needsEscaping
+                            ? "`\(declName)`"
+                            : declName
+                    )
+                )
+            }
         }
 
         override func visit(_: StructDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -114,48 +112,28 @@ private extension RedundantSelfInClosureRule {
         override func visitPost(_: StructDeclSyntax) {
             typeDeclarations.pop()
         }
+
+        private var isSelfRedundant: Bool {
+            if typeDeclarations.peek() == .likeStruct {
+                return true
+            }
+            guard let (closureType, selfCapture) = closureExprScopes.peek() else {
+                return false
+            }
+            return closureType == .anonymousCall
+                || selfCapture == .strong && SwiftVersion.current >= .fiveDotThree
+                || selfCapture == .weak && SwiftVersion.current >= .fiveDotEight
+        }
     }
 }
 
-private class ExplicitSelfVisitor<Configuration: RuleConfiguration>: DeclaredIdentifiersTrackingVisitor<Configuration> {
-    private let typeDeclKind: TypeDeclarationKind
-    private let functionCallType: FunctionCallType
-    private let selfCaptureKind: SelfCaptureKind
-
-    init(configuration: Configuration,
-         file: SwiftLintFile,
-         typeDeclarationKind: TypeDeclarationKind,
-         functionCallType: FunctionCallType,
-         selfCaptureKind: SelfCaptureKind,
-         scope: Scope) {
-        self.typeDeclKind = typeDeclarationKind
-        self.functionCallType = functionCallType
-        self.selfCaptureKind = selfCaptureKind
-        super.init(configuration: configuration, file: file, scope: scope)
-    }
-
-    override func visitPost(_ node: MemberAccessExprSyntax) {
-        if !hasSeenDeclaration(for: node.declName.baseName.text), node.isBaseSelf, isSelfRedundant {
-            violations.append(
-                at: node.positionAfterSkippingLeadingTrivia,
-                correction: .init(
-                    start: node.positionAfterSkippingLeadingTrivia,
-                    end: node.period.endPositionBeforeTrailingTrivia,
-                    replacement: ""
-                )
-            )
+private extension TokenSyntax {
+    var needsEscaping: Bool {
+        [UInt8](text.utf8).withUnsafeBufferPointer {
+            if let keyword = Keyword(SyntaxText(baseAddress: $0.baseAddress, count: text.count)) {
+                return TokenKind.keyword(keyword).isLexerClassifiedKeyword
+            }
+            return false
         }
-    }
-
-    override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-        // Will be handled separately by the parent visitor.
-        .skipChildren
-    }
-
-    var isSelfRedundant: Bool {
-           typeDeclKind == .likeStruct
-        || functionCallType == .anonymousClosure
-        || selfCaptureKind == .strong && SwiftVersion.current >= .fiveDotThree
-        || selfCaptureKind == .weak && SwiftVersion.current >= .fiveDotEight
     }
 }

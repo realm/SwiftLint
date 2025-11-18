@@ -34,6 +34,12 @@
 
 ### Bug Fixes
 
+* Fix `line_length` rule incorrectly ignoring function bodies when
+  `ignores_function_declarations` is enabled. The option should only ignore
+  function declarations, not their implementation.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6347](https://github.com/realm/SwiftLint/issues/6347)
+
 * Fix false positives in `vertical_whitespace_between_cases` rule when cases are
   interleaved with compiler directives like `#if`/`#else`/`#endif`.  
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -45,6 +45,20 @@ final class LineLengthRuleTests: SwiftLintTestCase {
             }
             """),
     ]
+    private let longFunctionCalls = [
+        Example("""
+            superDuperLongFunctionCall(a: "A", b: "B", c: "C", d: "D", e: "E", f: "F", \
+            g: "G", h: "H", i: "I", j: "J", k: "K", l: "L", m: "M", n: "N", o: "O", p: "P", \
+            q: "Q", r: "R", s: "S", t: "T", u: "U", v: "V", w: "W", x: "X", y: "Y", z: "Z")
+            """),
+        Example("""
+            func test() {
+                let _ = superDuperLongFunctionCall(a: "A", b: "B", c: "C", d: "D", e: "E", f: "F", \
+                g: "G", h: "H", i: "I", j: "J", k: "K", l: "L", m: "M", n: "N", o: "O", p: "P", \
+                q: "Q", r: "R", s: "S", t: "T", u: "U", v: "V", w: "W", x: "X", y: "Y", z: "Z")
+            }
+            """),
+    ]
 
     private let longComment = Example(String(repeating: "/", count: 121) + "\n")
     private let longBlockComment = Example("/*" + String(repeating: " ", count: 121) + "*/\n")
@@ -118,8 +132,10 @@ final class LineLengthRuleTests: SwiftLintTestCase {
 
     func testLineLengthWithIgnoreFunctionDeclarationsEnabled() {
         let baseDescription = LineLengthRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + longFunctionDeclarations
-        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+        let description = baseDescription.with(
+            nonTriggeringExamples: baseDescription.nonTriggeringExamples + longFunctionDeclarations,
+            triggeringExamples: longFunctionCalls
+        )
 
         verifyRule(
             description,

@@ -147,7 +147,7 @@ private extension LineLengthRule {
 
 // MARK: - Helper Visitors for Pre-computation
 
-// Visitor to find lines spanned by function declarations
+// Visitor to find lines spanned by function declaration signatures
 private final class FunctionLineVisitor: SyntaxVisitor {
     let locationConverter: SourceLocationConverter
     var lines = Set<Int>()
@@ -158,20 +158,32 @@ private final class FunctionLineVisitor: SyntaxVisitor {
     }
 
     override func visitPost(_ node: FunctionDeclSyntax) {
-        collectLines(from: node)
+        collectLines(
+            from: node.positionAfterSkippingLeadingTrivia,
+            to: node.genericWhereClause?.endPositionBeforeTrailingTrivia
+                ?? node.signature.endPositionBeforeTrailingTrivia
+        )
     }
 
     override func visitPost(_ node: InitializerDeclSyntax) {
-        collectLines(from: node)
+        collectLines(
+            from: node.positionAfterSkippingLeadingTrivia,
+            to: node.genericWhereClause?.endPositionBeforeTrailingTrivia
+                ?? node.signature.endPositionBeforeTrailingTrivia
+        )
     }
 
     override func visitPost(_ node: SubscriptDeclSyntax) {
-        collectLines(from: node)
+        collectLines(
+            from: node.positionAfterSkippingLeadingTrivia,
+            to: node.genericWhereClause?.endPositionBeforeTrailingTrivia
+                ?? node.returnClause.endPositionBeforeTrailingTrivia
+        )
     }
 
-    private func collectLines(from node: any SyntaxProtocol) {
-        let startLocation = locationConverter.location(for: node.positionAfterSkippingLeadingTrivia)
-        let endLocation = locationConverter.location(for: node.endPositionBeforeTrailingTrivia)
+    private func collectLines(from startPosition: AbsolutePosition, to endPosition: AbsolutePosition) {
+        let startLocation = locationConverter.location(for: startPosition)
+        let endLocation = locationConverter.location(for: endPosition)
         for line in startLocation.line...endLocation.line {
             lines.insert(line)
         }

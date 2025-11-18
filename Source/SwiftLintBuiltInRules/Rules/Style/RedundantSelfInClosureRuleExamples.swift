@@ -194,11 +194,11 @@ struct RedundantSelfInClosureRuleExamples {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
                 func g() {
-                    f { [weak self] in
+                    f({ [weak self] in
                         self?.x = 1
                         guard let self else { return }
                         ↓self.x = 1
-                    }
+                    })
                     f { [weak self] in
                         self?.x = 1
                         if let self = self { ↓self.x = 1 }

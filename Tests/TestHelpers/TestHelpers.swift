@@ -266,6 +266,11 @@ private func testCorrection(_ correction: (Example, Example),
         return
     }
 #endif
+#if os(Windows)
+    guard correction.0.testOnWindows else {
+        return
+    }
+#endif
     var config = configuration
     if let correctionConfiguration = correction.0.configuration,
        case let .onlyConfiguration(onlyRules) = configuration.rulesMode,

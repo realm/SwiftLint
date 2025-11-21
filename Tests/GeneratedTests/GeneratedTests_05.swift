@@ -103,6 +103,12 @@ final class MultilineArgumentsRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class MultilineCallArgumentsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultilineCallArgumentsRule.description)
+    }
+}
+
 final class MultilineFunctionChainsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineFunctionChainsRule.description)
@@ -148,11 +154,5 @@ final class NSLocalizedStringRequireBundleRuleGeneratedTests: SwiftLintTestCase 
 final class NSNumberInitAsFunctionReferenceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSNumberInitAsFunctionReferenceRule.description)
-    }
-}
-
-final class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSObjectPreferIsEqualRule.description)
     }
 }

@@ -4,6 +4,45 @@ import XCTest
 
 import SwiftLintFramework
 
+#if os(Windows)
+private struct PlatformInfo {
+    struct DefaultProperties {
+        let versionXCTest: String
+        let versionSwiftTesting: String
+        let swiftFlags: [String]?
+    }
+
+    let defaults: DefaultProperties
+}
+
+extension PlatformInfo.DefaultProperties: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case versionXCTest = "XCTEST_VERSION"
+        case versionSwiftTesting = "SWIFT_TESTING_VERSION"
+        case swiftFlags = "SWIFTC_FLAGS"
+    }
+}
+
+extension PlatformInfo: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case defaults = "DefaultProperties"
+    }
+}
+
+private let info: PlatformInfo = {
+    let sdk = URL(fileURLWithPath: sdkPath(), isDirectory: true)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent("Info.plist")
+    guard let data = try? Data(contentsOf: sdk),
+          let info = try? PropertyListDecoder().decode(PlatformInfo.self, from: data) else {
+        fatalError("invalid platorm SDK - couldn't decode \(sdk.path)")
+    }
+    return info
+}()
+#endif
+
 // swiftlint:disable file_length
 
 private let violationMarker = "↓"
@@ -28,12 +67,29 @@ private extension SwiftLintFile {
             .appendingPathComponent("Library")
             .appendingPathComponent("Frameworks")
             .path
-        return [
-            "-F",
-            frameworks,
+
+        let arguments = [
+            "-F", frameworks,
             "-sdk", sdk,
-            "-j4", path!,
+            "-Xfrontend", "-enable-objc-interop",
+            "-j4",
+            path!,
         ]
+#if os(Windows)
+        let XCTestPath = URL(fileURLWithPath: sdk, isDirectory: true)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Library")
+            .appendingPathComponent("XCTest-\(info.defaults.versionXCTest)")
+            .appendingPathComponent("usr")
+            .appendingPathComponent("lib")
+            .appendingPathComponent("swift")
+            .appendingPathComponent("windows")
+            .path
+        return ["-I", XCTestPath] + arguments
+#else
+        return arguments
+#endif
     }
 }
 

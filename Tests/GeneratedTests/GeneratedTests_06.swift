@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSObjectPreferIsEqualRule.description)
+    }
+}
+
 final class NestingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NestingRule.description)
@@ -148,11 +154,5 @@ final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
 final class PreferAssetSymbolsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferAssetSymbolsRule.description)
-    }
-}
-
-final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferConditionListRule.description)
     }
 }

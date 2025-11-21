@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantObjcAttributeRule.description)
+    }
+}
+
 final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantSelfInClosureRule.description)
@@ -148,11 +154,5 @@ final class StrictFilePrivateRuleGeneratedTests: SwiftLintTestCase {
 final class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrongIBOutletRule.description)
-    }
-}
-
-final class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(SuperfluousElseRule.description)
     }
 }

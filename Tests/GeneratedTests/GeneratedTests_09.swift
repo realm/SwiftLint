@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(SuperfluousElseRule.description)
+    }
+}
+
 final class SwitchCaseAlignmentRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SwitchCaseAlignmentRule.description)
@@ -148,11 +154,5 @@ final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase 
 final class UnneededThrowsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededThrowsRule.description)
-    }
-}
-
-final class UnownedVariableCaptureRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnownedVariableCaptureRule.description)
     }
 }

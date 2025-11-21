@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferConditionListRule.description)
+    }
+}
+
 final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
@@ -148,11 +154,5 @@ final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
 final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)
-    }
-}
-
-final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantObjcAttributeRule.description)
     }
 }

@@ -678,6 +678,12 @@ multiline_arguments_brackets:
   meta:
     opt-in: true
     correctable: false
+multiline_call_arguments:
+  severity: warning
+  allows_single_line: true
+  meta:
+    opt-in: true
+    correctable: false
 multiline_function_chains:
   severity: warning
   meta:

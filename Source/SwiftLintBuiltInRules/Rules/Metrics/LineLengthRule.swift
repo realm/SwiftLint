@@ -133,8 +133,11 @@ private extension LineLengthRule {
             var modifiedString = sourceString
             while modifiedString.contains("\(delimiter)(") {
                 if let rangeStart = modifiedString.range(of: "\(delimiter)("),
-                   let rangeEnd = modifiedString.range(of: ")", options: .literal,
-                                                       range: rangeStart.lowerBound..<modifiedString.endIndex) {
+                   let rangeEnd = modifiedString.range(
+                    of: ")",
+                    options: .literal,
+                    range: rangeStart.lowerBound..<modifiedString.endIndex
+                   ) {
                     modifiedString.replaceSubrange(rangeStart.lowerBound..<rangeEnd.upperBound, with: "#")
                 } else {
                     break

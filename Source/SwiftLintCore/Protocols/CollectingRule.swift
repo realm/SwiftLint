@@ -47,8 +47,12 @@ public protocol CollectingRule: AnyCollectingRule {
 
 public extension CollectingRule {
     func collectInfo(for file: SwiftLintFile, into storage: RuleStorage, compilerArguments: [String]) {
-        storage.collect(info: collectInfo(for: file, compilerArguments: compilerArguments),
-                        for: file, in: self)
+        storage.collect(
+            info: collectInfo(
+                for: file,
+                compilerArguments: compilerArguments),
+            for: file,
+            in: self)
     }
     func validate(file: SwiftLintFile, using storage: RuleStorage, compilerArguments: [String]) -> [StyleViolation] {
         guard let info = storage.collectedInfo(for: self) else {

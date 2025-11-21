@@ -73,7 +73,9 @@ struct PrivateOutletRule: Rule {
                     ellipsisButtonDidTouch?(self)
                 }
             }
-            """, configuration: ["allow_private_set": false], excludeFromDocumentation: true),
+            """,
+                    configuration: ["allow_private_set": false],
+                    excludeFromDocumentation: true),
         ]
     )
 }

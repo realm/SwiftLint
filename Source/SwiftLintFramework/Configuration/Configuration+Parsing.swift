@@ -57,8 +57,11 @@ extension Configuration {
 
         Self.warnAboutInvalidKeys(configurationDictionary: dict, ruleList: ruleList)
         Self.warnAboutDeprecations(
-            configurationDictionary: dict, disabledRules: disabledRules,
-            optInRules: optInRules, onlyRules: onlyRules, ruleList: ruleList
+            configurationDictionary: dict,
+            disabledRules: disabledRules,
+            optInRules: optInRules,
+            onlyRules: onlyRules,
+            ruleList: ruleList
         )
         Self.warnAboutMisplacedAnalyzerRules(optInRules: optInRules, ruleList: ruleList)
 

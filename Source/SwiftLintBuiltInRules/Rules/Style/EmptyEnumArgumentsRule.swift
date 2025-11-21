@@ -10,7 +10,9 @@ private func wrapInSwitch(
         switch \(variable) {
         \(str): break
         }
-        """, file: file, line: line)
+        """,
+        file: file,
+        line: line)
 }
 
 private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
@@ -21,7 +23,9 @@ private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UIn
             break
         }
     }
-    """, file: file, line: line)
+    """,
+            file: file,
+            line: line)
 }
 
 @SwiftSyntaxRule(explicitRewriter: true)

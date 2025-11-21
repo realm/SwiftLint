@@ -17,9 +17,11 @@ final class BlanketDisableCommandRuleTests: SwiftLintTestCase {
             Example("// swiftlint:disable:this ↓file_length"),
             Example("// swiftlint:disable:next ↓file_length"),
         ]
-        verifyRule(emptyDescription.with(triggeringExamples: triggeringExamples),
-                   ruleConfiguration: ["always_blanket_disable": ["file_length"]],
-                   skipCommentTests: true, skipDisableCommandTests: true)
+        verifyRule(
+            emptyDescription.with(triggeringExamples: triggeringExamples),
+            ruleConfiguration: ["always_blanket_disable": ["file_length"]],
+            skipCommentTests: true,
+            skipDisableCommandTests: true)
     }
 
     func testAlwaysBlanketDisabledAreAllowed() {

@@ -3,8 +3,11 @@ import TestHelpers
 
 final class RulesTests: SwiftLintTestCase {
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
-                   testMultiByteOffsets: false, testShebang: false)
+        verifyRule(
+            LeadingWhitespaceRule.description,
+            skipDisableCommandTests: true,
+            testMultiByteOffsets: false,
+            testShebang: false)
     }
 
     func testMark() {
@@ -17,8 +20,10 @@ final class RulesTests: SwiftLintTestCase {
     }
 
     func testTrailingNewline() {
-        verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
-                   stringDoesntViolate: false)
+        verifyRule(
+            TrailingNewlineRule.description,
+            commentDoesntViolate: false,
+            stringDoesntViolate: false)
     }
 
     func testOrphanedDocComment() {

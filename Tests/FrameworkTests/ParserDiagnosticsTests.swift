@@ -20,8 +20,12 @@ final class ParserDiagnosticsTests: SwiftLintTestCase {
             .with(corrections: [Example(contents): Example(contents)])
 
         let config = try XCTUnwrap(makeConfig(nil, ruleDescription.identifier, skipDisableCommandTests: true))
-        verifyCorrections(ruleDescription, config: config, disableCommands: [],
-                          testMultiByteOffsets: false, parserDiagnosticsDisabledForTests: false)
+        verifyCorrections(
+            ruleDescription,
+            config: config,
+            disableCommands: [],
+            testMultiByteOffsets: false,
+            parserDiagnosticsDisabledForTests: false)
     }
 
     func testFileWithParserWarningDiagnostics() throws {
@@ -42,8 +46,12 @@ final class ParserDiagnosticsTests: SwiftLintTestCase {
             .with(corrections: [Example(original): Example(corrected)])
 
         let config = try XCTUnwrap(makeConfig(nil, ruleDescription.identifier, skipDisableCommandTests: true))
-        verifyCorrections(ruleDescription, config: config, disableCommands: [],
-                          testMultiByteOffsets: false, parserDiagnosticsDisabledForTests: false)
+        verifyCorrections(
+            ruleDescription,
+            config: config,
+            disableCommands: [],
+            testMultiByteOffsets: false,
+            parserDiagnosticsDisabledForTests: false)
     }
 
     func testFileWithoutParserDiagnostics() {

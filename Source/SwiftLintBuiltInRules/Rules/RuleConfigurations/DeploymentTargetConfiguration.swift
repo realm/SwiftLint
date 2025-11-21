@@ -93,8 +93,11 @@ struct DeploymentTargetConfiguration: SeverityBasedRuleConfiguration {
     private(set) var iOSDeploymentTarget = Version(platform: .iOS, major: 7)
     private(set) var iOSAppExtensionDeploymentTarget = Version(platform: .iOSApplicationExtension, major: 7)
     private(set) var macOSDeploymentTarget = Version(platform: .macOS, major: 10, minor: 9)
-    private(set) var macOSAppExtensionDeploymentTarget = Version(platform: .macOSApplicationExtension,
-                                                                 major: 10, minor: 9)
+    private(set) var macOSAppExtensionDeploymentTarget = Version(
+        platform: .macOSApplicationExtension,
+        major: 10,
+        minor: 9
+    )
     private(set) var watchOSDeploymentTarget = Version(platform: .watchOS, major: 1)
     private(set) var watchOSAppExtensionDeploymentTarget = Version(platform: .watchOSApplicationExtension, major: 1)
     private(set) var tvOSDeploymentTarget = Version(platform: .tvOS, major: 9)

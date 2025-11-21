@@ -233,13 +233,15 @@ final class ConfigurationTests: SwiftLintTestCase {
 
         let duplicateConfig2 = try? Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
         XCTAssertEqual(
-            duplicateConfig2?.rules.filter { type(of: $0).identifier == optInRules.first! }.count, 1,
+            duplicateConfig2?.rules.filter { type(of: $0).identifier == optInRules.first! }.count,
+            1,
             "duplicate rules should be removed when initializing Configuration"
         )
 
         let duplicateConfig3 = try? Configuration(dict: ["disabled_rules": ["todo", "todo"]])
         XCTAssertEqual(
-            duplicateConfig3?.rulesWrapper.disabledRuleIdentifiers.count, 1,
+            duplicateConfig3?.rulesWrapper.disabledRuleIdentifiers.count,
+            1,
             "duplicate rules should be removed when initializing Configuration"
         )
     }

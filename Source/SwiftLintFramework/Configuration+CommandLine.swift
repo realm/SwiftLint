@@ -91,8 +91,11 @@ extension Configuration {
         }
         let collected = await Signposts.record(name: "Configuration.VisitLintableFiles.Collect") {
             await zip(lintersForFile, duplicateFileNames).asyncMap { linters, duplicateFileNames in
-                await collect(linters: linters, visitor: visitor, storage: storage,
-                              duplicateFileNames: duplicateFileNames)
+                await collect(
+                    linters: linters,
+                    visitor: visitor,
+                    storage: storage,
+                    duplicateFileNames: duplicateFileNames)
             }
         }
         let result = await Signposts.record(name: "Configuration.VisitLintableFiles.Visit") {
@@ -287,9 +290,11 @@ extension Configuration {
                             cache: LinterCache? = nil,
                             storage: RuleStorage,
                             visitorBlock: @escaping (CollectedLinter) async -> Void) async throws -> [SwiftLintFile] {
-        let visitor = try LintableFilesVisitor.create(options, cache: cache,
-                                                      allowZeroLintableFiles: allowZeroLintableFiles,
-                                                      block: visitorBlock)
+        let visitor = try LintableFilesVisitor.create(
+            options,
+            cache: cache,
+            allowZeroLintableFiles: allowZeroLintableFiles,
+            block: visitorBlock)
         return try await visitLintableFiles(with: visitor, storage: storage)
     }
 

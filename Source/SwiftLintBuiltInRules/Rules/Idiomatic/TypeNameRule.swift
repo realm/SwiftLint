@@ -22,15 +22,21 @@ struct TypeNameRule: Rule {
 private extension TypeNameRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StructDeclSyntax) {
-            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
+            if let violation = violation(
+                identifier: node.name,
+                modifiers: node.modifiers,
+                inheritedTypes: node.inheritanceClause?.inheritedTypes
+            ) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
+            if let violation = violation(
+                identifier: node.name,
+                modifiers: node.modifiers,
+                inheritedTypes: node.inheritanceClause?.inheritedTypes
+            ) {
                 violations.append(violation)
             }
         }
@@ -42,30 +48,42 @@ private extension TypeNameRule {
         }
 
         override func visitPost(_ node: AssociatedTypeDeclSyntax) {
-            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
+            if let violation = violation(
+                identifier: node.name,
+                modifiers: node.modifiers,
+                inheritedTypes: node.inheritanceClause?.inheritedTypes
+            ) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: EnumDeclSyntax) {
-            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
+            if let violation = violation(
+                identifier: node.name,
+                modifiers: node.modifiers,
+                inheritedTypes: node.inheritanceClause?.inheritedTypes
+            ) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ActorDeclSyntax) {
-            if let violation = violation(identifier: node.name, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
+            if let violation = violation(
+                identifier: node.name,
+                modifiers: node.modifiers,
+                inheritedTypes: node.inheritanceClause?.inheritedTypes
+            ) {
                 violations.append(violation)
             }
         }
 
         override func visitPost(_ node: ProtocolDeclSyntax) {
             if configuration.validateProtocols,
-               let violation = violation(identifier: node.name, modifiers: node.modifiers,
-                                         inheritedTypes: node.inheritanceClause?.inheritedTypes) {
+               let violation = violation(
+                identifier: node.name,
+                modifiers: node.modifiers,
+                inheritedTypes: node.inheritanceClause?.inheritedTypes
+               ) {
                 violations.append(violation)
             }
         }

@@ -6,8 +6,11 @@ final class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock1: Rule {
         var configuration = SeverityConfiguration<Self>(.warning)
         var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
-        static let description = RuleDescription(identifier: "RuleMock1", name: "",
-                                                 description: "", kind: .style)
+        static let description = RuleDescription(
+            identifier: "RuleMock1",
+            name: "",
+            description: "",
+            kind: .style)
 
         init() { /* conformance for test */ }
         init(configuration _: Any) { self.init() }
@@ -20,8 +23,11 @@ final class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleMock2: Rule {
         var configuration = SeverityConfiguration<Self>(.warning)
         var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
-        static let description = RuleDescription(identifier: "RuleMock2", name: "",
-                                                 description: "", kind: .style)
+        static let description = RuleDescription(
+            identifier: "RuleMock2",
+            name: "",
+            description: "",
+            kind: .style)
 
         init() { /* conformance for test */ }
         init(configuration _: Any) { self.init() }
@@ -34,9 +40,11 @@ final class RuleTests: SwiftLintTestCase {
     fileprivate struct RuleWithLevelsMock2: Rule {
         var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
 
-        static let description = RuleDescription(identifier: "violation_level_mock2",
-                                                 name: "",
-                                                 description: "", kind: .style)
+        static let description = RuleDescription(
+            identifier: "violation_level_mock2",
+            name: "",
+            description: "",
+            kind: .style)
 
         init() { /* conformance for test */ }
         init(configuration: Any) throws {

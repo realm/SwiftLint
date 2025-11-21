@@ -95,7 +95,9 @@ internal struct AttributesRuleExamples {
             @Environment(\.colorScheme) var second: ColorScheme
             @Persisted(primaryKey: true) var id: Int
         }
-        """#, configuration: ["attributes_with_arguments_always_on_line_above": false], excludeFromDocumentation: true),
+        """#,
+                configuration: ["attributes_with_arguments_always_on_line_above": false],
+                excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

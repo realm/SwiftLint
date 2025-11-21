@@ -5,7 +5,9 @@ private func wrapInSwitch(_ str: String, file: StaticString = #filePath, line: U
     switch foo {
         \(str)
     }
-    """, file: file, line: line)
+    """,
+            file: file,
+            line: line)
 }
 
 @SwiftSyntaxRule(optIn: true)

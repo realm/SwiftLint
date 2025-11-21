@@ -21,7 +21,10 @@ struct ImplicitlyUnwrappedOptionalRule: Rule {
                 @IBOutlet
                 weak var bar: SomeObject!
             }
-            """, configuration: ["mode": "all_except_iboutlets"], excludeFromDocumentation: true),
+            """,
+                    configuration: ["mode": "all_except_iboutlets"],
+                    excludeFromDocumentation: true
+                   ),
         ],
         triggeringExamples: [
             Example("let label: ↓UILabel!"),

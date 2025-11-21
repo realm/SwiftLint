@@ -218,5 +218,7 @@ private func wrapExample(_ type: String,
         \(type) Foo {
             \(test)
         }
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }

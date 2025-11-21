@@ -4,13 +4,17 @@ import XCTest
 
 final class YamlParserTests: SwiftLintTestCase {
     func testParseEmptyString() {
-        XCTAssertEqual((try YamlParser.parse("", env: [:])).count, 0,
-                       "Parsing empty YAML string should succeed")
+        XCTAssertEqual(
+            (try YamlParser.parse("", env: [:])).count,
+            0,
+            "Parsing empty YAML string should succeed")
     }
 
     func testParseValidString() {
-        XCTAssertEqual(try YamlParser.parse("a: 1\nb: 2", env: [:]).count, 2,
-                       "Parsing valid YAML string should succeed")
+        XCTAssertEqual(
+            try YamlParser.parse("a: 1\nb: 2", env: [:]).count,
+            2,
+            "Parsing valid YAML string should succeed")
     }
 
     func testParseReplacesEnvVar() throws {

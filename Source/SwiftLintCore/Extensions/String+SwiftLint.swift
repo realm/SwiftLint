@@ -70,7 +70,7 @@ public extension String {
     ///
     /// - returns: A new `String`.
     func absolutePathStandardized() -> String {
-        bridge().absolutePathRepresentation().bridge().standardizingPath
+        URL(fileURLWithPath: bridge().absolutePathRepresentation()).standardized.filepath
     }
 
     var isFile: Bool {

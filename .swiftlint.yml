@@ -40,6 +40,7 @@ disabled_rules:
   - one_declaration_per_file
   - prefer_nimble
   - prefixed_toplevel_constant
+  - redundant_self_in_closure
   - required_deinit
   - sorted_enum_cases
   - strict_fileprivate

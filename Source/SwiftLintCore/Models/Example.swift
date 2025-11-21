@@ -28,6 +28,8 @@ public struct Example: Sendable {
     package private(set) var testDisableCommand: Bool
     /// Whether the example should be tested on Linux
     public private(set) var testOnLinux: Bool
+    /// Whether the example should be tested on Windows
+    public private(set) var testOnWindows: Bool
     /// The path to the file where the example was created
     public private(set) var file: StaticString
     /// The line in the file where the example was created
@@ -68,6 +70,7 @@ public extension Example {
          testWrappingInString: Bool = true,
          testDisableCommand: Bool = true,
          testOnLinux: Bool = true,
+         testOnWindows: Bool = true,
          file: StaticString = #filePath,
          line: UInt = #line,
          excludeFromDocumentation: Bool = false) {
@@ -75,6 +78,7 @@ public extension Example {
         self.configuration = configuration
         self.testMultiByteOffsets = testMultiByteOffsets
         self.testOnLinux = testOnLinux
+        self.testOnWindows = testOnWindows
         self.file = file
         self.line = line
         self.excludeFromDocumentation = excludeFromDocumentation

@@ -95,7 +95,7 @@ private extension SwiftLintFile {
 
 public extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        bridge().appendingPathComponent(pathComponent)
+        URL(fileURLWithPath: self).appendingPathComponent(pathComponent).filepath
     }
 }
 

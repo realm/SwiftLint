@@ -8,7 +8,7 @@ private var temporaryDirectoryPath: String {
     let result = URL(
         fileURLWithPath: NSTemporaryDirectory(),
         isDirectory: true
-    ).path
+    ).filepath
 
 #if os(macOS)
     return "/private" + result

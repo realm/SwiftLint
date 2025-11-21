@@ -1,0 +1,14 @@
+import Foundation
+
+public extension URL {
+    var filepath: String {
+        self.withUnsafeFileSystemRepresentation { String(cString: $0!) }
+    }
+
+    var isSwiftFile: Bool {
+        guard FileManager.default.isFile(atPath: filepath), pathExtension == "swift" else {
+            return false
+        }
+        return true
+    }
+}

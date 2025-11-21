@@ -697,7 +697,6 @@ multiline_literal_brackets:
 multiline_parameters:
   severity: warning
   allows_single_line: true
-  check_calls: false
   meta:
     opt-in: true
     correctable: false

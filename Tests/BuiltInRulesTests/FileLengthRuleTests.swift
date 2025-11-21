@@ -3,8 +3,11 @@ import TestHelpers
 
 final class FileLengthRuleTests: SwiftLintTestCase {
     func testFileLengthWithDefaultConfiguration() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false, testShebang: false)
+        verifyRule(
+            FileLengthRule.description,
+            commentDoesntViolate: false,
+            testMultiByteOffsets: false,
+            testShebang: false)
     }
 
     func testFileLengthIgnoringLinesWithOnlyComments() {
@@ -21,7 +24,10 @@ final class FileLengthRuleTests: SwiftLintTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignore_comment_only_lines": true],
-                   testMultiByteOffsets: false, testShebang: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignore_comment_only_lines": true],
+            testMultiByteOffsets: false,
+            testShebang: false)
     }
 }

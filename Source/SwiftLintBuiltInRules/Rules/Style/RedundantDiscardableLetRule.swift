@@ -86,7 +86,9 @@ struct RedundantDiscardableLetRule: Rule {
                     ↓let _ = foo()
                     Text("Hello, World!")
                 }
-                """, configuration: ["ignore_swiftui_view_bodies": true], excludeFromDocumentation: true),
+                """,
+                    configuration: ["ignore_swiftui_view_bodies": true],
+                    excludeFromDocumentation: true),
             Example("""
                 var body: some NotView {
                     ↓let _ = foo()
@@ -95,7 +97,9 @@ struct RedundantDiscardableLetRule: Rule {
                     }
                     Text("Hello, World!")
                 }
-                """, configuration: ["ignore_swiftui_view_bodies": true], excludeFromDocumentation: true),
+                """,
+                    configuration: ["ignore_swiftui_view_bodies": true],
+                    excludeFromDocumentation: true),
         ],
         corrections: [
             Example("↓let _ = foo()"): Example("_ = foo()"),

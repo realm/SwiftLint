@@ -111,8 +111,12 @@ private extension SwiftLintFile {
                       compilerArguments: [String],
                       configuration: UnusedDeclarationConfiguration) -> Set<UnusedDeclarationRule.DeclaredUSR> {
         Set(index.traverseEntitiesDepthFirst { _, indexEntity in
-            self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
-                             configuration: configuration)
+            self.declaredUSR(
+                indexEntity: indexEntity,
+                editorOpen: editorOpen,
+                compilerArguments: compilerArguments,
+                configuration: configuration
+            )
         })
     }
 

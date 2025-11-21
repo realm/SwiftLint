@@ -153,8 +153,12 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_comments": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false, skipCommentTests: true)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_comments": true],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false,
+            skipCommentTests: true)
     }
 
     func testLineLengthWithIgnoreURLsEnabled() {
@@ -172,8 +176,11 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_urls": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_urls": true],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false)
     }
 
     func testLineLengthWithIgnoreInterpolatedStringsTrue() {
@@ -187,8 +194,11 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_interpolated_strings": true],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false)
     }
 
     func testLineLengthWithIgnoreMultilineStringsTrue() {
@@ -211,8 +221,11 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_multiline_strings": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_multiline_strings": true],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false)
     }
 
     func testLineLengthWithIgnoreInterpolatedStringsFalse() {
@@ -225,8 +238,11 @@ final class LineLengthRuleTests: SwiftLintTestCase {
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": false],
-                   commentDoesntViolate: false, stringDoesntViolate: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_interpolated_strings": false],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false)
     }
 
     func testLineLengthWithExcludedLinesPatterns() {

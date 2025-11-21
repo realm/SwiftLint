@@ -49,10 +49,17 @@ public extension String {
         guard nsrange.location != NSNotFound else {
             return nil
         }
-        let from16 = utf16.index(utf16.startIndex, offsetBy: nsrange.location,
-                                 limitedBy: utf16.endIndex) ?? utf16.endIndex
-        let to16 = utf16.index(from16, offsetBy: nsrange.length,
-                               limitedBy: utf16.endIndex) ?? utf16.endIndex
+        let from16 = utf16.index(
+            utf16.startIndex,
+            offsetBy: nsrange.location,
+            limitedBy: utf16.endIndex
+        ) ?? utf16.endIndex
+
+        let to16 = utf16.index(
+            from16,
+            offsetBy: nsrange.length,
+            limitedBy: utf16.endIndex
+        ) ?? utf16.endIndex
 
         guard let fromIndex = Index(from16, within: self),
               let toIndex = Index(to16, within: self) else {

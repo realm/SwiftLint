@@ -212,8 +212,11 @@ package struct LintOrAnalyzeCommand {
         builder.report(violations: builder.violations, realtimeCondition: false)
         let numberOfSeriousViolations = builder.violations.filter({ $0.severity == .error }).count
         if !options.quiet {
-            printStatus(violations: builder.violations, files: files, serious: numberOfSeriousViolations,
-                        verb: options.verb)
+            printStatus(
+                violations: builder.violations,
+                files: files,
+                serious: numberOfSeriousViolations,
+                verb: options.verb)
         }
         if options.benchmark {
             builder.fileBenchmark.save()

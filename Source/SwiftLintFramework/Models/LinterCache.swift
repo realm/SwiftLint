@@ -66,8 +66,10 @@ public final class LinterCache {
 
         writeCacheLock.lock()
         var filesCache = writeCache[configurationDescription] ?? .empty
-        filesCache.entries[file] = FileCacheEntry(violations: violations, lastModification: lastModification,
-                                                  swiftVersion: swiftVersion)
+        filesCache.entries[file] = FileCacheEntry(
+            violations: violations,
+            lastModification: lastModification,
+            swiftVersion: swiftVersion)
         writeCache[configurationDescription] = filesCache
         writeCacheLock.unlock()
     }

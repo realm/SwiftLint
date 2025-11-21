@@ -39,8 +39,12 @@ final class CommandTests: SwiftLintTestCase {
     func testDisablePrevious() {
         let input = "// swiftlint:disable:previous rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<38,
-                               modifier: .previous)
+        let expected = Command(
+            action: .disable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<38,
+            modifier: .previous)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -48,8 +52,12 @@ final class CommandTests: SwiftLintTestCase {
     func testDisableThis() {
         let input = "// swiftlint:disable:this rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<34,
-                               modifier: .this)
+        let expected = Command(
+            action: .disable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<34,
+            modifier: .this)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -57,8 +65,12 @@ final class CommandTests: SwiftLintTestCase {
     func testDisableNext() {
         let input = "// swiftlint:disable:next rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<34,
-                               modifier: .next)
+        let expected = Command(
+            action: .disable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<34,
+            modifier: .next)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -74,8 +86,12 @@ final class CommandTests: SwiftLintTestCase {
     func testEnablePrevious() {
         let input = "// swiftlint:enable:previous rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<37,
-                               modifier: .previous)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<37,
+            modifier: .previous)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -99,9 +115,13 @@ final class CommandTests: SwiftLintTestCase {
     func testTrailingComment() {
         let input = "// swiftlint:enable:next rule_id - Comment\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<43,
-                               modifier: .next,
-                               trailingComment: "Comment")
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<43,
+            modifier: .next,
+            trailingComment: "Comment")
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -109,9 +129,13 @@ final class CommandTests: SwiftLintTestCase {
     func testTrailingCommentWithUrl() {
         let input = "// swiftlint:enable:next rule_id - Comment with URL https://github.com/realm/SwiftLint\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<87,
-                               modifier: .next,
-                               trailingComment: "Comment with URL https://github.com/realm/SwiftLint")
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<87,
+            modifier: .next,
+            trailingComment: "Comment with URL https://github.com/realm/SwiftLint")
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -119,9 +143,13 @@ final class CommandTests: SwiftLintTestCase {
     func testTrailingCommentUrlOnly() {
         let input = "// swiftlint:enable:next rule_id - https://github.com/realm/SwiftLint\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<70,
-                               modifier: .next,
-                               trailingComment: "https://github.com/realm/SwiftLint")
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<70,
+            modifier: .next,
+            trailingComment: "https://github.com/realm/SwiftLint")
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -154,8 +182,12 @@ final class CommandTests: SwiftLintTestCase {
 
     func testExpandPreviousCommand() {
         do {
-            let command = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .previous)
+            let command = Command(
+                action: .disable,
+                ruleIdentifiers: ["rule_id"],
+                line: 1,
+                range: 4..<48,
+                modifier: .previous)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0),
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0, range: completeLine),
@@ -163,8 +195,12 @@ final class CommandTests: SwiftLintTestCase {
             XCTAssertEqual(command.expand(), expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .previous)
+            let command = Command(
+                action: .enable,
+                ruleIdentifiers: ["rule_id"],
+                line: 1,
+                range: 4..<48,
+                modifier: .previous)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0),
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0, range: completeLine),
@@ -172,8 +208,12 @@ final class CommandTests: SwiftLintTestCase {
             XCTAssertEqual(command.expand(), expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1, range: 4..<48,
-                                  modifier: .previous)
+            let command = Command(
+                action: .enable,
+                ruleIdentifiers: ["1", "2"],
+                line: 1,
+                range: 4..<48,
+                modifier: .previous)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 0),
                 Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 0, range: completeLine),
@@ -184,8 +224,12 @@ final class CommandTests: SwiftLintTestCase {
 
     func testExpandThisCommand() {
         do {
-            let command = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .this)
+            let command = Command(
+                action: .disable,
+                ruleIdentifiers: ["rule_id"],
+                line: 1,
+                range: 4..<48,
+                modifier: .this)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1),
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: completeLine),
@@ -193,8 +237,12 @@ final class CommandTests: SwiftLintTestCase {
             XCTAssertEqual(command.expand(), expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .this)
+            let command = Command(
+                action: .enable,
+                ruleIdentifiers: ["rule_id"],
+                line: 1,
+                range: 4..<48,
+                modifier: .this)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1),
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: completeLine),
@@ -202,8 +250,12 @@ final class CommandTests: SwiftLintTestCase {
             XCTAssertEqual(command.expand(), expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1, range: 4..<48,
-                                  modifier: .this)
+            let command = Command(
+                action: .enable,
+                ruleIdentifiers: ["1", "2"],
+                line: 1,
+                range: 4..<48,
+                modifier: .this)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1),
                 Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 1, range: completeLine),
@@ -214,8 +266,12 @@ final class CommandTests: SwiftLintTestCase {
 
     func testExpandNextCommand() {
         do {
-            let command = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .next)
+            let command = Command(
+                action: .disable,
+                ruleIdentifiers: ["rule_id"],
+                line: 1,
+                range: 4..<48,
+                modifier: .next)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2),
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, range: completeLine),
@@ -223,8 +279,12 @@ final class CommandTests: SwiftLintTestCase {
             XCTAssertEqual(command.expand(), expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .next)
+            let command = Command(
+                action: .enable,
+                ruleIdentifiers: ["rule_id"],
+                line: 1,
+                range: 4..<48,
+                modifier: .next)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2),
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, range: completeLine),
@@ -232,8 +292,11 @@ final class CommandTests: SwiftLintTestCase {
             XCTAssertEqual(command.expand(), expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1,
-                                  modifier: .next)
+            let command = Command(
+                action: .enable,
+                ruleIdentifiers: ["1", "2"],
+                line: 1,
+                modifier: .next)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 2),
                 Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 2, range: completeLine),

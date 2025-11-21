@@ -85,8 +85,13 @@ final class LinterCacheTests: SwiftLintTestCase {
                                   line: UInt = #line) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
-        XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
-                       violations, file: (file), line: line)
+        XCTAssertEqual(
+            cache.violations(
+                forFile: forFile,
+                configuration: configuration)!,
+            violations,
+            file: (file),
+            line: line)
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,

@@ -86,8 +86,11 @@ private extension DeploymentTargetRule {
             for elem in node.availabilityArguments {
                 guard let restriction = elem.argument.as(PlatformVersionSyntax.self),
                       let versionString = restriction.version?.description,
-                      let reason = reason(platform: restriction.platform, version: versionString,
-                                          violationType: violationType) else {
+                      let reason = reason(
+                        platform: restriction.platform,
+                        version: versionString,
+                        violationType: violationType
+                      ) else {
                     continue
                 }
 

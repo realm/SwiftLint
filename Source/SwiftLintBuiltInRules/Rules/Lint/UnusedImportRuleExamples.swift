@@ -182,15 +182,18 @@ struct UnusedImportRuleExamples {
         import Foundation
         typealias Foo = CFArray
         dispatchMain()
-        """, configuration: [
-            "require_explicit_imports": true,
-            "allowed_transitive_imports": [
-                [
-                    "module": "Foundation",
-                    "allowed_transitive_imports": ["CoreFoundation", "Dispatch"],
+        """,
+                configuration: [
+                    "require_explicit_imports": true,
+                    "allowed_transitive_imports": [
+                        [
+                            "module": "Foundation",
+                            "allowed_transitive_imports": ["CoreFoundation", "Dispatch"],
+                        ] as [String: any Sendable],
+                    ],
                 ] as [String: any Sendable],
-            ],
-        ] as [String: any Sendable], testMultiByteOffsets: false, testOnLinux: false):
+                testMultiByteOffsets: false,
+                testOnLinux: false):
             Example("""
             import Foundation
             typealias Foo = CFArray
@@ -200,9 +203,12 @@ struct UnusedImportRuleExamples {
         ↓↓↓import Foundation
         typealias Foo = CFData
         dispatchMain()
-        """, configuration: [
-            "require_explicit_imports": true
-        ], testMultiByteOffsets: false, testOnLinux: false):
+        """,
+                configuration: [
+                    "require_explicit_imports": true
+                ],
+                testMultiByteOffsets: false,
+                testOnLinux: false):
             Example("""
             import CoreFoundation
             import Dispatch
@@ -234,9 +240,12 @@ struct UnusedImportRuleExamples {
         typealias Bar = CFData
         @objc
         class A {}
-        """, configuration: [
-            "require_explicit_imports": true
-        ], testMultiByteOffsets: false, testOnLinux: false):
+        """,
+                configuration: [
+                    "require_explicit_imports": true
+                ],
+                testMultiByteOffsets: false,
+                testOnLinux: false):
             Example("""
             import CoreFoundation
             import Foundation

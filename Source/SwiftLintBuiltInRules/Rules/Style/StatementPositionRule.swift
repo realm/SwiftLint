@@ -110,8 +110,11 @@ private extension StatementPositionRule {
         let regularExpression = regex(Self.defaultPattern)
         var contents = file.contents
         for range in matches.reversed() {
-            contents = regularExpression.stringByReplacingMatches(in: contents, options: [], range: range,
-                                                                  withTemplate: "} $1")
+            contents = regularExpression.stringByReplacingMatches(
+                in: contents,
+                options: [],
+                range: range,
+                withTemplate: "} $1")
         }
         file.write(contents)
         return matches.count

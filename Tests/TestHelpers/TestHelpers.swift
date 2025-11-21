@@ -94,8 +94,10 @@ public extension Collection where Element: SwiftLintFile {
         -> [StyleViolation] {
             let storage = RuleStorage()
             let violations = map({ file in
-                Linter(file: file, configuration: config,
-                       compilerArguments: requiresFileOnDisk ? file.makeCompilerArguments() : [])
+                Linter(
+                    file: file,
+                    configuration: config,
+                    compilerArguments: requiresFileOnDisk ? file.makeCompilerArguments() : [])
             }).map({ linter in
                 linter.collect(into: storage)
             }).flatMap({ linter in
@@ -125,8 +127,10 @@ public extension Collection where Element: SwiftLintFile {
 private extension Collection where Element == StyleViolation {
     func withoutFiles() -> [StyleViolation] {
         map { violation in
-            let locationWithoutFile = Location(file: nil, line: violation.location.line,
-                                               character: violation.location.character)
+            let locationWithoutFile = Location(
+                file: nil,
+                line: violation.location.line,
+                character: violation.location.character)
             return violation.with(location: locationWithoutFile)
         }
     }
@@ -215,7 +219,8 @@ private extension Configuration {
             file.contents,
             expected.code,
             #function + ".file contents",
-            file: before.file, line: before.line)
+            file: before.file,
+            line: before.line)
         let path = file.path!
         do {
             let corrected = try String(contentsOfFile: path, encoding: .utf8)
@@ -223,11 +228,13 @@ private extension Configuration {
                 corrected,
                 expected.code,
                 #function + ".corrected file equals expected",
-                file: before.file, line: before.line)
+                file: before.file,
+                line: before.line)
         } catch {
             XCTFail(
                 "couldn't read file at path '\(path)': \(error)",
-                file: before.file, line: before.line)
+                file: before.file,
+                line: before.line)
         }
     }
 }
@@ -322,13 +329,23 @@ public extension XCTestCase {
             disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
         }
 
-        self.verifyLint(ruleDescription, config: config, commentDoesntViolate: commentDoesntViolate,
-                        stringDoesntViolate: stringDoesntViolate, skipCommentTests: skipCommentTests,
-                        skipStringTests: skipStringTests, disableCommands: disableCommands,
-                        testMultiByteOffsets: testMultiByteOffsets, testShebang: testShebang,
-                        file: file, line: line)
-        self.verifyCorrections(ruleDescription, config: config, disableCommands: disableCommands,
-                               testMultiByteOffsets: testMultiByteOffsets)
+        self.verifyLint(
+            ruleDescription,
+            config: config,
+            commentDoesntViolate: commentDoesntViolate,
+            stringDoesntViolate: stringDoesntViolate,
+            skipCommentTests: skipCommentTests,
+            skipStringTests: skipStringTests,
+            disableCommands: disableCommands,
+            testMultiByteOffsets: testMultiByteOffsets,
+            testShebang: testShebang,
+            file: file,
+            line: line)
+        self.verifyCorrections(
+            ruleDescription,
+            config: config,
+            disableCommands: disableCommands,
+            testMultiByteOffsets: testMultiByteOffsets)
     }
 
     // swiftlint:disable:next function_body_length
@@ -344,8 +361,11 @@ public extension XCTestCase {
                     file: StaticString = #filePath,
                     line: UInt = #line) {
         func verify(triggers: [Example], nonTriggers: [Example]) {
-            verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config,
-                           requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
+            verifyExamples(
+                triggers: triggers,
+                nonTriggers: nonTriggers,
+                configuration: config,
+                requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
         }
         func makeViolations(_ example: Example) -> [StyleViolation] {
             violations(example, config: config, requiresFileOnDisk: ruleDescription.requiresFileOnDisk)
@@ -375,7 +395,8 @@ public extension XCTestCase {
                 triggersToCheck.flatMap { makeViolations($0.with(code: "/*\n  " + $0.code + "\n */")) }.count,
                 commentDoesntViolate ? 0 : triggersToCheck.count,
                 "Violation(s) still triggered when code was nested inside a comment",
-                file: (file), line: line
+                file: (file),
+                line: line
             )
         }
 
@@ -386,7 +407,8 @@ public extension XCTestCase {
                 triggersToCheck.flatMap({ makeViolations($0.with(code: $0.code.toStringLiteral())) }).count,
                 stringDoesntViolate ? 0 : triggersToCheck.count,
                 "Violation(s) still triggered when code was nested inside a string literal",
-                file: (file), line: line
+                file: (file),
+                line: line
             )
         }
 
@@ -467,8 +489,10 @@ public extension XCTestCase {
                                 requiresFileOnDisk: Bool) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
-            let unexpectedViolations = violations(nonTrigger, config: config,
-                                                  requiresFileOnDisk: requiresFileOnDisk)
+            let unexpectedViolations = violations(
+                nonTrigger,
+                config: config,
+                requiresFileOnDisk: requiresFileOnDisk)
             if unexpectedViolations.isEmpty { continue }
             let nonTriggerWithViolations = render(violations: unexpectedViolations, in: nonTrigger.code)
             XCTFail(
@@ -479,8 +503,10 @@ public extension XCTestCase {
 
         // Triggering examples violate
         for trigger in triggers {
-            let triggerViolations = violations(trigger, config: config,
-                                               requiresFileOnDisk: requiresFileOnDisk)
+            let triggerViolations = violations(
+                trigger,
+                config: config,
+                requiresFileOnDisk: requiresFileOnDisk)
 
             // Triggering examples with violation markers violate at the marker's location
             let (cleanTrigger, markerOffsets) = cleanedContentsAndMarkerOffsets(from: trigger.code)
@@ -517,11 +543,15 @@ public extension XCTestCase {
                     line: trigger.line)
             }
 
-            XCTAssertEqual(triggerViolations.count, expectedLocations.count,
-                           file: trigger.file, line: trigger.line)
+            XCTAssertEqual(
+                triggerViolations.count,
+                expectedLocations.count,
+                file: trigger.file,
+                line: trigger.line)
             for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
                 XCTAssertEqual(
-                    triggerViolation.location, expectedLocation,
+                    triggerViolation.location,
+                    expectedLocation,
                     "'\(trigger)' violation didn't match expected location.",
                     file: trigger.file,
                     line: trigger.line)

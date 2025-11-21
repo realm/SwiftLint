@@ -141,8 +141,10 @@ package extension Configuration {
                 : Configuration.Key.parentConfig.rawValue
 
             if let reference = vertex.configurationDict[key] as? String {
-                let referencedVertex = Vertex(string: reference, rootDirectory: vertex.rootDirectory,
-                                              isInitialVertex: false)
+                let referencedVertex = Vertex(
+                    string: reference,
+                    rootDirectory: vertex.rootDirectory,
+                    isInitialVertex: false)
 
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references

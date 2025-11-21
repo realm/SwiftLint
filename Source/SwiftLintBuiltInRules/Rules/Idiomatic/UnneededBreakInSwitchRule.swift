@@ -11,7 +11,9 @@ private func embedInSwitch(
         \(`case`):
             \(text)
         }
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }
 
 @SwiftSyntaxRule(explicitRewriter: true)

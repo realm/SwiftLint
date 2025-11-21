@@ -45,7 +45,9 @@ private func trailingClosure(_ violationSymbol: String = "",
         \(repeatElement("\t// toto\n", count: commentLinesCount).joined())\
         \(repeatElement("\t\n", count: emptyLinesCount).joined())\
         }
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }
 
 private func argumentClosure(_ violationSymbol: String = "",
@@ -56,7 +58,9 @@ private func argumentClosure(_ violationSymbol: String = "",
         foo.bar(\(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }
 
 private func labeledArgumentClosure(_ violationSymbol: String = "",
@@ -67,7 +71,9 @@ private func labeledArgumentClosure(_ violationSymbol: String = "",
         foo.bar(label: \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }
 
 private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
@@ -80,7 +86,9 @@ private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
         }, anotherLabel: \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }
 
 private func labeledAndTrailingClosures(_ violationSymbol: String = "",
@@ -93,7 +101,9 @@ private func labeledAndTrailingClosures(_ violationSymbol: String = "",
         }) \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         }
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }
 
 private func lazyInitialization(_ violationSymbol: String = "",
@@ -106,5 +116,7 @@ private func lazyInitialization(_ violationSymbol: String = "",
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         \treturn bar
         }()
-        """, file: file, line: line)
+        """,
+            file: file,
+            line: line)
 }

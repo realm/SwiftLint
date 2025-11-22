@@ -1,0 +1,6 @@
+included:
+  - ModuleA
+  - ModuleB
+
+disabled_rules:
+  - line_length

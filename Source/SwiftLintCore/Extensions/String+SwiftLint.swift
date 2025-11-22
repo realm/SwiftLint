@@ -68,6 +68,9 @@ public extension String {
 
     /// Returns a new string, converting the path to a canonical absolute path.
     ///
+    /// > Important: This method might use an incorrect working directory internally. This can cause test failures
+    /// in Bazel builds but does not seem to cause trouble in production.
+    ///
     /// - returns: A new `String`.
     func absolutePathStandardized() -> String {
         bridge().absolutePathRepresentation().bridge().standardizingPath

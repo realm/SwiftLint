@@ -1,0 +1,5 @@
+excluded:
+  - Generated
+
+opt_in_rules:
+  - explicit_type_interface

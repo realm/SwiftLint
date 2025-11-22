@@ -15,6 +15,7 @@ bazel_dep(name = "rules_swift", version = "3.1.2", max_compatibility_level = 3, 
 
 bazel_dep(name = "sourcekitten", version = "0.37.2", repo_name = "SourceKittenFramework")
 bazel_dep(name = "swift_argument_parser", version = "1.6.2", repo_name = "SwiftArgumentParser")
+bazel_dep(name = "swift-filename-matcher", version = "2.0.1", repo_name = "FilenameMatcher")
 bazel_dep(name = "yams", version = "6.2.0", repo_name = "Yams")
 
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")

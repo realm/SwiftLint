@@ -1,0 +1,4 @@
+excluded:
+  - "ThirdParty/**"
+  - "*/ThirdParty/**"
+  - "**/ThirdParty/**"

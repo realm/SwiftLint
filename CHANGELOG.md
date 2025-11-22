@@ -31,6 +31,10 @@
 * Add new `unneeded_escaping` rule that detects closure parameters marked with
   `@escaping` that are never stored or captured escapingly.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Improve performance when exclude patterns resolve to a large set of files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5018](https://github.com/realm/SwiftLint/issues/5018)
 
 ### Bug Fixes
 

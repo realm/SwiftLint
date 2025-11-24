@@ -35,7 +35,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           persist-credentials: true
       - name: Checkout or create release branch
@@ -72,7 +72,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           persist-credentials: false
       - name: Set up Ruby and Bundler
@@ -104,7 +104,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
@@ -139,7 +139,7 @@ jobs:
     env:
       BINARY_PATH: .build/${{ matrix.swift_sdk }}/release/swiftlint
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
@@ -188,7 +188,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
@@ -218,7 +218,7 @@ jobs:
       actions: read
       contents: write
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: true

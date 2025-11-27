@@ -200,9 +200,12 @@ internal extension Configuration.FileGraph.FilePath {
     }
 
     private func filePath(for urlString: String, rootDirectory: String) -> String {
-        let adjustedUrlString = urlString
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: ":", with: "_")
+        let invalidCharacters = [":", "<", ">", "\"", "/", "\\", "|", "?", "*"]
+        var adjustedUrlString = urlString
+        for char in invalidCharacters {
+            adjustedUrlString = adjustedUrlString.replacingOccurrences(of: char, with: "_")
+        }
+        adjustedUrlString = adjustedUrlString.trimmingCharacters(in: CharacterSet(charactersIn: "."))
         let path = Configuration.FileGraph.FilePath.versionedRemoteCachePath + "/\(adjustedUrlString).yml"
         return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
     }

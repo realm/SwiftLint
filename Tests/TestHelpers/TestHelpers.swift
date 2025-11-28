@@ -37,7 +37,7 @@ private let info: PlatformInfo = {
         .appendingPathComponent("Info.plist")
     guard let data = try? Data(contentsOf: sdk),
           let info = try? PropertyListDecoder().decode(PlatformInfo.self, from: data) else {
-        fatalError("invalid platorm SDK - couldn't decode \(sdk.path)")
+        fatalError("invalid platform SDK - couldn't decode \(sdk.path)")
     }
     return info
 }()

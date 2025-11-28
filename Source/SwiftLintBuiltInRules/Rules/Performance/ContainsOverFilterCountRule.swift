@@ -9,7 +9,7 @@ struct ContainsOverFilterCountRule: Rule {
         name: "Contains over Filter Count",
         description: "Prefer `contains` over comparing `filter(where:).count` to 0",
         rationale: """
-        `filter` always needs to scan the entire collection, whereas `contains` can exit early as 
+        `filter` always needs to scan the entire collection, whereas `contains` can exit early as
         soon as a match is found.
         """,
         kind: .performance,

@@ -190,7 +190,7 @@ struct UnusedImportRuleExamples {
                     "allowed_transitive_imports": ["CoreFoundation", "Dispatch"],
                 ] as [String: any Sendable],
             ],
-        ] as [String: any Sendable], testMultiByteOffsets: false, testOnLinux: false):
+        ] as [String: any Sendable], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
             Example("""
             import Foundation
             typealias Foo = CFArray
@@ -202,7 +202,7 @@ struct UnusedImportRuleExamples {
         dispatchMain()
         """, configuration: [
             "require_explicit_imports": true
-        ], testMultiByteOffsets: false, testOnLinux: false):
+        ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
             Example("""
             import CoreFoundation
             import Dispatch
@@ -236,7 +236,7 @@ struct UnusedImportRuleExamples {
         class A {}
         """, configuration: [
             "require_explicit_imports": true
-        ], testMultiByteOffsets: false, testOnLinux: false):
+        ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
             Example("""
             import CoreFoundation
             import Foundation

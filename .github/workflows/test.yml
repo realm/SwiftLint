@@ -25,8 +25,8 @@ jobs:
         run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          key: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
-          restore-keys: ${{ runner.os }}-spm-${{ steps.swift_version.outputs.version }}-
+          key: ubuntu-24.04-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: ubuntu-24.04-spm-${{ steps.swift_version.outputs.version }}-
           path: .build
       - name: Run tests
         uses: ./.github/actions/run-make
@@ -53,8 +53,8 @@ jobs:
           persist-credentials: false
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          key: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
-          restore-keys: ${{ runner.os }}-xcode-spm-${{ matrix.xcode }}-
+          key: macos-${{ matrix.macOS }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: macos-${{ matrix.macOS }}-xcode-spm-${{ matrix.xcode }}-
           path: .build
       - name: Run tests
         run: make spm_test

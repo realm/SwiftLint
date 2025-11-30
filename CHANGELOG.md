@@ -12,6 +12,13 @@
 
 ### Enhancements
 
+* Extend `redundant_self_in_closure` rule to detect all redundant uses of `self`,
+  not just in closures. Initializers (which commonly prefer an explicit `self` prefix)
+  can be ignored by setting `ignore_initializers` to `true`. The rule has been renamed
+  to `redundant_self` (with `redundant_self_in_closure` as a deprecated alias) to reflect
+  its now broader scope.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 * Add a `separation` configuration option to the `vertical_whitespace_between_cases` rule
   to allow customizing blank line separation between switch cases. The default value is
   `always` (require at least one blank line). Setting it to `never` enforces no blank

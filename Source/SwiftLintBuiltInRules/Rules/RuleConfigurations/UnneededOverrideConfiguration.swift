@@ -1,9 +1,7 @@
 import SwiftLintCore
 
 @AutoConfigParser
-struct UnneededOverrideRuleConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = UnneededOverrideRule
-
+struct UnneededOverrideConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "affect_initializers")

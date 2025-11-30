@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct FunctionNameWhitespaceConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = FunctionNameWhitespaceRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "generic_spacing")

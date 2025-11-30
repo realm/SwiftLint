@@ -16,8 +16,6 @@ enum TypeBodyLengthCheckType: String, CaseIterable, Comparable {
 
 @AutoConfigParser
 struct TypeBodyLengthConfiguration: SeverityLevelsBasedRuleConfiguration {
-    typealias Parent = TypeBodyLengthRule
-
     @ConfigurationElement(inline: true)
     private(set) var severityConfiguration = SeverityLevelsConfiguration<Parent>(warning: 250, error: 350)
     @ConfigurationElement(key: "excluded_types")

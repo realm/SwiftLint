@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = IndentationWidthRule
-
     private static let defaultIndentationWidth = 4
 
     @ConfigurationElement(key: "severity")

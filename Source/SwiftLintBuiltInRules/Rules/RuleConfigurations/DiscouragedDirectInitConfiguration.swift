@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct DiscouragedDirectInitConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = DiscouragedDirectInitRule
-
     @ConfigurationElement(key: "severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 

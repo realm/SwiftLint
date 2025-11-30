@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct IdentifierNameConfiguration: RuleConfiguration {
-    typealias Parent = IdentifierNameRule
-
     private static let defaultOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
 
     @ConfigurationElement(inline: true)

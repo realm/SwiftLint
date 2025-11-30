@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct NumberSeparatorConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = NumberSeparatorRule
-
     struct ExcludeRange: AcceptableByConfigurationElement, Equatable {
         private let min: Double
         private let max: Double

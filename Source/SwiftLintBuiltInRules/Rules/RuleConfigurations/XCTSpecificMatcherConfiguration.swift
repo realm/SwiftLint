@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct XCTSpecificMatcherConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = XCTSpecificMatcherRule
-
     @AcceptableByConfigurationElement
     enum Matcher: String, CaseIterable {
         case oneArgumentAsserts = "one-argument-asserts"

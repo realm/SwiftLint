@@ -4,12 +4,12 @@ import XCTest
 
 final class RegexConfigurationTests: SwiftLintTestCase {
     func testShouldValidateIsTrueByDefault() {
-        let config = RegexConfiguration<RuleMock>(identifier: "example")
+        let config = RegexConfiguration<MockRule>(identifier: "example")
         XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
     }
 
     func testShouldValidateWithSingleExluded() throws {
-        var config = RegexConfiguration<RuleMock>(identifier: "example")
+        var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": "Tests/.*\\.swift",
@@ -20,7 +20,7 @@ final class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithArrayExluded() throws {
-        var config = RegexConfiguration<RuleMock>(identifier: "example")
+        var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": [
@@ -35,7 +35,7 @@ final class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithSingleIncluded() throws {
-        var config = RegexConfiguration<RuleMock>(identifier: "example")
+        var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": "App/.*\\.swift",
@@ -47,7 +47,7 @@ final class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithArrayIncluded() throws {
-        var config = RegexConfiguration<RuleMock>(identifier: "example")
+        var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": [
@@ -62,7 +62,7 @@ final class RegexConfigurationTests: SwiftLintTestCase {
     }
 
     func testShouldValidateWithIncludedAndExcluded() throws {
-        var config = RegexConfiguration<RuleMock>(identifier: "example")
+        var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": [

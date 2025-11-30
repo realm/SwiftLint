@@ -22,8 +22,6 @@ enum TypeContent: String {
 
 @AutoConfigParser
 struct TypeContentsOrderConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = TypeContentsOrderRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "order")

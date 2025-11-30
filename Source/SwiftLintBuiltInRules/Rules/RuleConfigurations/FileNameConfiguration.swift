@@ -4,8 +4,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct FileNameConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = FileNameRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")

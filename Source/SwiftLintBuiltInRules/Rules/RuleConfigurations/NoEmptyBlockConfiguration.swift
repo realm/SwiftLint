@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct NoEmptyBlockConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = NoEmptyBlockRule
-
     @AcceptableByConfigurationElement
     enum CodeBlockType: String, CaseIterable {
         case functionBodies = "function_bodies"

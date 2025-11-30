@@ -1,12 +1,12 @@
 import SwiftLintCore
 
-public struct RuleMock: Rule {
+public struct MockRule: Rule {
     var configurationDescription: some Documentable { RuleConfigurationOption.noOptions }
 
     public var configuration = SeverityConfiguration<Self>(.warning)
 
     public static let description = RuleDescription(
-        identifier: "RuleMock",
+        identifier: "MockRule",
         name: "",
         description: "",
         kind: .style

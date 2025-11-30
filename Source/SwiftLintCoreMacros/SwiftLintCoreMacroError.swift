@@ -3,6 +3,7 @@ import SwiftSyntax
 
 enum SwiftLintCoreMacroError: String, DiagnosticMessage {
     case notStruct = "Attribute can only be applied to structs"
+    case invalidConfigurationName = "Configuration type name must end with 'Configuration', but not 'RuleConfiguration'"
     case severityBasedWithoutProperty = """
         Severity-based configuration without a 'severityConfiguration' property is invalid
         """

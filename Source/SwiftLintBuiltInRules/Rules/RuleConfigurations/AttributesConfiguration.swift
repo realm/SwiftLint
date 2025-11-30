@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct AttributesConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = AttributesRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "attributes_with_arguments_always_on_line_above")

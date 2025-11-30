@@ -3,7 +3,7 @@ import TestHelpers
 import XCTest
 
 final class NameConfigurationTests: SwiftLintTestCase {
-    typealias TesteeType = NameConfiguration<RuleMock>
+    typealias TesteeType = NameConfiguration<MockRule>
 
     func testNameConfigurationSetsCorrectly() {
         let config: [String: any Sendable] = [
@@ -53,7 +53,7 @@ final class NameConfigurationTests: SwiftLintTestCase {
                                     minLengthError: 0,
                                     maxLengthWarning: 0,
                                     maxLengthError: 0)
-        checkError(Issue.invalidConfiguration(ruleID: RuleMock.identifier)) {
+        checkError(Issue.invalidConfiguration(ruleID: MockRule.identifier)) {
             try nameConfig.apply(configuration: config)
         }
     }

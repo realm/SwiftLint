@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct SwitchCaseAlignmentConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = SwitchCaseAlignmentRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "indented_cases")

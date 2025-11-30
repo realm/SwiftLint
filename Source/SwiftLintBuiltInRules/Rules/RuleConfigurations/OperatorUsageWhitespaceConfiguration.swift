@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct OperatorUsageWhitespaceConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = OperatorUsageWhitespaceRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "lines_look_around")

@@ -2,7 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct ExpiringTodoConfiguration: RuleConfiguration {
-    typealias Parent = ExpiringTodoRule
     typealias Severity = SeverityConfiguration<Parent>
 
     struct DelimiterConfiguration: Equatable, AcceptableByConfigurationElement {

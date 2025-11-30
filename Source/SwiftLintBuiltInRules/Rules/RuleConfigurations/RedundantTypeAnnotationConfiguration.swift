@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct RedundantTypeAnnotationConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = RedundantTypeAnnotationRule
-
     @ConfigurationElement(key: "severity")
     var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "ignore_attributes")

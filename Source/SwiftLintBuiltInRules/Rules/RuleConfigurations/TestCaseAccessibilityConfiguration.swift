@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct TestCaseAccessibilityConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = TestCaseAccessibilityRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_prefixes")

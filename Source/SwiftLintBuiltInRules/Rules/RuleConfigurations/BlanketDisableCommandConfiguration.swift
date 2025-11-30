@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct BlanketDisableCommandConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = BlanketDisableCommandRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allowed_rules")

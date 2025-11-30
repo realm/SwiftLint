@@ -7,9 +7,7 @@ import XCTest
 // swiftlint:disable:next type_body_length
 final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     @AutoConfigParser
-    private struct TestConfiguration: RuleConfiguration {
-        typealias Parent = RuleMock // swiftlint:disable:this nesting
-
+    private struct MockConfiguration: RuleConfiguration {
         @ConfigurationElement(key: "flag")
         var flag = true
         @ConfigurationElement(key: "string")
@@ -47,7 +45,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
 
     // swiftlint:disable:next function_body_length
     func testDescriptionFromConfiguration() throws {
-        var configuration = TestConfiguration()
+        var configuration = MockConfiguration()
         try configuration.apply(configuration: Void()) // Configure to set keys.
         let description = RuleConfigurationDescription.from(configuration: configuration)
 
@@ -223,8 +221,8 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     }
 
     func testPrefersParameterDescription() {
-        struct Config: RuleConfiguration {
-            typealias Parent = RuleMock // swiftlint:disable:this nesting
+        struct MockConfiguration: RuleConfiguration {
+            typealias Parent = MockRule // swiftlint:disable:this nesting
 
             var parameterDescription: RuleConfigurationDescription? {
                 "visible" => .flag(true)
@@ -238,7 +236,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             func isEqualTo(_: some RuleConfiguration) -> Bool { false }
         }
 
-        let description = RuleConfigurationDescription.from(configuration: Config())
+        let description = RuleConfigurationDescription.from(configuration: MockConfiguration())
         XCTAssertEqual(description.oneLiner(), "visible: true")
         XCTAssertEqual(description.markdown(), """
             <table>
@@ -470,7 +468,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     }
 
     func testUpdate() throws {
-        var configuration = TestConfiguration()
+        var configuration = MockConfiguration()
 
         try configuration.apply(configuration: [
             "flag": false,
@@ -504,7 +502,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
 
     func testDeprecationWarning() async throws {
         let console = try await Issue.captureConsole {
-            var configuration = TestConfiguration()
+            var configuration = MockConfiguration()
             try configuration.apply(configuration: ["set": [6, 7]])
         }
         XCTAssertEqual(
@@ -515,7 +513,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
 
     func testNoDeprecationWarningIfNoDeprecatedPropertySet() async throws {
         let console = try await Issue.captureConsole {
-            var configuration = TestConfiguration()
+            var configuration = MockConfiguration()
             try configuration.apply(configuration: ["flag": false])
         }
         XCTAssertTrue(console.isEmpty)
@@ -523,7 +521,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
 
     func testInvalidKeys() async throws {
         let console = try await Issue.captureConsole {
-            var configuration = TestConfiguration()
+            var configuration = MockConfiguration()
             try configuration.apply(configuration: [
                 "severity": "error",
                 "warning": 3,
@@ -533,7 +531,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
         }
         XCTAssertEqual(
             console,
-            "warning: Configuration for 'RuleMock' rule contains the invalid key(s) 'unknown', 'unsupported'."
+            "warning: Configuration for 'MockRule' rule contains the invalid key(s) 'unknown', 'unsupported'."
         )
     }
 

@@ -34,12 +34,14 @@ final class AutoConfigParserTests: XCTestCase {
         assertMacroExpansion(
             """
             @AutoConfigParser
-            struct S {
+            struct MyConfiguration {
             }
             """,
             expandedSource:
             """
-            struct S {
+            struct MyConfiguration {
+
+                typealias Parent = MyRule
 
                 mutating func apply(configuration: Any) throws(Issue) {
                     guard let configuration = configuration as? [String: Any] else {
@@ -62,7 +64,7 @@ final class AutoConfigParserTests: XCTestCase {
         assertMacroExpansion(
             """
             @AutoConfigParser
-            struct S {
+            struct MyConfiguration {
                 @ConfigurationElement
                 var eA = 1
                 @ConfigurationElement(key: "name")
@@ -71,11 +73,13 @@ final class AutoConfigParserTests: XCTestCase {
             """,
             expandedSource:
             """
-            struct S {
+            struct MyConfiguration {
                 @ConfigurationElement
                 var eA = 1
                 @ConfigurationElement(key: "name")
                 var eB = 2
+
+                typealias Parent = MyRule
 
                 mutating func apply(configuration: Any) throws(Issue) {
                     if $eA.key.isEmpty {
@@ -110,7 +114,7 @@ final class AutoConfigParserTests: XCTestCase {
         assertMacroExpansion(
             """
             @AutoConfigParser
-            struct S {
+            struct MyConfiguration {
                 @ConfigurationElement(key: "eD")
                 var eA = 1
                 @ConfigurationElement(inline: true)
@@ -121,13 +125,15 @@ final class AutoConfigParserTests: XCTestCase {
             """,
             expandedSource:
             """
-            struct S {
+            struct MyConfiguration {
                 @ConfigurationElement(key: "eD")
                 var eA = 1
                 @ConfigurationElement(inline: true)
                 var eB = 2
                 @ConfigurationElement(inline: false)
                 var eC = 3
+
+                typealias Parent = MyRule
 
                 mutating func apply(configuration: Any) throws(Issue) {
                     if $eA.key.isEmpty {
@@ -166,12 +172,14 @@ final class AutoConfigParserTests: XCTestCase {
         assertMacroExpansion(
             """
             @AutoConfigParser
-            struct S: SeverityBasedRuleConfiguration {
+            struct MyConfiguration: SeverityBasedRuleConfiguration {
             }
             """,
             expandedSource:
             """
-            struct S: SeverityBasedRuleConfiguration {
+            struct MyConfiguration: SeverityBasedRuleConfiguration {
+
+                typealias Parent = MyRule
 
                 mutating func apply(configuration: Any) throws(Issue) {
                     guard let configuration = configuration as? [String: Any] else {
@@ -201,7 +209,7 @@ final class AutoConfigParserTests: XCTestCase {
         assertMacroExpansion(
             """
             @AutoConfigParser
-            struct S: SeverityBasedRuleConfiguration {
+            struct MyConfiguration: SeverityBasedRuleConfiguration {
                 @ConfigurationElement
                 var severityConfiguration = .warning
                 @ConfigurationElement
@@ -210,11 +218,13 @@ final class AutoConfigParserTests: XCTestCase {
             """,
             expandedSource:
             """
-            struct S: SeverityBasedRuleConfiguration {
+            struct MyConfiguration: SeverityBasedRuleConfiguration {
                 @ConfigurationElement
                 var severityConfiguration = .warning
                 @ConfigurationElement
                 var foo = 2
+
+                typealias Parent = MyRule
 
                 mutating func apply(configuration: Any) throws(Issue) {
                     if $severityConfiguration.key.isEmpty {

@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct MultilineArgumentsConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = MultilineArgumentsRule
-
     @AcceptableByConfigurationElement
     enum FirstArgumentLocation: String {
         case anyLine = "any_line"

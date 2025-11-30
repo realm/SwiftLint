@@ -31,6 +31,10 @@
 * Add new `unneeded_escaping` rule that detects closure parameters marked with
   `@escaping` that are never stored or captured escapingly.  
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Add `multiline_call_arguments` opt-in rule to enforce consistent multiline
+  formatting for function and method call arguments.  
+  [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Bug Fixes
 

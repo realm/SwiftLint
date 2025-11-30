@@ -32,6 +32,7 @@ disabled_rules:
   - missing_docs
   - multiline_arguments
   - multiline_arguments_brackets
+  - multiline_call_arguments
   - multiline_function_chains
   - multiline_parameters_brackets
   - no_extension_access_modifier

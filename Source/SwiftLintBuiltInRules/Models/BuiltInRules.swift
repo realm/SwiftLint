@@ -118,6 +118,7 @@ public let builtInRules: [any Rule.Type] = [
     ModifierOrderRule.self,
     MultilineArgumentsBracketsRule.self,
     MultilineArgumentsRule.self,
+    MultilineCallArgumentsRule.self,
     MultilineFunctionChainsRule.self,
     MultilineLiteralBracketsRule.self,
     MultilineParametersBracketsRule.self,

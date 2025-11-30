@@ -4,17 +4,18 @@ import SwiftParser
 import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
-struct RedundantSelfInClosureRule: Rule {
+struct RedundantSelfRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
-        identifier: "redundant_self_in_closure",
-        name: "Redundant Self in Closure",
+        identifier: "redundant_self",
+        name: "Redundant Self",
         description: "Explicit use of 'self' is not required",
         kind: .style,
-        nonTriggeringExamples: RedundantSelfInClosureRuleExamples.nonTriggeringExamples,
-        triggeringExamples: RedundantSelfInClosureRuleExamples.triggeringExamples,
-        corrections: RedundantSelfInClosureRuleExamples.corrections
+        nonTriggeringExamples: RedundantSelfRuleExamples.nonTriggeringExamples,
+        triggeringExamples: RedundantSelfRuleExamples.triggeringExamples,
+        corrections: RedundantSelfRuleExamples.corrections,
+        deprecatedAliases: ["redundant_self_in_closure"]
     )
 }
 
@@ -30,7 +31,7 @@ private enum SelfCaptureKind {
     case strong, weak, uncaptured
 }
 
-private extension RedundantSelfInClosureRule {
+private extension RedundantSelfRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
         private var typeDeclarations = Stack<TypeDeclarationKind>()
         private var closureExprScopes = Stack<(ClosureExprType, SelfCaptureKind)>()

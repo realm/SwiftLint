@@ -1,4 +1,4 @@
-struct RedundantSelfInClosureRuleExamples {
+struct RedundantSelfRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
             struct S {

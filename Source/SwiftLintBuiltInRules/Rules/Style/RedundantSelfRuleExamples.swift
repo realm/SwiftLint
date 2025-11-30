@@ -93,6 +93,15 @@ struct RedundantSelfRuleExamples {
                 func f(_: () -> Void) {}
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class C {
+                var x = 0, y = 0
+                init(x: Int) {
+                    self.x = x
+                    self.y = x + 1
+                }
+            }
+            """, configuration: ["keep_in_initializers": true]),
     ]
 
     static let triggeringExamples = [
@@ -252,6 +261,23 @@ struct RedundantSelfRuleExamples {
                             x = 1
                             if x == 1 { g() }
                         }
+                    }
+                }
+                """),
+        Example("""
+            struct S {
+                var x = 0, y = 0
+                init(x: Int) {
+                    self.x = x
+                    ↓self.y = 1
+                }
+            }
+            """): Example("""
+                struct S {
+                    var x = 0, y = 0
+                    init(x: Int) {
+                        self.x = x
+                        y = 1
                     }
                 }
                 """),

@@ -5,7 +5,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
 struct RedundantSelfRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = RedundantSelfConfiguration()
 
     static let description = RuleDescription(
         identifier: "redundant_self",
@@ -35,6 +35,7 @@ private extension RedundantSelfRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
         private var typeDeclarations = Stack<TypeDeclarationKind>()
         private var closureExprScopes = Stack<(ClosureExprType, SelfCaptureKind)>()
+        private var initializerScopes = Stack<Bool>()
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [ProtocolDeclSyntax.self] }
 
@@ -86,7 +87,19 @@ private extension RedundantSelfRule {
             typeDeclarations.pop()
         }
 
+        override func visit(_: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+            initializerScopes.push(true)
+            return .visitChildren
+        }
+
+        override func visitPost(_: InitializerDeclSyntax) {
+            initializerScopes.pop()
+        }
+
         override func visitPost(_ node: MemberAccessExprSyntax) {
+            if configuration.keepInInitializers, initializerScopes.peek() == true {
+                return
+            }
             if closureExprScopes.isNotEmpty, !isSelfRedundant {
                 return
             }

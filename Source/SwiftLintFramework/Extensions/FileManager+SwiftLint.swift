@@ -39,8 +39,7 @@ extension FileManager: LintableFileManager {
 
         return subpaths(atPath: root.path)?.parallelCompactMap { element -> String? in
             let elementURL = URL(fileURLWithPath: element, relativeTo: root)
-            guard elementURL.pathExtension == "swift" else { return nil }
-            if FileManager.default.isFile(atPath: elementURL.path) {
+            if elementURL.isSwiftFile {
                 return elementURL.standardized.filepath
             }
             return nil

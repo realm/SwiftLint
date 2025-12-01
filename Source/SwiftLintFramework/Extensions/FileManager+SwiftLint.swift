@@ -31,19 +31,18 @@ public protocol LintableFileManager {
 
 extension FileManager: LintableFileManager {
     public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
-        let absolutePath = path.bridge()
-            .absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath).bridge()
-            .standardizingPath
+        let root =
+            URL(fileURLWithPath: path.absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath))
 
         // if path is a file, it won't be returned in `enumerator(atPath:)`
-        if absolutePath.bridge().isSwiftFile(), absolutePath.isFile {
-            return [absolutePath]
-        }
+        if root.isSwiftFile { return [root.standardized.filepath] }
 
-        return subpaths(atPath: absolutePath)?.parallelCompactMap { element -> String? in
-            guard element.bridge().isSwiftFile() else { return nil }
-            let absoluteElementPath = absolutePath.bridge().appendingPathComponent(element)
-            return absoluteElementPath.isFile ? absoluteElementPath : nil
+        return subpaths(atPath: root.path)?.parallelCompactMap { element -> String? in
+            let elementURL = URL(fileURLWithPath: element, relativeTo: root)
+            if elementURL.isSwiftFile {
+                return elementURL.standardized.filepath
+            }
+            return nil
         } ?? []
     }
 

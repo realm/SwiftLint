@@ -6,9 +6,6 @@ public extension URL {
     }
 
     var isSwiftFile: Bool {
-        guard FileManager.default.isFile(atPath: filepath), pathExtension == "swift" else {
-            return false
-        }
-        return true
+        filepath.isFile && pathExtension == "swift"
     }
 }

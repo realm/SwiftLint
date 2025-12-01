@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct ImplicitReturnConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = ImplicitReturnRule
-
     @AcceptableByConfigurationElement
     enum ReturnKind: String, CaseIterable, Comparable {
         case closure

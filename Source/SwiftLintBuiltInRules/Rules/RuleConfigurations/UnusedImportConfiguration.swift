@@ -29,8 +29,6 @@ struct TransitiveModuleConfiguration<Parent: Rule>: Equatable, AcceptableByConfi
 
 @AutoConfigParser
 struct UnusedImportConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = UnusedImportRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.warning
     @ConfigurationElement(key: "require_explicit_imports")

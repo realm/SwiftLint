@@ -52,8 +52,8 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testSeverityConfigurationFromString() {
         let config = "Warning"
-        let comp = SeverityConfiguration<RuleMock>(.warning)
-        var severityConfig = SeverityConfiguration<RuleMock>(.error)
+        let comp = SeverityConfiguration<MockRule>(.warning)
+        var severityConfig = SeverityConfiguration<MockRule>(.error)
         do {
             try severityConfig.apply(configuration: config)
             XCTAssertEqual(severityConfig, comp)
@@ -64,8 +64,8 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testSeverityConfigurationFromDictionary() {
         let config = ["severity": "warning"]
-        let comp = SeverityConfiguration<RuleMock>(.warning)
-        var severityConfig = SeverityConfiguration<RuleMock>(.error)
+        let comp = SeverityConfiguration<MockRule>(.warning)
+        var severityConfig = SeverityConfiguration<MockRule>(.error)
         do {
             try severityConfig.apply(configuration: config)
             XCTAssertEqual(severityConfig, comp)
@@ -76,22 +76,22 @@ final class RuleConfigurationTests: SwiftLintTestCase {
 
     func testSeverityConfigurationThrowsNothingApplied() {
         let config = 17
-        var severityConfig = SeverityConfiguration<RuleMock>(.error)
-        checkError(Issue.nothingApplied(ruleID: RuleMock.identifier)) {
+        var severityConfig = SeverityConfiguration<MockRule>(.error)
+        checkError(Issue.nothingApplied(ruleID: MockRule.identifier)) {
             try severityConfig.apply(configuration: config)
         }
     }
 
     func testSeverityConfigurationThrowsInvalidConfiguration() {
         let config = "foo"
-        var severityConfig = SeverityConfiguration<RuleMock>(.warning)
-        checkError(Issue.invalidConfiguration(ruleID: RuleMock.identifier)) {
+        var severityConfig = SeverityConfiguration<MockRule>(.warning)
+        checkError(Issue.invalidConfiguration(ruleID: MockRule.identifier)) {
             try severityConfig.apply(configuration: config)
         }
     }
 
     func testSeverityLevelConfigParams() {
-        let severityConfig = SeverityLevelsConfiguration<RuleMock>(warning: 17, error: 7)
+        let severityConfig = SeverityLevelsConfiguration<MockRule>(warning: 17, error: 7)
         XCTAssertEqual(
             severityConfig.params,
             [RuleParameter(severity: .error, value: 7), RuleParameter(severity: .warning, value: 17)]
@@ -99,32 +99,32 @@ final class RuleConfigurationTests: SwiftLintTestCase {
     }
 
     func testSeverityLevelConfigPartialParams() {
-        let severityConfig = SeverityLevelsConfiguration<RuleMock>(warning: 17, error: nil)
+        let severityConfig = SeverityLevelsConfiguration<MockRule>(warning: 17, error: nil)
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 17)])
     }
 
     func testSeverityLevelConfigApplyNilErrorValue() throws {
-        var severityConfig = SeverityLevelsConfiguration<RuleMock>(warning: 17, error: 20)
+        var severityConfig = SeverityLevelsConfiguration<MockRule>(warning: 17, error: 20)
         try severityConfig.apply(configuration: ["error": nil, "warning": 18])
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
     }
 
     func testSeverityLevelConfigApplyMissingErrorValue() throws {
-        var severityConfig = SeverityLevelsConfiguration<RuleMock>(warning: 17, error: 20)
+        var severityConfig = SeverityLevelsConfiguration<MockRule>(warning: 17, error: 20)
         try severityConfig.apply(configuration: ["warning": 18])
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
     }
 
     func testRegexConfigurationThrows() {
         let config = 17
-        var regexConfig = RegexConfiguration<RuleMock>(identifier: "")
-        checkError(Issue.invalidConfiguration(ruleID: RuleMock.identifier)) {
+        var regexConfig = RegexConfiguration<MockRule>(identifier: "")
+        checkError(Issue.invalidConfiguration(ruleID: MockRule.identifier)) {
             try regexConfig.apply(configuration: config)
         }
     }
 
     func testRegexRuleDescription() {
-        var regexConfig = RegexConfiguration<RuleMock>(identifier: "regex")
+        var regexConfig = RegexConfiguration<MockRule>(identifier: "regex")
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "regex",
                                                                 description: "", kind: .style))

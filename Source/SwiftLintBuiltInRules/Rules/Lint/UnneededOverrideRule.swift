@@ -3,7 +3,7 @@ import SwiftSyntaxBuilder
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct UnneededOverrideRule: Rule {
-    var configuration = UnneededOverrideRuleConfiguration()
+    var configuration = UnneededOverrideConfiguration()
 
     static let description = RuleDescription(
         identifier: "unneeded_override",

@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct UnusedDeclarationConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = UnusedDeclarationRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
     @ConfigurationElement(key: "include_public_and_open")

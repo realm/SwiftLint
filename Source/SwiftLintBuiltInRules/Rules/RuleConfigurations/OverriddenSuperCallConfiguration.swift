@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct OverriddenSuperCallConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = OverriddenSuperCallRule
-
     private static let defaultIncluded = [
         // NSObject
         "awakeFromNib()",

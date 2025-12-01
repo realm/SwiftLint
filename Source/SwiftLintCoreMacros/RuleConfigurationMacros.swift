@@ -15,6 +15,12 @@ enum AutoConfigParser: MemberMacro {
             context.diagnose(SwiftLintCoreMacroError.notStruct.diagnose(at: declaration))
             return []
         }
+        let name = configuration.name.text
+        guard name.hasSuffix("Configuration"), !name.hasSuffix("RuleConfiguration") else {
+            context.diagnose(SwiftLintCoreMacroError.invalidConfigurationName.diagnose(at: configuration.name))
+            return []
+        }
+        let ruleName = String(name.dropLast("Configuration".count)) + "Rule"
         var annotatedVarDecls = configuration.memberBlock.members
             .compactMap {
                 if let varDecl = $0.decl.as(VariableDeclSyntax.self),
@@ -48,8 +54,8 @@ enum AutoConfigParser: MemberMacro {
                 context.diagnose(SwiftLintCoreMacroError.severityBasedWithoutProperty.diagnose(at: configuration.name))
             }
         }
-        return [
-            DeclSyntax(try FunctionDeclSyntax("mutating func apply(configuration: Any) throws(Issue)") {
+        let applyMethod = DeclSyntax(
+            try FunctionDeclSyntax("mutating func apply(configuration: Any) throws(Issue)") {
                 for option in nonInlinedOptions {
                     """
                     if $\(raw: option).key.isEmpty {
@@ -89,8 +95,12 @@ enum AutoConfigParser: MemberMacro {
                 """
                 try validate()
                 """
-            }),
-        ]
+            }
+        )
+        if configuration.genericParameterClause?.parameters.contains(where: { $0.name.text == "Parent" }) == true {
+            return [applyMethod]
+        }
+        return [DeclSyntax("typealias Parent = \(raw: ruleName)")] + [applyMethod]
     }
 }
 

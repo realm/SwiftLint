@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct MultilineCallArgumentsConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = MultilineCallArgumentsRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allows_single_line")

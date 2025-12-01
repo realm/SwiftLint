@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct SortedImportsConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = SortedImportsRule
-
     @AcceptableByConfigurationElement
     enum Grouping: String {
         /// Sorts import lines based on any import attributes (e.g. `@testable`, `@_exported`, etc.), followed by a case

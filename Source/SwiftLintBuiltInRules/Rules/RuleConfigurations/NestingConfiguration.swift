@@ -2,7 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct NestingConfiguration: RuleConfiguration {
-    typealias Parent = NestingRule
     typealias Severity = SeverityLevelsConfiguration<Parent>
 
     @ConfigurationElement(key: "type_level")

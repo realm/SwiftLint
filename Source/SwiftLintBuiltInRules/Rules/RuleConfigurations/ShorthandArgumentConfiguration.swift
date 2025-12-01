@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct ShorthandArgumentConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = ShorthandArgumentRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "allow_until_line_after_opening_brace")

@@ -225,8 +225,6 @@ private extension SwiftLintDev.Rules.Template {
 
         @AutoConfigParser
         struct \(name)Configuration: SeverityBasedRuleConfiguration {
-            typealias Parent = \(name)Rule
-
             @ConfigurationElement(key: "severity")
             private(set) var severityConfiguration = SeverityConfiguration<Parent>(.\(severity))
         }

@@ -3,8 +3,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct ModifierOrderConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = ModifierOrderRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "preferred_modifier_order")

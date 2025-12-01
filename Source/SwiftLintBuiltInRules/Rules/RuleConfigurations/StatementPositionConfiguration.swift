@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct StatementPositionConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = StatementPositionRule
-
     @AcceptableByConfigurationElement
     enum StatementModeConfiguration: String {
         case `default` = "default"

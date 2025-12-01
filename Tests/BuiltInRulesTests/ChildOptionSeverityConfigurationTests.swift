@@ -3,7 +3,7 @@ import TestHelpers
 import XCTest
 
 final class ChildOptionSeverityConfigurationTests: SwiftLintTestCase {
-    typealias TesteeType = ChildOptionSeverityConfiguration<RuleMock>
+    typealias TesteeType = ChildOptionSeverityConfiguration<MockRule>
 
     func testSeverity() {
         XCTAssertNil(TesteeType.off.severity)

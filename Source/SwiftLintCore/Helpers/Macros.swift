@@ -2,7 +2,7 @@
 /// automatically based on the defined `@ConfigurationElement`s.
 @attached(
     member,
-    names: named(apply)
+    names: named(apply), named(Parent)
 )
 public macro AutoConfigParser() = #externalMacro(
     module: "SwiftLintCoreMacros",
@@ -13,7 +13,7 @@ public macro AutoConfigParser() = #externalMacro(
 @available(*, deprecated, renamed: "AutoConfigParser")
 @attached(
     member,
-    names: named(apply)
+    names: named(apply), named(Parent)
 )
 public macro AutoApply() = #externalMacro(
     module: "SwiftLintCoreMacros",

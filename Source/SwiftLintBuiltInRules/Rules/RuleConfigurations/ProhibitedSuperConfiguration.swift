@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct ProhibitedSuperConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = ProhibitedSuperRule
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "excluded")

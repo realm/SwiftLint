@@ -2,8 +2,6 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct ImplicitlyUnwrappedOptionalConfiguration: SeverityBasedRuleConfiguration {
-    typealias Parent = ImplicitlyUnwrappedOptionalRule
-
     @AcceptableByConfigurationElement
     enum ImplicitlyUnwrappedOptionalModeConfiguration: String { // swiftlint:disable:this type_name
         case all = "all"

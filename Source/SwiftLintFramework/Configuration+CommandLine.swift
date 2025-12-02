@@ -138,7 +138,7 @@ extension Configuration {
             pathComponents.removeFirst()
         }
 
-        return pathComponents.joined(separator: "/")
+        return pathComponents.reduce(URL(fileURLWithPath: "/")) { $0.appendingPathComponent($1) }.filepath
     }
 
     private func linters(for filesPerConfiguration: [Configuration: [SwiftLintFile]],

@@ -33,6 +33,10 @@ private func open(_ url: URL) {
     let command = "xdg-open"
     process.arguments = [command, url.absoluteString]
     try? process.run()
+#elseif os(Windows)
+    process.executableURL = URL(fileURLWithPath: "cmd", isDirectory: false)
+    process.arguments = ["/C", "start", url.absoluteString]
+    try? process.run()
 #else
     process.launchPath = "/usr/bin/env"
     let command = "open"

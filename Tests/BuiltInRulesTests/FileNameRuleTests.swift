@@ -2,7 +2,8 @@
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory = "\(TestResources.path())/FileNameRuleFixtures"
+private let fixturesDirectory =
+    TestResources.path().appendingPathComponent("FileNameRuleFixtures").filepath
 
 final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String,

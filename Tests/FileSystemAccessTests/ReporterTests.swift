@@ -23,7 +23,10 @@ final class ReporterTests: SwiftLintTestCase {
             ruleDescription: SyntacticSugarRule.description,
             severity: .error,
             location: Location(
-                file: FileManager.default.currentDirectoryPath + "/path/file.swift",
+                file: URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+                            .appendingPathComponent("path")
+                            .appendingPathComponent("file.swift")
+                            .path,
                 line: 1,
                 character: 2
             ),
@@ -43,7 +46,8 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     private func stringFromFile(_ filename: String) -> String {
-        SwiftLintFile(path: "\(TestResources.path())/\(filename)")!.contents
+        let path = URL(fileURLWithPath: TestResources.path()).appendingPathComponent(filename)
+        return SwiftLintFile(path: path.filepath)!.contents
     }
 
     func testXcodeReporter() throws {
@@ -196,9 +200,12 @@ final class ReporterTests: SwiftLintTestCase {
                                     line: UInt = #line) throws {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
+
+        let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).path
+
         let reference = stringFromFile(referenceFile).replacingOccurrences(
             of: "${CURRENT_WORKING_DIRECTORY}",
-            with: FileManager.default.currentDirectoryPath
+            with: cwd
         ).replacingOccurrences(
             of: "${SWIFTLINT_VERSION}",
             with: SwiftLintFramework.Version.current.value
@@ -210,9 +217,9 @@ final class ReporterTests: SwiftLintTestCase {
         let convertedReference = try stringConverter(reference)
         let convertedReporterOutput = try stringConverter(reporterOutput)
         if convertedReference != convertedReporterOutput {
-            let referenceURL = URL(fileURLWithPath: "\(TestResources.path())/\(referenceFile)")
+            let referenceURL = URL(fileURLWithPath: TestResources.path()).appendingPathComponent(referenceFile)
             try reporterOutput.replacingOccurrences(
-                of: FileManager.default.currentDirectoryPath,
+                of: cwd,
                 with: "${CURRENT_WORKING_DIRECTORY}"
             ).replacingOccurrences(
                 of: SwiftLintFramework.Version.current.value,

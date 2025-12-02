@@ -9,7 +9,6 @@ public enum TestResources {
         }
         return folder
             .appendingPathComponent("Resources")
-            .path
-            .absolutePathStandardized()
+            .filepath
     }
 }

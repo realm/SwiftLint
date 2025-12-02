@@ -9,7 +9,7 @@ import XCTest
 final class CustomRulesTests: SwiftLintTestCase {
     private typealias Configuration = RegexConfiguration<CustomRules>
 
-    private var testFile: SwiftLintFile { SwiftLintFile(path: "\(TestResources.path())/test.txt")! }
+    private var testFile: SwiftLintFile { SwiftLintFile(path: "\(TestResources.path().filepath)/test.txt")! }
 
     override func invokeTest() {
         CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {

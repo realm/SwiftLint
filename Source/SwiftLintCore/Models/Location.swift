@@ -25,7 +25,8 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
     public var relativeFile: String? {
         guard let file else { return nil }
         let fileComponents = URL(fileURLWithPath: file).pathComponents
-        let baseComponents = URL(fileURLWithPath: FileManager.default.currentDirectoryPath, isDirectory: true).pathComponents
+        let baseComponents = URL(fileURLWithPath: FileManager.default.currentDirectoryPath, isDirectory: true)
+            .pathComponents
 
         guard fileComponents.starts(with: baseComponents) else {
             return file

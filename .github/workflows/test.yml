@@ -89,7 +89,7 @@ jobs:
           restore-keys: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-
           path: .build
       - name: Build all targets
-        run: swift build --build-tests
+        run: swift build --build-tests --vv
       - name: Run selected tests
-        run: swift test --skip IntegrationTests --skip FileSystemAccessTests
+        run: swift test --vv --skip IntegrationTests --skip FileSystemAccessTests
       # To be extended with test execution and linting ...

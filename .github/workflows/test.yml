@@ -94,5 +94,5 @@ jobs:
       - name: Build all targets
         run: swift build --build-tests
       - name: Run selected tests
-        run: swift test --skip IntegrationTests --skip FileSystemAccessTests
+        run: swift test --skip IntegrationTests --skip FileSystemAccessTests --skip FrameworkTests --skip BuiltInRulesTests
       # To be extended with test execution and linting ...

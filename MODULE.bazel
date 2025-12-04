@@ -17,15 +17,6 @@ bazel_dep(name = "sourcekitten", version = "0.37.2", repo_name = "SourceKittenFr
 bazel_dep(name = "swift_argument_parser", version = "1.6.2", repo_name = "SwiftArgumentParser")
 bazel_dep(name = "yams", version = "6.2.0", repo_name = "Yams")
 
-archive_override(
-    module_name = "yams",
-    urls = ["https://github.com/jpsim/Yams/archive/refs/tags/6.2.0.tar.gz"],
-    strip_prefix = "Yams-6.2.0",
-    integrity = "sha256-UnGMXmV3iaQBXhdiDgWdd2LzYmHDvvv8E6SXe3obnQg=",
-    patches = ["//bazel:Yams.BUILD.bazel.patch"],
-    patch_strip = 1,
-)
-
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
     swiftlint_repos,

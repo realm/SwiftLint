@@ -4,23 +4,16 @@ try-import %workspace%/ci.bazelrc
 try-import %workspace%/user.bazelrc
 
 build --enable_platform_specific_config
+build:macos --apple_crosstool_top=@local_config_apple_cc//:toolchain
+build:macos --crosstool_top=@local_config_apple_cc//:toolchain
+build:macos --host_crosstool_top=@local_config_apple_cc//:toolchain
 
-build:macos \
-  --apple_crosstool_top=@local_config_apple_cc//:toolchain \
-  --crosstool_top=@local_config_apple_cc//:toolchain \
-  --host_crosstool_top=@local_config_apple_cc//:toolchain \
-  --macos_minimum_os=13.5 --host_macos_minimum_os=13.5
-
-build:windows \
-  --compiler=clang-cl \
-  --action_env=BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
-
-build \
-  --disk_cache=~/.bazel_cache \
-  --experimental_remote_cache_compression \
-  --remote_build_event_upload=minimal \
-  --nolegacy_important_outputs \
-  --incompatible_strict_action_env
+build --macos_minimum_os=13.5 --host_macos_minimum_os=13.5
+build --disk_cache=~/.bazel_cache
+build --experimental_remote_cache_compression
+build --remote_build_event_upload=minimal
+build --nolegacy_important_outputs
+build --incompatible_strict_action_env
 
 build:release \
   --compilation_mode=opt \

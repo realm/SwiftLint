@@ -23,7 +23,16 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
 
     /// The file path for this location relative to the current working directory.
     public var relativeFile: String? {
-        file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
+        guard let file else { return nil }
+        let fileComponents = URL(fileURLWithPath: file).pathComponents
+        let baseComponents = URL(fileURLWithPath: FileManager.default.currentDirectoryPath, isDirectory: true)
+            .pathComponents
+
+        guard fileComponents.starts(with: baseComponents) else {
+            return file
+        }
+
+        return fileComponents.dropFirst(baseComponents.count).joined(separator: "/")
     }
 
     /// Creates a `Location` by specifying its properties directly.

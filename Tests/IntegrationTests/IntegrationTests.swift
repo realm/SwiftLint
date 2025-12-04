@@ -26,10 +26,9 @@ final class IntegrationTests: SwiftLintTestCase {
             inPath: "",
             forceExclude: false,
             excludeBy: .paths(excludedPaths: config.excludedPaths()))
-        XCTAssert(
-            swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
-            "current file should be included"
-        )
+
+        let filePath = #filePath.bridge().absolutePathRepresentation()
+        XCTAssert(swiftFiles.contains(where: { $0.path == filePath }), "current file should be included")
 
         let storage = RuleStorage()
         let violations = swiftFiles.parallelFlatMap {

@@ -2,7 +2,8 @@
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory = "\(TestResources.path())/FileNameRuleFixtures"
+private let fixturesDirectory =
+    URL(fileURLWithPath: TestResources.path()).appendingPathComponent("FileNameRuleFixtures").filepath
 
 final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String,
@@ -165,7 +166,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
             try validate(
                 fileName: "main.swift",
                 excluded: [],
-                excludedPaths: [".*/FileNameRuleFixtures/.*"]
+                excludedPaths: [#".*[\\/]FileNameRuleFixtures[\\/].*"#]
             ).isEmpty
         )
     }
@@ -175,7 +176,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
             try validate(
                 fileName: "main.swift",
                 excluded: [],
-                excludedPaths: [".*/OtherFolder/.*", "MAIN\\.swift"]
+                excludedPaths: [#".*[\\/]OtherFolder[\\/].*"#, "MAIN\\.swift"]
             ).isNotEmpty
         )
     }
@@ -197,7 +198,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
             try validate(
                 fileName: "main.swift",
                 excluded: [],
-                excludedPaths: ["/FileNameRuleFixtures/.*", "("]
+                excludedPaths: [#"[\\/]FileNameRuleFixtures[\\/].*"#, "("]
             )
         )
 
@@ -205,7 +206,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
             try validate(
                 fileName: "main.swift",
                 excluded: [],
-                excludedPaths: ["/FileNameRuleFixtures/.*", "(", ".*.swift"]
+                excludedPaths: [#"[\\/]FileNameRuleFixtures[\\/].*"#, "(", ".*.swift"]
             )
         )
     }

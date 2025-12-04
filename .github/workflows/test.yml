@@ -74,6 +74,9 @@ jobs:
             arch: arm64
             windows-display-name: '11 ARM'
             swift-version: 6.2.1
+    env:
+      CC: clang
+      BAZEL_LLVM: C:\Program Files\LLVM
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:
@@ -83,13 +86,19 @@ jobs:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           persist-credentials: false
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          key: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
-          restore-keys: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-
-          path: .build
-      - name: Build all targets
-        run: swift build --build-tests --vv
+      - name: Apply patch
+        run: |
+          git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
+          git update-index --assume-unchanged BUILD
+      - name: Build SwiftLint
+        run: bazel build //:swiftlint --toolchain_resolution_debug=.*
       - name: Run selected tests
-        run: swift test --vv --skip IntegrationTests --skip FileSystemAccessTests
+        run: >
+          bazel test --test_output=errors
+          //Tests:BuiltInRulesTests
+          //Tests:CoreTests
+          //Tests:ExtraRulesTests
+          //Tests:FrameworkTests
+          //Tests:GeneratedTests
+          //Tests:MacrosTests
       # To be extended with test execution and linting ...

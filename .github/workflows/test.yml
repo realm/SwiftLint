@@ -60,7 +60,7 @@ jobs:
         run: make spm_test
 
   spm_windows:
-    name: SPM, Windows ${{ matrix.windows-display-name }}, Swift ${{ matrix.swift-version }}
+    name: SPM, Windows ${{ matrix.windows-display-name }}
     runs-on: windows-${{ matrix.windows-version }}
     strategy:
       fail-fast: false
@@ -69,12 +69,13 @@ jobs:
           - windows-version: 2025
             arch: amd64
             windows-display-name: 'Server 2025'
-            swift-version: 6.2.1
+            swift-version: development
+            swift-build: DEVELOPMENT-SNAPSHOT-2025-08-27-a
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:
-          swift-version: swift-${{ matrix.swift-version }}-release
-          swift-build: ${{ matrix.swift-version }}-RELEASE
+          swift-version: ${{ matrix.swift-version }}
+          swift-build: ${{ matrix.swift-build }}
           build_arch: ${{ matrix.arch }}
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
@@ -83,15 +84,13 @@ jobs:
         run: |
           git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
           git update-index --assume-unchanged BUILD
-      - name: Build SwiftLint
-        run: bazel build //:swiftlint --toolchain_resolution_debug=.*
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          key: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-${{ matrix.swift-build }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-${{ matrix.swift-build }}-
+          path: .build
+      - name: Build all targets
+        run: swift build --build-tests
       - name: Run selected tests
-        run: >
-          bazel test --test_output=errors
-          //Tests:BuiltInRulesTests
-          //Tests:CoreTests
-          //Tests:ExtraRulesTests
-          //Tests:FrameworkTests
-          //Tests:GeneratedTests
-          //Tests:MacrosTests
+        run: swift test --skip IntegrationTests --skip FileSystemAccessTests
       # To be extended with test execution and linting ...

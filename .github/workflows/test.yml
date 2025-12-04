@@ -58,3 +58,28 @@ jobs:
           path: .build
       - name: Run tests
         run: make spm_test
+
+  spm_windows:
+    name: SPM, Windows, Swift ${{ matrix.swift-version }}
+    runs-on: windows-${{ matrix.windows-version }}
+    strategy:
+      matrix:
+        include:
+          - windows-version: 2025
+            swift-version: 6.2.1
+    steps:
+      - uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: swift-${{ matrix.swift-version }}-release
+          swift-build: ${{ matrix.swift-version }}-RELEASE
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          key: ${{ runner.os }}-spm-${{ matrix.swift-version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: ${{ runner.os }}-spm-${{ matrix.swift-version }}-
+          path: .build
+      - name: Build
+        run: swift build --build-tests
+      # To be extended with test execution and linting ...

@@ -82,10 +82,6 @@ jobs:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           persist-credentials: false
-      - name: Apply patch
-        run: |
-          git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
-          git update-index --assume-unchanged BUILD
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           key: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-${{ matrix.swift-build }}-${{ hashFiles('Package.resolved', 'Package.swift') }}

@@ -1,0 +1,13 @@
+diff --git a/BUILD b/BUILD
+index c13d726..13ef414 100644
+--- a/BUILD
++++ b/BUILD
+@@ -8,7 +8,7 @@ cc_library(
+     ]),
+     hdrs = ["Sources/CYaml/include/yaml.h"],
+     # Requires because of https://github.com/bazelbuild/bazel/pull/10143 otherwise host transition builds fail
+-    copts = ["-fPIC"],
++    copts = ["-fPIC", "-DYAML_DECLARE_STATIC"],
+     includes = ["Sources/CYaml/include"],
+     linkstatic = True,
+     tags = ["swift_module"],

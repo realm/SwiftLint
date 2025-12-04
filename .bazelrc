@@ -12,8 +12,8 @@ build:macos \
   --macos_minimum_os=13.5 --host_macos_minimum_os=13.5
 
 build:windows \
-  --extra_toolchains=@local_config_cc//:cc-toolchain-x64_windows-clang-cl \
-  --extra_execution_platforms=//:x64_windows-clang-cl
+  --compiler=clang-cl \
+  --action_env=BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
 
 build \
   --disk_cache=~/.bazel_cache \

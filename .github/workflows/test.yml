@@ -74,9 +74,6 @@ jobs:
             arch: arm64
             windows-display-name: '11 ARM'
             swift-version: 6.2.1
-    env:
-      CC: clang
-      BAZEL_LLVM: C:\Program Files\LLVM
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:

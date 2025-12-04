@@ -70,10 +70,6 @@ jobs:
             arch: amd64
             windows-display-name: 'Server 2025'
             swift-version: 6.2.1
-          - windows-version: 11-arm
-            arch: arm64
-            windows-display-name: '11 ARM'
-            swift-version: 6.2.1
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:

@@ -60,25 +60,33 @@ jobs:
         run: make spm_test
 
   spm_windows:
-    name: SPM, Windows, Swift ${{ matrix.swift-version }}
+    name: SPM, Windows ${{ matrix.windows-display-name }}, Swift ${{ matrix.swift-version }}
     runs-on: windows-${{ matrix.windows-version }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - windows-version: 2025
+            arch: amd64
+            windows-display-name: 'Server 2025'
+            swift-version: 6.2.1
+          - windows-version: 11-arm
+            arch: arm64
+            windows-display-name: '11 ARM'
             swift-version: 6.2.1
     steps:
       - uses: compnerd/gha-setup-swift@main
         with:
           swift-version: swift-${{ matrix.swift-version }}-release
           swift-build: ${{ matrix.swift-version }}-RELEASE
+          build_arch: ${{ matrix.arch }}
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           persist-credentials: false
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          key: ${{ runner.os }}-spm-${{ matrix.swift-version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
-          restore-keys: ${{ runner.os }}-spm-${{ matrix.swift-version }}-
+          key: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: windows-${{ matrix.windows-version }}-spm-${{ matrix.swift-version }}-
           path: .build
       - name: Build
         run: swift build --build-tests

@@ -72,6 +72,8 @@ jobs:
             swift-version: development
             swift-build: DEVELOPMENT-SNAPSHOT-2025-08-27-a
     steps:
+      - name: Enable long path support
+        run: reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
       - uses: compnerd/gha-setup-swift@main
         with:
           swift-version: ${{ matrix.swift-version }}

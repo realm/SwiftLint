@@ -1,17 +1,19 @@
+import FilenameMatcher
 import Foundation
 import SourceKittenFramework
 
 /// An interface for enumerating files that can be linted by SwiftLint.
 public protocol LintableFileManager {
     /// Returns all files that can be linted in the specified path. If the path is relative, it will be appended to the
-    /// specified root path, or currentt working directory if no root directory is specified.
+    /// specified root path, or current working directory if no root directory is specified.
     ///
     /// - parameter path:          The path in which lintable files should be found.
     /// - parameter rootDirectory: The parent directory for the specified path. If none is provided, the current working
     ///                            directory will be used.
+    /// - parameter excluder:     The excluder used to filter out files that should not be linted.
     ///
     /// - returns: Files to lint.
-    func filesToLint(inPath path: String, rootDirectory: String?) -> [String]
+    func filesToLint(inPath path: String, rootDirectory: String?, excluder: Excluder) -> [String]
 
     /// Returns the date when the file at the specified path was last modified. Returns `nil` if the file cannot be
     /// found or its last modification date cannot be determined.
@@ -29,21 +31,66 @@ public protocol LintableFileManager {
     func isFile(atPath path: String) -> Bool
 }
 
+/// An excluder for filtering out files that should not be linted.
+public enum Excluder {
+    /// Full matching excluder using filename matchers.
+    case matching(matchers: [FilenameMatcher])
+    /// Prefix-based excluder using path prefixes.
+    case byPrefix(prefixes: [String])
+    /// An excluder that does not exclude any files.
+    case noExclusion
+
+    func excludes(path: String) -> Bool {
+        switch self {
+        case let .matching(matchers):
+            matchers.contains(where: { $0.match(filename: path) })
+        case let .byPrefix(prefixes):
+            prefixes.contains(where: { path.hasPrefix($0) })
+        case .noExclusion:
+            false
+        }
+    }
+}
+
 extension FileManager: LintableFileManager {
-    public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
-        let root =
-            URL(fileURLWithPath: path.absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath))
+    public func filesToLint(inPath path: String,
+                            rootDirectory: String? = nil,
+                            excluder: Excluder) -> [String] {
+        let absolutePath = URL(
+            fileURLWithPath: path.absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath)
+        )
 
-        // if path is a file, it won't be returned in `enumerator(atPath:)`
-        if root.isSwiftFile { return [root.standardized.filepath] }
+        // If path is a file, it won't be returned in `enumerator(atPath:)`.
+        if absolutePath.isSwiftFile {
+            let filePath = absolutePath.standardized.filepath
+            return excluder.excludes(path: filePath) ? [] : [filePath]
+        }
 
-        return subpaths(atPath: root.path)?.parallelCompactMap { element -> String? in
-            let elementURL = URL(fileURLWithPath: element, relativeTo: root)
-            if elementURL.isSwiftFile {
-                return elementURL.standardized.filepath
+        if case .noExclusion = excluder {
+            // Fast path when there is no exclusion.
+            return subpaths(atPath: absolutePath.filepath)?.parallelCompactMap { element in
+                let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
+                return absoluteElementPath.isSwiftFile ? absoluteElementPath.standardized.filepath : nil
+            } ?? []
+        }
+
+        guard let enumerator = enumerator(atPath: absolutePath.filepath) else {
+            return []
+        }
+
+        var files = [String]()
+        while let element = enumerator.nextObject() as? String {
+            let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
+            let absoluteStandardizedElementPath = absoluteElementPath.standardized.filepath
+            if absoluteElementPath.isSwiftFile {
+                if !excluder.excludes(path: absoluteStandardizedElementPath) {
+                    files.append(absoluteStandardizedElementPath)
+                }
+            } else if excluder.excludes(path: absoluteStandardizedElementPath) {
+                enumerator.skipDescendants()
             }
-            return nil
-        } ?? []
+        }
+        return files
     }
 
     public func modificationDate(forFileAtPath path: String) -> Date? {

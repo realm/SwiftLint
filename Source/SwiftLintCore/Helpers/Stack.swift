@@ -49,9 +49,21 @@ public struct Stack<Element> {
     }
 }
 
-extension Stack: Sequence {
-    public func makeIterator() -> [Element].Iterator {
-        elements.makeIterator()
+extension Stack: Collection {
+    public var startIndex: Int {
+        elements.startIndex
+    }
+
+    public var endIndex: Int {
+        elements.endIndex
+    }
+
+    public subscript(position: Int) -> Element {
+        elements[position]
+    }
+
+    public func index(after index: Int) -> Int {
+        elements.index(after: index)
     }
 }
 

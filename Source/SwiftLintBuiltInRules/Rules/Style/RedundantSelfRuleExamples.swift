@@ -1,4 +1,4 @@
-struct RedundantSelfInClosureRuleExamples {
+struct RedundantSelfRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
             struct S {
@@ -93,6 +93,15 @@ struct RedundantSelfInClosureRuleExamples {
                 func f(_: () -> Void) {}
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class C {
+                var x = 0, y = 0
+                init(x: Int) {
+                    self.x = x
+                    self.y = x + 1
+                }
+            }
+            """, configuration: ["keep_in_initializers": true]),
     ]
 
     static let triggeringExamples = [
@@ -194,11 +203,11 @@ struct RedundantSelfInClosureRuleExamples {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
                 func g() {
-                    f { [weak self] in
+                    f({ [weak self] in
                         self?.x = 1
                         guard let self else { return }
                         ↓self.x = 1
-                    }
+                    })
                     f { [weak self] in
                         self?.x = 1
                         if let self = self { ↓self.x = 1 }
@@ -212,6 +221,23 @@ struct RedundantSelfInClosureRuleExamples {
                 }
             }
             """),
+        Example("""
+            class C {
+                var x = 0
+                private lazy var c1: Int = {
+                    ↓self.x = 1
+                    let f = { self.x = 2 }
+                    let g = { [self] in ↓self.x = 3 }
+                    return 2
+                }()
+                private lazy var c2: Int = { [weak self] in
+                    guard let self else { return 0 }
+                    ↓self.x = 1
+                    let f = { self.x = 2 }
+                    return 2
+                }()
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let corrections = [
@@ -235,6 +261,23 @@ struct RedundantSelfInClosureRuleExamples {
                             x = 1
                             if x == 1 { g() }
                         }
+                    }
+                }
+                """),
+        Example("""
+            struct S {
+                var x = 0, y = 0
+                init(x: Int) {
+                    self.x = x
+                    ↓self.y = 1
+                }
+            }
+            """): Example("""
+                struct S {
+                    var x = 0, y = 0
+                    init(x: Int) {
+                        self.x = x
+                        y = 1
                     }
                 }
                 """),

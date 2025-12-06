@@ -58,3 +58,41 @@ jobs:
           path: .build
       - name: Run tests
         run: make spm_test
+
+  spm_windows:
+    name: SPM, Windows ${{ matrix.windows-display-name }}
+    runs-on: windows-${{ matrix.windows-version }}
+    env:
+      SWIFT_VERSION: development
+      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2025-08-27-a
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - windows-version: 2025
+            arch: amd64
+            windows-display-name: 'Server 2025'
+          - windows-version: '11-arm'
+            arch: arm64
+            windows-display-name: '11 ARM'
+    steps:
+      - name: Enable long path support
+        run: reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+      - uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: ${{ env.SWIFT_VERSION }}
+          swift-build: ${{ env.SWIFT_BUILD }}
+          build_arch: ${{ matrix.arch }}
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          key: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
+          restore-keys: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-
+          path: .build
+      - name: Build all targets
+        run: swift build --build-tests
+      - name: Run selected tests
+        run: swift test --skip IntegrationTests --skip FileSystemAccessTests --skip FrameworkTests --skip BuiltInRulesTests
+      # To be extended with test execution and linting ...

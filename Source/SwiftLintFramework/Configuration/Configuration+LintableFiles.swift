@@ -44,7 +44,7 @@ extension Configuration {
         if path.isFile {
             return fileManager.filesToLint(
                 inPath: path,
-                rootDirectory: nil,
+                rootDirectory: rootDirectory,
                 excluder: forceExclude ? excluder : .noExclusion
             )
         }
@@ -53,21 +53,32 @@ extension Configuration {
         if includedPaths.isEmpty {
             return fileManager.filesToLint(
                 inPath: path,
-                rootDirectory: nil,
+                rootDirectory: rootDirectory,
                 excluder: excluder
             )
         }
 
-        // With included paths, we only lint those paths (after resolving globs).
-        return includedPaths
-            .flatMap(Glob.resolveGlob)
-            .parallelFlatMap {
-                fileManager.filesToLint(
-                    inPath: $0,
-                    rootDirectory: rootDirectory,
-                    excluder: excluder
-                )
-            }
+        // With included paths, only lint them (after resolving globs).
+        let pathsToLint = includedPaths.flatMap(Glob.resolveGlob).parallelFlatMap {
+            fileManager.filesToLint(
+                inPath: $0,
+                rootDirectory: rootDirectory,
+                excluder: excluder
+            )
+        }
+
+        // Duplicates may arise, so make them unique.
+        return makeUnique(paths: pathsToLint)
+    }
+
+    private func makeUnique(paths: [String]) -> [String] {
+        #if os(Linux)
+        let result = NSMutableOrderedSet(capacity: paths.count)
+        result.addObjects(from: paths)
+        #else
+        let result = NSOrderedSet(array: paths)
+        #endif
+        return result.array as! [String] // swiftlint:disable:this force_cast
     }
 
     func filteredPaths(in paths: [String], excludeByPrefix: Bool) -> [String] {

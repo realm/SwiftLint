@@ -8,7 +8,7 @@ struct RedundantSelfRule: Rule {
     var configuration = RedundantSelfConfiguration()
 
     static let description = RuleDescription(
-        identifier: "redundant_self",
+        identifier: "redundant_self_in_closure",
         name: "Redundant Self",
         description: "Explicit use of 'self' is not required",
         kind: .style,

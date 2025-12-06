@@ -54,7 +54,9 @@ private struct CacheTestHelper {
 }
 
 private class TestFileManager: LintableFileManager {
-    fileprivate func filesToLint(inPath _: String, rootDirectory _: String? = nil) -> [String] {
+    fileprivate func filesToLint(inPath _: String,
+                                 rootDirectory _: String? = nil,
+                                 excluder _: Excluder) -> [String] {
         []
     }
 

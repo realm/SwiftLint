@@ -1,3 +1,4 @@
+import FilenameMatcher
 import TestHelpers
 import XCTest
 
@@ -83,5 +84,32 @@ final class GlobTests: SwiftLintTestCase {
 
         let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("**/*.swift"))
         XCTAssertEqual(files.sorted(), expectedFiles.sorted())
+    }
+
+    func testCreateFilenameMatchers() {
+        func assertGlobMatch(root: String = "", pattern: String, filename: String) {
+            let matchers = Glob.createFilenameMatchers(root: root, pattern: pattern)
+            XCTAssert(matchers.anyMatch(filename: filename))
+        }
+
+        assertGlobMatch(root: "/a/b/", pattern: "c/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(root: "/a", pattern: "**/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(root: "/a", pattern: "**/*.swift", filename: "/a/b.swift")
+        assertGlobMatch(root: "/", pattern: "**/*.swift", filename: "/a/b.swift")
+        assertGlobMatch(root: "/", pattern: "a/**/b.swift", filename: "/a/b.swift")
+        assertGlobMatch(root: "/", pattern: "a/**/b.swift", filename: "/a/c/b.swift")
+        assertGlobMatch(root: "/", pattern: "**/*.swift", filename: "/a.swift")
+        assertGlobMatch(root: "/", pattern: "a/**/*.swift", filename: "/a/b/c.swift")
+        assertGlobMatch(root: "/", pattern: "a/**/*.swift", filename: "/a/b.swift")
+        assertGlobMatch(root: "/a/b", pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(root: "/a/", pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
+
+        assertGlobMatch(pattern: "/a/b/c", filename: "/a/b/c/d.swift")
+        assertGlobMatch(pattern: "/a/b/c/", filename: "/a/b/c/d.swift")
+        assertGlobMatch(pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(pattern: "/d.swift/*.swift", filename: "/d.swift/e.swift")
+        assertGlobMatch(pattern: "/a/**", filename: "/a/b/c/d.swift")
+        assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/c/MyTest2.swift")
+        assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/MyTests/c.swift")
     }
 }

@@ -42,6 +42,7 @@ let package = Package(
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", .upToNextMajor(from: "0.9.0")),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit.git", .upToNextMajor(from: "0.2.0")),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .upToNextMajor(from: "1.9.0")),
+        .package(url: "https://github.com/ileitch/swift-filename-matcher", .upToNextMinor(from: "2.0.1")),
     ],
     targets: [
         .executableTarget(
@@ -65,6 +66,7 @@ let package = Package(
         .target(
             name: "SwiftLintFramework",
             dependencies: [
+                .product(name: "FilenameMatcher", package: "swift-filename-matcher"),
                 "SwiftLintBuiltInRules",
                 "SwiftLintCore",
                 "SwiftLintExtraRules",
@@ -96,6 +98,7 @@ let package = Package(
             dependencies: [
                 .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux, .windows])),
                 .target(name: "DyldWarningWorkaround", condition: .when(platforms: [.macOS])),
+                .product(name: "FilenameMatcher", package: "swift-filename-matcher"),
                 .product(name: "SourceKittenFramework", package: "SourceKitten"),
                 .product(name: "SwiftIDEUtils", package: "swift-syntax"),
                 .product(name: "SwiftOperators", package: "swift-syntax"),
@@ -167,6 +170,7 @@ let package = Package(
         .testTarget(
             name: "FileSystemAccessTests",
             dependencies: [
+                .product(name: "FilenameMatcher", package: "swift-filename-matcher"),
                 "SwiftLintFramework",
                 "TestHelpers",
                 "SwiftLintCoreMacros",
@@ -203,7 +207,7 @@ let package = Package(
                 "TestHelpers",
             ],
             exclude: [
-                "default_rule_configurations.yml"
+                "Resources",
             ],
             swiftSettings: swiftFeatures + targetedConcurrency // Set to strict once SwiftLintFramework is updated
         ),

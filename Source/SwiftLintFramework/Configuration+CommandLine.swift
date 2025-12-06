@@ -252,15 +252,12 @@ extension Configuration {
             guard options.forceExclude else {
                 return files
             }
-
             let scriptInputPaths = files.compactMap(\.path)
-
-            if options.useExcludingByPrefix {
-                return filterExcludedPathsByPrefix(in: scriptInputPaths)
-                    .map(SwiftLintFile.init(pathDeferringReading:))
-            }
-            return filterExcludedPaths(excludedPaths(), in: scriptInputPaths)
-                .map(SwiftLintFile.init(pathDeferringReading:))
+            return (
+                visitor.options.useExcludingByPrefix
+                    ? filterExcludedPathsByPrefix(in: scriptInputPaths)
+                    : filterExcludedPaths(in: scriptInputPaths)
+            ).map(SwiftLintFile.init(pathDeferringReading:))
         }
         if !options.quiet {
             let filesInfo: String
@@ -272,14 +269,12 @@ extension Configuration {
 
             queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
         }
-        let excludeLintableFilesBy = options.useExcludingByPrefix
-            ? Configuration.ExcludeBy.prefix
-            : .paths(excludedPaths: excludedPaths())
-        return options.paths.flatMap {
+        return visitor.options.paths.flatMap {
             self.lintableFiles(
                 inPath: $0,
-                forceExclude: options.forceExclude,
-                excludeBy: excludeLintableFilesBy)
+                forceExclude: visitor.options.forceExclude,
+                excludeByPrefix: visitor.options.useExcludingByPrefix
+            )
         }
     }
 

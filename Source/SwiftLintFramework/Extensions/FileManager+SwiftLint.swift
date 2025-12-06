@@ -22,13 +22,6 @@ public protocol LintableFileManager {
     ///
     /// - returns: A date, if one was determined.
     func modificationDate(forFileAtPath path: String) -> Date?
-
-    /// Returns true if a file (but not a directory) exists at the specified path.
-    ///
-    /// - parameter path: The path that should be checked to see if it is a file.
-    ///
-    /// - returns: true if the specified path is a file.
-    func isFile(atPath path: String) -> Bool
 }
 
 /// An excluder for filtering out files that should not be linted.
@@ -60,44 +53,51 @@ extension FileManager: LintableFileManager {
             fileURLWithPath: path.absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath)
         )
 
-        // If path is a file, it won't be returned in `enumerator(atPath:)`.
+        // If path is a file, filter and return it directly.
         if absolutePath.isSwiftFile {
             let filePath = absolutePath.standardized.filepath
             return excluder.excludes(path: filePath) ? [] : [filePath]
         }
 
+        // Fast path when there are no exclusions.
         if case .noExclusion = excluder {
-            // Fast path when there is no exclusion.
             return subpaths(atPath: absolutePath.filepath)?.parallelCompactMap { element in
                 let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
                 return absoluteElementPath.isSwiftFile ? absoluteElementPath.standardized.filepath : nil
             } ?? []
         }
 
+        return collectFiles(atPath: absolutePath, excluder: excluder)
+    }
+
+    private func collectFiles(atPath absolutePath: URL, excluder: Excluder) -> [String] {
         guard let enumerator = enumerator(atPath: absolutePath.filepath) else {
             return []
         }
 
         var files = [String]()
+        var directoriesToWalk = [String]()
+
         while let element = enumerator.nextObject() as? String {
             let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
             let absoluteStandardizedElementPath = absoluteElementPath.standardized.filepath
-            if absoluteElementPath.isSwiftFile {
-                if !excluder.excludes(path: absoluteStandardizedElementPath) {
-                    files.append(absoluteStandardizedElementPath)
-                }
-            } else if excluder.excludes(path: absoluteStandardizedElementPath) {
+
+            if enumerator.fileAttributes?[.type] as? FileAttributeType == .typeDirectory {
                 enumerator.skipDescendants()
+                if !excluder.excludes(path: absoluteStandardizedElementPath) {
+                    directoriesToWalk.append(absoluteStandardizedElementPath)
+                }
+            } else if absoluteElementPath.isSwiftFile, !excluder.excludes(path: absoluteStandardizedElementPath) {
+                files.append(absoluteStandardizedElementPath)
             }
         }
-        return files
+
+        return files + directoriesToWalk.parallelFlatMap {
+            FileManager().collectFiles(atPath: URL(fileURLWithPath: $0), excluder: excluder)
+        }
     }
 
     public func modificationDate(forFileAtPath path: String) -> Date? {
         (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
-    }
-
-    public func isFile(atPath path: String) -> Bool {
-        path.isFile
     }
 }

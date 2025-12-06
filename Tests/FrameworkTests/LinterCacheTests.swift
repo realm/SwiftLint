@@ -65,10 +65,6 @@ private class TestFileManager: LintableFileManager {
     fileprivate func modificationDate(forFileAtPath path: String) -> Date? {
         stubbedModificationDateByPath[path]
     }
-
-    fileprivate func isFile(atPath _: String) -> Bool {
-        false
-    }
 }
 
 final class LinterCacheTests: SwiftLintTestCase {

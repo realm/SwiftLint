@@ -41,7 +41,7 @@ extension Configuration {
         let excluder = createExcluder(excludeByPrefix: excludeByPrefix)
 
         // Handle single file path.
-        if fileManager.isFile(atPath: path) {
+        if path.isFile {
             return fileManager.filesToLint(
                 inPath: path,
                 rootDirectory: nil,

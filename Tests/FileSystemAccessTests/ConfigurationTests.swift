@@ -378,6 +378,18 @@ final class ConfigurationTests: SwiftLintTestCase {
         XCTAssertEqual(Set(expectedFilenames), Set(filenames))
     }
 
+    func testDuplicatedGlobIncludePaths() {
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0))
+        let configuration = Configuration(includedPaths: ["**/Level2", "**/Level2"])
+        let paths = configuration.lintablePaths(inPath: Mock.Dir.level0,
+                                                forceExclude: true,
+                                                excludeByPrefix: false)
+        let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
+        let expectedFilenames = ["Level2.swift", "Level3.swift"]
+
+        XCTAssertEqual(expectedFilenames, filenames)
+    }
+
     func testGlobExcludePaths() {
         let configuration = Configuration(
             includedPaths: [Mock.Dir.level3],

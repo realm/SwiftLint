@@ -4,16 +4,16 @@ import TestHelpers
 import XCTest
 
 final class ConfigPathResolutionTests: SwiftLintTestCase {
-    private func fixturePath(_ scenario: String) -> String {
-        #filePath.bridge()
-            .deletingLastPathComponent
-            .stringByAppendingPathComponent("Resources")
-            .stringByAppendingPathComponent(scenario)
+    private func fixturePath(_ scenario: String) -> URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .appending(path: "Resources")
+            .appending(component: scenario)
     }
 
     /// Returns the paths of lintable files relative to the fixture directory.
     private func lintableFilePaths(in scenario: String, configFile: String? = nil, inPath: String = ".") -> [String] {
-        let scenarioPath = fixturePath(scenario)
+        let scenarioPath = fixturePath(scenario).filepath
 
         let previousDir = FileManager.default.currentDirectoryPath
         defer {
@@ -28,7 +28,7 @@ final class ConfigPathResolutionTests: SwiftLintTestCase {
             excludeByPrefix: false
         )
 
-        return files.map { $0.path!.bridge().path(relativeTo: scenarioPath) }.sorted()
+        return files.map { $0.path!.path(relativeTo: scenarioPath) }.sorted()
     }
 
     func testParentChildSameDirectory() {
@@ -135,10 +135,10 @@ final class ConfigPathResolutionTests: SwiftLintTestCase {
         let config = Configuration(configurationFiles: [])
 
         let moduleAFile = SwiftLintFile(
-            path: scenarioPath.stringByAppendingPathComponent("ModuleA/File.swift")
+            path: scenarioPath.appending(path: "ModuleA/File.swift").filepath
         )!
         let moduleBFile = SwiftLintFile(
-            path: scenarioPath.stringByAppendingPathComponent("ModuleB/File.swift")
+            path: scenarioPath.appending(path: "ModuleB/File.swift").filepath
         )!
 
         XCTAssertTrue(
@@ -156,14 +156,15 @@ final class ConfigPathResolutionTests: SwiftLintTestCase {
 
     func testNestedConfigurationDisabledByConfigFlag() {
         let scenarioPath = fixturePath("_4_nested_basic")
-        let configFile = scenarioPath.stringByAppendingPathComponent("root.yml")
 
         let moduleAFile = SwiftLintFile(
-            path: scenarioPath.stringByAppendingPathComponent("ModuleB/File.swift")
+            path: scenarioPath.appending(path: "ModuleB/File.swift").filepath
         )!
 
         XCTAssertFalse(
-            Configuration(configurationFiles: [configFile]).configuration(for: moduleAFile).rules
+            Configuration(configurationFiles: [scenarioPath.appending(path: "root.yml").filepath])
+                .configuration(for: moduleAFile)
+                .rules
                 .map { type(of: $0).identifier }
                 .contains("explicit_type_interface")
         )

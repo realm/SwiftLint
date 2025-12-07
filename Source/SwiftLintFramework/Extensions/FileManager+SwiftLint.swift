@@ -45,7 +45,7 @@ public enum Excluder {
     }
 }
 
-extension FileManager: LintableFileManager {
+extension FileManager: LintableFileManager, @unchecked @retroactive Sendable {
     public func filesToLint(inPath path: String,
                             rootDirectory: String? = nil,
                             excluder: Excluder) -> [String] {
@@ -81,19 +81,21 @@ extension FileManager: LintableFileManager {
         while let element = enumerator.nextObject() as? String {
             let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
             let absoluteStandardizedElementPath = absoluteElementPath.standardized.filepath
-
-            if enumerator.fileAttributes?[.type] as? FileAttributeType == .typeDirectory {
+            if absoluteElementPath.path.isFile {
+                if absoluteElementPath.pathExtension == "swift",
+                   !excluder.excludes(path: absoluteStandardizedElementPath) {
+                    files.append(absoluteStandardizedElementPath)
+                }
+            } else {
                 enumerator.skipDescendants()
                 if !excluder.excludes(path: absoluteStandardizedElementPath) {
                     directoriesToWalk.append(absoluteStandardizedElementPath)
                 }
-            } else if absoluteElementPath.isSwiftFile, !excluder.excludes(path: absoluteStandardizedElementPath) {
-                files.append(absoluteStandardizedElementPath)
             }
         }
 
         return files + directoriesToWalk.parallelFlatMap {
-            FileManager().collectFiles(atPath: URL(fileURLWithPath: $0), excluder: excluder)
+            collectFiles(atPath: URL(fileURLWithPath: $0), excluder: excluder)
         }
     }
 

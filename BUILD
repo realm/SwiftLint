@@ -70,6 +70,7 @@ swift_library(
     visibility = ["//visibility:public"],
     deps = [
         ":Yams.wrapper",
+        "@FilenameMatcher",
         "@SourceKittenFramework",
         "@SwiftSyntax//:SwiftIDEUtils_opt",
         "@SwiftSyntax//:SwiftOperators_opt",

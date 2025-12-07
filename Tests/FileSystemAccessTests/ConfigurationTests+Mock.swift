@@ -33,6 +33,10 @@ internal extension ConfigurationTests {
             static var remoteConfigLocalRef: String { level0.stringByAppendingPathComponent("RemoteConfig/LocalRef") }
             static var remoteConfigCycle: String { level0.stringByAppendingPathComponent("RemoteConfig/Cycle") }
             static var emptyFolder: String { level0.stringByAppendingPathComponent("EmptyFolder") }
+
+            static var exclusionTests: String { testResourcesPath.stringByAppendingPathComponent("ExclusionTests") }
+            static var directory: String { exclusionTests.stringByAppendingPathComponent("directory") }
+            static var directoryExcluded: String { directory.stringByAppendingPathComponent("excluded") }
         }
 
         // MARK: YAML File Paths

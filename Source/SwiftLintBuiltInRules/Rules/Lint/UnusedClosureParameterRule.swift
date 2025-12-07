@@ -99,7 +99,7 @@ private final class IdentifierReferenceVisitor: SyntaxVisitor {
 
 private extension String {
     var removingDollarsAndBackticks: String {
-        self.replacingOccurrences(of: "$", with: "")
+        replacingOccurrences(of: "$", with: "")
             .replacingOccurrences(of: "`", with: "")
     }
 }

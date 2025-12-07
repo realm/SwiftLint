@@ -55,7 +55,7 @@ extension Configuration {
         }
 
         let pathsForPath = includedPaths.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let includedPaths = self.includedPaths
+        let includedPaths = includedPaths
             .flatMap(Glob.resolveGlob)
             .parallelFlatMap { fileManager.filesToLint(inPath: $0, rootDirectory: rootDirectory) }
 
@@ -98,7 +98,7 @@ extension Configuration {
     /// - returns: The input paths after removing the excluded paths.
     public func filterExcludedPathsByPrefix(in paths: [String]...) -> [String] {
         let allPaths = paths.flatMap(\.self)
-        let excludedPaths = self.excludedPaths
+        let excludedPaths = excludedPaths
             .parallelFlatMap { @Sendable in Glob.resolveGlob($0) }
             .map { $0.absolutePathStandardized() }
         return allPaths.filter { path in

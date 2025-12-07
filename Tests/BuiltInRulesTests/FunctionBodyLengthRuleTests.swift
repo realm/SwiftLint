@@ -13,7 +13,7 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             """)
 
         XCTAssertEqual(
-            self.violations(example, configuration: ["warning": 2, "error": 4]),
+            violations(example, configuration: ["warning": 2, "error": 4]),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,
@@ -38,7 +38,7 @@ final class FunctionBodyLengthRuleTests: SwiftLintTestCase {
             """)
 
         XCTAssertEqual(
-            self.violations(example, configuration: ["warning": 1, "error": 2]),
+            violations(example, configuration: ["warning": 1, "error": 2]),
             [
                 StyleViolation(
                     ruleDescription: FunctionBodyLengthRule.description,

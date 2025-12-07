@@ -88,6 +88,6 @@ final class ImplicitReturnRuleTests: SwiftLintTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, ruleConfiguration: ["included": [kind.rawValue]])
+        verifyRule(description, ruleConfiguration: ["included": [kind.rawValue]])
     }
 }

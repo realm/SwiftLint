@@ -321,7 +321,7 @@ private extension String {
     func trailingWhitespaceInfo() -> TrailingWhitespaceInfo? {
         var charCount = 0
         var byteLen = 0
-        for char in self.reversed() {
+        for char in reversed() {
             if char.isWhitespace, char == " " || char == "\t" { // Only count spaces and tabs
                 charCount += 1
                 byteLen += char.utf8.count

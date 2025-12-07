@@ -52,10 +52,10 @@ private extension UnusedOptionalBindingRule {
 
 private extension ExprSyntax {
     var isDiscardExpression: Bool {
-        if self.is(DiscardAssignmentExprSyntax.self) {
+        if `is`(DiscardAssignmentExprSyntax.self) {
             return true
         }
-        if let tuple = self.as(TupleExprSyntax.self) {
+        if let tuple = `as`(TupleExprSyntax.self) {
             return tuple.elements.allSatisfy(\.expression.isDiscardExpression)
         }
 

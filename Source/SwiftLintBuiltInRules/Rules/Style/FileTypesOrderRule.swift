@@ -20,22 +20,22 @@ struct FileTypesOrderRule: OptInRule {
         guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
               let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 
-        let extensionsSubstructures = self.extensionsSubstructures(
+        let extensionsSubstructures = extensionsSubstructures(
             in: file,
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        let supportingTypesSubstructures = self.supportingTypesSubstructures(
+        let supportingTypesSubstructures = supportingTypesSubstructures(
             in: file,
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        let previewProviderSubstructures = self.substructures(
+        let previewProviderSubstructures = substructures(
             in: file,
             withInheritedType: "PreviewProvider"
         )
 
-        let libraryContentSubstructures = self.substructures(
+        let libraryContentSubstructures = substructures(
             in: file,
             withInheritedType: "LibraryContentProvider"
         )
@@ -133,13 +133,13 @@ struct FileTypesOrderRule: OptInRule {
         let dict = file.structureDictionary
 
         guard let filePath = file.path else {
-            return self.mainTypeSubstructure(in: dict)
+            return mainTypeSubstructure(in: dict)
         }
 
         let fileName = URL(fileURLWithPath: filePath, isDirectory: false)
             .lastPathComponent.replacingOccurrences(of: ".swift", with: "")
         guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return self.mainTypeSubstructure(in: file.structureDictionary)
+            return mainTypeSubstructure(in: file.structureDictionary)
         }
 
         // specify type with name matching the files name as main type
@@ -167,7 +167,7 @@ struct FileTypesOrderRule: OptInRule {
 
 private extension SourceKittenDictionary {
     var hasExcludedInheritedType: Bool {
-        self.inheritedTypes.contains { inheritedType in
+        inheritedTypes.contains { inheritedType in
             inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
         }
     }
@@ -175,7 +175,7 @@ private extension SourceKittenDictionary {
 
 private extension Array where Element == SourceKittenDictionary {
     func offsets(for fileType: FileTypesOrderConfiguration.FileType) -> [FileTypeOffset] {
-        self.compactMap { substructure in
+        compactMap { substructure in
             guard let offset = substructure.offset else { return nil }
             return (fileType, offset)
         }

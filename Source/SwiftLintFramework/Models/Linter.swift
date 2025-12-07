@@ -352,7 +352,7 @@ public struct CollectedLinter {
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: compilerArguments)
         }
-        let undefinedSuperfluousCommandViolations = self.undefinedSuperfluousCommandViolations(
+        let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)
 

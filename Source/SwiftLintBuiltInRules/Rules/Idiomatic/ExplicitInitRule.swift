@@ -234,14 +234,14 @@ private extension MemberAccessExprSyntax {
 private extension ExprSyntax {
     /// `String` or `Nested.Type`.
     var isTypeReferenceLike: Bool {
-        if let expr = self.as(DeclReferenceExprSyntax.self), expr.baseName.text.startsWithUppercase {
+        if let expr = `as`(DeclReferenceExprSyntax.self), expr.baseName.text.startsWithUppercase {
             return true
         }
-        if let expr = self.as(MemberAccessExprSyntax.self),
+        if let expr = `as`(MemberAccessExprSyntax.self),
            expr.description.split(separator: ".").allSatisfy(\.startsWithUppercase) {
             return true
         }
-        if let expr = self.as(GenericSpecializationExprSyntax.self)?.expression.as(DeclReferenceExprSyntax.self),
+        if let expr = `as`(GenericSpecializationExprSyntax.self)?.expression.as(DeclReferenceExprSyntax.self),
            expr.baseName.text.startsWithUppercase {
             return true
         }

@@ -86,7 +86,7 @@ private extension InfixOperatorExprSyntax {
         if let asExpr = leftOperand.as(AsExprSyntax.self) ?? rightOperand.as(AsExprSyntax.self),
            asExpr.questionOrExclamationMark?.tokenKind == .postfixQuestionMark,
            !asExpr.type.is(OptionalTypeSyntax.self),
-           self.operator.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!="),
+           `operator`.as(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("!="),
            rightOperand.is(NilLiteralExprSyntax.self) || leftOperand.is(NilLiteralExprSyntax.self) {
             asExpr
         } else {

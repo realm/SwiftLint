@@ -74,7 +74,7 @@ public extension String {
     }
 
     var isFile: Bool {
-        if self.isEmpty {
+        if isEmpty {
             return false
         }
         var isDirectoryObjC: ObjCBool = false
@@ -88,9 +88,7 @@ public extension String {
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`
     func countOccurrences(of character: Character) -> Int {
-        self.reduce(0, {
-            $1 == character ? $0 + 1 : $0
-        })
+        reduce(0) { $1 == character ? $0 + 1 : $0 }
     }
 
     /// If self is a path, this method can be used to get a path expression relative to a root directory

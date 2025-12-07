@@ -55,13 +55,13 @@ private extension NSLocalizedStringKeyRule {
 
 private extension ExprSyntax {
     var hasViolation: Bool {
-        if let strExpr = self.as(StringLiteralExprSyntax.self) {
+        if let strExpr = `as`(StringLiteralExprSyntax.self) {
             return strExpr.segments.contains { segment in
                 !segment.is(StringSegmentSyntax.self)
             }
         }
 
-        if let sequenceExpr = self.as(SequenceExprSyntax.self) {
+        if let sequenceExpr = `as`(SequenceExprSyntax.self) {
             return sequenceExpr.elements.contains { expr in
                 if expr.is(BinaryOperatorExprSyntax.self) {
                     return false

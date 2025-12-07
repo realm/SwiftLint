@@ -176,8 +176,7 @@ private struct RuleHelper {
 private extension AttributeListSyntax {
     func attributesAndPlacements(configuration: AttributesConfiguration, shouldBeOnSameLine: Bool)
         -> [(AttributeSyntax, AttributePlacement)] {
-        self
-            .children(viewMode: .sourceAccurate)
+        children(viewMode: .sourceAccurate)
             .compactMap { $0.as(AttributeSyntax.self) }
             .map { attribute in
                 let atPrefixedName = "@\(attribute.attributeNameText)"

@@ -88,13 +88,13 @@ private extension StringLiteralExprSyntax {
 
 private extension ExprSyntax {
     var canBeExpressedAsColorLiteralParams: Bool {
-        if self.is(FloatLiteralExprSyntax.self) ||
-            self.is(IntegerLiteralExprSyntax.self) ||
-            self.is(BinaryOperatorExprSyntax.self) {
+        if `is`(FloatLiteralExprSyntax.self) ||
+            `is`(IntegerLiteralExprSyntax.self) ||
+            `is`(BinaryOperatorExprSyntax.self) {
             return true
         }
 
-        if let expr = self.as(SequenceExprSyntax.self) {
+        if let expr = `as`(SequenceExprSyntax.self) {
             return expr.elements.allSatisfy(\.canBeExpressedAsColorLiteralParams)
         }
 

@@ -99,7 +99,7 @@ public extension SwiftDeclarationAttributeKind {
         }
 
         public var debugDescription: String {
-            self.rawValue
+            rawValue
         }
     }
 }

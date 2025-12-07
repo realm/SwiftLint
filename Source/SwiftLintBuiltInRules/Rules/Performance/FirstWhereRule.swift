@@ -52,10 +52,10 @@ private extension FirstWhereRule {
 
 private extension ExprSyntax {
     var shouldSkip: Bool {
-        if self.is(StringLiteralExprSyntax.self) {
+        if `is`(StringLiteralExprSyntax.self) {
             return true
         }
-        if let functionCall = self.as(FunctionCallExprSyntax.self),
+        if let functionCall = `as`(FunctionCallExprSyntax.self),
            let calledExpression = functionCall.calledExpression.as(DeclReferenceExprSyntax.self),
            calledExpression.baseName.text == "NSPredicate" {
             return true

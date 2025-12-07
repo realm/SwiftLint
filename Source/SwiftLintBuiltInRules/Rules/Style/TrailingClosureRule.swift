@@ -180,15 +180,13 @@ private extension FunctionCallExprSyntax {
     }
 
     func dropLastArgument() -> Self {
-        self
-            .with(\.arguments, LabeledExprListSyntax(arguments.dropLast()).dropLastTrailingComma())
+        with(\.arguments, LabeledExprListSyntax(arguments.dropLast()).dropLastTrailingComma())
             .dropParensIfEmpty()
     }
 
     func dropParensIfEmpty() -> Self {
         if arguments.isEmpty {
-            self
-                .with(\.rightParen, nil)
+            with(\.rightParen, nil)
                 .with(\.leftParen, nil)
         } else {
             self

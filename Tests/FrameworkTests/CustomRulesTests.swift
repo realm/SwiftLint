@@ -323,7 +323,7 @@ final class CustomRulesTests: SwiftLintTestCase {
                               let ALLOWED = 2
                               """)
 
-        let violations = try self.violations(forExample: example, customRules: customRules)
+        let violations = try violations(forExample: example, customRules: customRules)
         XCTAssertEqual(violations.count, 2)
         XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "forbidden"))
         XCTAssertTrue(violations[1].isSuperfluousDisableCommandViolation(for: "forbidden2"))
@@ -343,7 +343,7 @@ final class CustomRulesTests: SwiftLintTestCase {
                               let FORBIDDEN = 1
                               """)
 
-        let violations = try self.violations(forExample: example, customRules: customRules)
+        let violations = try violations(forExample: example, customRules: customRules)
         XCTAssertEqual(violations.count, 1)
         XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "forbidden2"))
     }
@@ -362,7 +362,7 @@ final class CustomRulesTests: SwiftLintTestCase {
                               let FORBIDDEN = 1
                               """)
 
-        let violations = try self.violations(forExample: example, customRules: customRules)
+        let violations = try violations(forExample: example, customRules: customRules)
         XCTAssertEqual(violations.count, 1)
         XCTAssertTrue(violations[0].isSuperfluousDisableCommandViolation(for: "forbidden2"))
     }

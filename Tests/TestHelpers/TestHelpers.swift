@@ -104,7 +104,7 @@ public let allRuleIdentifiers = Set(RuleRegistry.shared.list.list.keys)
 public extension Configuration {
     func applyingConfiguration(from example: Example) -> Configuration {
         guard let exampleConfiguration = example.configuration,
-              case let .onlyConfiguration(onlyRules) = self.rulesMode,
+              case let .onlyConfiguration(onlyRules) = rulesMode,
               let firstRule = (onlyRules.first { $0 != "superfluous_disable_command" }),
               case let configDict: [_: any Sendable] = ["only_rules": onlyRules, firstRule: exampleConfiguration],
               let typedConfiguration = try? Configuration(dict: configDict) else { return self }
@@ -254,7 +254,7 @@ private extension Configuration {
         let (cleanedBefore, _) = cleanedContentsAndMarkerOffsets(from: before.code)
         let file = SwiftLintFile.testFile(withContents: cleanedBefore, persistToDisk: true)
         // expectedLocations are needed to create before call `correct()`
-        let includeCompilerArguments = self.rules.contains(where: { $0 is any AnalyzerRule })
+        let includeCompilerArguments = rules.contains(where: { $0 is any AnalyzerRule })
         let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
         let storage = RuleStorage()
         let collector = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
@@ -383,13 +383,25 @@ public extension XCTestCase {
             disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
         }
 
-        self.verifyLint(ruleDescription, config: config, commentDoesntViolate: commentDoesntViolate,
-                        stringDoesntViolate: stringDoesntViolate, skipCommentTests: skipCommentTests,
-                        skipStringTests: skipStringTests, disableCommands: disableCommands,
-                        testMultiByteOffsets: testMultiByteOffsets, testShebang: testShebang,
-                        file: file, line: line)
-        self.verifyCorrections(ruleDescription, config: config, disableCommands: disableCommands,
-                               testMultiByteOffsets: testMultiByteOffsets)
+        verifyLint(
+            ruleDescription,
+            config: config,
+            commentDoesntViolate: commentDoesntViolate,
+            stringDoesntViolate: stringDoesntViolate,
+            skipCommentTests: skipCommentTests,
+            skipStringTests: skipStringTests,
+            disableCommands: disableCommands,
+            testMultiByteOffsets: testMultiByteOffsets,
+            testShebang: testShebang,
+            file: file,
+            line: line
+        )
+        verifyCorrections(
+            ruleDescription,
+            config: config,
+            disableCommands: disableCommands,
+            testMultiByteOffsets: testMultiByteOffsets
+        )
     }
 
     // swiftlint:disable:next function_body_length

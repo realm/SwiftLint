@@ -110,7 +110,7 @@ private extension RedundantSetAccessControlRule {
 
 private extension SyntaxProtocol {
     func closestDecl() -> DeclSyntax? {
-        if let decl = self.parent?.as(DeclSyntax.self) {
+        if let decl = parent?.as(DeclSyntax.self) {
             return decl
         }
 
@@ -120,7 +120,7 @@ private extension SyntaxProtocol {
 
 private extension DeclSyntax {
     var modifiers: DeclModifierListSyntax? {
-        self.asProtocol((any WithModifiersSyntax).self)?.modifiers
+        asProtocol((any WithModifiersSyntax).self)?.modifiers
     }
 }
 

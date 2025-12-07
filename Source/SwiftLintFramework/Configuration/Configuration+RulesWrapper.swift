@@ -151,7 +151,7 @@ internal extension Configuration {
             let newAllRulesWrapped = mergedAllRulesWrapped(with: child)
 
             // Merge mode
-            let validRuleIdentifiers = self.validRuleIdentifiers.union(child.validRuleIdentifiers)
+            let validRuleIdentifiers = validRuleIdentifiers.union(child.validRuleIdentifiers)
             let newMode: RulesMode
             switch child.mode {
             case let .defaultConfiguration(childDisabled, childOptIn):

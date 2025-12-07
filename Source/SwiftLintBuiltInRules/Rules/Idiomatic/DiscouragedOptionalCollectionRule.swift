@@ -26,9 +26,9 @@ private extension DiscouragedOptionalCollectionRule {
 
 private extension SyntaxProtocol {
     var isCollectionType: Bool {
-        self.is(ArrayTypeSyntax.self) ||
-            self.is(DictionaryTypeSyntax.self) ||
-            self.as(IdentifierTypeSyntax.self)?.isCollectionType == true
+        `is`(ArrayTypeSyntax.self) ||
+            `is`(DictionaryTypeSyntax.self) ||
+            `as`(IdentifierTypeSyntax.self)?.isCollectionType == true
     }
 }
 

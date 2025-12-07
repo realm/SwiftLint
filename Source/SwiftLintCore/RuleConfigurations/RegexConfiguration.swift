@@ -114,10 +114,10 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
             guard let mode = ExecutionMode(rawValue: modeString) else {
                 throw Issue.invalidConfiguration(ruleID: Parent.identifier)
             }
-            self.executionMode = mode
+            executionMode = mode
         }
 
-        self.excludedMatchKinds = try self.excludedMatchKinds(from: configurationDict)
+        excludedMatchKinds = try excludedMatchKinds(from: configurationDict)
     }
 
     public func hash(into hasher: inout Hasher) {

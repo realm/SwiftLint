@@ -32,14 +32,9 @@ public extension SourceKittenDictionary {
     /// - Parameter file: File this structure occurs in
     /// - Returns: The content of the file which this `SourceKittenDictionary` structure represents
     func content(in file: SwiftLintFile) -> String? {
-        guard
-            let byteRange = self.byteRange,
-            let range = file.stringView.byteRangeToNSRange(byteRange)
-        else {
+        guard let byteRange, let range = file.stringView.byteRangeToNSRange(byteRange) else {
             return nil
         }
-
-        let body = file.stringView.nsString.substring(with: range)
-        return String(body)
+        return String(file.stringView.nsString.substring(with: range))
     }
 }

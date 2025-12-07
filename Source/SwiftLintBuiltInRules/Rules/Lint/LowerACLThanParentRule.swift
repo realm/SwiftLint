@@ -166,14 +166,14 @@ private extension SyntaxProtocol {
 
 private extension Syntax {
     var isNominalTypeDecl: Bool {
-        self.is(StructDeclSyntax.self) ||
-            self.is(ClassDeclSyntax.self) ||
-            self.is(ActorDeclSyntax.self) ||
-            self.is(EnumDeclSyntax.self)
+        `is`(StructDeclSyntax.self) ||
+            `is`(ClassDeclSyntax.self) ||
+            `is`(ActorDeclSyntax.self) ||
+            `is`(EnumDeclSyntax.self)
     }
 
     var isExtensionDecl: Bool {
-        self.is(ExtensionDeclSyntax.self)
+        `is`(ExtensionDeclSyntax.self)
     }
 
     var modifiers: DeclModifierListSyntax? {

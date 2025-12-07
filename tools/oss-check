@@ -447,6 +447,7 @@ $working_dir = 'osscheck'
   Repo.new('Realm', 'realm/realm-swift'),
   Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
   Repo.new('Swift', 'apple/swift', false, 'included: stdlib'),
+  Repo.new('SwiftLintPerformanceTests', 'SimplyDanny/swiftlint-performance-test-setup', true),
   Repo.new('VLC', 'videolan/vlc-ios'),
   Repo.new('Wire', 'wireapp/wire-ios', false, 'excluded: wire-ios/Templates/Viper'),
   Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')

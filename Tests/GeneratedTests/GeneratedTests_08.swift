@@ -13,9 +13,9 @@ final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class RedundantSelfInClosureRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(RedundantSelfInClosureRule.description)
+        verifyRule(RedundantSelfRule.description)
     }
 }
 

@@ -54,11 +54,11 @@ private extension ReturnValueFromVoidFunctionRule {
 
 private extension Syntax {
     func enclosingFunction() -> FunctionDeclSyntax? {
-        if let node = self.as(FunctionDeclSyntax.self) {
+        if let node = `as`(FunctionDeclSyntax.self) {
             return node
         }
 
-        if self.is(ClosureExprSyntax.self) || self.is(VariableDeclSyntax.self) || self.is(InitializerDeclSyntax.self) {
+        if `is`(ClosureExprSyntax.self) || `is`(VariableDeclSyntax.self) || `is`(InitializerDeclSyntax.self) {
             return nil
         }
 

@@ -103,7 +103,7 @@ extension SwitchCaseAlignmentRule {
         }
 
         private var indentedCases: [Example] {
-            let violationMarker = indentedCasesOption ? "" : self.violationMarker
+            let violationMarker = indentedCasesOption ? "" : violationMarker
 
             return [
                 Example("""
@@ -144,7 +144,7 @@ extension SwitchCaseAlignmentRule {
         }
 
         private var nonIndentedCases: [Example] {
-            let violationMarker = indentedCasesOption ? self.violationMarker : ""
+            let violationMarker = indentedCasesOption ? violationMarker : ""
 
             return [
                 Example("""

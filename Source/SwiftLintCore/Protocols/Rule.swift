@@ -234,7 +234,7 @@ public extension SubstitutionCorrectableRule {
         var contents = file.contents
         for range in violatingRanges.sorted(by: { $0.location > $1.location }) {
             let contentsNSString = contents.bridge()
-            if let (rangeToRemove, substitution) = self.substitution(for: range, in: file) {
+            if let (rangeToRemove, substitution) = substitution(for: range, in: file) {
                 contents = contentsNSString.replacingCharacters(in: rangeToRemove, with: substitution)
                 numberOfCorrections += 1
             }

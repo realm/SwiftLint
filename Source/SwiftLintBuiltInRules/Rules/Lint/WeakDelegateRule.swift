@@ -88,10 +88,10 @@ private extension WeakDelegateRule {
 
 private extension Syntax {
     func enclosingClass() -> ClassDeclSyntax? {
-        if let classExpr = self.as(ClassDeclSyntax.self) {
+        if let classExpr = `as`(ClassDeclSyntax.self) {
             return classExpr
         }
-        if self.as(DeclSyntax.self) != nil {
+        if `as`(DeclSyntax.self) != nil {
             return nil
         }
 

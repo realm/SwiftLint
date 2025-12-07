@@ -178,7 +178,7 @@ private extension SwiftLintFile {
             }
         }
 
-        let cursorInfo = self.cursorInfo(at: nameOffset, compilerArguments: compilerArguments)
+        let cursorInfo = cursorInfo(at: nameOffset, compilerArguments: compilerArguments)
 
         if cursorInfo?.annotatedDeclaration?.contains("@objc ") == true {
             return nil
@@ -282,7 +282,7 @@ private extension SourceKittenDictionary {
     }
 
     func shouldSkipIndexEntityToWorkAroundSR11985() -> Bool {
-        guard enclosedSwiftAttributes.contains(.objcName), let name = self.name else {
+        guard enclosedSwiftAttributes.contains(.objcName), let name else {
             return false
         }
 

@@ -10,7 +10,7 @@ extension Configuration {
         withChild childConfiguration: Configuration,
         rootDirectory: String = ""
     ) -> Configuration {
-        let mergedIncludedAndExcluded = self.mergedIncludedAndExcluded(
+        let mergedIncludedAndExcluded = mergedIncludedAndExcluded(
             with: childConfiguration,
             rootDirectory: rootDirectory
         )

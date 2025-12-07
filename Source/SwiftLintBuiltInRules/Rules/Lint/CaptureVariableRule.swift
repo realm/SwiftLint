@@ -204,7 +204,7 @@ private extension SwiftLintFile {
     }
 
     func captureListVariables(compilerArguments: [String]) -> Set<CaptureVariableRule.Variable> {
-        let offsets = self.captureListVariableOffsets()
+        let offsets = captureListVariableOffsets()
         guard !offsets.isEmpty, let indexEntities = index(compilerArguments: compilerArguments) else { return Set() }
 
         return Set(indexEntities.traverseEntitiesDepthFirst { _, entity in
@@ -243,7 +243,7 @@ private extension SwiftLintFile {
     }
 
     func declaredVariables(compilerArguments: [String]) -> Set<CaptureVariableRule.USR> {
-        let offsets = self.declaredVariableOffsets()
+        let offsets = declaredVariableOffsets()
         guard !offsets.isEmpty, let indexEntities = index(compilerArguments: compilerArguments) else { return Set() }
 
         return Set(indexEntities.traverseEntitiesDepthFirst { _, entity in
@@ -261,7 +261,7 @@ private extension SwiftLintFile {
 
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
         guard
-            let path = self.path,
+            let path,
             let response = try? Request.index(file: path, arguments: compilerArguments).sendIfNotDisabled()
         else {
             Issue.indexingError(path: path, ruleID: CaptureVariableRule.identifier).print()

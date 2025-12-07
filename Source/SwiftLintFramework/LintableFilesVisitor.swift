@@ -100,7 +100,7 @@ struct LintableFilesVisitor {
     }
 
     func shouldSkipFile(atPath path: String?) -> Bool {
-        switch self.mode {
+        switch mode {
         case .lint:
             return false
         case let .analyze(compilerInvocations):
@@ -110,7 +110,7 @@ struct LintableFilesVisitor {
     }
 
     func linter(forFile file: SwiftLintFile, configuration: Configuration) -> Linter {
-        switch self.mode {
+        switch mode {
         case .lint:
             return Linter(file: file, configuration: configuration, cache: cache)
         case let .analyze(compilerInvocations):
@@ -122,7 +122,7 @@ struct LintableFilesVisitor {
     private static func loadCompilerInvocations(_ options: LintOrAnalyzeOptions)
             throws(SwiftLintError) -> CompilerInvocations {
         if let path = options.compilerLogPath {
-            guard let compilerInvocations = self.loadLogCompilerInvocations(path) else {
+            guard let compilerInvocations = loadLogCompilerInvocations(path) else {
                 throw .usageError(description: "Could not read compiler log at path: '\(path)'")
             }
 
@@ -130,7 +130,7 @@ struct LintableFilesVisitor {
         }
         if let path = options.compileCommands {
             do {
-                return .compilationDatabase(compileCommands: try self.loadCompileCommands(path))
+                return .compilationDatabase(compileCommands: try loadCompileCommands(path))
             } catch {
                 throw .usageError(
                     description: "Could not read compilation database at path: '\(path)' \(error.localizedDescription)"

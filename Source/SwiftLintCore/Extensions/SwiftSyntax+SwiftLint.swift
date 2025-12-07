@@ -65,10 +65,10 @@ public extension ClassDeclSyntax {
 
 public extension ExprSyntax {
     var asFunctionCall: FunctionCallExprSyntax? {
-        if let functionCall = self.as(FunctionCallExprSyntax.self) {
+        if let functionCall = `as`(FunctionCallExprSyntax.self) {
             return functionCall
         }
-        if let tuple = self.as(TupleExprSyntax.self),
+        if let tuple = `as`(TupleExprSyntax.self),
            let firstElement = tuple.elements.onlyElement,
            let functionCall = firstElement.expression.as(FunctionCallExprSyntax.self) {
             return functionCall
@@ -216,7 +216,7 @@ public extension FunctionDeclSyntax {
 
     /// Returns the signature including arguments, e.g "setEditing(_:animated:)"
     var resolvedName: String {
-        var name = self.name.text
+        var name = name.text
         name += "("
 
         let params = signature.parameterClause.parameters.compactMap { param in

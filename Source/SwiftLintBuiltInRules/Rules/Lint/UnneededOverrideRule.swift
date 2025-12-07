@@ -20,13 +20,13 @@ private extension UnneededOverrideRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             if node.isUnneededOverride(excludedMethods: configuration.excludedMethods) {
-                self.violations.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
             if configuration.affectInits, node.isUnneededOverride {
-                self.violations.append(node.positionAfterSkippingLeadingTrivia)
+                violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
     }

@@ -5,7 +5,7 @@ import XCTest
 final class ContainsOverFirstNotNilRuleTests: SwiftLintTestCase {
     func testFirstReason() {
         let example = Example("↓myList.first { $0 % 2 == 0 } != nil")
-        let violations = self.violations(example)
+        let violations = violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer `contains` over `first(where:) != nil`")
@@ -13,7 +13,7 @@ final class ContainsOverFirstNotNilRuleTests: SwiftLintTestCase {
 
     func testFirstIndexReason() {
         let example = Example("↓myList.firstIndex { $0 % 2 == 0 } != nil")
-        let violations = self.violations(example)
+        let violations = violations(example)
 
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first?.reason, "Prefer `contains` over `firstIndex(where:) != nil`")

@@ -61,7 +61,7 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
             try maxLength.apply(configuration: maxLengthConfiguration)
         }
         if let excluded = [String].array(of: configurationDict[$excludedRegularExpressions.key]) {
-            self.excludedRegularExpressions = Set(excluded.compactMap {
+            excludedRegularExpressions = Set(excluded.compactMap {
                 try? RegularExpression(pattern: "^\($0)$")
             })
         }

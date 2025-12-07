@@ -41,7 +41,6 @@ disabled_rules:
   - one_declaration_per_file
   - prefer_nimble
   - prefixed_toplevel_constant
-  - redundant_self_in_closure
   - required_deinit
   - sorted_enum_cases
   - strict_fileprivate
@@ -86,6 +85,8 @@ identifier_name:
 large_tuple: 3
 number_separator:
   minimum_length: 5
+redundant_self:
+  keep_in_initializers: true
 redundant_type_annotation:
   consider_default_literal_types_redundant: true
 single_test_class: *unit_test_configuration

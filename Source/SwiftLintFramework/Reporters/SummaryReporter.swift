@@ -106,7 +106,7 @@ private extension TextTable {
 
 private extension String {
     func leftPadded(forHeader header: String) -> String {
-        let headerCount = header.count - self.count
+        let headerCount = header.count - count
         if headerCount > 0 {
             return String(repeating: " ", count: headerCount) + self
         }

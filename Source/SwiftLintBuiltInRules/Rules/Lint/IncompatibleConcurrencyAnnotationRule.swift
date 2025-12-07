@@ -166,10 +166,10 @@ private extension WithAttributesSyntax where Self: WithModifiersSyntax {
 
 private extension TypeSyntax {
     var isSendable: Bool {
-        if let identifierType = self.as(IdentifierTypeSyntax.self) {
+        if let identifierType = `as`(IdentifierTypeSyntax.self) {
             return identifierType.name.text == "Sendable"
         }
-        if let compositeType = self.as(CompositionTypeSyntax.self) {
+        if let compositeType = `as`(CompositionTypeSyntax.self) {
             return compositeType.elements.contains(where: \.type.isSendable)
         }
         return false

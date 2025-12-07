@@ -42,14 +42,14 @@ public struct SeverityLevelsConfiguration<Parent: Rule>: RuleConfiguration, Inli
             }
             if let errorValue = configDict[$error.key] {
                 if errorValue == nil {
-                    self.error = nil
+                    error = nil
                 } else if let error = errorValue as? Int {
                     self.error = error
                 } else {
                     throw .invalidConfiguration(ruleID: Parent.identifier)
                 }
             } else if warningValue != nil {
-                self.error = nil
+                error = nil
             }
         } else {
             throw .nothingApplied(ruleID: Parent.identifier)

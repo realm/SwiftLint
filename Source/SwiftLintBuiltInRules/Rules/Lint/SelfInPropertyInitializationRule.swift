@@ -135,7 +135,7 @@ private final class IdentifierUsageVisitor: SyntaxVisitor {
 
 private extension SyntaxProtocol {
     func closestDecl() -> DeclSyntax? {
-        if let decl = self.parent?.as(DeclSyntax.self) {
+        if let decl = parent?.as(DeclSyntax.self) {
             return decl
         }
 

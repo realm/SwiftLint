@@ -169,7 +169,7 @@ private extension ControlStatementRule {
 
 private extension ExprSyntax {
     var unwrapped: ExprSyntax? {
-        if let expr = self.as(TupleExprSyntax.self)?.elements.onlyElement?.expression {
+        if let expr = `as`(TupleExprSyntax.self)?.elements.onlyElement?.expression {
             return containsTrailingClosure(Syntax(expr)) ? nil : expr
         }
         return nil

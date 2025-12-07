@@ -20,7 +20,7 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
     private let trivialLinePattern = "((?:\\n[ \\t]*)+)(\\n[ \\t)}\\]]*$)"
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
-        let pattern = configuration.onlyEnforceBeforeTrivialLines ? self.trivialLinePattern : self.pattern
+        let pattern = configuration.onlyEnforceBeforeTrivialLines ? trivialLinePattern : pattern
 
         let patternRegex: NSRegularExpression = regex(pattern)
 
@@ -39,7 +39,7 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
     }
 
     func correct(file: SwiftLintFile) -> Int {
-        let pattern = configuration.onlyEnforceBeforeTrivialLines ? self.trivialLinePattern : self.pattern
+        let pattern = configuration.onlyEnforceBeforeTrivialLines ? trivialLinePattern : pattern
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
         guard violatingRanges.isNotEmpty else {
             return 0

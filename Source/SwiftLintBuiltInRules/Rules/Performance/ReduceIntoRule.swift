@@ -141,13 +141,11 @@ private extension FunctionCallExprSyntax {
 
 private extension ExprSyntax {
     var isCopyOnWriteType: Bool {
-        if self.is(StringLiteralExprSyntax.self) ||
-            self.is(DictionaryExprSyntax.self) ||
-            self.is(ArrayExprSyntax.self) {
+        if `is`(StringLiteralExprSyntax.self) || `is`(DictionaryExprSyntax.self) || `is`(ArrayExprSyntax.self) {
             return true
         }
 
-        if let expr = self.as(FunctionCallExprSyntax.self) {
+        if let expr = `as`(FunctionCallExprSyntax.self) {
             if let identifierExpr = expr.calledExpression.identifierExpr {
                 return identifierExpr.isCopyOnWriteType
             }
@@ -165,10 +163,10 @@ private extension ExprSyntax {
     }
 
     var identifierExpr: DeclReferenceExprSyntax? {
-        if let identifierExpr = self.as(DeclReferenceExprSyntax.self) {
+        if let identifierExpr = `as`(DeclReferenceExprSyntax.self) {
             return identifierExpr
         }
-        if let specializeExpr = self.as(GenericSpecializationExprSyntax.self) {
+        if let specializeExpr = `as`(GenericSpecializationExprSyntax.self) {
             return specializeExpr.expression.identifierExpr
         }
 

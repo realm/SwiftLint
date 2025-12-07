@@ -40,7 +40,7 @@ private extension ImplicitOptionalInitializationRule {
                 return super.visit(node)
             }
 
-            self.numberOfCorrections += 1
+            numberOfCorrections += 1
 
             return switch configuration.style {
             case .never:

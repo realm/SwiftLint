@@ -60,10 +60,10 @@ private extension AttributeListSyntax {
 
 private extension Syntax {
     var isFunctionOrStoredProperty: Bool {
-        if self.is(FunctionDeclSyntax.self) {
+        if `is`(FunctionDeclSyntax.self) {
             return true
         }
-        if let variableDecl = self.as(VariableDeclSyntax.self),
+        if let variableDecl = `as`(VariableDeclSyntax.self),
            variableDecl.bindings.allSatisfy({ $0.accessorBlock == nil }) {
             return true
         }
@@ -71,10 +71,10 @@ private extension Syntax {
     }
 
     var functionOrVariableModifiers: DeclModifierListSyntax? {
-        if let functionDecl = self.as(FunctionDeclSyntax.self) {
+        if let functionDecl = `as`(FunctionDeclSyntax.self) {
             return functionDecl.modifiers
         }
-        if let variableDecl = self.as(VariableDeclSyntax.self) {
+        if let variableDecl = `as`(VariableDeclSyntax.self) {
             return variableDecl.modifiers
         }
         return nil

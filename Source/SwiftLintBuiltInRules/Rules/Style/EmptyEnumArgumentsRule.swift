@@ -151,7 +151,7 @@ private extension EmptyEnumArgumentsRule {
 private extension PatternSyntax {
     func emptyEnumArgumentsViolation(rewrite: Bool) -> (position: AbsolutePosition, pattern: PatternSyntax)? {
         guard
-            var pattern = self.as(ExpressionPatternSyntax.self),
+            var pattern = `as`(ExpressionPatternSyntax.self),
             let expression = pattern.expression.as(FunctionCallExprSyntax.self),
             expression.argumentsHasViolation,
             let calledExpression = expression.calledExpression.as(MemberAccessExprSyntax.self),
@@ -195,8 +195,7 @@ private extension FunctionCallExprSyntax {
         if arguments.allSatisfy({ $0.expression.is(DiscardAssignmentExprSyntax.self) }) {
             let newCalledExpression = calledExpression
                 .with(\.trailingTrivia, rightParen?.trailingTrivia ?? Trivia())
-            let newExpression = self
-                .with(\.calledExpression, ExprSyntax(newCalledExpression))
+            let newExpression = with(\.calledExpression, ExprSyntax(newCalledExpression))
                 .with(\.leftParen, nil)
                 .with(\.arguments, [])
                 .with(\.rightParen, nil)
@@ -216,8 +215,7 @@ private extension FunctionCallExprSyntax {
 
 private extension ExprSyntax {
     var isDiscardAssignmentOrFunction: Bool {
-        self.is(DiscardAssignmentExprSyntax.self) ||
-            (self.as(FunctionCallExprSyntax.self)?.argumentsHasViolation == true)
+        `is`(DiscardAssignmentExprSyntax.self) || (`as`(FunctionCallExprSyntax.self)?.argumentsHasViolation == true)
     }
 }
 

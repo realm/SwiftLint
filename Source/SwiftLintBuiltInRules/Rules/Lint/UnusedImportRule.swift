@@ -214,14 +214,13 @@ private extension SwiftLintFile {
         }
 
         let operatorEntities = flatEntities(entity: index).filter { mightBeOperator(kind: $0.kind) }
-        let offsetPerLine = self.offsetPerLine()
+        let offsetPerLine = offsetPerLine()
         var imports = Set<String>()
 
         for entity in operatorEntities {
-            if
-                let line = entity.line,
-                let column = entity.column,
-                let lineOffset = offsetPerLine[Int(line) - 1] {
+            if let line = entity.line,
+               let column = entity.column,
+               let lineOffset = offsetPerLine[Int(line) - 1] {
                 let offset = lineOffset + column - 1
 
                 // Filter already processed tokens such as static methods that are not operators

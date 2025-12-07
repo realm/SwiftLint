@@ -168,7 +168,7 @@ private extension EmptyCountRule {
 
 private extension ExprSyntax {
     var isNonLocalCountIdentifier: Bool {
-        guard let declRef = self.as(DeclReferenceExprSyntax.self),
+        guard let declRef = `as`(DeclReferenceExprSyntax.self),
               declRef.argumentNames == nil,
               declRef.baseName.tokenKind == .identifier("count") else {
             return false
@@ -183,7 +183,7 @@ private extension ExprSyntax {
     }
 
     func countCallPosition(onlyAfterDot: Bool) -> AbsolutePosition? {
-        if let expr = self.as(MemberAccessExprSyntax.self) {
+        if let expr = `as`(MemberAccessExprSyntax.self) {
             if expr.declName.argumentNames == nil, expr.declName.baseName.tokenKind == .identifier("count") {
                 return expr.declName.baseName.positionAfterSkippingLeadingTrivia
             }
@@ -224,8 +224,7 @@ private extension ExprSyntaxProtocol {
 
 private extension SyntaxProtocol {
     func withTrivia(from node: some SyntaxProtocol) -> Self {
-        self
-            .with(\.leadingTrivia, node.leadingTrivia)
+        with(\.leadingTrivia, node.leadingTrivia)
             .with(\.trailingTrivia, node.trailingTrivia)
     }
 }
@@ -244,7 +243,7 @@ private extension InfixOperatorExprSyntax {
     }
 
     var binaryOperator: String? {
-        self.operator.as(BinaryOperatorExprSyntax.self)?.operator.binaryOperator
+        `operator`.as(BinaryOperatorExprSyntax.self)?.operator.binaryOperator
     }
 }
 

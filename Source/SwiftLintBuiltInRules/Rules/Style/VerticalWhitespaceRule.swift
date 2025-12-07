@@ -123,7 +123,7 @@ private extension VerticalWhitespaceRule {
                 consecutiveNewlines += count
 
                 if count > linesToPreserve {
-                    self.numberOfCorrections += count - linesToPreserve
+                    numberOfCorrections += count - linesToPreserve
                 }
 
                 if linesToPreserve > 0 {

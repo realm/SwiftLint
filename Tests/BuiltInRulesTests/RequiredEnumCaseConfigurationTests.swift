@@ -50,8 +50,8 @@ final class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
     }
 
     private func validateRulesExistForProtocol1() {
-        XCTAssertTrue(self.config.protocols[Self.protocol1]?.contains(Self.rule1) ?? false)
-        XCTAssertTrue(self.config.protocols[Self.protocol1]?.contains(Self.rule2) ?? false)
+        XCTAssertTrue(config.protocols[Self.protocol1]?.contains(Self.rule1) ?? false)
+        XCTAssertTrue(config.protocols[Self.protocol1]?.contains(Self.rule2) ?? false)
     }
 
     func testRegisterProtocolCasesRegistersCasesWithSpecifiedSeverity() {
@@ -60,8 +60,8 @@ final class RequiredEnumCaseConfigurationTests: SwiftLintTestCase {
     }
 
     private func validateRulesExistForProtocol3() {
-        XCTAssertTrue(self.config.protocols[Self.protocol3]?.contains(Self.rule3) ?? false)
-        XCTAssertTrue(self.config.protocols[Self.protocol3]?.contains(Self.rule2) ?? false)
+        XCTAssertTrue(config.protocols[Self.protocol3]?.contains(Self.rule3) ?? false)
+        XCTAssertTrue(config.protocols[Self.protocol3]?.contains(Self.rule2) ?? false)
     }
 
     func testRegisterProtocols() {

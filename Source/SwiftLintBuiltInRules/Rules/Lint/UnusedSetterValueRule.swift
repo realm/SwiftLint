@@ -170,10 +170,10 @@ private final class NewValueUsageVisitor: SyntaxVisitor {
 
 private extension Syntax {
     func closestVariableOrSubscript() -> Either<SubscriptDeclSyntax, VariableDeclSyntax>? {
-        if let subscriptDecl = self.as(SubscriptDeclSyntax.self) {
+        if let subscriptDecl = `as`(SubscriptDeclSyntax.self) {
             return .left(subscriptDecl)
         }
-        if let variableDecl = self.as(VariableDeclSyntax.self) {
+        if let variableDecl = `as`(VariableDeclSyntax.self) {
             return .right(variableDecl)
         }
 

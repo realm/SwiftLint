@@ -9,14 +9,14 @@ final class TodoRuleTests: SwiftLintTestCase {
 
     func testTodoMessage() {
         let example = Example("fatalError() // TODO: Implement")
-        let violations = self.violations(example)
+        let violations = violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement)")
     }
 
     func testFixMeMessage() {
         let example = Example("fatalError() // FIXME: Implement")
-        let violations = self.violations(example)
+        let violations = violations(example)
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement)")
     }
@@ -26,7 +26,7 @@ final class TodoRuleTests: SwiftLintTestCase {
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
         """)
-        let violations = self.violations(example, config: ["only": ["FIXME"]])
+        let violations = violations(example, config: ["only": ["FIXME"]])
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "FIXMEs should be resolved (Implement fixme)")
     }
@@ -36,7 +36,7 @@ final class TodoRuleTests: SwiftLintTestCase {
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
         """)
-        let violations = self.violations(example, config: ["only": ["TODO"]])
+        let violations = violations(example, config: ["only": ["TODO"]])
         XCTAssertEqual(violations.count, 1)
         XCTAssertEqual(violations.first!.reason, "TODOs should be resolved (Implement todo)")
     }

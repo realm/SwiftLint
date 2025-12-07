@@ -116,19 +116,19 @@ private struct DictionaryKey {
 
 private extension ExprSyntax {
     var stringContent: String? {
-        if let string = self.as(StringLiteralExprSyntax.self) {
+        if let string = `as`(StringLiteralExprSyntax.self) {
             return string.description
         }
-        if let int = self.as(IntegerLiteralExprSyntax.self) {
+        if let int = `as`(IntegerLiteralExprSyntax.self) {
             return int.description
         }
-        if let float = self.as(FloatLiteralExprSyntax.self) {
+        if let float = `as`(FloatLiteralExprSyntax.self) {
             return float.description
         }
-        if let memberAccess = self.as(MemberAccessExprSyntax.self) {
+        if let memberAccess = `as`(MemberAccessExprSyntax.self) {
             return memberAccess.description
         }
-        if let identifier = self.as(DeclReferenceExprSyntax.self) {
+        if let identifier = `as`(DeclReferenceExprSyntax.self) {
             return identifier.baseName.text
         }
 

@@ -93,7 +93,7 @@ private extension ExplicitEnumRawValueRule {
 
 private extension SyntaxProtocol {
     func enclosingEnum() -> EnumDeclSyntax? {
-        if let node = self.as(EnumDeclSyntax.self) {
+        if let node = `as`(EnumDeclSyntax.self) {
             return node
         }
 

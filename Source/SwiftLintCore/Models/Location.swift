@@ -32,9 +32,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
             return file
         }
 
-        return fileComponents.dropFirst(baseComponents.count).reduce(into: URL(filePath: "")) {
-            $0.append(component: $1)
-        }.relativePath
+        return fileComponents.dropFirst(baseComponents.count).joined(separator: "/")
     }
 
     /// Creates a `Location` by specifying its properties directly.

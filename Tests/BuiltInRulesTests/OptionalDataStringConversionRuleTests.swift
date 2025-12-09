@@ -1,3 +1,5 @@
+@testable import SwiftLintBuiltInRules
+import TestHelpers
 import XCTest
 
 final class OptionalDataStringConversionRuleTests: SwiftLintTestCase {

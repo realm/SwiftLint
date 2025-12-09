@@ -1,5 +1,5 @@
-import SwiftSyntax
 import Foundation
+import SwiftSyntax
 
 @SwiftSyntaxRule
 struct OptionalDataStringConversionRule: Rule {
@@ -85,11 +85,11 @@ private extension OptionalDataStringConversionRule {
                 violations.append(called.positionAfterSkippingLeadingTrivia)
             }
         }
-
+        
         override func visitPost(_ node: MemberAccessExprSyntax) {
             // Matches String.init(...) and .init(...) used with a variable typed as String
             guard node.declName.baseName.text == "init" else { return }
-            
+
             // Helper to validate the function-call shape and UTF8.self argument
             func parentCallLooksLikeDecodingAsUTF8(_ parentCall: FunctionCallExprSyntax?) -> Bool {
                 guard let parent = parentCall else { return false }
@@ -97,7 +97,7 @@ private extension OptionalDataStringConversionRule {
                 guard let expr = parent.arguments.last?.expression.as(MemberAccessExprSyntax.self) else { return false }
                 return expr.base?.description == "UTF8" && expr.declName.baseName.description == "self"
             }
-            
+
             // Case 1: String.init(decoding:as:)
             if let base = node.base?.as(DeclReferenceExprSyntax.self),
                base.baseName.text == "String",
@@ -105,30 +105,31 @@ private extension OptionalDataStringConversionRule {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
                 return
             }
-            
+
             // Case 2: .init(decoding:as:) where the type is provided by an explicit variable type annotation
             // Walk up ancestors to find a VariableDecl or PatternBinding with a type annotation of `String`
             if node.base == nil, // leading-dot init: `.init(...)`
                parentCallLooksLikeDecodingAsUTF8(node.parent?.as(FunctionCallExprSyntax.self)) {
-                var ancestor: Syntax? = node.parent
-                while let a = ancestor {
-                    if let varDecl = a.as(VariableDeclSyntax.self) {
+                var parent: Syntax? = node.parent
+                while let ancestor = parent {
+                    if let varDecl = ancestor.as(VariableDeclSyntax.self) {
                         // Check all bindings for a type annotation equal to `String`
                         if varDecl.bindings.contains(where: { binding in
-                            binding.typeAnnotation?.type.description.trimmingCharacters(in: .whitespacesAndNewlines) == "String"
+                            binding.typeAnnotation?.type.description
+                                .trimmingCharacters(in: .whitespacesAndNewlines) == "String"
                         }) {
                             violations.append(node.positionAfterSkippingLeadingTrivia)
                             return
                         }
                     }
-                    
-                    if let patternBinding = a.as(PatternBindingSyntax.self),
-                       patternBinding.typeAnnotation?.type.description.trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
+
+                    if let patternBinding = ancestor.as(PatternBindingSyntax.self),
+                       patternBinding.typeAnnotation?.type.description
+                        .trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
                         violations.append(node.positionAfterSkippingLeadingTrivia)
                         return
                     }
-                    
-                    ancestor = a.parent
+                    parent = ancestor.parent
                 }
             }
         }

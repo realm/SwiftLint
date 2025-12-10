@@ -1,3 +1,4 @@
+import Foundation
 import SwiftLintFramework
 import TestHelpers
 
@@ -7,7 +8,7 @@ import TestHelpers
 internal extension ConfigurationTests {
     enum Mock {
         // MARK: Test Resources Path
-        static let testResourcesPath: String = TestResources.path()
+        static let testResourcesPath: String = TestResources.path().resolvingSymlinksInPath().filepath
 
         // MARK: Directory Paths
         enum Dir {

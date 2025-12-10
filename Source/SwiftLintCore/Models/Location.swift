@@ -32,6 +32,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
             return file
         }
 
+        // TODO: this needs to be updated for Windows paths, together with other places where slash is used as a separator
         return fileComponents.dropFirst(baseComponents.count).joined(separator: "/")
     }
 

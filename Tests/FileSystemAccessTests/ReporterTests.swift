@@ -46,7 +46,7 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     private func stringFromFile(_ filename: String) -> String {
-        let path = URL(fileURLWithPath: TestResources.path()).appendingPathComponent(filename)
+        let path = TestResources.path().appendingPathComponent(filename)
         return SwiftLintFile(path: path.filepath)!.contents
     }
 
@@ -217,7 +217,7 @@ final class ReporterTests: SwiftLintTestCase {
         let convertedReference = try stringConverter(reference)
         let convertedReporterOutput = try stringConverter(reporterOutput)
         if convertedReference != convertedReporterOutput {
-            let referenceURL = URL(fileURLWithPath: TestResources.path()).appendingPathComponent(referenceFile)
+            let referenceURL = TestResources.path().appendingPathComponent(referenceFile)
             try reporterOutput.replacingOccurrences(
                 of: cwd,
                 with: "${CURRENT_WORKING_DIRECTORY}"

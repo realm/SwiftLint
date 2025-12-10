@@ -2,7 +2,7 @@
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory = "\(TestResources.path())/FileHeaderRuleFixtures"
+private let fixturesDirectory = "\(TestResources.path().filepath)/FileHeaderRuleFixtures"
 
 final class FileHeaderRuleTests: SwiftLintTestCase {
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {

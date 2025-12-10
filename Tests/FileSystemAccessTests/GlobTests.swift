@@ -6,7 +6,7 @@ import XCTest
 
 final class GlobTests: SwiftLintTestCase {
     private var mockPath: String {
-        TestResources.path().stringByAppendingPathComponent("ProjectMock")
+        TestResources.path().appendingPathComponent("ProjectMock").resolvingSymlinksInPath().filepath
     }
 
     func testNonExistingDirectory() {

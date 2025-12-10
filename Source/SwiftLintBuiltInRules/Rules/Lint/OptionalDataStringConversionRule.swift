@@ -16,6 +16,16 @@ struct OptionalDataStringConversionRule: Rule {
             Example("String(UTF8.self)"),
             Example("String(a, b, c, UTF8.self)"),
             Example("String(decoding: data, encoding: UTF8.self)"),
+            // Additional non-triggering examples to maximize coverage:
+            Example("String(data: data, encoding: .ascii)"),
+            Example("String(bytes: data, encoding: .utf16LittleEndian)"),
+            Example("String(decoding: data, as: UTF16.self)"),
+            Example("String.init(bytes: data, encoding: .utf8)"),
+            Example("let text: String = .init(bytes: data, encoding: .utf8)"),
+            Example("let text: String = .init(data)"),
+            Example("let n: Int = .init(0)"),
+            Example("String(repeating: \"a\", count: 3)"),
+            Example("String(format: \"%d\", 3)"),
         ],
         triggeringExamples: [
             Example("String(decoding: data, as: UTF8.self)"),

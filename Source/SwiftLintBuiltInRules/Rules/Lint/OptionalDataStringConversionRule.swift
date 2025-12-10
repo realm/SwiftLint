@@ -4,7 +4,7 @@ import SwiftSyntax
 @SwiftSyntaxRule
 struct OptionalDataStringConversionRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
-    
+
     static let description = RuleDescription(
         identifier: "optional_data_string_conversion",
         name: "Optional Data -> String Conversion",
@@ -41,7 +41,6 @@ private extension OptionalDataStringConversionRule {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             // Only consider calls with labels `decoding` and `as`
             guard node.arguments.map(\.label?.text) == ["decoding", "as"] else { return }
-
             // Check that the `as:` argument is `UTF8.self`
             guard let lastExpr = node.arguments.last?.expression.as(MemberAccessExprSyntax.self),
                   lastExpr.base?.description == "UTF8",
@@ -83,54 +82,6 @@ private extension OptionalDataStringConversionRule {
                binding.typeAnnotation?.type.description
                 .trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
                 violations.append(called.positionAfterSkippingLeadingTrivia)
-            }
-        }
-        
-        override func visitPost(_ node: MemberAccessExprSyntax) {
-            // Matches String.init(...) and .init(...) used with a variable typed as String
-            guard node.declName.baseName.text == "init" else { return }
-
-            // Helper to validate the function-call shape and UTF8.self argument
-            func parentCallLooksLikeDecodingAsUTF8(_ parentCall: FunctionCallExprSyntax?) -> Bool {
-                guard let parent = parentCall else { return false }
-                guard parent.arguments.map(\.label?.text) == ["decoding", "as"] else { return false }
-                guard let expr = parent.arguments.last?.expression.as(MemberAccessExprSyntax.self) else { return false }
-                return expr.base?.description == "UTF8" && expr.declName.baseName.description == "self"
-            }
-
-            // Case 1: String.init(decoding:as:)
-            if let base = node.base?.as(DeclReferenceExprSyntax.self),
-               base.baseName.text == "String",
-               parentCallLooksLikeDecodingAsUTF8(node.parent?.as(FunctionCallExprSyntax.self)) {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
-                return
-            }
-
-            // Case 2: .init(decoding:as:) where the type is provided by an explicit variable type annotation
-            // Walk up ancestors to find a VariableDecl or PatternBinding with a type annotation of `String`
-            if node.base == nil, // leading-dot init: `.init(...)`
-               parentCallLooksLikeDecodingAsUTF8(node.parent?.as(FunctionCallExprSyntax.self)) {
-                var parent: Syntax? = node.parent
-                while let ancestor = parent {
-                    if let varDecl = ancestor.as(VariableDeclSyntax.self) {
-                        // Check all bindings for a type annotation equal to `String`
-                        if varDecl.bindings.contains(where: { binding in
-                            binding.typeAnnotation?.type.description
-                                .trimmingCharacters(in: .whitespacesAndNewlines) == "String"
-                        }) {
-                            violations.append(node.positionAfterSkippingLeadingTrivia)
-                            return
-                        }
-                    }
-
-                    if let patternBinding = ancestor.as(PatternBindingSyntax.self),
-                       patternBinding.typeAnnotation?.type.description
-                        .trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
-                        violations.append(node.positionAfterSkippingLeadingTrivia)
-                        return
-                    }
-                    parent = ancestor.parent
-                }
             }
         }
     }

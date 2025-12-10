@@ -3,7 +3,7 @@ import SourceKittenFramework
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory = "\(TestResources.path())/FileNameNoSpaceRuleFixtures"
+private let fixturesDirectory = "\(TestResources.path().filepath)/FileNameNoSpaceRuleFixtures"
 
 final class FileNameNoSpaceRuleTests: SwiftLintTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil) throws -> [StyleViolation] {

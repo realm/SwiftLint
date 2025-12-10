@@ -3,7 +3,7 @@ import TestHelpers
 import XCTest
 
 private let fixturesDirectory =
-    URL(fileURLWithPath: TestResources.path()).appendingPathComponent("FileNameRuleFixtures").filepath
+    TestResources.path().appendingPathComponent("FileNameRuleFixtures").filepath
 
 final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String,

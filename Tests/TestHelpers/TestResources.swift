@@ -11,5 +11,6 @@ public enum TestResources {
         }
         return folder
             .appendingPathComponent("Resources")
+            .resolvingSymlinksInPath()
     }
 }

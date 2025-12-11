@@ -8,7 +8,7 @@ import TestHelpers
 internal extension ConfigurationTests {
     enum Mock {
         // MARK: Test Resources Path
-        static let testResourcesPath: String = TestResources.path().resolvingSymlinksInPath().filepath
+        static let testResourcesPath: String = TestResources.path().filepath
 
         // MARK: Directory Paths
         enum Dir {

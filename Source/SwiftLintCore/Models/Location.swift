@@ -23,17 +23,7 @@ public struct Location: CustomStringConvertible, Comparable, Codable, Sendable {
 
     /// The file path for this location relative to the current working directory.
     public var relativeFile: String? {
-        guard let file else { return nil }
-        let fileComponents = URL(fileURLWithPath: file).pathComponents
-        let baseComponents = URL(fileURLWithPath: FileManager.default.currentDirectoryPath, isDirectory: true)
-            .pathComponents
-
-        guard fileComponents.starts(with: baseComponents) else {
-            return file
-        }
-
-        // TODO: update for Windows paths, together with other places where slash is used as a separator
-        return fileComponents.dropFirst(baseComponents.count).joined(separator: "/")
+        file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
     }
 
     /// Creates a `Location` by specifying its properties directly.

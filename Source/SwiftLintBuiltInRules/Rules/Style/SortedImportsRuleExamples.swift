@@ -78,6 +78,19 @@ internal struct SortedImportsRuleExamples {
         @_exported @testable import BBB
           import AAA
         """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+        @_exported @testable import BBB
+          public import BBB
+          import AAA
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+        public import FFF
+        package import EEE
+        internal import DDD
+        fileprivate import CCC
+        private import BBB
+        import AAA
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ].skipMultiByteOffsetTests()
 
     static let triggeringExamples = [

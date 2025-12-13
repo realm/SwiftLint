@@ -78,6 +78,27 @@ internal struct SortedImportsRuleExamples {
         @_exported @testable import BBB
           import AAA
         """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+        @_exported @testable import BBB
+          public import BBB
+          import AAA
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+        public import FFF
+        package import EEE
+        internal import DDD
+        fileprivate import CCC
+        private import BBB
+        import AAA
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+        @_exported @testable public import BBB
+        @_exported @testable private import BBB
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+        @_exported public import BBB
+        @_exported @testable import BBB
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ].skipMultiByteOffsetTests()
 
     static let triggeringExamples = [
@@ -133,6 +154,18 @@ internal struct SortedImportsRuleExamples {
         Example("""
           import AAA
         @_exported @testable import ↓BBB
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+          import AAA
+          public import ↓BBB
+        """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
+        Example("""
+          import AAA
+          private import ↓BBB
+          fileprivate import ↓CCC
+          internal import ↓DDD
+          package import ↓EEE
+          public import ↓FFF
         """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ]
 
@@ -308,6 +341,30 @@ internal struct SortedImportsRuleExamples {
         """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
             @_exported @testable import BBB
               import AAA
+            """),
+        Example("""
+          public import AAA
+        @_exported @testable import BBB
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
+            @_exported @testable import BBB
+              public import AAA
+            """),
+        Example("""
+        import AAA
+        private import BBB
+        fileprivate import CCC
+        internal import DDD
+        package import EEE
+        // A comment that needs to be shifted along with the import
+        public import FFF
+        """, configuration: groupByAttributesConfiguration, testMultiByteOffsets: false): Example("""
+            // A comment that needs to be shifted along with the import
+            public import FFF
+            package import EEE
+            internal import DDD
+            fileprivate import CCC
+            private import BBB
+            import AAA
             """),
     ]
 }

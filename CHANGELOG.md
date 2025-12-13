@@ -67,6 +67,10 @@
 * `override_in_extension` no longer triggers inside `@objc @implementation` extensions.  
   [JaredGrubb](https://github.com/jaredgrubb)
 
+* Reinstate handling of access level imports in `sorted_imports` rule.
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6374](https://github.com/realm/SwiftLint/issues/6374)
+
 ## 0.62.2: Generous Drum Volume
 
 ### Breaking

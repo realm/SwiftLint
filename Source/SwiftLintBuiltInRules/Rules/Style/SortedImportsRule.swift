@@ -182,6 +182,7 @@ private struct Import: Comparable {
     let line: Int
     let offset: Int
     let attributes: String
+    let modifier: UInt8
 
     var violationPosition: AbsolutePosition {
         importDecl.path.positionAfterSkippingLeadingTrivia
@@ -202,12 +203,35 @@ private struct Import: Comparable {
             } else {
                 []
             }
+        let modifier: UInt8 =
+            if grouping == .attributes {
+                // As of (swift-syntax@604.0.0-prerelease-2025-12-15) the `importDecl.modifiers` documentation states:
+                // Modifiers that are attached to the import declaration.
+                // Currently, no modifiers are supported by Swift.
+                //
+                // This is incorrect, a single access level modifier is allowed when either or both:
+                // - Experimental Feature `AccessLevelOnImport` is enabled
+                // - Upcoming Feature `InternalImportsByDefault` is enabled
+                //
+                // https://github.com/swiftlang/swift-syntax/issues/3213
+                switch importDecl.modifiers.first?.name.text {
+                case "public": 1
+                case "package": 2
+                case "internal": 3
+                case "fileprivate": 4
+                case "private": 5
+                default: 0
+                }
+            } else {
+                0
+            }
         let startLine = locationConverter.location(for: importDecl.positionAfterSkippingLeadingTrivia).line
         return Self(
             importDecl: importDecl,
             line: startLine,
             offset: locationConverter.location(for: importDecl.path.endPositionBeforeTrailingTrivia).line - startLine,
-            attributes: attributes.joined()
+            attributes: attributes.joined(),
+            modifier: modifier
         )
     }
 
@@ -226,6 +250,12 @@ private struct Import: Comparable {
                 return false
             }
             return rhs.attributes.isEmpty || lhs.attributes < rhs.attributes
+        }
+        if lhs.modifier != rhs.modifier {
+            if lhs.modifier == 0 {
+                return false
+            }
+            return rhs.modifier == 0 || lhs.modifier < rhs.modifier
         }
         return lhs.symbol.caseInsensitiveCompare(rhs.symbol) == .orderedAscending
     }

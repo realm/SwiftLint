@@ -35,10 +35,10 @@ def swiftlint_repos(bzlmod = False):
 
     http_archive(
         name = "SwiftSyntax",
-        sha256 = "15a66c06ea36fbbdaddcd708da0a51994fbc5a1e80932af02259b976f9a17a42",
-        strip_prefix = "swift-syntax-603.0.0-prerelease-2025-10-30",
-        url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/603.0.0-prerelease-2025-10-30.tar.gz",
-        patches = ["@SwiftLint//bazel:SwiftSyntax.BUILD.bazel.patch"],
+        sha256 = "d7dcf414c7c597ee01478a39e19e59f076a35e7f4dc1434990c31331f6fdd22a",
+        strip_prefix = "swift-syntax-604.0.0-prerelease-2025-12-15",
+        url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/604.0.0-prerelease-2025-12-15.tar.gz",
+        patches = [],
         patch_args = ["-p1"],
     )
 

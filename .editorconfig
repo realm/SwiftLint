@@ -1,0 +1,5 @@
+root = true
+
+[*.swift]
+indent_style = space
+indent_size = 4

@@ -253,11 +253,8 @@ extension Configuration {
                 return files
             }
             let scriptInputPaths = files.compactMap(\.path)
-            return (
-                visitor.options.useExcludingByPrefix
-                    ? filterExcludedPathsByPrefix(in: scriptInputPaths)
-                    : filterExcludedPaths(in: scriptInputPaths)
-            ).map(SwiftLintFile.init(pathDeferringReading:))
+            return filteredPaths(in: scriptInputPaths, excludeByPrefix: visitor.options.useExcludingByPrefix)
+                .map(SwiftLintFile.init(pathDeferringReading:))
         }
         if !options.quiet {
             let filesInfo: String

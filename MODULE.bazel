@@ -18,6 +18,15 @@ bazel_dep(name = "swift_argument_parser", version = "1.7.0", repo_name = "SwiftA
 bazel_dep(name = "swift-filename-matcher", version = "2.0.1", repo_name = "FilenameMatcher")
 bazel_dep(name = "yams", version = "6.2.0", repo_name = "Yams")
 
+archive_override(
+    module_name = "yams",
+    urls = ["https://github.com/jpsim/Yams/archive/refs/tags/6.2.0.tar.gz"],
+    strip_prefix = "Yams-6.2.0",
+    integrity = "sha256-UnGMXmV3iaQBXhdiDgWdd2LzYmHDvvv8E6SXe3obnQg=",
+    patches = ["//bazel:Yams.BUILD.bazel.patch"],
+    patch_strip = 1,
+)
+
 swiftlint_repos = use_extension("//bazel:repos.bzl", "swiftlint_repos_bzlmod")
 use_repo(
     swiftlint_repos,

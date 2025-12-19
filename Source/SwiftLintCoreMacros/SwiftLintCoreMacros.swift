@@ -14,3 +14,10 @@ struct SwiftLintCoreMacros: CompilerPlugin {
         WorkingDirectory.self,
     ]
 }
+
+#if os(Windows)
+@_cdecl("main")
+public func main() {
+    try! SwiftLintCoreMacros.main()
+}
+#endif

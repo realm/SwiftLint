@@ -83,7 +83,8 @@ jobs:
             {
               "title": "${{ github.event.release.name }}",
               "tag": "${{ github.event.release.tag_name }}",
-              "checksum": "${{ steps.parse_checksum.outputs.checksum }}"
+              "checksum": "${{ steps.parse_checksum.outputs.checksum }}",
+              "prerelease": ${{ github.event.release.prerelease }}
             }
 
   bump-homebrew:

@@ -15,10 +15,10 @@ public struct Configuration {
 
     // MARK: Public Instance
     /// The paths that should be included when linting
-    public private(set) var includedPaths: [String]
+    public private(set) var includedPaths: [URL]
 
     /// The paths that should be excluded when linting
-    public private(set) var excludedPaths: [String]
+    public private(set) var excludedPaths: [URL]
 
     /// The style to use when indenting Swift source code.
     public let indentation: IndentationStyle
@@ -42,10 +42,10 @@ public struct Configuration {
     public let lenient: Bool
 
     /// The path to read a baseline from.
-    public let baseline: String?
+    public let baseline: URL?
 
     /// The path to write a baseline to.
-    public let writeBaseline: String?
+    public let writeBaseline: URL?
 
     /// Check for updates.
     public let checkForUpdates: Bool
@@ -63,7 +63,7 @@ public struct Configuration {
     /// By default, the root directory is the current working directory,
     /// but during some merging algorithms it may be used differently.
     /// The rootDirectory also serves as the stopping point when searching for nested configs along the file hierarchy.
-    public var rootDirectory: String { fileGraph.rootDirectory }
+    public var rootDirectory: URL { fileGraph.rootDirectory }
 
     /// The rules mode used for this configuration.
     public var rulesMode: RulesMode { rulesWrapper.mode }
@@ -78,8 +78,8 @@ public struct Configuration {
     internal init(
         rulesWrapper: RulesWrapper,
         fileGraph: FileGraph,
-        includedPaths: [String],
-        excludedPaths: [String],
+        includedPaths: [URL],
+        excludedPaths: [URL],
         indentation: IndentationStyle,
         warningThreshold: Int?,
         reporter: String?,
@@ -87,8 +87,8 @@ public struct Configuration {
         allowZeroLintableFiles: Bool,
         strict: Bool,
         lenient: Bool,
-        baseline: String?,
-        writeBaseline: String?,
+        baseline: URL?,
+        writeBaseline: URL?,
         checkForUpdates: Bool
     ) {
         self.rulesWrapper = rulesWrapper
@@ -158,8 +158,8 @@ public struct Configuration {
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
         ruleList: RuleList = RuleRegistry.shared.list,
         fileGraph: FileGraph? = nil,
-        includedPaths: [String] = [],
-        excludedPaths: [String] = [],
+        includedPaths: [URL] = [],
+        excludedPaths: [URL] = [],
         indentation: IndentationStyle = .default,
         warningThreshold: Int? = nil,
         reporter: String? = nil,
@@ -168,8 +168,8 @@ public struct Configuration {
         allowZeroLintableFiles: Bool = false,
         strict: Bool = false,
         lenient: Bool = false,
-        baseline: String? = nil,
-        writeBaseline: String? = nil,
+        baseline: URL? = nil,
+        writeBaseline: URL? = nil,
         checkForUpdates: Bool = false
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
@@ -186,9 +186,7 @@ public struct Configuration {
                 allRulesWrapped: allRulesWrapped ?? (try? ruleList.allRulesWrapped()) ?? [],
                 aliasResolver: { ruleList.identifier(for: $0) ?? $0 }
             ),
-            fileGraph: fileGraph ?? FileGraph(
-                rootDirectory: FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
-            ),
+            fileGraph: fileGraph ?? FileGraph(rootDirectory: URL.currentDirectory()),
             includedPaths: includedPaths,
             excludedPaths: excludedPaths,
             indentation: indentation,
@@ -217,12 +215,12 @@ public struct Configuration {
     /// - parameter useDefaultConfigOnFailure:  If this value is specified, it will override the normal behavior.
     ///                                         This is only intended for tests checking whether invalid configs fail.
     public init(
-        configurationFiles: [String], // No default value here to avoid ambiguous Configuration() initializer
+        configurationFiles: [URL], // No default value here to avoid ambiguous Configuration() initializer
         enableAllRules: Bool = false,
         onlyRule: [String] = [],
         cachePath: String? = nil,
         ignoreParentAndChildConfigs: Bool = false,
-        mockedNetworkResults: [String: String] = [:],
+        mockedNetworkResults: [URL: String] = [:],
         useDefaultConfigOnFailure: Bool? = nil // swiftlint:disable:this discouraged_optional_boolean
     ) {
         // Handle mocked network results if needed
@@ -235,10 +233,12 @@ public struct Configuration {
 
         // Store whether there are custom configuration files; use default config file name if there are none
         let hasCustomConfigurationFiles: Bool = configurationFiles.isNotEmpty
-        let configurationFiles = configurationFiles.isEmpty ? [Self.defaultFileName] : configurationFiles
+        let configurationFiles = configurationFiles.isEmpty
+            ? [URL(filePath: Self.defaultFileName)]
+            : configurationFiles
         defer { basedOnCustomConfigurationFiles = hasCustomConfigurationFiles }
 
-        let currentWorkingDirectory = FileManager.default.currentDirectoryPath.bridge().absolutePathStandardized()
+        let currentWorkingDirectory = URL.currentDirectory()
         let rulesMode: RulesMode = if enableAllRules {
             .allCommandLine
         } else if onlyRule.isNotEmpty {
@@ -292,14 +292,9 @@ public struct Configuration {
     }
 
     // MARK: - Methods: Internal
-    mutating func makeIncludedAndExcludedPaths(relativeTo newBasePath: String, previousBasePath: String) {
-        includedPaths = includedPaths.map {
-            $0.bridge().absolutePathRepresentation(rootDirectory: previousBasePath).path(relativeTo: newBasePath)
-        }
-
-        excludedPaths = excludedPaths.map {
-            $0.bridge().absolutePathRepresentation(rootDirectory: previousBasePath).path(relativeTo: newBasePath)
-        }
+    mutating func makeIncludedAndExcludedPaths(relativeTo newBasePath: URL, previousBasePath: URL) {
+        includedPaths = includedPaths.map { $0.relative(to: newBasePath) }
+        excludedPaths = excludedPaths.map { $0.relative(to: newBasePath) }
     }
 }
 

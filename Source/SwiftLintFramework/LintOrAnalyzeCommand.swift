@@ -30,9 +30,9 @@ package enum LintOrAnalyzeMode {
 
 package struct LintOrAnalyzeOptions {
     let mode: LintOrAnalyzeMode
-    let paths: [String]
+    let paths: [URL]
     let useSTDIN: Bool
-    let configurationFiles: [String]
+    let configurationFiles: [URL]
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
@@ -41,11 +41,11 @@ package struct LintOrAnalyzeOptions {
     let useScriptInputFileLists: Bool
     let benchmark: Bool
     let reporter: String?
-    let baseline: String?
-    let writeBaseline: String?
+    let baseline: URL?
+    let writeBaseline: URL?
     let workingDirectory: String?
     let quiet: Bool
-    let output: String?
+    let output: URL?
     let progress: Bool
     let cachePath: String?
     let ignoreCache: Bool
@@ -58,9 +58,9 @@ package struct LintOrAnalyzeOptions {
     let checkForUpdates: Bool
 
     package init(mode: LintOrAnalyzeMode,
-                 paths: [String],
+                 paths: [URL],
                  useSTDIN: Bool,
-                 configurationFiles: [String],
+                 configurationFiles: [URL],
                  strict: Bool,
                  lenient: Bool,
                  forceExclude: Bool,
@@ -69,11 +69,11 @@ package struct LintOrAnalyzeOptions {
                  useScriptInputFileLists: Bool,
                  benchmark: Bool,
                  reporter: String?,
-                 baseline: String?,
-                 writeBaseline: String?,
+                 baseline: URL?,
+                 writeBaseline: URL?,
                  workingDirectory: String?,
                  quiet: Bool,
-                 output: String?,
+                 output: URL?,
                  progress: Bool,
                  cachePath: String?,
                  ignoreCache: Bool,
@@ -271,7 +271,7 @@ package struct LintOrAnalyzeCommand {
         return StyleViolation(
             ruleDescription: description,
             severity: .error,
-            location: Location(file: "", line: 0, character: 0),
+            location: Location(file: nil, line: 0, character: 0),
             reason: "Number of warnings exceeded threshold of \(threshold).")
     }
 
@@ -390,7 +390,7 @@ private class LintOrAnalyzeResultBuilder {
 
         if let outFile = options.output {
             do {
-                try Data().write(to: URL(fileURLWithPath: outFile))
+                try Data().write(to: outFile)
             } catch {
                 Issue.fileNotWritable(path: outFile).print()
             }
@@ -415,8 +415,7 @@ extension LintOrAnalyzeOptions {
         }
 
         do {
-            let outFileURL = URL(fileURLWithPath: outFile)
-            let fileUpdater = try FileHandle(forUpdating: outFileURL)
+            let fileUpdater = try FileHandle(forUpdating: outFile)
             fileUpdater.seekToEndOfFile()
             fileUpdater.write(Data((string + "\n").utf8))
             fileUpdater.closeFile()

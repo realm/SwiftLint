@@ -76,17 +76,6 @@ public extension String {
         URL(fileURLWithPath: bridge().standardizingPath.absolutePathRepresentation()).filepath
     }
 
-    var isFile: Bool {
-        if isEmpty {
-            return false
-        }
-        var isDirectoryObjC: ObjCBool = false
-        if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
-            return !isDirectoryObjC.boolValue
-        }
-        return false
-    }
-
     /// Count the number of occurrences of the given character in `self`
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`

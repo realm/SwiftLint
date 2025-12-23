@@ -54,7 +54,7 @@ private extension SwiftLintFile {
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("swift")
             _ = try? contents.data(using: .utf8)!.write(to: url)
-            return SwiftLintFile(path: url.path, isTestFile: true)!
+            return SwiftLintFile(path: url, isTestFile: true)!
         }
         return SwiftLintFile(contents: contents, isTestFile: true)
     }
@@ -66,14 +66,14 @@ private extension SwiftLintFile {
             .deletingLastPathComponent()
             .appendingPathComponent("Library")
             .appendingPathComponent("Frameworks")
-            .path
+            .filepath
 
         let arguments = [
             "-F", frameworks,
             "-sdk", sdk,
             "-Xfrontend", "-enable-objc-interop",
             "-j4",
-            path!,
+            path!.filepath,
         ]
 #if os(Windows)
         let XCTestPath = URL(fileURLWithPath: sdk, isDirectory: true)
@@ -274,7 +274,7 @@ private extension Configuration {
             file: before.file, line: before.line)
         let path = file.path!
         do {
-            let corrected = try String(contentsOfFile: path, encoding: .utf8)
+            let corrected = try String(contentsOf: path, encoding: .utf8)
             XCTAssertEqual(
                 corrected,
                 expected.code,

@@ -410,7 +410,10 @@ public struct CollectedLinter {
 
         if file.parserDiagnostics.isNotEmpty {
             queuedPrintError(
-                "warning: Skipping correcting file because it produced Swift parser errors: \(file.path ?? "<nopath>")"
+                """
+                warning: Skipping correcting file '\(file.path?.filepath ?? "<nopath>")' \
+                because it produced Swift parser errors
+                """
             )
             queuedPrintError(toJSON(["diagnostics": file.parserDiagnostics]))
             return [:]

@@ -2,11 +2,11 @@
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory = "\(TestResources.path().filepath)/FileHeaderRuleFixtures"
+private let fixturesDirectory = TestResources.path().appending(component: "FileHeaderRuleFixtures")
 
 final class FileHeaderRuleTests: SwiftLintTestCase {
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {
-        let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
+        let file = SwiftLintFile(path: fixturesDirectory.appending(component: fileName))!
         let rule = try FileHeaderRule(configuration: configuration)
         return rule.validate(file: file)
     }

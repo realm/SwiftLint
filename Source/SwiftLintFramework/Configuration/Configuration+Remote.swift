@@ -28,20 +28,20 @@ internal extension Configuration.FileGraph.FilePath {
 
     /// This dictionary has URLs as its keys and contents of those URLs as its values
     /// In production mode, this should be empty. For tests, it may be filled.
-    static var mockedNetworkResults: [String: String] = [:]
+    static var mockedNetworkResults: [URL: String] = [:]
 
     // MARK: - Methods: Resolving
     mutating func resolve(
         remoteConfigTimeout: Double,
         remoteConfigTimeoutIfCached: Double
-    ) throws -> String {
+    ) throws -> URL {
         switch self {
         case let .existing(path):
             return path
 
-        case let .promised(urlString):
+        case let .promised(url):
             return try resolve(
-                urlString: urlString,
+                url: url,
                 remoteConfigTimeout: remoteConfigTimeout,
                 remoteConfigTimeoutIfCached: remoteConfigTimeoutIfCached
             )
@@ -49,25 +49,20 @@ internal extension Configuration.FileGraph.FilePath {
     }
 
     private mutating func resolve(
-        urlString: String,
+        url: URL,
         remoteConfigTimeout: Double,
         remoteConfigTimeoutIfCached: Double
-    ) throws -> String {
+    ) throws -> URL {
         // Always use top level as root directory for remote files
-        let rootDirectory = FileManager.default.currentDirectoryPath.bridge().standardizingPath
+        let rootDirectory = URL.currentDirectory()
 
         // Get cache path
-        let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: rootDirectory)
+        let cachedFilePath = getCachedFilePath(url: url, rootDirectory: rootDirectory)
 
         let configString: String
-        if let mockedValue = Configuration.FileGraph.FilePath.mockedNetworkResults[urlString] {
+        if let mockedValue = Configuration.FileGraph.FilePath.mockedNetworkResults[url] {
             configString = mockedValue
         } else {
-            // Handle wrong url format
-            guard let url = URL(string: urlString) else {
-                throw Issue.genericWarning("Invalid configuration entry: \"\(urlString)\" isn't a valid url.")
-            }
-
             // Load from url
             var taskResult: (Data?, URLResponse?, (any Error)?)
             var taskDone = false
@@ -101,7 +96,7 @@ internal extension Configuration.FileGraph.FilePath {
                 let configStr = (taskResult.0.flatMap { String(data: $0, encoding: .utf8) })
             else {
                 return try handleWrongData(
-                    urlString: urlString,
+                    url: url,
                     cachedFilePath: cachedFilePath,
                     taskDone: taskDone,
                     timeout: timeout
@@ -112,8 +107,8 @@ internal extension Configuration.FileGraph.FilePath {
         }
 
         // Handle file write failure
-        guard let filePath = cache(configString: configString, from: urlString, rootDirectory: rootDirectory) else {
-            return try handleFileWriteFailure(urlString: urlString, cachedFilePath: cachedFilePath)
+        guard let filePath = cache(configString: configString, from: url, rootDirectory: rootDirectory) else {
+            return try handleFileWriteFailure(url: url, cachedFilePath: cachedFilePath)
         }
 
         // Handle success
@@ -122,20 +117,24 @@ internal extension Configuration.FileGraph.FilePath {
     }
 
     private mutating func handleWrongData(
-        urlString: String,
-        cachedFilePath: String?,
+        url: URL,
+        cachedFilePath: URL?,
         taskDone: Bool,
         timeout: TimeInterval
-    ) throws -> String {
+    ) throws -> URL {
         if let cachedFilePath {
             if taskDone {
                 queuedPrintError(
-                    "warning: Unable to load remote config from \"\(urlString)\". Using cached version as a fallback."
+                    """
+                    warning: Unable to load remote config from '\(url.filepath)'. Using cached version as a fallback.
+                    """
                 )
             } else {
                 queuedPrintError(
-                    "warning: Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "
-                        + "Using cached version as a fallback."
+                    """
+                    warning: Timeout (\(timeout) sec): Unable to load remote config from '\(url.filepath)'. \
+                    Using cached version as a fallback.
+                    """
                 )
             }
 
@@ -144,36 +143,36 @@ internal extension Configuration.FileGraph.FilePath {
         }
         if taskDone {
             throw Issue.genericWarning(
-                "Unable to load remote config from \"\(urlString)\". "
+                "Unable to load remote config from '\(url.filepath)'. "
                     + "Also didn't found cached version to fallback to."
             )
         }
         throw Issue.genericWarning(
-            "Timeout (\(timeout) sec): Unable to load remote config from \"\(urlString)\". "
+            "Timeout (\(timeout) sec): Unable to load remote config from '\(url.filepath)'. "
                 + "Also didn't found cached version to fallback to."
         )
     }
 
-    private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: String?) throws -> String {
+    private mutating func handleFileWriteFailure(url: URL, cachedFilePath: URL?) throws -> URL {
         if let cachedFilePath {
             queuedPrintError(
-                "warning: Unable to cache remote config from \"\(urlString)\". Using cached version as a fallback."
+                "warning: Unable to cache remote config from \"\(url.filepath)\". Using cached version as a fallback."
             )
             self = .existing(path: cachedFilePath)
             return cachedFilePath
         }
         throw Issue.genericWarning(
-            "Unable to cache remote config from \"\(urlString)\". Also didn't found cached version to fallback to."
+            "Unable to cache remote config from \"\(url.filepath)\". Also cannot find cached version to fallback to."
         )
     }
 
     // MARK: Caching
-    private func getCachedFilePath(urlString: String, rootDirectory: String) -> String? {
-        let path = filePath(for: urlString, rootDirectory: rootDirectory)
-        return FileManager.default.fileExists(atPath: path) ? path : nil
+    private func getCachedFilePath(url: URL, rootDirectory: URL) -> URL? {
+        let path = filePath(for: url, rootDirectory: rootDirectory)
+        return path.exists ? path : nil
     }
 
-    private func cache(configString: String, from urlString: String, rootDirectory: String) -> String? {
+    private func cache(configString: String, from url: URL, rootDirectory: URL) -> URL? {
         // Do cache maintenance
         do {
             try maintainRemoteConfigCache(rootDirectory: rootDirectory)
@@ -186,28 +185,28 @@ internal extension Configuration.FileGraph.FilePath {
         formatter.dateFormat = "dd/MM/yyyy 'at' HH:mm:ss"
         let configString =
             "#\n"
-            + "# Automatically downloaded from \(urlString) by SwiftLint on \(formatter.string(from: Date())).\n"
+            + "# Automatically downloaded from \(url.filepath) by SwiftLint on \(formatter.string(from: Date())).\n"
             + "#\n"
             + configString
 
         // Create file
-        let path = filePath(for: urlString, rootDirectory: rootDirectory)
+        let path = filePath(for: url, rootDirectory: rootDirectory)
         return FileManager.default.createFile(
-            atPath: path,
+            atPath: path.filepath,
             contents: Data(configString.utf8),
             attributes: [:]
         ) ? path : nil
     }
 
-    private func filePath(for urlString: String, rootDirectory: String) -> String {
+    private func filePath(for url: URL, rootDirectory: URL) -> URL {
         let invalidCharacters = [":", "<", ">", "\"", "/", "\\", "|", "?", "*"]
-        var adjustedUrlString = urlString
+        var adjustedUrlString = url.filepath
         for char in invalidCharacters {
             adjustedUrlString = adjustedUrlString.replacingOccurrences(of: char, with: "_")
         }
         adjustedUrlString = adjustedUrlString.trimmingCharacters(in: CharacterSet(charactersIn: "."))
         let path = Configuration.FileGraph.FilePath.versionedRemoteCachePath + "/\(adjustedUrlString).yml"
-        return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+        return URL(fileURLWithPath: path, relativeTo: rootDirectory)
     }
 
     /// As a safeguard, this method only works when there are mocked network results.
@@ -223,20 +222,22 @@ internal extension Configuration.FileGraph.FilePath {
         }
     }
 
-    private func maintainRemoteConfigCache(rootDirectory: String) throws {
+    private func maintainRemoteConfigCache(rootDirectory: URL) throws {
         // Create directory if needed
-        let directory = Configuration.FileGraph.FilePath.versionedRemoteCachePath
-            .bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
-        if !FileManager.default.fileExists(atPath: directory) {
-            try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
+        let directory = URL(
+            filePath: Configuration.FileGraph.FilePath.versionedRemoteCachePath,
+            relativeTo: rootDirectory
+        )
+        if !directory.exists {
+            try FileManager.default.createDirectory(atPath: directory.filepath, withIntermediateDirectories: true)
         }
 
         // Delete all cache folders except for the current version's folder
-        let directoryWithoutVersionNum = directory.components(separatedBy: "/").dropLast().joined(separator: "/")
-        try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum)).forEach {
+        let directoryWithoutVersionNum = directory.deletingLastPathComponent()
+        try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum.filepath)).forEach {
             if !$0.contains("/"), $0 != Configuration.FileGraph.FilePath.remoteCacheVersionNumber {
-                try FileManager.default.removeItem(atPath:
-                    $0.bridge().absolutePathRepresentation(rootDirectory: directoryWithoutVersionNum)
+                try FileManager.default.removeItem(
+                    atPath: URL(filePath: $0, relativeTo: directoryWithoutVersionNum).filepath
                 )
             }
         }

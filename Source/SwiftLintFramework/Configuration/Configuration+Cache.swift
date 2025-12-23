@@ -62,7 +62,7 @@ extension Configuration {
         let cacheRulesDescriptions = rules
             .map { rule in [type(of: rule).identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
-        let jsonObject: [Any] = [rootDirectory, cacheRulesDescriptions]
+        let jsonObject: [Any] = [rootDirectory.filepath, cacheRulesDescriptions]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
             return jsonData.sha256().toHexString()
         }

@@ -8,7 +8,7 @@ extension Configuration {
     // MARK: - Methods: Merging
     package func merged(
         withChild childConfiguration: Configuration,
-        rootDirectory: String = ""
+        rootDirectory: URL = URL.currentDirectory()
     ) -> Configuration {
         let mergedIncludedAndExcluded = mergedIncludedAndExcluded(
             with: childConfiguration,
@@ -33,35 +33,22 @@ extension Configuration {
         )
     }
 
-    private func mergedIncludedAndExcluded(
-        with childConfiguration: Configuration,
-        rootDirectory: String
-    ) -> (includedPaths: [String], excludedPaths: [String]) {
-        // Render paths relative to their respective root paths → makes them comparable
-        let childConfigIncluded = childConfiguration.includedPaths.map {
-            $0.bridge().absolutePathRepresentation(rootDirectory: childConfiguration.rootDirectory)
-        }
-
-        let childConfigExcluded = childConfiguration.excludedPaths.map {
-            $0.bridge().absolutePathRepresentation(rootDirectory: childConfiguration.rootDirectory)
-        }
-
-        let parentConfigIncluded = includedPaths.map {
-            $0.bridge().absolutePathRepresentation(rootDirectory: self.rootDirectory)
-        }
-
-        let parentConfigExcluded = excludedPaths.map {
-            $0.bridge().absolutePathRepresentation(rootDirectory: self.rootDirectory)
-        }
+    private func mergedIncludedAndExcluded(with childConfiguration: Configuration,
+                                           rootDirectory: URL) -> (includedPaths: [URL], excludedPaths: [URL]) {
+        let childConfigIncluded = childConfiguration.includedPaths
+        let childConfigExcluded = childConfiguration.excludedPaths
 
         // Prefer child configuration over parent configuration
-        let includedPaths = parentConfigIncluded.filter { !childConfigExcluded.contains($0) } + childConfigIncluded
-        let excludedPaths = parentConfigExcluded.filter { !childConfigIncluded.contains($0) } + childConfigExcluded
+        let includedPaths = includedPaths.filter { includePath in
+            !childConfigExcluded.contains(includePath)
+        }
+        let excludedPaths = excludedPaths.filter { excludePath in
+            !childConfigIncluded.contains(excludePath)
+        }
 
-        // Return paths relative to the provided root directory
         return (
-            includedPaths: includedPaths.map { $0.path(relativeTo: rootDirectory) },
-            excludedPaths: excludedPaths.map { $0.path(relativeTo: rootDirectory) }
+            includedPaths: includedPaths + childConfigIncluded,
+            excludedPaths: excludedPaths + childConfigExcluded
         )
     }
 
@@ -85,16 +72,15 @@ extension Configuration {
     ///
     /// - returns: A new configuration.
     public func configuration(for file: SwiftLintFile) -> Configuration {
-        (file.path?.bridge().deletingLastPathComponent).map(configuration(forDirectory:)) ?? self
+        (file.path?.deletingLastPathComponent()).map(configuration(forDirectory:)) ?? self
     }
 
-    private func configuration(forDirectory directory: String) -> Configuration {
+    private func configuration(forDirectory directory: URL) -> Configuration {
         // If the configuration was explicitly specified via the `--config` param, don't use nested configs
         guard !basedOnCustomConfigurationFiles else { return self }
 
-        let directoryNSString = directory.bridge()
-        let configurationSearchPath = directoryNSString.appendingPathComponent(Self.defaultFileName)
-        let cacheIdentifier = "nestedPath" + rootDirectory + configurationSearchPath
+        let configurationSearchPath = directory.appending(component: Self.defaultFileName)
+        let cacheIdentifier = "nestedPath" + rootDirectory.path + configurationSearchPath.path
 
         if Self.getIsNestedConfigurationSelf(forIdentifier: cacheIdentifier) == true {
             return self
@@ -107,9 +93,7 @@ extension Configuration {
         if directory == rootDirectory {
             // Use self if at level self
             config = self
-        } else if
-            FileManager.default.fileExists(atPath: configurationSearchPath),
-            !fileGraph.includesFile(atPath: configurationSearchPath) {
+        } else if configurationSearchPath.exists, !fileGraph.includesFile(atPath: configurationSearchPath) {
             // Use self merged with the nested config that was found
             // iff that nested config has not already been used to build the main config
 
@@ -123,9 +107,9 @@ extension Configuration {
 
             // Cache merged result to circumvent heavy merge recomputations
             config.setCached(forIdentifier: cacheIdentifier)
-        } else if directory != "/" {
+        } else if directory.path != "/" {
             // If we are not at the root path, continue down the tree
-            config = configuration(forDirectory: directoryNSString.deletingLastPathComponent)
+            config = configuration(forDirectory: directory.deletingLastPathComponent())
         } else {
             // Fallback to self
             config = self

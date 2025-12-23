@@ -5,85 +5,81 @@ import XCTest
 @testable import SwiftLintFramework
 
 final class GlobTests: SwiftLintTestCase {
-    private var mockPath: String {
-        TestResources.path().appendingPathComponent("ProjectMock").filepath
-    }
+    private let mockPath = TestResources.path().appending(path: "ProjectMock")
 
     func testNonExistingDirectory() {
-        XCTAssertTrue(Glob.resolveGlob("./bar/**").isEmpty)
+        XCTAssertTrue(Glob.resolveGlob("./bar/**".url).isEmpty)
     }
 
     func testOnlyGlobForWildcard() {
-        let files = Glob.resolveGlob("foo/bar.swift")
-        XCTAssertEqual(files, ["foo/bar.swift"])
+        let files = Glob.resolveGlob("foo/bar.swift".url)
+        XCTAssertEqual(files, ["foo/bar.swift".url])
     }
 
     func testNoMatchReturnsEmpty() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("NoFile*.swift"))
+        let files = Glob.resolveGlob(mockPath.appending(path: "NoFile*.swift"))
         XCTAssertTrue(files.isEmpty)
     }
 
     func testMatchesFiles() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level*.swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level*.swift"))
+        XCTAssertEqual(files, [mockPath.appending(path: "Level0.swift")])
     }
 
     func testMatchesSingleCharacter() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level?.swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level?.swift"))
+        XCTAssertEqual(files, [mockPath.appending(path: "Level0.swift")])
     }
 
     func testMatchesOneCharacterInBracket() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[01].swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level[01].swift"))
+        XCTAssertEqual(files, [mockPath.appending(path: "Level0.swift")])
     }
 
     func testNoMatchOneCharacterInBracket() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[ab].swift"))
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level[ab].swift"))
         XCTAssertTrue(files.isEmpty)
     }
 
     func testMatchesCharacterInRange() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[0-9].swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level[0-9].swift"))
+        XCTAssertEqual(files, [mockPath.appending(path: "Level0.swift")])
     }
 
     func testNoMatchCharactersInRange() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level[a-z].swift"))
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level[a-z].swift"))
         XCTAssertTrue(files.isEmpty)
     }
 
     func testMatchesMultipleFiles() {
-        let expectedFiles: Set = [
-            mockPath.stringByAppendingPathComponent("Level0.swift"),
-            mockPath.stringByAppendingPathComponent("Directory.swift"),
+        let expectedFiles = [
+            mockPath.appending(path: "Level0.swift"),
+            mockPath.appending(path: "Directory.swift/"),
         ]
 
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("*.swift"))
-        XCTAssertEqual(files.sorted(), expectedFiles.sorted())
+        let files = Glob.resolveGlob(mockPath.appending(path: "*.swift"))
+        AssertEqualInAnyOder(files, expectedFiles)
     }
 
     func testMatchesNestedDirectory() {
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level1/*.swift"))
-        XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level1/Level1.swift")])
+        let files = Glob.resolveGlob(mockPath.appending(path: "Level1/*.swift"))
+        XCTAssertEqual(files, [mockPath.appending(path: "Level1/Level1.swift")])
     }
 
     func testGlobstarSupport() {
-        let expectedFiles = Set(
-            [
-                "Directory.swift",
-                "Directory.swift/DirectoryLevel1.swift",
-                "Level0.swift",
-                "Level1/Level1.swift",
-                "Level1/Level2/Level2.swift",
-                "Level1/Level2/Level3/Level3.swift",
-                "NestedConfig/Test/Main.swift",
-                "NestedConfig/Test/Sub/Sub.swift",
-            ].map(mockPath.stringByAppendingPathComponent)
-        )
+        let expectedFiles = [
+            "Directory.swift/",
+            "Directory.swift/DirectoryLevel1.swift",
+            "Level0.swift",
+            "Level1/Level1.swift",
+            "Level1/Level2/Level2.swift",
+            "Level1/Level2/Level3/Level3.swift",
+            "NestedConfig/Test/Main.swift",
+            "NestedConfig/Test/Sub/Sub.swift",
+        ].map { mockPath.appending(path: $0) }
 
-        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("**/*.swift"))
-        XCTAssertEqual(files.sorted(), expectedFiles.sorted())
+        let files = Glob.resolveGlob(mockPath.appending(path: "**/*.swift"))
+        AssertEqualInAnyOder(files, expectedFiles)
     }
 
     func testCreateFilenameMatchers() {
@@ -111,5 +107,13 @@ final class GlobTests: SwiftLintTestCase {
         assertGlobMatch(pattern: "/a/**", filename: "/a/b/c/d.swift")
         assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/c/MyTest2.swift")
         assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/MyTests/c.swift")
+    }
+
+    // swiftlint:disable:next identifier_name
+    private func AssertEqualInAnyOder(_ lhs: [URL], _ rhs: [URL], file: StaticString = #filePath, line: UInt = #line) {
+        func compare(lhs: URL, rhs: URL) -> Bool {
+            lhs.path < rhs.path
+        }
+        XCTAssertEqual(lhs.sorted(by: compare), rhs.sorted(by: compare), file: file, line: line)
     }
 }

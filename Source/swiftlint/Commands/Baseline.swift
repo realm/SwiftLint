@@ -13,7 +13,7 @@ extension SwiftLint {
 
     private struct BaselineOptions: ParsableArguments {
         @Argument(help: "The path to the baseline file.")
-        var baseline: String
+        var baseline: URL
     }
 
     private struct ReportingOptions: ParsableArguments {
@@ -25,7 +25,7 @@ extension SwiftLint {
         )
         var reporter: String?
         @Option(help: "The file where violations should be saved. Prints to stdout by default.")
-        var output: String?
+        var output: URL?
     }
 
     private struct Report: ParsableCommand {
@@ -56,7 +56,7 @@ extension SwiftLint {
                   the second baseline that are not present in the original baseline will be reported.
                   """
         )
-        var otherBaseline: String
+        var otherBaseline: URL
         @OptionGroup
         var reportingOptions: ReportingOptions
 
@@ -68,14 +68,14 @@ extension SwiftLint {
     }
 }
 
-private func report(_ violations: [StyleViolation], using reporterIdentifier: String?, to output: String?) {
+private func report(_ violations: [StyleViolation], using reporterIdentifier: String?, to output: URL?) {
     let reporter = reporterFrom(identifier: reporterIdentifier)
     let report = reporter.generateReport(violations)
     if report.isNotEmpty {
         if let output {
             let data = Data((report + "\n").utf8)
             do {
-                try data.write(to: URL(fileURLWithPath: output))
+                try data.write(to: output)
             } catch {
                 Issue.fileNotWritable(path: output).print()
             }

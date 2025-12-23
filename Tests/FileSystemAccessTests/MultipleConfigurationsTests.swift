@@ -13,7 +13,22 @@ private extension Configuration {
 }
 
 // swiftlint:disable:next type_body_length
-extension ConfigurationTests {
+final class MultipleConfigurationsTests: SwiftLintTestCase {
+    // MARK: Setup & Teardown
+    private var previousWorkingDir: String! // swiftlint:disable:this implicitly_unwrapped_optional
+
+    override func setUp() {
+        super.setUp()
+        Configuration.resetCache()
+        previousWorkingDir = FileManager.default.currentDirectoryPath
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.level0.filepath))
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(previousWorkingDir))
+    }
+
     // MARK: - Rules Merging
     func testMerge() {
         let config0Merge2 = Mock.Config._0.merged(withChild: Mock.Config._2)
@@ -102,7 +117,7 @@ extension ConfigurationTests {
     func testCustomRulesMerging() {
         let mergedConfiguration = Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRules,
-            rootDirectory: ""
+            rootDirectory: URL.currentDirectory()
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
@@ -120,7 +135,7 @@ extension ConfigurationTests {
     func testMergingAllowsDisablingParentsCustomRules() {
         let mergedConfiguration = Mock.Config._0CustomRules.merged(
             withChild: Mock.Config._2CustomRulesDisabled,
-            rootDirectory: ""
+            rootDirectory: URL.currentDirectory()
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
@@ -141,7 +156,7 @@ extension ConfigurationTests {
         // => all custom rules should be considered
         let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRules,
-            rootDirectory: ""
+            rootDirectory: URL.currentDirectory()
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
@@ -163,7 +178,7 @@ extension ConfigurationTests {
         // (because custom rules from base configuration would require explicit mention as one of the `only_rules`)
         let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRulesOnly,
-            rootDirectory: ""
+            rootDirectory: URL.currentDirectory()
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
@@ -182,7 +197,7 @@ extension ConfigurationTests {
         // Custom Rule severity gets reconfigured to "error"
         let mergedConfiguration = Mock.Config._0CustomRulesOnly.merged(
             withChild: Mock.Config._2CustomRulesReconfig,
-            rootDirectory: ""
+            rootDirectory: URL.currentDirectory()
         )
         guard let mergedCustomRules = mergedConfiguration.rules.customRules
             else {
@@ -259,22 +274,22 @@ extension ConfigurationTests {
         }
 
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
 
             assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["main.yml"]),
-                Configuration(configurationFiles: ["expected.yml"])
+                Configuration(configurationFiles: ["main.yml".url]),
+                Configuration(configurationFiles: ["expected.yml".url])
             )
         }
     }
 
     func testValidParentConfig() {
         for path in [Mock.Dir.parentConfigTest1, Mock.Dir.parentConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
 
             assertEqualExceptForFileGraph(
-                Configuration(configurationFiles: ["main.yml"]),
-                Configuration(configurationFiles: ["expected.yml"])
+                Configuration(configurationFiles: ["main.yml".url]),
+                Configuration(configurationFiles: ["expected.yml".url])
             )
         }
     }
@@ -285,13 +300,17 @@ extension ConfigurationTests {
         }
 
         for path in [Mock.Dir.childConfigTest1, Mock.Dir.childConfigTest2] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
 
             assertEqualExceptForFileGraph(
                 Configuration(
-                    configurationFiles: ["main.yml", "child1.yml", "child2.yml"]
+                    configurationFiles: [
+                        "main.yml".url,
+                        "child1.yml".url,
+                        "child2.yml".url,
+                    ]
                 ),
-                Configuration(configurationFiles: ["expected.yml"])
+                Configuration(configurationFiles: ["expected.yml".url])
             )
         }
     }
@@ -305,7 +324,7 @@ extension ConfigurationTests {
             Mock.Dir.parentConfigCycle2,
             Mock.Dir.parentConfigCycle3,
         ] {
-            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path))
+            XCTAssert(FileManager.default.changeCurrentDirectoryPath(path.filepath))
 
             // If the cycle is properly detected, the config should equal the default config.
             XCTAssertEqual(
@@ -316,12 +335,12 @@ extension ConfigurationTests {
     }
 
     func testCommandLineConfigsCycleDetection() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4))
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.childConfigCycle4.filepath))
 
         // If the cycle is properly detected, the config should equal the default config.
         assertEqualExceptForFileGraph(
             Configuration(
-                configurationFiles: ["main.yml", "child.yml"],
+                configurationFiles: ["main.yml".url, "child.yml".url],
                 useDefaultConfigOnFailure: true
             ),
             Configuration()
@@ -547,13 +566,13 @@ extension ConfigurationTests {
 
     // MARK: - Remote Configs
     func testValidRemoteChildConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild))
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigChild.filepath))
 
         assertEqualExceptForFileGraph(
             Configuration(
-                configurationFiles: ["main.yml"],
+                configurationFiles: ["main.yml".url],
                 mockedNetworkResults: [
-                    "https://www.mock.com":
+                    URL(string: "https://www.mock.com")!:
                     """
                     included:
                       - Test/Test1/Test/Test
@@ -561,18 +580,18 @@ extension ConfigurationTests {
                     """,
                 ]
             ),
-            Configuration(configurationFiles: ["expected.yml"])
+            Configuration(configurationFiles: ["expected.yml".url])
         )
     }
 
     func testValidRemoteParentConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent))
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigParent.filepath))
 
         assertEqualExceptForFileGraph(
             Configuration(
-                configurationFiles: ["main.yml"],
+                configurationFiles: ["main.yml".url],
                 mockedNetworkResults: [
-                    "https://www.mock.com":
+                    URL(string: "https://www.mock.com")!:
                     """
                     included:
                       - Test/Test1
@@ -586,19 +605,19 @@ extension ConfigurationTests {
                     """,
                 ]
             ),
-            Configuration(configurationFiles: ["expected.yml"])
+            Configuration(configurationFiles: ["expected.yml".url])
         )
     }
 
     func testsRemoteConfigNotAllowedToReferenceLocalConfig() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef))
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigLocalRef.filepath))
 
         // If the remote file is not allowed to reference a local file, the config should equal the default config.
         XCTAssertEqual(
             Configuration(
                 configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
                 mockedNetworkResults: [
-                    "https://www.mock.com":
+                    URL(string: "https://www.mock.com")!:
                     """
                     line_length: 60
 
@@ -611,14 +630,14 @@ extension ConfigurationTests {
     }
 
     func testRemoteConfigCycleDetection() {
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle))
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.remoteConfigCycle.filepath))
 
         // If the cycle is properly detected, the config should equal the default config.
         XCTAssertEqual(
             Configuration(
                 configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
                 mockedNetworkResults: [
-                    "https://www.mock.com":
+                    URL(string: "https://www.mock.com")!:
                     """
                     child_config: https://www.mock.com
                     """,
@@ -651,9 +670,15 @@ extension ConfigurationTests {
             })
         )
 
-        XCTAssertEqual(Set(configuration1.includedPaths), Set(configuration2.includedPaths))
+        XCTAssertEqual(
+            configuration1.includedPaths.map(\.path).sorted(),
+            configuration2.includedPaths.map(\.path).sorted()
+        )
 
-        XCTAssertEqual(Set(configuration1.excludedPaths), Set(configuration2.excludedPaths))
+        XCTAssertEqual(
+            configuration1.excludedPaths.map(\.path).sorted(),
+            configuration2.excludedPaths.map(\.path).sorted()
+        )
     }
 }
 

@@ -4,16 +4,11 @@ import XCTest
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
 
-private var temporaryDirectoryPath: String {
-    let result = URL(
-        fileURLWithPath: NSTemporaryDirectory(),
-        isDirectory: true
-    ).filepath
-
+private var temporaryDirectoryPath: URL {
 #if os(macOS)
-    return "/private" + result
+    URL(fileURLWithPath: "/private" + NSTemporaryDirectory(), isDirectory: true)
 #else
-    return result
+    URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
 #endif
 }
 
@@ -49,11 +44,11 @@ final class BaselineTests: XCTestCase {
         DirectReturnRule.description,
     ]
 
-    private static func violations(for filePath: String?) -> [StyleViolation] {
+    private static func violations(for filePath: URL?) -> [StyleViolation] {
         ruleDescriptions.violations(for: filePath)
     }
 
-    private static func baseline(for filePath: String) -> Baseline {
+    private static func baseline(for filePath: URL) -> Baseline {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
@@ -62,7 +57,7 @@ final class BaselineTests: XCTestCase {
     override static func setUp() {
         super.setUp()
         currentDirectoryPath = FileManager.default.currentDirectoryPath
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(temporaryDirectoryPath))
+        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(temporaryDirectoryPath.filepath))
     }
 
     override static func tearDown() {
@@ -72,10 +67,10 @@ final class BaselineTests: XCTestCase {
 
     func testWritingAndReading() throws {
         try withExampleFileCreated { sourceFilePath in
-            let baselinePath = temporaryDirectoryPath.stringByAppendingPathComponent(UUID().uuidString)
+            let baselinePath = temporaryDirectoryPath.appending(path: UUID().uuidString)
             try Baseline(violations: Self.violations(for: sourceFilePath)).write(toPath: baselinePath)
             defer {
-                try? FileManager.default.removeItem(atPath: baselinePath)
+                try? FileManager.default.removeItem(atPath: baselinePath.filepath)
             }
             let newBaseline = try Baseline(fromPath: baselinePath)
             XCTAssertEqual(newBaseline, Self.baseline(for: sourceFilePath))
@@ -175,22 +170,22 @@ final class BaselineTests: XCTestCase {
         }
     }
 
-    private func withExampleFileCreated(_ block: (String) throws -> Void) throws {
-        let sourceFilePath = temporaryDirectoryPath.stringByAppendingPathComponent("\(UUID().uuidString).swift")
+    private func withExampleFileCreated(_ block: (URL) throws -> Void) throws {
+        let sourceFilePath = temporaryDirectoryPath.appending(path: "\(UUID().uuidString).swift")
         guard let data = Self.example.data(using: .utf8) else {
             XCTFail("Could not convert example code to data using UTF-8 encoding")
             return
         }
-        try data.write(to: URL(fileURLWithPath: sourceFilePath))
+        try data.write(to: sourceFilePath)
         defer {
-            try? FileManager.default.removeItem(atPath: sourceFilePath)
+            try? FileManager.default.removeItem(atPath: sourceFilePath.filepath)
         }
         try block(sourceFilePath)
     }
 }
 
 private extension [StyleViolation] {
-    func lineShifted(by shift: Int, path: String) throws -> [StyleViolation] {
+    func lineShifted(by shift: Int, path: URL) throws -> [StyleViolation] {
         guard shift > 0 else {
             XCTFail("Shift must be positive")
             return self
@@ -198,7 +193,7 @@ private extension [StyleViolation] {
         var lines = SwiftLintFile(path: path)?.lines.map(\.content) ?? []
         lines = [String](repeating: "", count: shift) + lines
         if let data = lines.joined(separator: "\n").data(using: .utf8) {
-            try data.write(to: URL(fileURLWithPath: path))
+            try data.write(to: path)
         }
         return map {
             let shiftedLocation = Location(
@@ -212,7 +207,7 @@ private extension [StyleViolation] {
 }
 
 private extension Sequence where Element == RuleDescription {
-    func violations(for filePath: String?) -> [StyleViolation] {
+    func violations(for filePath: URL?) -> [StyleViolation] {
         enumerated().map { index, ruleDescription in
             StyleViolation(
                 ruleDescription: ruleDescription,

@@ -4,52 +4,52 @@ import SourceKittenFramework
 internal extension Configuration.FileGraph {
     // MARK: - FilePath
     enum FilePath: Hashable {
-        case promised(urlString: String)
-        case existing(path: String)
+        case promised(urlString: URL)
+        case existing(path: URL)
     }
 
     // MARK: - Vertex
     class Vertex: Hashable {
-        internal let originalRemoteString: String?
-        internal var originatesFromRemote: Bool { originalRemoteString != nil }
-        internal var rootDirectory: String {
-            if !originatesFromRemote, case let .existing(path) = filePath {
+        var originatesFromRemote: Bool {
+            if case .promised = filePath {
+                return true
+            }
+            return false
+         }
+
+        var rootDirectory: URL {
+            if case let .existing(path) = filePath {
                 // This is a local file, so its root directory is its containing directory
-                return path.bridge().deletingLastPathComponent
+                return path.deletingLastPathComponent()
             }
             // This is a remote file, so its root directory is the directory where it was referenced from
             return originalRootDirectory
         }
 
-        private let originalRootDirectory: String
+        private let originalRootDirectory: URL
         let isInitialVertex: Bool
         private(set) var filePath: FilePath
         private(set) var configurationDict: [String: Any] = [:]
 
-        init(string: String, rootDirectory: String, isInitialVertex: Bool) {
+        init(configPath: URL, rootDirectory: URL, isInitialVertex: Bool) {
             originalRootDirectory = rootDirectory
-            if string.hasPrefix("http://") || string.hasPrefix("https://") {
-                originalRemoteString = string
-                filePath = .promised(urlString: string)
-            } else {
-                originalRemoteString = nil
-                filePath = .existing(
-                    path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
-                )
-            }
+            filePath =
+                if ["http", "https"].contains(configPath.scheme) {
+                    .promised(urlString: configPath)
+                } else {
+                    .existing(path: URL(filePath: configPath.path, relativeTo: rootDirectory))
+                }
             self.isInitialVertex = isInitialVertex
         }
 
-        init(originalRemoteString: String?, originalRootDirectory: String, filePath: FilePath, isInitialVertex: Bool) {
-            self.originalRemoteString = originalRemoteString
+        init(originalRootDirectory: URL, filePath: FilePath, isInitialVertex: Bool) {
             self.originalRootDirectory = originalRootDirectory
             self.filePath = filePath
             self.isInitialVertex = isInitialVertex
         }
 
-        internal func copy(withNewRootDirectory rootDirectory: String) -> Vertex {
+        internal func copy(withNewRootDirectory rootDirectory: URL) -> Vertex {
             let vertex = Vertex(
-                originalRemoteString: originalRemoteString,
                 originalRootDirectory: rootDirectory,
                 filePath: filePath,
                 isInitialVertex: isInitialVertex
@@ -71,25 +71,22 @@ internal extension Configuration.FileGraph {
             configurationDict = try YamlParser.parse(read(at: path))
         }
 
-        private func read(at path: String) throws -> String {
-            guard !path.isEmpty, FileManager.default.fileExists(atPath: path) else {
+        private func read(at path: URL) throws -> String {
+            guard path.exists else {
                 throw isInitialVertex
                     ? Issue.initialFileNotFound(path: path)
                     : Issue.fileNotFound(path: path)
             }
 
-            return try String(contentsOfFile: path, encoding: .utf8)
+            return try String(contentsOf: path, encoding: .utf8)
         }
 
-        internal static func == (lhs: Vertex, rhs: Vertex) -> Bool {
-            lhs.filePath == rhs.filePath
-                && lhs.originalRemoteString == rhs.originalRemoteString
-                && lhs.rootDirectory == rhs.rootDirectory
+        static func == (lhs: Vertex, rhs: Vertex) -> Bool {
+            lhs.filePath == rhs.filePath && lhs.rootDirectory == rhs.rootDirectory
         }
 
-        internal func hash(into hasher: inout Hasher) {
+        func hash(into hasher: inout Hasher) {
             hasher.combine(filePath)
-            hasher.combine(originalRemoteString)
             hasher.combine(originalRootDirectory)
         }
     }

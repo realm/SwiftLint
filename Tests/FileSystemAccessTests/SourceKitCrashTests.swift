@@ -35,7 +35,10 @@ final class SourceKitCrashTests: SwiftLintTestCase {
     }
 
     func testRulesWithFileThatCrashedSourceKitService() throws {
-        let file = try XCTUnwrap(SwiftLintFile(path: "\(TestResources.path().filepath)/ProjectMock/Level0.swift"))
+        let path = TestResources.path()
+            .appendingPathComponent("ProjectMock")
+            .appendingPathComponent("Level0.swift")
+        let file = try XCTUnwrap(SwiftLintFile(path: path))
         file.sourcekitdFailed = true
         file.assertHandler = {
             XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")

@@ -17,7 +17,7 @@ struct JSONReporter: Reporter {
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         [
-            "file": violation.location.file ?? NSNull() as Any,
+            "file": violation.location.file?.path ?? NSNull() as Any,
             "line": violation.location.line ?? NSNull() as Any,
             "character": violation.location.character ?? NSNull() as Any,
             "severity": violation.severity.rawValue.capitalized,

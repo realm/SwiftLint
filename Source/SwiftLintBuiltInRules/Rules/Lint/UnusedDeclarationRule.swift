@@ -84,7 +84,7 @@ private extension SwiftLintFile {
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
         path
             .flatMap { path in
-                try? Request.index(file: path, arguments: compilerArguments).send()
+                try? Request.index(file: path.filepath, arguments: compilerArguments).send()
             }
             .map(SourceKittenDictionary.init)
     }
@@ -203,7 +203,7 @@ private extension SwiftLintFile {
 
     func cursorInfo(at byteOffset: ByteCount, compilerArguments: [String]) -> SourceKittenDictionary? {
         let request = Request.cursorInfoWithoutSymbolGraph(
-            file: path!, offset: byteOffset, arguments: compilerArguments
+            file: path!.filepath, offset: byteOffset, arguments: compilerArguments
         )
         return (try? request.sendIfNotDisabled()).map(SourceKittenDictionary.init)
     }

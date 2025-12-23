@@ -221,6 +221,6 @@ private extension Command {
                 location = line.distance(from: line.startIndex, to: ruleIdentifierIndex) + 1
             }
         }
-        return Location(file: file.file.path, line: line, character: location)
+        return Location(file: file.path, line: line, character: location)
     }
 }

@@ -19,7 +19,7 @@ struct Benchmark {
     }
 
     mutating func record(file: SwiftLintFile, from start: Date) {
-        record(id: file.path ?? "<nopath>", time: -start.timeIntervalSinceNow)
+        record(id: file.path?.filepath ?? "<nopath>", time: -start.timeIntervalSinceNow)
     }
 
     func save() {

@@ -74,8 +74,8 @@ internal extension Configuration.FileGraph {
         private func read(at path: String) throws -> String {
             guard !path.isEmpty, FileManager.default.fileExists(atPath: path) else {
                 throw isInitialVertex
-                    ? Issue.initialFileNotFound(path: path)
-                    : Issue.fileNotFound(path: path)
+                    ? Issue.initialFileNotFound(path: URL(filePath: path))
+                    : Issue.fileNotFound(path: URL(filePath: path))
             }
 
             return try String(contentsOfFile: path, encoding: .utf8)

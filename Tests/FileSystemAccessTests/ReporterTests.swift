@@ -10,13 +10,13 @@ final class ReporterTests: SwiftLintTestCase {
     private let violations = [
         StyleViolation(
             ruleDescription: LineLengthRule.description,
-            location: Location(file: "filename", line: 1, character: 1),
+            location: Location(file: "filename".url, line: 1, character: 1),
             reason: "Violation Reason 1"
         ),
         StyleViolation(
             ruleDescription: LineLengthRule.description,
             severity: .error,
-            location: Location(file: "filename", line: 1),
+            location: Location(file: "filename".url, line: 1),
             reason: "Violation Reason 2"
         ),
         StyleViolation(
@@ -25,8 +25,7 @@ final class ReporterTests: SwiftLintTestCase {
             location: Location(
                 file: URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
                             .appendingPathComponent("path")
-                            .appendingPathComponent("file.swift")
-                            .path,
+                            .appendingPathComponent("file.swift"),
                 line: 1,
                 character: 2
             ),
@@ -47,7 +46,7 @@ final class ReporterTests: SwiftLintTestCase {
 
     private func stringFromFile(_ filename: String) -> String {
         let path = TestResources.path().appendingPathComponent(filename)
-        return SwiftLintFile(path: path.filepath)!.contents
+        return SwiftLintFile(path: path)!.contents
     }
 
     func testXcodeReporter() throws {
@@ -163,15 +162,14 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     func testRelativePathReporterPaths() {
-        let relativePath = "filename"
-        let absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
-        let location = Location(file: absolutePath, line: 1, character: 2)
+        let relativePath = "filename".url
+        let location = Location(file: relativePath, line: 1, character: 2)
         let violation = StyleViolation(ruleDescription: LineLengthRule.description,
                                        location: location,
                                        reason: "Violation Reason")
         let result = RelativePathReporter.generateReport([violation])
-        XCTAssertFalse(result.contains(absolutePath))
-        XCTAssertTrue(result.contains(relativePath))
+        XCTAssertFalse(result.contains(relativePath.filepath))
+        XCTAssertTrue(result.contains(relativePath.relativeFilepath))
     }
 
     func testSummaryReporter() {
@@ -179,7 +177,7 @@ final class ReporterTests: SwiftLintTestCase {
             .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
         let correctableViolation = StyleViolation(
             ruleDescription: VerticalWhitespaceOpeningBracesRule.description,
-            location: Location(file: "filename", line: 1, character: 2),
+            location: Location(file: "filename".url, line: 1, character: 2),
             reason: "Violation Reason"
         )
         let result = SummaryReporter.generateReport(violations + [correctableViolation])
@@ -201,7 +199,7 @@ final class ReporterTests: SwiftLintTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
 
-        let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).path
+        let cwd = URL.currentDirectory().path
 
         let reference = stringFromFile(referenceFile).replacingOccurrences(
             of: "${CURRENT_WORKING_DIRECTORY}",

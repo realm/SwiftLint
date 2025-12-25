@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Do not consider closures assigned to wildcard variables (`_`) as captures
+  of escaping closures in `unneeded_escaping` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6385](https://github.com/realm/SwiftLint/issues/6385)
 
 ### Bug Fixes
 

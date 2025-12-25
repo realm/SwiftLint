@@ -24,6 +24,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6386](https://github.com/realm/SwiftLint/pull/6386)
 
+* Keep closure `@escaping` when it's also `@autoclosure` and called as an argument of
+  another (assumed `@escaping @autoclosure`) function in `unneeded_escaping` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6391](https://github.com/realm/SwiftLint/issues/6391)
+
 ## 0.63.0-rc.2: High-Speed Extraction
 
 ### Breaking

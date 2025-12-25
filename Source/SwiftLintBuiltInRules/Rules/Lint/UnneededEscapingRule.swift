@@ -16,6 +16,11 @@ struct UnneededEscapingRule: Rule {
             func outer(completion: @escaping () -> Void) { inner(completion: completion) }
             """),
             Example("""
+            func outer(closure: @escaping @autoclosure () -> String) {
+                inner(closure: closure())
+            }
+            """),
+            Example("""
             func returning(_ work: @escaping () -> Void) -> () -> Void { return work }
             """),
             Example("""
@@ -109,6 +114,11 @@ struct UnneededEscapingRule: Rule {
             """),
         ],
         triggeringExamples: [
+            Example("""
+            func f(c: ↓@escaping () -> Int) {
+                print(c())
+            }
+            """),
             Example("""
             func forEach(action: ↓@escaping (Int) -> Void) {
                 for i in 0..<10 {
@@ -221,14 +231,23 @@ private extension UnneededEscapingRule {
                 return
             }
             for param in parameters.parameters {
-                if let escapingAttr = param.type.escapingAttribute {
-                    validate(paramName: (param.secondName ?? param.firstName).text, with: escapingAttr, in: body)
+                if let escapingAttr = param.type.attribute(named: "escaping") {
+                    validate(
+                        paramName: (param.secondName ?? param.firstName).text,
+                        with: escapingAttr,
+                        isAutoclosure: param.type.attribute(named: "autoclosure") != nil,
+                        in: body
+                    )
                 }
             }
         }
 
-        private func validate(paramName: String, with attr: AttributeSyntax, in body: CodeBlockItemListSyntax) {
-            if EscapeChecker(paramName: paramName).walk(tree: body, handler: \.doesEscape) {
+        private func validate(paramName: String,
+                              with attr: AttributeSyntax,
+                              isAutoclosure: Bool,
+                              in body: CodeBlockItemListSyntax) {
+            if EscapeChecker(paramName: paramName, isAutoclosure: isAutoclosure)
+                .walk(tree: body, handler: \.doesEscape) {
                 return
             }
             let correctionEndPosition =
@@ -256,9 +275,11 @@ private final class EscapeChecker: SyntaxVisitor {
     var taintedVariables = Set<String>()
     var doesEscape = false
     var inClosureContext = false
+    let isAutoclosure: Bool
 
-    init(paramName: String) {
+    init(paramName: String, isAutoclosure: Bool) {
         taintedVariables.insert(paramName)
+        self.isAutoclosure = isAutoclosure
         super.init(viewMode: .sourceAccurate)
     }
 
@@ -298,7 +319,7 @@ private final class EscapeChecker: SyntaxVisitor {
     }
 
     override func visitPost(_ node: FunctionCallExprSyntax) {
-        for argument in node.arguments where isTainted(argument.expression) {
+        for argument in node.arguments where isTainted(argument.expression) || usesTaintedCallee(argument.expression) {
             doesEscape = true
         }
     }
@@ -334,19 +355,31 @@ private final class EscapeChecker: SyntaxVisitor {
         }
         return false
     }
+
+    private func usesTaintedCallee(_ expr: ExprSyntax) -> Bool {
+        guard isAutoclosure,
+              let callExpr = expr.as(FunctionCallExprSyntax.self),
+              callExpr.arguments.isEmpty,
+              callExpr.trailingClosure == nil,
+              callExpr.additionalTrailingClosures.isEmpty else {
+            return false
+        }
+        return isTainted(callExpr.calledExpression)
+    }
 }
 
 private extension TypeSyntax {
-    var escapingAttribute: AttributeSyntax? {
+    func attribute(named name: String) -> AttributeSyntax? {
         if let attributeType = `as`(AttributedTypeSyntax.self) {
             return attributeType.attributes
                 .compactMap { $0.as(AttributeSyntax.self) }
-                .first { $0.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "escaping" }
+                .first { $0.attributeName.as(IdentifierTypeSyntax.self)?.name.text == name }
         }
-        if let optionalType = `as`(OptionalTypeSyntax.self) {
-            return optionalType.wrappedType.as(TupleTypeSyntax.self)?.elements.first?.type.escapingAttribute
-        }
-        return nil
+        return `as`(OptionalTypeSyntax.self)?
+            .wrappedType
+            .as(TupleTypeSyntax.self)?
+            .elements.onlyElement?.type
+            .attribute(named: name)
     }
 }
 

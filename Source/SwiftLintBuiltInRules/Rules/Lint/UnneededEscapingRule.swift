@@ -102,6 +102,11 @@ struct UnneededEscapingRule: Rule {
                 var cs = [1: c]
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            func f(c: @escaping () -> Void) {
+                f(true ? c : { })
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -323,6 +328,9 @@ private final class EscapeChecker: SyntaxVisitor {
         if let optChain = expr.as(OptionalChainingExprSyntax.self),
            let declRef = optChain.expression.as(DeclReferenceExprSyntax.self) {
             return taintedVariables.contains(declRef.baseName.text)
+        }
+        if let ternary = expr.as(TernaryExprSyntax.self) {
+            return isTainted(ternary.thenExpression) || isTainted(ternary.elseExpression)
         }
         return false
     }

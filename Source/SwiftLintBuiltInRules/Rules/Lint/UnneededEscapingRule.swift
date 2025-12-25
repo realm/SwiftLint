@@ -150,6 +150,11 @@ struct UnneededEscapingRule: Rule {
                 local()
             }
             """),
+            Example("""
+            func assignToLocal(completion: ↓@escaping () -> Void) {
+                _ = completion
+            }
+            """),
         ],
         corrections: [
             Example("""
@@ -344,6 +349,9 @@ private extension ExprSyntax {
     }
 
     var isLocalVariable: Bool {
+        guard !`is`(DiscardAssignmentExprSyntax.self) else {
+            return true
+        }
         if let baseNameToken {
             let results = lookup(.init(baseNameToken))
             return results.isNotEmpty && results.allSatisfy {

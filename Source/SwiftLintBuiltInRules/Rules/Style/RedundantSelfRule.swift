@@ -20,7 +20,7 @@ struct RedundantSelfRule: Rule {
 }
 
 private enum TypeDeclarationKind {
-    case likeStruct, likeClass
+    case likeStruct, likeClass, `extension`
 }
 
 private enum ClosureExprType {
@@ -87,6 +87,19 @@ private extension RedundantSelfRule {
             typeDeclarations.pop()
         }
 
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            if node.extendedType.isOptionalType {
+                typeDeclarations.push(.extension)
+            }
+            return .visitChildren
+        }
+
+        override func visitPost(_ node: ExtensionDeclSyntax) {
+            if node.extendedType.isOptionalType {
+                typeDeclarations.pop()
+            }
+        }
+
         override func visit(_: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
             initializerScopes.push(true)
             return .visitChildren
@@ -101,6 +114,9 @@ private extension RedundantSelfRule {
                 return
             }
             if closureExprScopes.isNotEmpty, !isSelfRedundant {
+                return
+            }
+            if typeDeclarations.peek() == .extension, node.isBaseSelf, hasSeenDeclaration(for: "self") {
                 return
             }
             let declName = node.declName.baseName.text

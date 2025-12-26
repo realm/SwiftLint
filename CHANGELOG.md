@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Keep `self` in extensions for optional types in `redundant_self` rule
+  when the optional instance was unwrapped somewhere in the current scope.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6390](https://github.com/realm/SwiftLint/issues/6390)
+
 * Treat closures in the branches of ternary expressions as escaping
   when the whole expression is escaping in the `unneeded_escaping` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

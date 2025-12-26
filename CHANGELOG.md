@@ -19,7 +19,10 @@
 
 ### Bug Fixes
 
-* None.
+* Treat closures in the branches of ternary expressions as escaping
+  when the whole expression is escaping in the `unneeded_escaping` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6386](https://github.com/realm/SwiftLint/pull/6386)
 
 ## 0.63.0-rc.2: High-Speed Extraction
 

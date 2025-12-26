@@ -15,8 +15,6 @@ steps:
       SKIP_INTEGRATION_TESTS: true
   - label: "Danger"
     commands:
-      - echo "+++ Install Bundler"
-      - gem install bundler -v 2.4.22
       - echo "+++ Run OSS Scan"
       - make oss_scan
     artifact_paths: "oss-check-summary.md"

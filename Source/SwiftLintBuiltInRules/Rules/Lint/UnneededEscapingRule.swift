@@ -11,186 +11,9 @@ struct UnneededEscapingRule: Rule {
         name: "Unneeded Escaping",
         description: "The `@escaping` attribute should only be used when the closure actually escapes.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
-            func outer(completion: @escaping () -> Void) { inner(completion: completion) }
-            """),
-            Example("""
-            func returning(_ work: @escaping () -> Void) -> () -> Void { return work }
-            """),
-            Example("""
-            func implicitlyReturning(g: @escaping () -> Void) -> () -> Void { g }
-            """),
-            Example("""
-            struct S {
-                var closure: (() -> Void)?
-                mutating func setClosure(_ newValue: @escaping () -> Void) {
-                    closure = newValue
-                }
-                mutating func setToSelf(_ newValue: @escaping () -> Void) {
-                    self.closure = newValue
-                }
-            }
-            """),
-            Example("""
-            func closure(completion: @escaping () -> Void) {
-                DispatchQueue.main.async { completion() }
-            }
-            """),
-            Example("""
-            func capture(completion: @escaping () -> Void) {
-                let closure = { completion() }
-                closure()
-            }
-            """),
-            Example("""
-            func reassignLocal(completion: @escaping () -> Void) -> () -> Void {
-                var local = { print("initial") }
-                local = completion
-                return local
-            }
-            """),
-            Example("""
-            func global(completion: @escaping () -> Void) {
-                Global.completion = completion
-            }
-            """),
-            Example("""
-            func chain(c: @escaping () -> Void) -> () -> Void {
-                let c1 = c
-                if condition {
-                    let c2 = c1
-                    return c2
-                }
-                let c3 = c1
-                return c3
-            }
-            """),
-            Example("""
-            var arrayOfCompletions = [() -> Void]()
-            func array(completion: @escaping () -> Void) {
-                var completions = [() -> Void]()
-                completions[0] = completion
-                arrayOfCompletions = completions
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            var arrayOfCompletions = [() -> Void]()
-            func array(completion: @escaping () -> Void) {
-                arrayOfCompletions[0] = completion
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            var _testSuiteFailedCallback: (() -> Void)?
-            public func _setTestSuiteFailedCallback(_ callback: @escaping () -> Void) {
-                _testSuiteFailedCallback = callback
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            func f(c: @escaping () -> Void) {
-                var cs = [() -> Void]()
-                cs[0] = c
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            func f(c: @escaping () -> Void) {
-                var cs = [c]
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            func f(c: @escaping () -> Void) {
-                var cs = [1: c]
-            }
-            """, excludeFromDocumentation: true),
-            Example("""
-            func f(c: @escaping () -> Void) {
-                f(true ? c : { })
-            }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
-            func forEach(action: ↓@escaping (Int) -> Void) {
-                for i in 0..<10 {
-                    action(i)
-                }
-            }
-            """),
-            Example("""
-            func process(completion: ↓@escaping () -> Void) {
-                completion()
-            }
-            """),
-            Example("""
-            func apply(_ transform: ↓@escaping (Int) -> Int) -> Int {
-                return transform(5)
-            }
-            """),
-            Example("""
-            func optional(completion: (↓@escaping () -> Void)?) {
-                completion?()
-            }
-            """),
-            Example("""
-            func multiple(first: ↓@escaping () -> Void, second: ↓@escaping () -> Void) {
-                first()
-                second()
-            }
-            """),
-            Example("""
-            subscript(transform: ↓@escaping (Int) -> String) -> String {
-                transform(42)
-            }
-            """),
-            Example("""
-            func assignToLocal(completion: ↓@escaping () -> Void) {
-                let local = completion
-                local()
-            }
-            """),
-            Example("""
-            func reassignLocal(completion: ↓@escaping () -> Void) {
-                var local = { print(\"initial\") }
-                local = completion
-                local()
-            }
-            """),
-            Example("""
-            func assignToLocal(completion: ↓@escaping () -> Void) {
-                _ = completion
-            }
-            """),
-        ],
-        corrections: [
-            Example("""
-            func forEach(action: ↓@escaping (Int) -> Void) {
-                for i in 0..<10 {
-                    action(i)
-                }
-            }
-            """): Example("""
-                func forEach(action: (Int) -> Void) {
-                    for i in 0..<10 {
-                        action(i)
-                    }
-                }
-                """),
-            Example("""
-            func process(completion: ↓@escaping () -> Void) { completion() }
-            """): Example("""
-                func process(completion: () -> Void) { completion() }
-                """),
-            Example("""
-            subscript(transform: ↓@escaping (Int) -> String) -> String { transform(42) }
-            """): Example("""
-                subscript(transform: (Int) -> String) -> String { transform(42) }
-                """),
-            Example("""
-            func f(c: ↓@escaping() -> Void) { c() }
-            """): Example("""
-                func f(c: () -> Void) { c() }
-                """),
-        ]
+        nonTriggeringExamples: UnneededEscapingRuleExamples.nonTriggeringExamples,
+        triggeringExamples: UnneededEscapingRuleExamples.triggeringExamples,
+        corrections: UnneededEscapingRuleExamples.corrections
     )
 }
 
@@ -221,14 +44,23 @@ private extension UnneededEscapingRule {
                 return
             }
             for param in parameters.parameters {
-                if let escapingAttr = param.type.escapingAttribute {
-                    validate(paramName: (param.secondName ?? param.firstName).text, with: escapingAttr, in: body)
+                if let escapingAttr = param.type.attribute(named: "escaping") {
+                    validate(
+                        paramName: (param.secondName ?? param.firstName).text,
+                        with: escapingAttr,
+                        isAutoclosure: param.type.attribute(named: "autoclosure") != nil,
+                        in: body
+                    )
                 }
             }
         }
 
-        private func validate(paramName: String, with attr: AttributeSyntax, in body: CodeBlockItemListSyntax) {
-            if EscapeChecker(paramName: paramName).walk(tree: body, handler: \.doesEscape) {
+        private func validate(paramName: String,
+                              with attr: AttributeSyntax,
+                              isAutoclosure: Bool,
+                              in body: CodeBlockItemListSyntax) {
+            if EscapeChecker(paramName: paramName, isAutoclosure: isAutoclosure)
+                .walk(tree: body, handler: \.doesEscape) {
                 return
             }
             let correctionEndPosition =
@@ -256,9 +88,11 @@ private final class EscapeChecker: SyntaxVisitor {
     var taintedVariables = Set<String>()
     var doesEscape = false
     var inClosureContext = false
+    let isAutoclosure: Bool
 
-    init(paramName: String) {
+    init(paramName: String, isAutoclosure: Bool) {
         taintedVariables.insert(paramName)
+        self.isAutoclosure = isAutoclosure
         super.init(viewMode: .sourceAccurate)
     }
 
@@ -298,7 +132,7 @@ private final class EscapeChecker: SyntaxVisitor {
     }
 
     override func visitPost(_ node: FunctionCallExprSyntax) {
-        for argument in node.arguments where isTainted(argument.expression) {
+        for argument in node.arguments where isTainted(argument.expression) || usesTaintedCallee(argument.expression) {
             doesEscape = true
         }
     }
@@ -334,19 +168,31 @@ private final class EscapeChecker: SyntaxVisitor {
         }
         return false
     }
+
+    private func usesTaintedCallee(_ expr: ExprSyntax) -> Bool {
+        guard isAutoclosure,
+              let callExpr = expr.as(FunctionCallExprSyntax.self),
+              callExpr.arguments.isEmpty,
+              callExpr.trailingClosure == nil,
+              callExpr.additionalTrailingClosures.isEmpty else {
+            return false
+        }
+        return isTainted(callExpr.calledExpression)
+    }
 }
 
 private extension TypeSyntax {
-    var escapingAttribute: AttributeSyntax? {
+    func attribute(named name: String) -> AttributeSyntax? {
         if let attributeType = `as`(AttributedTypeSyntax.self) {
             return attributeType.attributes
                 .compactMap { $0.as(AttributeSyntax.self) }
-                .first { $0.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "escaping" }
+                .first { $0.attributeName.as(IdentifierTypeSyntax.self)?.name.text == name }
         }
-        if let optionalType = `as`(OptionalTypeSyntax.self) {
-            return optionalType.wrappedType.as(TupleTypeSyntax.self)?.elements.first?.type.escapingAttribute
-        }
-        return nil
+        return `as`(OptionalTypeSyntax.self)?
+            .wrappedType
+            .as(TupleTypeSyntax.self)?
+            .elements.onlyElement?.type
+            .attribute(named: name)
     }
 }
 

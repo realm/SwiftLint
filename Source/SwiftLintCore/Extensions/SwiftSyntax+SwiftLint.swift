@@ -372,6 +372,18 @@ public extension ClosureCaptureSyntax {
     }
 }
 
+public extension TypeSyntax {
+    var isOptionalType: Bool {
+        if `is`(OptionalTypeSyntax.self) {
+            return true
+        }
+        if let type = `as`(IdentifierTypeSyntax.self) {
+            return type.name.text == "Optional" && type.genericArgumentClause?.arguments.count == 1
+        }
+        return false
+    }
+}
+
 private extension String {
     var isZero: Bool {
         if self == "0" { // fast path

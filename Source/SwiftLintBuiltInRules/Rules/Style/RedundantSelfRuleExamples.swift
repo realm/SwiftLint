@@ -102,6 +102,14 @@ struct RedundantSelfRuleExamples {
                 }
             }
             """, configuration: ["keep_in_initializers": true]),
+        Example("""
+            extension String? {
+                func foo() -> String {
+                    guard let self else { return "" }
+                    return self.uppercased()
+                }
+            }
+            """),
     ]
 
     static let triggeringExamples = [
@@ -238,6 +246,11 @@ struct RedundantSelfRuleExamples {
                 }()
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            extension String {
+                func foo() -> String { ↓self.uppercased() }
+            }
+            """),
     ]
 
     static let corrections = [

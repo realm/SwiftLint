@@ -191,7 +191,9 @@ private extension StyleViolation {
     var withAbsolutePath: StyleViolation {
         let absolutePath: String? =
             if let relativePath = location.file {
-                FileManager.default.currentDirectoryPath + "/" + relativePath
+                URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+                    .appendingPathComponent(relativePath)
+                    .filepath
             } else {
                 nil
             }

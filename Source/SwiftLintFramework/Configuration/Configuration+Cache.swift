@@ -81,13 +81,12 @@ extension Configuration {
 #endif
         }
 
-        let versionedDirectory = [
-            "SwiftLint",
-            Version.current.value,
-            ExecutableInfo.buildID,
-        ].compactMap(\.self).joined(separator: "/")
-
-        let folder = baseURL.appendingPathComponent(versionedDirectory)
+        var folder = baseURL
+                .appendingPathComponent("SwiftLint")
+                .appendingPathComponent(Version.current.value)
+        if let buildID = ExecutableInfo.buildID {
+            folder = folder.appendingPathComponent(buildID)
+        }
 
         do {
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)

@@ -48,7 +48,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - &checkout-step
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           ref: ${{ github.event.release.tag_name }}
           persist-credentials: false
@@ -65,11 +66,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          ref: ${{ github.event.release.tag_name }}
-          persist-credentials: false
+      - *checkout-step
       - name: Parse checksum
         id: parse_checksum
         run: echo "checksum=$(grep -o '[a-fA-F0-9]\{64\}' Package.swift)" >> "$GITHUB_OUTPUT"

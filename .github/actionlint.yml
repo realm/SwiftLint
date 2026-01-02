@@ -2,6 +2,3 @@ paths:
   .github/workflows/docker.yml:
     ignore:
       - 'shellcheck reported issue in this script: SC2046:warning:1:137: Quote this to prevent word splitting'
-self-hosted-runner:
-  labels:
-    - ubuntu-slim

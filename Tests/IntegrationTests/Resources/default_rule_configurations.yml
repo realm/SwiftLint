@@ -1017,6 +1017,7 @@ redundant_objc_attribute:
 redundant_self:
   severity: warning
   keep_in_initializers: false
+  only_in_closures: true
   meta:
     opt-in: true
     correctable: true

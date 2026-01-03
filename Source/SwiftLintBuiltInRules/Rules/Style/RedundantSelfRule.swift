@@ -116,6 +116,9 @@ private extension RedundantSelfRule {
             if closureExprScopes.isNotEmpty, !isSelfRedundant {
                 return
             }
+            if configuration.onlyInClosures, closureExprScopes.isEmpty {
+                return
+            }
             if typeDeclarations.peek() == .extension, node.isBaseSelf, hasSeenDeclaration(for: "self") {
                 return
             }

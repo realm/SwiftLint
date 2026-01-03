@@ -39,7 +39,10 @@
 ### Breaking
 
 * The `redundant_self_in_closure` rule has been renamed to `redundant_self` (with
-  `redundant_self_in_closure` as a deprecated alias) to reflect its now broader scope.  
+  `redundant_self_in_closure` as a deprecated alias) to reflect its now broader scope,
+  while by default still maintaining the previous behavior of only checking closures.
+  To enable checking for all redundant `self` usages, set the new `only_in_closures`
+  option to `false`.  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental

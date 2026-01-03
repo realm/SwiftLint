@@ -3,6 +3,13 @@ struct RedundantSelfRuleExamples {
         Example("""
             struct S {
                 var x = 0
+                init() { self.x = 1 }
+                func foo() { self.x = 1 }
+            }
+            """),
+        Example("""
+            struct S {
+                var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
                 func g() {
                     f {
@@ -113,6 +120,13 @@ struct RedundantSelfRuleExamples {
     ]
 
     static let triggeringExamples = [
+        Example("""
+            struct S {
+                var x = 0
+                init() { ↓self.x = 1 }
+                func foo() { ↓self.x = 1 }
+            }
+            """, configuration: ["only_in_closures": false]),
         Example("""
             struct S {
                 var x = 0
@@ -250,7 +264,7 @@ struct RedundantSelfRuleExamples {
             extension String {
                 func foo() -> String { ↓self.uppercased() }
             }
-            """),
+            """, configuration: ["only_in_closures": false]),
     ]
 
     static let corrections = [
@@ -285,7 +299,7 @@ struct RedundantSelfRuleExamples {
                     ↓self.y = 1
                 }
             }
-            """): Example("""
+            """, configuration: ["only_in_closures": false]): Example("""
                 struct S {
                     var x = 0, y = 0
                     init(x: Int) {

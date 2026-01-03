@@ -6,4 +6,6 @@ struct RedundantSelfConfiguration: SeverityBasedRuleConfiguration {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "keep_in_initializers")
     private(set) var keepInInitializers = false
+    @ConfigurationElement(key: "only_in_closures")
+    private(set) var onlyInClosures = true
 }

@@ -4,43 +4,9 @@
 
 ### Breaking
 
-* None.
-
-### Experimental
-
-* None.
-
-### Enhancements
-
-* Do not consider closures assigned to wildcard variables (`_`) as captures
-  of escaping closures in `unneeded_escaping` rule.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#6385](https://github.com/realm/SwiftLint/issues/6385)
-
-### Bug Fixes
-
-* Keep `self` in extensions for optional types in `redundant_self` rule
-  when the optional instance was unwrapped somewhere in the current scope.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#6390](https://github.com/realm/SwiftLint/issues/6390)
-
-* Treat closures in the branches of ternary expressions as escaping
-  when the whole expression is escaping in the `unneeded_escaping` rule.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#6386](https://github.com/realm/SwiftLint/pull/6386)
-
-* Keep closure `@escaping` when it's also `@autoclosure` and called as an argument of
-  another (assumed `@escaping @autoclosure`) function in `unneeded_escaping` rule.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-  [#6391](https://github.com/realm/SwiftLint/issues/6391)
-
-## 0.63.0-rc.2: High-Speed Extraction
-
-### Breaking
-
 * The `redundant_self_in_closure` rule has been renamed to `redundant_self` (with
   `redundant_self_in_closure` as a deprecated alias) to reflect its now broader scope,
-  while by default still maintaining the previous behavior of only checking closures.
+  while by default still maintains the previous behavior of only checking closures.
   To enable checking for all redundant `self` usages, set the new `only_in_closures`
   option to `false`.  
   [SimplyDanny](https://github.com/SimplyDanny)

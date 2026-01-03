@@ -57,7 +57,7 @@ public final class LinterCache {
         self.swiftVersion = swiftVersion
     }
 
-    internal func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
+    internal func cache(violations: [StyleViolation], forFile file: URL, configuration: Configuration) {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
             return
         }
@@ -66,15 +66,18 @@ public final class LinterCache {
 
         writeCacheLock.lock()
         var filesCache = writeCache[configurationDescription] ?? .empty
-        filesCache.entries[file] = FileCacheEntry(violations: violations, lastModification: lastModification,
-                                                  swiftVersion: swiftVersion)
+        filesCache.entries[file.filepath] = FileCacheEntry(
+            violations: violations,
+            lastModification: lastModification,
+            swiftVersion: swiftVersion
+        )
         writeCache[configurationDescription] = filesCache
         writeCacheLock.unlock()
     }
 
-    internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
+    internal func violations(forFile file: URL, configuration: Configuration) -> [StyleViolation]? {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file),
-              let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file],
+              let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file.filepath],
               entry.lastModification == lastModification,
               entry.swiftVersion == swiftVersion
         else {

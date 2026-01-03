@@ -62,7 +62,7 @@ extension Configuration {
         let cacheRulesDescriptions = rules
             .map { rule in [type(of: rule).identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
-        let jsonObject: [Any] = [rootDirectory, cacheRulesDescriptions]
+        let jsonObject: [Any] = [rootDirectory.filepath, cacheRulesDescriptions]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
             return jsonData.sha256().toHexString()
         }
@@ -81,13 +81,12 @@ extension Configuration {
 #endif
         }
 
-        let versionedDirectory = [
-            "SwiftLint",
-            Version.current.value,
-            ExecutableInfo.buildID,
-        ].compactMap(\.self).joined(separator: "/")
-
-        let folder = baseURL.appendingPathComponent(versionedDirectory)
+        var folder = baseURL
+                .appendingPathComponent("SwiftLint")
+                .appendingPathComponent(Version.current.value)
+        if let buildID = ExecutableInfo.buildID {
+            folder = folder.appendingPathComponent(buildID)
+        }
 
         do {
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)

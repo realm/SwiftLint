@@ -1,7 +1,7 @@
 [
   {
     "character" : 1,
-    "file" : "filename",
+    "file" : "${CURRENT_WORKING_DIRECTORY}/filename",
     "line" : 1,
     "reason" : "Violation Reason 1",
     "rule_id" : "line_length",
@@ -10,7 +10,7 @@
   },
   {
     "character" : null,
-    "file" : "filename",
+    "file" : "${CURRENT_WORKING_DIRECTORY}/filename",
     "line" : 1,
     "reason" : "Violation Reason 2",
     "rule_id" : "line_length",

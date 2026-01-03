@@ -125,10 +125,11 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         hasher.combine(executionMode)
     }
 
-    package func shouldValidate(filePath: String) -> Bool {
-        let pathRange = filePath.fullNSRange
+    package func shouldValidate(filePath: URL) -> Bool {
+        let relativePath = filePath.relativePath
+        let pathRange = relativePath.fullNSRange
         let isIncluded = included.isEmpty || included.contains { regex in
-            regex.regex.firstMatch(in: filePath, range: pathRange) != nil
+            regex.regex.firstMatch(in: relativePath, range: pathRange) != nil
         }
 
         guard isIncluded else {
@@ -136,7 +137,7 @@ public struct RegexConfiguration<Parent: Rule>: SeverityBasedRuleConfiguration, 
         }
 
         return excluded.allSatisfy { regex in
-            regex.regex.firstMatch(in: filePath, range: pathRange) == nil
+            regex.regex.firstMatch(in: relativePath, range: pathRange) == nil
         }
     }
 

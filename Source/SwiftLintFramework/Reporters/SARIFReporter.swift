@@ -54,7 +54,7 @@ struct SARIFReporter: Reporter {
             return [
                 "physicalLocation": [
                     "artifactLocation": [
-                        "uri": location.relativeFile ?? ""
+                        "uri": location.file?.relativeFilepath ?? ""
                     ],
                     "region": [
                         "startLine": line,
@@ -67,7 +67,7 @@ struct SARIFReporter: Reporter {
         return [
             "physicalLocation": [
                 "artifactLocation": [
-                    "uri": location.file ?? ""
+                    "uri": location.file?.relativeFilepath ?? ""
                 ],
             ],
         ]

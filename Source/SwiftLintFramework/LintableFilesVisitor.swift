@@ -14,25 +14,26 @@ class CompilerInvocations {
     }
 
     /// Default implementation
-    func arguments(forFile _: String?) -> Arguments { [] }
+    func arguments(forFile _: URL?) -> Arguments { [] }
 
     // MARK: - Private
 
     private class ArrayCompilerInvocations: CompilerInvocations {
-        private let invocationsByArgument: [String: [Arguments]]
+        private let invocationsByArgument: [URL: [Arguments]]
 
         init(invocations: [Arguments]) {
             // Store invocations by the path, so next when we'll be asked for arguments,
             // we'll be able to return them faster
             self.invocationsByArgument = invocations.reduce(into: [:]) { result, arguments in
-                arguments.forEach { result[$0, default: []].append(arguments) }
+                arguments.forEach { result[URL(filePath: $0), default: []].append(arguments) }
             }
         }
 
-        override func arguments(forFile path: String?) -> Arguments {
-            path.flatMap { path in
-                invocationsByArgument[path]?.first
-            } ?? []
+        override func arguments(forFile path: URL?) -> Arguments {
+            if let path, let invocation = invocationsByArgument[path]?.first {
+                return invocation
+            }
+            return []
         }
     }
 
@@ -43,10 +44,10 @@ class CompilerInvocations {
             self.compileCommands = compileCommands
         }
 
-        override func arguments(forFile path: String?) -> Arguments {
+        override func arguments(forFile path: URL?) -> Arguments {
             path.flatMap { path in
-                compileCommands[path] ??
-                compileCommands[path.path(relativeTo: FileManager.default.currentDirectoryPath)]
+                compileCommands[path.filepath] ??
+                compileCommands[path.relativeFilepath]
             } ?? []
         }
     }
@@ -99,7 +100,7 @@ struct LintableFilesVisitor {
         }
     }
 
-    func shouldSkipFile(atPath path: String?) -> Bool {
+    func shouldSkipFile(atPath path: URL?) -> Bool {
         switch mode {
         case .lint:
             return false

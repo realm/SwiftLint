@@ -86,7 +86,7 @@ private extension SwiftLintFile {
         try byteOffsets.compactMap { offset in
             if isExplicitAccess(at: offset) { return nil }
             let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
-                file: self.path!, offset: offset, arguments: compilerArguments
+                file: path!.filepath, offset: offset, arguments: compilerArguments
             )
             var cursorInfo = try cursorInfoRequest.sendIfNotDisabled()
 
@@ -135,8 +135,7 @@ private extension StringView {
 }
 
 private func binaryOffsets(file: SwiftLintFile, compilerArguments: [String]) throws -> [ByteCount] {
-    let absoluteFile = file.path!.bridge().absolutePathRepresentation()
-    let index = try Request.index(file: absoluteFile, arguments: compilerArguments).sendIfNotDisabled()
+    let index = try Request.index(file: file.path!.filepath, arguments: compilerArguments).sendIfNotDisabled()
     let binaryOffsets = file.stringView.recursiveByteOffsets(index)
     return binaryOffsets.sorted()
 }

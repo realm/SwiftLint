@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <testsuites failures="1" errors="3" tests="4">
 	<testsuite failures="1" errors="3" tests="4">
-		<testcase classname='Formatting Test' name='filename'>
+		<testcase classname='Formatting Test' name='${CURRENT_WORKING_DIRECTORY}/filename'>
 			<failure message='Violation Reason 1'>Warning:Line:1</failure>
 		</testcase>
-		<testcase classname='Formatting Test' name='filename'>
+		<testcase classname='Formatting Test' name='${CURRENT_WORKING_DIRECTORY}/filename'>
 			<failure message='Violation Reason 2'>Error:Line:1</failure>
 		</testcase>
 		<testcase classname='Formatting Test' name='${CURRENT_WORKING_DIRECTORY}/path/file.swift'>

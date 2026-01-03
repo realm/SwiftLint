@@ -76,8 +76,8 @@ file_name:
     - SwiftSyntax+SwiftLint.swift
     - TestHelpers.swift
   excluded_paths:
-    - Tests/GeneratedTests/GeneratedTests_\d\d\.swift
-    - Tests/FileSystemAccessTests/.+\.swift
+    - Tests[\\/]GeneratedTests[\\/]GeneratedTests_\d\d\.swift
+    - Tests[\\/]FileSystemAccessTests[\\/].+\.swift
 final_test_case: *unit_test_configuration
 function_body_length: 60
 identifier_name:

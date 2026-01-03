@@ -3,7 +3,7 @@
     "check_name" : "Line Length",
     "description" : "Violation Reason 1",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "4a17aef14fdc2dbdd95ab2ee78d1b7d6cc289539d290b283cbabedd30e929f5f",
+    "fingerprint" : "752a4a1b46a05187653ee3fde419b239969b34ffa25568e89985aafbff94afee",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -18,7 +18,7 @@
     "check_name" : "Line Length",
     "description" : "Violation Reason 2",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "4a17aef14fdc2dbdd95ab2ee78d1b7d6cc289539d290b283cbabedd30e929f5f",
+    "fingerprint" : "752a4a1b46a05187653ee3fde419b239969b34ffa25568e89985aafbff94afee",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -33,7 +33,7 @@
     "check_name" : "Syntactic Sugar",
     "description" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "752322cea7c7ad97a20777d51a8d44c33a7e037290344c8fed6881ec916b6f1a",
+    "fingerprint" : "2528f90c0fd6ec28e5570b4a08add2a2096fc5737e44889bee5063c740730145",
     "location" : {
       "lines" : {
         "begin" : 1,

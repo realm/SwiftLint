@@ -6,6 +6,14 @@ struct UnneededEscapingRuleExamples {
         func outer(completion: @escaping () -> Void) { inner(completion: completion) }
         """),
         Example("""
+        func f(completion: @escaping [Int] -> Void) {
+            g {
+                let result = [1].map { _ in 0 }
+                completion(result)
+            }
+        }
+        """),
+        Example("""
         func outer(closure: @escaping @autoclosure () -> String) {
             inner(closure: closure())
         }

@@ -16,7 +16,10 @@
 
 ### Bug Fixes
 
-* None.
+* Fix false positive in `unneeded_escaping` rule when an escaping closure is used in
+  a nested closure preceded by another closure.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6410](https://github.com/realm/SwiftLint/issues/6410)
 
 ## 0.63.0: High-Speed Extraction
 

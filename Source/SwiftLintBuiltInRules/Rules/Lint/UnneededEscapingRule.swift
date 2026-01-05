@@ -87,7 +87,7 @@ private extension UnneededEscapingRule {
 private final class EscapeChecker: SyntaxVisitor {
     var taintedVariables = Set<String>()
     var doesEscape = false
-    var inClosureContext = false
+    var inClosureContext = Stack<Bool>()
     let isAutoclosure: Bool
 
     init(paramName: String, isAutoclosure: Bool) {
@@ -138,19 +138,19 @@ private final class EscapeChecker: SyntaxVisitor {
     }
 
     override func visit(_: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-        inClosureContext = true
+        inClosureContext.push(true)
         return .visitChildren
     }
 
     override func visitPost(_: ClosureExprSyntax) {
-        inClosureContext = false
+        inClosureContext.pop()
     }
 
     override func visitPost(_ node: DeclReferenceExprSyntax) {
         guard isTainted(ExprSyntax(node)) else {
             return
         }
-        if inClosureContext || [.arrayElement, .dictionaryElement].contains(node.parent?.kind) {
+        if (inClosureContext.peek() ?? false) || [.arrayElement, .dictionaryElement].contains(node.parent?.kind) {
             doesEscape = true
         }
     }

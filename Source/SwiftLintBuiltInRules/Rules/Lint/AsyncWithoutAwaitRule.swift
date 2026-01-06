@@ -26,17 +26,10 @@ private extension AsyncWithoutAwaitRule {
         private var pendingAsync: TokenSyntax?
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.body != nil else {
-                return .visitChildren
+            if node.body != nil {
+                let asyncToken = node.needsToKeepAsync ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+                functionScopes.push(.init(asyncToken: asyncToken))
             }
-
-            // @concurrent functions require the async keyword even without await calls
-            // Override functions must keep async to properly override parent's async function
-            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
-                || node.modifiers.contains(keyword: .override)
-                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken))
-
             return .visitChildren
         }
 
@@ -47,7 +40,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            // @concurrent closures require the async keyword even without await calls
+            // @concurrent closures require the async keyword even without await calls,
             let asyncToken = (node.signature?.attributes.contains(attributeNamed: "concurrent") ?? false)
                 ? nil : pendingAsync
             functionScopes.push(.init(asyncToken: asyncToken))
@@ -64,16 +57,10 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.body != nil else {
-                return .visitChildren
+            if node.body != nil {
+                let asyncToken = node.needsToKeepAsync ? nil : node.effectSpecifiers?.asyncSpecifier
+                functionScopes.push(.init(asyncToken: asyncToken))
             }
-
-            // Check if the parent variable/subscript has override modifier
-            let hasOverride = Syntax(node).closestVariableOrSubscript()?.contains(keyword: .override) ?? false
-            let asyncToken = hasOverride
-                ? nil : node.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken))
-
             return .visitChildren
         }
 
@@ -84,17 +71,10 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.body != nil else {
-                return .visitChildren
+            if node.body != nil {
+                let asyncToken = node.needsToKeepAsync ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+                functionScopes.push(.init(asyncToken: asyncToken))
             }
-
-            // @concurrent can be applied to initializers
-            // Override initializers must keep async to properly override parent's async initializer
-            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
-                || node.modifiers.contains(keyword: .override)
-                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken))
-
             return .visitChildren
         }
 
@@ -171,16 +151,20 @@ private extension TypeSyntax {
     }
 }
 
-private extension Syntax {
-    /// Traverses up the syntax tree to find the nearest variable or subscript declaration.
-    /// - Returns: The modifiers of the closest variable or subscript declaration, or `nil` if none is found.
-    func closestVariableOrSubscript() -> DeclModifierListSyntax? {
+private extension WithModifiersSyntax where Self: WithAttributesSyntax {
+    var needsToKeepAsync: Bool {
+        attributes.contains(attributeNamed: "concurrent") || modifiers.contains(keyword: .override)
+    }
+}
+
+private extension SyntaxProtocol {
+    var needsToKeepAsync: Bool {
         if let variableDecl = `as`(VariableDeclSyntax.self) {
-            return variableDecl.modifiers
+            return variableDecl.needsToKeepAsync
         }
         if let subscriptDecl = `as`(SubscriptDeclSyntax.self) {
-            return subscriptDecl.modifiers
+            return subscriptDecl.needsToKeepAsync
         }
-        return parent?.closestVariableOrSubscript()
+        return parent?.needsToKeepAsync ?? false
     }
 }

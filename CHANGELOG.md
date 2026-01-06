@@ -16,10 +16,9 @@
 
 ### Bug Fixes
 
-* Fix false positive in `async_without_await` rule for `override` functions that
-  must keep the `async` keyword to properly override the parent's async function.  
-  [copilot](https://github.com/copilot)
-  [#ISSUE_NUMBER](https://github.com/realm/SwiftLint/issues/ISSUE_NUMBER)
+* Ignore `override` functions in `async_without_await` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6416](https://github.com/realm/SwiftLint/issues/6416)
 
 * Fix false positive in `unneeded_escaping` rule when an escaping closure is used in
   a nested closure preceded by another closure.  

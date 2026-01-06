@@ -16,6 +16,10 @@
 
 ### Bug Fixes
 
+* Fix false positive in `async_without_await` rule for `override` functions that
+  must keep the `async` keyword to properly override the parent's async function.  
+  [copilot](https://github.com/copilot)
+
 * Fix false positive in `unneeded_escaping` rule when an escaping closure is used in
   a nested closure preceded by another closure.  
   [SimplyDanny](https://github.com/SimplyDanny)

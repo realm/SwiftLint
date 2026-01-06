@@ -31,7 +31,9 @@ private extension AsyncWithoutAwaitRule {
             }
 
             // @concurrent functions require the async keyword even without await calls
+            // Override functions must keep async to properly override parent's async function
             let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
+                || node.modifiers.contains(keyword: .override)
                 ? nil : node.signature.effectSpecifiers?.asyncSpecifier
             functionScopes.push(.init(asyncToken: asyncToken))
 

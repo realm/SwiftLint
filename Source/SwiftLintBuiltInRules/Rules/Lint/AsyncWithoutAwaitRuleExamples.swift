@@ -189,27 +189,31 @@ internal struct AsyncWithoutAwaitRuleExamples {
         }
         """),
         Example("""
-        class A {
-            func test() async {
-                await foo()
-            }
+        class Parent {
+            func test() async { await foo() }
         }
-        class B: A {
-            override func test() async {
-                print("B")
-            }
+        class Child: Parent {
+            override func test() async { print("Child") }
         }
         """),
         Example("""
         class Parent {
-            func asyncMethod() async throws {
-                try await someAsyncWork()
+            var prop: Int {
+                get async { await fetchValue() }
             }
         }
         class Child: Parent {
-            override func asyncMethod() async throws {
-                print("Child implementation")
+            override var prop: Int {
+                get async { return 2 }
             }
+        }
+        """),
+        Example("""
+        class Base {
+            init() async { await setup() }
+        }
+        class Derived: Base {
+            override init() async { print("Derived") }
         }
         """),
     ]

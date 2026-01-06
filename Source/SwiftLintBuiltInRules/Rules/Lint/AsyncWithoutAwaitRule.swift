@@ -68,7 +68,10 @@ private extension AsyncWithoutAwaitRule {
                 return .visitChildren
             }
 
-            let asyncToken = node.effectSpecifiers?.asyncSpecifier
+            // Check if the parent variable/subscript has override modifier
+            let hasOverride = Syntax(node).closestVariableOrSubscript()?.contains(keyword: .override) ?? false
+            let asyncToken = hasOverride
+                ? nil : node.effectSpecifiers?.asyncSpecifier
             functionScopes.push(.init(asyncToken: asyncToken))
 
             return .visitChildren
@@ -86,7 +89,9 @@ private extension AsyncWithoutAwaitRule {
             }
 
             // @concurrent can be applied to initializers
+            // Override initializers must keep async to properly override parent's async initializer
             let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
+                || node.modifiers.contains(keyword: .override)
                 ? nil : node.signature.effectSpecifiers?.asyncSpecifier
             functionScopes.push(.init(asyncToken: asyncToken))
 
@@ -163,5 +168,17 @@ private extension TypeSyntax {
             return tupleType.elements.onlyElement?.type.asyncToken
         }
         return nil
+    }
+}
+
+private extension Syntax {
+    func closestVariableOrSubscript() -> DeclModifierListSyntax? {
+        if let variableDecl = `as`(VariableDeclSyntax.self) {
+            return variableDecl.modifiers
+        }
+        if let subscriptDecl = `as`(SubscriptDeclSyntax.self) {
+            return subscriptDecl.modifiers
+        }
+        return parent?.closestVariableOrSubscript()
     }
 }

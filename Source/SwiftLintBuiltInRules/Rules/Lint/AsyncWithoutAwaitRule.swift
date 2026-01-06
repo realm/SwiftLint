@@ -172,6 +172,8 @@ private extension TypeSyntax {
 }
 
 private extension Syntax {
+    /// Traverses up the syntax tree to find the nearest variable or subscript declaration.
+    /// - Returns: The modifiers of the closest variable or subscript declaration, or `nil` if none is found.
     func closestVariableOrSubscript() -> DeclModifierListSyntax? {
         if let variableDecl = `as`(VariableDeclSyntax.self) {
             return variableDecl.modifiers

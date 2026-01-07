@@ -26,15 +26,10 @@ private extension AsyncWithoutAwaitRule {
         private var pendingAsync: TokenSyntax?
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.body != nil else {
-                return .visitChildren
+            if node.body != nil {
+                let asyncToken = node.needsToKeepAsync ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+                functionScopes.push(.init(asyncToken: asyncToken))
             }
-
-            // @concurrent functions require the async keyword even without await calls
-            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
-                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken))
-
             return .visitChildren
         }
 
@@ -45,7 +40,7 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            // @concurrent closures require the async keyword even without await calls
+            // @concurrent closures require the async keyword even without await calls,
             let asyncToken = (node.signature?.attributes.contains(attributeNamed: "concurrent") ?? false)
                 ? nil : pendingAsync
             functionScopes.push(.init(asyncToken: asyncToken))
@@ -62,13 +57,10 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.body != nil else {
-                return .visitChildren
+            if node.body != nil {
+                let asyncToken = node.needsToKeepAsync ? nil : node.effectSpecifiers?.asyncSpecifier
+                functionScopes.push(.init(asyncToken: asyncToken))
             }
-
-            let asyncToken = node.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken))
-
             return .visitChildren
         }
 
@@ -79,15 +71,10 @@ private extension AsyncWithoutAwaitRule {
         }
 
         override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
-            guard node.body != nil else {
-                return .visitChildren
+            if node.body != nil {
+                let asyncToken = node.needsToKeepAsync ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+                functionScopes.push(.init(asyncToken: asyncToken))
             }
-
-            // @concurrent can be applied to initializers
-            let asyncToken = node.attributes.contains(attributeNamed: "concurrent")
-                ? nil : node.signature.effectSpecifiers?.asyncSpecifier
-            functionScopes.push(.init(asyncToken: asyncToken))
-
             return .visitChildren
         }
 
@@ -161,5 +148,23 @@ private extension TypeSyntax {
             return tupleType.elements.onlyElement?.type.asyncToken
         }
         return nil
+    }
+}
+
+private extension WithModifiersSyntax where Self: WithAttributesSyntax {
+    var needsToKeepAsync: Bool {
+        attributes.contains(attributeNamed: "concurrent") || modifiers.contains(keyword: .override)
+    }
+}
+
+private extension SyntaxProtocol {
+    var needsToKeepAsync: Bool {
+        if let variableDecl = `as`(VariableDeclSyntax.self) {
+            return variableDecl.needsToKeepAsync
+        }
+        if let subscriptDecl = `as`(SubscriptDeclSyntax.self) {
+            return subscriptDecl.needsToKeepAsync
+        }
+        return parent?.needsToKeepAsync ?? false
     }
 }

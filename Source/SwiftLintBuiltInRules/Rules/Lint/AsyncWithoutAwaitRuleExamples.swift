@@ -188,6 +188,34 @@ internal struct AsyncWithoutAwaitRuleExamples {
             let c: () async -> Int = { @concurrent in 1 }
         }
         """),
+        Example("""
+        class Parent {
+            func test() async { await foo() }
+        }
+        class Child: Parent {
+            override func test() async { print("Child") }
+        }
+        """),
+        Example("""
+        class Parent {
+            var prop: Int {
+                get async { await fetchValue() }
+            }
+        }
+        class Child: Parent {
+            override var prop: Int {
+                get async { return 2 }
+            }
+        }
+        """),
+        Example("""
+        class Base {
+            init() async { await setup() }
+        }
+        class Derived: Base {
+            override init() async { print("Derived") }
+        }
+        """),
     ]
 
     static let triggeringExamples = [

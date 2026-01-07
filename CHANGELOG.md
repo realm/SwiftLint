@@ -21,6 +21,9 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6410](https://github.com/realm/SwiftLint/issues/6410)
 
+* Fix non-excluded bool literal in `optional_enum_case_name` when used inside a tuple.  
+  [tristan-burnside-anz](https://github.com/tristan-burnside-anz)
+
 ## 0.63.0: High-Speed Extraction
 
 ### Breaking

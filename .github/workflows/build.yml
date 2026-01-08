@@ -21,6 +21,22 @@ jobs:
         name: Build SwiftLint with Bazel
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Prepare release workspace
+        run: |
+          cp bazel-bin/swiftlint .
+          make bazel_release
+          mkdir -p bazel-workspace
+          tar -czvf bazel.tar.gz bazel-workspace
+          cd bazel-workspace
+          sed -i '/-warnings-as-errors/d' bazel/copts.bzl
+      - name: Build release archive
+        uses: ./.github/actions/bazel-linux-build
+        env:
+          CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Run tests for extra rules
+        run: |
+          bazel run //:swiftlint -- version
+          bazel test //Tests/ExtraRulesTests --test_output=errors
 
   plugins_linux:
     name: SPM plugins, Linux, Swift ${{ matrix.version }}

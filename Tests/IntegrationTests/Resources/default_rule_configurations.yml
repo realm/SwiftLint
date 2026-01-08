@@ -547,6 +547,11 @@ invalid_swiftlint_command:
   meta:
     opt-in: false
     correctable: false
+invisible_character:
+  severity: error
+  meta:
+    opt-in: false
+    correctable: false
 is_disjoint:
   severity: warning
   meta:

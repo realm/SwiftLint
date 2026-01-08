@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PeriodSpacingRule.description)
+    }
+}
+
 final class PreferAssetSymbolsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferAssetSymbolsRule.description)
@@ -148,11 +154,5 @@ final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
 final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceIntoRule.description)
-    }
-}
-
-final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantDiscardableLetRule.description)
     }
 }

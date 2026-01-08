@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class NSLocalizedStringRequireBundleRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSLocalizedStringRequireBundleRule.description)
+    }
+}
+
 final class NSNumberInitAsFunctionReferenceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSNumberInitAsFunctionReferenceRule.description)
@@ -148,11 +154,5 @@ final class OverrideInExtensionRuleGeneratedTests: SwiftLintTestCase {
 final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PatternMatchingKeywordsRule.description)
-    }
-}
-
-final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PeriodSpacingRule.description)
     }
 }

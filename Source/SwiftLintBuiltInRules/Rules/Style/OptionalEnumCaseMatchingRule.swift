@@ -151,6 +151,21 @@ struct OptionalEnumCaseMatchingRule: Rule {
              default: break
             }
             """),
+            Example("""
+            switch foo {
+             case (true?, false?): break
+             case (true?, _): break
+             case (_, false?): break
+             default: break
+            }
+            """): Example("""
+            switch foo {
+             case (true?, false?): break
+             case (true?, _): break
+             case (_, false?): break
+             default: break
+            }
+            """),
         ]
     )
 }
@@ -198,7 +213,7 @@ private extension OptionalEnumCaseMatchingRule {
                 for element in expression.elements {
                     guard
                         let optionalChainingExpression = element.expression.as(OptionalChainingExprSyntax.self),
-                        !optionalChainingExpression.expression.is(DiscardAssignmentExprSyntax.self)
+                        !optionalChainingExpression.expression.isDiscardAssignmentOrBoolLiteral
                     else {
                         continue
                     }

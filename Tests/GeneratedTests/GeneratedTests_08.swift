@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantDiscardableLetRule.description)
+    }
+}
+
 final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)
@@ -148,11 +154,5 @@ final class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
 final class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOverFinalClassRule.description)
-    }
-}
-
-final class StrictFilePrivateRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StrictFilePrivateRule.description)
     }
 }

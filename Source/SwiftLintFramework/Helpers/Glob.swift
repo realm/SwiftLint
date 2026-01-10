@@ -121,32 +121,20 @@ struct Glob {
     }
     #endif
 
-    static func createFilenameMatchers(root: String, pattern: String) -> [FilenameMatcher] {
-        var absolutPathPattern = pattern
-        #if os(Windows)
-        if !pattern.contains(":") {
-            // If the root is not already part of the pattern, prepend it.
-            absolutPathPattern = root + (root.hasSuffix("/") ? "" : "/") + absolutPathPattern
-        }
-        #else
-        if !pattern.starts(with: "/") {
-            // If the root is not already part of the pattern, prepend it.
-            absolutPathPattern = root + (root.hasSuffix("/") ? "" : "/") + absolutPathPattern
-        }
-        #endif
+    static func createFilenameMatchers(pattern: String) -> [FilenameMatcher] {
         if pattern.hasSuffix(".swift") || pattern.hasSuffix("/**") {
             // Suffix is already well defined.
-            return [FilenameMatcher(pattern: absolutPathPattern)]
+            return [FilenameMatcher(pattern: pattern)]
         }
         if pattern.hasSuffix("/") {
             // Matching all files in the folder.
-            return [FilenameMatcher(pattern: absolutPathPattern + "**")]
+            return [FilenameMatcher(pattern: pattern + "**")]
         }
         // The pattern could match files in the last folder in the path or all contained files if the last component
         // represents folders.
         return [
-            FilenameMatcher(pattern: absolutPathPattern),
-            FilenameMatcher(pattern: absolutPathPattern + "/**"),
+            FilenameMatcher(pattern: pattern),
+            FilenameMatcher(pattern: pattern + "/**"),
         ]
     }
 

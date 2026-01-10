@@ -90,44 +90,34 @@ final class GlobTests: SwiftLintTestCase {
     }
 
     func testCreateFilenameMatchers() {
-        func assertGlobMatch(root: String = "", pattern: String, filename: String,
-                             file: StaticString = #filePath, line: UInt = #line) {
+        func assertGlobMatch(pattern: String, filename: String, file: StaticString = #filePath, line: UInt = #line) {
             #if os(Windows)
-            var root = root
             var pattern = pattern
             var filename = filename
-            if root.starts(with: "/") {
-                root = "C:" + root
-            }
-            if pattern.starts(with: "/") {
-                pattern = "C:" + pattern
-            }
+            pattern = "C:" + pattern
             filename = "C:" + filename
             #endif
-            print(root, pattern, filename)
-            let matchers = Glob.createFilenameMatchers(root: root, pattern: pattern)
+            let matchers = Glob.createFilenameMatchers(pattern: pattern)
             XCTAssert(matchers.anyMatch(filename: filename), file: file, line: line)
         }
 
-        assertGlobMatch(root: "/a/b/", pattern: "c/*.swift", filename: "/a/b/c/d.swift")
-        assertGlobMatch(root: "/a", pattern: "**/*.swift", filename: "/a/b/c/d.swift")
-        assertGlobMatch(root: "/a", pattern: "**/*.swift", filename: "/a/b.swift")
-        assertGlobMatch(root: "/", pattern: "**/*.swift", filename: "/a/b.swift")
-        assertGlobMatch(root: "/", pattern: "a/**/b.swift", filename: "/a/b.swift")
-        assertGlobMatch(root: "/", pattern: "a/**/b.swift", filename: "/a/c/b.swift")
-        assertGlobMatch(root: "/", pattern: "**/*.swift", filename: "/a.swift")
-        assertGlobMatch(root: "/", pattern: "a/**/*.swift", filename: "/a/b/c.swift")
-        assertGlobMatch(root: "/", pattern: "a/**/*.swift", filename: "/a/b.swift")
-        assertGlobMatch(root: "/a/b", pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
-        assertGlobMatch(root: "/a/", pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(pattern: "/a**/*.swift", filename: "/a/b/c/d.swift")
+        assertGlobMatch(pattern: "/a**/*.swift", filename: "/a/b.swift")
+        assertGlobMatch(pattern: "/**/*.swift", filename: "/a/b.swift")
+        assertGlobMatch(pattern: "/a/**/b.swift", filename: "/a/b.swift")
+        assertGlobMatch(pattern: "/a/**/b.swift", filename: "/a/c/b.swift")
+        assertGlobMatch(pattern: "/**/*.swift", filename: "/a.swift")
+        assertGlobMatch(pattern: "/a/**/*.swift", filename: "/a/b/c.swift")
+        assertGlobMatch(pattern: "/a/**/*.swift", filename: "/a/b.swift")
 
         assertGlobMatch(pattern: "/a/b/c", filename: "/a/b/c/d.swift")
         assertGlobMatch(pattern: "/a/b/c/", filename: "/a/b/c/d.swift")
         assertGlobMatch(pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
         assertGlobMatch(pattern: "/d.swift/*.swift", filename: "/d.swift/e.swift")
         assertGlobMatch(pattern: "/a/**", filename: "/a/b/c/d.swift")
-        assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/c/MyTest2.swift")
-        assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/MyTests/c.swift")
+        assertGlobMatch(pattern: "/**/*Test*", filename: "/a/b/c/MyTest2.swift")
+        assertGlobMatch(pattern: "/**/*Test*", filename: "/a/b/MyTests/c.swift")
     }
 
     // swiftlint:disable:next identifier_name

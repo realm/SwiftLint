@@ -96,7 +96,7 @@ extension Configuration {
         }
         return .matching(
             matchers: excludedPaths.flatMap {
-                Glob.createFilenameMatchers(root: rootDirectory.path, pattern: $0.path)
+                Glob.createFilenameMatchers(pattern: $0.path)
             }
         )
     }

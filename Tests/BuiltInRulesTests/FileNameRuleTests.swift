@@ -2,8 +2,7 @@
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory =
-    TestResources.path().appendingPathComponent("FileNameRuleFixtures").filepath
+private let fixturesDirectory = TestResources.path().appending(path: "FileNameRuleFixtures")
 
 final class FileNameRuleTests: SwiftLintTestCase {
     private func validate(fileName: String,
@@ -13,7 +12,7 @@ final class FileNameRuleTests: SwiftLintTestCase {
                           suffixPattern: String? = nil,
                           nestedTypeSeparator: String? = nil,
                           requireFullyQualifiedNames: Bool = false) throws -> [StyleViolation] {
-        let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
+        let file = SwiftLintFile(path: fixturesDirectory.appending(path: fileName))!
 
         var configuration = [String: Any]()
 

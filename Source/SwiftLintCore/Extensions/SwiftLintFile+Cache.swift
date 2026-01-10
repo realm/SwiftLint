@@ -34,7 +34,7 @@ private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
         .as(SourceFileSyntax.self)
 }
 private let locationConverterCache = Cache { file -> SourceLocationConverter in
-    SourceLocationConverter(fileName: file.path ?? "<nopath>", tree: file.syntaxTree)
+    SourceLocationConverter(fileName: file.path?.filepath ?? "<nopath>", tree: file.syntaxTree)
 }
 private let commandsCache = Cache { file -> [Command] in
     guard file.contents.contains("swiftlint:") else {

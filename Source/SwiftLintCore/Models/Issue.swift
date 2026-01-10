@@ -55,31 +55,31 @@ public enum Issue: LocalizedError, Equatable {
     case ruleDeprecated(ruleID: String)
 
     /// The initial configuration file was not found.
-    case initialFileNotFound(path: String)
+    case initialFileNotFound(path: URL)
 
     /// A file at specified path was not found.
-    case fileNotFound(path: String)
+    case fileNotFound(path: URL)
 
     /// The file at `path` is not readable or cannot be opened.
-    case fileNotReadable(path: String?, ruleID: String)
+    case fileNotReadable(path: URL?, ruleID: String)
 
     /// The file at `path` is not writable.
-    case fileNotWritable(path: String)
+    case fileNotWritable(path: URL)
 
     /// The file at `path` cannot be indexed by a specific rule.
-    case indexingError(path: String?, ruleID: String)
+    case indexingError(path: URL?, ruleID: String)
 
     /// No arguments were provided to compile a file at `path` within a specific rule.
-    case missingCompilerArguments(path: String?, ruleID: String)
+    case missingCompilerArguments(path: URL?, ruleID: String)
 
     /// Cursor information cannot be extracted from a specific location.
-    case missingCursorInfo(path: String?, ruleID: String)
+    case missingCursorInfo(path: URL?, ruleID: String)
 
     /// An error that occurred when parsing YAML.
     case yamlParsing(String)
 
     /// The baseline file at `path` is not readable or cannot be opened.
-    case baselineNotReadable(path: String)
+    case baselineNotReadable(path: URL)
 
     /// Flag to enable warnings for deprecations being printed to the console. Printing is enabled by default.
     package nonisolated(unsafe) static var printDeprecationWarnings = true
@@ -183,22 +183,22 @@ public enum Issue: LocalizedError, Equatable {
         case let .fileNotFound(path):
             return "File at path '\(path)' not found."
         case let .fileNotReadable(path, id):
-            return "Cannot open or read file at path '\(path ?? "...")' within '\(id)' rule."
+            return "Cannot open or read file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule."
         case let .fileNotWritable(path):
-            return "Cannot write to file at path '\(path)'."
+            return "Cannot write to file at path '\(path.relativeFilepath)'."
         case let .indexingError(path, id):
-            return "Cannot index file at path '\(path ?? "...")' within '\(id)' rule."
+            return "Cannot index file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule."
         case let .missingCompilerArguments(path, id):
             return """
-                Attempted to lint file at path '\(path ?? "...")' within '\(id)' rule \
+                Attempted to lint file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule \
                 without any compiler arguments.
                 """
         case let .missingCursorInfo(path, id):
-            return "Cannot get cursor info from file at path '\(path ?? "...")' within '\(id)' rule."
+            return "Cannot get cursor info from file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule."
         case let .yamlParsing(message):
             return "Cannot parse YAML file: \(message)"
         case let .baselineNotReadable(path):
-            return "Cannot open or read the baseline file at path '\(path)'."
+            return "Cannot open or read the baseline file at path '\(path.relativeFilepath)'."
         }
     }
 }

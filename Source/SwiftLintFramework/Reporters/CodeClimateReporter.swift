@@ -26,7 +26,7 @@ struct CodeClimateReporter: Reporter {
             "engine_name": "SwiftLint",
             "fingerprint": generateFingerprint(violation),
             "location": [
-                "path": violation.location.relativeFile ?? NSNull() as Any,
+                "path": violation.location.file?.relativeFilepath ?? NSNull() as Any,
                 "lines": [
                     "begin": violation.location.line ?? NSNull() as Any,
                     "end": violation.location.line ?? NSNull() as Any,
@@ -38,14 +38,10 @@ struct CodeClimateReporter: Reporter {
     }
 
     internal static func generateFingerprint(_ violation: StyleViolation) -> String {
-        let fingerprintLocation = Location(
-            file: violation.location.relativeFile,
-            line: violation.location.line,
-            character: violation.location.character
-        )
-
-        return [
-            "\(fingerprintLocation)",
+        [
+            "\(violation.location.file?.relativeFilepath ?? "")",
+            "\(violation.location.line ?? 0)",
+            "\(violation.location.character ?? 0)",
             "\(violation.ruleIdentifier)",
         ].joined().sha256()
     }

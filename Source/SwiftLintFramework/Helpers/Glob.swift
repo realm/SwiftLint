@@ -17,16 +17,16 @@ import WinSDK
 // Adapted from https://gist.github.com/efirestone/ce01ae109e08772647eb061b3bb387c3
 
 struct Glob {
-    static func resolveGlob(_ pattern: String) -> [String] {
+    static func resolveGlob(_ pattern: URL) -> [URL] {
         let globCharset = CharacterSet(charactersIn: "*?[]")
-        guard pattern.rangeOfCharacter(from: globCharset) != nil else {
+        guard pattern.path.rangeOfCharacter(from: globCharset) != nil else {
             return [pattern]
         }
 
         return expandGlobstar(pattern: pattern)
-            .reduce(into: [String]()) { paths, pattern in
+            .reduce(into: [URL]()) { paths, pattern in
 #if os(Windows)
-                URL(fileURLWithPath: pattern).withUnsafeFileSystemRepresentation {
+                pattern.withUnsafeFileSystemRepresentation {
                     var ffd = WIN32_FIND_DATAW()
 
                     let hDirectory: HANDLE = String(cString: $0!).withCString(encodedAs: UTF16.self) {
@@ -43,7 +43,7 @@ struct Glob {
                             }
                         }
                         if path == "." || path == ".." { continue }
-                        paths.append(path)
+                        paths.append(path.url())
                     } while FindNextFileW(hDirectory, &ffd)
                 }
 #else
@@ -55,19 +55,17 @@ struct Glob {
                 #else
                 let flags = GLOB_TILDE | GLOB_BRACE | GLOB_MARK
                 #endif
-                if glob(pattern, flags, nil, &globResult) == 0 {
+                if glob(pattern.path, flags, nil, &globResult) == 0 {
                     paths.append(contentsOf: populateFiles(globResult: globResult))
                 }
 #endif
             }
             .unique
-            .sorted()
-            .map { $0.absolutePathStandardized() }
     }
 
     static func createFilenameMatchers(root: String, pattern: String) -> [FilenameMatcher] {
         var absolutPathPattern = pattern
-        if !pattern.starts(with: root) {
+        if !pattern.starts(with: "/") {
             // If the root is not already part of the pattern, prepend it.
             absolutPathPattern = root + (root.hasSuffix("/") ? "" : "/") + absolutPathPattern
         }
@@ -90,22 +88,22 @@ struct Glob {
 
     // MARK: Private
 
-    private static func expandGlobstar(pattern: String) -> [String] {
-        guard pattern.contains("**") else {
+    private static func expandGlobstar(pattern: URL) -> [URL] {
+        guard pattern.path.contains("**") else {
             return [pattern]
         }
-        var parts = pattern.components(separatedBy: "**")
+        var parts = pattern.filepath.components(separatedBy: "**")
         let firstPart = parts.removeFirst()
         let fileManager = FileManager.default
         guard firstPart.isEmpty || fileManager.fileExists(atPath: firstPart) else {
             return []
         }
         let searchPath = firstPart.isEmpty ? fileManager.currentDirectoryPath : firstPart
-        var directories = [String]()
+        var directories = [URL]()
         do {
             directories = try fileManager.subpathsOfDirectory(atPath: searchPath).compactMap { subpath in
-                let fullPath = firstPart.bridge().appendingPathComponent(subpath)
-                guard isDirectory(path: fullPath) else { return nil }
+                let fullPath = firstPart.url().appending(path: subpath)
+                guard fullPath.isDirectory else { return nil }
                 return fullPath
             }
         } catch {
@@ -113,45 +111,33 @@ struct Glob {
         }
 
         // Check the base directory for the glob star as well.
-        directories.insert(firstPart, at: 0)
+        directories.insert(firstPart.url(), at: 0)
 
         var lastPart = parts.joined(separator: "**")
-        var results = [String]()
+        var results = [URL]()
 
         // Include the globstar root directory ("dir/") in a pattern like "dir/**" or "dir/**/"
         if lastPart.isEmpty {
-            results.append(firstPart)
+            results.append(firstPart.url())
             lastPart = "*"
         }
 
         for directory in directories {
-            let partiallyResolvedPattern: String
-            if directory.isEmpty {
-                partiallyResolvedPattern = lastPart.starts(with: "/") ? String(lastPart.dropFirst()) : lastPart
-            } else {
-                partiallyResolvedPattern = directory.bridge().appendingPathComponent(lastPart)
-            }
-            results.append(contentsOf: expandGlobstar(pattern: partiallyResolvedPattern))
+            results.append(contentsOf: expandGlobstar(pattern: directory.appending(path: lastPart)))
         }
 
         return results
     }
 
-    private static func isDirectory(path: String) -> Bool {
-        var isDirectoryBool = ObjCBool(false)
-        let isDirectory = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryBool)
-        return isDirectory && isDirectoryBool.boolValue
-    }
-
 #if !os(Windows)
-    private static func populateFiles(globResult: glob_t) -> [String] {
+    private static func populateFiles(globResult: glob_t) -> [URL] {
 #if os(Linux)
         let matchCount = globResult.gl_pathc
 #else
         let matchCount = globResult.gl_matchc
 #endif
         return (0..<Int(matchCount)).compactMap { index in
-            globResult.gl_pathv[index].flatMap { String(validatingUTF8: $0) }
+            globResult.gl_pathv[index].flatMap { String(validatingUTF8: $0)?.url() }
         }
     }
 #endif

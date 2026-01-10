@@ -10,23 +10,22 @@ final class ReporterTests: SwiftLintTestCase {
     private let violations = [
         StyleViolation(
             ruleDescription: LineLengthRule.description,
-            location: Location(file: "filename", line: 1, character: 1),
+            location: Location(file: URL.cwd.appending(path: "filename"), line: 1, character: 1),
             reason: "Violation Reason 1"
         ),
         StyleViolation(
             ruleDescription: LineLengthRule.description,
             severity: .error,
-            location: Location(file: "filename", line: 1),
+            location: Location(file: URL.cwd.appending(path: "filename"), line: 1),
             reason: "Violation Reason 2"
         ),
         StyleViolation(
             ruleDescription: SyntacticSugarRule.description,
             severity: .error,
             location: Location(
-                file: URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-                            .appendingPathComponent("path")
-                            .appendingPathComponent("file.swift")
-                            .path,
+                file: URL.cwd
+                    .appending(path: "path", directoryHint: .isDirectory)
+                    .appending(path: "file.swift", directoryHint: .notDirectory),
                 line: 1,
                 character: 2
             ),
@@ -46,8 +45,8 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     private func stringFromFile(_ filename: String) -> String {
-        let path = TestResources.path().appendingPathComponent(filename)
-        return SwiftLintFile(path: path.filepath)!.contents
+        let path = TestResources.path().appending(path: filename, directoryHint: .notDirectory)
+        return SwiftLintFile(path: path)!.contents
     }
 
     func testXcodeReporter() throws {
@@ -163,15 +162,14 @@ final class ReporterTests: SwiftLintTestCase {
     }
 
     func testRelativePathReporterPaths() {
-        let relativePath = "filename"
-        let absolutePath = FileManager.default.currentDirectoryPath + "/" + relativePath
-        let location = Location(file: absolutePath, line: 1, character: 2)
+        let relativePath = "filename".url()
+        let location = Location(file: relativePath, line: 1, character: 2)
         let violation = StyleViolation(ruleDescription: LineLengthRule.description,
                                        location: location,
                                        reason: "Violation Reason")
         let result = RelativePathReporter.generateReport([violation])
-        XCTAssertFalse(result.contains(absolutePath))
-        XCTAssertTrue(result.contains(relativePath))
+        XCTAssertFalse(result.contains(relativePath.filepath))
+        XCTAssertTrue(result.contains(relativePath.relativeFilepath))
     }
 
     func testSummaryReporter() {
@@ -179,7 +177,7 @@ final class ReporterTests: SwiftLintTestCase {
             .trimmingTrailingCharacters(in: .whitespacesAndNewlines)
         let correctableViolation = StyleViolation(
             ruleDescription: VerticalWhitespaceOpeningBracesRule.description,
-            location: Location(file: "filename", line: 1, character: 2),
+            location: Location(file: URL.cwd.appending(path: "filename"), line: 1, character: 2),
             reason: "Violation Reason"
         )
         let result = SummaryReporter.generateReport(violations + [correctableViolation])
@@ -201,11 +199,9 @@ final class ReporterTests: SwiftLintTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
 
-        let cwd = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).path
-
         let reference = stringFromFile(referenceFile).replacingOccurrences(
             of: "${CURRENT_WORKING_DIRECTORY}",
-            with: cwd
+            with: URL.cwd.path
         ).replacingOccurrences(
             of: "${SWIFTLINT_VERSION}",
             with: SwiftLintFramework.Version.current.value
@@ -217,9 +213,9 @@ final class ReporterTests: SwiftLintTestCase {
         let convertedReference = try stringConverter(reference)
         let convertedReporterOutput = try stringConverter(reporterOutput)
         if convertedReference != convertedReporterOutput {
-            let referenceURL = TestResources.path().appendingPathComponent(referenceFile)
+            let referenceURL = TestResources.path().appending(path: referenceFile, directoryHint: .notDirectory)
             try reporterOutput.replacingOccurrences(
-                of: cwd,
+                of: URL.cwd.path,
                 with: "${CURRENT_WORKING_DIRECTORY}"
             ).replacingOccurrences(
                 of: SwiftLintFramework.Version.current.value,

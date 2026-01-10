@@ -29,12 +29,12 @@ extension SwiftLint {
 private func open(_ url: URL) {
     let process = Process()
 #if os(Linux)
-    process.executableURL = URL(fileURLWithPath: "/usr/bin/env", isDirectory: false)
+    process.executableURL = URL(filePath: "/usr/bin/env", directoryHint: .notDirectory)
     let command = "xdg-open"
     process.arguments = [command, url.absoluteString]
     try? process.run()
 #elseif os(Windows)
-    process.executableURL = URL(fileURLWithPath: "cmd", isDirectory: false)
+    process.executableURL = URL(filePath: "cmd", directoryHint: .notDirectory)
     process.arguments = ["/C", "start", url.absoluteString]
     try? process.run()
 #else

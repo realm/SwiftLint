@@ -20,8 +20,9 @@ private func readFilesFromScriptInputFiles() throws(SwiftLintError) -> [SwiftLin
             guard let path = environment[variable] else {
                 throw SwiftLintError.usageError(description: "Environment variable not set: \(variable)")
             }
-            if path.bridge().isSwiftFile() {
-                return SwiftLintFile(pathDeferringReading: path)
+            let pathURL = URL(filePath: path)
+            if pathURL.isSwiftFile {
+                return SwiftLintFile(pathDeferringReading: pathURL)
             }
             return nil
         } catch {
@@ -41,14 +42,15 @@ private func readFilesFromScriptInputFileLists() throws(SwiftLintError) -> [Swif
             guard let path = environment[variable] else {
                 throw SwiftLintError.usageError(description: "Environment variable not set: \(variable)")
             }
-            if path.bridge().pathExtension == "xcfilelist" {
-                guard let fileContents = FileManager.default.contents(atPath: path),
-                      let textContents = String(data: fileContents, encoding: .utf8) else {
+            let pathURL = URL(filePath: path)
+            if pathURL.pathExtension == "xcfilelist" {
+                guard let textContents = try? String(contentsOf: pathURL, encoding: .utf8) else {
                     throw SwiftLintError.usageError(description: "Could not read file list at: \(path)")
                 }
                 textContents.enumerateLines { line, _ in
-                    if line.isSwiftFile() {
-                        filesToLint.append(SwiftLintFile(pathDeferringReading: line))
+                    let lineURL = URL(filePath: line)
+                    if lineURL.isSwiftFile {
+                        filesToLint.append(SwiftLintFile(pathDeferringReading: lineURL))
                     }
                 }
             }
@@ -107,19 +109,22 @@ extension Configuration {
         -> [Configuration: [SwiftLintFile]] {
         if files.isEmpty, !visitor.allowZeroLintableFiles {
             throw .usageError(
-                description: "No lintable files found at paths: '\(visitor.options.paths.joined(separator: ", "))'"
+                description: """
+                    No lintable files found at paths: \
+                    '\(visitor.options.paths.map(\.relativePath).joined(separator: ", "))'
+                    """
             )
         }
 
         return files.parallelFilterGroup { file in
             let fileConfiguration = configuration(for: file)
-            let fileConfigurationRootPath = fileConfiguration.rootDirectory.bridge()
+            let fileConfigurationRootPath = fileConfiguration.rootDirectory
 
             // Files whose configuration specifies they should be excluded will be skipped
             let shouldSkip = fileConfiguration.excludedPaths.contains { excludedRelativePath in
-                let excludedPath = fileConfigurationRootPath.appendingPathComponent(excludedRelativePath)
-                let filePathComponents = file.path?.bridge().pathComponents ?? []
-                let excludedPathComponents = excludedPath.bridge().pathComponents
+                let excludedPath = fileConfigurationRootPath.appending(path: excludedRelativePath.relativePath)
+                let filePathComponents = file.path?.pathComponents ?? []
+                let excludedPathComponents = excludedPath.pathComponents
                 return filePathComponents.starts(with: excludedPathComponents)
             }
 
@@ -127,18 +132,18 @@ extension Configuration {
         }
     }
 
-    private func outputFilename(for path: String, duplicateFileNames: Set<String>) -> String {
-        let basename = path.bridge().lastPathComponent
+    private func outputFilename(for path: URL, duplicateFileNames: Set<String>) -> String {
+        let basename = path.lastPathComponent
         if !duplicateFileNames.contains(basename) {
             return basename
         }
 
-        var pathComponents = path.bridge().pathComponents
-        for component in rootDirectory.bridge().pathComponents where pathComponents.first == component {
+        var pathComponents = path.pathComponents
+        for component in rootDirectory.pathComponents where pathComponents.first == component {
             pathComponents.removeFirst()
         }
 
-        return pathComponents.reduce(URL(fileURLWithPath: "/")) { $0.appendingPathComponent($1) }.filepath
+        return pathComponents.reduce(URL(filePath: "/")) { $0.appending(path: $1) }.filepath
     }
 
     private func linters(for filesPerConfiguration: [Configuration: [SwiftLintFile]],
@@ -226,7 +231,7 @@ extension Configuration {
                 }
             }
 
-            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path ?? "")) {
+            await Signposts.record(name: "Configuration.Visit", span: .file(linter.file.path?.filepath ?? "")) {
                 await visitor.block(linter)
             }
             return linter.file
@@ -258,10 +263,10 @@ extension Configuration {
         }
         if !options.quiet {
             let filesInfo: String
-            if options.paths.isEmpty || options.paths == [""] {
+            if options.paths.isEmpty || options.paths == [URL.cwd] {
                 filesInfo = "in current working directory"
             } else {
-                filesInfo = "at paths \(options.paths.joined(separator: ", "))"
+                filesInfo = "at paths \(options.paths.map(\.relativePath).joined(separator: ", "))"
             }
 
             queuedPrintError("\(options.capitalizedVerb) Swift files \(filesInfo)")
@@ -305,7 +310,7 @@ private struct DuplicateCollector {
 private extension Collection where Element == Linter {
     var duplicateFileNames: Set<String> {
         let collector = reduce(into: DuplicateCollector()) { result, linter in
-            if let filename = linter.file.path?.bridge().lastPathComponent {
+            if let filename = linter.file.path?.lastPathComponent {
                 if result.all.contains(filename) {
                     result.duplicates.insert(filename)
                 }

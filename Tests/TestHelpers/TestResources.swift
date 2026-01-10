@@ -3,14 +3,15 @@ import SwiftLintCore
 
 public enum TestResources {
     public static func path(_ calleePath: String = #filePath) -> URL {
-        let folder = URL(fileURLWithPath: calleePath, isDirectory: false).deletingLastPathComponent()
+        let folder = calleePath.url(directoryHint: .notDirectory).deletingLastPathComponent()
         if let rootProjectDirectory = ProcessInfo.processInfo.environment["BUILD_WORKSPACE_DIRECTORY"] {
-            return URL(
-                fileURLWithPath: "\(rootProjectDirectory)/Tests/\(folder.lastPathComponent)/Resources",
-                isDirectory: true)
+            return rootProjectDirectory.url(directoryHint: .isDirectory)
+                .appending(path: "Tests", directoryHint: .isDirectory)
+                .appending(path: folder.lastPathComponent, directoryHint: .isDirectory)
+                .appending(path: "Resources", directoryHint: .isDirectory)
         }
         return folder
-            .appendingPathComponent("Resources")
+            .appending(path: "Resources", directoryHint: .isDirectory)
             .resolvingSymlinksInPath()
     }
 }

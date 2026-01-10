@@ -21,7 +21,7 @@ struct FileNameRule: OptInRule, SourceKitFreeRule {
         let prefixRegex = regex("\\A(?:\(configuration.prefixPattern))")
         let suffixRegex = regex("(?:\(configuration.suffixPattern))\\z")
 
-        let fileName = filePath.bridge().lastPathComponent
+        let fileName = filePath.lastPathComponent
         var typeInFileName = fileName.bridge().deletingPathExtension
 
         // Process prefix

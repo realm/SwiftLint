@@ -7,28 +7,28 @@ import XCTest
 
 final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
     private func fixturePath(_ scenario: String) -> URL {
-        URL(fileURLWithPath: #filePath)
+        #filePath.url(directoryHint: .isDirectory)
             .deletingLastPathComponent()
-            .appending(path: "Resources")
-            .appending(component: scenario)
+            .appending(path: "Resources", directoryHint: .isDirectory)
+            .appending(path: scenario, directoryHint: .isDirectory)
     }
 
     /// Returns the paths of lintable files relative to the fixture directory.
-    private func lintableFilePaths(in scenario: String, configFile: String? = nil, inPath: String = ".") -> [String] {
-        let scenarioPath = fixturePath(scenario).filepath
+    private func lintableFilePaths(in scenario: String, configFile: String? = nil, inPath: String? = nil) -> [String] {
+        let scenarioPath = fixturePath(scenario)
 
         let previousDir = FileManager.default.currentDirectoryPath
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(scenarioPath))
         defer { _ = FileManager.default.changeCurrentDirectoryPath(previousDir) }
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(scenarioPath.filepath))
 
-        let config = Configuration(configurationFiles: configFile.map { [$0] } ?? [])
+        let config = Configuration(configurationFiles: configFile.map { [$0.url()] } ?? [])
         let files = config.lintableFiles(
-            inPath: inPath,
+            inPath: inPath.map { $0.url() } ?? URL.cwd,
             forceExclude: false,
             excludeByPrefix: false
         )
 
-        return files.map { $0.path!.path(relativeTo: scenarioPath) }.sorted()
+        return files.map { $0.path!.relativeFilepath }.sorted()
     }
 
     func testParentChildSameDirectory() {
@@ -135,10 +135,10 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         let config = Configuration(configurationFiles: [])
 
         let moduleAFile = SwiftLintFile(
-            path: scenarioPath.appending(path: "ModuleA/File.swift").filepath
+            path: scenarioPath.appending(path: "ModuleA/File.swift")
         )!
         let moduleBFile = SwiftLintFile(
-            path: scenarioPath.appending(path: "ModuleB/File.swift").filepath
+            path: scenarioPath.appending(path: "ModuleB/File.swift")
         )!
 
         XCTAssertTrue(
@@ -158,11 +158,11 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         let scenarioPath = fixturePath("_4_nested_basic")
 
         let moduleAFile = SwiftLintFile(
-            path: scenarioPath.appending(path: "ModuleB/File.swift").filepath
+            path: scenarioPath.appending(path: "ModuleB/File.swift")
         )!
 
         XCTAssertFalse(
-            Configuration(configurationFiles: [scenarioPath.appending(path: "root.yml").filepath])
+            Configuration(configurationFiles: [scenarioPath.appending(path: "root.yml")])
                 .configuration(for: moduleAFile)
                 .rules
                 .map { type(of: $0).identifier }

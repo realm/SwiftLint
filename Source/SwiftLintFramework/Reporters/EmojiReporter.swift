@@ -1,3 +1,5 @@
+import Foundation
+
 /// Reports violations in a format that's both fun and easy to read.
 struct EmojiReporter: Reporter {
     // MARK: - Reporter Conformance
@@ -8,8 +10,8 @@ struct EmojiReporter: Reporter {
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
         violations
-            .group { $0.location.file ?? "Other" }
-            .sorted { $0.key < $1.key }
+            .group { $0.location.file?.path ?? "Other" }
+            .sorted { $0.key.lowercased() < $1.key.lowercased() }
             .map(report)
             .joined(separator: "\n")
     }

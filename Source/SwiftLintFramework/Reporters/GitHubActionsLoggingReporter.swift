@@ -19,7 +19,7 @@ struct GitHubActionsLoggingReporter: Reporter {
         // ::(warning|error) file={relative_path_to_file},line={:line},col={:character}::{content}
         [
             "::\(violation.severity.rawValue) ",
-            "file=\(violation.location.relativeFile ?? ""),",
+            "file=\(violation.location.file?.relativeFilepath ?? ""),",
             "line=\(violation.location.line ?? 1),",
             "col=\(violation.location.character ?? 1)::",
             violation.reason,

@@ -26,26 +26,7 @@ struct Glob {
         return expandGlobstar(pattern: pattern)
             .reduce(into: [URL]()) { paths, pattern in
 #if os(Windows)
-                pattern.withUnsafeFileSystemRepresentation {
-                    var ffd = WIN32_FIND_DATAW()
-
-                    let hDirectory: HANDLE = String(cString: $0!).withCString(encodedAs: UTF16.self) {
-                        FindFirstFileW($0, &ffd)
-                    }
-                    if hDirectory == INVALID_HANDLE_VALUE { return }
-                    defer { FindClose(hDirectory) }
-
-                    repeat {
-                        let path: String = withUnsafePointer(to: &ffd.cFileName) {
-                            $0.withMemoryRebound(to: UInt16.self,
-                                                 capacity: MemoryLayout.size(ofValue: $0) / MemoryLayout<WCHAR>.size) {
-                                String(decodingCString: $0, as: UTF16.self)
-                            }
-                        }
-                        if path == "." || path == ".." { continue }
-                        paths.append(path.url())
-                    } while FindNextFileW(hDirectory, &ffd)
-                }
+                paths.append(contentsOf: Self.windowsResolve(pattern))
 #else
                 var globResult = glob_t()
                 defer { globfree(&globResult) }
@@ -60,16 +41,99 @@ struct Glob {
                 }
 #endif
             }
-            .unique
     }
+
+    #if os(Windows)
+    private static func windowsResolve(_ pattern: URL) -> [URL] {
+        let wildcardSet = CharacterSet(charactersIn: "*?[]")
+
+        let native = pattern.filepath
+        guard native.rangeOfCharacter(from: wildcardSet) != nil else {
+            return [pattern]
+        }
+
+        // Find base directory before the first wildcard in the native path
+        var baseDirPath: String
+        var remainder: String
+        if let firstWCIndex = native.firstIndex(where: { "*?[]".contains($0) }) {
+            let upToWildcard = native[..<firstWCIndex]
+            if let lastSep = upToWildcard.lastIndex(where: { "/\\".contains($0) }) {
+                baseDirPath = String(native[..<lastSep])
+                remainder = String(native[native.index(after: lastSep)...])
+            } else {
+                baseDirPath = FileManager.default.currentDirectoryPath
+                remainder = String(native)
+            }
+        } else {
+            return [pattern]
+        }
+
+        let baseURL = baseDirPath.url(directoryHint: .isDirectory)
+        let segments = remainder.split(whereSeparator: { "/\\".contains($0) }).map(String.init)
+        return windowsExpand(base: baseURL, segments: ArraySlice(segments))
+    }
+
+    private static func windowsExpand(base: URL, segments: ArraySlice<String>) -> [URL] {
+        guard let first = segments.first else {
+            return [base]
+        }
+
+        let wildcardSet = CharacterSet(charactersIn: "*?[]")
+        let isLast = segments.count == 1
+        if first.rangeOfCharacter(from: wildcardSet) == nil {
+            let nextBase = base.appending(path: first, directoryHint: .isDirectory)
+            return windowsExpand(base: nextBase, segments: segments.dropFirst())
+        }
+
+        // Segment contains wildcard -> enumerate matches using FindFirstFileW
+        var results = [URL]()
+        let searchURL = base.appending(path: first)
+        searchURL.withUnsafeFileSystemRepresentation { cPath in
+            guard let cPath else { return }
+            var ffd = WIN32_FIND_DATAW()
+            let hFind: HANDLE = String(cString: cPath).withCString(encodedAs: UTF16.self) {
+                FindFirstFileW($0, &ffd)
+            }
+            if hFind == INVALID_HANDLE_VALUE { return }
+            defer { FindClose(hFind) }
+
+            repeat {
+                let name: String = withUnsafePointer(to: &ffd.cFileName) {
+                    $0.withMemoryRebound(to: UInt16.self,
+                                         capacity: MemoryLayout.size(ofValue: $0) / MemoryLayout<WCHAR>.size) {
+                        String(decodingCString: $0, as: UTF16.self)
+                    }
+                }
+                if name == "." || name == ".." { continue }
+                let isDir = (ffd.dwFileAttributes & DWORD(FILE_ATTRIBUTE_DIRECTORY)) != 0
+                let matchedURL = base.appending(path: name, directoryHint: isDir ? .isDirectory : .inferFromPath)
+
+                if isLast {
+                    results.append(matchedURL)
+                } else if isDir {
+                    let tail = segments.dropFirst()
+                    results.append(contentsOf: windowsExpand(base: matchedURL, segments: tail))
+                }
+            } while FindNextFileW(hFind, &ffd)
+        }
+
+        return results
+    }
+    #endif
 
     static func createFilenameMatchers(root: String, pattern: String) -> [FilenameMatcher] {
         var absolutPathPattern = pattern
+        #if os(Windows)
+        if !pattern.contains(":") {
+            // If the root is not already part of the pattern, prepend it.
+            absolutPathPattern = root + (root.hasSuffix("/") ? "" : "/") + absolutPathPattern
+        }
+        #else
         if !pattern.starts(with: "/") {
             // If the root is not already part of the pattern, prepend it.
             absolutPathPattern = root + (root.hasSuffix("/") ? "" : "/") + absolutPathPattern
         }
-        absolutPathPattern = absolutPathPattern.absolutePathStandardized()
+        #endif
         if pattern.hasSuffix(".swift") || pattern.hasSuffix("/**") {
             // Suffix is already well defined.
             return [FilenameMatcher(pattern: absolutPathPattern)]
@@ -85,8 +149,6 @@ struct Glob {
             FilenameMatcher(pattern: absolutPathPattern + "/**"),
         ]
     }
-
-    // MARK: Private
 
     private static func expandGlobstar(pattern: URL) -> [URL] {
         guard pattern.path.contains("**") else {

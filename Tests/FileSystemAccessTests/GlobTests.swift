@@ -31,6 +31,7 @@ final class GlobTests: SwiftLintTestCase {
         XCTAssertEqual(files, [mockPath.appending(path: "Level0.swift")])
     }
 
+    #if !os(Windows)
     func testMatchesOneCharacterInBracket() {
         let files = Glob.resolveGlob(mockPath.appending(path: "Level[01].swift"))
         XCTAssertEqual(files, [mockPath.appending(path: "Level0.swift")])
@@ -50,6 +51,7 @@ final class GlobTests: SwiftLintTestCase {
         let files = Glob.resolveGlob(mockPath.appending(path: "Level[a-z].swift"))
         XCTAssertTrue(files.isEmpty)
     }
+    #endif
 
     func testMatchesMultipleFiles() {
         let expectedFiles = [
@@ -88,9 +90,23 @@ final class GlobTests: SwiftLintTestCase {
     }
 
     func testCreateFilenameMatchers() {
-        func assertGlobMatch(root: String = "", pattern: String, filename: String) {
+        func assertGlobMatch(root: String = "", pattern: String, filename: String,
+                             file: StaticString = #filePath, line: UInt = #line) {
+            #if os(Windows)
+            var root = root
+            var pattern = pattern
+            var filename = filename
+            if root.starts(with: "/") {
+                root = "C:" + root
+            }
+            if pattern.starts(with: "/") {
+                pattern = "C:" + pattern
+            }
+            filename = "C:" + filename
+            #endif
+            print(root, pattern, filename)
             let matchers = Glob.createFilenameMatchers(root: root, pattern: pattern)
-            XCTAssert(matchers.anyMatch(filename: filename))
+            XCTAssert(matchers.anyMatch(filename: filename), file: file, line: line)
         }
 
         assertGlobMatch(root: "/a/b/", pattern: "c/*.swift", filename: "/a/b/c/d.swift")

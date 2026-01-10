@@ -43,17 +43,17 @@ extension SwiftLintDev.Rules {
         var skipRegistration = false
 
         func run() throws {
-            let rootDirectory = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+            let rootDirectory = URL(filePath: FileManager.default.currentDirectoryPath)
             let ruleDirectory = rootDirectory
-                .appendingPathComponent("Source", isDirectory: true)
-                .appendingPathComponent("SwiftLintBuiltInRules", isDirectory: true)
-                .appendingPathComponent("Rules", isDirectory: true)
-            let ruleLocation = ruleDirectory.appendingPathComponent(kind.rawValue.capitalized, isDirectory: true)
+                .appending(path: "Source", directoryHint: .isDirectory)
+                .appending(path: "SwiftLintBuiltInRules", directoryHint: .isDirectory)
+                .appending(path: "Rules", directoryHint: .isDirectory)
+            let ruleLocation = ruleDirectory.appending(path: kind.rawValue.capitalized, directoryHint: .isDirectory)
             guard FileManager.default.fileExists(atPath: ruleLocation.filepath) else {
                 throw ValidationError("Command must be run from the root of the SwiftLint repository.")
             }
             print("Creating template(s) for new rule \"\(ruleName)\" identified by '\(ruleId)' ...")
-            let rulePath = ruleLocation.appendingPathComponent("\(name)Rule.swift", isDirectory: false)
+            let rulePath = ruleLocation.appending(path: "\(name)Rule.swift", directoryHint: .notDirectory)
             guard overwrite || !FileManager.default.fileExists(atPath: rulePath.filepath) else {
                 throw ValidationError("Rule file already exists at \(rulePath.relativeToCurrentDirectory).")
             }
@@ -61,8 +61,8 @@ extension SwiftLintDev.Rules {
             print("Rule file created at \(rulePath.relativeToCurrentDirectory).")
             if config {
                 let configPath = ruleDirectory
-                    .appendingPathComponent("RuleConfigurations", isDirectory: true)
-                    .appendingPathComponent("\(name)Configuration.swift", isDirectory: false)
+                    .appending(path: "RuleConfigurations", directoryHint: .isDirectory)
+                    .appending(path: "\(name)Configuration.swift", directoryHint: .notDirectory)
                 guard overwrite || !FileManager.default.fileExists(atPath: configPath.filepath) else {
                     throw ValidationError(
                         "Configuration file already exists at \(configPath.relativeToCurrentDirectory)."
@@ -73,9 +73,9 @@ extension SwiftLintDev.Rules {
             }
             if test {
                 let testDirectory = rootDirectory
-                    .appendingPathComponent("Tests", isDirectory: true)
-                    .appendingPathComponent("BuiltInRulesTests", isDirectory: true)
-                let testPath = testDirectory.appendingPathComponent("\(name)RuleTests.swift", isDirectory: false)
+                    .appending(path: "Tests", directoryHint: .isDirectory)
+                    .appending(path: "BuiltInRulesTests", directoryHint: .isDirectory)
+                let testPath = testDirectory.appending(path: "\(name)RuleTests.swift", directoryHint: .notDirectory)
                 guard FileManager.default.fileExists(atPath: testDirectory.filepath) else {
                     throw ValidationError("Command must be run from the root of the SwiftLint repository.")
                 }

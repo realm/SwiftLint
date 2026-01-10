@@ -3,19 +3,18 @@ import SourceKittenFramework
 import TestHelpers
 import XCTest
 
-private let fixturesDirectory = "\(TestResources.path().filepath)/FileNameNoSpaceRuleFixtures"
-
 final class FileNameNoSpaceRuleTests: SwiftLintTestCase {
     private func validate(fileName: String, excludedOverride: [String]? = nil) throws -> [StyleViolation] {
-        let file = SwiftLintFile(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
-        let rule: FileNameNoSpaceRule
-        if let excluded = excludedOverride {
-            rule = try FileNameNoSpaceRule(configuration: ["excluded": excluded])
-        } else {
-            rule = FileNameNoSpaceRule()
-        }
-
-        return rule.validate(file: file)
+        let file = TestResources.path()
+            .appending(path: "FileNameNoSpaceRuleFixtures", directoryHint: .isDirectory)
+            .appending(path: fileName, directoryHint: .notDirectory)
+        let rule =
+            if let excluded = excludedOverride {
+                try FileNameNoSpaceRule(configuration: ["excluded": excluded])
+            } else {
+                FileNameNoSpaceRule()
+            }
+        return rule.validate(file: SwiftLintFile(path: file)!)
     }
 
     func testFileNameDoesntTrigger() {

@@ -3,7 +3,7 @@
     "check_name" : "Line Length",
     "description" : "Violation Reason 1",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "4a17aef14fdc2dbdd95ab2ee78d1b7d6cc289539d290b283cbabedd30e929f5f",
+    "fingerprint" : "19ad62b3ad78be4d03fc82c2846bef0f873c4235611321aaca16ee36f72214f9",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -18,7 +18,7 @@
     "check_name" : "Line Length",
     "description" : "Violation Reason 2",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "4a17aef14fdc2dbdd95ab2ee78d1b7d6cc289539d290b283cbabedd30e929f5f",
+    "fingerprint" : "f7186279d6dc9e8bcd0a13adbc07e111e1bc95178953d0c5d061534c75a81e2f",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -33,7 +33,7 @@
     "check_name" : "Syntactic Sugar",
     "description" : "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "752322cea7c7ad97a20777d51a8d44c33a7e037290344c8fed6881ec916b6f1a",
+    "fingerprint" : "740b45a83d152b64836c6703474f2dc8d5f6c89b792d04f83cd058a92fa5db46",
     "location" : {
       "lines" : {
         "begin" : 1,
@@ -48,7 +48,7 @@
     "check_name" : "Colon Spacing",
     "description" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals",
     "engine_name" : "SwiftLint",
-    "fingerprint" : "9b1ddedc847d23a54124cb02a56452fc01c23df8f3babc07a6a68cf2449b14a6",
+    "fingerprint" : "25477e0cb480fc03bfdcbfa0d7cf569515a6e6ac372406e4121213585404cd9c",
     "location" : {
       "lines" : {
         "begin" : null,

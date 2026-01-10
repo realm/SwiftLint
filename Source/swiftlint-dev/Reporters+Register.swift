@@ -13,10 +13,10 @@ extension SwiftLintDev.Reporters {
         )
 
         private var reportersDirectory: URL {
-            URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-                .appendingPathComponent("Source", isDirectory: true)
-                .appendingPathComponent("SwiftLintFramework", isDirectory: true)
-                .appendingPathComponent("Reporters", isDirectory: true)
+            URL(filePath: FileManager.default.currentDirectoryPath)
+                .appending(path: "Source", directoryHint: .isDirectory)
+                .appending(path: "SwiftLintFramework", directoryHint: .isDirectory)
+                .appending(path: "Reporters", directoryHint: .isDirectory)
         }
 
         func run() throws {
@@ -33,8 +33,8 @@ extension SwiftLintDev.Reporters {
                 .map { $0.replacingOccurrences(of: ".swift", with: ".self") }
                 .joined(separator: ",\n")
             let builtInReportersFile = reportersDirectory.deletingLastPathComponent()
-                .appendingPathComponent("Models", isDirectory: true)
-                .appendingPathComponent("ReportersList.swift", isDirectory: false)
+                .appending(path: "Models", directoryHint: .isDirectory)
+                .appending(path: "ReportersList.swift", directoryHint: .notDirectory)
             try """
                 // GENERATED FILE. DO NOT EDIT!
 

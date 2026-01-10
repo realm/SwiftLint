@@ -30,11 +30,11 @@ extension PlatformInfo: Decodable {
 }
 
 private let info: PlatformInfo = {
-    let sdk = URL(fileURLWithPath: sdkPath(), isDirectory: true)
+    let sdk = sdkPath().url(directoryHint: .isDirectory)
         .deletingLastPathComponent()
         .deletingLastPathComponent()
         .deletingLastPathComponent()
-        .appendingPathComponent("Info.plist")
+        .appending(path: "Info.plist", directoryHint: .notDirectory)
     guard let data = try? Data(contentsOf: sdk),
           let info = try? PropertyListDecoder().decode(PlatformInfo.self, from: data) else {
         fatalError("invalid platform SDK - couldn't decode \(sdk.path)")
@@ -50,52 +50,46 @@ private let violationMarker = "↓"
 private extension SwiftLintFile {
     static func testFile(withContents contents: String, persistToDisk: Bool = false) -> SwiftLintFile {
         if persistToDisk {
-            let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-                .appendingPathComponent(UUID().uuidString)
+            let url = URL.temporaryDirectory
+                .appending(path: UUID().uuidString, directoryHint: .notDirectory)
                 .appendingPathExtension("swift")
             _ = try? contents.data(using: .utf8)!.write(to: url)
-            return SwiftLintFile(path: url.path, isTestFile: true)!
+            return SwiftLintFile(path: url, isTestFile: true)!
         }
         return SwiftLintFile(contents: contents, isTestFile: true)
     }
 
     func makeCompilerArguments() -> [String] {
         let sdk = sdkPath()
-        let frameworks = URL(fileURLWithPath: sdk, isDirectory: true)
+        let frameworks = sdk.url(directoryHint: .isDirectory)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-            .appendingPathComponent("Library")
-            .appendingPathComponent("Frameworks")
-            .path
+            .appending(path: "Library", directoryHint: .isDirectory)
+            .appending(path: "Frameworks", directoryHint: .isDirectory)
+            .filepath
 
         let arguments = [
             "-F", frameworks,
             "-sdk", sdk,
             "-Xfrontend", "-enable-objc-interop",
             "-j4",
-            path!,
+            path!.filepath,
         ]
 #if os(Windows)
-        let XCTestPath = URL(fileURLWithPath: sdk, isDirectory: true)
+        let XCTestPath = sdk.url(directoryHint: .isDirectory)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-            .appendingPathComponent("Library")
-            .appendingPathComponent("XCTest-\(info.defaults.versionXCTest)")
-            .appendingPathComponent("usr")
-            .appendingPathComponent("lib")
-            .appendingPathComponent("swift")
-            .appendingPathComponent("windows")
+            .appending(path: "Library", directoryHint: .isDirectory)
+            .appending(path: "XCTest-\(info.defaults.versionXCTest)", directoryHint: .isDirectory)
+            .appending(path: "usr", directoryHint: .isDirectory)
+            .appending(path: "lib", directoryHint: .isDirectory)
+            .appending(path: "swift", directoryHint: .isDirectory)
+            .appending(path: "windows", directoryHint: .isDirectory)
             .path
         return ["-I", XCTestPath] + arguments
 #else
         return arguments
 #endif
-    }
-}
-
-public extension String {
-    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        URL(fileURLWithPath: self).appendingPathComponent(pathComponent).filepath
     }
 }
 
@@ -274,7 +268,7 @@ private extension Configuration {
             file: before.file, line: before.line)
         let path = file.path!
         do {
-            let corrected = try String(contentsOfFile: path, encoding: .utf8)
+            let corrected = try String(contentsOf: path, encoding: .utf8)
             XCTAssertEqual(
                 corrected,
                 expected.code,

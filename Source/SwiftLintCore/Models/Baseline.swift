@@ -11,14 +11,7 @@ private struct BaselineViolation: Codable, Hashable, Comparable {
     var key: String { text + violation.reason }
 
     init(violation: StyleViolation, text: String) {
-        let location = violation.location
-        self.violation = violation.with(location: Location(
-            // Within the baseline, we use relative paths, so that
-            // comparisons are independent of the absolute path
-            file: location.relativeFile,
-            line: location.line,
-            character: location.character)
-        )
+        self.violation = violation
         self.text = text
     }
 
@@ -42,14 +35,14 @@ public struct Baseline: Equatable {
 
     /// The stored violations.
     public var violations: [StyleViolation] {
-        sortedBaselineViolations.violationsWithAbsolutePaths
+        sortedBaselineViolations.map(\.violation)
     }
 
     /// Creates a `Baseline` from a saved file.
     ///
     /// - parameter fromPath: The path to read from.
-    public init(fromPath path: String) throws {
-        let data = try Data(contentsOf: URL(fileURLWithPath: path))
+    public init(fromPath path: URL) throws {
+        let data = try Data(contentsOf: path)
         baseline = try JSONDecoder().decode(BaselineViolations.self, from: data).groupedByFile()
     }
 
@@ -63,9 +56,8 @@ public struct Baseline: Equatable {
     /// Writes a `Baseline` to disk in JSON format.
     ///
     /// - parameter toPath: The path to write to.
-    public func write(toPath path: String) throws {
-        let data = try JSONEncoder().encode(sortedBaselineViolations)
-        try data.write(to: URL(fileURLWithPath: path))
+    public func write(toPath path: URL) throws {
+        try JSONEncoder().encode(sortedBaselineViolations).write(to: path)
     }
 
     /// Filters out violations that are present in the `Baseline`.
@@ -76,7 +68,7 @@ public struct Baseline: Equatable {
     /// - Returns: The new violations.
     public func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
         guard let firstViolation = violations.first,
-              let baselineViolations = baseline[firstViolation.location.relativeFile ?? ""],
+              let baselineViolations = baseline[firstViolation.location.file?.relativeFilepath ?? ""],
               baselineViolations.isNotEmpty else {
             return violations
         }
@@ -126,7 +118,7 @@ public struct Baseline: Equatable {
             }
         }
 
-        return Set(filteredViolations.violationsWithAbsolutePaths)
+        return Set(filteredViolations.map(\.violation))
     }
 
     /// Returns the violations that are present in another `Baseline`, but not in this one.
@@ -139,7 +131,7 @@ public struct Baseline: Equatable {
             if let baselineViolations = baseline[relativePath] {
                 return filter(relativePathViolations: otherBaselineViolations, baselineViolations: baselineViolations)
             }
-            return Set(otherBaselineViolations.violationsWithAbsolutePaths)
+            return Set(otherBaselineViolations.map(\.violation))
         }.sorted {
             $0.location == $1.location ? $0.ruleIdentifier < $1.ruleIdentifier : $0.location < $1.location
         }
@@ -147,7 +139,7 @@ public struct Baseline: Equatable {
 }
 
 private struct LineCache {
-    private var lines: [String: [String]] = [:]
+    private var lines: [URL: [String]] = [:]
 
     mutating func text(at location: Location) -> String {
         let line = (location.line ?? 0) - 1
@@ -157,7 +149,7 @@ private struct LineCache {
         return ""
     }
 
-    private mutating func cached(file: String) -> [String]? {
+    private mutating func cached(file: URL) -> [String]? {
         if let fileLines = lines[file] {
             return fileLines
         }
@@ -175,12 +167,8 @@ private extension Sequence where Element == BaselineViolation {
         self = violations.map { $0.baselineViolation(text: lineCache.text(at: $0.location)) }
     }
 
-    var violationsWithAbsolutePaths: [StyleViolation] {
-        map(\.violation.withAbsolutePath)
-    }
-
     func groupedByFile() -> ViolationsPerFile {
-        Dictionary(grouping: self) { $0.violation.location.relativeFile ?? "" }
+        Dictionary(grouping: self) { $0.violation.location.file?.relativeFilepath ?? "" }
     }
 
     func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation] = []) -> ViolationsPerRule {
@@ -189,19 +177,6 @@ private extension Sequence where Element == BaselineViolation {
 }
 
 private extension StyleViolation {
-    var withAbsolutePath: StyleViolation {
-        let absolutePath: String? =
-            if let relativePath = location.file {
-                URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-                    .appendingPathComponent(relativePath)
-                    .filepath
-            } else {
-                nil
-            }
-        let newLocation = Location(file: absolutePath, line: location.line, character: location.character)
-        return with(location: newLocation)
-    }
-
     func baselineViolation(text: String = "") -> BaselineViolation {
         BaselineViolation(violation: self, text: text)
     }

@@ -9,7 +9,9 @@ import XCTest
 final class CustomRulesTests: SwiftLintTestCase {
     private typealias Configuration = RegexConfiguration<CustomRules>
 
-    private var testFile: SwiftLintFile { SwiftLintFile(path: "\(TestResources.path().filepath)/test.txt")! }
+    private var testFile: SwiftLintFile {
+        SwiftLintFile(path: TestResources.path().appending(path: "test.txt", directoryHint: .notDirectory))!
+    }
 
     override func invokeTest() {
         CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
@@ -870,9 +872,9 @@ final class CustomRulesTests: SwiftLintTestCase {
         regexConfig.included = [try RegularExpression(pattern: "\\.swift$")]
         regexConfig.excluded = [try RegularExpression(pattern: "Tests")]
 
-        XCTAssertTrue(regexConfig.shouldValidate(filePath: "/path/to/file.swift"))
-        XCTAssertFalse(regexConfig.shouldValidate(filePath: "/path/to/file.m"))
-        XCTAssertFalse(regexConfig.shouldValidate(filePath: "/path/to/Tests/file.swift"))
+        XCTAssertTrue(regexConfig.shouldValidate(filePath: "/path/to/file.swift".url()))
+        XCTAssertFalse(regexConfig.shouldValidate(filePath: "/path/to/file.m".url()))
+        XCTAssertFalse(regexConfig.shouldValidate(filePath: "/path/to/Tests/file.swift".url()))
     }
 
     // MARK: - only_rules support

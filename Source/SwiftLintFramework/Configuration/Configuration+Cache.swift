@@ -62,7 +62,7 @@ extension Configuration {
         let cacheRulesDescriptions = rules
             .map { rule in [type(of: rule).identifier, rule.cacheDescription] }
             .sorted { $0[0] < $1[0] }
-        let jsonObject: [Any] = [rootDirectory, cacheRulesDescriptions]
+        let jsonObject: [Any] = [rootDirectory.filepath, cacheRulesDescriptions]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) {
             return jsonData.sha256().toHexString()
         }
@@ -72,20 +72,20 @@ extension Configuration {
     internal var cacheURL: URL {
         let baseURL: URL
         if let path = cachePath {
-            baseURL = URL(fileURLWithPath: path, isDirectory: true)
+            baseURL = URL(filePath: path, directoryHint: .isDirectory)
         } else {
 #if os(Linux)
-            baseURL = URL(fileURLWithPath: "/var/tmp/", isDirectory: true)
+            baseURL = URL(filePath: "/var/tmp/", directoryHint: .isDirectory)
 #else
             baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
 #endif
         }
 
         var folder = baseURL
-                .appendingPathComponent("SwiftLint")
-                .appendingPathComponent(Version.current.value)
+                .appending(path: "SwiftLint", directoryHint: .isDirectory)
+                .appending(path: Version.current.value, directoryHint: .isDirectory)
         if let buildID = ExecutableInfo.buildID {
-            folder = folder.appendingPathComponent(buildID)
+            folder = folder.appending(path: buildID, directoryHint: .isDirectory)
         }
 
         do {

@@ -22,7 +22,7 @@ private struct CacheTestHelper {
         self.cache = cache
     }
 
-    fileprivate func makeViolations(file: String) -> [StyleViolation] {
+    fileprivate func makeViolations(file: URL) -> [StyleViolation] {
         touch(file: file)
         return [
             StyleViolation(ruleDescription: ruleDescription,
@@ -40,11 +40,11 @@ private struct CacheTestHelper {
         try! Configuration(dict: dict, ruleList: ruleList) // swiftlint:disable:this force_try
     }
 
-    fileprivate func touch(file: String) {
+    fileprivate func touch(file: URL) {
         fileManager.stubbedModificationDateByPath[file] = Date()
     }
 
-    fileprivate func remove(file: String) {
+    fileprivate func remove(file: URL) {
         fileManager.stubbedModificationDateByPath[file] = nil
     }
 
@@ -54,15 +54,14 @@ private struct CacheTestHelper {
 }
 
 private class TestFileManager: LintableFileManager {
-    fileprivate func filesToLint(inPath _: String,
-                                 rootDirectory _: String? = nil,
-                                 excluder _: Excluder) -> [String] {
+    fileprivate func filesToLint(inPath _: URL,
+                                 excluder _: Excluder) -> [URL] {
         []
     }
 
-    fileprivate var stubbedModificationDateByPath = [String: Date]()
+    fileprivate var stubbedModificationDateByPath = [URL: Date]()
 
-    fileprivate func modificationDate(forFileAtPath path: String) -> Date? {
+    fileprivate func modificationDate(forFileAtPath path: URL) -> Date? {
         stubbedModificationDateByPath[path]
     }
 }
@@ -77,7 +76,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     }
 
     private func cacheAndValidate(violations: [StyleViolation],
-                                  forFile: String,
+                                  forFile: URL,
                                   configuration: Configuration,
                                   file: StaticString = #filePath,
                                   line: UInt = #line) {
@@ -90,7 +89,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
                                                       file: StaticString = #filePath,
                                                       line: UInt = #line) {
-        let (file1, file2) = ("file1.swift", "file2.swift")
+        let (file1, file2) = ("file1.swift".url(), "file2.swift".url())
         // swiftlint:disable:next force_cast
         let fileManager = cache.fileManager as! TestFileManager
         fileManager.stubbedModificationDateByPath = [file1: Date(), file2: Date()]
@@ -104,7 +103,7 @@ final class LinterCacheTests: SwiftLintTestCase {
                                                  file: StaticString = #filePath,
                                                  line: UInt = #line) throws {
         let newConfig = try Configuration(dict: dict)
-        let (file1, file2) = ("file1.swift", "file2.swift")
+        let (file1, file2) = ("file1.swift".url(), "file2.swift".url())
 
         XCTAssertNil(cache.violations(forFile: file1, configuration: newConfig), file: (file), line: line)
         XCTAssertNil(cache.violations(forFile: file2, configuration: newConfig), file: (file), line: line)
@@ -118,7 +117,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     // Two subsequent lints with no changes reuses cache
     func testUnchangedFilesReusesCache() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"]])
-        let file = "foo.swift"
+        let file = "foo.swift".url()
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
@@ -129,7 +128,7 @@ final class LinterCacheTests: SwiftLintTestCase {
 
     func testConfigFileReorderedReusesCache() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "disabled_rules": [Any]()])
-        let file = "foo.swift"
+        let file = "foo.swift".url()
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
@@ -139,7 +138,7 @@ final class LinterCacheTests: SwiftLintTestCase {
 
     func testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache() throws {
         let helper = makeCacheTestHelper(dict: try YamlParser.parse("only_rules:\n  - mock"))
-        let file = "foo.swift"
+        let file = "foo.swift".url()
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
@@ -153,7 +152,7 @@ final class LinterCacheTests: SwiftLintTestCase {
 
     func testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
-        let file = "foo.swift"
+        let file = "foo.swift".url()
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
@@ -169,7 +168,7 @@ final class LinterCacheTests: SwiftLintTestCase {
     // file to be re-linted, with the cache used for all other files
     func testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
-        let (file1, file2) = ("file1.swift", "file2.swift")
+        let (file1, file2) = ("file1.swift".url(), "file2.swift".url())
         let violations1 = helper.makeViolations(file: file1)
         let violations2 = helper.makeViolations(file: file2)
 
@@ -182,7 +181,7 @@ final class LinterCacheTests: SwiftLintTestCase {
 
     func testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted() {
         let helper = makeCacheTestHelper(dict: ["only_rules": ["mock"], "reporter": "json"])
-        let (file1, file2) = ("file1.swift", "file2.swift")
+        let (file1, file2) = ("file1.swift".url(), "file2.swift".url())
         let violations1 = helper.makeViolations(file: file1)
         let violations2 = helper.makeViolations(file: file2)
 
@@ -295,7 +294,7 @@ final class LinterCacheTests: SwiftLintTestCase {
         let fileManager = TestFileManager()
         cache = LinterCache(fileManager: fileManager)
         let helper = makeCacheTestHelper(dict: [:])
-        let file = "foo.swift"
+        let file = "foo.swift".url()
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)

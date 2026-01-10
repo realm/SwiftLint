@@ -57,7 +57,7 @@ public final class LinterCache {
         self.swiftVersion = swiftVersion
     }
 
-    internal func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
+    internal func cache(violations: [StyleViolation], forFile file: URL, configuration: Configuration) {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
             return
         }
@@ -66,15 +66,18 @@ public final class LinterCache {
 
         writeCacheLock.lock()
         var filesCache = writeCache[configurationDescription] ?? .empty
-        filesCache.entries[file] = FileCacheEntry(violations: violations, lastModification: lastModification,
-                                                  swiftVersion: swiftVersion)
+        filesCache.entries[file.filepath] = FileCacheEntry(
+            violations: violations,
+            lastModification: lastModification,
+            swiftVersion: swiftVersion
+        )
         writeCache[configurationDescription] = filesCache
         writeCacheLock.unlock()
     }
 
-    internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
+    internal func violations(forFile file: URL, configuration: Configuration) -> [StyleViolation]? {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file),
-              let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file],
+              let entry = fileCache(cacheDescription: configuration.cacheDescription).entries[file.filepath],
               entry.lastModification == lastModification,
               entry.swiftVersion == swiftVersion
         else {
@@ -109,7 +112,7 @@ public final class LinterCache {
             let fileCacheEntries = readCache[description]?.entries.merging(writeFileCache.entries) { _, write in write }
             let fileCache = fileCacheEntries.map(FileCache.init) ?? writeFileCache
             let data = try encoder.encode(fileCache)
-            let file = url.appendingPathComponent(description).appendingPathExtension(Self.fileExtension)
+            let file = url.appending(path: description).appendingPathExtension(Self.fileExtension)
             try data.write(to: file, options: .atomic)
         }
     }
@@ -132,7 +135,7 @@ public final class LinterCache {
             return .empty
         }
 
-        let file = location.appendingPathComponent(cacheDescription).appendingPathExtension(Self.fileExtension)
+        let file = location.appending(path: cacheDescription).appendingPathExtension(Self.fileExtension)
         let data = try? Data(contentsOf: file)
         let fileCache = data.flatMap { try? Decoder().decode(FileCache.self, from: $0) } ?? .empty
         lazyReadCache[cacheDescription] = fileCache

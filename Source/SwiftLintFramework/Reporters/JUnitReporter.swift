@@ -24,7 +24,7 @@ struct JUnitReporter: Reporter {
     }
 
     private static func testCase(for violation: StyleViolation) -> String {
-        let fileName = (violation.location.file ?? "<nopath>").escapedForXML()
+        let fileName = (violation.location.file?.path ?? "<nopath>").escapedForXML()
         let reason = violation.reason.escapedForXML()
         let severity = violation.severity.rawValue.capitalized
         let lineNumber = String(violation.location.line ?? 0)

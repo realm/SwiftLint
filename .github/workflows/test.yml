@@ -63,7 +63,7 @@ jobs:
     runs-on: windows-${{ matrix.windows-version }}
     env:
       SWIFT_VERSION: development
-      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2025-12-01-a
+      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-01-09-a
     strategy:
       fail-fast: false
       matrix:

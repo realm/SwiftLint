@@ -137,13 +137,7 @@ extension Configuration {
         if !duplicateFileNames.contains(basename) {
             return basename
         }
-
-        var pathComponents = path.pathComponents
-        for component in rootDirectory.pathComponents where pathComponents.first == component {
-            pathComponents.removeFirst()
-        }
-
-        return pathComponents.reduce(URL(filePath: "/")) { $0.appending(path: $1) }.filepath
+        return path.relativeDisplayPath
     }
 
     private func linters(for filesPerConfiguration: [Configuration: [SwiftLintFile]],

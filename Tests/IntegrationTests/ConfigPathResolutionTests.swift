@@ -28,7 +28,7 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
             excludeByPrefix: false
         )
 
-        return files.map { $0.path!.relativeFilepath }.sorted()
+        return files.map { $0.path!.relativeDisplayPath }.sorted()
     }
 
     func testParentChildSameDirectory() {

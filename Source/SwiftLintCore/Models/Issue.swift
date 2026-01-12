@@ -183,22 +183,24 @@ public enum Issue: LocalizedError, Equatable {
         case let .fileNotFound(path):
             return "File at path '\(path)' not found."
         case let .fileNotReadable(path, id):
-            return "Cannot open or read file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule."
+            return "Cannot open or read file at path '\(path?.relativeDisplayPath ?? "...")' within '\(id)' rule."
         case let .fileNotWritable(path):
-            return "Cannot write to file at path '\(path.relativeFilepath)'."
+            return "Cannot write to file at path '\(path.relativeDisplayPath)'."
         case let .indexingError(path, id):
-            return "Cannot index file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule."
+            return "Cannot index file at path '\(path?.relativeDisplayPath ?? "...")' within '\(id)' rule."
         case let .missingCompilerArguments(path, id):
             return """
-                Attempted to lint file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule \
+                Attempted to lint file at path '\(path?.relativeDisplayPath ?? "...")' within '\(id)' rule \
                 without any compiler arguments.
                 """
         case let .missingCursorInfo(path, id):
-            return "Cannot get cursor info from file at path '\(path?.relativeFilepath ?? "...")' within '\(id)' rule."
+            return """
+                Cannot get cursor info from file at path '\(path?.relativeDisplayPath ?? "...")' within '\(id)' rule.
+                """
         case let .yamlParsing(message):
             return "Cannot parse YAML file: \(message)"
         case let .baselineNotReadable(path):
-            return "Cannot open or read the baseline file at path '\(path.relativeFilepath)'."
+            return "Cannot open or read the baseline file at path '\(path.relativeDisplayPath)'."
         }
     }
 }

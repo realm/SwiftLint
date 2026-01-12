@@ -12,7 +12,7 @@ public struct Correction: Equatable, Sendable {
     /// The console-printable description for this correction.
     public var consoleDescription: String {
         let times = numberOfCorrections == 1 ? "time" : "times"
-        return "\(filePath?.relativeFilepath ?? "<nopath>"): Corrected \(ruleName) \(numberOfCorrections) \(times)"
+        return "\(filePath?.relativeDisplayPath ?? "<nopath>"): Corrected \(ruleName) \(numberOfCorrections) \(times)"
     }
 
     /// Memberwise initializer.

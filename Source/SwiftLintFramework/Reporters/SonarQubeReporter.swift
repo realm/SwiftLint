@@ -21,7 +21,7 @@ struct SonarQubeReporter: Reporter {
             "ruleId": violation.ruleIdentifier,
             "primaryLocation": [
                 "message": violation.reason,
-                "filePath": violation.location.file?.relativeFilepath ?? "",
+                "filePath": violation.location.file?.relativeDisplayPath ?? "",
                 "textRange": [
                     "startLine": violation.location.line ?? 1
                 ] as Any,

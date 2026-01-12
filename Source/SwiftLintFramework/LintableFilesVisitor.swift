@@ -47,7 +47,7 @@ class CompilerInvocations {
         override func arguments(forFile path: URL?) -> Arguments {
             path.flatMap { path in
                 compileCommands[path.filepath] ??
-                compileCommands[path.relativeFilepath]
+                compileCommands[path.relativeDisplayPath]
             } ?? []
         }
     }

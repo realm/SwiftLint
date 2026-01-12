@@ -19,7 +19,7 @@ struct RelativePathReporter: Reporter {
         // {relative_path_to_file}{:line}{:character}: {error,warning}: {content}
 
         [
-            "\(violation.location.file?.relativeFilepath ?? "<nopath>")",
+            "\(violation.location.file?.relativeDisplayPath ?? "<nopath>")",
             ":\(violation.location.line ?? 1)",
             ":\(violation.location.character ?? 1): ",
             "\(violation.severity.rawValue): ",

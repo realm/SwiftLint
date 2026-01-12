@@ -45,7 +45,7 @@ public extension URL {
     ///
     /// > Warning: Use this representation only for displaying file paths to users. It is not
     ///   suitable for file operations.
-    var relativeFilepath: String {
+    var relativeDisplayPath: String {
         let path = path.replacing(URL.cwd.path, with: "")
         if path.starts(with: "/") {
             return String(path.dropFirst())

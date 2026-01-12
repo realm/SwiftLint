@@ -68,7 +68,7 @@ public struct Baseline: Equatable {
     /// - Returns: The new violations.
     public func filter(_ violations: [StyleViolation]) -> [StyleViolation] {
         guard let firstViolation = violations.first,
-              let baselineViolations = baseline[firstViolation.location.file?.relativeFilepath ?? ""],
+              let baselineViolations = baseline[firstViolation.location.file?.relativeDisplayPath ?? ""],
               baselineViolations.isNotEmpty else {
             return violations
         }
@@ -168,7 +168,7 @@ private extension Sequence where Element == BaselineViolation {
     }
 
     func groupedByFile() -> ViolationsPerFile {
-        Dictionary(grouping: self) { $0.violation.location.file?.relativeFilepath ?? "" }
+        Dictionary(grouping: self) { $0.violation.location.file?.relativeDisplayPath ?? "" }
     }
 
     func groupedByRuleIdentifier(filteredBy existingViolations: [BaselineViolation] = []) -> ViolationsPerRule {

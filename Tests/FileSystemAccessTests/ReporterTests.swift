@@ -169,7 +169,7 @@ final class ReporterTests: SwiftLintTestCase {
                                        reason: "Violation Reason")
         let result = RelativePathReporter.generateReport([violation])
         XCTAssertFalse(result.contains(relativePath.filepath))
-        XCTAssertTrue(result.contains(relativePath.relativeFilepath))
+        XCTAssertTrue(result.contains(relativePath.relativeDisplayPath))
     }
 
     func testSummaryReporter() {

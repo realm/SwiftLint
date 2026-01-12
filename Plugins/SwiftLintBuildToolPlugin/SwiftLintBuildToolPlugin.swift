@@ -10,14 +10,14 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
         try makeCommand(executable: context.tool(named: "swiftlint"),
                         swiftFiles: (target as? SourceModuleTarget).flatMap(swiftFiles) ?? [],
                         environment: environment(context: context, target: target),
-                        pluginWorkDirectory: context.pluginWorkDirectory)
+                        pluginWorkDirectory: context.pluginWorkDirectoryURL)
     }
 
     /// Collects the paths of the Swift files to be linted.
-    private func swiftFiles(target: SourceModuleTarget) -> [Path] {
+    private func swiftFiles(target: SourceModuleTarget) -> [URL] {
         target
             .sourceFiles(withSuffix: "swift")
-            .map(\.path)
+            .map(\.url)
     }
 
     /// Creates an environment dictionary containing a value for the `BUILD_WORKSPACE_DIRECTORY` key.
@@ -35,15 +35,15 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
         context: PluginContext,
         target: Target
     ) throws -> [String: String] {
-        let workingDirectory: Path = try target.directory.resolveWorkingDirectory(in: context.package.directory)
-        return ["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"]
+        let workingDirectory = try target.directoryURL.resolvedWorkingDirectory(in: context.package.directoryURL)
+        return ["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory.filepath)"]
     }
 
     private func makeCommand(
         executable: PluginContext.Tool,
-        swiftFiles: [Path],
+        swiftFiles: [URL],
         environment: [String: String],
-        pluginWorkDirectory path: Path
+        pluginWorkDirectory path: URL
     ) throws -> [Command] {
         // Don't lint anything if there are no Swift source files in this target
         guard !swiftFiles.isEmpty else {
@@ -66,17 +66,17 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
         if ProcessInfo.processInfo.environment["CI_XCODE_CLOUD"] == "TRUE" {
             cacheArguments = ["--no-cache"]
         } else {
-            let cachePath: Path = path.appending("Cache")
-            try FileManager.default.createDirectory(atPath: cachePath.string, withIntermediateDirectories: true)
+            let cachePath = path.appending(path: "Cache", directoryHint: .isDirectory)
+            try FileManager.default.createDirectory(atPath: cachePath.filepath, withIntermediateDirectories: true)
             cacheArguments = ["--cache-path", "\(cachePath)"]
         }
-        let outputPath: Path = path.appending("Output")
-        try FileManager.default.createDirectory(atPath: outputPath.string, withIntermediateDirectories: true)
+        let outputPath = path.appending(path: "Output", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(atPath: outputPath.filepath, withIntermediateDirectories: true)
         return [
             .prebuildCommand(
                 displayName: "SwiftLint",
-                executable: executable.path,
-                arguments: arguments + cacheArguments + swiftFiles.map(\.string),
+                executable: executable.url,
+                arguments: arguments + cacheArguments + swiftFiles.map(\.filepath),
                 environment: environment,
                 outputFilesDirectory: outputPath),
         ]
@@ -96,15 +96,15 @@ extension SwiftLintBuildToolPlugin: XcodeBuildToolPlugin {
         try makeCommand(executable: context.tool(named: "swiftlint"),
                         swiftFiles: swiftFiles(target: target),
                         environment: environment(context: context, target: target),
-                        pluginWorkDirectory: context.pluginWorkDirectory)
+                        pluginWorkDirectory: context.pluginWorkDirectoryURL)
     }
 
     /// Collects the paths of the Swift files to be linted.
-    private func swiftFiles(target: XcodeTarget) -> [Path] {
+    private func swiftFiles(target: XcodeTarget) -> [URL] {
         target
             .inputFiles
-            .filter { $0.type == .source && $0.path.extension == "swift" }
-            .map(\.path)
+            .filter { $0.type == .source && $0.url.pathExtension == "swift" }
+            .map(\.url)
     }
 
     /// Creates an environment dictionary containing a value for the `BUILD_WORKSPACE_DIRECTORY` key.
@@ -122,17 +122,17 @@ extension SwiftLintBuildToolPlugin: XcodeBuildToolPlugin {
         context: XcodePluginContext,
         target: XcodeTarget
     ) throws -> [String: String] {
-        let projectDirectory: Path = context.xcodeProject.directory
-        let swiftFiles: [Path] = swiftFiles(target: target)
-        let swiftFilesNotInProjectDirectory: [Path] = swiftFiles.filter { !$0.isDescendant(of: projectDirectory) }
+        let projectDirectory = context.xcodeProject.directoryURL
+        let swiftFiles = swiftFiles(target: target)
+        let swiftFilesNotInProjectDirectory = swiftFiles.filter { !$0.isDescendant(of: projectDirectory) }
 
         guard swiftFilesNotInProjectDirectory.isEmpty else {
             throw SwiftLintBuildToolPluginError.swiftFilesNotInProjectDirectory(projectDirectory)
         }
 
-        let directories: [Path] = try swiftFiles.map { try $0.resolveWorkingDirectory(in: projectDirectory) }
-        let workingDirectory: Path = directories.min { $0.depth < $1.depth } ?? projectDirectory
-        let swiftFilesNotInWorkingDirectory: [Path] = swiftFiles.filter { !$0.isDescendant(of: workingDirectory) }
+        let directories = try swiftFiles.map { try $0.resolvedWorkingDirectory(in: projectDirectory) }
+        let workingDirectory = directories.min { $0.depth < $1.depth } ?? projectDirectory
+        let swiftFilesNotInWorkingDirectory = swiftFiles.filter { !$0.isDescendant(of: workingDirectory) }
 
         guard swiftFilesNotInWorkingDirectory.isEmpty else {
             throw SwiftLintBuildToolPluginError.swiftFilesNotInWorkingDirectory(workingDirectory)

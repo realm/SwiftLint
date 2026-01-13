@@ -95,7 +95,7 @@ extension FileManager: LintableFileManager, @unchecked @retroactive Sendable {
         }
 
         return files + directoriesToWalk.parallelFlatMap {
-            collectFiles(atPath: URL(fileURLWithPath: $0), excluder: excluder)
+            collectFiles(atPath: URL(fileURLWithPath: $0, isDirectory: true), excluder: excluder)
         }
     }
 

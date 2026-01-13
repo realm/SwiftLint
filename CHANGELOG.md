@@ -19,6 +19,11 @@
 * Ignore `override` functions in `async_without_await` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6416](https://github.com/realm/SwiftLint/issues/6416)
+  
+* Avoid infinite recursion for deeply nested symbolic links which is usually the case
+  in `node_modules` directories managed by `pnpm`.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6425](https://github.com/realm/SwiftLint/issues/6425)
 
 * Fix false positive in `unneeded_escaping` rule when an escaping closure is used in
   a nested closure preceded by another closure.  

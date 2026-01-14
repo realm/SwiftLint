@@ -71,7 +71,7 @@ extension FileManager: LintableFileManager, @unchecked @retroactive Sendable {
     }
 
     private func collectFiles(atPath absolutePath: URL, excluder: Excluder) -> [String] {
-        guard let enumerator = enumerator(atPath: absolutePath.filepath) else {
+        guard let root = absolutePath.filepathGuarded, let enumerator = enumerator(atPath: root) else {
             return []
         }
 
@@ -80,7 +80,9 @@ extension FileManager: LintableFileManager, @unchecked @retroactive Sendable {
 
         while let element = enumerator.nextObject() as? String {
             let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
-            let absoluteStandardizedElementPath = absoluteElementPath.standardized.filepath
+            guard let absoluteStandardizedElementPath = absoluteElementPath.standardized.filepathGuarded else {
+                continue
+            }
             if absoluteElementPath.path.isFile {
                 if absoluteElementPath.pathExtension == "swift",
                    !excluder.excludes(path: absoluteStandardizedElementPath) {

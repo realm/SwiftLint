@@ -3,7 +3,9 @@ import SwiftLintFramework
 import TestHelpers
 import XCTest
 
-final class ConfigPathResolutionTests: SwiftLintTestCase {
+@testable import SwiftLintCore
+
+final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
     private func fixturePath(_ scenario: String) -> URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
@@ -16,10 +18,8 @@ final class ConfigPathResolutionTests: SwiftLintTestCase {
         let scenarioPath = fixturePath(scenario).filepath
 
         let previousDir = FileManager.default.currentDirectoryPath
-        defer {
-            _ = FileManager.default.changeCurrentDirectoryPath(previousDir)
-        }
         XCTAssert(FileManager.default.changeCurrentDirectoryPath(scenarioPath))
+        defer { _ = FileManager.default.changeCurrentDirectoryPath(previousDir) }
 
         let config = Configuration(configurationFiles: configFile.map { [$0] } ?? [])
         let files = config.lintableFiles(
@@ -169,4 +169,36 @@ final class ConfigPathResolutionTests: SwiftLintTestCase {
                 .contains("explicit_type_interface")
         )
     }
+
+    #if !os(Windows)
+    func testUnicodePrivateUseAreaCharacterInPath() async throws {
+        let fixture = fixturePath("_8_unicode_private_use_area")
+
+        let process = Process()
+        process.executableURL = URL(filePath: "/usr/bin/env", directoryHint: .notDirectory)
+        process.arguments = ["unzip", "-o", fixture.appending(path: "app.zip").filepath, "-d", fixture.filepath]
+        try process.run()
+        process.waitUntilExit()
+        defer { try? FileManager.default.removeItem(at: fixture.appending(path: "App")) }
+
+        if #available(macOS 26, *) {
+            XCTAssertEqual(
+                lintableFilePaths(in: "_8_unicode_private_use_area/App"),
+                ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
+            )
+        } else {
+            let console = await Issue.captureConsole {
+                XCTAssert(lintableFilePaths(in: "_8_unicode_private_use_area/App").isEmpty)
+            }
+            XCTAssert(
+                console.contains(
+                    """
+                    error: File with URL 'androidx.core:core-bundle.swift' \
+                    cannot be represented as a file system path; skipping it
+                    """
+                )
+            )
+        }
+    }
+    #endif
 }

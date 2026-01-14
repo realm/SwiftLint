@@ -20,6 +20,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6423](https://github.com/realm/SwiftLint/issues/6423)
 
+* Inform users about files being skipped due to impossible file system representation
+  instead of crashing.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6419](https://github.com/realm/SwiftLint/issues/6419)
+
 * Ignore `override` functions in `async_without_await` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6416](https://github.com/realm/SwiftLint/issues/6416)

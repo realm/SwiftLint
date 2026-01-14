@@ -203,6 +203,7 @@ let package = Package(
         .testTarget(
             name: "IntegrationTests",
             dependencies: [
+                "SwiftLintCore",
                 "SwiftLintFramework",
                 "TestHelpers",
             ],

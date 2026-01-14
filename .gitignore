@@ -39,7 +39,7 @@ default.profraw
 
 SwiftLint.xcodeproj
 SwiftLint.pkg
-*.zip
+/*.zip
 benchmark_*
 docs/
 rule_docs/

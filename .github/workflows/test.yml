@@ -38,6 +38,7 @@ jobs:
     name: SPM, macOS ${{ matrix.macOS }}, Xcode ${{ matrix.xcode }}
     runs-on: macos-${{ matrix.macOS }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - macOS: '14'

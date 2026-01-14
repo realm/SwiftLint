@@ -23,6 +23,7 @@ private extension AsyncWithoutAwaitRule {
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var functionScopes = Stack<FuncInfo>()
+        private var actorTypeStack = Stack<Bool>()
         private var pendingAsync: TokenSyntax?
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -72,7 +73,9 @@ private extension AsyncWithoutAwaitRule {
 
         override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.body != nil {
-                let asyncToken = node.needsToKeepAsync ? nil : node.signature.effectSpecifiers?.asyncSpecifier
+                let asyncToken = node.needsToKeepAsync || actorTypeStack.peek() == true
+                    ? nil
+                    : node.signature.effectSpecifiers?.asyncSpecifier
                 functionScopes.push(.init(asyncToken: asyncToken))
             }
             return .visitChildren
@@ -111,6 +114,42 @@ private extension AsyncWithoutAwaitRule {
                 }
                 pendingAsync = nil
             }
+        }
+
+        override func visit(_: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            actorTypeStack.push(true)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ActorDeclSyntax) {
+            actorTypeStack.pop()
+        }
+
+        override func visit(_: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            actorTypeStack.push(false)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ClassDeclSyntax) {
+            actorTypeStack.pop()
+        }
+
+        override func visit(_: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            actorTypeStack.push(false)
+            return .visitChildren
+        }
+
+        override func visitPost(_: EnumDeclSyntax) {
+            actorTypeStack.pop()
+        }
+
+        override func visit(_: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            actorTypeStack.push(false)
+            return .visitChildren
+        }
+
+        override func visitPost(_: StructDeclSyntax) {
+            actorTypeStack.pop()
         }
 
         override func visit(_: FunctionParameterSyntax) -> SyntaxVisitorContinueKind {

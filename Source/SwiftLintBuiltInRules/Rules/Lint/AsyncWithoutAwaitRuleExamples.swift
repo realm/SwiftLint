@@ -1,6 +1,14 @@
 internal struct AsyncWithoutAwaitRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
+        actor A {
+            init() async {
+                foo()
+            }
+            func foo() {}
+        }
+        """),
+        Example("""
         func test() {
             func test() async {
                 await test()

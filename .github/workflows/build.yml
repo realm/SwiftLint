@@ -21,6 +21,8 @@ jobs:
         name: Build SwiftLint with Bazel
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
+      - name: Verify SourceKit dynamic loading behavior
+        run: bash tools/verify-sourcekit-loading.sh bazel-bin/swiftlint .
 
   plugins_linux:
     name: SPM plugins, Linux, Swift ${{ matrix.version }}

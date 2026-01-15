@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Add a `--disable-sourcekit` flag to the `lint` command to disable SourceKit when needed.
+  The environment variable `SWIFTLINT_DISABLE_SOURCEKIT` can still be used as well.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6282](https://github.com/realm/SwiftLint/issues/6282)
 
 ### Bug Fixes
 

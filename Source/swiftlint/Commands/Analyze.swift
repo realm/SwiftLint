@@ -44,6 +44,7 @@ extension SwiftLint {
                 onlyRule: common.onlyRule,
                 autocorrect: common.fix,
                 format: common.format,
+                disableSourceKit: false,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands,
                 checkForUpdates: common.checkForUpdates

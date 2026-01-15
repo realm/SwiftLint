@@ -3,6 +3,7 @@
 #endif
 import Dispatch
 import Foundation
+import SourceKittenFramework
 
 // swiftlint:disable file_length
 
@@ -53,6 +54,7 @@ package struct LintOrAnalyzeOptions {
     let onlyRule: [String]
     let autocorrect: Bool
     let format: Bool
+    let disableSourceKit: Bool
     let compilerLogPath: String?
     let compileCommands: String?
     let checkForUpdates: Bool
@@ -81,6 +83,7 @@ package struct LintOrAnalyzeOptions {
                  onlyRule: [String],
                  autocorrect: Bool,
                  format: Bool,
+                 disableSourceKit: Bool,
                  compilerLogPath: String?,
                  compileCommands: String?,
                  checkForUpdates: Bool) {
@@ -108,6 +111,7 @@ package struct LintOrAnalyzeOptions {
         self.onlyRule = onlyRule
         self.autocorrect = autocorrect
         self.format = format
+        self.disableSourceKit = disableSourceKit
         self.compilerLogPath = compilerLogPath
         self.compileCommands = compileCommands
         self.checkForUpdates = checkForUpdates
@@ -124,6 +128,7 @@ package struct LintOrAnalyzeOptions {
 
 package struct LintOrAnalyzeCommand {
     package static func run(_ options: LintOrAnalyzeOptions) async throws {
+        Request.disableSourceKitOverride = options.mode == .lint && options.disableSourceKit
         if let workingDirectory = options.workingDirectory {
             if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
                 throw SwiftLintError.usageError(

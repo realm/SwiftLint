@@ -19,6 +19,11 @@ extension SwiftLint {
         var noCache = false
         @Flag(help: "Run all rules, even opt-in and disabled ones, ignoring `only_rules`.")
         var enableAllRules = false
+        @Flag(
+            name: .customLong("disable-sourcekit"),
+            help: "Do not dynamically load SourceKit at runtime. Skip and report rules that require it."
+        )
+        var disableSourceKit = false
         @Argument(help: pathsArgumentDescription(for: .lint))
         var paths = [String]()
 
@@ -56,6 +61,7 @@ extension SwiftLint {
                 onlyRule: common.onlyRule,
                 autocorrect: common.fix,
                 format: common.format,
+                disableSourceKit: disableSourceKit,
                 compilerLogPath: nil,
                 compileCommands: nil,
                 checkForUpdates: common.checkForUpdates

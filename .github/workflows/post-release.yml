@@ -39,11 +39,33 @@ jobs:
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
 
+  publish-bcr:
+    name: Publish to Bazel Central Registry
+    needs:
+      - merge-into-main
+      - setup-credentials
+    if: ${{ !github.event.release.prerelease }}
+    uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@0bd40ad4f872b4d216d3f01bc0844ade304e2b5a # v1.1.0
+    permissions:
+      contents: write
+    with:
+      tag_name: ${{ github.event.release.tag_name }}
+      registry_fork: ${{ needs.setup-credentials.outputs.author_lowercase }}/bazel-central-registry
+      tag_prefix: ""
+      attest: false
+      author_name: ${{ needs.setup-credentials.outputs.author_name }}
+      author_email: ${{ needs.setup-credentials.outputs.author_email }}
+      committer_name: ${{ needs.setup-credentials.outputs.author_name }}
+      committer_email: ${{ needs.setup-credentials.outputs.author_email }}
+    secrets:
+      publish_token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
+
   publish-pod:
     name: Publish Pod
     needs:
       - merge-into-main
       - setup-credentials
+    if: ${{ !github.event.release.prerelease }}
     runs-on: macOS-14
     permissions:
       contents: read

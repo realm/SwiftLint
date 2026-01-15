@@ -64,6 +64,7 @@ private extension LintOrAnalyzeOptions {
                   onlyRule: [],
                   autocorrect: false,
                   format: false,
+                  disableSourceKit: false,
                   compilerLogPath: nil,
                   compileCommands: nil,
                   checkForUpdates: false

@@ -171,7 +171,7 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
     }
 
     #if !os(Windows)
-    func testUnicodePrivateUseAreaCharacterInPath() async throws {
+    func testUnicodePrivateUseAreaCharacterInPath() throws {
         let fixture = fixturePath("_8_unicode_private_use_area")
 
         let process = Process()
@@ -181,24 +181,10 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         process.waitUntilExit()
         defer { try? FileManager.default.removeItem(at: fixture.appending(path: "App")) }
 
-        if #available(macOS 26, *) {
-            XCTAssertEqual(
-                lintableFilePaths(in: "_8_unicode_private_use_area/App"),
-                ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
-            )
-        } else {
-            let console = await Issue.captureConsole {
-                XCTAssert(lintableFilePaths(in: "_8_unicode_private_use_area/App").isEmpty)
-            }
-            XCTAssert(
-                console.contains(
-                    """
-                    error: File with URL 'androidx.core:core-bundle.swift' \
-                    cannot be represented as a file system path; skipping it
-                    """
-                )
-            )
-        }
+        XCTAssertEqual(
+            lintableFilePaths(in: "_8_unicode_private_use_area/App"),
+            ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
+        )
     }
     #endif
 }

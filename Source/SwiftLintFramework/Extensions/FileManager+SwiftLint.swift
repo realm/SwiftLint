@@ -34,12 +34,11 @@ public enum Excluder {
     case noExclusion
 
     func excludes(path: URL) -> Bool {
-        let standardized = path.standardized.path
-        return switch self {
+        switch self {
         case let .matching(matchers):
-            matchers.contains(where: { $0.match(filename: standardized) })
+            matchers.contains(where: { $0.match(filename: path.path) })
         case let .byPrefix(prefixes):
-            prefixes.contains(where: { standardized.hasPrefix($0) })
+            prefixes.contains(where: { path.path.hasPrefix($0) })
         case .noExclusion:
             false
         }
@@ -51,6 +50,17 @@ extension FileManager: @unchecked @retroactive Sendable {}
 #endif
 
 extension FileManager: LintableFileManager {
+    private static let enumeratorProperties: Set<URLResourceKey> = [
+        .isRegularFileKey,
+        .isSymbolicLinkKey,
+    ]
+    private static let enumeratorOptions: DirectoryEnumerationOptions = [
+        .producesRelativePathURLs,
+        .skipsHiddenFiles,
+        .skipsPackageDescendants,
+        .skipsSubdirectoryDescendants,
+    ]
+
     public func filesToLint(inPath path: URL, excluder: Excluder) -> [URL] {
         // If path is a file, filter and return it directly.
         if path.isSwiftFile {
@@ -69,31 +79,38 @@ extension FileManager: LintableFileManager {
     }
 
     private func collectFiles(atPath absolutePath: URL, excluder: Excluder) -> [URL] {
-        guard let enumerator = enumerator(atPath: absolutePath.filepath) else {
+        let absolutePath = absolutePath.standardized.resolvingSymlinksInPath()
+        let enumerator = enumerator(
+            at: absolutePath,
+            includingPropertiesForKeys: Array(Self.enumeratorProperties),
+            options: Self.enumeratorOptions
+        )
+        guard let enumerator else {
             return []
         }
 
         var files = [URL]()
         var directoriesToWalk = [URL]()
 
-        while let element = enumerator.nextObject() as? String {
-            let absoluteElementPath = element.url(relativeTo: absolutePath)
-            if absoluteElementPath.isFile {
-                if absoluteElementPath.pathExtension == "swift",
-                   !excluder.excludes(path: absoluteElementPath) {
-                    files.append(absoluteElementPath)
+        while var element = (enumerator.nextObject() as? URL)?.relative(to: absolutePath) {
+            var resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
+            if resourceValues?.isSymbolicLink == true {
+                if excluder.excludes(path: element) {
+                    continue
                 }
-            } else {
-                enumerator.skipDescendants()
-                if !excluder.excludes(path: absoluteElementPath) {
-                    directoriesToWalk.append(absoluteElementPath)
+                element.resolveSymlinksInPath()
+                resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
+            }
+            if resourceValues?.isRegularFile == true {
+                if element.pathExtension == "swift", !excluder.excludes(path: element) {
+                    files.append(element)
                 }
+            } else if resourceValues != nil, !excluder.excludes(path: element) {
+                directoriesToWalk.append(element)
             }
         }
 
-        return files + directoriesToWalk.parallelFlatMap {
-            collectFiles(atPath: $0, excluder: excluder)
-        }
+        return files + directoriesToWalk.parallelFlatMap { collectFiles(atPath: $0, excluder: excluder) }
     }
 
     public func modificationDate(forFileAtPath path: URL) -> Date? {

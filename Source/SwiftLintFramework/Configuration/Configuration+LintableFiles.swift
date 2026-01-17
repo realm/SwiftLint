@@ -48,10 +48,7 @@ extension Configuration {
 
         // With no included paths, we lint everything in the given path.
         if includedPaths.isEmpty {
-            return fileManager.filesToLint(
-                inPath: path,
-                excluder: excluder
-            )
+            return makeUnique(paths: fileManager.filesToLint(inPath: path, excluder: excluder))
         }
 
         // With included paths, only lint them (after resolving globs).
@@ -88,16 +85,8 @@ extension Configuration {
             return .noExclusion
         }
         if excludeByPrefix {
-            return .byPrefix(
-                prefixes: excludedPaths
-                    .flatMap { Glob.resolveGlob($0) }
-                    .map(\.path)
-              )
+            return .byPrefix(prefixes: excludedPaths.flatMap(Glob.resolveGlob).map(\.path))
         }
-        return .matching(
-            matchers: excludedPaths.flatMap {
-                Glob.createFilenameMatchers(pattern: $0.path)
-            }
-        )
+        return .matching(matchers: excludedPaths.flatMap { Glob.createFilenameMatchers(pattern: $0.path) })
     }
 }

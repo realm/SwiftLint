@@ -644,7 +644,7 @@ final class ConfigurationTests: SwiftLintTestCase { // swiftlint:disable:this ty
 private extension Sequence where Element == String {
     func absolutePathsStandardized() -> [String] {
         // In Bazel builds, absolute paths might be prefixed with `/private`.
-        map { String($0.absolutePathStandardized().trimmingPrefix("/private")) }
+        map { URL(filePath: $0).standardizedFileURL.resolvingSymlinksInPath().relativeDisplayPath }
     }
 }
 

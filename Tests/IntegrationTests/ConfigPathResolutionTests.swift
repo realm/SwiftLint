@@ -170,8 +170,43 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         )
     }
 
-    #if !os(Windows)
+    func testSymlinkedFileAndFolderAreFollowed() throws {
+        #if os(Windows)
+        try XCTSkip("Symlinks in fixture folder are not supported on Windows")
+        #endif
+
+        let expectedPaths = ["Real/Folder/Nested.swift", "Real/Target.swift"]
+
+        // With symlinks
+        XCTAssertEqual(lintableFilePaths(in: "_9_symlinked_paths", configFile: ".swiftlint.yml"), expectedPaths)
+
+        let fixture = fixturePath("_9_symlinked_paths")
+        let fileLink = fixture.appending(path: "LinkToFile.swift", directoryHint: .notDirectory)
+        var folderLink = fixture.appending(path: "LinkToFolder", directoryHint: .isDirectory)
+        let targetFile = fixture.appending(path: "Real/Target.swift", directoryHint: .notDirectory)
+        let targetFolder = fixture.appending(path: "Real/Folder", directoryHint: .isDirectory)
+
+        let fileManager = FileManager.default
+        XCTAssert(fileManager.fileExists(atPath: fileLink.filepath))
+        XCTAssert(fileManager.fileExists(atPath: folderLink.filepath))
+        XCTAssert(try fileLink.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == true)
+        XCTAssert(try folderLink.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == true)
+        XCTAssertEqual(fileLink.resolvingSymlinksInPath(), targetFile)
+
+        XCTAssertNotEqual(folderLink, targetFile)
+        folderLink.resolveSymlinksInPath()
+        XCTAssert(try folderLink.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == false)
+        XCTAssertEqual(folderLink, targetFolder)
+
+        // Without symlinks
+        XCTAssertEqual(lintableFilePaths(in: "_9_symlinked_paths", configFile: ".swiftlint.yml"), expectedPaths)
+    }
+
     func testUnicodePrivateUseAreaCharacterInPath() throws {
+        #if os(Windows)
+        try XCTSkip("Windows unzip does not support PUA characters in paths")
+        #endif
+
         let fixture = fixturePath("_8_unicode_private_use_area")
 
         let process = Process()
@@ -186,5 +221,4 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
             ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
         )
     }
-    #endif
 }

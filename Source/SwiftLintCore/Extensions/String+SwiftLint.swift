@@ -66,16 +66,6 @@ public extension String {
         NSRange(location: 0, length: utf16.count)
     }
 
-    /// Returns a new string, converting the path to a canonical absolute path.
-    ///
-    /// > Important: This method might use an incorrect working directory internally. This can cause test failures
-    /// in Bazel builds but does not seem to cause trouble in production.
-    ///
-    /// - returns: A new `String`.
-    func absolutePathStandardized() -> String {
-        URL(filePath: bridge().standardizingPath.absolutePathRepresentation()).filepath
-    }
-
     /// Count the number of occurrences of the given character in `self`
     /// - Parameter character: Character to count
     /// - Returns: Number of times `character` occurs in `self`

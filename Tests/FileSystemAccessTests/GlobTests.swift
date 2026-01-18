@@ -92,10 +92,12 @@ final class GlobTests: SwiftLintTestCase {
     func testCreateFilenameMatchers() {
         func assertGlobMatch(pattern: String, filename: String, file: StaticString = #filePath, line: UInt = #line) {
             #if os(Windows)
-            var pattern = pattern
-            var filename = filename
-            pattern = "C:" + pattern
-            filename = "C:" + filename
+            guard let driveLetter = ProcessInfo.processInfo.environment["SystemDrive"] else {
+                XCTFail("Cannot retrieve %SystemDrive% environment variable")
+                return
+            }
+            var pattern = driveLetter + pattern
+            var filename = driveLetter + filename
             #endif
             let matchers = Glob.createFilenameMatchers(pattern: pattern)
             XCTAssert(matchers.anyMatch(filename: filename), file: file, line: line)

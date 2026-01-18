@@ -79,7 +79,6 @@ extension FileManager: LintableFileManager {
     }
 
     private func collectFiles(atPath absolutePath: URL, excluder: Excluder) -> [URL] {
-        let absolutePath = absolutePath.standardized.resolvingSymlinksInPath()
         let enumerator = enumerator(
             at: absolutePath,
             includingPropertiesForKeys: Array(Self.enumeratorProperties),

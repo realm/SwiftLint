@@ -28,7 +28,8 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
             excludeByPrefix: false
         )
 
-        return files.map { $0.path!.relativeDisplayPath }.sorted()
+        // swiftlint:disable:next force_try
+        return files.map { $0.path!.path.replacing(try! Regex(".+/\(scenario)/"), with: "") }.sorted()
     }
 
     func testParentChildSameDirectory() {
@@ -174,6 +175,10 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         #if os(Windows)
         try XCTSkip("Symlinks in fixture folder are not supported on Windows")
         #endif
+        try XCTSkipIf(
+            ProcessInfo.processInfo.environment["SWIFTLINT_BAZEL_TEST"] != nil,
+            "Bazel's sandboxed environment uses symlinks heavily breaking the fixture setup"
+        )
 
         let expectedPaths = ["Real/Folder/Nested.swift", "Real/Target.swift"]
 

@@ -580,11 +580,11 @@ can be used to update to the current version.
 SwiftLint can be configured using `entry` to apply fixes and fail on errors:
 
 ```yaml
--   repo: https://github.com/realm/SwiftLint
-    rev: 0.57.1
-    hooks:
-    -   id: swiftlint
-        entry: swiftlint --fix --strict
+- repo: https://github.com/realm/SwiftLint
+  rev: 0.57.1
+  hooks:
+    - id: swiftlint
+      entry: swiftlint --fix --strict
 ```
 
 ## Rules
@@ -629,9 +629,9 @@ For example:
 
 ```swift
 // swiftlint:disable colon
-let noWarning :String = "" // No warning about colons immediately after variable names!
+let noWarning :String = "" // No warning about colons immediately after variable names.
 // swiftlint:enable colon
-let hasWarning :String = "" // Warning generated about colons immediately after variable names
+let hasWarning :String = "" // Warning generated about colons immediately after variable names.
 ```
 
 Including the `all` keyword will disable all rules until the linter sees a
@@ -644,11 +644,11 @@ For example:
 
 ```swift
 // swiftlint:disable all
-let noWarning :String = "" // No warning about colons immediately after variable names!
-let i = "" // Also no warning about short identifier names
+let noWarning :String = "" // No warning about colons immediately after variable names.
+let i = "" // Also no warning about short identifier names.
 // swiftlint:enable all
-let hasWarning :String = "" // Warning generated about colons immediately after variable names
-let y = "" // Warning generated about short identifier names
+let hasWarning :String = "" // Warning generated about colons immediately after variable names.
+let y = "" // Warning generated about short identifier names.
 ```
 
 It's also possible to modify a `disable` or `enable` command by appending
@@ -689,32 +689,41 @@ Rule inclusion:
   all analyzer rules, except the ones listed in `disabled_rules`.
 
 ```yaml
-# By default, SwiftLint uses a set of sensible default rules you can adjust:
-disabled_rules: # rule identifiers turned on by default to exclude from running
+# By default, SwiftLint uses a set of sensible default rules you can adjust. Find all the available rules
+# by running `swiftlint rules` or visiting https://realm.github.io/SwiftLint/rule-directory.html.
+
+# Rules turned on by default can be disabled.
+disabled_rules:
   - colon
   - comma
   - control_statement
-opt_in_rules: # some rules are turned off by default, so you need to opt-in
-  - empty_count # find all the available rules by running: `swiftlint rules`
+  
+# Rules turned off by default can be enabled.
+opt_in_rules:
+  - empty_count
 
-# Alternatively, specify all rules explicitly by uncommenting this option:
-# only_rules: # delete `disabled_rules` & `opt_in_rules` if using this
+# Alternatively, specify all rules explicitly by uncommenting this option and removing the above two.
+# only_rules:
 #   - empty_parameters
 #   - vertical_whitespace
 
-analyzer_rules: # rules run by `swiftlint analyze`
+# Rules only run by `swiftlint analyze`. These are all opt-in.
+analyzer_rules:
   - explicit_self
 
 # Case-sensitive paths to include during linting. Directory paths supplied on the
-# command line will be ignored.
+# command line will be ignored. Wildcards are supported.
 included: 
   - Sources
-excluded: # case-sensitive paths to ignore during linting. Takes precedence over `included`
+
+# Case-sensitive paths to ignore during linting. Takes precedence over `included`. Wildcards
+# are supported.
+excluded: 
   - Carthage
   - Pods
   - Sources/ExcludedFolder
   - Sources/ExcludedFile.swift
-  - Sources/*/ExcludedFile.swift # exclude files with a wildcard
+  - Sources/*/ExcludedFile.swift
 
 # If true, SwiftLint will not fail if no lintable files are found.
 allow_zero_lintable_files: false
@@ -734,39 +743,45 @@ write_baseline: Baseline.json
 # If true, SwiftLint will check for updates after linting or analyzing.
 check_for_updates: true
 
-# configurable rules can be customized from this configuration file
-# binary rules can set their severity level
+# Configurable rules can be customized. All rules support setting their severity level.
 force_cast: warning # implicitly
 force_try:
   severity: warning # explicitly
-# rules that have both warning and error levels, can set just the warning level
-# implicitly
+  
+# Rules that have both warning and error levels can set just the warning level implicitly.
 line_length: 110
-# they can set both implicitly with an array
+
+# To set both levels implicitly, use an array.
 type_body_length:
   - 300 # warning
   - 400 # error
-# or they can set both explicitly
+
+# To set both levels explicitly, use a dictionary.
 file_length:
   warning: 500
   error: 1200
-# naming rules can set warnings/errors for min_length and max_length
-# additionally they can set excluded names
+  
+# Naming rules can set warnings/errors for `min_length` and `max_length`. Additionally, they can
+# set excluded names and allowed symbols.
 type_name:
-  min_length: 4 # only warning
+  min_length: 4 # warning
   max_length: # warning and error
     warning: 40
     error: 50
-  excluded: iPhone # excluded via string
-  allowed_symbols: ["_"] # these are allowed in type names
+  excluded: i(Phone|Pad|Pod) # regex pattern
+  allowed_symbols: ["_"]
 identifier_name:
-  min_length: # only min_length
+  min_length:
     error: 4 # only error
   excluded: # excluded via string array
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging, summary)
+    
+# The default reporter (SwiftLint's output format) can be configured as `checkstyle`, `codeclimate`, `csv`,
+# `emoji`, `github-actions-logging`, `gitlab`, `html`, `json`, `junit`, `markdown`, `relative-path`, `sarif`,
+# `sonarqube`, `summary`, or `xcode` (default).
+reporter: "xcode"
 ```
 
 You can also use environment variables in your configuration file,
@@ -795,21 +810,31 @@ following syntax:
 
 ```yaml
 custom_rules:
-  pirates_beat_ninjas: # rule identifier
+  # Rule identifier.
+  pirates_beat_ninjas:
+    # Optional regex that defines paths to include during linting.
     included:
-      - ".*\\.swift" # regex that defines paths to include during linting. optional.
+      - ".*\\.swift"
+    # Optional regex that defines paths to exclude during linting.
     excluded:
-      - ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
-    name: "Pirates Beat Ninjas" # rule name. optional.
-    regex: "([nN]inja)" # matching pattern
-    capture_group: 0 # number of regex capture group to highlight the rule violation at. optional.
-    match_kinds: # SyntaxKinds to match. optional.
+      - ".*Test\\.swift"
+    # Optional rule name.
+    name: "Pirates Beat Ninjas"
+    # Matching pattern.
+    regex: "([nN]inja)"
+    # Number of regex capture group to highlight the rule violation at. Optional, defaults to 0 (the whole match).
+    capture_group: 0
+    # SyntaxKinds to match. optional.
+    match_kinds:
       - comment
       - identifier
-    message: "Pirates are better than ninjas." # violation message. optional.
-    severity: error # violation severity. optional.
+    # Optional violation message.
+    message: "Pirates are better than ninjas."
+    # Optional violation severity.
+    severity: error
   no_hiding_in_strings:
     regex: "([nN]inja)"
+    # Syntax kinds to match. optional.
     match_kinds: string
 ```
 
@@ -918,14 +943,14 @@ Team-Wide Configuration:
 
 ```yaml
 disabled_rules:
-- force_cast
+  - force_cast
 ```
 
 Project-Specific Configuration:
 
 ```yaml
 opt_in_rules:
-- force_cast
+  - force_cast
 ```
 
 ### Child/Parent Configs (Locally)

@@ -8,7 +8,14 @@
 
 ### Experimental
 
-* None.
+* SwiftLint can now be built and run on Windows. It is expected to work in the same way as
+  on other platforms. The only restrictions are missing support for `?[]` glob patterns in
+  include/exclude patterns and the requirement for `\n` as line ending in all linted files.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [compnerd](https://github.com/compnerd)
+  [roman-bcny](https://github.com/roman-bcny)
+  [#6351](https://github.com/realm/SwiftLint/issues/6351)
+  [#6352](https://github.com/realm/SwiftLint/issues/6352)
 
 ### Enhancements
 

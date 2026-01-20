@@ -43,7 +43,8 @@ private extension AsyncWithoutAwaitRule {
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             // @concurrent closures require the async keyword even without await calls,
             let asyncToken = (node.signature?.attributes.contains(attributeNamed: "concurrent") ?? false)
-                ? nil : pendingAsync
+                ? nil
+                : pendingAsync
             functionScopes.push(.init(asyncToken: asyncToken))
             pendingAsync = nil
             return .visitChildren
@@ -59,7 +60,7 @@ private extension AsyncWithoutAwaitRule {
 
         override func visit(_ node: AccessorDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.body != nil {
-                let asyncToken = node.needsToKeepAsync ? nil : node.effectSpecifiers?.asyncSpecifier
+                let asyncToken = Syntax(node).needsToKeepAsync ? nil : node.effectSpecifiers?.asyncSpecifier
                 functionScopes.push(.init(asyncToken: asyncToken))
             }
             return .visitChildren

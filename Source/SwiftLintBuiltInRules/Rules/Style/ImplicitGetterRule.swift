@@ -33,8 +33,8 @@ private extension ImplicitGetterRule {
             guard node.accessorsList.count == 1,
                   let getAccessor = node.getAccessor,
                   getAccessor.effectSpecifiers == nil,
-                  getAccessor.modifier == nil,
-                  getAccessor.attributes.isEmpty == true,
+                  getAccessor.modifiers.isEmpty,
+                  getAccessor.attributes.isEmpty,
                   getAccessor.body != nil else {
                 return
             }

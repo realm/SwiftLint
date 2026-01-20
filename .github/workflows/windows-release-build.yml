@@ -1,0 +1,94 @@
+name: Windows Release Build
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: Build Static Windows ${{ matrix.arch-display-name }} Binary and Installer
+    runs-on: windows-${{ matrix.windows-version }}
+    env:
+      SWIFT_VERSION: development
+      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-01-09-a
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - windows-version: 2025
+            windows-display-name: "Server 2025"
+            arch: amd64
+            arch-display-name: AMD64
+            wix-platform: x64
+            target-triple: x86_64-unknown-windows-msvc
+          - windows-version: "11-arm"
+            windows-display-name: "11 ARM"
+            arch: arm64
+            arch-display-name: ARM64
+            wix-platform: arm64
+            target-triple: aarch64-unknown-windows-msvc
+    steps:
+      - name: Enable long path support
+        run: reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+      - name: Set up Swift
+        uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: ${{ env.SWIFT_VERSION }}
+          swift-build: ${{ env.SWIFT_BUILD }}
+          build_arch: ${{ matrix.arch }}
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+      - name: Build static executable
+        shell: pwsh
+        env:
+          SWIFTLINT_STATIC_WINDOWS_BUILD: 1
+        run: |
+          $sdk = Join-Path (Split-Path -Path $env:SDKROOT -Parent) 'WindowsExperimental.sdk'
+          $archDir = ('${{ matrix.target-triple }}'.Split('-')[0])
+          $staticLibDir = Join-Path $sdk (Join-Path 'usr\lib\swift_static\windows' $archDir)
+          Copy-Item -Path (Join-Path $staticLibDir 'libcurl.lib') -Destination (Join-Path $staticLibDir 'curl.lib') -Force
+          Copy-Item -Path (Join-Path $staticLibDir 'libxml2s.lib') -Destination (Join-Path $staticLibDir 'xml2.lib') -Force
+          swift build `
+            -c release `
+            --product swiftlint `
+            --triple ${{ matrix.target-triple }} `
+            -debug-info-format none `
+            -Xswiftc -static-stdlib `
+            -Xswiftc -sdk `
+            -Xswiftc $sdk `
+            -Xlinker /LIBPATH:"$staticLibDir"
+      - name: Prepare artifacts directory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path artifacts -Force | Out-Null
+          Copy-Item ".build/${{ matrix.target-triple }}/release/swiftlint.exe" "artifacts/swiftlint.exe" -Force
+      - name: Create portable zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "artifacts/swiftlint.exe" -DestinationPath "artifacts/swiftlint-portable-${{ matrix.arch }}.zip" -Force
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+      - name: Build WiX MSI
+        shell: pwsh
+        run: |
+          & msbuild -nologo -restore `
+            Platforms\Windows\SwiftLint.wixproj `
+            -p:Configuration=Release `
+            -p:InstallerPlatform=${{ matrix.wix-platform }} `
+            -p:ProductVersion=0.63.1.${{ github.run_number }} `
+            -p:SwiftLintBuildDir=${{ github.workspace }}\.build\${{ matrix.target-triple }}\release `
+            -p:OutputPath=${{ github.workspace }}\artifacts `
+            -p:RunWixToolsOutOfProc=true
+          Move-Item -Path "artifacts\SwiftLint.msi" -Destination "artifacts\SwiftLint.${{ matrix.arch }}.msi" -Force
+      - name: Upload artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: artifacts-${{ matrix.arch }}
+          path: artifacts
+          if-no-files-found: error
+          retention-days: 2

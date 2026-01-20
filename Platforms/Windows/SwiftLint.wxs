@@ -1,0 +1,70 @@
+<Wix
+  xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package
+      Name="SwiftLint"
+      Manufacturer="SwiftLint"
+      Version="$(var.ProductVersion)"
+      UpgradeCode="{83C6C6DC-BE70-4788-B79A-2BAA8F1F5FBF}"
+      Language="1033">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of SwiftLint is already installed." />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="SwiftLint" />
+    </StandardDirectory>
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component>
+        <File Id="SwiftLintExe" Source="$(var.SwiftLintBuildDir)\swiftlint.exe" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="EnvironmentVariables">
+      <Component
+        Id="SystemEnvironmentVariables"
+        Condition="ALLUSERS=1"
+        Directory="INSTALLFOLDER"
+        Guid="A271C9AE-1BDC-4D27-B4A1-5195479C8D86">
+          <Environment
+            Id="SystemPath"
+            Action="set"
+            Name="Path"
+            Part="last"
+            Permanent="no"
+            System="yes"
+            Value="[INSTALLFOLDER]"
+          />
+      </Component>
+      <Component
+        Id="UserEnvironmentVariables"
+        Condition="NOT ALLUSERS=1"
+        Directory="INSTALLFOLDER"
+        Guid="1C384F6C-8779-4575-9723-CCB20C6DFFB6">
+          <Environment
+            Id="UserPath"
+            Action="set"
+            Name="Path"
+            Part="last"
+            Permanent="no"
+            System="no"
+            Value="[INSTALLFOLDER]"
+          />
+      </Component>
+    </ComponentGroup>
+
+    <Feature Id="MainFeature" Title="SwiftLint" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="EnvironmentVariables" />
+    </Feature>
+
+    <UI>
+      <ui:WixUI Id="WixUI_InstallDir" />
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2" />
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2" />
+    </UI>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"></Property>
+  </Package>
+</Wix>

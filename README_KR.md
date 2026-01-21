@@ -19,7 +19,7 @@ SwiftLint는 좀 더 정확한 결과를 위해 [Clang](http://clang.llvm.org)�
 brew install swiftlint
 ```
 
-### [CocoaPods](https://cocoapods.org)를 사용하는 경우
+### [CocoaPods](https://cocoapods.org)을 사용하는 경우
 
 Podfile에 아래 라인을 추가하기만 하면 됩니다.
 
@@ -27,9 +27,9 @@ Podfile에 아래 라인을 추가하기만 하면 됩니다.
 pod 'SwiftLint'
 ```
 
-이를 실행하면 다음번 `pod install` 실행 시 SwiftLint 바이너리 및 `Pods/`에 있는 디펜던시들을 다운로드하고, Script Build Phases에서 `${PODS_ROOT}/SwiftLint/swiftlint` 명령을 사용할 수 있게 됩니다.
+이를 실행하면 다음 번 `pod install` 실행 시 SwiftLint 바이너리 및 `Pods/`에 있는 의존성들을 다운로드하고, Script Build Phases에서 `${PODS_ROOT}/SwiftLint/swiftlint` 명령을 사용할 수 있게 됩니다.
 
-CocoaPods를 사용하면 최신 버전 외에도 SwiftLint의 특정 버전을 설치할 수 있기 때문에 이 방법을 권장합니다. (Homebrew는 최신 버전만 설치 가능)
+CocoaPods을 사용하면 최신 버전 외에도 SwiftLint의 특정 버전을 설치할 수 있기 때문에 이 방법을 권장합니다. (Homebrew는 최신 버전만 설치 가능)
 
 이렇게 했을 때 SwiftLint 바이너리 및 그에 종속된 바이너리들과 스위프트 바이너리까지 `Pods/` 디렉터리에 추가되기 때문에, git 등의 SCM에 이런 디렉터리들을 체크인하는 것은 권장하지 않습니다.
 
@@ -95,9 +95,9 @@ ln -s /opt/homebrew/bin/swiftlint /usr/local/bin/swiftlint
 
 당신은 SwiftLint phase를 'Compile Sources' 단계 직전으로 옮겨 컴파일 전에 에러를 빠르게 찾고 싶어 할 것입니다. 하지만, SwiftLint는 컴파일러의 구문 분석 단계를 완벽히 수행하는 유효한 Swift 코드를 실행하기 위해 설계되었습니다. 따라서, 'Compile Sources' 전에 SwiftLint를 실행하면 일부 부정확한 오류가 발생할 수도 있습니다.
 
-만약 당신은 위반 사항(violations)을 동시에 수정하는 것을 원한다면, 스크립트에 `swiftlint` 대신 `swiftlint --fix && swiftlint`을 적어야 합니다. 이는 프로젝트의 수정 가능한 모든 위반 사항들이 수정되고 나머지 위반 사항에 대한 경고가 표시된다는 것을 의미합니다.
+만약 당신이 위반 사항(violations)을 동시에 수정하는 것을 원한다면, 스크립트에 `swiftlint` 대신 `swiftlint --fix && swiftlint`을 적어야 합니다. 이는 프로젝트의 수정 가능한 모든 위반 사항들이 수정되고 나머지 위반 사항에 대한 경고가 표시된다는 것을 의미합니다.
 
-CocoaPods를 사용해서 설치한 경우는 아래 스크립트를 대신 사용합니다.
+CocoaPods을 사용해서 설치한 경우는 아래 스크립트를 대신 사용합니다.
 
 ```bash
 "${PODS_ROOT}/SwiftLint/swiftlint"
@@ -124,7 +124,7 @@ fastlane 과정에서 SwiftLint를 사용하려면 [공식적인 fastlane 액션
 ```ruby
 swiftlint(
   mode: :lint,                            # SwiftLint 모드: :lint (디폴트) 아니면 :autocorrect
-  executable: "Pods/SwiftLint/swiftlint", # SwiftLint 바이너리 경로 (선택 가능). CocoaPods를 사용해서 설치한 경우는 이 옵션이 중요합니다
+  executable: "Pods/SwiftLint/swiftlint", # SwiftLint 바이너리 경로 (선택 가능). CocoaPods을 사용해서 설치한 경우는 이 옵션이 중요합니다
   output_file: "swiftlint.result.json",   # 결과 파일의 경로 (선택 가능)
   reporter: "json",                       # 보고 유형 (선택 가능)
   config_file: ".swiftlint-ci.yml",       # 설정 파일의 경로 (선택 가능)
@@ -164,13 +164,13 @@ SwiftLint를 실행할 때는 항상 스위프트 파일을 컴파일하는 동�
 
 SwiftLint가 어느 스위프트 툴체인을 사용할지 결정하는 순서는 다음과 같습니다.
 
-* `$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE`
-* `$TOOLCHAIN_DIR` or `$TOOLCHAINS`
-* `xcrun -find swift`
-* `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
-* `/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
-* `~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
-* `~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+- `$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE`
+- `$TOOLCHAIN_DIR` or `$TOOLCHAINS`
+- `xcrun -find swift`
+- `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+- `/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+- `~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+- `~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
 
 `sourcekitd.framework`은 위에서 선택된 경로의 `usr/lib/` 하위 디렉터리에 존재해야 합니다.
 
@@ -192,9 +192,9 @@ SwiftLint에는 200개가 넘는 룰들이 있고, 스위프트 커뮤니티(바
 
 다음은 룰을 옵트 인으로 구현하는 경우에 대한 기준입니다.
 
-* 잘못 판단될 가능성이 많은 룰 (예: `empty_count`)
-* 속도가 매우 느린 룰
-* 일반적으로 모든 사람이 합의하지 않거나 특정한 상황에만 유용한 룰 (예: `force_unwrapping`, `missing_docs`)
+- 잘못 판단될 가능성이 많은 룰 (예: `empty_count`)
+- 속도가 매우 느린 룰
+- 일반적으로 모든 사람이 합의하지 않거나 특정한 상황에만 유용한 룰 (예: `force_unwrapping`, `missing_docs`)
 
 ### 코드에서 룰 비활성화하기
 
@@ -234,11 +234,11 @@ let noWarning3 = NSNumber() as! Int
 
 SwiftLint가 실행될 디렉터리에 `.swiftlint.yml` 파일을 추가해서 SwiftLint를 설정할 수 있습니다. 아래 파라미터들을 설정 가능합니다.
 
-룰 적용여부 설정:
+룰 적용 여부 설정:
 
-* `disabled_rules`: 기본 활성화된 룰 중에 비활성화할 룰들을 지정합니다.
-* `opt_in_rules`: 기본 룰이 아닌 룰들을 활성화합니다.
-* `only_rules`: 지정한 룰들만 활성화되도록 화이트리스트로 지정합니다. `disabled_rules` 및 `opt_in_rules`과는 같이 사용할 수 없습니다.
+- `disabled_rules`: 기본 활성화된 룰 중에 비활성화할 룰들을 지정합니다.
+- `opt_in_rules`: 기본 룰이 아닌 룰들을 활성화합니다.
+- `only_rules`: 지정한 룰들만 활성화되도록 화이트리스트로 지정합니다. `disabled_rules` 또는 `opt_in_rules`와 함께 사용할 수 없습니다.
 
 ```yaml
 disabled_rules: # 실행에서 제외할 룰 식별자들
@@ -316,33 +316,33 @@ custom_rules:
 
 하나 이상의 `match_kinds`를 사용해서 매칭된 결과를 필터링할 수 있습니다. 이 목록에 들어있지 않은 구문 유형이 포함된 결과는 매칭에서 제외됩니다. 사용 가능한 모든 구문 유형은 다음과 같습니다.
 
-* argument
-* attribute.builtin
-* attribute.id
-* buildconfig.id
-* buildconfig.keyword
-* comment
-* comment.mark
-* comment.url
-* doccomment
-* doccomment.field
-* identifier
-* keyword
-* number
-* objectliteral
-* parameter
-* placeholder
-* string
-* string_interpolation_anchor
-* typeidentifier
+- argument
+- attribute.builtin
+- attribute.id
+- buildconfig.id
+- buildconfig.keyword
+- comment
+- comment.mark
+- comment.url
+- doccomment
+- doccomment.field
+- identifier
+- keyword
+- number
+- objectliteral
+- parameter
+- placeholder
+- string
+- string_interpolation_anchor
+- typeidentifier
 
 #### 중첩 구성
 
 SwiftLint는 설정 파일을 중첩되게 구성해서 린트 과정을 더욱 세밀하게 제어할 수 있습니다.
 
-* 디렉터리 구조에서 필요한 곳이면 어디든지 `.swiftlint.yml` 파일을 추가할 수 있습니다.
-* 각 파일은 자신의 디렉터리 내에 있는 설정 파일을 사용하거나, 계층구조 상 가장 가까운 부모 디렉터리에 있는 설정 파일을 사용해서 린트됩니다. 별도로 설정 파일이 존재하지 않으면 루트에 있는 설정 파일이 사용됩니다.
-* 중첩 구성에서 `excluded` 및 `included`는 무시됩니다.
+- 디렉터리 구조에서 필요한 곳이면 어디든지 `.swiftlint.yml` 파일을 추가할 수 있습니다.
+- 각 파일은 자신의 디렉터리 내에 있는 설정 파일을 사용하거나, 계층구조 상 가장 가까운 부모 디렉터리에 있는 설정 파일을 사용해서 린트됩니다. 별도로 설정 파일이 존재하지 않으면 루트에 있는 설정 파일이 사용됩니다.
+- 중첩 구성에서 `excluded` 및 `included`는 무시됩니다.
 
 ### 자동 수정
 

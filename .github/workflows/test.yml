@@ -76,8 +76,6 @@ jobs:
             arch: arm64
             windows-display-name: '11 ARM'
     steps:
-      - name: Enable long path support
-        run: reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
       - uses: compnerd/gha-setup-swift@main
         with:
           swift-version: ${{ env.SWIFT_VERSION }}

@@ -31,8 +31,6 @@ jobs:
             wix-platform: arm64
             target-triple: aarch64-unknown-windows-msvc
     steps:
-      - name: Enable long path support
-        run: reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
       - name: Set up Swift
         uses: compnerd/gha-setup-swift@main
         with:

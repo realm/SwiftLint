@@ -45,14 +45,8 @@ jobs:
           persist-credentials: false
       - name: Build static executable
         shell: pwsh
-        env:
-          SWIFTLINT_STATIC_WINDOWS_BUILD: 1
         run: |
           $sdk = Join-Path (Split-Path -Path $env:SDKROOT -Parent) 'WindowsExperimental.sdk'
-          $archDir = ('${{ matrix.target-triple }}'.Split('-')[0])
-          $staticLibDir = Join-Path $sdk (Join-Path 'usr\lib\swift_static\windows' $archDir)
-          Copy-Item -Path (Join-Path $staticLibDir 'libcurl.lib') -Destination (Join-Path $staticLibDir 'curl.lib') -Force
-          Copy-Item -Path (Join-Path $staticLibDir 'libxml2s.lib') -Destination (Join-Path $staticLibDir 'xml2.lib') -Force
           swift build `
             -c release `
             --product swiftlint `
@@ -61,7 +55,8 @@ jobs:
             -Xswiftc -static-stdlib `
             -Xswiftc -sdk `
             -Xswiftc $sdk `
-            -Xlinker /LIBPATH:"$staticLibDir"
+            -Xcc -DCURL_STATICLIB `
+            -Xcc -DLIBXML_STATIC
       - name: Prepare artifacts directory
         shell: pwsh
         run: |

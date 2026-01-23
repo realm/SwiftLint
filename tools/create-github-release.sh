@@ -19,10 +19,6 @@ gh release create "$version" --title "$release_title" -F "$release_notes" --draf
     "SwiftLint.pkg#Universal macOS Installer"                                                   \
     "swiftlint_linux_amd64.zip#AMD64 Linux Binaries"                                            \
     "swiftlint_linux_arm64.zip#ARM64 Linux Binaries"                                            \
-    "SwiftLint.amd64.zip#AMD64 Windows Binary"                                                  \
-    "SwiftLint.arm64.zip#ARM64 Windows Binary"                                                  \
-    "SwiftLint.amd64.msi#AMD64 Windows Installer"                                               \
-    "SwiftLint.arm64.msi#ARM64 Windows Installer"                                               \
     "SwiftLintBinary.artifactbundle.zip"
 
 rm "$release_notes"

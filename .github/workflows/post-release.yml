@@ -14,15 +14,51 @@ jobs:
       contents: write
     secrets: inherit
 
-  merge-into-main:
-    name: Merge into main
-    needs: setup-credentials
+  extract-base-branch:
+    name: Extract Base Branch
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    outputs:
+      base-branch: ${{ steps.extract.outputs.base-branch }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - name: Extract base branch from tag message
+        id: extract
+        run: |
+          TAG_MESSAGE=$(git show -s --format=%b "${{ github.event.release.tag_name }}")
+          BASE_BRANCH=$(echo "$TAG_MESSAGE" | grep "^Base:" | cut -d: -f2- | xargs)
+          if [ -z "$BASE_BRANCH" ]; then
+            BASE_BRANCH="main"
+          fi
+          echo "base-branch=$BASE_BRANCH" >> "$GITHUB_OUTPUT"
+      - name: Check non-main release is pre-release
+        run: |
+          BASE_BRANCH="${{ steps.extract.outputs.base-branch }}"
+          IS_PRERELEASE="${{ github.event.release.prerelease }}"
+
+          if [ "$BASE_BRANCH" != "main" ] && [ "$IS_PRERELEASE" != "true" ]; then
+            echo "ERROR: Releases from non-main branches must be marked as pre-releases."
+            echo "Base branch: $BASE_BRANCH"
+            echo "Pre-release: $IS_PRERELEASE"
+            exit 1
+          fi
+
+  merge-into-base-branch:
+    name: Merge into Base Branch
+    needs:
+      - setup-credentials
+      - extract-base-branch
     runs-on: ubuntu-slim
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: ${{ needs.extract-base-branch.outputs.base-branch }}
           persist-credentials: true
       - name: Configure Git author
         uses: Homebrew/actions/git-user-config@main
@@ -32,16 +68,17 @@ jobs:
         run: |
           git fetch origin "release/${TAG_NAME}"
           git merge --ff-only "origin/release/${TAG_NAME}"
-          git push origin main
+          git push origin "${BASE_BRANCH}"
           git push origin --delete "release/${TAG_NAME}"
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
+          BASE_BRANCH: ${{ needs.extract-base-branch.outputs.base-branch }}
 
   publish-bcr:
     name: Publish to Bazel Central Registry
     needs:
-      - merge-into-main
       - setup-credentials
+      - merge-into-base-branch
     if: ${{ !github.event.release.prerelease }}
     uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@0bd40ad4f872b4d216d3f01bc0844ade304e2b5a # v1.1.0
     permissions:
@@ -61,8 +98,8 @@ jobs:
   publish-pod:
     name: Publish Pod
     needs:
-      - merge-into-main
       - setup-credentials
+      - merge-into-base-branch
     if: ${{ !github.event.release.prerelease }}
     runs-on: macOS-14
     permissions:
@@ -81,7 +118,10 @@ jobs:
 
   dispatch-plugins:
     name: Dispatch Plugins Repository
-    needs: merge-into-main
+    needs:
+      - extract-base-branch
+      - merge-into-base-branch
+    if: ${{ needs.extract-base-branch.outputs.base-branch == 'main' }}
     runs-on: ubuntu-slim
     permissions:
       contents: read
@@ -107,8 +147,8 @@ jobs:
   bump-homebrew:
     name: Bump Homebrew Formula
     needs:
-      - merge-into-main
       - setup-credentials
+      - merge-into-base-branch
     if: ${{ !github.event.release.prerelease }}
     runs-on: ubuntu-24.04
     container:
@@ -130,7 +170,8 @@ jobs:
 
   build-docker:
     name: Build Docker Images
-    needs: merge-into-main
+    needs:
+      - merge-into-base-branch
     uses: ./.github/workflows/docker.yml
     permissions:
       contents: read

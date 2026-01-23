@@ -11,6 +11,11 @@ on:
         description: "Release title"
         required: true
         type: string
+      base-branch:
+        description: "Base branch to create the release from"
+        required: false
+        type: string
+        default: main
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_26.0.1.app
@@ -36,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: ${{ inputs.base-branch }}
           persist-credentials: true
       - name: Checkout or create release branch
         run: |
@@ -72,6 +78,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: ${{ inputs.base-branch }}
           persist-credentials: false
       - name: Set up Ruby and Bundler
         uses: ruby/setup-ruby@90be1154f987f4dc0fe0dd0feedac9e473aa4ba8 # v1.286.0
@@ -330,7 +337,9 @@ jobs:
       - name: Create tag and release commit
         run: |
           git commit -a -m "Release ${{ inputs.version }}"
-          git tag -a "${{ inputs.version }}" -m "${{ inputs.title }}"
+          git tag -a "${{ inputs.version }}" \
+            -m "Title: ${{ inputs.title }}" \
+            -m "Base: ${{ inputs.base-branch }}"
           git push origin HEAD
           git push origin "${{ inputs.version }}"
       - name: Create release

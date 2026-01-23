@@ -89,8 +89,7 @@ jobs:
           key: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
           restore-keys: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-
           path: .build
-      - name: Build all targets
-        run: swift build --build-tests
-      - name: Run selected tests
-        run: swift test --skip IntegrationTests --skip FileSystemAccessTests --skip FrameworkTests --skip BuiltInRulesTests
-      # To be extended with test execution and linting ...
+      - name: Run tests
+        run: swift test --parallel
+      - name: Lint codebase
+        run: swift run swiftlint lint --strict

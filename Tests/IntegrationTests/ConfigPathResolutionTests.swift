@@ -173,7 +173,7 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
 
     func testSymlinkedFileAndFolderAreFollowed() throws {
         #if os(Windows)
-        try XCTSkip("Symlinks in fixture folder are not supported on Windows")
+        throw XCTSkip("Symlinks in fixture folder are not supported on Windows")
         #endif
         try XCTSkipIf(
             ProcessInfo.processInfo.environment["SWIFTLINT_BAZEL_TEST"] != nil,
@@ -209,7 +209,7 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
 
     func testUnicodePrivateUseAreaCharacterInPath() throws {
         #if os(Windows)
-        try XCTSkip("Windows unzip does not support PUA characters in paths")
+        throw XCTSkip("Windows unzip does not support PUA characters in paths")
         #endif
 
         let fixture = fixturePath("_8_unicode_private_use_area")

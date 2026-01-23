@@ -53,8 +53,11 @@ jobs:
             -Xswiftc -static-stdlib `
             -Xswiftc -sdk `
             -Xswiftc $sdk `
-            -Xcc -DCURL_STATICLIB `
-            -Xcc -DLIBXML_STATIC
+            -Xlinker /NODEFAULTLIB:curl -Xlinker libcurl.lib `
+            -Xlinker /NODEFAULTLIB:xml2 -Xlinker libxml2s.lib `
+            -Xlinker zlibstatic.lib `
+            -Xlinker brotlidec.lib `
+            -Xlinker brotlicommon.lib
       - name: Prepare artifacts directory
         shell: pwsh
         run: |

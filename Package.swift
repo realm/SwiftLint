@@ -1,6 +1,5 @@
 // swift-tools-version:5.9
 import CompilerPluginSupport
-import Foundation
 import PackageDescription
 
 let swiftFeatures: [SwiftSetting] = [
@@ -25,19 +24,6 @@ swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
 #else
 swiftLintPluginDependencies = [.target(name: "swiftlint")]
 #endif
-
-// Linker flags for static Windows builds.
-let windowsStaticLinkerFlags: [LinkerSetting] =
-    if ProcessInfo.processInfo.environment["SWIFTLINT_STATIC_WINDOWS_BUILD"] == nil {
-        []
-    } else {
-        [
-            .linkedLibrary("libcurl.lib"),
-            .linkedLibrary("zlibstatic.lib"),
-            .linkedLibrary("brotlicommon.lib"),
-            .linkedLibrary("brotlidec.lib"),
-        ]
-    }
 
 let package = Package(
     name: "SwiftLint",
@@ -67,8 +53,7 @@ let package = Package(
                 "SwiftLintFramework",
                 "SwiftyTextTable",
             ],
-            swiftSettings: swiftFeatures + strictConcurrency,
-            linkerSettings: windowsStaticLinkerFlags
+            swiftSettings: swiftFeatures + strictConcurrency
         ),
         .executableTarget(
             name: "swiftlint-dev",

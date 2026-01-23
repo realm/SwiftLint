@@ -4,7 +4,10 @@
 
 ### Breaking
 
-* None.
+* Use start position of closure (in addition to the containing function call) to check
+  if violations are disabled for it in `trailing_closure` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6451](https://github.com/realm/SwiftLint/issues/6451)
 
 ### Experimental
 

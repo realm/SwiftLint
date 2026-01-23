@@ -96,7 +96,16 @@ open class ViolationsSyntaxRewriter<Configuration: RuleConfiguration>: SyntaxRew
         self.file = file
     }
 
+    /// Determines whether the rule is disabled at the start position of the given syntax node.
+    ///
+    /// - parameter node: The syntax node to check.
+    ///
+    /// - returns: `true` if the rule is disabled for the node.
+    public func isDisabled(atStartPositionOf node: some SyntaxProtocol) -> Bool {
+        node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter)
+    }
+
     override open func visitAny(_ node: Syntax) -> Syntax? {
-        node.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) ? node : nil
+        isDisabled(atStartPositionOf: node) ? node : nil
     }
 }

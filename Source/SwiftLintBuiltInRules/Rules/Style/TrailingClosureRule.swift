@@ -5,6 +5,8 @@ import SwiftSyntax
 struct TrailingClosureRule: Rule {
     var configuration = TrailingClosureConfiguration()
 
+    private static let onlySingleMutedConfig = ["only_single_muted_parameter": true]
+
     static let description = RuleDescription(
         identifier: "trailing_closure",
         name: "Trailing Closure",
@@ -36,6 +38,9 @@ struct TrailingClosureRule: Rule {
                 print(i)
             }
             """),
+            Example("foo.reduce(0, combine: { $0 + 1 })", configuration: onlySingleMutedConfig),
+            Example("offsets.sorted(by: { $0.offset < $1.offset })", configuration: onlySingleMutedConfig),
+            Example("foo.something(0, { $0 + 1 })", configuration: onlySingleMutedConfig),
         ],
         triggeringExamples: [
             Example("foo.map(↓{ $0 + 1 })"),
@@ -48,6 +53,7 @@ struct TrailingClosureRule: Rule {
                 n.forEach(↓{ print($0) })
             }
             """, excludeFromDocumentation: true),
+            Example("foo.map(↓{ $0 + 1 })", configuration: onlySingleMutedConfig),
         ],
         corrections: [
             Example("foo.map(↓{ $0 + 1 })"):
@@ -78,6 +84,19 @@ struct TrailingClosureRule: Rule {
                 """): Example("""
                     f(a: 1,
                     b: 2) { 3 }
+                    """),
+            Example("foo.map(↓{ $0 + 1 })", configuration: onlySingleMutedConfig):
+                Example("foo.map { $0 + 1 }", configuration: onlySingleMutedConfig),
+            Example("f(↓{ g(↓{ 1 }) })", configuration: onlySingleMutedConfig):
+                Example("f { g { 1 }}", configuration: onlySingleMutedConfig),
+            Example("""
+                for n in list {
+                    n.forEach(↓{ print($0) })
+                }
+                """, configuration: onlySingleMutedConfig): Example("""
+                    for n in list {
+                        n.forEach { print($0) }
+                    }
                     """),
             Example("""
                 f(a: 1, // comment

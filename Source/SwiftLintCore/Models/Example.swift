@@ -140,12 +140,15 @@ extension Example: Hashable {
         // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
         lhs.code == rhs.code
+            && lhs.configuration?.mapValues(String.init(describing:))
+                == rhs.configuration?.mapValues(String.init(describing:))
     }
 
     public func hash(into hasher: inout Hasher) {
         // Ignoring file/line metadata because two Examples could represent
         // the same idea, but captured at two different points in the code
         hasher.combine(code)
+        hasher.combine(configuration?.mapValues(String.init(describing:)))
     }
 }
 

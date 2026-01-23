@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version'
+        description: "Release version"
         required: true
         type: string
       title:
-        description: 'Release title'
+        description: "Release title"
         required: true
         type: string
 
@@ -198,6 +198,88 @@ jobs:
           retention-days: 2
           if-no-files-found: error
 
+  build-windows:
+    name: Build Windows ${{ matrix.arch-display-name }} Installer
+    needs: prepare-release
+    runs-on: windows-${{ matrix.windows-version }}
+    env:
+      SWIFT_VERSION: development
+      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-01-09-a
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - windows-version: 2025
+            arch-display-name: AMD64
+            arch: amd64
+            wix-platform: x64
+            target-triple: x86_64-unknown-windows-msvc
+          - windows-version: "11-arm"
+            arch-display-name: ARM64
+            arch: arm64
+            wix-platform: arm64
+            target-triple: aarch64-unknown-windows-msvc
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+          persist-credentials: false
+      - name: Set up Swift
+        uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: ${{ env.SWIFT_VERSION }}
+          swift-build: ${{ env.SWIFT_BUILD }}
+          build_arch: ${{ matrix.arch }}
+      - name: Build static executable
+        shell: pwsh
+        run: |
+          $sdk = Join-Path (Split-Path -Path $env:SDKROOT -Parent) 'WindowsExperimental.sdk'
+          swift build `
+            -c release `
+            --product swiftlint `
+            --triple ${{ matrix.target-triple }} `
+            -debug-info-format none `
+            -Xswiftc -static-stdlib `
+            -Xswiftc -sdk `
+            -Xswiftc $sdk `
+            -Xlinker /NODEFAULTLIB:curl -Xlinker libcurl.lib `
+            -Xlinker /NODEFAULTLIB:xml2 -Xlinker libxml2s.lib `
+            -Xlinker zlibstatic.lib `
+            -Xlinker brotlidec.lib `
+            -Xlinker brotlicommon.lib
+      - name: Prepare artifacts directory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path artifacts -Force | Out-Null
+          Copy-Item ".build/${{ matrix.target-triple }}/release/swiftlint.exe" "artifacts/swiftlint.exe" -Force
+      - name: Create portable zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "artifacts/swiftlint.exe" -DestinationPath "artifacts/SwiftLint.${{ matrix.arch }}.zip" -Force
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+      - name: Build WiX MSI
+        shell: pwsh
+        run: |
+          & msbuild -nologo `
+            Platforms\Windows\SwiftLint.wixproj `
+            -p:Configuration=Release `
+            -p:InstallerPlatform=${{ matrix.wix-platform }} `
+            -p:ProductVersion=${{ inputs.version }} `
+            -p:SwiftLintBuildDir=${{ github.workspace }}\.build\${{ matrix.target-triple }}\release `
+            -p:OutputPath=${{ github.workspace }}\artifacts `
+            -p:RunWixToolsOutOfProc=true
+          Move-Item -Path "artifacts\SwiftLint.msi" -Destination "artifacts\SwiftLint.${{ matrix.arch }}.msi" -Force
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: swiftlint-windows-${{ matrix.arch }}
+          path: artifacts
+          retention-days: 2
+          if-no-files-found: error
+
   create-release:
     name: Create Release
     needs:
@@ -206,6 +288,7 @@ jobs:
       - build-linux
       - build-static-linux
       - build-macos
+      - build-windows
     runs-on: macOS-26
     permissions:
       actions: read
@@ -223,7 +306,10 @@ jobs:
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
       - name: Move artifacts
         run: |
+          # Move macOS artifacts.
           mv -f swiftlint-macos/* .
+
+          # Move Linux artifacts.
           mv -f swiftlint-linux-amd64/swiftlint swiftlint_linux_amd64
           mv -f swiftlint-linux-arm64/swiftlint swiftlint_linux_arm64
           mv -f swiftlint-static-amd64/swiftlint swiftlint_static_amd64
@@ -231,9 +317,12 @@ jobs:
 
           # Just pick one of the licenses.
           mv -f swiftlint-static-amd64/LICENSE.mimalloc .
+
+          # Move Windows artifacts.
+          mv -f swiftlint-windows-{arm,amd}64/*.{msi,zip} .
       - name: Make binaries executable
         run: chmod +x swiftlint*
-      - name: Create artifacts
+      - name: Package artifacts
         run: |
           make --debug spm_artifactbundle
           make --debug package

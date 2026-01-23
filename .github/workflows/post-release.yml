@@ -23,8 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: main
-          token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
           persist-credentials: true
       - name: Configure Git author
         uses: Homebrew/actions/git-user-config@main
@@ -111,6 +109,7 @@ jobs:
     needs:
       - merge-into-main
       - setup-credentials
+    if: ${{ !github.event.release.prerelease }}
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/homebrew/ubuntu24.04:latest

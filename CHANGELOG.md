@@ -15,7 +15,11 @@
 
 ### Enhancements
 
-* None.
+* Add `ignore_regex` configuration option to the `large_tuple` rule to silence
+  violations for tuples inside `Regex<...>` types, which commonly have large
+  tuple type parameters for capture groups.
+  [Deco354](https://github.com/Deco354)
+  [#6340](https://github.com/realm/SwiftLint/issues/6340)
 
 ### Bug Fixes
 

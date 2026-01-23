@@ -120,6 +120,19 @@ struct TrailingClosureRule: Rule {
                 """): Example("""
                     f(a: 2) /* comment1 */ /* comment2 */ /* comment3 */ { 3 } /* comment4 */
                     """),
+            Example("""
+                let dataSource = RxTableViewSectionedReloadDataSource(
+                    configureCell: { cell in // swiftlint:disable:this trailing_closure
+                        return cell
+                    }
+                )
+                """): Example("""
+                let dataSource = RxTableViewSectionedReloadDataSource(
+                    configureCell: { cell in // swiftlint:disable:this trailing_closure
+                        return cell
+                    }
+                )
+                """),
         ]
     )
 }
@@ -127,7 +140,9 @@ struct TrailingClosureRule: Rule {
 private extension TrailingClosureRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard node.trailingClosure == nil else { return }
+            guard node.trailingClosure == nil else {
+                return
+            }
 
             if configuration.onlySingleMutedParameter {
                 if let param = node.singleMutedClosureParameter {
@@ -152,15 +167,19 @@ private extension TrailingClosureRule {
 private extension TrailingClosureRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-            guard node.trailingClosure == nil else { return super.visit(node) }
+            guard node.trailingClosure == nil else {
+                return super.visit(node)
+            }
 
             if configuration.onlySingleMutedParameter {
-                if node.singleMutedClosureParameter != nil,
+                if let param = node.singleMutedClosureParameter,
+                   !isDisabled(atStartPositionOf: param),
                    let converted = node.convertToTrailingClosure() {
                     numberOfCorrections += 1
                     return super.visit(converted)
                 }
-            } else if node.lastDistinctClosureParameter != nil,
+            } else if let param = node.lastDistinctClosureParameter,
+                      !isDisabled(atStartPositionOf: param),
                       let converted = node.convertToTrailingClosure() {
                 numberOfCorrections += 1
                 return super.visit(converted)
@@ -213,7 +232,9 @@ private extension FunctionCallExprSyntax {
     }
 
     func convertToTrailingClosure() -> Self? {
-        guard trailingClosure == nil, let lastDistinctClosureParameter else { return nil }
+        guard let lastDistinctClosureParameter else {
+            return nil
+        }
         let leadingTrivia = lastTriviaInArguments?
             .removingLeadingNewlines()
             .appendingMissingSpace() ?? []

@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Add `ignore_regex` option to `large_tuple` rule to silence violations
+  for tuples inside `Regex<...>` generic type arguments.  
+  [Deco354](https://github.com/Deco354)
+  [#6340](https://github.com/realm/SwiftLint/issues/6340)
 
 ### Bug Fixes
 

@@ -47,7 +47,7 @@ struct LargeTupleRule: Rule {
                 configuration: ["ignore_regex": true]
             ),
             Example(
-                "let regex: Regex<(Substring, Substring, Substring, Substring)?> = nil",
+                "var regex: Regex<(Substring, Substring, Substring, Substring)?>.Match? { nil }",
                 configuration: ["ignore_regex": true]
             ),
         ],

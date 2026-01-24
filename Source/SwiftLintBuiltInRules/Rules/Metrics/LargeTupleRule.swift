@@ -46,6 +46,10 @@ struct LargeTupleRule: Rule {
                 "let regex: Regex<(Substring, Substring, Substring, Substring)>? = nil",
                 configuration: ["ignore_regex": true]
             ),
+            Example(
+                "let regex: Regex<(Substring, Substring, Substring, Substring)?> = nil",
+                configuration: ["ignore_regex": true]
+            ),
         ],
         triggeringExamples: [
             Example("let foo: ↓(Int, Int, Int)"),

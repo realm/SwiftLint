@@ -56,7 +56,6 @@ extension FileManager: LintableFileManager {
     ]
     private static let enumeratorOptions: DirectoryEnumerationOptions = [
         .producesRelativePathURLs,
-        .skipsHiddenFiles,
         .skipsPackageDescendants,
         .skipsSubdirectoryDescendants,
     ]

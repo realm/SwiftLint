@@ -97,10 +97,6 @@ private extension LargeTupleRule {
 }
 
 private extension TupleTypeSyntax {
-    /// Check if this tuple is a direct generic argument of a `Regex` type.
-    /// Expected chain: TupleType -> GenericArgument -> GenericArgumentList ->
-    ///   GenericArgumentClause -> IdentifierType "Regex"
-    /// Optionally with OptionalType wrapper: TupleType -> OptionalType -> GenericArgument -> ...
     var isInsideRegexType: Bool {
         var current: Syntax? = Syntax(self)
 

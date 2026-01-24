@@ -262,11 +262,11 @@ jobs:
       - name: Build WiX MSI
         shell: pwsh
         run: |
-          & msbuild -nologo -Restore `
+          & msbuild -nologo -restore `
             Platforms\Windows\SwiftLint.wixproj `
             -p:Configuration=Release `
             -p:InstallerPlatform=${{ matrix.wix-platform }} `
-            -p:ProductVersion=${{ inputs.version }} `
+            -p:ProductVersion=("${{ inputs.version }}" -replace '-rc\.', '.') `
             -p:SwiftLintBuildDir=${{ github.workspace }}\.build\${{ matrix.target-triple }}\release `
             -p:OutputPath=${{ github.workspace }}\artifacts `
             -p:RunWixToolsOutOfProc=true

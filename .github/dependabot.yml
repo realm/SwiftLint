@@ -1,14 +1,22 @@
 version: 2
 updates:
-  - &base
-    package-ecosystem: github-actions
+  - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     labels: [dependencies]
-  - <<: *base
-    package-ecosystem: swift
-  - <<: *base
-    package-ecosystem: bundler
-  - <<: *base
-    package-ecosystem: bazel
+  - package-ecosystem: swift
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+  - package-ecosystem: bazel
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]

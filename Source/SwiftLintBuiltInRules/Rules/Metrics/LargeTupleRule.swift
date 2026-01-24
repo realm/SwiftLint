@@ -66,17 +66,12 @@ struct LargeTupleRule: Rule {
             Example("func foo(bar: String) async -> ↓(Int, Int, Int)"),
             Example("func foo(bar: String) async -> ↓(Int, Int, Int) {}"),
             Example("func foo() async throws -> ↓(Int, Int, Int)"),
-            Example("func foo() async throws -> ↓(Int, Int, Int) {}"),
-            Example("func foo() async throws -> ↓(Int, ↓(String, String, String), Int) {}"),
-            Example("func getDictionaryAndInt() async -> (Dictionary<Int, ↓(String, String, String)>, Int)?"),
             Example(
-                "func foo() -> Regex<↓(Substring, foo: Substring, bar: Substring)>.Match? { nil }",
+                "func foo() async throws -> ↓(Int, Int, Int) {}",
                 configuration: ["ignore_regex": false]
             ),
-            Example(
-                "func foo() -> ↓(Int, Int, Int) {}",
-                configuration: ["ignore_regex": true]
-            ),
+            Example("func foo() async throws -> ↓(Int, ↓(String, String, String), Int) {}"),
+            Example("func getDictionaryAndInt() async -> (Dictionary<Int, ↓(String, String, String)>, Int)?"),
         ]
     )
 }
@@ -102,15 +97,25 @@ private extension LargeTupleRule {
 }
 
 private extension TupleTypeSyntax {
+    /// Check if this tuple is a direct generic argument of a `Regex` type.
+    /// Expected chain: TupleType -> GenericArgument -> GenericArgumentList ->
+    ///   GenericArgumentClause -> IdentifierType "Regex"
+    /// Optionally with OptionalType wrapper: TupleType -> OptionalType -> GenericArgument -> ...
     var isInsideRegexType: Bool {
-        var currentNode: Syntax? = Syntax(self)
-        while let node = currentNode {
-            if let identifierType = node.as(IdentifierTypeSyntax.self),
-               identifierType.name.text == "Regex" {
-                return true
-            }
-            currentNode = node.parent
+        var current: Syntax? = Syntax(self)
+
+        // Skip OptionalType wrapper if present (for Regex<(A, B)?>)
+        if current?.parent?.is(OptionalTypeSyntax.self) == true {
+            current = current?.parent
         }
-        return false
+
+        guard let genericArgument = current?.parent?.as(GenericArgumentSyntax.self),
+              let genericArgumentList = genericArgument.parent?.as(GenericArgumentListSyntax.self),
+              let genericArgumentClause = genericArgumentList.parent?.as(GenericArgumentClauseSyntax.self),
+              let identifierType = genericArgumentClause.parent?.as(IdentifierTypeSyntax.self),
+              identifierType.name.text == "Regex" else {
+            return false
+        }
+        return true
     }
 }

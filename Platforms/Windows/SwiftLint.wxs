@@ -59,6 +59,8 @@
       <ComponentGroupRef Id="EnvironmentVariables" />
     </Feature>
 
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
     <UI>
       <ui:WixUI Id="WixUI_InstallDir" />
       <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2" />

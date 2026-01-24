@@ -2,7 +2,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule
 struct LargeTupleRule: Rule {
-    var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
+    var configuration = LargeTupleConfiguration()
 
     static let description = RuleDescription(
         identifier: "large_tuple",
@@ -38,6 +38,18 @@ struct LargeTupleRule: Rule {
             Example("func foo(bar: (Int, String, Float) async throws -> Void)"),
             Example("func getDictionaryAndInt() async -> (Dictionary<Int, String>, Int)?"),
             Example("func getGenericTypeAndInt() async -> (Type<Int, String, Float>, Int)?"),
+            Example(
+                "func foo() -> Regex<(Substring, foo: Substring, bar: Substring)>.Match? { nil }",
+                configuration: ["ignore_regex": true]
+            ),
+            Example(
+                "let regex: Regex<(Substring, Substring, Substring, Substring)>? = nil",
+                configuration: ["ignore_regex": true]
+            ),
+            Example(
+                "var regex: Regex<(Substring, Substring, Substring, Substring)?>.Match? { nil }",
+                configuration: ["ignore_regex": true]
+            ),
         ],
         triggeringExamples: [
             Example("let foo: ↓(Int, Int, Int)"),
@@ -58,7 +70,10 @@ struct LargeTupleRule: Rule {
             Example("func foo(bar: String) async -> ↓(Int, Int, Int)"),
             Example("func foo(bar: String) async -> ↓(Int, Int, Int) {}"),
             Example("func foo() async throws -> ↓(Int, Int, Int)"),
-            Example("func foo() async throws -> ↓(Int, Int, Int) {}"),
+            Example(
+                "func foo() async throws -> ↓(Int, Int, Int) {}",
+                configuration: ["ignore_regex": false]
+            ),
             Example("func foo() async throws -> ↓(Int, ↓(String, String, String), Int) {}"),
             Example("func getDictionaryAndInt() async -> (Dictionary<Int, ↓(String, String, String)>, Int)?"),
         ]
@@ -68,15 +83,39 @@ struct LargeTupleRule: Rule {
 private extension LargeTupleRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: TupleTypeSyntax) {
+            if configuration.ignoreRegex, node.isInsideRegexType {
+                return
+            }
+
             let memberCount = node.elements.count
-            for parameter in configuration.params where memberCount > parameter.value {
+            for parameter in configuration.severityConfiguration.params where memberCount > parameter.value {
                 violations.append(.init(
                     position: node.positionAfterSkippingLeadingTrivia,
-                    reason: "Tuples should have at most \(configuration.warning) members",
+                    reason: "Tuples should have at most \(configuration.severityConfiguration.warning) members",
                     severity: parameter.severity
                 ))
                 return
             }
         }
+    }
+}
+
+private extension TupleTypeSyntax {
+    var isInsideRegexType: Bool {
+        var current: Syntax? = Syntax(self)
+
+        // Skip OptionalType wrapper if present (for Regex<(A, B)?>)
+        if current?.parent?.is(OptionalTypeSyntax.self) == true {
+            current = current?.parent
+        }
+
+        guard let genericArgument = current?.parent?.as(GenericArgumentSyntax.self),
+              let genericArgumentList = genericArgument.parent?.as(GenericArgumentListSyntax.self),
+              let genericArgumentClause = genericArgumentList.parent?.as(GenericArgumentClauseSyntax.self),
+              let identifierType = genericArgumentClause.parent?.as(IdentifierTypeSyntax.self),
+              identifierType.name.text == "Regex" else {
+            return false
+        }
+        return true
     }
 }

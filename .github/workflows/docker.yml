@@ -14,6 +14,12 @@ on:
         description: 'Docker tag'
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker tag'
+        required: true
+        type: string
 
 jobs:
   set-context:

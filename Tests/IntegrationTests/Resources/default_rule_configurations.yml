@@ -551,7 +551,7 @@ invisible_character:
   severity: error
   meta:
     opt-in: false
-    correctable: false
+    correctable: true
 is_disjoint:
   severity: warning
   meta:

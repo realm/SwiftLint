@@ -9,31 +9,29 @@ struct InvisibleCharacterConfiguration: SeverityBasedRuleConfiguration {
         "\u{FEFF}": "U+FEFF (zero-width no-break space)",
     ]
 
-    private static let defaultCharacters = Set(defaultCharacterDescriptions.keys.map(\.hexCode))
-
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
     @ConfigurationElement(
-        key: "include_hex_codes",
-        postprocessor: { $0.formUnion(defaultCharacters) }
+        key: "additional_code_points",
+        postprocessor: { $0.formUnion(defaultCharacterDescriptions.keys) }
     )
-    private(set) var violatingCharacters = Set<String>()
-
-    func violatingScalars() -> Set<UnicodeScalar> {
-        Set(violatingCharacters.compactMap { .init(hexCode: $0) })
-    }
+    private(set) var violatingCharacters = Set<UnicodeScalar>()
 }
 
-private extension UnicodeScalar {
-    var hexCode: String {
-        .init(value, radix: 16, uppercase: true)
-    }
-
-    init?(hexCode: String) {
-        guard let value = UInt32(hexCode, radix: 16),
-              let scalar = Self(value) else {
-            return nil
+extension UnicodeScalar: AcceptableByConfigurationElement {
+    public init(fromAny value: Any, context ruleID: String) throws(Issue) {
+        guard let hexCode = value as? String,
+              let codePoint = UInt32(hexCode, radix: 16),
+              let scalar = Self(codePoint) else {
+            throw .invalidConfiguration(
+                ruleID: ruleID,
+                message: "\(value) is not a valid Unicode scalar code point."
+            )
         }
         self = scalar
+    }
+
+    public func asOption() -> OptionType {
+        .string(.init(value, radix: 16, uppercase: true))
     }
 }

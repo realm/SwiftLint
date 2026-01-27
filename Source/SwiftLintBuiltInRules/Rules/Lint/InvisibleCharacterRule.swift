@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
+@SwiftSyntaxRule(correctable: true)
 struct InvisibleCharacterRule: Rule {
     var configuration = SeverityConfiguration<Self>(.error)
 
@@ -71,91 +71,40 @@ struct InvisibleCharacterRule: Rule {
         "\u{200C}": "U+200C (zero-width non-joiner)",
         "\u{FEFF}": "U+FEFF (zero-width no-break space)",
     ]
-
-    private static let invisibleCharacterSet: Set<Unicode.Scalar> = Set(invisibleCharacters.keys)
 }
 
 private extension InvisibleCharacterRule {
-    static func violatingSegments(
-        in node: StringLiteralExprSyntax
-    ) -> [SyntaxIdentifier: (segment: StringSegmentSyntax, text: String)] {
-        var result = [SyntaxIdentifier: (StringSegmentSyntax, String)]()
-        for segment in node.segments {
-            guard let stringSegment = segment.as(StringSegmentSyntax.self) else {
-                continue
-            }
-            let text = stringSegment.content.text
-            if text.unicodeScalars.contains(where: { invisibleCharacterSet.contains($0) }) {
-                result[stringSegment.id] = (stringSegment, text)
-            }
-        }
-        return result
-    }
-
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StringLiteralExprSyntax) {
-            for (segment, text) in violatingSegments(in: node).values {
+            let characters = invisibleCharacters.keys
+            for segment in node.segments {
+                guard let stringSegment = segment.as(StringSegmentSyntax.self) else {
+                    continue
+                }
+                let text = stringSegment.content.text
+                guard text.unicodeScalars.contains(where: { characters.contains($0) }) else {
+                    continue
+                }
                 var utf8Offset = 0
                 for scalar in text.unicodeScalars {
                     defer { utf8Offset += scalar.utf8Length }
                     guard let characterName = invisibleCharacters[scalar] else {
                         continue
                     }
+                    let position = stringSegment.content.positionAfterSkippingLeadingTrivia.advanced(by: utf8Offset)
                     violations.append(
                         ReasonedRuleViolation(
-                            position: segment.content.positionAfterSkippingLeadingTrivia
-                                .advanced(by: utf8Offset),
-                            reason: "String literal should not contain invisible character \(characterName)"
+                            position: position,
+                            reason: "String literal should not contain invisible character \(characterName)",
+                            correction: .init(
+                                start: position,
+                                end: position.advanced(by: scalar.utf8Length),
+                                replacement: ""
+                            )
                         )
                     )
                 }
             }
-        }
-    }
-
-    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: StringLiteralExprSyntax) -> ExprSyntax {
-            guard !isDisabled(atStartPositionOf: node) else {
-                return super.visit(node)
-            }
-
-            let segmentsToFix = violatingSegments(in: node)
-            guard segmentsToFix.isNotEmpty else {
-                return super.visit(node)
-            }
-
-            var correctionCount = 0
-
-            let newSegments = node.segments.map { segment -> StringLiteralSegmentListSyntax.Element in
-                guard let stringSegment = segment.as(StringSegmentSyntax.self),
-                      let (_, text) = segmentsToFix[stringSegment.id] else {
-                    return segment
-                }
-
-                var cleanedScalars = [Unicode.Scalar]()
-                cleanedScalars.reserveCapacity(text.unicodeScalars.count)
-                var removedCount = 0
-
-                for scalar in text.unicodeScalars {
-                    if invisibleCharacterSet.contains(scalar) {
-                        removedCount += 1
-                    } else {
-                        cleanedScalars.append(scalar)
-                    }
-                }
-
-                correctionCount += removedCount
-                let cleanedText = String(String.UnicodeScalarView(cleanedScalars))
-                let newSegment = stringSegment.with(
-                    \.content,
-                    stringSegment.content.with(\.tokenKind, .stringSegment(cleanedText))
-                )
-                return .stringSegment(newSegment)
-            }
-
-            numberOfCorrections += correctionCount
-            let newNode = node.with(\.segments, StringLiteralSegmentListSyntax(newSegments))
-            return super.visit(newNode)
         }
     }
 }

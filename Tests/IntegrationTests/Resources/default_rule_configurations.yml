@@ -549,6 +549,7 @@ invalid_swiftlint_command:
     correctable: false
 invisible_character:
   severity: error
+  include_hex_codes: ["200B", "200C", "FEFF"]
   meta:
     opt-in: false
     correctable: true

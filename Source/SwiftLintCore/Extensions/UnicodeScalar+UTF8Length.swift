@@ -1,4 +1,4 @@
-public extension Unicode.Scalar {
+public extension UnicodeScalar {
     /// Returns the number of bytes needed to encode this scalar in UTF-8.
     var utf8Length: Int {
         switch value {

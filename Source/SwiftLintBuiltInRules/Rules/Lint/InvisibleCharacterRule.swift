@@ -11,7 +11,7 @@ struct InvisibleCharacterRule: Rule {
         description: """
             Disallows invisible characters like zero-width space (U+200B), \
             zero-width non-joiner (U+200C), and FEFF formatting character (U+FEFF) \
-            in string literals as they can cause hard-to-debug issues
+            in string literals as they can cause hard-to-debug issues.
             """,
         kind: .lint,
         nonTriggeringExamples: [
@@ -46,12 +46,12 @@ struct InvisibleCharacterRule: Rule {
             Example(#"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#),
             Example("""
             //
-            // include_hex_codes: ["200D"]
+            // additional_code_points: ["200D"]
             //
             let s = "Hello↓‍World"
             """,
             configuration: [
-                "include_hex_codes": ["200D"],
+                "additional_code_points": ["200D"],
             ]
             ),
         ],
@@ -75,12 +75,12 @@ struct InvisibleCharacterRule: Rule {
             Example(
                 #"let s = "Hello‍World""#,
                 configuration: [
-                    "include_hex_codes": ["200D"],
+                    "additional_code_points": ["200D"],
                 ]
             ): Example(
                 #"let s = "HelloWorld""#,
                 configuration: [
-                    "include_hex_codes": ["200D"],
+                    "additional_code_points": ["200D"],
                 ]
             ),
         ]
@@ -91,19 +91,18 @@ struct InvisibleCharacterRule: Rule {
 private extension InvisibleCharacterRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StringLiteralExprSyntax) {
-            let violatingScalars = configuration.violatingScalars()
             for segment in node.segments {
                 guard let stringSegment = segment.as(StringSegmentSyntax.self) else {
                     continue
                 }
                 let text = stringSegment.content.text
-                guard text.unicodeScalars.contains(where: { violatingScalars.contains($0) }) else {
+                guard text.unicodeScalars.contains(where: { configuration.violatingCharacters.contains($0) }) else {
                     continue
                 }
                 var utf8Offset = 0
                 for scalar in text.unicodeScalars {
                     defer { utf8Offset += scalar.utf8Length }
-                    guard violatingScalars.contains(scalar) else {
+                    guard configuration.violatingCharacters.contains(scalar) else {
                         continue
                     }
 

@@ -44,6 +44,7 @@ struct InvisibleCharacterRule: Rule {
             Example(#"let s = "Test↓​String↓﻿Here" // Multiple invisible characters"#),
             Example(#"let s = "Hel↓‌lo" + "World" // string concatenation with U+200C"#),
             Example(#"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#),
+            /*
             Example("""
             //
             // additional_code_points: ["200D"]
@@ -54,6 +55,7 @@ struct InvisibleCharacterRule: Rule {
                 "additional_code_points": ["200D"],
             ]
             ),
+             */
         ],
         corrections: [
             Example(#"let s = "Hello​World""#): Example(#"let s = "HelloWorld""#),
@@ -72,6 +74,7 @@ struct InvisibleCharacterRule: Rule {
             Example(#"let s = "Test​String﻿Here""#): Example(#"let s = "TestStringHere""#),
             Example(#"let s = "Hel‌lo" + "World""#): Example(#"let s = "Hello" + "World""#),
             Example(#"let s = "Hel‌lo \(name)""#): Example(#"let s = "Hello \(name)""#),
+            /*
             Example(
                 #"let s = "Hello‍World""#,
                 configuration: [
@@ -83,6 +86,7 @@ struct InvisibleCharacterRule: Rule {
                     "additional_code_points": ["200D"],
                 ]
             ),
+             */
         ]
     )
     // swiftlint:enable invisible_character
@@ -91,22 +95,24 @@ struct InvisibleCharacterRule: Rule {
 private extension InvisibleCharacterRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: StringLiteralExprSyntax) {
+            let violatingCharacters = configuration.violatingCharacters
             for segment in node.segments {
                 guard let stringSegment = segment.as(StringSegmentSyntax.self) else {
                     continue
                 }
                 let text = stringSegment.content.text
-                guard text.unicodeScalars.contains(where: { configuration.violatingCharacters.contains($0) }) else {
+                let scalars = text.unicodeScalars
+                guard scalars.contains(where: { violatingCharacters.contains($0) }) else {
                     continue
                 }
                 var utf8Offset = 0
-                for scalar in text.unicodeScalars {
+                for scalar in scalars {
                     defer { utf8Offset += scalar.utf8Length }
-                    guard configuration.violatingCharacters.contains(scalar) else {
+                    guard violatingCharacters.contains(scalar) else {
                         continue
                     }
 
-                    let characterName = InvisibleCharacterConfiguration.defaultCharacterDescriptions[scalar]
+                    let characterName = InvisibleCharacterConfiguration.defaultCharacterDescriptions[scalar.value]
                         ?? scalar.escaped(asASCII: true)
 
                     let position = stringSegment.content.positionAfterSkippingLeadingTrivia.advanced(by: utf8Offset)

@@ -44,18 +44,16 @@ struct InvisibleCharacterRule: Rule {
             Example(#"let s = "Test↓​String↓﻿Here" // Multiple invisible characters"#),
             Example(#"let s = "Hel↓‌lo" + "World" // string concatenation with U+200C"#),
             Example(#"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#),
-            /*
             Example("""
             //
-            // additional_code_points: ["200D"]
+            // additional_code_points: ["00AD"]
             //
-            let s = "Hello↓‍World"
+            let s = "Hello↓­World"
             """,
             configuration: [
-                "additional_code_points": ["200D"],
+                "additional_code_points": ["00AD"],
             ]
             ),
-             */
         ],
         corrections: [
             Example(#"let s = "Hello​World""#): Example(#"let s = "HelloWorld""#),
@@ -74,19 +72,17 @@ struct InvisibleCharacterRule: Rule {
             Example(#"let s = "Test​String﻿Here""#): Example(#"let s = "TestStringHere""#),
             Example(#"let s = "Hel‌lo" + "World""#): Example(#"let s = "Hello" + "World""#),
             Example(#"let s = "Hel‌lo \(name)""#): Example(#"let s = "Hello \(name)""#),
-            /*
             Example(
-                #"let s = "Hello‍World""#,
+                #"let s = "Hello­World""#,
                 configuration: [
-                    "additional_code_points": ["200D"],
+                    "additional_code_points": ["00AD"],
                 ]
             ): Example(
                 #"let s = "HelloWorld""#,
                 configuration: [
-                    "additional_code_points": ["200D"],
+                    "additional_code_points": ["00AD"],
                 ]
             ),
-             */
         ]
     )
     // swiftlint:enable invisible_character

@@ -16,7 +16,9 @@
 
 ### Bug Fixes
 
-* None.
+* Ensure that disable commands work for `redundant_nil_coalescing` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6465](https://github.com/realm/SwiftLint/issues/6465)
 
 ## 0.63.2: High-Speed Extraction
 

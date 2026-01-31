@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+@SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true, optIn: true)
 struct RedundantNilCoalescingRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -19,40 +19,35 @@ struct RedundantNilCoalescingRule: Rule {
         corrections: [
             Example("var myVar: Int? = nil; let foo = myVar ↓?? nil"):
                 Example("var myVar: Int? = nil; let foo = myVar"),
+            Example("let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing"):
+                Example("let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing"),
         ]
     )
 }
 
 private extension RedundantNilCoalescingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: TokenSyntax) {
-            if node.tokenKind.isNilCoalescingOperator,
-               node.nextToken(viewMode: .sourceAccurate)?.tokenKind == .keyword(.nil) {
-                violations.append(node.position)
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            if node.operator.isNilCoalescingOperator, node.rightOperand.is(NilLiteralExprSyntax.self) {
+                violations.append(node.operator.positionAfterSkippingLeadingTrivia)
             }
         }
     }
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: ExprListSyntax) -> ExprListSyntax {
-            guard
-                node.count > 2,
-                let lastExpression = node.last,
-                lastExpression.is(NilLiteralExprSyntax.self),
-                let secondToLastExpression = node.dropLast().last?.as(BinaryOperatorExprSyntax.self),
-                secondToLastExpression.operator.tokenKind.isNilCoalescingOperator
-            else {
+        override func visit(_ node: InfixOperatorExprSyntax) -> ExprSyntax {
+            guard node.operator.isNilCoalescingOperator,
+                  node.rightOperand.is(NilLiteralExprSyntax.self) else {
                 return super.visit(node)
             }
             numberOfCorrections += 1
-            let newNode = ExprListSyntax(node.dropLast(2)).with(\.trailingTrivia, [])
-            return super.visit(newNode)
+            return super.visit(node.leftOperand.with(\.trailingTrivia, []))
         }
     }
 }
 
-private extension TokenKind {
+private extension ExprSyntax {
     var isNilCoalescingOperator: Bool {
-        self == .binaryOperator("??")
+        `as`(BinaryOperatorExprSyntax.self)?.operator.tokenKind == .binaryOperator("??")
     }
 }

@@ -20,6 +20,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6465](https://github.com/realm/SwiftLint/issues/6465)
 
+* Ensure that disable commands work for `prefer_key_path` rule when the trailing
+  closure starts on a different line than the function call as a whole.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6466](https://github.com/realm/SwiftLint/issues/6466)
+
 ## 0.63.2: High-Speed Extraction
 
 ### Breaking

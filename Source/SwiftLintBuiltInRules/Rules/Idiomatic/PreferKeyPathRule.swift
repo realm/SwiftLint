@@ -97,6 +97,14 @@ struct PreferKeyPathRule: Rule {
                 Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity),
             Example("f.map { $0 }", configuration: ignoreIdentity): // no change with option enabled
                 Example("f.map { $0 }", configuration: ignoreIdentity),
+            Example("""
+                myList
+                    .map { $0.a } // swiftlint:disable:this prefer_key_path
+                """):
+                Example("""
+                myList
+                    .map { $0.a } // swiftlint:disable:this prefer_key_path
+                """),
         ]
     )
 }
@@ -123,6 +131,7 @@ private extension PreferKeyPathRule {
         override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
             guard node.additionalTrailingClosures.isEmpty,
                   let closure = node.trailingClosure,
+                  !isDisabled(atStartPositionOf: closure),
                   !closure.isInvalid(restrictToStandardFunctions: configuration.restrictToStandardFunctions),
                   let expr = closure.onlyExprStmt,
                   expr.accesses(identifier: closure.onlyParameter) == true,

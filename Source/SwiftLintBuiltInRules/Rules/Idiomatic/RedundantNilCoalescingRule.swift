@@ -7,8 +7,7 @@ struct RedundantNilCoalescingRule: Rule {
     static let description = RuleDescription(
         identifier: "redundant_nil_coalescing",
         name: "Redundant Nil Coalescing",
-        description: "nil coalescing operator is only evaluated if the lhs is nil" +
-            ", coalescing operator with nil as rhs is redundant",
+        description: "Coalescing operator with right-hand side nil is redundant",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("var myVar: Int?; myVar ?? 0")

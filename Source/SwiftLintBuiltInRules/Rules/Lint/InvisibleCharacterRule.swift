@@ -54,6 +54,16 @@ struct InvisibleCharacterRule: Rule {
                 "additional_code_points": ["00AD"],
             ]
             ),
+            Example("""
+            //
+            // additional_code_points: ["200D"]
+            //
+            let s = "Hello↓‍World"
+            """,
+            configuration: [
+                "additional_code_points": ["200D"],
+            ]
+            ),
         ],
         corrections: [
             Example(#"let s = "Hello​World""#): Example(#"let s = "HelloWorld""#),
@@ -83,6 +93,17 @@ struct InvisibleCharacterRule: Rule {
                     "additional_code_points": ["00AD"],
                 ]
             ),
+            Example(
+                #"let s = "Hello‍World""#,
+                configuration: [
+                    "additional_code_points": ["200D"],
+                ]
+            ): Example(
+                #"let s = "HelloWorld""#,
+                configuration: [
+                    "additional_code_points": ["200D"],
+                ]
+            ),
         ]
     )
     // swiftlint:enable invisible_character
@@ -102,8 +123,15 @@ private extension InvisibleCharacterRule {
                     continue
                 }
                 var utf8Offset = 0
+                var previousScalar: UnicodeScalar?
+                var previousUtf8Size = 0
+
                 for scalar in scalars {
-                    defer { utf8Offset += scalar.utf8Length }
+                    defer {
+                        previousScalar = scalar
+                        previousUtf8Size = scalar.utf8.count
+                        utf8Offset += scalar.utf8.count
+                    }
                     guard violatingCharacters.contains(scalar) else {
                         continue
                     }
@@ -111,15 +139,40 @@ private extension InvisibleCharacterRule {
                     let characterName = InvisibleCharacterConfiguration.defaultCharacterDescriptions[scalar.value]
                         ?? scalar.escaped(asASCII: true)
 
+                    // Check if this scalar forms a grapheme cluster with the previous one.
+                    // This is needed on Windows and Linux where NSString operations on grapheme clusters
+                    // can delete more than intended when removing a combining character like ZWJ.
+                    let formsCombinedCluster: Bool
+                    if let prev = previousScalar {
+                        let combined = String(prev) + String(scalar)
+                        formsCombinedCluster = combined.count == 1
+                    } else {
+                        formsCombinedCluster = false
+                    }
+
+                    let correctionStart: AbsolutePosition
+                    let replacement: String
+
+                    if formsCombinedCluster, let prev = previousScalar {
+                        // Include previous scalar in the correction range and use it as replacement
+                        correctionStart = stringSegment.content.positionAfterSkippingLeadingTrivia
+                            .advanced(by: utf8Offset - previousUtf8Size)
+                        replacement = String(prev)
+                    } else {
+                        correctionStart = stringSegment.content.positionAfterSkippingLeadingTrivia
+                            .advanced(by: utf8Offset)
+                        replacement = ""
+                    }
+
                     let position = stringSegment.content.positionAfterSkippingLeadingTrivia.advanced(by: utf8Offset)
                     violations.append(
                         ReasonedRuleViolation(
                             position: position,
                             reason: "String literal should not contain invisible character \(characterName)",
                             correction: .init(
-                                start: position,
-                                end: position.advanced(by: scalar.utf8Length),
-                                replacement: ""
+                                start: correctionStart,
+                                end: position.advanced(by: scalar.utf8.count),
+                                replacement: replacement
                             )
                         )
                     )

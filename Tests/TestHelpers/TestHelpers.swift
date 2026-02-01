@@ -46,6 +46,7 @@ private let info: PlatformInfo = {
 // swiftlint:disable file_length
 
 private let violationMarker = "↓"
+private let violationMarkerChar = violationMarker.first!
 
 private extension SwiftLintFile {
     static func testFile(withContents contents: String, persistToDisk: Bool = false) -> SwiftLintFile {
@@ -198,15 +199,23 @@ public extension Collection where Element == Example {
 }
 
 private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
-    var contents = contents.bridge()
     var markerOffsets = [Int]()
-    var markerRange = contents.range(of: violationMarker)
-    while markerRange.location != NSNotFound {
-        markerOffsets.append(markerRange.location)
-        contents = contents.replacingCharacters(in: markerRange, with: "").bridge()
-        markerRange = contents.range(of: violationMarker)
+    var cleanedContents = ""
+    cleanedContents.reserveCapacity(contents.count)
+
+    var iter = contents.makeIterator()
+
+    var offset = 0
+    while let char = iter.next() {
+        if char == violationMarkerChar {
+            markerOffsets.append(offset)
+        } else {
+            cleanedContents.append(char)
+            offset += 1
+        }
     }
-    return (contents.bridge(), markerOffsets.sorted())
+
+    return (cleanedContents, markerOffsets)
 }
 
 private func render(violations: [StyleViolation], in contents: String) -> String {
@@ -567,7 +576,12 @@ public extension XCTestCase {
                 continue
             }
             let file = SwiftLintFile.testFile(withContents: cleanTrigger)
-            let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
+
+            // Convert grapheme cluster indices to UTF-16 offsets
+            let expectedLocations = markerOffsets.map { graphemeOffset -> Location in
+                let utf16Offset = cleanTrigger.utf16OffsetFrom(graphemeOffset: graphemeOffset)
+                return Location(file: file, characterOffset: utf16Offset)
+            }
 
             // Assert violations on unexpected location
             let violationsAtUnexpectedLocation = triggerViolations
@@ -658,5 +672,23 @@ private extension RuleDescription {
 package extension [any Rule] {
     var customRules: CustomRules? {
         first(where: { $0 is CustomRules }) as? CustomRules
+    }
+}
+
+private extension String {
+    /// Converts a grapheme cluster offset to a UTF-16 code unit offset
+    func utf16OffsetFrom(graphemeOffset: Int) -> Int {
+        var currentGraphemeIndex = 0
+        var utf16Offset = 0
+
+        for char in self {
+            if currentGraphemeIndex == graphemeOffset {
+                return utf16Offset
+            }
+            utf16Offset += char.utf16.count
+            currentGraphemeIndex += 1
+        }
+
+        return utf16Offset
     }
 }

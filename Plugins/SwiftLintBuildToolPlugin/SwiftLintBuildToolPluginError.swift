@@ -1,9 +1,10 @@
+import Foundation
 import PackagePlugin
 
 enum SwiftLintBuildToolPluginError: Error, CustomStringConvertible {
-    case pathNotInDirectory(path: Path, directory: Path)
-    case swiftFilesNotInProjectDirectory(Path)
-    case swiftFilesNotInWorkingDirectory(Path)
+    case pathNotInDirectory(path: URL, directory: URL)
+    case swiftFilesNotInProjectDirectory(URL)
+    case swiftFilesNotInWorkingDirectory(URL)
 
     var description: String {
         switch self {

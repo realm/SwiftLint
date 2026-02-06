@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(EmptyEnumArgumentsRule.description)
+    }
+}
+
 final class EmptyParametersRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyParametersRule.description)
@@ -148,11 +154,5 @@ final class FlatMapOverMapReduceRuleGeneratedTests: SwiftLintTestCase {
 final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForWhereRule.description)
-    }
-}
-
-final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ForceCastRule.description)
     }
 }

@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class ConditionalReturnsOnNewlineRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ConditionalReturnsOnNewlineRule.description)
+    }
+}
+
 final class ContainsOverFilterCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ContainsOverFilterCountRule.description)
@@ -148,11 +154,5 @@ final class EmptyCollectionLiteralRuleGeneratedTests: SwiftLintTestCase {
 final class EmptyCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)
-    }
-}
-
-final class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyEnumArgumentsRule.description)
     }
 }

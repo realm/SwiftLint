@@ -136,7 +136,7 @@ private extension InvisibleCharacterRule {
                         continue
                     }
 
-                    let characterName = InvisibleCharacterConfiguration.defaultCharacterDescriptions[scalar.value]
+                    let characterName = InvisibleCharacterConfiguration.defaultCharacterDescriptions[scalar]
                         ?? scalar.escaped(asASCII: true)
 
                     // Check if this scalar forms a grapheme cluster with the previous one.

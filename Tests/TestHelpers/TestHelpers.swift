@@ -203,10 +203,8 @@ private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, 
     var cleanedContents = ""
     cleanedContents.reserveCapacity(contents.count)
 
-    var iter = contents.makeIterator()
-
     var offset = 0
-    while let char = iter.next() {
+    for char in contents {
         if char == violationMarkerChar {
             markerOffsets.append(offset)
         } else {

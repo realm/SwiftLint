@@ -2,10 +2,10 @@ import SwiftLintCore
 
 @AutoConfigParser
 struct InvisibleCharacterConfiguration: SeverityBasedRuleConfiguration {
-    static let defaultCharacterDescriptions: [UInt32: String] = [
-        0x200B: "U+200B (zero-width space)",
-        0x200C: "U+200C (zero-width non-joiner)",
-        0xFEFF: "U+FEFF (zero-width no-break space)",
+    static let defaultCharacterDescriptions: [UnicodeScalar: String] = [
+        "\u{200B}": "U+200B (zero-width space)",
+        "\u{200C}": "U+200C (zero-width non-joiner)",
+        "\u{FEFF}": "U+FEFF (zero-width no-break space)",
     ]
 
     @ConfigurationElement(key: "severity")
@@ -13,8 +13,7 @@ struct InvisibleCharacterConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(
         key: "additional_code_points",
         postprocessor: {
-            let defaultScalars = defaultCharacterDescriptions.keys.compactMap { UnicodeScalar($0) }
-            $0.formUnion(defaultScalars)
+            $0.formUnion(defaultCharacterDescriptions.keys)
         }
     )
     private(set) var violatingCharacters = Set<UnicodeScalar>()

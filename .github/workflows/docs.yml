@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: ruby/setup-ruby@8d27f39a5e7ad39aebbcbd1324f7af020229645c # v1.287.0
+      - uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
           bundler-cache: true
       - name: Build SwiftLint and SourceKitten

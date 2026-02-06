@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ForceCastRule.description)
+    }
+}
+
 final class ForceTryRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceTryRule.description)
@@ -148,11 +154,5 @@ final class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
 final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
-    }
-}
-
-final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyConstantRule.description)
     }
 }

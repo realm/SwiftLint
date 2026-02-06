@@ -21,6 +21,7 @@ public let builtInRules: [any Rule.Type] = [
     ClosureSpacingRule.self,
     CollectionAlignmentRule.self,
     ColonRule.self,
+    CombineFlatMapRule.self,
     CommaInheritanceRule.self,
     CommaRule.self,
     CommentSpacingRule.self,

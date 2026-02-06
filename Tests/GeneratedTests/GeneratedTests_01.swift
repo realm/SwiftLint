@@ -121,6 +121,12 @@ final class ColonRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class CombineFlatMapRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(CombineFlatMapRule.description)
+    }
+}
+
 final class CommaInheritanceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaInheritanceRule.description)
@@ -148,11 +154,5 @@ final class CompilerProtocolInitRuleGeneratedTests: SwiftLintTestCase {
 final class ComputedAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ComputedAccessorsOrderRule.description)
-    }
-}
-
-final class ConditionalReturnsOnNewlineRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 }

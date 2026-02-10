@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class NSNumberInitAsFunctionReferenceRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(NSNumberInitAsFunctionReferenceRule.description)
+    }
+}
+
 final class NSObjectPreferIsEqualRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSObjectPreferIsEqualRule.description)
@@ -148,11 +154,5 @@ final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
 final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PeriodSpacingRule.description)
-    }
-}
-
-final class PreferAssetSymbolsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PreferAssetSymbolsRule.description)
     }
 }

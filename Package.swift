@@ -1,8 +1,10 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.1
 import CompilerPluginSupport
 import PackageDescription
 
 let swiftFeatures: [SwiftSetting] = [
+    .swiftLanguageMode(.v5),
+
     .enableUpcomingFeature("ConciseMagicFile"),
     .enableUpcomingFeature("ExistentialAny"),
     .enableUpcomingFeature("ForwardTrailingClosures"),

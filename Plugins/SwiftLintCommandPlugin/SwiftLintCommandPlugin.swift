@@ -1,6 +1,12 @@
 import Foundation
 import PackagePlugin
 
+private extension URL {
+    var filepath: String {
+        withUnsafeFileSystemRepresentation { String(cString: $0!) }
+    }
+}
+
 private let commandsNotExpectingPaths: Set<String> = [
     "docs",
     "generate-docs",
@@ -61,19 +67,19 @@ extension SwiftLintCommandPlugin {
         }
     }
 
-    private func lintFiles(in paths: [String] = ["."],
+    private func lintFiles(in paths: [URL] = [URL.currentDirectory()],
                            for targetName: String? = nil,
                            with context: some CommandContext,
                            arguments: [String]) throws {
         let process = Process()
-        process.currentDirectoryURL = URL(fileURLWithPath: context.workingDirectory)
-        process.executableURL = URL(fileURLWithPath: try context.tool)
+        process.currentDirectoryURL = context.workingDirectory
+        process.executableURL = try context.tool
         process.arguments = arguments
         if commandsWithoutCachPathOption.isDisjoint(with: arguments) {
-            process.arguments! += ["--cache-path", context.cacheDirectory]
+            process.arguments! += ["--cache-path", context.cacheDirectory.filepath]
         }
         if commandsNotExpectingPaths.isDisjoint(with: arguments) {
-            process.arguments! += paths
+            process.arguments! += paths.map(\.filepath)
         }
 
         try process.run()

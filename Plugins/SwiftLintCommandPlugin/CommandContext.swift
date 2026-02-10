@@ -1,32 +1,33 @@
+import Foundation
 import PackagePlugin
 
 protocol CommandContext {
-    var tool: String { get throws }
+    var tool: URL { get throws }
 
-    var cacheDirectory: String { get }
+    var cacheDirectory: URL { get }
 
-    var workingDirectory: String { get }
+    var workingDirectory: URL { get }
 
     var unitName: String { get }
 
     var subUnitName: String { get }
 
-    func targets(named names: [String]) throws -> [(paths: [String], name: String)]
+    func targets(named names: [String]) throws -> [(paths: [URL], name: String)]
 }
 
 extension PluginContext: CommandContext {
-    var tool: String {
+    var tool: URL {
         get throws {
-            try tool(named: "swiftlint").path.string
+            try tool(named: "swiftlint").url
         }
     }
 
-    var cacheDirectory: String {
-        pluginWorkDirectory.string
+    var cacheDirectory: URL {
+        pluginWorkDirectoryURL
     }
 
-    var workingDirectory: String {
-        package.directory.string
+    var workingDirectory: URL {
+        package.directoryURL
     }
 
     var unitName: String {
@@ -37,17 +38,17 @@ extension PluginContext: CommandContext {
         "module"
     }
 
-    func targets(named names: [String]) throws -> [(paths: [String], name: String)] {
+    func targets(named names: [String]) throws -> [(paths: [URL], name: String)] {
         let targets = names.isEmpty
             ? package.targets
             : try package.targets(named: names)
-        return targets.compactMap { target in
+        return targets.compactMap { target -> (paths: [URL], name: String)? in
             guard let target = target.sourceModule else {
                 Diagnostics.warning("Target '\(target.name)' is not a source module; skipping it")
                 return nil
             }
             // Packages have a 1-to-1 mapping between targets and directories.
-            return (paths: [target.directory.string], name: target.name)
+            return (paths: [target.directoryURL], name: target.name)
         }
     }
 }
@@ -57,18 +58,18 @@ extension PluginContext: CommandContext {
 import XcodeProjectPlugin
 
 extension XcodePluginContext: CommandContext {
-    var tool: String {
+    var tool: URL {
         get throws {
-            try tool(named: "swiftlint").path.string
+            try tool(named: "swiftlint").url
         }
     }
 
-    var cacheDirectory: String {
-        pluginWorkDirectory.string
+    var cacheDirectory: URL {
+        pluginWorkDirectoryURL
     }
 
-    var workingDirectory: String {
-        xcodeProject.directory.string
+    var workingDirectory: URL {
+        xcodeProject.directoryURL
     }
 
     var unitName: String {
@@ -79,13 +80,13 @@ extension XcodePluginContext: CommandContext {
         "target"
     }
 
-    func targets(named names: [String]) -> [(paths: [String], name: String)] {
+    func targets(named names: [String]) -> [(paths: [URL], name: String)] {
         if names.isEmpty {
-            return [(paths: [xcodeProject.directory.string], name: xcodeProject.displayName)]
+            return [(paths: [xcodeProject.directoryURL], name: xcodeProject.displayName)]
         }
         return xcodeProject.targets
             .filter { names.contains($0.displayName) }
-            .map { (paths: $0.inputFiles.map(\.path.string).filter { $0.hasSuffix(".swift") }, name: $0.displayName) }
+            .map { (paths: $0.inputFiles.map(\.url).filter { $0.pathExtension == "swift" }, name: $0.displayName) }
     }
 }
 

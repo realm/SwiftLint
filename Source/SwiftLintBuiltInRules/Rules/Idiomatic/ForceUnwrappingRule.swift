@@ -30,13 +30,16 @@ struct ForceUnwrappingRule: Rule {
             Example("func foo() -> [AnyHashable: Any]!"),
             Example("func foo() -> [Int]! { return [] }"),
             Example("return self"),
+            Example("let url = URL(string: \"https://www.example.com\")!"),
+            Example("let data = Data(hexString: \"AABBCCDD\")!"),
+            Example("let image = UIImage(named: \"icon\")!"),
+            Example("let url = NSURL(string: \"http://www.google.com\")!"),
         ],
         triggeringExamples: [
             Example("let url = NSURL(string: query)↓!"),
             Example("navigationController↓!.pushViewController(viewController, animated: true)"),
             Example("let unwrapped = optional↓!"),
             Example("return cell↓!"),
-            Example("let url = NSURL(string: \"http://www.google.com\")↓!"),
             Example("""
             let dict = ["Boooo": "👻"]
             func bla() -> String {
@@ -63,6 +66,8 @@ struct ForceUnwrappingRule: Rule {
             Example("return self↓!"),
             Example("[1, 3, 5, 6].first { $0.isMultiple(of: 2) }↓!"),
             Example("map[\"a\"]↓!↓!"),
+            Example("let url = URL(string: variable)↓!"),
+            Example("let url = URL(string: \"\\(dynamicValue)\")↓!"),
         ]
     )
 }
@@ -70,7 +75,32 @@ struct ForceUnwrappingRule: Rule {
 private extension ForceUnwrappingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ForceUnwrapExprSyntax) {
+            if node.expression.isCallWithOnlyStaticStringArguments {
+                return
+            }
             violations.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private extension ExprSyntax {
+    var isCallWithOnlyStaticStringArguments: Bool {
+        guard let funcCall = `as`(FunctionCallExprSyntax.self) else {
+            return false
+        }
+        let arguments = funcCall.arguments
+        guard !arguments.isEmpty else {
+            return false
+        }
+        return arguments.allSatisfy { argument in
+            argument.expression.isStaticStringLiteral
+        }
+    }
+
+    var isStaticStringLiteral: Bool {
+        guard let stringLiteral = `as`(StringLiteralExprSyntax.self) else {
+            return false
+        }
+        return stringLiteral.segments.allSatisfy { $0.is(StringSegmentSyntax.self) }
     }
 }

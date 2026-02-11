@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Skip `force_unwrapping` violations for function calls where all arguments are
+  static string literals (e.g. `URL(string: "https://example.com")!`).
+  [claudeaceae](https://github.com/claudeaceae)
+  [#6487](https://github.com/realm/SwiftLint/issues/6487)
 
 ### Bug Fixes
 

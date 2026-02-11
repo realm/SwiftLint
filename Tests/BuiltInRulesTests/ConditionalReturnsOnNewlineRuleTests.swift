@@ -31,8 +31,10 @@ final class ConditionalReturnsOnNewlineRuleTests: SwiftLintTestCase {
     func testGuardCorrection() {
         // Test guard correction with default configuration
         let corrections = [
-            Example("↓guard true else { return }"): Example("guard true else {\n    return\n}"),
-            Example("↓guard condition else { XCTFail(); return }"): Example("guard condition else { XCTFail();\n    return\n}"),
+            Example("↓guard true else { return }"):
+                Example("guard true else {\n    return\n}"),
+            Example("↓guard condition else { XCTFail(); return }"):
+                Example("guard condition else { XCTFail();\n    return\n}"),
         ]
 
         let description = ConditionalReturnsOnNewlineRule.description

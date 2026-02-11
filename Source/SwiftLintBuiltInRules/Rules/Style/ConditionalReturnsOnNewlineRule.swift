@@ -34,8 +34,10 @@ struct ConditionalReturnsOnNewlineRule: Rule {
         ],
         corrections: [
             Example("↓if true { return }"): Example("if true {\n    return\n}"),
-            Example("↓if true { break } else { return }"): Example("if true { break } else {\n    return\n}"),
-            Example("↓if true { return \"YES\" } else { return \"NO\" }"): Example("if true {\n    return \"YES\"\n} else { return \"NO\" }"),
+            Example("↓if true { break } else { return }"):
+                Example("if true { break } else {\n    return\n}"),
+            Example("↓if true { return \"YES\" } else { return \"NO\" }"):
+                Example("if true {\n    return \"YES\"\n} else { return \"NO\" }"),
         ]
     )
 }
@@ -135,20 +137,18 @@ private extension ConditionalReturnsOnNewlineRule {
             // Fix the statements: add newline + inner indentation before the return,
             // and remove trailing whitespace from the return value and the preceding statement
             var statements = Array(block.statements)
-            for i in statements.indices {
-                if statements[i].item.is(ReturnStmtSyntax.self) {
-                    // Remove trailing whitespace from the previous statement if there is one
-                    if i > 0 {
-                        statements[i - 1] = statements[i - 1].with(\.trailingTrivia, Trivia())
-                    }
-                    // Add newline + indentation before return and remove its trailing whitespace
-                    statements[i] = statements[i]
-                        .with(
-                            \.leadingTrivia,
-                            Trivia(pieces: [.newlines(1)] + innerIndentation.pieces)
-                        )
-                        .with(\.trailingTrivia, Trivia())
+            for index in statements.indices where statements[index].item.is(ReturnStmtSyntax.self) {
+                // Remove trailing whitespace from the previous statement if there is one
+                if index > 0 {
+                    statements[index - 1] = statements[index - 1].with(\.trailingTrivia, Trivia())
                 }
+                // Add newline + indentation before return and remove its trailing whitespace
+                statements[index] = statements[index]
+                    .with(
+                        \.leadingTrivia,
+                        Trivia(pieces: [.newlines(1)] + innerIndentation.pieces)
+                    )
+                    .with(\.trailingTrivia, Trivia())
             }
             let fixedStatements = CodeBlockItemListSyntax(statements)
 

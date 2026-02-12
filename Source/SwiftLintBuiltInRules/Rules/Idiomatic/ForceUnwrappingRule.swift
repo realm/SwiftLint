@@ -92,15 +92,13 @@ private extension ExprSyntax {
         guard !arguments.isEmpty else {
             return false
         }
-        return arguments.allSatisfy { argument in
-            argument.expression.isStaticStringLiteral
-        }
+        return arguments.allSatisfy(\.expression.isStaticStringLiteral)
     }
 
     var isStaticStringLiteral: Bool {
         guard let stringLiteral = `as`(StringLiteralExprSyntax.self) else {
             return false
         }
-        return stringLiteral.segments.allSatisfy { $0.is(StringSegmentSyntax.self) }
+        return stringLiteral.segments.onlyElement?.is(StringSegmentSyntax.self) == true
     }
 }

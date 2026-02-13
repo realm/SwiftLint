@@ -1,4 +1,6 @@
-internal struct UnneededThrowsRuleExamples {
+// swiftlint:disable file_length
+
+struct UnneededThrowsRuleExamples { // swiftlint:disable:this type_body_length
     static let nonTriggeringExamples = [
         Example("""
             func foo() throws {
@@ -154,6 +156,21 @@ internal struct UnneededThrowsRuleExamples {
         Example("let foo: () throws -> Void = bar"),
         Example("var foo: () throws -> Void = {}"),
         Example("let x = { () throws -> Void in try baz() }"),
+        Example("""
+        func c() throws {
+            b(text: try a()) { print("") }
+        }
+        """),
+        Example("""
+        func c() throws {
+            b(text: try a())
+        }
+        """),
+        Example("""
+        func c() throws {
+            [try f()].map { $0 }
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -313,6 +330,12 @@ internal struct UnneededThrowsRuleExamples {
         }
         """),
         Example("let x = { () ↓throws -> Void in baz() }"),
+        Example("""
+        func c() {
+            b { (n: String) ↓throws -> String in n }
+            d: { try foo() }
+        }
+        """),
     ]
 
     static let corrections = [

@@ -49,6 +49,15 @@ struct ConditionalReturnsOnNewlineRule: Rule {
                 Example("if true { break } else {\n    return\n}"),
             Example("↓if true { return \"YES\" } else { return \"NO\" }"):
                 Example("if true {\n    return \"YES\"\n} else { return \"NO\" }"),
+            Example("↓guard true else { return }"):
+                Example("guard true else {\n    return\n}"),
+            Example("""
+                ↓guard condition else { XCTFail(); return }
+                """): Example("""
+                guard condition else { XCTFail();
+                    return
+                }
+                """),
         ]
     )
 }

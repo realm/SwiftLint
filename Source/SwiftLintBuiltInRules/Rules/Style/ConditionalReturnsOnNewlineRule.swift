@@ -34,6 +34,17 @@ struct ConditionalReturnsOnNewlineRule: Rule {
         ],
         corrections: [
             Example("↓if true { return }"): Example("if true {\n    return\n}"),
+            Example("""
+                func f() {
+                    ↓if true { return }
+                }
+                """): Example("""
+                func f() {
+                    if true {
+                        return
+                    }
+                }
+                """),
             Example("↓if true { break } else { return }"):
                 Example("if true { break } else {\n    return\n}"),
             Example("↓if true { return \"YES\" } else { return \"NO\" }"):

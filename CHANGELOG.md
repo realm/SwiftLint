@@ -12,7 +12,12 @@
 
 ### Enhancements
 
-* None.
+* Support `String.init(decoding:as:)` and `.init(decoding:as:)` syntax in the
+  `optional_data_string_conversion` rule. The bare `.init` form is gated behind
+  a new `include_bare_init` option (default: `false`) since type inference cannot
+  be verified syntactically.
+  [claudeaceae](https://github.com/claudeaceae)
+  [#6359](https://github.com/realm/SwiftLint/issues/6359)
 
 ### Bug Fixes
 

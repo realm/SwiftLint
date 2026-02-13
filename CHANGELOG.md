@@ -20,6 +20,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6465](https://github.com/realm/SwiftLint/issues/6465)
 
+* Take `try` expressions in call parameters into account even if the call has
+  trailing closures as well, so that an outer `throws` is not considered unneeded
+  in the `unneeded_throws_rethrows` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6491](https://github.com/realm/SwiftLint/issues/6491)
+
 * Ensure that disable commands work for `prefer_key_path` rule when the trailing
   closure starts on a different line than the function call as a whole.  
   [SimplyDanny](https://github.com/SimplyDanny)

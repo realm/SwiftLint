@@ -112,14 +112,20 @@ private extension UnneededThrowsRule {
         }
 
         override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
-            if node.containsClosureDeclaration {
+            walk(node.calledExpression)
+            walk(node.arguments)
+            if node.hasTrailingClosures {
                 scopes.openScope()
+                if let trailingClosure = node.trailingClosure {
+                    walk(trailingClosure)
+                }
+                walk(node.additionalTrailingClosures)
             }
-            return .visitChildren
+            return .skipChildren
         }
 
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            if node.containsClosureDeclaration {
+            if node.hasTrailingClosures {
                 scopes.closeScope()
             }
         }
@@ -195,8 +201,8 @@ private extension Stack where Element == UnneededThrowsRule.Scope {
 }
 
 private extension FunctionCallExprSyntax {
-    var containsClosureDeclaration: Bool {
-        children(viewMode: .sourceAccurate).contains { $0.is(ClosureExprSyntax.self) }
+    var hasTrailingClosures: Bool {
+        trailingClosure != nil || additionalTrailingClosures.isNotEmpty
     }
 }
 

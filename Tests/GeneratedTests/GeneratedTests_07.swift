@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PreferAssetSymbolsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferAssetSymbolsRule.description)
+    }
+}
+
 final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferConditionListRule.description)
@@ -148,11 +154,5 @@ final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
 final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)
-    }
-}
-
-final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RedundantNilCoalescingRule.description)
     }
 }

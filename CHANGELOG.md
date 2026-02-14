@@ -12,8 +12,11 @@
 
 ### Enhancements
 
-* Skip `force_unwrapping` violations for function calls where all arguments are
-  static string literals (e.g. `URL(string: "https://example.com")!`).
+* Add `static_string_argument_functions` option to the `force_unwrapping` rule
+  to skip violations for configurable function calls when all arguments are
+  static string literals (e.g. `URL(string: "https://example.com")!`). Defaults
+  include `URL(string:)`, `NSURL(string:)`, `UIImage(named:)`,
+  `NSImage(named:)`, and `Data(hexString:)`.
   [claudeaceae](https://github.com/claudeaceae)
   [#6487](https://github.com/realm/SwiftLint/issues/6487)
 

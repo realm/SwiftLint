@@ -2,7 +2,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
 struct ForceUnwrappingRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = ForceUnwrappingConfiguration()
 
     static let description = RuleDescription(
         identifier: "force_unwrapping",
@@ -34,6 +34,7 @@ struct ForceUnwrappingRule: Rule {
             Example("let data = Data(hexString: \"AABBCCDD\")!"),
             Example("let image = UIImage(named: \"icon\")!"),
             Example("let url = NSURL(string: \"http://www.google.com\")!"),
+            Example("let url = URL.init(string: \"https://www.example.com\")!"),
         ],
         triggeringExamples: [
             Example("let url = NSURL(string: query)↓!"),
@@ -68,6 +69,7 @@ struct ForceUnwrappingRule: Rule {
             Example("map[\"a\"]↓!↓!"),
             Example("let url = URL(string: variable)↓!"),
             Example("let url = URL(string: \"\\(dynamicValue)\")↓!"),
+            Example("let result = someFunction(\"constant\")↓!"),
         ]
     )
 }
@@ -75,26 +77,40 @@ struct ForceUnwrappingRule: Rule {
 private extension ForceUnwrappingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ForceUnwrapExprSyntax) {
-            if node.expression.isCallWithOnlyStaticStringArguments {
+            if isAllowedStaticStringCall(node.expression) {
                 return
             }
             violations.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)
         }
+
+        private func isAllowedStaticStringCall(_ expression: ExprSyntax) -> Bool {
+            guard let funcCall = expression.as(FunctionCallExprSyntax.self) else {
+                return false
+            }
+            let arguments = funcCall.arguments
+            guard !arguments.isEmpty,
+                  arguments.allSatisfy(\.expression.isStaticStringLiteral) else {
+                return false
+            }
+            let resolvedName = funcCall.resolvedFunctionName
+            return configuration.staticStringArgumentFunctions.contains(resolvedName)
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var resolvedFunctionName: String {
+        var callee = calledExpression.trimmedDescription
+        // Normalize `Type.init(args)` to `Type(args)` so both forms match the allowlist.
+        if callee.hasSuffix(".init") {
+            callee = String(callee.dropLast(5))
+        }
+        let labels = arguments.map { ($0.label?.text ?? "_") + ":" }
+        return callee + "(" + labels.joined() + ")"
     }
 }
 
 private extension ExprSyntax {
-    var isCallWithOnlyStaticStringArguments: Bool {
-        guard let funcCall = `as`(FunctionCallExprSyntax.self) else {
-            return false
-        }
-        let arguments = funcCall.arguments
-        guard !arguments.isEmpty else {
-            return false
-        }
-        return arguments.allSatisfy(\.expression.isStaticStringLiteral)
-    }
-
     var isStaticStringLiteral: Bool {
         guard let stringLiteral = `as`(StringLiteralExprSyntax.self) else {
             return false

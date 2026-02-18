@@ -77,13 +77,13 @@ struct ForceUnwrappingRule: Rule {
 private extension ForceUnwrappingRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ForceUnwrapExprSyntax) {
-            if isAllowedStaticStringCall(node.expression) {
+            if isIgnoredLiteralArgumentCall(node.expression) {
                 return
             }
             violations.append(node.exclamationMark.positionAfterSkippingLeadingTrivia)
         }
 
-        private func isAllowedStaticStringCall(_ expression: ExprSyntax) -> Bool {
+        private func isIgnoredLiteralArgumentCall(_ expression: ExprSyntax) -> Bool {
             guard let funcCall = expression.as(FunctionCallExprSyntax.self) else {
                 return false
             }
@@ -93,7 +93,7 @@ private extension ForceUnwrappingRule {
                 return false
             }
             let resolvedName = funcCall.resolvedFunctionName
-            return configuration.staticStringArgumentFunctions.contains(resolvedName)
+            return configuration.ignoredLiteralArgumentFunctions.contains(resolvedName)
         }
     }
 }

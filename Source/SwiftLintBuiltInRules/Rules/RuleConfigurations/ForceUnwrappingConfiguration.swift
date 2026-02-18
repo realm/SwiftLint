@@ -5,7 +5,7 @@ struct ForceUnwrappingConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(
-        key: "static_string_argument_functions",
+        key: "ignored_literal_argument_functions",
         postprocessor: {
             $0.formUnion([
                 "URL(string:)",
@@ -16,5 +16,5 @@ struct ForceUnwrappingConfiguration: SeverityBasedRuleConfiguration {
             ])
         }
     )
-    private(set) var staticStringArgumentFunctions = Set<String>()
+    private(set) var ignoredLiteralArgumentFunctions = Set<String>()
 }

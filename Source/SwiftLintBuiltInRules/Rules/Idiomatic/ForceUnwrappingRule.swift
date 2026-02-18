@@ -35,6 +35,11 @@ struct ForceUnwrappingRule: Rule {
             Example("let image = UIImage(named: \"icon\")!"),
             Example("let url = NSURL(string: \"http://www.google.com\")!"),
             Example("let url = URL.init(string: \"https://www.example.com\")!"),
+            Example(
+                "let result = someFunction(\"constant\")!",
+                configuration: ["ignored_literal_argument_functions": ["someFunction(_:)"]],
+                excludeFromDocumentation: true
+            ),
         ],
         triggeringExamples: [
             Example("let url = NSURL(string: query)↓!"),

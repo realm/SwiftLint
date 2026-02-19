@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 @DisabledWithoutSourceKit
 struct IndentationWidthRule: OptInRule {
@@ -31,6 +32,18 @@ struct IndentationWidthRule: OptInRule {
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
             Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine"),
             Example("firstLine\n    secondLine\n        thirdLine\nfourthLine"),
+            Example("""
+                guard let x = foo(),
+                      let y = bar() else {
+                    return
+                }
+                """),
+            Example("""
+                if let x = foo(),
+                   let y = bar() {
+                    doSomething()
+                }
+                """),
         ],
         triggeringExamples: [
             Example("↓    firstLine", testMultiByteOffsets: false, testDisableCommand: false),
@@ -46,6 +59,8 @@ struct IndentationWidthRule: OptInRule {
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 
+        let conditionContinuationLines = multilineConditionLines(in: file)
+
         for line in file.lines {
             if ignoreCompilerDirective(line: line, in: file) { continue }
 
@@ -53,7 +68,8 @@ struct IndentationWidthRule: OptInRule {
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
             if line.content.count == indentationCharacterCount { continue }
 
-            if ignoreComment(line: line, in: file) || ignoreMultilineStrings(line: line, in: file) { continue }
+            if ignoreComment(line: line, in: file) || ignoreMultilineStrings(line: line, in: file)
+                || conditionContinuationLines.contains(line.index) { continue }
 
             // Get space and tab count in prefix
             let prefix = String(line.content.prefix(indentationCharacterCount))
@@ -141,6 +157,14 @@ struct IndentationWidthRule: OptInRule {
         return violations
     }
 
+    private func multilineConditionLines(in file: SwiftLintFile) -> Set<Int> {
+        if configuration.includeMultilineConditions {
+            return []
+        }
+        let visitor = MultilineConditionLineVisitor(locationConverter: file.locationConverter)
+        return visitor.walk(tree: file.syntaxTree, handler: \.continuationLines)
+    }
+
     private func ignoreCompilerDirective(line: Line, in file: SwiftLintFile) -> Bool {
         if configuration.includeCompilerDirectives {
             return false
@@ -201,5 +225,34 @@ struct IndentationWidthRule: OptInRule {
                 (lastSpaceEquivalent - currentSpaceEquivalent).isMultiple(of: configuration.indentationWidth)
             ) // Allow unindent if it stays in the grid
         )
+    }
+}
+
+private final class MultilineConditionLineVisitor: SyntaxVisitor {
+    private let locationConverter: SourceLocationConverter
+    private(set) var continuationLines = Set<Int>()
+
+    init(locationConverter: SourceLocationConverter) {
+        self.locationConverter = locationConverter
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: GuardStmtSyntax) {
+        collectContinuationLines(keyword: node.guardKeyword, conditions: node.conditions)
+    }
+
+    override func visitPost(_ node: IfExprSyntax) {
+        collectContinuationLines(keyword: node.ifKeyword, conditions: node.conditions)
+    }
+
+    override func visitPost(_ node: WhileStmtSyntax) {
+        collectContinuationLines(keyword: node.whileKeyword, conditions: node.conditions)
+    }
+
+    private func collectContinuationLines(keyword: TokenSyntax, conditions: ConditionElementListSyntax) {
+        let keywordLine = locationConverter.location(for: keyword.positionAfterSkippingLeadingTrivia).line
+        let conditionsEndLine = locationConverter.location(for: conditions.endPositionBeforeTrailingTrivia).line
+        guard keywordLine < conditionsEndLine else { return }
+        continuationLines.formUnion((keywordLine + 1)...conditionsEndLine)
     }
 }

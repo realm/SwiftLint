@@ -268,6 +268,32 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         assert1Violation(in: example4, includeMultilineStrings: true)
     }
 
+    func testIncludeMultilineConditions() {
+        let guardExample = """
+            guard let x = foo(),
+                  let y = bar() else {
+                return
+            }
+            """
+        let ifExample = """
+            if let x = foo(),
+               let y = bar() {
+                doSomething()
+            }
+            """
+
+        assertNoViolation(in: guardExample)
+        assertNoViolation(in: ifExample)
+        assertNoViolation(in: "while let x = foo(),\n      let y = bar() {\n    doSomething()\n}")
+        assert1Violation(in: guardExample, includeMultilineConditions: true)
+        assert1Violation(in: ifExample, includeMultilineConditions: true)
+        assertNoViolation(in: "guard let x = foo() else {\n    return\n}")
+        assertNoViolation(
+            in: "guard\n    let x = foo(),\n    let y = bar()\nelse {\n    return\n}",
+            includeMultilineConditions: true
+        )
+    }
+
     // MARK: Helpers
     private func countViolations(
         in example: Example,
@@ -275,6 +301,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         includeComments: Bool = true,
         includeCompilerDirectives: Bool = true,
         includeMultilineStrings: Bool = true,
+        includeMultilineConditions: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Int {
@@ -285,6 +312,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         configDict["include_comments"] = includeComments
         configDict["include_compiler_directives"] = includeCompilerDirectives
         configDict["include_multiline_strings"] = includeMultilineStrings
+        configDict["include_multiline_conditions"] = includeMultilineConditions
 
         guard let config = makeConfig(configDict, IndentationWidthRule.identifier) else {
             XCTFail("Unable to create rule configuration.", file: (file), line: line)
@@ -301,6 +329,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         includeComments: Bool = true,
         includeCompilerDirectives: Bool = true,
         includeMultilineStrings: Bool = true,
+        includeMultilineConditions: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -311,6 +340,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
                 includeComments: includeComments,
                 includeCompilerDirectives: includeCompilerDirectives,
                 includeMultilineStrings: includeMultilineStrings,
+                includeMultilineConditions: includeMultilineConditions,
                 file: file,
                 line: line
             ),
@@ -326,6 +356,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         includeComments: Bool = true,
         includeCompilerDirectives: Bool = true,
         includeMultilineStrings: Bool = true,
+        includeMultilineConditions: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -336,6 +367,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
             includeComments: includeComments,
             includeCompilerDirectives: includeCompilerDirectives,
             includeMultilineStrings: includeMultilineStrings,
+            includeMultilineConditions: includeMultilineConditions,
             file: file,
             line: line
         )
@@ -347,6 +379,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         includeComments: Bool = true,
         includeCompilerDirectives: Bool = true,
         includeMultilineStrings: Bool = true,
+        includeMultilineConditions: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -357,6 +390,7 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
             includeComments: includeComments,
             includeCompilerDirectives: includeCompilerDirectives,
             includeMultilineStrings: includeMultilineStrings,
+            includeMultilineConditions: includeMultilineConditions,
             file: file,
             line: line
         )

@@ -15,23 +15,34 @@ struct OptionalDataStringConversionRule: Rule {
             Example("String(UTF8.self)"),
             Example("String(a, b, c, UTF8.self)"),
             Example("String(decoding: data, encoding: UTF8.self)"),
+            Example("let text: String = .init(data: data, encoding: .utf8)"),
         ],
         triggeringExamples: [
-            Example("String(decoding: data, as: UTF8.self)")
+            Example("String(decoding: data, as: UTF8.self)"),
+            Example("let text: String = .init(decoding: data, as: UTF8.self)"),
         ]
     )
 }
 
 private extension OptionalDataStringConversionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if node.baseName.text == "String",
-               let parent = node.parent?.as(FunctionCallExprSyntax.self),
-               parent.arguments.map(\.label?.text) == ["decoding", "as"],
-               let expr = parent.arguments.last?.expression.as(MemberAccessExprSyntax.self),
-               expr.base?.description == "UTF8",
-               expr.declName.baseName.description == "self" {
-                violations.append(node.positionAfterSkippingLeadingTrivia)
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            guard node.arguments.map(\.label?.text) == ["decoding", "as"],
+                  let lastExpr = node.arguments.last?.expression.as(MemberAccessExprSyntax.self),
+                  lastExpr.base?.description == "UTF8",
+                  lastExpr.declName.baseName.description == "self" else {
+                return
+            }
+
+            if let declRef = node.calledExpression.as(DeclReferenceExprSyntax.self),
+               declRef.baseName.text == "String" {
+                // String(decoding: data, as: UTF8.self)
+                violations.append(declRef.positionAfterSkippingLeadingTrivia)
+            } else if let memberAccess = node.calledExpression.as(MemberAccessExprSyntax.self),
+                      memberAccess.base == nil,
+                      memberAccess.declName.baseName.text == "init" {
+                // .init(decoding: data, as: UTF8.self)
+                violations.append(memberAccess.positionAfterSkippingLeadingTrivia)
             }
         }
     }

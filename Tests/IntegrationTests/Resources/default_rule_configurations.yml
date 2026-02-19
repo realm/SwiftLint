@@ -431,6 +431,7 @@ force_try:
     correctable: false
 force_unwrapping:
   severity: warning
+  ignored_literal_argument_functions: ["Data(hexString:)", "NSImage(named:)", "NSURL(string:)", "UIImage(named:)", "URL(string:)"]
   meta:
     opt-in: true
     correctable: false

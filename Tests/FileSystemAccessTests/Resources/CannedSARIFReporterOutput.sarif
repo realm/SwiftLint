@@ -277,22 +277,22 @@
             },
             {
               "fullDescription" : {
-                "text" : "Use commas to separate types in inheritance lists"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/comma_inheritance.html",
-              "id" : "comma_inheritance",
-              "shortDescription" : {
-                "text" : "Comma Inheritance Rule"
-              }
-            },
-            {
-              "fullDescription" : {
                 "text" : "There should be no space before and one after any comma"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/comma.html",
               "id" : "comma",
               "shortDescription" : {
                 "text" : "Comma Spacing"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "Use commas to separate types in inheritance lists"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/comma_inheritance.html",
+              "id" : "comma_inheritance",
+              "shortDescription" : {
+                "text" : "Comma Inheritance Rule"
               }
             },
             {
@@ -403,6 +403,16 @@
               "id" : "convenience_type",
               "shortDescription" : {
                 "text" : "Convenience Type"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, the severity level, and what message to display. Rules default to SwiftSyntax mode for improved performance. Use `execution_mode: sourcekit` or `default_execution_mode: sourcekit` for SourceKit mode."
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/custom_rules.html",
+              "id" : "custom_rules",
+              "shortDescription" : {
+                "text" : "Custom Rules"
               }
             },
             {
@@ -757,22 +767,22 @@
             },
             {
               "fullDescription" : {
-                "text" : "File name should not contain any whitespace"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/file_name_no_space.html",
-              "id" : "file_name_no_space",
-              "shortDescription" : {
-                "text" : "File Name no Space"
-              }
-            },
-            {
-              "fullDescription" : {
                 "text" : "File name should match a type or extension declared in the file (if any)"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/file_name.html",
               "id" : "file_name",
               "shortDescription" : {
                 "text" : "File Name"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "File name should not contain any whitespace"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/file_name_no_space.html",
+              "id" : "file_name_no_space",
+              "shortDescription" : {
+                "text" : "File Name no Space"
               }
             },
             {
@@ -1227,22 +1237,22 @@
             },
             {
               "fullDescription" : {
-                "text" : "Multiline arguments should have their surrounding brackets in a new line"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/multiline_arguments_brackets.html",
-              "id" : "multiline_arguments_brackets",
-              "shortDescription" : {
-                "text" : "Multiline Arguments Brackets"
-              }
-            },
-            {
-              "fullDescription" : {
                 "text" : "Arguments should be either on the same line, or one per line"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/multiline_arguments.html",
               "id" : "multiline_arguments",
               "shortDescription" : {
                 "text" : "Multiline Arguments"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "Multiline arguments should have their surrounding brackets in a new line"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/multiline_arguments_brackets.html",
+              "id" : "multiline_arguments_brackets",
+              "shortDescription" : {
+                "text" : "Multiline Arguments Brackets"
               }
             },
             {
@@ -1277,16 +1287,6 @@
             },
             {
               "fullDescription" : {
-                "text" : "Multiline parameters should have their surrounding brackets in a new line"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/multiline_parameters_brackets.html",
-              "id" : "multiline_parameters_brackets",
-              "shortDescription" : {
-                "text" : "Multiline Parameters Brackets"
-              }
-            },
-            {
-              "fullDescription" : {
                 "text" : "Functions and methods parameters should be either on the same line, or one per line"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/multiline_parameters.html",
@@ -1297,52 +1297,22 @@
             },
             {
               "fullDescription" : {
+                "text" : "Multiline parameters should have their surrounding brackets in a new line"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/multiline_parameters_brackets.html",
+              "id" : "multiline_parameters_brackets",
+              "shortDescription" : {
+                "text" : "Multiline Parameters Brackets"
+              }
+            },
+            {
+              "fullDescription" : {
                 "text" : "Trailing closure syntax should not be used when passing more than one closure argument"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/multiple_closures_with_trailing_closure.html",
               "id" : "multiple_closures_with_trailing_closure",
               "shortDescription" : {
                 "text" : "Multiple Closures with Trailing Closure"
-              }
-            },
-            {
-              "fullDescription" : {
-                "text" : "Static strings should be used as key/comment in NSLocalizedString in order for genstrings to work"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/nslocalizedstring_key.html",
-              "id" : "nslocalizedstring_key",
-              "shortDescription" : {
-                "text" : "NSLocalizedString Key"
-              }
-            },
-            {
-              "fullDescription" : {
-                "text" : "Calls to NSLocalizedString should specify the bundle which contains the strings file"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/nslocalizedstring_require_bundle.html",
-              "id" : "nslocalizedstring_require_bundle",
-              "shortDescription" : {
-                "text" : "NSLocalizedString Require Bundle"
-              }
-            },
-            {
-              "fullDescription" : {
-                "text" : "Passing `NSNumber.init` or `NSDecimalNumber.init` as a function reference is dangerous as it can cause the wrong initializer to be used, causing crashes; use `.init(value:)` instead"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/ns_number_init_as_function_reference.html",
-              "id" : "ns_number_init_as_function_reference",
-              "shortDescription" : {
-                "text" : "NSNumber Init as Function Reference"
-              }
-            },
-            {
-              "fullDescription" : {
-                "text" : "NSObject subclasses should implement isEqual instead of =="
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/nsobject_prefer_isequal.html",
-              "id" : "nsobject_prefer_isequal",
-              "shortDescription" : {
-                "text" : "NSObject Prefer isEqual"
               }
             },
             {
@@ -1453,6 +1423,46 @@
               "id" : "notification_center_detachment",
               "shortDescription" : {
                 "text" : "Notification Center Detachment"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "Passing `NSNumber.init` or `NSDecimalNumber.init` as a function reference is dangerous as it can cause the wrong initializer to be used, causing crashes; use `.init(value:)` instead"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/ns_number_init_as_function_reference.html",
+              "id" : "ns_number_init_as_function_reference",
+              "shortDescription" : {
+                "text" : "NSNumber Init as Function Reference"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "Static strings should be used as key/comment in NSLocalizedString in order for genstrings to work"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/nslocalizedstring_key.html",
+              "id" : "nslocalizedstring_key",
+              "shortDescription" : {
+                "text" : "NSLocalizedString Key"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "Calls to NSLocalizedString should specify the bundle which contains the strings file"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/nslocalizedstring_require_bundle.html",
+              "id" : "nslocalizedstring_require_bundle",
+              "shortDescription" : {
+                "text" : "NSLocalizedString Require Bundle"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "NSObject subclasses should implement isEqual instead of =="
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/nsobject_prefer_isequal.html",
+              "id" : "nsobject_prefer_isequal",
+              "shortDescription" : {
+                "text" : "NSObject Prefer isEqual"
               }
             },
             {
@@ -2087,6 +2097,16 @@
             },
             {
               "fullDescription" : {
+                "text" : "SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region. Use \" - \" if you wish to document a command."
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/superfluous_disable_command.html",
+              "id" : "superfluous_disable_command",
+              "shortDescription" : {
+                "text" : "Superfluous Disable Command"
+              }
+            },
+            {
+              "fullDescription" : {
                 "text" : "Else branches should be avoided when the previous if-block exits the current scope"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/superfluous_else.html",
@@ -2447,6 +2467,16 @@
             },
             {
               "fullDescription" : {
+                "text" : "Function parameters should be aligned vertically if they're in multiple lines in a declaration"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/vertical_parameter_alignment.html",
+              "id" : "vertical_parameter_alignment",
+              "shortDescription" : {
+                "text" : "Vertical Parameter Alignment"
+              }
+            },
+            {
+              "fullDescription" : {
                 "text" : "Function parameters should be aligned vertically if they're in multiple lines in a method call"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/vertical_parameter_alignment_on_call.html",
@@ -2457,12 +2487,12 @@
             },
             {
               "fullDescription" : {
-                "text" : "Function parameters should be aligned vertically if they're in multiple lines in a declaration"
+                "text" : "Limit vertical whitespace to a single empty line"
               },
-              "helpUri" : "https://realm.github.io/SwiftLint/vertical_parameter_alignment.html",
-              "id" : "vertical_parameter_alignment",
+              "helpUri" : "https://realm.github.io/SwiftLint/vertical_whitespace.html",
+              "id" : "vertical_whitespace",
               "shortDescription" : {
-                "text" : "Vertical Parameter Alignment"
+                "text" : "Vertical Whitespace"
               }
             },
             {
@@ -2497,16 +2527,6 @@
             },
             {
               "fullDescription" : {
-                "text" : "Limit vertical whitespace to a single empty line"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/vertical_whitespace.html",
-              "id" : "vertical_whitespace",
-              "shortDescription" : {
-                "text" : "Vertical Whitespace"
-              }
-            },
-            {
-              "fullDescription" : {
                 "text" : "Using ternary to call Void functions should be avoided"
               },
               "helpUri" : "https://realm.github.io/SwiftLint/void_function_in_ternary.html",
@@ -2537,22 +2557,22 @@
             },
             {
               "fullDescription" : {
-                "text" : "An XCTFail call should include a description of the assertion"
-              },
-              "helpUri" : "https://realm.github.io/SwiftLint/xctfail_message.html",
-              "id" : "xctfail_message",
-              "shortDescription" : {
-                "text" : "XCTFail Message"
-              }
-            },
-            {
-              "fullDescription" : {
                 "text" : "Prefer specific XCTest matchers."
               },
               "helpUri" : "https://realm.github.io/SwiftLint/xct_specific_matcher.html",
               "id" : "xct_specific_matcher",
               "shortDescription" : {
                 "text" : "XCTest Specific Matcher"
+              }
+            },
+            {
+              "fullDescription" : {
+                "text" : "An XCTFail call should include a description of the assertion"
+              },
+              "helpUri" : "https://realm.github.io/SwiftLint/xctfail_message.html",
+              "id" : "xctfail_message",
+              "shortDescription" : {
+                "text" : "XCTFail Message"
               }
             },
             {

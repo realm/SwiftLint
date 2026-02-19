@@ -23,7 +23,9 @@ struct SARIFReporter: Reporter {
                             "name": "SwiftLint",
                             "semanticVersion": Version.current.value,
                             "informationUri": swiftlintVersion,
-                            "rules": RuleRegistry.shared.list.map(dictionary(for:)),
+                            "rules": RuleRegistry.shared.list.list.values
+                                .sorted { $0.identifier < $1.identifier }
+                                .map(dictionary(for:)),
                         ],
                     ],
                     "results": violations.map(dictionary(for:)),

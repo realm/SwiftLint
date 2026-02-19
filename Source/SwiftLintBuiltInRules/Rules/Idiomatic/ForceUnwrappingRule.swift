@@ -37,8 +37,7 @@ struct ForceUnwrappingRule: Rule {
             Example("let url = URL.init(string: \"https://www.example.com\")!"),
             Example(
                 "let result = someFunction(\"constant\")!",
-                configuration: ["ignored_literal_argument_functions": ["someFunction(_:)"]],
-                excludeFromDocumentation: true
+                configuration: ["ignored_literal_argument_functions": ["someFunction(_:)"]]
             ),
         ],
         triggeringExamples: [

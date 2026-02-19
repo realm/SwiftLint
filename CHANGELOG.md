@@ -31,6 +31,13 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6466](https://github.com/realm/SwiftLint/issues/6466)
 
+* Fix false positives in `indentation_width` rule for continuation lines
+  of multi-line `guard`/`if`/`while` conditions. A new option
+  `include_multiline_conditions` (default: `false`) controls whether
+  these lines are checked for indentation.
+  [tanaev](https://github.com/tanaev)
+  [#4961](https://github.com/realm/SwiftLint/issues/4961)
+
 ## 0.63.2: High-Speed Extraction
 
 ### Breaking

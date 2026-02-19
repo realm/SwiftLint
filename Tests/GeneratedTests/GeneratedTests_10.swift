@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    }
+}
+
 final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededSynthesizedInitializerRule.description)
@@ -148,11 +154,5 @@ final class WeakDelegateRuleGeneratedTests: SwiftLintTestCase {
 final class XCTFailMessageRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(XCTFailMessageRule.description)
-    }
-}
-
-final class XCTSpecificMatcherRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(XCTSpecificMatcherRule.description)
     }
 }

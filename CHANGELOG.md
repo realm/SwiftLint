@@ -16,6 +16,14 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)
 
+* Add new `redundant_final` rule that detects `final` modifiers on declarations
+  where they are redundant due to the containing context, such as `final` classes
+  or actors. Final actors are themselves implicitly final, so the `final` modifier
+  is redundant on them as well.  
+  [william-laverty](https://github.com/william-laverty)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6407](https://github.com/realm/SwiftLint/issues/6407)
+
 * Add `discouraged_default_parameter` opt-in rule that flags default parameter
   values in functions with configurable access levels.  
   [William-Laverty](https://github.com/William-Laverty)

@@ -119,6 +119,10 @@ public extension DeclModifierListSyntax {
     func contains(keyword: Keyword) -> Bool {
         contains { $0.name.tokenKind == .keyword(keyword) }
     }
+
+    func modifier(with keyword: Keyword) -> DeclModifierSyntax? {
+        first { $0.name.tokenKind == .keyword(keyword) }
+    }
 }
 
 public extension DeclModifierSyntax {

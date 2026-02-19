@@ -13,6 +13,12 @@ final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class RedundantFinalRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantFinalRule.description)
+    }
+}
+
 final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)
@@ -148,11 +154,5 @@ final class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
 final class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)
-    }
-}
-
-final class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StaticOverFinalClassRule.description)
     }
 }

@@ -118,7 +118,8 @@ final class ReporterTests: SwiftLintTestCase {
     func testSARIFReporter() throws {
         try assertEqualContent(
             referenceFile: "CannedSARIFReporterOutput.sarif",
-            reporterType: SARIFReporter.self
+            reporterType: SARIFReporter.self,
+            stringConverter: { try jsonValue($0) }
         )
     }
 

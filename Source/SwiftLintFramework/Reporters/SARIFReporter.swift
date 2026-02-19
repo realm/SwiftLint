@@ -23,6 +23,7 @@ struct SARIFReporter: Reporter {
                             "name": "SwiftLint",
                             "semanticVersion": Version.current.value,
                             "informationUri": swiftlintVersion,
+                            "rules": builtInRules.map(dictionary(for:)),
                         ],
                     ],
                     "results": violations.map(dictionary(for:)),
@@ -34,6 +35,20 @@ struct SARIFReporter: Reporter {
     }
 
     // MARK: - Private
+
+    private static func dictionary(for ruleType: any Rule.Type) -> [String: Any] {
+        let description = ruleType.description
+        return [
+            "id": description.identifier,
+            "shortDescription": [
+                "text": description.name
+            ],
+            "fullDescription": [
+                "text": description.description
+            ],
+            "helpUri": "https://realm.github.io/SwiftLint/\(description.identifier).html",
+        ]
+    }
 
     private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         [

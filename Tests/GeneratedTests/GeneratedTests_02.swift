@@ -79,6 +79,12 @@ final class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class DisallowDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DisallowDefaultParameterRule.description)
+    }
+}
+
 final class DiscouragedDirectInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedDirectInitRule.description)

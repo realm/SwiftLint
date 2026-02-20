@@ -451,6 +451,14 @@
   [Bradley Mackey](https://github.com/bradleymackey)
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Custom rules now default to SwiftSyntax mode for pattern matching instead of SourceKit.
+  This may result in subtle behavioral differences. While performance is significantly improved,
+  rules that rely on specific SourceKit behaviors may need adjustment. Users can temporarily
+  revert to the legacy SourceKit behavior by setting `default_execution_mode: sourcekit` in
+  their custom rules configuration or `execution_mode: sourcekit` for individual rules.
+  The SourceKit mode is deprecated and will be removed in a future version.  
+  [JP Simard](https://github.com/jpsim)
+
 ### Experimental
 
 * None.

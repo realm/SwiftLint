@@ -11,12 +11,6 @@ final class CustomRulesTests: SwiftLintTestCase {
 
     private var testFile: SwiftLintFile { SwiftLintFile(path: "\(TestResources.path())/test.txt")! }
 
-    override func invokeTest() {
-        CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
-            super.invokeTest()
-        }
-    }
-
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [

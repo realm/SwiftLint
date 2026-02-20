@@ -1,4 +1,5 @@
 import Foundation
+import SourceKittenFramework
 
 // MARK: - CustomRulesConfiguration
 
@@ -109,7 +110,49 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
             let excludingKinds = configuration.excludedMatchKinds
-            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup).map({
+
+            // Determine effective execution mode (defaults to swiftsyntax if not specified)
+            let effectiveMode = configuration.executionMode == .default
+                ? (self.configuration.defaultExecutionMode ?? .swiftsyntax)
+                : configuration.executionMode
+            let needsKindMatching = !excludingKinds.isEmpty
+
+            let matches: [NSRange]
+            if effectiveMode == .swiftsyntax {
+                if needsKindMatching {
+                    // SwiftSyntax mode WITH kind filtering
+                    // CRITICAL: This path must not trigger any SourceKit requests
+                    guard let bridgedTokens = file.swiftSyntaxDerivedSourceKittenTokens else {
+                        // Log error/warning: Bridging failed
+                        queuedPrintError(
+                            "Warning: SwiftSyntax bridging failed for custom rule '\(configuration.identifier)'"
+                        )
+                        return []
+                    }
+                    let syntaxMapFromBridgedTokens = SwiftLintSyntaxMap(
+                        value: SyntaxMap(tokens: bridgedTokens.map(\.value))
+                    )
+
+                    // Use the performMatchingWithSyntaxMap helper that operates on stringView and syntaxMap ONLY
+                    matches = performMatchingWithSyntaxMap(
+                        stringView: file.stringView,
+                        syntaxMap: syntaxMapFromBridgedTokens,
+                        pattern: pattern,
+                        excludingSyntaxKinds: excludingKinds,
+                        captureGroup: captureGroup
+                    )
+                } else {
+                    // SwiftSyntax mode WITHOUT kind filtering
+                    // This path must not trigger any SourceKit requests
+                    matches = file.stringView.match(pattern: pattern, captureGroup: captureGroup)
+                }
+            } else {
+                // SourceKit mode
+                // SourceKit calls ARE EXPECTED AND PERMITTED here because CustomRules is not SourceKitFreeRule
+                matches = file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup)
+            }
+
+            return matches.map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),
@@ -138,5 +181,44 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
         return !region.disabledRuleIdentifiers.contains(RuleIdentifier(Self.identifier))
             && !region.disabledRuleIdentifiers.contains(RuleIdentifier(ruleID))
             && !region.disabledRuleIdentifiers.contains(.all)
+    }
+}
+
+// MARK: - Helpers
+
+private func performMatchingWithSyntaxMap(
+    stringView: StringView,
+    syntaxMap: SwiftLintSyntaxMap,
+    pattern: String,
+    excludingSyntaxKinds: Set<SyntaxKind>,
+    captureGroup: Int
+) -> [NSRange] {
+    // This helper method must not access any part of SwiftLintFile that could trigger SourceKit requests
+    // It operates only on the provided stringView and syntaxMap
+
+    let regex = regex(pattern)
+    let range = stringView.range
+    let matches = regex.matches(in: stringView, options: [], range: range)
+
+    return matches.compactMap { match in
+        let matchRange = match.range(at: captureGroup)
+
+        // Get tokens in the match range
+        guard let byteRange = stringView.NSRangeToByteRange(
+            start: matchRange.location,
+            length: matchRange.length
+        ) else {
+            return nil
+        }
+
+        let tokensInRange = syntaxMap.tokens(inByteRange: byteRange)
+        let kindsInRange = Set(tokensInRange.kinds)
+
+        // Check if any excluded kinds are present
+        if excludingSyntaxKinds.isDisjoint(with: kindsInRange) {
+            return matchRange
+        }
+
+        return nil
     }
 }

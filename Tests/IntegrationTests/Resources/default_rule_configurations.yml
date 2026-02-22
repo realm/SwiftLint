@@ -195,6 +195,12 @@ direct_return:
   meta:
     opt-in: true
     correctable: true
+disallow_default_parameter:
+  severity: warning
+  disallowed_access_levels: [internal, private]
+  meta:
+    opt-in: true
+    correctable: false
 discarded_notification_center_observer:
   severity: warning
   meta:

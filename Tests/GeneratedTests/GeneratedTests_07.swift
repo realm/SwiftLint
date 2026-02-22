@@ -151,8 +151,8 @@ final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
+final class RedundantFinalActorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(RedundantNilCoalescingRule.description)
+        verifyRule(RedundantFinalActorRule.description)
     }
 }

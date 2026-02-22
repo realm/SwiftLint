@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true)
-struct RedundantFinalActorRule: OptInRule {
+@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+struct RedundantFinalActorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(

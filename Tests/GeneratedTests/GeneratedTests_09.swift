@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class StrongIBOutletRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StrongIBOutletRule.description)
+    }
+}
+
 final class SuperfluousElseRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SuperfluousElseRule.description)
@@ -148,11 +154,5 @@ final class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTes
 final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededSynthesizedInitializerRule.description)
-    }
-}
-
-final class UnneededThrowsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnneededThrowsRule.description)
     }
 }

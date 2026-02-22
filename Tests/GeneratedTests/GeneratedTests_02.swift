@@ -67,6 +67,12 @@ final class DirectReturnRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class DisallowDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DisallowDefaultParameterRule.description)
+    }
+}
+
 final class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
@@ -76,12 +82,6 @@ final class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTest
 final class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
-    }
-}
-
-final class DisallowDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DisallowDefaultParameterRule.description)
     }
 }
 
@@ -154,11 +154,5 @@ final class EmptyCollectionLiteralRuleGeneratedTests: SwiftLintTestCase {
 final class EmptyCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)
-    }
-}
-
-final class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyEnumArgumentsRule.description)
     }
 }

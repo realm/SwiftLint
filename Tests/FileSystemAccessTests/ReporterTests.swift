@@ -117,9 +117,44 @@ final class ReporterTests: SwiftLintTestCase {
 
     func testSARIFReporter() throws {
         try assertEqualContent(
-            referenceFile: "CannedSARIFReporterOutput.json",
-            reporterType: SARIFReporter.self
+            referenceFile: "CannedSARIFReporterOutput.sarif",
+            reporterType: SARIFReporter.self,
+            stringConverter: { try sarifValueWithoutRules($0) }
         )
+    }
+
+    private func sarifValueWithoutRules(_ jsonString: String) throws -> NSObject {
+        let data = jsonString.data(using: .utf8)!
+        guard var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+            queuedFatalError("Expected dictionary in SARIF JSON")
+        }
+
+        // Extract and verify rules before removing them
+        if var runs = json["runs"] as? [[String: Any]],
+           var firstRun = runs.first,
+           var tool = firstRun["tool"] as? [String: Any],
+           var driver = tool["driver"] as? [String: Any],
+           let rules = driver["rules"] as? [[String: Any]] {
+            // Verify rules array is not empty
+            XCTAssertFalse(rules.isEmpty, "Rules array should not be empty")
+
+            // Verify rule structure
+            if let firstRule = rules.first {
+                XCTAssertNotNil(firstRule["id"], "Rule should have id")
+                XCTAssertNotNil(firstRule["shortDescription"], "Rule should have shortDescription")
+                XCTAssertNotNil(firstRule["fullDescription"], "Rule should have fullDescription")
+                XCTAssertNotNil(firstRule["helpUri"], "Rule should have helpUri")
+            }
+
+            // Remove rules array for comparison
+            driver.removeValue(forKey: "rules")
+            tool["driver"] = driver
+            firstRun["tool"] = tool
+            runs[0] = firstRun
+            json["runs"] = runs
+        }
+
+        return json.bridge()
     }
 
     func testJunitReporter() throws {

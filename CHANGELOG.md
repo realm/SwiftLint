@@ -20,6 +20,11 @@
   [claudeaceae](https://github.com/claudeaceae)
   [#6487](https://github.com/realm/SwiftLint/issues/6487)
 
+* Add `rules` array to SARIF reporter output, providing metadata for all
+  built-in rules in accordance with the SARIF specification.  
+  [ahmadalfy](https://github.com/ahmadalfy)
+  [#6499](https://github.com/realm/SwiftLint/issues/6499)
+
 ### Bug Fixes
 
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  

@@ -18,7 +18,7 @@
   include `URL(string:)`, `NSURL(string:)`, `UIImage(named:)`,
   `NSImage(named:)`, and `Data(hexString:)`.
   [claudeaceae](https://github.com/claudeaceae)
-[#6487](https://github.com/realm/SwiftLint/issues/6487)
+  [#6487](https://github.com/realm/SwiftLint/issues/6487)
 
 * Add `rules` array to SARIF reporter output, providing metadata for all
   built-in rules in accordance with the SARIF specification.  

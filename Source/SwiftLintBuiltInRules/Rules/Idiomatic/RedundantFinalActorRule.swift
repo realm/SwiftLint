@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(explicitRewriter: true, optIn: true)
+@SwiftSyntaxRule(optIn: true)
 struct RedundantFinalActorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -37,27 +37,22 @@ struct RedundantFinalActorRule: Rule {
 private extension RedundantFinalActorRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: ActorDeclSyntax) {
-            if let finalModifier = node.modifiers.first(where: { $0.name.text == "final" }) {
-                violations.append(finalModifier.positionAfterSkippingLeadingTrivia)
+            guard let finalModifier = node.modifiers.first(where: { $0.name.text == "final" }) else {
+                return
             }
-        }
-    }
-
-    final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
-        override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
-            guard let finalIndex = node.modifiers.firstIndex(where: { $0.name.text == "final" }) else {
-                return super.visit(node)
-            }
-            numberOfCorrections += 1
-            var modifiers = node.modifiers
-            modifiers.remove(at: finalIndex)
-            // If no modifiers remain, preserve the leading trivia on the actor keyword
-            var result = node.with(\.modifiers, modifiers)
-            if modifiers.isEmpty {
-                let leadingTrivia = node.modifiers[finalIndex].leadingTrivia
-                result = result.with(\.actorKeyword.leadingTrivia, leadingTrivia)
-            }
-            return super.visit(result)
+            let start = finalModifier.positionAfterSkippingLeadingTrivia
+            // endPosition includes trailing trivia (the space after "final")
+            let end = finalModifier.endPosition
+            violations.append(
+                ReasonedRuleViolation(
+                    position: start,
+                    correction: .init(
+                        start: start,
+                        end: end,
+                        replacement: ""
+                    )
+                )
+            )
         }
     }
 }

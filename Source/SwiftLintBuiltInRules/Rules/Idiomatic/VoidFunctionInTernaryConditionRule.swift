@@ -67,6 +67,23 @@ struct VoidFunctionInTernaryConditionRule: Rule {
             a &<<= b ? c() : d()
             a &-= b ? c() : d()
             """),
+            Example("""
+            func makeValue() -> MyStruct {
+                if condition {
+                    flag ? MyStruct(value: 0) : MyStruct(value: 1)
+                } else {
+                    MyStruct(value: 2)
+                }
+            }
+            """),
+            Example("""
+            func computeSize(for section: Int) -> CGSize {
+                switch section {
+                case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("success ↓? askQuestion() : exit()"),
@@ -184,7 +201,7 @@ private extension CodeBlockItemSyntax {
     var isImplicitReturn: Bool {
         isClosureImplicitReturn || isFunctionImplicitReturn ||
         isVariableImplicitReturn || isSubscriptImplicitReturn ||
-        isAccessorImplicitReturn
+        isAccessorImplicitReturn || isIfExprOrSwitchExprImplicitReturn
     }
 
     var isClosureImplicitReturn: Bool {
@@ -230,6 +247,36 @@ private extension CodeBlockItemSyntax {
         }
 
         return parent.children(viewMode: .sourceAccurate).count == 1
+    }
+
+    /// Returns `true` if this code block item is the sole expression in a branch of an `if` or
+    /// `switch` expression that is itself used as an implicit return value. This prevents false
+    /// positives when a ternary that returns a value appears inside an `if`/`switch` expression
+    /// branch (Swift 5.9+) where the result of the branch is used as the enclosing expression's
+    /// value.
+    var isIfExprOrSwitchExprImplicitReturn: Bool {
+        guard let parent = parent?.as(CodeBlockItemListSyntax.self),
+              parent.children(viewMode: .sourceAccurate).count == 1 else {
+            return false
+        }
+
+        // Check if inside an if expression branch (body or else body).
+        // Chain: CodeBlockItemListSyntax -> CodeBlockSyntax -> IfExprSyntax
+        // Note: IfExprSyntax used as a statement is wrapped in ExpressionStmtSyntax inside the CodeBlockItemSyntax.
+        if let ifExpr = parent.parent?.parent?.as(IfExprSyntax.self),
+           let ifCodeBlockItem = ifExpr.parent?.as(ExpressionStmtSyntax.self)?.parent?.as(CodeBlockItemSyntax.self) {
+            return ifCodeBlockItem.isImplicitReturn
+        }
+
+        // Check if inside a switch expression case body.
+        // Chain: CodeBlockItemListSyntax -> SwitchCaseSyntax -> SwitchCaseListSyntax -> SwitchExprSyntax
+        // Note: SwitchExprSyntax used as a statement is wrapped in ExpressionStmtSyntax inside the CodeBlockItemSyntax.
+        if let switchExpr = parent.parent?.parent?.parent?.as(SwitchExprSyntax.self),
+           let switchCodeBlockItem = switchExpr.parent?.as(ExpressionStmtSyntax.self)?.parent?.as(CodeBlockItemSyntax.self) {
+            return switchCodeBlockItem.isImplicitReturn
+        }
+
+        return false
     }
 }
 

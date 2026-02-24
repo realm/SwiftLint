@@ -198,7 +198,7 @@
 
 * Add detection of cases such as `String.init(decoding: data, as: UTF8.self)` and 
   `let text: String = .init(decoding: data, as: UTF8.self)` to `optional_data_string_conversion` rule.  
-  [Nadeem Ali](https://github.com/nadeemnali)
+  [nadeemnali](https://github.com/nadeemnali)
   [#6359](https://github.com/realm/SwiftLint/issues/6359)
 
 ## 0.62.2: Generous Drum Volume

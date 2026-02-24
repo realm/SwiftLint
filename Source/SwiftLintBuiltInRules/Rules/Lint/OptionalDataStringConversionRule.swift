@@ -25,10 +25,12 @@ struct OptionalDataStringConversionRule: Rule {
             Example("let text: Int = .init(decoding: data, as: UTF8.self)"),
             Example("let n: Int = .init(0)"),
             Example("String(repeating: \"a\", count: 3)"),
-            Example("String(format: \"%d\", 3)"),
+            Example("String(format: \"%d\", 3)")
         ],
         triggeringExamples: [
-            Example("String(decoding: data, as: UTF8.self)")
+            Example("String(decoding: data, as: UTF8.self)"),
+            Example("String.init(decoding: data, as: UTF8.self)"),
+            Example("let text: String = .init(decoding: data, as: UTF8.self)")
         ]
     )
 }

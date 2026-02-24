@@ -25,6 +25,12 @@
   [ahmadalfy](https://github.com/ahmadalfy)
   [#6499](https://github.com/realm/SwiftLint/issues/6499)
 
+* Add `include_shorthand_init` option to
+  `optional_data_string_conversion` rule to optionally lint shorthand
+  `.init(decoding:as:)` calls as `String` conversions.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6359](https://github.com/realm/SwiftLint/issues/6359)
+
 ### Bug Fixes
 
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  

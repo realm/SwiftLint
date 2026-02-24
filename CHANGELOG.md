@@ -29,6 +29,12 @@
   [ahmadalfy](https://github.com/ahmadalfy)
   [#6499](https://github.com/realm/SwiftLint/issues/6499)
 
+* Add `allow_underscore_prefixed_names` option to `unused_parameter` so
+  underscore-prefixed parameter names can be treated as intentionally
+  unused when configured.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#5741](https://github.com/realm/SwiftLint/issues/5741)
+
 ### Bug Fixes
 
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so

@@ -3,7 +3,9 @@ import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
 struct UnusedParameterRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = UnusedParameterConfiguration()
+
+    private static let allowUnderscorePrefixedNames = ["allow_underscore_prefixed_names": true]
 
     static let description = RuleDescription(
         identifier: "unused_parameter",
@@ -62,10 +64,16 @@ struct UnusedParameterRule: Rule {
             Example("""
             func f(`operator`: Int) -> Int { `operator` }
             """),
+            Example("""
+            func f(_a: Int) {}
+            """, configuration: allowUnderscorePrefixedNames),
         ],
         triggeringExamples: [
             Example("""
             func f(↓a: Int) {}
+            """),
+            Example("""
+            func f(↓_a: Int) {}
             """),
             Example("""
             func f(↓a: Int, b ↓c: String) {}
@@ -146,6 +154,9 @@ private extension UnusedParameterRule {
             for declaration in declarations.reversed() where !referencedDeclarations.contains(declaration) {
                 guard case let .parameter(name) = declaration,
                       let previousToken = name.previousToken(viewMode: .sourceAccurate) else {
+                    continue
+                }
+                if configuration.allowUnderscorePrefixedNames, name.text.hasPrefix("_") {
                     continue
                 }
                 let startPosReplacement =

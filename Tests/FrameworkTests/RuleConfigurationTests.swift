@@ -347,6 +347,17 @@ final class RuleConfigurationTests: SwiftLintTestCase {
         }
     }
 
+    func testUnusedParameterConfigurationFromDictionary() throws {
+        var configuration = UnusedParameterConfiguration()
+        try configuration.apply(configuration: [
+            "severity": "error",
+            "allow_underscore_prefixed_names": true,
+        ])
+
+        XCTAssertEqual(configuration.severity, .error)
+        XCTAssertTrue(configuration.allowUnderscorePrefixedNames)
+    }
+
     func testComputedAccessorsOrderRuleConfiguration() throws {
         var configuration = ComputedAccessorsOrderConfiguration()
         let config = ["severity": "error", "order": "set_get"]

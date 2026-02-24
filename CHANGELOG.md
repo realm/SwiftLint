@@ -27,6 +27,11 @@
 
 ### Bug Fixes
 
+* Fix false positive in `void_function_in_ternary` rule when a ternary expression
+  appears inside an `if` or `switch` expression used as an implicit return value.  
+  [WZBbiao](https://github.com/WZBbiao)
+  [#5611](https://github.com/realm/SwiftLint/issues/5611)
+
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6465](https://github.com/realm/SwiftLint/issues/6465)

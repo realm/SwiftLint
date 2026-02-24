@@ -262,15 +262,17 @@ private extension CodeBlockItemSyntax {
 
         // Check if inside an if expression branch (body or else body).
         // Chain: CodeBlockItemListSyntax -> CodeBlockSyntax -> IfExprSyntax
+        // Note: IfExprSyntax used as a statement is wrapped in ExpressionStmtSyntax inside the CodeBlockItemSyntax.
         if let ifExpr = parent.parent?.parent?.as(IfExprSyntax.self),
-           let ifCodeBlockItem = ifExpr.parent?.as(CodeBlockItemSyntax.self) {
+           let ifCodeBlockItem = ifExpr.parent?.as(ExpressionStmtSyntax.self)?.parent?.as(CodeBlockItemSyntax.self) {
             return ifCodeBlockItem.isImplicitReturn
         }
 
         // Check if inside a switch expression case body.
         // Chain: CodeBlockItemListSyntax -> SwitchCaseSyntax -> SwitchCaseListSyntax -> SwitchExprSyntax
+        // Note: SwitchExprSyntax used as a statement is wrapped in ExpressionStmtSyntax inside the CodeBlockItemSyntax.
         if let switchExpr = parent.parent?.parent?.parent?.as(SwitchExprSyntax.self),
-           let switchCodeBlockItem = switchExpr.parent?.as(CodeBlockItemSyntax.self) {
+           let switchCodeBlockItem = switchExpr.parent?.as(ExpressionStmtSyntax.self)?.parent?.as(CodeBlockItemSyntax.self) {
             return switchCodeBlockItem.isImplicitReturn
         }
 

@@ -7,57 +7,82 @@ struct DisallowDefaultParameterRule: Rule {
     static let description = RuleDescription(
         identifier: "disallow_default_parameter",
         name: "Disallow Default Parameter",
-        description: "Default parameter values should not be used in functions with certain access levels",
-        kind: .idiomatic,
-        nonTriggeringExamples: DisallowDefaultParameterRuleExamples.nonTriggeringExamples,
-        triggeringExamples: DisallowDefaultParameterRuleExamples.triggeringExamples
+        description: "Default parameter values should not be used in functions with certain access levels.",
+        kind: .lint,
+        nonTriggeringExamples: [
+            Example("public func foo(bar: Int = 0) {}"),
+            Example("open func foo(bar: Int = 0) {}"),
+            Example("func foo(bar: Int) {}"),
+            Example("private func foo(bar: Int = 0) {}"),
+            Example("public init(value: Int = 42) {}"),
+            Example(
+                "func foo(bar: Int = 0) {}",
+                configuration: ["disallowed_access_levels": ["private"]]
+            ),
+        ],
+        triggeringExamples: [
+            Example("func foo(bar: Int ↓= 0) {}"),
+            Example("internal func foo(bar: Int ↓= 0) {}"),
+            Example("func foo(bar: Int ↓= 0, baz: String ↓= \"\") {}"),
+            Example("init(value: Int ↓= 42) {}"),
+            Example(
+                "private func foo(bar: Int ↓= 0) {}",
+                configuration: ["disallowed_access_levels": ["private"]]
+            ),
+            Example(
+                "package func foo(bar: Int ↓= 0) {}",
+                configuration: ["disallowed_access_levels": ["package"]]
+            ),
+            Example(
+                "fileprivate func foo(bar: Int ↓= 0) {}",
+                configuration: ["disallowed_access_levels": ["fileprivate"]]
+            ),
+        ]
     )
 }
 
 private extension DisallowDefaultParameterRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
-            collectViolations(modifiers: node.modifiers, signature: node.signature)
+            collectViolations(modifiers: node.modifiers, parameterClause: node.signature.parameterClause)
         }
 
         override func visitPost(_ node: InitializerDeclSyntax) {
-            collectViolations(modifiers: node.modifiers, signature: node.signature)
+            collectViolations(modifiers: node.modifiers, parameterClause: node.signature.parameterClause)
         }
 
         override func visitPost(_ node: SubscriptDeclSyntax) {
-            guard matchesDisallowedAccessLevel(node.modifiers) else { return }
-            for param in node.parameterClause.parameters where param.defaultValue != nil {
-                violations.append(param.defaultValue!.positionAfterSkippingLeadingTrivia)
-            }
+            collectViolations(modifiers: node.modifiers, parameterClause: node.parameterClause)
         }
 
         private func collectViolations(
             modifiers: DeclModifierListSyntax,
-            signature: FunctionSignatureSyntax
+            parameterClause: FunctionParameterClauseSyntax
         ) {
-            guard matchesDisallowedAccessLevel(modifiers) else { return }
-            for param in signature.parameterClause.parameters where param.defaultValue != nil {
-                violations.append(param.defaultValue!.positionAfterSkippingLeadingTrivia)
+            guard let accessLevel = effectiveAccessLevel(modifiers),
+                  configuration.disallowedAccessLevels.contains(accessLevel) else {
+                return
+            }
+            let levelName = accessLevel.rawValue
+            for param in parameterClause.parameters {
+                if let defaultValue = param.defaultValue {
+                    violations.append(
+                        ReasonedRuleViolation(
+                            position: defaultValue.positionAfterSkippingLeadingTrivia,
+                            reason: "Default parameter values should not be used in '\(levelName)' functions"
+                        )
+                    )
+                }
             }
         }
 
-        private func matchesDisallowedAccessLevel(_ modifiers: DeclModifierListSyntax) -> Bool {
-            let disallowed = configuration.disallowedAccessLevels
-            // Determine the effective access level from modifiers
-            if modifiers.contains(keyword: .private) {
-                return disallowed.contains(.private)
-            }
-            if modifiers.contains(keyword: .fileprivate) {
-                return disallowed.contains(.fileprivate)
-            }
-            if modifiers.contains(keyword: .package) {
-                return disallowed.contains(.package)
-            }
-            if modifiers.contains(keyword: .public) || modifiers.contains(keyword: .open) {
-                return false // public/open are never disallowed
-            }
-            // No explicit access modifier means `internal`
-            return disallowed.contains(.internal)
+        private func effectiveAccessLevel(_ modifiers: DeclModifierListSyntax)
+            -> DisallowDefaultParameterConfiguration.AccessLevel? {
+            if modifiers.contains(keyword: .private) { return .private }
+            if modifiers.contains(keyword: .fileprivate) { return .fileprivate }
+            if modifiers.contains(keyword: .package) { return .package }
+            if modifiers.contains(keyword: .public) || modifiers.contains(keyword: .open) { return nil }
+            return .internal
         }
     }
 }

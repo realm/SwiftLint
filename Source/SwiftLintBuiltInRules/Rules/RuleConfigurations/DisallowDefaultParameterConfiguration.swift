@@ -4,11 +4,8 @@ import SwiftLintCore
 struct DisallowDefaultParameterConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(
-        key: "disallowed_access_levels",
-        postprocessor: { $0 = Set($0.sorted()) }
-    )
-    private(set) var disallowedAccessLevels: Set<AccessLevel> = [.private, .internal]
+    @ConfigurationElement(key: "disallowed_access_levels")
+    private(set) var disallowedAccessLevels: Set<AccessLevel> = [.internal]
 
     @AcceptableByConfigurationElement
     enum AccessLevel: String, Comparable {

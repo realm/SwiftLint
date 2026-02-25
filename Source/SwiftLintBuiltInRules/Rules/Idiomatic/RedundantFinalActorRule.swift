@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(optIn: true)
+@SwiftSyntaxRule(correctable: true, optIn: true)
 struct RedundantFinalActorRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 

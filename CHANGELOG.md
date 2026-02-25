@@ -77,6 +77,10 @@
   in build tool plugins.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6080](https://github.com/realm/SwiftLint/issues/6080)
+* Add detection of cases such as `String.init(decoding: data, as: UTF8.self)` and 
+  `let text: String = .init(decoding: data, as: UTF8.self)` to `optional_data_string_conversion` rule.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6359](https://github.com/realm/SwiftLint/issues/6359)
 
 ## 0.63.2: High-Speed Extraction
 
@@ -221,12 +225,7 @@
 * Reinstate handling of access level imports in `sorted_imports` rule.  
   [Brett-Best](https://github.com/Brett-Best)
   [#6374](https://github.com/realm/SwiftLint/issues/6374)
-
-* Add detection of cases such as `String.init(decoding: data, as: UTF8.self)` and 
-  `let text: String = .init(decoding: data, as: UTF8.self)` to `optional_data_string_conversion` rule.  
-  [nadeemnali](https://github.com/nadeemnali)
-  [#6359](https://github.com/realm/SwiftLint/issues/6359)
-
+  
 ## 0.62.2: Generous Drum Volume
 
 ### Breaking

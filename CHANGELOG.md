@@ -8739,11 +8739,6 @@ This release has seen a phenomenal uptake in community contributions!
   [JP Simard](https://github.com/jpsim)
   [#43](https://github.com/realm/SwiftLint/issues/43)
 
-### Bug Fixes
-
-* optional_data_string_conversion: Detect `String.init(...)` and leading-dot `.init(...)` usages when converting `Data` to `String`. This fixes cases such as `String.init(decoding: data, as: UTF8.self)` and `let text: String = .init(decoding: data, as: UTF8.self)` which previously did not trigger the rule. (Fixes https://github.com/realm/SwiftLint/issues/6359)
-  [Nadeem Ali](https://github.com/nadeemnali)
-
 ## 0.1.0: Fresh Out Of The Dryer
 
 First Version!

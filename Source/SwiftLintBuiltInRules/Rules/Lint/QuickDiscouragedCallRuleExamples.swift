@@ -1,6 +1,21 @@
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("""
+        class TotoTests: QuickSpec {
+           override func spec() {
+               describe("foo") {
+                   @TestState var foo: Foo! = Foo()
+                   context("bar") {
+                       @TestState var bar: Bar! = .init()
+                       it("does something") {
+                           bar.toto()
+                       }
+                   }
+               }
+           }
+        }
+        """),
+        Example("""
         class TotoTests {
            override func spec() {
                describe("foo") {

@@ -60,6 +60,11 @@ private extension QuickDiscouragedCallRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            // Skip variables annotated with @TestState (Quick's property wrapper
+            // that resets state between tests), since the initializer is required.
+            if node.attributes.contains(attributeNamed: "TestState") {
+                return .skipChildren
+            }
             for binding in node.bindings {
                 if let scope = quickScope.lastSuspiciousScope(node),
                    let initializer = binding.initializer,

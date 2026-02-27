@@ -39,6 +39,16 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             }
             """, configuration: ["style": "never"]),
         Example("var x: Int? = nil // comment", configuration: ["style": "never"]),  // with comment after
+        Example(
+            """
+            @Wrapper("name")
+            var flag: Bool?
+            """,
+            configuration: [
+                "style": "never",
+                "ignore_attributes": ["Wrapper"],
+            ]
+        ),
 
         // always style
         Example("public var myVar: Int?", configuration: ["style": "always"]),
@@ -87,6 +97,16 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
               var ↓myVar: String?
             }
             """, configuration: ["style": "never"]
+        ),
+        Example(
+            """
+            @Wrapper("name")
+            var ↓flag: Bool?
+            """,
+            configuration: [
+                "style": "never",
+                "ignore_attributes": ["State"],
+            ]
         ),
 
         // always style

@@ -83,8 +83,7 @@ private extension PatternBindingSyntax {
             typeAnnotation.isOptionalType
         else { return nil }
 
-        if configuration.style == .always,
-           configuration.ignoreAttributes.contains(where: { parent.attributes.contains(attributeNamed: $0) }) {
+        if configuration.ignoreAttributes.contains(where: { parent.attributes.contains(attributeNamed: $0) }) {
             return nil
         }
 

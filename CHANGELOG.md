@@ -29,7 +29,7 @@
 
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so
   wrappers/attributes that require explicit `= nil` can be excluded from
-  style checks when using `style: always`.  
+  style checks for both `style: always` and `style: never`.  
   [theamodhshetty](https://github.com/theamodhshetty)
   [#3998](https://github.com/realm/SwiftLint/issues/3998)
 

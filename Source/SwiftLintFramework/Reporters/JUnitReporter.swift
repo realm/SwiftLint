@@ -15,7 +15,7 @@ struct JUnitReporter: Reporter {
 
         return """
             <?xml version="1.0" encoding="utf-8"?>
-            <testsuites failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
+            <testsuites name="SwiftLint" failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
             \t<testsuite name="SwiftLint" failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
             \(violations.map(testCase(for:)).joined(separator: "\n"))
             \t</testsuite>
@@ -32,7 +32,7 @@ struct JUnitReporter: Reporter {
 
         return """
             \t\t<testcase classname='Formatting Test' name='\(fileName)'>
-            \t\t\t<failure message='\(reason)' line='\(lineNumber)'>\(message)</failure>
+            \t\t\t<failure message='\(reason)'>\(message)</failure>
             \t\t</testcase>
             """
     }

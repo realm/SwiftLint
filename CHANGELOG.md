@@ -25,8 +25,8 @@
   [ahmadalfy](https://github.com/ahmadalfy)
   [#6499](https://github.com/realm/SwiftLint/issues/6499)
 
-* Add `name` on JUnit `testsuite` output and include a `line` attribute on
-  each `failure` element for better CI parser compatibility.  
+* Add `name="SwiftLint"` to JUnit `testsuites` and `testsuite` output for
+  better CI parser compatibility.  
   [theamodhshetty](https://github.com/theamodhshetty)
   [#6161](https://github.com/realm/SwiftLint/issues/6161)
 

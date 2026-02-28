@@ -15,7 +15,7 @@
 * Add `disallow_default_parameter` opt-in rule that flags default parameter
   values in functions with configurable access levels.  
   [William-Laverty](https://github.com/William-Laverty)
-  [#6506](https://github.com/realm/SwiftLint/pull/6506)
+  [#6488](https://github.com/realm/SwiftLint/issues/6488)
 
 * Add `ignored_literal_argument_functions` option to the `force_unwrapping` rule
   to skip violations for configurable function calls when all arguments are

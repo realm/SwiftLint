@@ -197,7 +197,7 @@ direct_return:
     correctable: true
 disallow_default_parameter:
   severity: warning
-  disallowed_access_levels: [internal, private]
+  disallowed_access_levels: [internal, package]
   meta:
     opt-in: true
     correctable: false

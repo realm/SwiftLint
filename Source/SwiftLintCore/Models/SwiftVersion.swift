@@ -81,6 +81,8 @@ public extension SwiftVersion {
     static let sixDotTwoDotTwo = SwiftVersion(rawValue: "6.2.2")
     /// Swift 6.2.3
     static let sixDotTwoDotThree = SwiftVersion(rawValue: "6.2.3")
+    /// Swift 6.2.4
+    static let sixDotTwoDotFour = SwiftVersion(rawValue: "6.2.4")
     /// Swift 6.3
     static let sixDotThree = SwiftVersion(rawValue: "6.3.0")
 

@@ -31,6 +31,12 @@
 
 ### Bug Fixes
 
+* Add an `ignore_attributes` option to `implicit_optional_initialization` so
+  wrappers/attributes that require explicit `= nil` can be excluded from
+  style checks for both `style: always` and `style: never`.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#3998](https://github.com/realm/SwiftLint/issues/3998)
+
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6465](https://github.com/realm/SwiftLint/issues/6465)

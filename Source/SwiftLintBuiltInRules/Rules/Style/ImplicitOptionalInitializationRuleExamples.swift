@@ -39,10 +39,30 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             }
             """, configuration: ["style": "never"]),
         Example("var x: Int? = nil // comment", configuration: ["style": "never"]),  // with comment after
+        Example(
+            """
+            @Wrapper("name")
+            var flag: Bool?
+            """,
+            configuration: [
+                "style": "never",
+                "ignore_attributes": ["Wrapper"],
+            ]
+        ),
 
         // always style
         Example("public var myVar: Int?", configuration: ["style": "always"]),
         Example("var myVar: Optional<Int>", configuration: ["style": "always"]),
+        Example(
+            """
+            @Wrapper("name")
+            var flag: Bool? = nil
+            """,
+            configuration: [
+                "style": "always",
+                "ignore_attributes": ["Wrapper"],
+            ]
+        ),
         Example(
             "var myVar: Int? { nil }, myOtherVar: Int?", configuration: ["style": "always"]),
         Example(
@@ -78,10 +98,30 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             }
             """, configuration: ["style": "never"]
         ),
+        Example(
+            """
+            @Wrapper("name")
+            var ↓flag: Bool?
+            """,
+            configuration: [
+                "style": "never",
+                "ignore_attributes": ["State"],
+            ]
+        ),
 
         // always style
         Example("var ↓myVar: Int? = nil", configuration: ["style": "always"]),
         Example("var ↓myVar: Optional<Int> = nil", configuration: ["style": "always"]),
+        Example(
+            """
+            @Wrapper("name")
+            var ↓flag: Bool? = nil
+            """,
+            configuration: [
+                "style": "always",
+                "ignore_attributes": ["State"],
+            ]
+        ),
         Example("var myVar: Int?, ↓myOtherVar: Int? = nil", configuration: ["style": "always"]),
         Example(
             """
@@ -99,6 +139,20 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
 
     static let corrections = [
         // never style
+        Example(
+            """
+            @Wrapper("name")
+            var flag: Bool?
+            """,
+            configuration: [
+                "style": "never",
+                "ignore_attributes": ["Wrapper"],
+            ]):
+            Example(
+                """
+                @Wrapper("name")
+                var flag: Bool?
+                """),
         Example("var ↓myVar: Int? // comment", configuration: ["style": "never"]):
             Example("var myVar: Int? = nil // comment"),
         Example("var ↓myVar: Optional<Int> // comment", configuration: ["style": "never"]):
@@ -128,6 +182,20 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             }
             """),
 
+        Example(
+            """
+            @Wrapper("name")
+            var flag: Bool? = nil
+            """,
+            configuration: [
+                "style": "always",
+                "ignore_attributes": ["Wrapper"],
+            ]):
+            Example(
+                """
+                @Wrapper("name")
+                var flag: Bool? = nil
+                """),
         Example("var ↓myVar: Int? = nil // comment", configuration: ["style": "always"]):
             Example("var myVar: Int? // comment"),
         Example("var ↓myVar: Optional<Int> = nil // comment", configuration: ["style": "always"]):

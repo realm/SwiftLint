@@ -26,7 +26,7 @@ private extension ImplicitOptionalInitializationRule {
         }
 
         override func visitPost(_ node: PatternBindingSyntax) {
-            guard let violationPosition = node.violationPosition(for: configuration.style) else { return }
+            guard let violationPosition = node.violationPosition(for: configuration) else { return }
 
             violations.append(ReasonedRuleViolation(position: violationPosition, reason: reason))
         }
@@ -36,7 +36,7 @@ private extension ImplicitOptionalInitializationRule {
 private extension ImplicitOptionalInitializationRule {
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: PatternBindingSyntax) -> PatternBindingSyntax {
-            guard node.violationPosition(for: configuration.style) != nil else {
+            guard node.violationPosition(for: configuration) != nil else {
                 return super.visit(node)
             }
 
@@ -73,7 +73,7 @@ private extension ImplicitOptionalInitializationRule {
 
 private extension PatternBindingSyntax {
     func violationPosition(
-        for style: ImplicitOptionalInitializationConfiguration.Style
+        for configuration: ImplicitOptionalInitializationConfiguration
     ) -> AbsolutePosition? {
         guard
             let parent = parent?.parent?.as(VariableDeclSyntax.self),
@@ -82,6 +82,10 @@ private extension PatternBindingSyntax {
             let typeAnnotation,
             typeAnnotation.isOptionalType
         else { return nil }
+
+        if configuration.ignoreAttributes.contains(where: { parent.attributes.contains(attributeNamed: $0) }) {
+            return nil
+        }
 
         // ignore properties with accessors unless they have only willSet or didSet
         if let accessorBlock {
@@ -97,7 +101,8 @@ private extension PatternBindingSyntax {
             }
         }
 
-        if (style == .never && !initializer.isNil) || (style == .always && initializer.isNil) {
+        if (configuration.style == .never && !initializer.isNil)
+            || (configuration.style == .always && initializer.isNil) {
             return positionAfterSkippingLeadingTrivia
         }
 

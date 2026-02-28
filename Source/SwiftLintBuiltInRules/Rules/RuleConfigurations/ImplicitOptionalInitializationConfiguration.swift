@@ -12,4 +12,6 @@ struct ImplicitOptionalInitializationConfiguration: SeverityBasedRuleConfigurati
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "style")
     private(set) var style: Style = .always
+    @ConfigurationElement(key: "ignore_attributes")
+    private(set) var ignoreAttributes = Set<String>()
 }

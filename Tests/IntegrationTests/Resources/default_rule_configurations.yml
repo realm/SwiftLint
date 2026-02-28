@@ -507,6 +507,7 @@ implicit_getter:
 implicit_optional_initialization:
   severity: warning
   style: always
+  ignore_attributes: []
   meta:
     opt-in: false
     correctable: true

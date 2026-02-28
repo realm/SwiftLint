@@ -7,13 +7,15 @@ struct DisallowDefaultParameterRule: Rule {
     static let description = RuleDescription(
         identifier: "disallow_default_parameter",
         name: "Disallow Default Parameter",
-        description: "Default parameter values should not be used in functions with certain access levels.",
+        description: "Default parameter values should not be used in functions with certain access levels. " +
+            "By default, `internal` and `package` functions are checked.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("public func foo(bar: Int = 0) {}"),
             Example("open func foo(bar: Int = 0) {}"),
             Example("func foo(bar: Int) {}"),
             Example("private func foo(bar: Int = 0) {}"),
+            Example("fileprivate func foo(bar: Int = 0) {}"),
             Example("public init(value: Int = 42) {}"),
             Example(
                 "func foo(bar: Int = 0) {}",
@@ -23,15 +25,12 @@ struct DisallowDefaultParameterRule: Rule {
         triggeringExamples: [
             Example("func foo(bar: Int ↓= 0) {}"),
             Example("internal func foo(bar: Int ↓= 0) {}"),
+            Example("package func foo(bar: Int ↓= 0) {}"),
             Example("func foo(bar: Int ↓= 0, baz: String ↓= \"\") {}"),
             Example("init(value: Int ↓= 42) {}"),
             Example(
                 "private func foo(bar: Int ↓= 0) {}",
                 configuration: ["disallowed_access_levels": ["private"]]
-            ),
-            Example(
-                "package func foo(bar: Int ↓= 0) {}",
-                configuration: ["disallowed_access_levels": ["package"]]
             ),
             Example(
                 "fileprivate func foo(bar: Int ↓= 0) {}",

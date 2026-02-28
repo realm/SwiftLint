@@ -1007,6 +1007,11 @@ redundant_discardable_let:
   meta:
     opt-in: false
     correctable: true
+redundant_final_actor:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: true
 redundant_nil_coalescing:
   severity: warning
   meta:

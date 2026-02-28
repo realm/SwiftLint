@@ -16,6 +16,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)
 
+* Clarify SwiftLintPlugin run script guidance in the README for
+  `xcodebuild -clonedSourcePackagesDirPath` builds by documenting how to set
+  `SWIFT_PACKAGE_DIR` to the custom artifacts location.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#5821](https://github.com/realm/SwiftLint/issues/5821)
+
 * Add `ignored_literal_argument_functions` option to the `force_unwrapping` rule
   to skip violations for configurable function calls when all arguments are
   literal values (e.g. `URL(string: "https://example.com")!`). Defaults

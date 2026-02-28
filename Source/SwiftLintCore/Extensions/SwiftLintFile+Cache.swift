@@ -182,7 +182,9 @@ extension SwiftLintFile {
 
     /// Invalidates all cached data for this file.
     public func invalidateCache() {
-        file.clearCaches()
+        if !isVirtual {
+            file.clearCaches()
+        }
         responseCache.invalidate(self)
         assertHandlerCache.invalidate(self)
         structureDictionaryCache.invalidate(self)

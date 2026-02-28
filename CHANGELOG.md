@@ -12,6 +12,10 @@
 
 ### Enhancements
 
+* Print fixed code read from stdin to stdout.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6501](https://github.com/realm/SwiftLint/issues/6501)
+
 * Add `ignored_literal_argument_functions` option to the `force_unwrapping` rule
   to skip violations for configurable function calls when all arguments are
   literal values (e.g. `URL(string: "https://example.com")!`). Defaults

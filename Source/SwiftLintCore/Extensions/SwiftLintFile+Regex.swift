@@ -134,6 +134,7 @@ extension SwiftLintFile {
         guard string.isNotEmpty else {
             return
         }
+        defer { invalidateCache() }
         file.contents += string
         if isVirtual {
             return
@@ -147,13 +148,13 @@ extension SwiftLintFile {
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
-        invalidateCache()
     }
 
     public func write<S: StringProtocol>(_ string: S) {
         guard string != contents else {
             return
         }
+        defer { invalidateCache() }
         file.contents = String(string)
         if isVirtual {
             return
@@ -169,7 +170,6 @@ extension SwiftLintFile {
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        invalidateCache()
     }
 
     public func ruleEnabled(violatingRanges: [NSRange], for rule: some Rule) -> [NSRange] {

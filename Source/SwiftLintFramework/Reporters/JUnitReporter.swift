@@ -15,8 +15,8 @@ struct JUnitReporter: Reporter {
 
         return """
             <?xml version="1.0" encoding="utf-8"?>
-            <testsuites failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
-            \t<testsuite failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
+            <testsuites name="SwiftLint" failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
+            \t<testsuite name="SwiftLint" failures="\(warningCount)" errors="\(errorCount)" tests="\(testCount)">
             \(violations.map(testCase(for:)).joined(separator: "\n"))
             \t</testsuite>
             </testsuites>

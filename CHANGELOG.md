@@ -25,6 +25,11 @@
   [ahmadalfy](https://github.com/ahmadalfy)
   [#6499](https://github.com/realm/SwiftLint/issues/6499)
 
+* Add `name="SwiftLint"` to JUnit `testsuites` and `testsuite` output for
+  better CI parser compatibility.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6161](https://github.com/realm/SwiftLint/issues/6161)
+
 ### Bug Fixes
 
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  

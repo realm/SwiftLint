@@ -336,7 +336,7 @@ you may refer to the `swiftlint` executable in the
 following way:
 
 ```bash
-SWIFT_PACKAGE_DIR="${BUILD_DIR%Build/*}SourcePackages/artifacts"
+SWIFT_PACKAGE_DIR="${SWIFT_PACKAGE_DIR:-${BUILD_DIR%Build/*}SourcePackages/artifacts}"
 SWIFTLINT_CMD="$SWIFT_PACKAGE_DIR/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/macos/swiftlint"
 
 if test -f "$SWIFTLINT_CMD" 2>&1
@@ -351,6 +351,8 @@ fi
 > The `SWIFTLINT_CMD` path uses the default Xcode configuration and has been
 > tested on Xcode 15/16. In case of another configuration (e.g. a custom
 > Swift package path), please adapt the values accordingly.
+> If you run `xcodebuild` with `-clonedSourcePackagesDirPath`, set
+> `SWIFT_PACKAGE_DIR` to `<that path>/artifacts` before running the script.
 <!-- markdownlint-disable MD028 -->
 > [!TIP]
 > Uncheck `Based on dependency analysis` to run `swiftlint` on all incremental

@@ -37,6 +37,7 @@ public let builtInRules: [any Rule.Type] = [
     CyclomaticComplexityRule.self,
     DeploymentTargetRule.self,
     DirectReturnRule.self,
+    DisallowDefaultParameterRule.self,
     DiscardedNotificationCenterObserverRule.self,
     DiscouragedAssertRule.self,
     DiscouragedDirectInitRule.self,

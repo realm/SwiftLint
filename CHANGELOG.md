@@ -77,6 +77,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6451](https://github.com/realm/SwiftLint/issues/6451)
 
+* `multiline_call_arguments` no longer reports violations for enum-case patterns in
+  pattern matching (e.g. if case, switch case, for case, catch).  
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ## 0.63.1: High-Speed Extraction
 
 ### Breaking

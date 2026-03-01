@@ -8,7 +8,11 @@ struct OptionalDataStringConversionRule: Rule {
     static let description = RuleDescription(
         identifier: "optional_data_string_conversion",
         name: "Optional Data -> String Conversion",
-        description: "Prefer failable `String(bytes:encoding:)` initializer when converting `Data` to `String`. Optionally, set `allow_implicit_init: true` to also flag leading-dot initializers without explicit type annotations.",
+        description: """
+            Prefer failable `String(bytes:encoding:)` initializer when converting `Data` to `String`. \
+            Optionally, set `allow_implicit_init: true` to also flag leading-dot initializers without \
+            explicit type annotations
+            """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("String(data: data, encoding: .utf8)"),
@@ -27,15 +31,13 @@ struct OptionalDataStringConversionRule: Rule {
             Example("let n: Int = .init(0)"),
             Example("String(repeating: \"a\", count: 3)"),
             Example("String(format: \"%d\", 3)"),
-            // Default behavior (allow_implicit_init == false): implicit leading-dot init without explicit type does NOT trigger
+            // Default behavior (allow_implicit_init == false): implicit leading-dot init without explicit type
             Example("let text = .init(decoding: data, as: UTF8.self)"),
         ],
         triggeringExamples: [
             Example("String(decoding: data, as: UTF8.self)"),
             Example("String.init(decoding: data, as: UTF8.self)"),
             Example("let text: String = .init(decoding: data, as: UTF8.self)"),
-            // When configured with allow_implicit_init: true, the following should trigger as well:
-            Example("let text = .init(decoding: data, as: UTF8.self)"),
         ]
     )
 }

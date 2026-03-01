@@ -540,6 +540,7 @@ indentation_width:
   include_comments: true
   include_compiler_directives: true
   include_multiline_strings: true
+  include_multiline_conditions: false
   meta:
     opt-in: true
     correctable: false

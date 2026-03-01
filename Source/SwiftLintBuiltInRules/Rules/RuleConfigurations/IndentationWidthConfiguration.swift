@@ -22,4 +22,6 @@ struct IndentationWidthConfiguration: SeverityBasedRuleConfiguration {
     private(set) var includeCompilerDirectives = true
     @ConfigurationElement(key: "include_multiline_strings")
     private(set) var includeMultilineStrings = true
+    @ConfigurationElement(key: "include_multiline_conditions")
+    private(set) var includeMultilineConditions = false
 }

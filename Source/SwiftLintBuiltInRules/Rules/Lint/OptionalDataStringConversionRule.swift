@@ -3,12 +3,12 @@ import SwiftSyntax
 
 @SwiftSyntaxRule
 struct OptionalDataStringConversionRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = OptionalDataStringConversionConfiguration()
 
     static let description = RuleDescription(
         identifier: "optional_data_string_conversion",
         name: "Optional Data -> String Conversion",
-        description: "Prefer failable `String(bytes:encoding:)` initializer when converting `Data` to `String`",
+        description: "Prefer failable `String(bytes:encoding:)` initializer when converting `Data` to `String`. Optionally, set `allow_implicit_init: true` to also flag leading-dot initializers without explicit type annotations.",
         kind: .lint,
         nonTriggeringExamples: [
             Example("String(data: data, encoding: .utf8)"),
@@ -27,11 +27,15 @@ struct OptionalDataStringConversionRule: Rule {
             Example("let n: Int = .init(0)"),
             Example("String(repeating: \"a\", count: 3)"),
             Example("String(format: \"%d\", 3)"),
+            // Default behavior (allow_implicit_init == false): implicit leading-dot init without explicit type does NOT trigger
+            Example("let text = .init(decoding: data, as: UTF8.self)"),
         ],
         triggeringExamples: [
             Example("String(decoding: data, as: UTF8.self)"),
             Example("String.init(decoding: data, as: UTF8.self)"),
             Example("let text: String = .init(decoding: data, as: UTF8.self)"),
+            // When configured with allow_implicit_init: true, the following should trigger as well:
+            Example("let text = .init(decoding: data, as: UTF8.self)"),
         ]
     )
 }
@@ -70,18 +74,21 @@ private extension OptionalDataStringConversionRule {
             }
 
             // Case 3: leading-dot `.init(...)`
-            // This is ambiguous in general. We conservatively only trigger if the call
-            // is used to initialize a variable that has an explicit `String` type annotation:
+            // This is ambiguous in general. By default we only trigger if the call is used to
+            // initialize a variable that has an explicit `String` type annotation:
             // let x: String = .init(...)
-            // We intentionally do not (yet) match arbitrary contexts like f(.init(...)) or returns,
-            // because `.init` can refer to other types and those cases are frequent and risky.
+            // If configuration.allowImplicitInit is true, we also trigger for the leading-dot
+            // form even when the type is not explicitly annotated as `String`.
             guard member.base == nil else { return }
 
             // Walk ancestors to find a VariableDecl or PatternBinding with a type annotation of `String`.
-            if let binding = node.parent?.parent?.as(PatternBindingSyntax.self),
-               binding.typeAnnotation?.type.description
-                .trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
-                violations.append(called.positionAfterSkippingLeadingTrivia)
+            if let binding = node.parent?.parent?.as(PatternBindingSyntax.self) {
+                let annotatedString = binding.typeAnnotation?.type.description
+                    .trimmingCharacters(in: .whitespacesAndNewlines) == "String"
+
+                if annotatedString || configuration.allowImplicitInit {
+                    violations.append(called.positionAfterSkippingLeadingTrivia)
+                }
             }
         }
     }

@@ -1356,6 +1356,7 @@ unused_optional_binding:
     correctable: false
 unused_parameter:
   severity: warning
+  allow_underscore_prefixed_names: false
   meta:
     opt-in: true
     correctable: true

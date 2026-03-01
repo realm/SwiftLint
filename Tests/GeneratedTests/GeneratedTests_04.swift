@@ -115,6 +115,12 @@ final class InvalidSwiftLintCommandRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class InvisibleCharacterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(InvisibleCharacterRule.description)
+    }
+}
+
 final class IsDisjointRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)
@@ -148,11 +154,5 @@ final class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
 final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
-    }
-}
-
-final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LegacyConstantRule.description)
     }
 }

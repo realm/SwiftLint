@@ -838,6 +838,7 @@ operator_usage_whitespace:
     correctable: true
 optional_data_string_conversion:
   severity: warning
+  allow_implicit_init: false
   meta:
     opt-in: false
     correctable: false

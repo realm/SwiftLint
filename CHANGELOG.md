@@ -52,6 +52,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6466](https://github.com/realm/SwiftLint/issues/6466)
 
+* Add detection of cases such as `String.init(decoding: data, as: UTF8.self)` and
+  `let text: String = .init(decoding: data, as: UTF8.self)` to `optional_data_string_conversion` rule.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6359](https://github.com/realm/SwiftLint/issues/6359)
+
 ## 0.63.2: High-Speed Extraction
 
 ### Breaking

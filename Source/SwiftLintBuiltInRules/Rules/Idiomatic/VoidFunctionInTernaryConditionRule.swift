@@ -204,6 +204,15 @@ private extension CodeBlockItemSyntax {
         isAccessorImplicitReturn || isIfExprOrSwitchExprImplicitReturn
     }
 
+    /// Like `isImplicitReturn` but without checking `isIfExprOrSwitchExprImplicitReturn`.
+    /// Used inside `isIfExprOrSwitchExprImplicitReturn` to avoid recursive calls that can
+    /// trigger thread-safety issues when multiple rules traverse the syntax tree concurrently.
+    var isImplicitReturnExcludingIfSwitchExpr: Bool {
+        isClosureImplicitReturn || isFunctionImplicitReturn ||
+        isVariableImplicitReturn || isSubscriptImplicitReturn ||
+        isAccessorImplicitReturn
+    }
+
     var isClosureImplicitReturn: Bool {
         guard let parent = parent?.as(CodeBlockItemListSyntax.self),
               let grandparent = parent.parent else {
@@ -265,7 +274,9 @@ private extension CodeBlockItemSyntax {
         // Note: IfExprSyntax used as a statement is wrapped in ExpressionStmtSyntax inside the CodeBlockItemSyntax.
         if let ifExpr = parent.parent?.parent?.as(IfExprSyntax.self),
            let ifCodeBlockItem = ifExpr.parent?.as(ExpressionStmtSyntax.self)?.parent?.as(CodeBlockItemSyntax.self) {
-            return ifCodeBlockItem.isImplicitReturn
+            // Use isImplicitReturnExcludingIfSwitchExpr instead of isImplicitReturn to avoid
+            // recursive calls that traverse shared syntax nodes concurrently during parallel rule execution.
+            return ifCodeBlockItem.isImplicitReturnExcludingIfSwitchExpr
         }
 
         // Check if inside a switch expression case body.
@@ -273,7 +284,9 @@ private extension CodeBlockItemSyntax {
         // Note: SwitchExprSyntax used as a statement is wrapped in ExpressionStmtSyntax inside the CodeBlockItemSyntax.
         if let switchExpr = parent.parent?.parent?.parent?.as(SwitchExprSyntax.self),
            let switchCodeBlockItem = switchExpr.parent?.as(ExpressionStmtSyntax.self)?.parent?.as(CodeBlockItemSyntax.self) {
-            return switchCodeBlockItem.isImplicitReturn
+            // Use isImplicitReturnExcludingIfSwitchExpr instead of isImplicitReturn to avoid
+            // recursive calls that traverse shared syntax nodes concurrently during parallel rule execution.
+            return switchCodeBlockItem.isImplicitReturnExcludingIfSwitchExpr
         }
 
         return false

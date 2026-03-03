@@ -33,6 +33,13 @@
   built-in rules in accordance with the SARIF specification.  
   [ahmadalfy](https://github.com/ahmadalfy)
   [#6499](https://github.com/realm/SwiftLint/issues/6499)
+  
+* Add `explicit_return` opt-in rule that warns against omitting the `return`
+  keyword inside closures, functions and getters.
+  [m-chojnacki](https://github.com/m-chojnacki)
+  [talanov](https://github.com/talanov)
+  [#3632](https://github.com/realm/SwiftLint/issues/3632)
+  [#3859](https://github.com/realm/SwiftLint/issues/3859)
 
 * Add `allow_underscore_prefixed_names` option to `unused_parameter` so
   underscore-prefixed parameter names can be treated as intentionally
@@ -3011,10 +3018,6 @@ accordingly._
   [JP Simard](https://github.com/jpsim)
 
 ### Bug Fixes
-* Add `explicit_return` opt-in rule that warns against omitting the `return`
-  keyword inside closures, functions and getters.
-
-#### Bug Fixes
 
 * Fix false positive in `self_in_property_initialization` rule when using
   closures inside `didSet` and other accessors.  

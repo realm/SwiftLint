@@ -1,7 +1,8 @@
-@testable import SwiftLintFramework
+@testable import SwiftLintBuiltInRules
+import TestHelpers
 import XCTest
 
-class ExplicitReturnConfigurationTests: XCTestCase {
+final class ExplicitReturnConfigurationTests: SwiftLintTestCase {
     func testExplicitReturnConfigurationFromDictionary() throws {
         var configuration = ExplicitReturnConfiguration(includedKinds: Set<ExplicitReturnConfiguration.ReturnKind>())
         let config: [String: Any] = [
@@ -9,25 +10,29 @@ class ExplicitReturnConfigurationTests: XCTestCase {
             "included": [
                 "closure",
                 "function",
-                "getter"
-            ]
+                "getter",
+                "initializer",
+                "subscript",
+            ],
         ]
 
         try configuration.apply(configuration: config)
         let expectedKinds: Set<ExplicitReturnConfiguration.ReturnKind> = Set([
             .closure,
             .function,
-            .getter
+            .getter,
+            .initializer,
+            .subscript,
         ])
-        XCTAssert(configuration.severityConfiguration.severity == .error)
-        XCTAssertTrue(configuration.includedKinds == expectedKinds)
+        XCTAssertEqual(configuration.severityConfiguration.severity, .error)
+        XCTAssertEqual(configuration.includedKinds, expectedKinds)
     }
 
     func testExplicitReturnConfigurationThrowsOnUnrecognizedModifierGroup() {
         var configuration = ExplicitReturnConfiguration()
-        let config = ["included": ["foreach"]] as [String: Any]
+        let config = ["included": ["foreach"]] as [String: any Sendable]
 
-        checkError(ConfigurationError.unknownConfiguration) {
+        checkError(Issue.invalidConfiguration(ruleID: ExplicitReturnRule.identifier)) {
             try configuration.apply(configuration: config)
         }
     }

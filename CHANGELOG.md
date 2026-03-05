@@ -16,7 +16,7 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)
 
-* Add `disallow_default_parameter` opt-in rule that flags default parameter
+* Add `discouraged_default_parameter` opt-in rule that flags default parameter
   values in functions with configurable access levels.  
   [William-Laverty](https://github.com/William-Laverty)
   [#6488](https://github.com/realm/SwiftLint/issues/6488)

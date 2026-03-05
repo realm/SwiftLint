@@ -67,12 +67,6 @@ final class DirectReturnRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
-final class DisallowDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(DisallowDefaultParameterRule.description)
-    }
-}
-
 final class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
@@ -82,6 +76,12 @@ final class DiscardedNotificationCenterObserverRuleGeneratedTests: SwiftLintTest
 final class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedAssertRule.description)
+    }
+}
+
+final class DiscouragedDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DiscouragedDefaultParameterRule.description)
     }
 }
 

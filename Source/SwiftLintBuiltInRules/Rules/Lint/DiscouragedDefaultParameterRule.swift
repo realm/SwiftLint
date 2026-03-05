@@ -1,15 +1,15 @@
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
-struct DisallowDefaultParameterRule: Rule {
-    var configuration = DisallowDefaultParameterConfiguration()
+struct DiscouragedDefaultParameterRule: Rule {
+    var configuration = DiscouragedDefaultParameterConfiguration()
 
     static let description = RuleDescription(
-        identifier: "disallow_default_parameter",
-        name: "Disallow Default Parameter",
+        identifier: "discouraged_default_parameter",
+        name: "Discouraged Default Parameter",
         description: "Default parameter values should not be used in functions with certain access levels.",
         rationale: """
-            By disallowing default parameter values in functions, that are exposed to other source files in the module
+            By discouraging default parameter values in functions, that are exposed to other source files in the module
             or package and their consumers, we can promote call sites and reduce the likelihood of bugs caused by
             unexpected (or changed) default values being used.
             """,
@@ -44,7 +44,7 @@ struct DisallowDefaultParameterRule: Rule {
     )
 }
 
-private extension DisallowDefaultParameterRule {
+private extension DiscouragedDefaultParameterRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             collectViolations(modifiers: node.modifiers, parameterClause: node.signature.parameterClause)
@@ -80,7 +80,7 @@ private extension DisallowDefaultParameterRule {
         }
 
         private func effectiveAccessLevel(_ modifiers: DeclModifierListSyntax)
-            -> DisallowDefaultParameterConfiguration.AccessLevel? {
+            -> DiscouragedDefaultParameterConfiguration.AccessLevel? {
             if modifiers.contains(keyword: .private) { return .private }
             if modifiers.contains(keyword: .fileprivate) { return .fileprivate }
             if modifiers.contains(keyword: .package) { return .package }

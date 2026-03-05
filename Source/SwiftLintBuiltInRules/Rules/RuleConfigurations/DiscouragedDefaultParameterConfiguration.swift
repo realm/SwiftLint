@@ -1,7 +1,7 @@
 import SwiftLintCore
 
 @AutoConfigParser
-struct DisallowDefaultParameterConfiguration: SeverityBasedRuleConfiguration {
+struct DiscouragedDefaultParameterConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "disallowed_access_levels")

@@ -195,12 +195,6 @@ direct_return:
   meta:
     opt-in: true
     correctable: true
-disallow_default_parameter:
-  severity: warning
-  disallowed_access_levels: [internal, package]
-  meta:
-    opt-in: true
-    correctable: false
 discarded_notification_center_observer:
   severity: warning
   meta:
@@ -208,6 +202,12 @@ discarded_notification_center_observer:
     correctable: false
 discouraged_assert:
   severity: warning
+  meta:
+    opt-in: true
+    correctable: false
+discouraged_default_parameter:
+  severity: warning
+  disallowed_access_levels: [internal, package]
   meta:
     opt-in: true
     correctable: false

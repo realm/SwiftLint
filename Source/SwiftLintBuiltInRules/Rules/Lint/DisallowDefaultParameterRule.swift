@@ -7,8 +7,12 @@ struct DisallowDefaultParameterRule: Rule {
     static let description = RuleDescription(
         identifier: "disallow_default_parameter",
         name: "Disallow Default Parameter",
-        description: "Default parameter values should not be used in functions with certain access levels. " +
-            "By default, `internal` and `package` functions are checked.",
+        description: "Default parameter values should not be used in functions with certain access levels.",
+        rationale: """
+            By disallowing default parameter values in functions, that are exposed to other source files in the module
+            or package and their consumers, we can promote call sites and reduce the likelihood of bugs caused by
+            unexpected (or changed) default values being used.
+            """,
         kind: .lint,
         nonTriggeringExamples: [
             Example("public func foo(bar: Int = 0) {}"),

@@ -37,6 +37,11 @@
   [theamodhshetty](https://github.com/theamodhshetty)
   [#3998](https://github.com/realm/SwiftLint/issues/3998)
 
+* Skip `@TestState` properties in `quick_discouraged_call` rule, matching
+  existing `@TestInjected` and `@TestWeakly` exclusions.  
+  [William-Laverty](https://github.com/William-Laverty)
+  [#5803](https://github.com/realm/SwiftLint/pull/5803)
+
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6465](https://github.com/realm/SwiftLint/issues/6465)

@@ -79,6 +79,12 @@ final class DiscouragedAssertRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class DiscouragedDefaultParameterRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DiscouragedDefaultParameterRule.description)
+    }
+}
+
 final class DiscouragedDirectInitRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DiscouragedDirectInitRule.description)
@@ -148,11 +154,5 @@ final class EmptyCollectionLiteralRuleGeneratedTests: SwiftLintTestCase {
 final class EmptyCountRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(EmptyCountRule.description)
-    }
-}
-
-final class EmptyEnumArgumentsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(EmptyEnumArgumentsRule.description)
     }
 }

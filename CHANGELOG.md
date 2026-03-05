@@ -16,6 +16,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)
 
+* Add `discouraged_default_parameter` opt-in rule that flags default parameter
+  values in functions with configurable access levels.  
+  [William-Laverty](https://github.com/William-Laverty)
+  [#6488](https://github.com/realm/SwiftLint/issues/6488)
+
 * Add `ignored_literal_argument_functions` option to the `force_unwrapping` rule
   to skip violations for configurable function calls when all arguments are
   literal values (e.g. `URL(string: "https://example.com")!`). Defaults

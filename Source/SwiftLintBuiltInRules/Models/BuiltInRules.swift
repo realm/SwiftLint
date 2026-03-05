@@ -39,6 +39,7 @@ public let builtInRules: [any Rule.Type] = [
     DirectReturnRule.self,
     DiscardedNotificationCenterObserverRule.self,
     DiscouragedAssertRule.self,
+    DiscouragedDefaultParameterRule.self,
     DiscouragedDirectInitRule.self,
     DiscouragedNoneNameRule.self,
     DiscouragedObjectLiteralRule.self,

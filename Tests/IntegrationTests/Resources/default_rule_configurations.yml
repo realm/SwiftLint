@@ -205,6 +205,12 @@ discouraged_assert:
   meta:
     opt-in: true
     correctable: false
+discouraged_default_parameter:
+  severity: warning
+  disallowed_access_levels: [internal, package]
+  meta:
+    opt-in: true
+    correctable: false
 discouraged_direct_init:
   severity: warning
   types: ["Bundle", "Bundle.init", "NSError", "NSError.init", "UIDevice", "UIDevice.init"]

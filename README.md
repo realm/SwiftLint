@@ -986,6 +986,21 @@ When merging parent and child configs, `included` and `excluded` configurations
 are processed carefully to account for differences in the directory location
 of the containing configuration files.
 
+Path merging follows these rules:
+
+1. `included`/`excluded` entries from each config are resolved relative to that
+   config file's directory.
+2. Child entries override conflicting parent entries.
+3. The merged path lists are computed as:
+
+```text
+merged.included = (parent.included - child.excluded) + child.included
+merged.excluded = (parent.excluded - child.included) + child.excluded
+```
+
+This means a child config can re-include a path excluded by its parent and can
+exclude a path included by its parent.
+
 ### Child/Parent Configs (Remote)
 
 Just as you can provide local `child_config`/`parent_config` references,
@@ -1028,12 +1043,17 @@ A simple example including just two configuration files looks like this:
 
 In addition to a main configuration (the `.swiftlint.yml` file in the root
 folder), you can put other configuration files named `.swiftlint.yml` into the
-directory structure that then get merged as a child config, but only with an
-effect for those files that are within the same directory as the config or in a
-deeper directory where there isn't another configuration file. In other words:
-Nested configurations don't work recursively – there's a maximum number of one
-nested configuration per file that may be applied in addition to the main
-configuration.
+directory structure. For a given file, SwiftLint walks up from that file's
+directory towards the root configuration and uses the first nested
+`.swiftlint.yml` it finds as a child config.
+
+That nested config applies only to files in its directory subtree. Files in
+other subtrees continue using the main config (or their own nearest nested
+config).
+
+Because SwiftLint stops at the first match while walking up the directory tree,
+**at most one nested configuration is merged per file** (in addition to the
+main configuration).
 
 `.swiftlint.yml` files are only considered as a nested configuration if they
 have not been used to build the main configuration already (e. g. by having

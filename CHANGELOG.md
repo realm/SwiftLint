@@ -40,6 +40,12 @@
   [theamodhshetty](https://github.com/theamodhshetty)
   [#5741](https://github.com/realm/SwiftLint/issues/5741)
 
+* Add new default `invisible_character` rule that detects invisible characters
+  like zero-width space (U+200B), zero-width non-joiner (U+200C),
+  and FEFF formatting character (U+FEFF) in string literals, which can cause hard-to-debug issues.  
+  [kapitoshka438](https://github.com/kapitoshka438)
+  [#6045](https://github.com/realm/SwiftLint/issues/6045)
+
 ### Bug Fixes
 
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so

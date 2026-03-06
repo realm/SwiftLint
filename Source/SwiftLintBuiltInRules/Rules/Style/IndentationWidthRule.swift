@@ -244,11 +244,13 @@ struct IndentationWidthRule: OptInRule {
         previousLineStartedWithClosingDelimiter: Bool,
         previousLineWasInvalid: Bool
     ) -> [Bool] {
-        if startsWithClosingDelimiter {
+        if
+            startsWithClosingDelimiter,
+            let previousIndentation = previousLineIndentations.last {
             return [
                 validateClosingDelimiterLine(
                     indentation: indentation,
-                    previousIndentation: previousLineIndentations.last!,
+                    previousIndentation: previousIndentation,
                     previousLineStartedWithClosingDelimiter: previousLineStartedWithClosingDelimiter,
                     previousLineWasInvalid: previousLineWasInvalid
                 ),

@@ -45,6 +45,8 @@ struct IndentationWidthRule: OptInRule {
     func validate(file: SwiftLintFile) -> [StyleViolation] { // swiftlint:disable:this function_body_length
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
+        var previousLineStartedWithClosingDelimiter = false
+        var previousLineWasInvalid = false
 
         for line in file.lines {
             if ignoreCompilerDirective(line: line, in: file) { continue }
@@ -85,6 +87,8 @@ struct IndentationWidthRule: OptInRule {
             // Catch indented first line
             guard previousLineIndentations.isNotEmpty else {
                 previousLineIndentations = [indentation]
+                previousLineStartedWithClosingDelimiter = startsWithClosingDelimiter(in: line.content)
+                previousLineWasInvalid = false
 
                 if indentation != .spaces(0) {
                     // There's an indentation although this is the first line!
@@ -101,12 +105,23 @@ struct IndentationWidthRule: OptInRule {
                 continue
             }
 
-            let linesValidationResult = previousLineIndentations.map {
-                validate(indentation: indentation, comparingTo: $0)
+            let startsWithClosingDelimiter = startsWithClosingDelimiter(in: line.content)
+            let linesValidationResult = if startsWithClosingDelimiter {
+                [validateClosingDelimiterLine(
+                    indentation: indentation,
+                    previousIndentation: previousLineIndentations.last!,
+                    previousLineStartedWithClosingDelimiter: previousLineStartedWithClosingDelimiter,
+                    previousLineWasInvalid: previousLineWasInvalid
+                )]
+            } else {
+                previousLineIndentations.map {
+                    validate(indentation: indentation, comparingTo: $0)
+                }
             }
 
             // Catch wrong indentation or wrong unindentation
-            if !linesValidationResult.contains(true) {
+            let isValidLine = linesValidationResult.contains(true)
+            if !isValidLine {
                 let isIndentation = previousLineIndentations.last.map {
                     indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth) >=
                         $0.spacesEquivalent(indentationWidth: configuration.indentationWidth)
@@ -136,6 +151,9 @@ struct IndentationWidthRule: OptInRule {
                 // This mechanism avoids duplicate warnings.
                 previousLineIndentations.append(indentation)
             }
+
+            previousLineStartedWithClosingDelimiter = startsWithClosingDelimiter
+            previousLineWasInvalid = !isValidLine
         }
 
         return violations
@@ -201,5 +219,34 @@ struct IndentationWidthRule: OptInRule {
                 (lastSpaceEquivalent - currentSpaceEquivalent).isMultiple(of: configuration.indentationWidth)
             ) // Allow unindent if it stays in the grid
         )
+    }
+
+    private func validateClosingDelimiterLine(
+        indentation: Indentation,
+        previousIndentation: Indentation,
+        previousLineStartedWithClosingDelimiter: Bool,
+        previousLineWasInvalid: Bool
+    ) -> Bool {
+        let currentSpaceEquivalent = indentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+        let previousSpaceEquivalent = previousIndentation.spacesEquivalent(
+            indentationWidth: configuration.indentationWidth
+        )
+
+        return (
+            currentSpaceEquivalent == previousSpaceEquivalent - configuration.indentationWidth ||
+            (
+                previousLineStartedWithClosingDelimiter &&
+                previousLineWasInvalid &&
+                currentSpaceEquivalent == previousSpaceEquivalent
+            )
+        )
+    }
+
+    private func startsWithClosingDelimiter(in lineContent: String) -> Bool {
+        guard let firstCharacter = lineContent.trimmingCharacters(in: .whitespacesAndNewlines).first else {
+            return false
+        }
+
+        return firstCharacter == "}" || firstCharacter == "]" || firstCharacter == ")"
     }
 }

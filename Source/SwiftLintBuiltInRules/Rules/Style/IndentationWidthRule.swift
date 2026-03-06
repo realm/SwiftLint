@@ -106,18 +106,13 @@ struct IndentationWidthRule: OptInRule {
             }
 
             let startsWithClosingDelimiter = startsWithClosingDelimiter(in: line.content)
-            let linesValidationResult = if startsWithClosingDelimiter {
-                [validateClosingDelimiterLine(
-                    indentation: indentation,
-                    previousIndentation: previousLineIndentations.last!,
-                    previousLineStartedWithClosingDelimiter: previousLineStartedWithClosingDelimiter,
-                    previousLineWasInvalid: previousLineWasInvalid
-                )]
-            } else {
-                previousLineIndentations.map {
-                    validate(indentation: indentation, comparingTo: $0)
-                }
-            }
+            let linesValidationResult = validationResults(
+                for: indentation,
+                previousLineIndentations: previousLineIndentations,
+                startsWithClosingDelimiter: startsWithClosingDelimiter,
+                previousLineStartedWithClosingDelimiter: previousLineStartedWithClosingDelimiter,
+                previousLineWasInvalid: previousLineWasInvalid
+            )
 
             // Catch wrong indentation or wrong unindentation
             let isValidLine = linesValidationResult.contains(true)
@@ -240,6 +235,29 @@ struct IndentationWidthRule: OptInRule {
                 currentSpaceEquivalent == previousSpaceEquivalent
             )
         )
+    }
+
+    private func validationResults(
+        for indentation: Indentation,
+        previousLineIndentations: [Indentation],
+        startsWithClosingDelimiter: Bool,
+        previousLineStartedWithClosingDelimiter: Bool,
+        previousLineWasInvalid: Bool
+    ) -> [Bool] {
+        if startsWithClosingDelimiter {
+            return [
+                validateClosingDelimiterLine(
+                    indentation: indentation,
+                    previousIndentation: previousLineIndentations.last!,
+                    previousLineStartedWithClosingDelimiter: previousLineStartedWithClosingDelimiter,
+                    previousLineWasInvalid: previousLineWasInvalid
+                ),
+            ]
+        }
+
+        return previousLineIndentations.map {
+            validate(indentation: indentation, comparingTo: $0)
+        }
     }
 
     private func startsWithClosingDelimiter(in lineContent: String) -> Bool {

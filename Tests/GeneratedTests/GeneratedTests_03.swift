@@ -67,6 +67,12 @@ final class ExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class ExplicitReturnRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ExplicitReturnRule.description)
+    }
+}
+
 final class ExplicitSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitSelfRule.description)

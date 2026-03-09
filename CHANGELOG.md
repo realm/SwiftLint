@@ -45,6 +45,9 @@
   `optional_data_string_conversion` rule.  
   [nadeemnali](https://github.com/nadeemnali)
   [#6359](https://github.com/realm/SwiftLint/issues/6359)
+* Improve the opt-in `pattern_matching_keywords` rule by extending support
+  beyond `switch case` and refining nested pattern handling.  
+  [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Bug Fixes
 

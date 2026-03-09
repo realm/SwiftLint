@@ -86,6 +86,10 @@
   [theamodhshetty](https://github.com/theamodhshetty)
   [#6161](https://github.com/realm/SwiftLint/issues/6161)
 
+* Improve the opt-in `pattern_matching_keywords` rule by extending support
+  beyond `switch case` and refining nested pattern handling.  
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ### Bug Fixes
 
 * Detect and autocorrect missing whitespace before `else` in `guard`

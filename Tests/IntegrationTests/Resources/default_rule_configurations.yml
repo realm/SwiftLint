@@ -336,6 +336,12 @@ explicit_init:
   meta:
     opt-in: true
     correctable: true
+explicit_return:
+  severity: warning
+  included: [closure, function, getter, initializer, subscript]
+  meta:
+    opt-in: true
+    correctable: true
 explicit_self:
   severity: warning
   meta:

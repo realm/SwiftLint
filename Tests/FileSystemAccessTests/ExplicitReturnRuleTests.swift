@@ -1,45 +1,93 @@
-@testable import SwiftLintFramework
-import XCTest
+@testable import SwiftLintBuiltInRules
+import TestHelpers
 
-class ExplicitReturnRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ExplicitReturnRule.description)
-    }
-
+final class ExplicitReturnRuleTests: SwiftLintTestCase {
     func testOnlyClosureKindIncluded() {
-        let triggeringExamples = ExplicitReturnRuleExamples.ClosureExamples.triggeringExamples
-        let corrections = ExplicitReturnRuleExamples.ClosureExamples.corrections
+        var nonTriggeringExamples = ExplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ExplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ExplicitReturnRuleExamples.ClosureExamples.triggeringExamples.contains
+        )
 
-        let description = ExplicitReturnRule.description
-            .with(triggeringExamples: triggeringExamples)
-            .with(corrections: corrections)
-
-        self.verifyRule(description, returnKind: .closure)
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ExplicitReturnRuleExamples.ClosureExamples.triggeringExamples,
+            corrections: ExplicitReturnRuleExamples.ClosureExamples.corrections,
+            kind: .closure
+        )
     }
 
     func testOnlyFunctionKindIncluded() {
-        let triggeringExamples = ExplicitReturnRuleExamples.FunctionExamples.triggeringExamples
-        let corrections = ExplicitReturnRuleExamples.FunctionExamples.corrections
+        var nonTriggeringExamples = ExplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ExplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ExplicitReturnRuleExamples.FunctionExamples.triggeringExamples.contains
+        )
 
-        let description = ExplicitReturnRule.description
-            .with(triggeringExamples: triggeringExamples)
-            .with(corrections: corrections)
-
-        self.verifyRule(description, returnKind: .function)
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ExplicitReturnRuleExamples.FunctionExamples.triggeringExamples,
+            corrections: ExplicitReturnRuleExamples.FunctionExamples.corrections,
+            kind: .function
+        )
     }
 
     func testOnlyGetterKindIncluded() {
-        let triggeringExamples = ExplicitReturnRuleExamples.GetterExamples.triggeringExamples
-        let corrections = ExplicitReturnRuleExamples.GetterExamples.corrections
+        var nonTriggeringExamples = ExplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ExplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ExplicitReturnRuleExamples.GetterExamples.triggeringExamples.contains
+        )
 
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ExplicitReturnRuleExamples.GetterExamples.triggeringExamples,
+            corrections: ExplicitReturnRuleExamples.GetterExamples.corrections,
+            kind: .getter
+        )
+    }
+
+    func testOnlyInitializerKindIncluded() {
+        var nonTriggeringExamples = ExplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ExplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ExplicitReturnRuleExamples.InitializerExamples.triggeringExamples.contains
+        )
+
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ExplicitReturnRuleExamples.InitializerExamples.triggeringExamples,
+            corrections: ExplicitReturnRuleExamples.InitializerExamples.corrections,
+            kind: .initializer
+        )
+    }
+
+    func testOnlySubscriptKindIncluded() {
+        var nonTriggeringExamples = ExplicitReturnRuleExamples.nonTriggeringExamples +
+                                    ExplicitReturnRuleExamples.triggeringExamples
+        nonTriggeringExamples.removeAll(
+            where: ExplicitReturnRuleExamples.SubscriptExamples.triggeringExamples.contains
+        )
+
+        verifySubset(
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: ExplicitReturnRuleExamples.SubscriptExamples.triggeringExamples,
+            corrections: ExplicitReturnRuleExamples.SubscriptExamples.corrections,
+            kind: .subscript
+        )
+    }
+
+    private func verifySubset(
+        nonTriggeringExamples: [Example],
+        triggeringExamples: [Example],
+        corrections: [Example: Example],
+        kind: ExplicitReturnConfiguration.ReturnKind
+    ) {
         let description = ExplicitReturnRule.description
+            .with(nonTriggeringExamples: nonTriggeringExamples.removingViolationMarker())
             .with(triggeringExamples: triggeringExamples)
             .with(corrections: corrections)
 
-        self.verifyRule(description, returnKind: .getter)
-    }
-
-    private func verifyRule(_ ruleDescription: RuleDescription, returnKind: ExplicitReturnConfiguration.ReturnKind) {
-        self.verifyRule(ruleDescription, ruleConfiguration: ["included": [returnKind.rawValue]])
+        verifyRule(description, ruleConfiguration: ["included": [kind.rawValue]])
     }
 }

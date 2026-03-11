@@ -15,7 +15,7 @@ struct ExplicitReturnConfiguration: SeverityBasedRuleConfiguration {
         }
     }
 
-    static let defaultIncludedKinds = Set(ReturnKind.allCases)
+    static let defaultIncludedKinds: Set<ReturnKind> = [.function, .getter, .subscript, .initializer]
 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)

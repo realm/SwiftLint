@@ -1,34 +1,63 @@
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 internal struct ExplicitReturnRuleExamples {
+    private static let closureConfig: [String: any Sendable] = [
+        "included": ["closure", "function", "getter", "subscript", "initializer"],
+    ]
+
     internal struct ClosureExamples {
         static let nonTriggeringExamples = [
             Example("""
             foo.map {
                 return $0 + 1
             }
-            """),
+            """, configuration: closureConfig),
             Example("""
             foo.map({
                 return $0 + 1
             })
-            """),
+            """, configuration: closureConfig),
             Example("""
             foo.map { value in
                 return value + 1
             }
-            """),
+            """, configuration: closureConfig),
             Example("""
             [1, 2].first(where: {
                 return true
             })
-            """),
+            """, configuration: closureConfig),
             Example("""
             [1, 2].first(where: {
                 bar($0)
                 return true
             })
-            """),
+            """, configuration: closureConfig),
+            Example("""
+            runOn(.main, {
+                controller?.present(alert, animated: true, completion: nil)
+            })
+            """, configuration: closureConfig),
+            Example("""
+            foo.bar(failure: { error in
+                cont.resume(throwing: error)
+            })
+            """, configuration: closureConfig),
+            Example("""
+            foo.map {
+                someFunc($0)
+            }
+            """, configuration: closureConfig),
+            Example("""
+            foo.map {
+                try someFunc($0)
+            }
+            """, configuration: closureConfig),
+            Example("""
+            foo.map {
+                await someFunc($0)
+            }
+            """, configuration: closureConfig),
         ]
 
         static let triggeringExamples = [
@@ -36,27 +65,27 @@ internal struct ExplicitReturnRuleExamples {
             foo.map { value in
                 ↓value + 1
             }
-            """),
+            """, configuration: closureConfig),
             Example("""
             foo.map {
                 ↓$0 + 1
             }
-            """),
-            Example("foo.map({ ↓$0 + 1 })"),
+            """, configuration: closureConfig),
+            Example("foo.map({ ↓$0 + 1 })", configuration: closureConfig),
             Example("""
             [1, 2].first(where: {
                 ↓true
             })
-            """),
+            """, configuration: closureConfig),
         ]
 
-        static let corrections = [
+        static let corrections: [Example: Example] = [
             Example("""
             foo.map { value in
                 // Important comment
                 value + 1
             }
-            """): Example("""
+            """, configuration: closureConfig): Example("""
                 foo.map { value in
                     // Important comment
                     return value + 1
@@ -66,17 +95,18 @@ internal struct ExplicitReturnRuleExamples {
             foo.map {
                 $0 + 1
             }
-            """): Example("""
+            """, configuration: closureConfig): Example("""
                 foo.map {
                     return $0 + 1
                 }
                 """),
-            Example("foo.map({ $0 + 1 })"): Example("foo.map({ return $0 + 1 })"),
+            Example("foo.map({ $0 + 1 })", configuration: closureConfig):
+                Example("foo.map({ return $0 + 1 })"),
             Example("""
             [1, 2].first(where: {
                 true
             })
-            """): Example("""
+            """, configuration: closureConfig): Example("""
                 [1, 2].first(where: {
                     return true
                 })
@@ -422,17 +452,30 @@ internal struct ExplicitReturnRuleExamples {
     }
 
     struct MixedExamples {
-        static let corrections = [
+        static let corrections: [Example: Example] = [
             Example("""
                 func foo() -> Int {
                     ↓[1, 2].first(where: {
                         ↓true
                     })!
                 }
-                """): Example("""
+                """, configuration: closureConfig): Example("""
                 func foo() -> Int {
                     return [1, 2].first(where: {
                         return true
+                    })!
+                }
+                """),
+            Example("""
+                func foo() -> Int {
+                    ↓[1, 2].first(where: {
+                        true
+                    })!
+                }
+                """): Example("""
+                func foo() -> Int {
+                    return [1, 2].first(where: {
+                        true
                     })!
                 }
                 """),

@@ -30,7 +30,7 @@ private extension ExplicitReturnRule {
 
         override func visitPost(_ node: ClosureExprSyntax) {
             if configuration.isKindIncluded(.closure) {
-                collectViolation(in: node.statements)
+                collectViolation(in: node.statements, isInsideClosure: true)
             }
         }
 
@@ -64,10 +64,13 @@ private extension ExplicitReturnRule {
             }
         }
 
-        private func collectViolation(in itemList: CodeBlockItemListSyntax) {
+        private func collectViolation(in itemList: CodeBlockItemListSyntax, isInsideClosure: Bool = false) {
             guard let onlyItem = itemList.onlyElement?.item,
                   !onlyItem.is(ReturnStmtSyntax.self),
                   Syntax(onlyItem).isProtocol((any ExprSyntaxProtocol).self) else {
+                return
+            }
+            if isInsideClosure, Syntax(onlyItem).isFunctionCallExpr {
                 return
             }
             let position = onlyItem.positionAfterSkippingLeadingTrivia
@@ -80,6 +83,21 @@ private extension ExplicitReturnRule {
                 )
             )
         }
+    }
+}
+
+private extension Syntax {
+    var isFunctionCallExpr: Bool {
+        if `is`(FunctionCallExprSyntax.self) {
+            return true
+        }
+        if let tryExpr = `as`(TryExprSyntax.self) {
+            return Syntax(tryExpr.expression).isFunctionCallExpr
+        }
+        if let awaitExpr = `as`(AwaitExprSyntax.self) {
+            return Syntax(awaitExpr.expression).isFunctionCallExpr
+        }
+        return false
     }
 }
 

@@ -8,6 +8,7 @@ final class ExplicitReturnRuleTests: SwiftLintTestCase {
         nonTriggeringExamples.removeAll(
             where: ExplicitReturnRuleExamples.ClosureExamples.triggeringExamples.contains
         )
+        nonTriggeringExamples.removeAll { $0.configuration != nil }
 
         verifySubset(
             nonTriggeringExamples: nonTriggeringExamples,
@@ -23,6 +24,7 @@ final class ExplicitReturnRuleTests: SwiftLintTestCase {
         nonTriggeringExamples.removeAll(
             where: ExplicitReturnRuleExamples.FunctionExamples.triggeringExamples.contains
         )
+        nonTriggeringExamples.removeAll { $0.configuration != nil }
 
         verifySubset(
             nonTriggeringExamples: nonTriggeringExamples,
@@ -38,6 +40,7 @@ final class ExplicitReturnRuleTests: SwiftLintTestCase {
         nonTriggeringExamples.removeAll(
             where: ExplicitReturnRuleExamples.GetterExamples.triggeringExamples.contains
         )
+        nonTriggeringExamples.removeAll { $0.configuration != nil }
 
         verifySubset(
             nonTriggeringExamples: nonTriggeringExamples,
@@ -53,6 +56,7 @@ final class ExplicitReturnRuleTests: SwiftLintTestCase {
         nonTriggeringExamples.removeAll(
             where: ExplicitReturnRuleExamples.InitializerExamples.triggeringExamples.contains
         )
+        nonTriggeringExamples.removeAll { $0.configuration != nil }
 
         verifySubset(
             nonTriggeringExamples: nonTriggeringExamples,
@@ -68,6 +72,7 @@ final class ExplicitReturnRuleTests: SwiftLintTestCase {
         nonTriggeringExamples.removeAll(
             where: ExplicitReturnRuleExamples.SubscriptExamples.triggeringExamples.contains
         )
+        nonTriggeringExamples.removeAll { $0.configuration != nil }
 
         verifySubset(
             nonTriggeringExamples: nonTriggeringExamples,

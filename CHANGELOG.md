@@ -12,7 +12,11 @@
 
 ### Enhancements
 
-* Print fixed code read from stdin to stdout.  
+* Add `--fail-on-unfixable` flag for single-pass fix and validation.
+  [omar-y-abdi](https://github.com/omar-y-abdi)
+  [#6450](https://github.com/realm/SwiftLint/issues/6450)
+
+* Print fixed code read from stdin to stdout.
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)
 

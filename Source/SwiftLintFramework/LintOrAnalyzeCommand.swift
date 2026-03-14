@@ -122,8 +122,8 @@ package struct LintOrAnalyzeOptions {
 
     /// Returns a copy of these options with `autocorrect` set to `false` and `failOnUnfixable` set to `false`,
     /// suitable for a re-lint pass after autocorrection.
-    func asLintOnly() -> LintOrAnalyzeOptions {
-        LintOrAnalyzeOptions(
+    func asLintOnly() -> Self {
+        Self(
             mode: mode,
             paths: paths,
             useSTDIN: useSTDIN,

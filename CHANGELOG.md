@@ -42,6 +42,11 @@
 
 ### Bug Fixes
 
+* Detect and autocorrect missing whitespace before `else` in `guard`
+  statements for the `statement_position` rule.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6153](https://github.com/realm/SwiftLint/issues/6153)
+
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so
   wrappers/attributes that require explicit `= nil` can be excluded from
   style checks for both `style: always` and `style: never`.  

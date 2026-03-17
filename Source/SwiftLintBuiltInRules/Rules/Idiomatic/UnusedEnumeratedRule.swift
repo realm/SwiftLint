@@ -187,9 +187,11 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if let nextClosureId, nextClosureId == node.id, let lastEnumeratedPosition {
+            if let trackedClosureId = nextClosureId,
+               trackedClosureId == node.id,
+               let trackedEnumeratedPosition = lastEnumeratedPosition {
                 closures.push(Closure(
-                    enumeratedPosition: lastEnumeratedPosition,
+                    enumeratedPosition: trackedEnumeratedPosition,
                     usesZeroResultMember: lastEnumeratedResultMemberUsage.zero,
                     usesOneResultMember: lastEnumeratedResultMemberUsage.one
                 ))

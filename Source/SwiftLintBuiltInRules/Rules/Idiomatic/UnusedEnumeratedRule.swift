@@ -25,6 +25,18 @@ struct UnusedEnumeratedRule: Rule {
             Example("list.enumerated().map { ($0.offset, $0.element) }"),
             Example("list.enumerated().map { ($0.0, $0.1) }"),
             Example("""
+            list.enumerated().first {
+                $0.element.0.isNumber &&
+                $0.element.1.isNumber &&
+                $0.element.0 != $0.element.1
+            }?.offset
+            """),
+            Example("""
+            list.enumerated().max {
+                $0.element < $1.element
+            }?.offset
+            """),
+            Example("""
             list.enumerated().map {
                 $1.enumerated().forEach { print($0, $1) }
                 return $0
@@ -95,14 +107,21 @@ private extension UnusedEnumeratedRule {
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
 
-        init(enumeratedPosition: AbsolutePosition? = nil) {
+        init(
+            enumeratedPosition: AbsolutePosition? = nil,
+            usesZeroResultMember: Bool = false,
+            usesOneResultMember: Bool = false
+        ) {
             self.enumeratedPosition = enumeratedPosition
+            self.zeroPosition = usesZeroResultMember ? enumeratedPosition : nil
+            self.onePosition = usesOneResultMember ? enumeratedPosition : nil
         }
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var nextClosureId: SyntaxIdentifier?
         private var lastEnumeratedPosition: AbsolutePosition?
+        private var lastEnumeratedResultMemberUsage = (zero: false, one: false)
         private var closures = Stack<Closure>()
 
         override func visitPost(_ node: ForStmtSyntax) {
@@ -159,6 +178,9 @@ private extension UnusedEnumeratedRule {
             } else {
                 nextClosureId = trailingClosure.id
                 lastEnumeratedPosition = node.enumeratedPosition
+                lastEnumeratedResultMemberUsage =
+                    parent.parent?.as(FunctionCallExprSyntax.self)?
+                    .usedEnumeratedResultMembers ?? (false, false)
             }
 
             return .visitChildren
@@ -166,9 +188,14 @@ private extension UnusedEnumeratedRule {
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             if let nextClosureId, nextClosureId == node.id, let lastEnumeratedPosition {
-                closures.push(Closure(enumeratedPosition: lastEnumeratedPosition))
-                self.nextClosureId = nil
-                self.lastEnumeratedPosition = nil
+                closures.push(Closure(
+                    enumeratedPosition: lastEnumeratedPosition,
+                    usesZeroResultMember: lastEnumeratedResultMemberUsage.zero,
+                    usesOneResultMember: lastEnumeratedResultMemberUsage.one
+                ))
+                nextClosureId = nil
+                lastEnumeratedPosition = nil
+                lastEnumeratedResultMemberUsage = (false, false)
             } else {
                 closures.push(Closure())
             }
@@ -256,6 +283,27 @@ private extension FunctionCallExprSyntax {
            trailingClosure == nil
         && additionalTrailingClosures.isEmpty
         && arguments.isEmpty
+    }
+
+    var usedEnumeratedResultMembers: (zero: Bool, one: Bool) {
+        var current = parent
+
+        while let currentNode = current {
+            if let memberAccess = currentNode.as(MemberAccessExprSyntax.self) {
+                switch memberAccess.declName.baseName.text {
+                case "offset", "0":
+                    return (true, false)
+                case "element", "1":
+                    return (false, true)
+                default:
+                    return (false, false)
+                }
+            }
+
+            current = currentNode.parent
+        }
+
+        return (false, false)
     }
 }
 

@@ -42,6 +42,11 @@
 
 ### Bug Fixes
 
+* Skip `control_statement` corrections for parenthesized conditions that contain
+  comments, avoiding comment loss during `swiftlint --fix`.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6207](https://github.com/realm/SwiftLint/issues/6207)
+
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so
   wrappers/attributes that require explicit `= nil` can be excluded from
   style checks for both `style: always` and `style: never`.  

@@ -83,6 +83,15 @@ struct VerticalParameterAlignmentOnCallRule: Rule {
                 // completion
             }
             """),
+            Example("""
+            func test() {
+                СreateAdUpdateShopHelper.updateShopModels(categoryModels: &categoryModels,
+                                                          contactModels: &contactModels,
+                                                          country: response.country!,
+                                                          contact: response.contact,
+                                                          shop: response.shop)
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -132,7 +141,7 @@ private extension VerticalParameterAlignmentOnCallRule {
                 return
             }
 
-            var firstArgumentLocation = locationConverter.location(for: firstArg.positionAfterSkippingLeadingTrivia)
+            var firstArgumentLocation = characterLocation(for: firstArg.positionAfterSkippingLeadingTrivia)
 
             var visitedLines = Set<Int>()
             var previousArgumentWasMultiline = false
@@ -144,7 +153,7 @@ private extension VerticalParameterAlignmentOnCallRule {
                     }
 
                     let position = argument.positionAfterSkippingLeadingTrivia
-                    let location = locationConverter.location(for: position)
+                    let location = characterLocation(for: position)
                     guard location.line > firstArgumentLocation.line else {
                         return nil
                     }
@@ -173,6 +182,27 @@ private extension VerticalParameterAlignmentOnCallRule {
             let endPosition = locationConverter.location(for: expression.endPositionBeforeTrailingTrivia)
 
             return endPosition.line > startPosition.line
+        }
+
+        private func characterLocation(for position: AbsolutePosition) -> SourceLocation {
+            let location = locationConverter.location(for: position)
+
+            let characterColumn: Int
+            let graphemeClusters = String(
+                locationConverter.sourceLines[location.line - 1].utf8.prefix(location.column - 1)
+            )
+            if let graphemeClusters {
+                characterColumn = graphemeClusters.count + 1
+            } else {
+                characterColumn = location.column
+            }
+
+            return SourceLocation(
+                line: location.line,
+                column: characterColumn,
+                offset: location.offset,
+                file: location.file
+            )
         }
     }
 }

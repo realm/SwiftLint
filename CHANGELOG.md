@@ -68,6 +68,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6466](https://github.com/realm/SwiftLint/issues/6466)
 
+* Avoid false positives in `prefer_self_in_static_references` when a nested type
+  shadows its enclosing type name.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#5917](https://github.com/realm/SwiftLint/issues/5917)
+
 ## 0.63.2: High-Speed Extraction
 
 ### Breaking

@@ -37,15 +37,16 @@ private extension PreferSelfInStaticReferencesRule {
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var parentDeclScopes = Stack<ParentDeclBehavior>()
+        private var shadowingNestedTypeScopes = Stack<Bool>()
         private var variableDeclScopes = Stack<VariableDeclBehavior>()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.likeClass(name: node.name.text))
+            pushParentDeclScope(.likeClass(name: node.name.text), for: node.name.text, memberBlock: node.memberBlock)
             return .skipChildren
         }
 
         override func visitPost(_: ActorDeclSyntax) {
-            parentDeclScopes.pop()
+            popParentDeclScope()
         }
 
         override func visit(_: AttributeSyntax) -> SyntaxVisitorContinueKind {
@@ -56,12 +57,12 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.likeClass(name: node.name.text))
+            pushParentDeclScope(.likeClass(name: node.name.text), for: node.name.text, memberBlock: node.memberBlock)
             return .visitChildren
         }
 
         override func visitPost(_: ClassDeclSyntax) {
-            parentDeclScopes.pop()
+            popParentDeclScope()
         }
 
         override func visit(_: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
@@ -74,21 +75,21 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.likeStruct(node.name.text))
+            pushParentDeclScope(.likeStruct(node.name.text), for: node.name.text, memberBlock: node.memberBlock)
             return .visitChildren
         }
 
         override func visitPost(_: EnumDeclSyntax) {
-            parentDeclScopes.pop()
+            popParentDeclScope()
         }
 
         override func visit(_: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.skipReferences)
+            pushParentDeclScope(.skipReferences)
             return .visitChildren
         }
 
         override func visitPost(_: ExtensionDeclSyntax) {
-            parentDeclScopes.pop()
+            popParentDeclScope()
         }
 
         override func visit(_ node: MemberAccessExprSyntax) -> SyntaxVisitorContinueKind {
@@ -146,12 +147,12 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.skipReferences)
+            pushParentDeclScope(.skipReferences)
             return .skipChildren
         }
 
         override func visitPost(_: ProtocolDeclSyntax) {
-            parentDeclScopes.pop()
+            popParentDeclScope()
         }
 
         override func visit(_: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
@@ -162,12 +163,12 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.likeStruct(node.name.text))
+            pushParentDeclScope(.likeStruct(node.name.text), for: node.name.text, memberBlock: node.memberBlock)
             return .visitChildren
         }
 
         override func visitPost(_: StructDeclSyntax) {
-            parentDeclScopes.pop()
+            popParentDeclScope()
         }
 
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
@@ -213,7 +214,9 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         private func addViolation(on node: TokenSyntax) {
-            if let parentName = parentDeclScopes.peek()?.parentName, node.tokenKind == .identifier(parentName) {
+            if shadowingNestedTypeScopes.peek() != true,
+               let parentName = parentDeclScopes.peek()?.parentName,
+               node.tokenKind == .identifier(parentName) {
                 violations.append(
                     at: node.positionAfterSkippingLeadingTrivia,
                     correction: .init(
@@ -222,6 +225,45 @@ private extension PreferSelfInStaticReferencesRule {
                         replacement: "Self"
                     )
                 )
+            }
+        }
+
+        private func pushParentDeclScope(
+            _ behavior: ParentDeclBehavior,
+            for name: String? = nil,
+            memberBlock: MemberBlockSyntax? = nil
+        ) {
+            parentDeclScopes.push(behavior)
+            let hasShadowingNestedType: Bool
+            if let name, let memberBlock {
+                hasShadowingNestedType = containsSameNamedNestedType(named: name, in: memberBlock)
+            } else {
+                hasShadowingNestedType = false
+            }
+            shadowingNestedTypeScopes.push(hasShadowingNestedType)
+        }
+
+        private func popParentDeclScope() {
+            parentDeclScopes.pop()
+            shadowingNestedTypeScopes.pop()
+        }
+
+        private func containsSameNamedNestedType(named name: String, in memberBlock: MemberBlockSyntax) -> Bool {
+            memberBlock.members.contains { member in
+                if let actor = member.decl.as(ActorDeclSyntax.self) {
+                    return actor.name.text == name
+                }
+                if let classDecl = member.decl.as(ClassDeclSyntax.self) {
+                    return classDecl.name.text == name
+                }
+                if let enumDecl = member.decl.as(EnumDeclSyntax.self) {
+                    return enumDecl.name.text == name
+                }
+                if let structDecl = member.decl.as(StructDeclSyntax.self) {
+                    return structDecl.name.text == name
+                }
+
+                return false
             }
         }
     }

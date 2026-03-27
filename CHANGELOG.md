@@ -72,6 +72,11 @@
   `redundant_self` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6553](https://github.com/realm/SwiftLint/issues/6553)
+  
+* Respect existing environment variables when setting `BUILD_WORKSPACE_DIRECTORY`
+  in build tool plugins.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6080](https://github.com/realm/SwiftLint/issues/6080)
 
 ## 0.63.2: High-Speed Extraction
 

@@ -36,7 +36,7 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
         target: Target
     ) throws -> [String: String] {
         let workingDirectory: Path = try target.directory.resolveWorkingDirectory(in: context.package.directory)
-        return ["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"]
+        return addedToEnvironment(["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"])
     }
 
     private func makeCommand(
@@ -81,6 +81,10 @@ struct SwiftLintBuildToolPlugin: BuildToolPlugin {
                 outputFilesDirectory: outputPath),
         ]
     }
+}
+
+private func addedToEnvironment(_ new: [String: String]) -> [String: String] {
+    ProcessInfo.processInfo.environment.merging(new) { _, new in new }
 }
 
 #if canImport(XcodeProjectPlugin)
@@ -138,7 +142,7 @@ extension SwiftLintBuildToolPlugin: XcodeBuildToolPlugin {
             throw SwiftLintBuildToolPluginError.swiftFilesNotInWorkingDirectory(workingDirectory)
         }
 
-        return ["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"]
+        return addedToEnvironment(["BUILD_WORKSPACE_DIRECTORY": "\(workingDirectory)"])
     }
 }
 

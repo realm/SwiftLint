@@ -5,7 +5,7 @@ struct DiscouragedDefaultParameterConfiguration: SeverityBasedRuleConfiguration 
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "disallowed_access_levels")
-    private(set) var disallowedAccessLevels: Set<AccessLevel> = [.internal, .package]
+    private(set) var disallowedAccessLevels: Set<AccessControlLevel> = [.internal, .package]
 
     @AcceptableByConfigurationElement
     enum AccessLevel: String, Comparable {

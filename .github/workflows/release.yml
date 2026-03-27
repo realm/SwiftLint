@@ -258,7 +258,7 @@ jobs:
         run: |
           Compress-Archive -Path "artifacts/swiftlint.exe" -DestinationPath "artifacts/SwiftLint.${{ matrix.arch }}.zip" -Force
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+        uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
       - name: Build WiX MSI
         shell: pwsh
         run: |

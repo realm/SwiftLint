@@ -17,6 +17,9 @@ struct DiscouragedDefaultParameterRule: Rule {
         nonTriggeringExamples: [
             Example("public func foo(bar: Int = 0) {}"),
             Example("open func foo(bar: Int = 0) {}"),
+            Example("public extension Foo { func foo(bar: Int = 0) {} }"),
+            Example("extension E { public func foo(bar: Int = 0) {} }"),
+            Example("func outer() { func inner(bar: Int = 0) {} }"),
             Example("func foo(bar: Int) {}"),
             Example("private func foo(bar: Int = 0) {}"),
             Example("fileprivate func foo(bar: Int = 0) {}"),
@@ -32,6 +35,8 @@ struct DiscouragedDefaultParameterRule: Rule {
             Example("package func foo(bar: Int ↓= 0) {}"),
             Example("func foo(bar: Int ↓= 0, baz: String ↓= \"\") {}"),
             Example("init(value: Int ↓= 42) {}"),
+            Example("class C { public func foo(bar: Int ↓= 0) {} }"),
+            Example("struct S { public init(value: Int ↓= 42) {} }"),
             Example(
                 "private func foo(bar: Int ↓= 0) {}",
                 configuration: ["disallowed_access_levels": ["private"]]
@@ -45,47 +50,43 @@ struct DiscouragedDefaultParameterRule: Rule {
 }
 
 private extension DiscouragedDefaultParameterRule {
-    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: FunctionDeclSyntax) {
-            collectViolations(modifiers: node.modifiers, parameterClause: node.signature.parameterClause)
+    final class Visitor: EffectiveAccessControlSyntaxVisitor<ConfigurationType> {
+        init(configuration: ConfigurationType, file: SwiftLintFile) {
+            super.init(configuration: configuration, file: file)
         }
 
-        override func visitPost(_ node: InitializerDeclSyntax) {
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolations(modifiers: node.modifiers, parameterClause: node.signature.parameterClause)
+            return .skipChildren
         }
 
-        override func visitPost(_ node: SubscriptDeclSyntax) {
+        override func visit(_ node: InitializerDeclSyntax) -> SyntaxVisitorContinueKind {
+            collectViolations(modifiers: node.modifiers, parameterClause: node.signature.parameterClause)
+            return .skipChildren
+        }
+
+        override func visit(_ node: SubscriptDeclSyntax) -> SyntaxVisitorContinueKind {
             collectViolations(modifiers: node.modifiers, parameterClause: node.parameterClause)
+            return .skipChildren
         }
 
-        private func collectViolations(
-            modifiers: DeclModifierListSyntax,
-            parameterClause: FunctionParameterClauseSyntax
-        ) {
-            guard let accessLevel = effectiveAccessLevel(modifiers),
+        private func collectViolations(modifiers: DeclModifierListSyntax,
+                                       parameterClause: FunctionParameterClauseSyntax) {
+            guard !isInLocalAccessControlScope,
+                  case let accessLevel = effectiveAccessControlLevel(for: modifiers),
                   configuration.disallowedAccessLevels.contains(accessLevel) else {
                 return
             }
-            let levelName = accessLevel.rawValue
             for param in parameterClause.parameters {
                 if let defaultValue = param.defaultValue {
                     violations.append(
-                        ReasonedRuleViolation(
+                        .init(
                             position: defaultValue.positionAfterSkippingLeadingTrivia,
-                            reason: "Default parameter values should not be used in '\(levelName)' functions"
+                            reason: "Default parameter values should not be used in '\(accessLevel)' functions"
                         )
                     )
                 }
             }
-        }
-
-        private func effectiveAccessLevel(_ modifiers: DeclModifierListSyntax)
-            -> DiscouragedDefaultParameterConfiguration.AccessLevel? {
-            if modifiers.contains(keyword: .private) { return .private }
-            if modifiers.contains(keyword: .fileprivate) { return .fileprivate }
-            if modifiers.contains(keyword: .package) { return .package }
-            if modifiers.contains(keyword: .public) || modifiers.contains(keyword: .open) { return nil }
-            return .internal
         }
     }
 }

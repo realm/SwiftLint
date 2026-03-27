@@ -65,3 +65,17 @@ extension AccessControlLevel: Comparable {
         lhs.priority < rhs.priority
     }
 }
+
+extension AccessControlLevel: AcceptableByConfigurationElement {
+    public init(fromAny value: Any, context ruleID: String) throws(Issue) {
+        if let value = value as? String, let newSelf = Self(description: value) {
+            self = newSelf
+        } else {
+            throw .invalidConfiguration(ruleID: ruleID)
+        }
+    }
+
+    public func asOption() -> OptionType {
+        .symbol(description)
+    }
+}

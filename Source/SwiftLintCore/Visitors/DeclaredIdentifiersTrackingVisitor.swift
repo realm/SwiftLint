@@ -205,6 +205,10 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     private func collectIdentifiers(from pattern: PatternSyntax) {
         if let id = pattern.as(IdentifierPatternSyntax.self)?.identifier {
             scope.addToCurrentScope(.localVariable(name: id))
+        } else if let tuple = pattern.as(TuplePatternSyntax.self) {
+            for element in tuple.elements {
+                collectIdentifiers(from: element.pattern)
+            }
         }
     }
 }

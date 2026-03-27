@@ -117,6 +117,16 @@ struct RedundantSelfRuleExamples {
                 }
             }
             """),
+        Example("""
+            struct S {
+                var x = 0, y = 0
+                init() {
+                    let (x, y) = (1, 2)
+                    self.x = x
+                    self.y = y
+                }
+            }
+            """, configuration: ["only_in_closures": false]),
     ]
 
     static let triggeringExamples = [

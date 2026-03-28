@@ -11,7 +11,7 @@ COPY Source Source/
 COPY Tests Tests/
 COPY Package.* ./
 ARG TARGETPLATFORM
-RUN swift build -c release --product swiftlint
+RUN swift build -c release --product swiftlint -Xswiftc -static-stdlib -Xlinker -fuse-ld=lld
 RUN mv $(swift build -c release --show-bin-path)/swiftlint .
 
 # Runtime image

@@ -77,21 +77,22 @@ private extension OptionalDataStringConversionRule {
             }
 
             // Case 3: leading-dot `.init(...)`
-            // This is ambiguous in general. By default we only trigger if the call is used to
+            // This is ambiguous in general. If configuration.allowImplicitInit is true,
+            // we trigger everywhere. Otherwise, we only trigger if the call is used to
             // initialize a variable that has an explicit `String` type annotation:
             // let x: String = .init(...)
-            // If configuration.allowImplicitInit is true, we also trigger for the leading-dot
-            // form even when the type is not explicitly annotated as `String`.
             guard member.base == nil else { return }
 
-            // Walk ancestors to find a VariableDecl or PatternBinding with a type annotation of `String`.
-            if let binding = node.parent?.parent?.as(PatternBindingSyntax.self) {
-                let annotatedString = binding.typeAnnotation?.type.description
-                    .trimmingCharacters(in: .whitespacesAndNewlines) == "String"
+            if configuration.allowImplicitInit {
+                violations.append(called.positionAfterSkippingLeadingTrivia)
+                return
+            }
 
-                if annotatedString || configuration.allowImplicitInit {
-                    violations.append(called.positionAfterSkippingLeadingTrivia)
-                }
+            // Check if the binding has an explicit `String` type annotation
+            if let binding = node.parent?.parent?.as(PatternBindingSyntax.self),
+               binding.typeAnnotation?.type.description
+                .trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
+                violations.append(called.positionAfterSkippingLeadingTrivia)
             }
         }
     }

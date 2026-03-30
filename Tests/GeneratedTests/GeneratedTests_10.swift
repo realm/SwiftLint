@@ -79,6 +79,12 @@ final class ValidIBInspectableRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class VariableShadowingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(VariableShadowingRule.description)
+    }
+}
+
 final class VerticalParameterAlignmentOnCallRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalParameterAlignmentOnCallRule.description)

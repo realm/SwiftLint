@@ -239,6 +239,7 @@ public let builtInRules: [any Rule.Type] = [
     UnusedParameterRule.self,
     UnusedSetterValueRule.self,
     ValidIBInspectableRule.self,
+    VariableShadowingRule.self,
     VerticalParameterAlignmentOnCallRule.self,
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceBetweenCasesRule.self,

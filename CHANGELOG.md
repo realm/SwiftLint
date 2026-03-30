@@ -40,6 +40,12 @@
   [theamodhshetty](https://github.com/theamodhshetty)
   [#5741](https://github.com/realm/SwiftLint/issues/5741)
 
+* Add detection of cases such as `String.init(decoding: data, as: UTF8.self)` and
+  `let text: String = .init(decoding: data, as: UTF8.self)` to
+  `optional_data_string_conversion` rule.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6359](https://github.com/realm/SwiftLint/issues/6359)
+
 ### Bug Fixes
 
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so
@@ -72,7 +78,7 @@
   `redundant_self` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6553](https://github.com/realm/SwiftLint/issues/6553)
-  
+
 * Respect existing environment variables when setting `BUILD_WORKSPACE_DIRECTORY`
   in build tool plugins.  
   [SimplyDanny](https://github.com/SimplyDanny)

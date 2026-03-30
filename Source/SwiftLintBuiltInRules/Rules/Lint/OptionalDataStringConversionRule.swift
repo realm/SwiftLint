@@ -31,12 +31,16 @@ struct OptionalDataStringConversionRule: Rule {
             Example("let text = .init(decoding: data, as: UTF8.self)"),
         ],
         triggeringExamples: [
-            Example("String(decoding: data, as: UTF8.self)"),
-            Example("String.init(decoding: data, as: UTF8.self)"),
-            Example("let text: String = .init(decoding: data, as: UTF8.self)"),
+            Example("↓String(decoding: data, as: UTF8.self)"),
+            Example("↓String.init(decoding: data, as: UTF8.self)"),
+            Example("let text: String = ↓.init(decoding: data, as: UTF8.self)"),
             // With allow_implicit_init enabled, implicit leading-dot init also triggers
             Example(
-                "let text = .init(decoding: data, as: UTF8.self)",
+                "let text = ↓.init(decoding: data, as: UTF8.self)",
+                configuration: ["allow_implicit_init": true]
+            ),
+            Example(
+                "f(↓.init(decoding: data, as: UTF8.self))",
                 configuration: ["allow_implicit_init": true]
             ),
         ]
@@ -47,11 +51,15 @@ private extension OptionalDataStringConversionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionCallExprSyntax) {
             // Only consider calls with labels `decoding` and `as`
-            guard node.arguments.map(\.label?.text) == ["decoding", "as"] else { return }
+            guard node.arguments.map(\.label?.text) == ["decoding", "as"] else {
+                return
+            }
             // Check that the `as:` argument is `UTF8.self`
             guard let lastExpr = node.arguments.last?.expression.as(MemberAccessExprSyntax.self),
                   lastExpr.base?.description == "UTF8",
-                  lastExpr.declName.baseName.description == "self" else { return }
+                  lastExpr.declName.baseName.description == "self" else {
+                return
+            }
 
             // Called expression can be:
             // 1) DeclReferenceExprSyntax("String") -> String(decoding:as:)
@@ -66,12 +74,12 @@ private extension OptionalDataStringConversionRule {
             }
 
             // Case 2 and 3: `.init` or `String.init`
-            guard let member = called.as(MemberAccessExprSyntax.self),
-                  member.declName.baseName.text == "init" else { return }
+            guard let member = called.as(MemberAccessExprSyntax.self), member.declName.baseName.text == "init" else {
+                return
+            }
 
             // Case 2: `String.init(...)`
-            if let baseDecl = member.base?.as(DeclReferenceExprSyntax.self),
-               baseDecl.baseName.text == "String" {
+            if let baseDecl = member.base?.as(DeclReferenceExprSyntax.self), baseDecl.baseName.text == "String" {
                 violations.append(called.positionAfterSkippingLeadingTrivia)
                 return
             }
@@ -90,8 +98,7 @@ private extension OptionalDataStringConversionRule {
 
             // Check if the binding has an explicit `String` type annotation
             if let binding = node.parent?.parent?.as(PatternBindingSyntax.self),
-               binding.typeAnnotation?.type.description
-                .trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
+               binding.typeAnnotation?.type.description.trimmingCharacters(in: .whitespacesAndNewlines) == "String" {
                 violations.append(called.positionAfterSkippingLeadingTrivia)
             }
         }

@@ -17,22 +17,42 @@ struct OptionalDataStringConversionRule: Rule {
             Example("String(decoding: data, encoding: UTF8.self)"),
         ],
         triggeringExamples: [
-            Example("String(decoding: data, as: UTF8.self)")
-        ]
+            Example("String(decoding: data, as: UTF8.self)"),
+            Example("String.init(decoding: data, as: UTF8.self)"),
+            Example("let text: String = .init(decoding: data, as: UTF8.self)"),
+        ],
     )
 }
 
 private extension OptionalDataStringConversionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if node.baseName.text == "String",
-               let parent = node.parent?.as(FunctionCallExprSyntax.self),
-               parent.arguments.map(\.label?.text) == ["decoding", "as"],
-               let expr = parent.arguments.last?.expression.as(MemberAccessExprSyntax.self),
+        override func visitPost(_ node: FunctionCallExprSyntax) {
+            if node.arguments.map(\.label?.text) == ["decoding", "as"],
+               let expr = node.arguments.last?.expression.as(MemberAccessExprSyntax.self),
                expr.base?.description == "UTF8",
-               expr.declName.baseName.description == "self" {
+               expr.declName.baseName.description == "self",
+               node.calledExpression.isOptionalDataStringInitializer {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
+    }
+}
+
+private extension ExprSyntax {
+    var isOptionalDataStringInitializer: Bool {
+        if let declReference = `as`(DeclReferenceExprSyntax.self) {
+            return declReference.baseName.text == "String"
+        }
+
+        guard let memberAccess = `as`(MemberAccessExprSyntax.self),
+              memberAccess.declName.baseName.text == "init" else {
+            return false
+        }
+
+        if memberAccess.base == nil {
+            return true
+        }
+
+        return memberAccess.base?.as(DeclReferenceExprSyntax.self)?.baseName.text == "String"
     }
 }

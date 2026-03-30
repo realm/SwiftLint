@@ -72,6 +72,12 @@
   `redundant_self` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6553](https://github.com/realm/SwiftLint/issues/6553)
+
+* Catch `String.init(decoding:as:)` and `.init(decoding:as:)` in
+  `optional_data_string_conversion`, matching the existing
+  `String(decoding:as:)` check.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6359](https://github.com/realm/SwiftLint/issues/6359)
   
 * Respect existing environment variables when setting `BUILD_WORKSPACE_DIRECTORY`
   in build tool plugins.  

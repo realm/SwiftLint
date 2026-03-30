@@ -82,40 +82,8 @@ private extension VariableShadowingRule {
             return super.visit(node)
         }
 
-        override func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
-            guard let parent = node.parent else {
-                return super.visit(node)
-            }
-
-            // Call super first so the base visitor opens the child scope and collects identifiers
-            let kind = super.visit(node)
-
-            // Check conditions if this is an if/while body AFTER identifiers from conditions were collected
-            if let ifStmt = parent.as(IfExprSyntax.self) {
-                checkForShadowingInConditions(ifStmt.conditions)
-            } else if let whileStmt = parent.as(WhileStmtSyntax.self) {
-                checkForShadowingInConditions(whileStmt.conditions)
-            }
-
-            return kind
-        }
-
-        override func visitPost(_ node: GuardStmtSyntax) {
-            // Let the base visitor collect identifiers first (it does so in its visitPost)
-            super.visitPost(node)
-            // Check for shadowing in guard conditions after collection
-            checkForShadowingInConditions(node.conditions)
-        }
-
-        private func checkForShadowingInConditions(_ conditions: ConditionElementListSyntax) {
-            for element in conditions {
-                if let binding = element.condition.as(OptionalBindingConditionSyntax.self) {
-                    checkForShadowing(in: binding.pattern)
-                }
-            }
-        }
-
         private func checkForShadowing(in pattern: PatternSyntax) {
+            // Handle direct identifier patterns
             if let identifier = pattern.as(IdentifierPatternSyntax.self) {
                 let identifierText = identifier.identifier.text
                 if isShadowingOuterScope(identifierText) {
@@ -124,10 +92,17 @@ private extension VariableShadowingRule {
                 return
             }
 
+            // Recurse into tuple patterns: e.g., (a, b)
             if let tuple = pattern.as(TuplePatternSyntax.self) {
                 tuple.elements.forEach { element in
                     checkForShadowing(in: element.pattern)
                 }
+                return
+            }
+
+            // Recurse into value binding patterns: e.g., `let a`, `var (a, b)`
+            if let valueBinding = pattern.as(ValueBindingPatternSyntax.self) {
+                checkForShadowing(in: valueBinding.pattern)
                 return
             }
 

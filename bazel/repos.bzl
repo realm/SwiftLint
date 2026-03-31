@@ -35,9 +35,9 @@ def swiftlint_repos(bzlmod = False):
 
     http_archive(
         name = "SwiftSyntax",
-        sha256 = "e71d2fc0ceb534b28a12846c39eb09461e116bd46dd1701eaa8f188eb3be5ec7",
-        strip_prefix = "swift-syntax-604.0.0-prerelease-2026-03-24",
-        url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/604.0.0-prerelease-2026-03-24.tar.gz",
+        sha256 = "b058323416a5d7a6fb88040393980dd4da2454586136776cd8cf3d16aa171132",
+        strip_prefix = "swift-syntax-604.0.0-prerelease-2026-03-31",
+        url = "https://github.com/swiftlang/swift-syntax/archive/refs/tags/604.0.0-prerelease-2026-03-31.tar.gz",
     )
 
     http_archive(

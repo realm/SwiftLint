@@ -40,26 +40,26 @@ public extension SwiftSyntaxCorrectableRule {
             .filter { $0.areRulesDisabled(ruleIDs: Self.description.allIdentifiers) }
             .compactMap { $0.toSourceRange(locationConverter: locationConverter) }
 
-        typealias CorrectionRange = (range: NSRange, correction: String)
         let correctionRanges = violations
             .filter { !$0.position.isContainedIn(regions: disabledRegions, locationConverter: locationConverter) }
             .compactMap(\.correction)
             .compactMap { correction in
-                file.stringView.NSRange(start: correction.start, end: correction.end).map { range in
-                    CorrectionRange(range: range, correction: correction.replacement)
-                }
+                (
+                    startByte: correction.start.utf8Offset,
+                    endByte: correction.end.utf8Offset,
+                    replacementBytes: correction.replacement.utf8)
             }
-            .sorted { (lhs: CorrectionRange, rhs: CorrectionRange) -> Bool in
-                lhs.range.location > rhs.range.location
-            }
+            .sorted { $0.startByte > $1.startByte }
         guard correctionRanges.isNotEmpty else {
             return 0
         }
 
-        var contents = file.contents
+        var bytes = Array(file.contents.utf8)
         for range in correctionRanges {
-            let contentsNSString = contents.bridge()
-            contents = contentsNSString.replacingCharacters(in: range.range, with: range.correction)
+            bytes.replaceSubrange(range.startByte..<range.endByte, with: range.replacementBytes)
+        }
+        guard let contents = String(bytes: bytes, encoding: .utf8) else {
+            return 0
         }
         file.write(contents)
         return correctionRanges.count

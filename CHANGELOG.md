@@ -46,6 +46,11 @@
   [nadeemnali](https://github.com/nadeemnali)
   [#6359](https://github.com/realm/SwiftLint/issues/6359)
 
+* Add `variable_shadowing` rule that flags when a variable declaration shadows
+  an identifier from an outer scope.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6228](https://github.com/realm/SwiftLint/issues/6228)
+
 ### Bug Fixes
 
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so

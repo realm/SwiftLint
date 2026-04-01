@@ -11,6 +11,14 @@ internal struct MultilineCallArgumentsRuleExamples {
                 configuration: ["max_number_of_single_line_parameters": 1]
                ),
         Example("""
+            func foo(one: [Int], animated: Bool) {}
+            add(one: [
+                1,
+                2,
+                3
+            ], animated: true)
+            """),
+        Example("""
             foo(
                 param1: 1,
                 param2: 2,
@@ -112,6 +120,13 @@ internal struct MultilineCallArgumentsRuleExamples {
             """,
                 configuration: ["max_number_of_single_line_parameters": 2]
                ),
+        Example("""
+            foo(with: { _ in
+                9_999
+            }, and: { _ in
+                nil
+            })
+            """),
 
         // MARK: - Trivia / comments
         Example("""
@@ -122,16 +137,20 @@ internal struct MultilineCallArgumentsRuleExamples {
                 c: 3
             )
             """),
-
+        // Note: arguments start on the same line, so this is treated as a single-line-args call;
+        // the comma-newline check applies only when argument start lines are already split.
         Example("""
             foo(
-                a: (
-                    1,
-                    2
-                ), b: 3
+                a: (1, 2), b: 3
+            )
+            """),
+        Example("""
+            foo(
+                a: (1, 2),
+                b: 3
             )
             """,
-                configuration: ["max_number_of_single_line_parameters": 10]
+                configuration: ["allows_single_line": false]
                ),
         Example("""
             foo(
@@ -139,9 +158,7 @@ internal struct MultilineCallArgumentsRuleExamples {
                 b: 2,
                 c: 3
             )
-            """,
-                configuration: ["max_number_of_single_line_parameters": 10]
-               ),
+            """),
 
         Example("""
             enum EnumCase {
@@ -355,17 +372,13 @@ internal struct MultilineCallArgumentsRuleExamples {
                 a: 1, ↓b: 2,
                 c: 3
             )
-            """,
-                configuration: ["max_number_of_single_line_parameters": 10]
-               ),
+            """),
         Example("""
             foo(
                 a: 1,
                 b: 2, ↓c: 3
             )
-            """,
-                configuration: ["max_number_of_single_line_parameters": 10]
-               ),
+            """),
         Example("""
             foo(
                 a: 1,
@@ -373,17 +386,23 @@ internal struct MultilineCallArgumentsRuleExamples {
                 c: 3, ↓d: 4,
                 e: 5
             )
+            """),
+        Example("""
+            foo(
+                a: (
+                    1,
+                    2
+                ), ↓b: 3
+            )
             """,
-                configuration: ["max_number_of_single_line_parameters": 10]
-               ),
+            configuration: ["max_number_of_single_line_parameters": 1]
+        ),
         Example("""
             foo(
                 a: 1, /* comment */ ↓b: 2,
                 c: 3
             )
-            """,
-                configuration: ["max_number_of_single_line_parameters": 10]
-               ),
+            """),
 
         // MARK: - Enum-case constructor calls are linted like normal calls
         Example("""

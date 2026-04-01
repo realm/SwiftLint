@@ -15,15 +15,19 @@ struct MultilineCallArgumentsRule: Rule {
 
         static let eachArgumentMustStartOnOwnLine =
             "In multi-line calls, each argument must start on its own line"
+
+        static let newlineRequiredAfterCommaInMultilineCall =
+            "In multi-line calls, a newline is required after each comma"
     }
 
     static let description = RuleDescription(
         identifier: "multiline_call_arguments",
         name: "Multiline Call Arguments",
         description: """
-                     Enforces one-argument-per-line for multi-line calls; \
-                     optionally limits or forbids multi-argument single-line calls via configuration
-                     """,
+        Enforces one-argument-per-line for multi-line calls and requires a newline after commas \
+        when arguments are split across lines;
+        optionally limits or forbids multi-argument single-line calls via configuration.
+        """,
         kind: .style,
         nonTriggeringExamples: MultilineCallArgumentsRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineCallArgumentsRuleExamples.triggeringExamples
@@ -51,16 +55,20 @@ private extension MultilineCallArgumentsRule {
             guard args.count > 1 else { return }
 
             let argumentPositions = args.map(\.positionAfterSkippingLeadingTrivia)
-            guard let violation = reasonedViolation(argumentPositions: argumentPositions) else { return }
+            guard let violation = reasonedViolation(argumentPositions: argumentPositions, arguments: args) else {
+                return
+            }
             violations.append(violation)
         }
 
-        private func reasonedViolation(argumentPositions: [AbsolutePosition]) -> ReasonedRuleViolation? {
+        private func reasonedViolation(
+            argumentPositions: [AbsolutePosition],
+            arguments: LabeledExprListSyntax
+        ) -> ReasonedRuleViolation? {
             guard let firstPos = argumentPositions.first else { return nil }
 
             let firstLine = line(for: firstPos)
             var allOnSameLine = true
-
             for pos in argumentPositions.dropFirst() where line(for: pos) != firstLine {
                 allOnSameLine = false
                 break
@@ -85,18 +93,79 @@ private extension MultilineCallArgumentsRule {
                 return nil
             }
 
+            if let startLineViolation = duplicateArgumentStartLineViolation(in: arguments) {
+                return startLineViolation
+            }
+
+            if let commaViolation = newlineAfterCommaViolation(in: arguments) {
+                return commaViolation
+            }
+
+            return nil
+        }
+
+        private func duplicateArgumentStartLineViolation(
+            in arguments: LabeledExprListSyntax
+        ) -> ReasonedRuleViolation? {
+            let args = Array(arguments)
+            guard args.count > 1 else { return nil }
+
             var seen: Set<Int> = []
-            for pos in argumentPositions {
-                let line = line(for: pos)
+            for arg in args {
+                let startPos = startPosition(of: arg)
+                let line = line(for: startPos)
                 if !seen.insert(line).inserted {
                     return ReasonedRuleViolation(
-                        position: pos,
+                        position: startPos,
                         reason: Reason.eachArgumentMustStartOnOwnLine
                     )
                 }
             }
 
             return nil
+        }
+
+        private func newlineAfterCommaViolation(in arguments: LabeledExprListSyntax) -> ReasonedRuleViolation? {
+            let args = Array(arguments)
+            guard args.count > 1 else { return nil }
+
+            for index in args.indices.dropLast() {
+                let current = args[index]
+                let next = args[index + 1]
+
+                guard let comma = current.trailingComma, comma.presence != .missing else { continue }
+
+                if let lastToken = current.expression.lastToken(viewMode: .sourceAccurate) {
+                    switch lastToken.tokenKind {
+                    case .rightBrace,
+                        .rightSquare:
+                        continue
+                    default:
+                        break
+                    }
+                }
+
+                let commaLine = line(for: comma.positionAfterSkippingLeadingTrivia)
+                let currentStartLine = line(for: startPosition(of: current))
+                let nextStartPos = startPosition(of: next)
+                let nextStartLine = line(for: nextStartPos)
+
+                if commaLine == nextStartLine, currentStartLine != nextStartLine {
+                    return ReasonedRuleViolation(
+                        position: nextStartPos,
+                        reason: Reason.newlineRequiredAfterCommaInMultilineCall
+                    )
+                }
+            }
+
+            return nil
+        }
+
+        private func startPosition(of argument: LabeledExprSyntax) -> AbsolutePosition {
+            if let label = argument.label, label.presence != .missing {
+                return label.positionAfterSkippingLeadingTrivia
+            }
+            return argument.expression.positionAfterSkippingLeadingTrivia
         }
 
         private func line(for position: AbsolutePosition) -> Int {
@@ -118,7 +187,6 @@ private extension FunctionCallExprSyntax {
         let selfSyntax = Syntax(self)
         var current: Syntax? = parent
 
-        // Low-level pattern nodes can appear inside multiple contexts; we only need to check each once.
         var checkedExpressionPattern = false
         var checkedValueBindingPattern = false
 
@@ -132,9 +200,6 @@ private extension FunctionCallExprSyntax {
                 checkedValueBindingPattern = true
                 if selfSyntax.isInside(Syntax(valueBindingPattern.pattern)) { return true }
             }
-
-            // Once we reach a *top-level* pattern container (if/switch/for/catch),
-            // we can safely stop walking up the parent chain after checking its pattern subtree.
 
             if let condition = node.as(MatchingPatternConditionSyntax.self) {
                 if selfSyntax.isInside(Syntax(condition.pattern)) { return true }

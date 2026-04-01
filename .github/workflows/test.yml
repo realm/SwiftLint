@@ -46,7 +46,7 @@ jobs:
           - macOS: '15'
             xcode: '16.4'
           - macOS: '26'
-            xcode: '26.0'
+            xcode: '26.4'
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app
     steps:

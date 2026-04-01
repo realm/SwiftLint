@@ -58,6 +58,7 @@ package struct LintOrAnalyzeOptions {
     let compilerLogPath: String?
     let compileCommands: String?
     let checkForUpdates: Bool
+    let failOnUnfixable: Bool
 
     package init(mode: LintOrAnalyzeMode,
                  paths: [String],
@@ -86,7 +87,8 @@ package struct LintOrAnalyzeOptions {
                  disableSourceKit: Bool,
                  compilerLogPath: String?,
                  compileCommands: String?,
-                 checkForUpdates: Bool) {
+                 checkForUpdates: Bool,
+                 failOnUnfixable: Bool = false) {
         self.mode = mode
         self.paths = paths
         self.useSTDIN = useSTDIN
@@ -115,6 +117,42 @@ package struct LintOrAnalyzeOptions {
         self.compilerLogPath = compilerLogPath
         self.compileCommands = compileCommands
         self.checkForUpdates = checkForUpdates
+        self.failOnUnfixable = failOnUnfixable
+    }
+
+    /// Returns a copy of these options with `autocorrect` set to `false` and `failOnUnfixable` set to `false`,
+    /// suitable for a re-lint pass after autocorrection.
+    func asLintOnly() -> Self {
+        Self(
+            mode: mode,
+            paths: paths,
+            useSTDIN: useSTDIN,
+            configurationFiles: configurationFiles,
+            strict: strict,
+            lenient: lenient,
+            forceExclude: forceExclude,
+            useExcludingByPrefix: useExcludingByPrefix,
+            useScriptInputFiles: useScriptInputFiles,
+            useScriptInputFileLists: useScriptInputFileLists,
+            benchmark: benchmark,
+            reporter: reporter,
+            baseline: baseline,
+            writeBaseline: writeBaseline,
+            workingDirectory: nil, // Already changed in run()
+            quiet: quiet,
+            output: output,
+            progress: progress,
+            cachePath: cachePath,
+            ignoreCache: true, // Must ignore cache since files were just modified
+            enableAllRules: enableAllRules,
+            onlyRule: onlyRule,
+            autocorrect: false,
+            format: false,
+            disableSourceKit: disableSourceKit,
+            compilerLogPath: compilerLogPath,
+            compileCommands: compileCommands,
+            checkForUpdates: false // Already checked in autocorrect pass
+        )
     }
 
     var verb: String {
@@ -140,7 +178,19 @@ package struct LintOrAnalyzeCommand {
             }
         }
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
-            try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+            if options.autocorrect {
+                try await autocorrect(options)
+                if options.failOnUnfixable {
+                    try await lintOrAnalyze(options.asLintOnly())
+                }
+            } else {
+                if options.failOnUnfixable {
+                    queuedPrintError(
+                        "warning: The option --fail-on-unfixable has no effect without --fix."
+                    )
+                }
+                try await lintOrAnalyze(options)
+            }
         }
     }
 

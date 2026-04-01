@@ -47,7 +47,8 @@ extension SwiftLint {
                 disableSourceKit: false,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands,
-                checkForUpdates: common.checkForUpdates
+                checkForUpdates: common.checkForUpdates,
+                failOnUnfixable: common.failOnUnfixable
             )
 
             try await LintOrAnalyzeCommand.run(options)

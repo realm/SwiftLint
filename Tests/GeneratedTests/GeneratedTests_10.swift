@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededSynthesizedInitializerRule.description)
+    }
+}
+
 final class UnneededThrowsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededThrowsRule.description)

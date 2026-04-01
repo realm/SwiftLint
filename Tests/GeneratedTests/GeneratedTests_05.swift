@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyCGGeometryFunctionsRule.description)
+    }
+}
+
 final class LegacyConstantRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyConstantRule.description)
@@ -148,11 +154,5 @@ final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTest
 final class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(NSLocalizedStringKeyRule.description)
-    }
-}
-
-final class NSLocalizedStringRequireBundleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSLocalizedStringRequireBundleRule.description)
     }
 }

@@ -114,7 +114,7 @@ private extension VariableShadowingRule {
 
             // Use early exit and lazy evaluation for better performance
             for scopeDeclarations in scope.dropLast() where
-                scopeDeclarations.lazy.contains(where: { $0.declares(id: identifier) }) {
+                scopeDeclarations.contains(where: { $0.declares(id: identifier) }) {
                 return true
             }
             return false

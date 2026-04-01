@@ -110,7 +110,7 @@ private extension VariableShadowingRule {
         }
 
         private func isShadowingOuterScope(_ identifier: String) -> Bool {
-            guard !scope.isEmpty, scope.count > 1 else { return false }
+            guard scope.count > 1 else { return false }
 
             // Use early exit and lazy evaluation for better performance
             for scopeDeclarations in scope.dropLast() where

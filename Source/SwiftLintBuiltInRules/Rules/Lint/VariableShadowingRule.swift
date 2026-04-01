@@ -56,6 +56,52 @@ struct VariableShadowingRule: Rule {
                 }
             }
             """),
+            Example("""
+            var outer: String = "hello"
+            if let inner = Optional(outer) {
+                print(inner)
+            }
+            """),
+            Example("""
+            var a: String = "outer"
+            let (b, c) = ("first", "second")
+            print(a, b, c)
+            """),
+            Example("""
+            class Test {
+                var property: String = "class property"
+                func test() {
+                    var localVar = "local"
+                    print(property, localVar)
+                }
+            }
+            """),
+            Example("""
+            func outer() {
+                func inner() {
+                    print("no shadowing")
+                }
+            }
+            """),
+            Example("""
+            var result: String?
+            if let unwrappedResult = result {
+                print(unwrappedResult)
+            }
+            """),
+            Example("""
+            var value: Int? = 10
+            guard let safeValue = value else {
+                return
+            }
+            print(safeValue)
+            """),
+            Example("""
+            var data: [Int?] = [1, nil, 3]
+            for case let item? in data {
+                print(item)
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -63,6 +109,38 @@ struct VariableShadowingRule: Rule {
             func test() {
                 let ↓outer = "world"
                 print(outer)
+            }
+            """),
+            Example("""
+            var x = 1
+            do {
+                let ↓x = 2
+                print(x)
+            }
+            """),
+            Example("""
+            var counter = 0
+            func incrementCounter() {
+                var ↓counter = 1
+                counter += 1
+            }
+            """),
+            Example("""
+            func outer() {
+                var value = 10
+                do {
+                    let ↓value = 20
+                    print(value)
+                }
+            }
+            """),
+            Example("""
+            var globalName = "global"
+            func test() {
+                for item in [1, 2, 3] {
+                    var ↓globalName = "local"
+                    print(globalName)
+                }
             }
             """),
         ]

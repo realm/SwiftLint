@@ -8,7 +8,7 @@ struct VariableShadowingRule: Rule {
     static let description = RuleDescription(
         identifier: "variable_shadowing",
         name: "Variable Shadowing",
-        description: "Prefer not to shadow variables declared in outer scopes",
+        description: "Do not shadow variables declared in outer scopes",
         kind: .lint,
         nonTriggeringExamples: [
             Example("""

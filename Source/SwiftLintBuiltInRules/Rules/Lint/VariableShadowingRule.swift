@@ -167,30 +167,20 @@ private extension VariableShadowingRule {
                 if isShadowingOuterScope(identifierText) {
                     violations.append(identifier.identifier.positionAfterSkippingLeadingTrivia)
                 }
-                return
-            }
-
-            // Recurse into tuple patterns: e.g., (a, b)
-            if let tuple = pattern.as(TuplePatternSyntax.self) {
+            } else if let tuple = pattern.as(TuplePatternSyntax.self) {
+                // Recurse into tuple patterns: e.g., (a, b)
                 tuple.elements.forEach { element in
                     checkForShadowing(in: element.pattern)
                 }
-                return
-            }
-
-            // Recurse into value binding patterns: e.g., `let a`, `var (a, b)`
-            if let valueBinding = pattern.as(ValueBindingPatternSyntax.self) {
+            } else if let valueBinding = pattern.as(ValueBindingPatternSyntax.self) {
+                // Recurse into optional binding patterns: e.g., `if let a`, `while var (a, b)`
                 checkForShadowing(in: valueBinding.pattern)
-                return
             }
-
-            // Other pattern kinds are not relevant for shadowing checks here; no action needed.
         }
 
         private func isShadowingOuterScope(_ identifier: String) -> Bool {
             guard scope.count > 1 else { return false }
 
-            // Use early exit and lazy evaluation for better performance
             for scopeDeclarations in scope.dropLast() where
                 scopeDeclarations.contains(where: { $0.declares(id: identifier) }) {
                 return true

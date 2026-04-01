@@ -73,7 +73,7 @@ private extension VariableShadowingRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<ConfigurationType> {
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             // Early exit for member blocks (class/struct properties)
-            if node.parent?.is(MemberBlockItemSyntax.self) != true {
+            if node.parent?.is(MemberBlockItemSyntax.self) == false {
                 // Check for shadowing BEFORE adding to scope
                 node.bindings.forEach { binding in
                     checkForShadowing(in: binding.pattern)

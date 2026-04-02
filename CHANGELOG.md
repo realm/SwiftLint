@@ -48,6 +48,11 @@
 
 ### Bug Fixes
 
+* Ensure that `indentation_width` flags under-indented closing braces while
+  still avoiding duplicate warnings on the next outer closing brace.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6498](https://github.com/realm/SwiftLint/issues/6498)
+
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so
   wrappers/attributes that require explicit `= nil` can be excluded from
   style checks for both `style: always` and `style: never`.  

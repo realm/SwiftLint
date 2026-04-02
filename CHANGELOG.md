@@ -48,6 +48,11 @@
 
 ### Bug Fixes
 
+* Avoid false positives from `unused_enumerated` when higher-order calls on
+  `.enumerated()` use result members like `?.offset` after the closure.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#5881](https://github.com/realm/SwiftLint/issues/5881)
+
 * Add an `ignore_attributes` option to `implicit_optional_initialization` so
   wrappers/attributes that require explicit `= nil` can be excluded from
   style checks for both `style: always` and `style: never`.  

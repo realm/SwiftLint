@@ -1,6 +1,6 @@
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
-internal struct MultilineCallArgumentsRuleExamples {
+struct MultilineCallArgumentsRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         // MARK: - Baseline: multi-line OK
         Example("""

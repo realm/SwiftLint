@@ -123,13 +123,9 @@ private extension InvisibleCharacterRule {
                     continue
                 }
                 var utf8Offset = 0
-                var previousScalar: UnicodeScalar?
-                var previousUtf8Size = 0
 
                 for scalar in scalars {
                     defer {
-                        previousScalar = scalar
-                        previousUtf8Size = scalar.utf8.count
                         utf8Offset += scalar.utf8.count
                     }
                     guard violatingCharacters.contains(scalar) else {
@@ -139,40 +135,15 @@ private extension InvisibleCharacterRule {
                     let characterName = InvisibleCharacterConfiguration.defaultCharacterDescriptions[scalar]
                         ?? scalar.escaped(asASCII: true)
 
-                    // Check if this scalar forms a grapheme cluster with the previous one.
-                    // This is needed on Windows and Linux where NSString operations on grapheme clusters
-                    // can delete more than intended when removing a combining character like ZWJ.
-                    let formsCombinedCluster: Bool
-                    if let prev = previousScalar {
-                        let combined = String(prev) + String(scalar)
-                        formsCombinedCluster = combined.count == 1
-                    } else {
-                        formsCombinedCluster = false
-                    }
-
-                    let correctionStart: AbsolutePosition
-                    let replacement: String
-
-                    if formsCombinedCluster, let prev = previousScalar {
-                        // Include previous scalar in the correction range and use it as replacement
-                        correctionStart = stringSegment.content.positionAfterSkippingLeadingTrivia
-                            .advanced(by: utf8Offset - previousUtf8Size)
-                        replacement = String(prev)
-                    } else {
-                        correctionStart = stringSegment.content.positionAfterSkippingLeadingTrivia
-                            .advanced(by: utf8Offset)
-                        replacement = ""
-                    }
-
                     let position = stringSegment.content.positionAfterSkippingLeadingTrivia.advanced(by: utf8Offset)
                     violations.append(
                         ReasonedRuleViolation(
                             position: position,
                             reason: "String literal should not contain invisible character \(characterName)",
                             correction: .init(
-                                start: correctionStart,
+                                start: position,
                                 end: position.advanced(by: scalar.utf8.count),
-                                replacement: replacement
+                                replacement: ""
                             )
                         )
                     )

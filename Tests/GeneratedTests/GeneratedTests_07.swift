@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class PatternMatchingKeywordsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PatternMatchingKeywordsRule.description)
+    }
+}
+
 final class PeriodSpacingRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PeriodSpacingRule.description)
@@ -148,11 +154,5 @@ final class RawValueForCamelCasedCodableEnumRuleGeneratedTests: SwiftLintTestCas
 final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceBooleanRule.description)
-    }
-}
-
-final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReduceIntoRule.description)
     }
 }

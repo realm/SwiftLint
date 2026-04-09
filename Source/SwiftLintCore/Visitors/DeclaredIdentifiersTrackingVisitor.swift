@@ -71,7 +71,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     ///   - identifier: An identifier.
     /// - Returns: `true` if the identifier was declared previously.
     public func hasSeenDeclaration(for identifier: String) -> Bool {
-        scope.contains { $0.contains { $0.name == identifier } }
+        scope.contains { $0.contains { $0.declares(id: identifier) } }
     }
 
     override open func visit(_ node: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {

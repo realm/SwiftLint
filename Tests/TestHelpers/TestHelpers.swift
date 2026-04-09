@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 import XCTest
 
 import SwiftLintFramework
@@ -198,18 +199,18 @@ public extension Collection where Element == Example {
     }
 }
 
-private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
-    var markerOffsets = [Int]()
+private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [AbsolutePosition]) {
+    var markerOffsets = [AbsolutePosition]()
     var cleanedContents = ""
     cleanedContents.reserveCapacity(contents.count)
 
-    var offset = 0
+    var offset = AbsolutePosition(utf8Offset: 0)
     for char in contents {
         if char == violationMarkerChar {
             markerOffsets.append(offset)
         } else {
             cleanedContents.append(char)
-            offset += 1
+            offset = offset.advanced(by: char.utf8.count)
         }
     }
 
@@ -575,11 +576,7 @@ public extension XCTestCase {
             }
             let file = SwiftLintFile.testFile(withContents: cleanTrigger)
 
-            // Convert grapheme cluster indices to UTF-16 offsets
-            let expectedLocations = markerOffsets.map { graphemeOffset -> Location in
-                let utf16Offset = cleanTrigger.utf16OffsetFrom(graphemeOffset: graphemeOffset)
-                return Location(file: file, characterOffset: utf16Offset)
-            }
+            let expectedLocations = markerOffsets.map { Location(file: file, position: $0) }
 
             // Assert violations on unexpected location
             let violationsAtUnexpectedLocation = triggerViolations
@@ -670,23 +667,5 @@ private extension RuleDescription {
 package extension [any Rule] {
     var customRules: CustomRules? {
         first(where: { $0 is CustomRules }) as? CustomRules
-    }
-}
-
-private extension String {
-    /// Converts a grapheme cluster offset to a UTF-16 code unit offset
-    func utf16OffsetFrom(graphemeOffset: Int) -> Int {
-        var currentGraphemeIndex = 0
-        var utf16Offset = 0
-
-        for char in self {
-            if currentGraphemeIndex == graphemeOffset {
-                return utf16Offset
-            }
-            utf16Offset += char.utf16.count
-            currentGraphemeIndex += 1
-        }
-
-        return utf16Offset
     }
 }

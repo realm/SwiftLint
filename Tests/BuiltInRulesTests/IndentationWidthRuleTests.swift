@@ -268,30 +268,37 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         assert1Violation(in: example4, includeMultilineStrings: true)
     }
 
-    func testIncludeMultilineConditions() {
-        let guardExample = """
-            guard let x = foo(),
-                  let y = bar() else {
-                return
-            }
-            """
-        let ifExample = """
-            if let x = foo(),
-               let y = bar() {
-                doSomething()
-            }
-            """
-
-        assertNoViolation(in: guardExample)
-        assertNoViolation(in: ifExample)
+    func testMultilineConditionsSkippedByDefault() {
+        assertNoViolation(in: "guard let x = foo(),\n      let y = bar() else {\n    return\n}")
+        assertNoViolation(in: "if let x = foo(),\n   let y = bar() {\n    doSomething()\n}")
         assertNoViolation(in: "while let x = foo(),\n      let y = bar() {\n    doSomething()\n}")
-        assert1Violation(in: guardExample, includeMultilineConditions: true)
-        assert1Violation(in: ifExample, includeMultilineConditions: true)
         assertNoViolation(in: "guard let x = foo() else {\n    return\n}")
-        assertNoViolation(
-            in: "guard\n    let x = foo(),\n    let y = bar()\nelse {\n    return\n}",
-            includeMultilineConditions: true
-        )
+        // Misaligned but skipped when include_multiline_conditions: false
+        assertNoViolation(in: "if let x = foo(),\n        let y = bar() {\n    doSomething()\n}")
+    }
+
+    func testMultilineConditionsAlignmentChecked() {
+        // Properly aligned — no violations
+        let guardAligned = "guard let x = foo(),\n      let y = bar() else {\n    return\n}"
+        let ifAligned = "if let x = foo(),\n   let y = bar() {\n    doSomething()\n}"
+        let whileAligned = "while let x = foo(),\n      let y = bar() {\n    doSomething()\n}"
+        let guardNextLine = "guard\n    let x = foo(),\n    let y = bar()\nelse {\n    return\n}"
+        let ifThreeAligned = "if let a = foo(),\n   let b = bar(),\n   let c = baz() {\n    doSomething()\n}"
+        assertNoViolation(in: guardAligned, includeMultilineConditions: true)
+        assertNoViolation(in: ifAligned, includeMultilineConditions: true)
+        assertNoViolation(in: whileAligned, includeMultilineConditions: true)
+        assertNoViolation(in: guardNextLine, includeMultilineConditions: true)
+        assertNoViolation(in: ifThreeAligned, includeMultilineConditions: true)
+    }
+
+    func testMultilineConditionsMisaligned() {
+        let ifMisaligned = "if let x = foo(),\n       let y = bar() {\n    doSomething()\n}"
+        let guardMisaligned = "guard let x = foo(),\n        let y = bar() else {\n    return\n}"
+        let ifThreeMisaligned =
+            "if let a = foo(),\n       let b = bar(),\n       let c = baz() {\n    doSomething()\n}"
+        assert1Violation(in: ifMisaligned, includeMultilineConditions: true)
+        assert1Violation(in: guardMisaligned, includeMultilineConditions: true)
+        assertViolations(in: ifThreeMisaligned, equals: 2, includeMultilineConditions: true)
     }
 
     // MARK: Helpers
@@ -361,15 +368,10 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         line: UInt = #line
     ) {
         assertViolations(
-            in: string,
-            equals: 0,
-            indentationWidth: indentationWidth,
-            includeComments: includeComments,
-            includeCompilerDirectives: includeCompilerDirectives,
+            in: string, equals: 0, indentationWidth: indentationWidth,
+            includeComments: includeComments, includeCompilerDirectives: includeCompilerDirectives,
             includeMultilineStrings: includeMultilineStrings,
-            includeMultilineConditions: includeMultilineConditions,
-            file: file,
-            line: line
+            includeMultilineConditions: includeMultilineConditions, file: file, line: line
         )
     }
 
@@ -384,15 +386,10 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         line: UInt = #line
     ) {
         assertViolations(
-            in: string,
-            equals: 1,
-            indentationWidth: indentationWidth,
-            includeComments: includeComments,
-            includeCompilerDirectives: includeCompilerDirectives,
+            in: string, equals: 1, indentationWidth: indentationWidth,
+            includeComments: includeComments, includeCompilerDirectives: includeCompilerDirectives,
             includeMultilineStrings: includeMultilineStrings,
-            includeMultilineConditions: includeMultilineConditions,
-            file: file,
-            line: line
+            includeMultilineConditions: includeMultilineConditions, file: file, line: line
         )
     }
 }

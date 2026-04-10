@@ -178,71 +178,15 @@ private extension MultilineCallArgumentsRule {
     }
 }
 
-// MARK: - Pattern filtering (precise, pattern-part only)
-
 private extension FunctionCallExprSyntax {
-    /// `true` only when this FunctionCall is used inside a *pattern* (e.g. `.caseOne(...)`),
-    /// not just somewhere inside `if case` / `switch case` bodies.
+    /// Returns `true` if this call appears in a pattern position (e.g., `case .foo(a)`).
+    ///
+    /// Works because SwiftSyntax wraps pattern expressions in `ExpressionPatternSyntax`:
+    /// - `if case let .foo(a) = x` → parent is ExpressionPatternSyntax
+    /// - `switch x { case let .foo(a): }` → parent is ExpressionPatternSyntax
+    /// - `for case let .foo(a) in items` → parent is ExpressionPatternSyntax
+    /// - `catch .foo(1, 2)` → parent is ExpressionPatternSyntax
     var isInPatternMatchingPatternPosition: Bool {
-        let selfSyntax = Syntax(self)
-        var current: Syntax? = parent
-
-        var checkedExpressionPattern = false
-        var checkedValueBindingPattern = false
-
-        while let node = current {
-            if !checkedExpressionPattern, let expressionPattern = node.as(ExpressionPatternSyntax.self) {
-                checkedExpressionPattern = true
-                if selfSyntax.isInside(Syntax(expressionPattern.expression)) { return true }
-            }
-
-            if !checkedValueBindingPattern, let valueBindingPattern = node.as(ValueBindingPatternSyntax.self) {
-                checkedValueBindingPattern = true
-                if selfSyntax.isInside(Syntax(valueBindingPattern.pattern)) { return true }
-            }
-
-            if let condition = node.as(MatchingPatternConditionSyntax.self) {
-                if selfSyntax.isInside(Syntax(condition.pattern)) { return true }
-                break
-            }
-
-            if let caseItem = node.as(SwitchCaseItemSyntax.self) {
-                if selfSyntax.isInside(Syntax(caseItem.pattern)) { return true }
-                break
-            }
-
-            if let forStmt = node.as(ForStmtSyntax.self) {
-                if selfSyntax.isInside(Syntax(forStmt.pattern)) { return true }
-                break
-            }
-
-            if let catchClause = node.as(CatchClauseSyntax.self) {
-                for item in catchClause.catchItems {
-                    if let pattern = item.pattern,
-                       selfSyntax.isInside(Syntax(pattern)) {
-                        return true
-                    }
-                }
-                break
-            }
-
-            current = node.parent
-        }
-
-        return false
-    }
-}
-
-// MARK: - Generic helpers
-
-private extension Syntax {
-    /// Returns `true` if `self` is the `ancestor` node itself or is located inside its subtree.
-    func isInside(_ ancestor: Syntax) -> Bool {
-        var current: Syntax? = self
-        while let node = current {
-            if node.id == ancestor.id { return true }
-            current = node.parent
-        }
-        return false
+        parent?.is(ExpressionPatternSyntax.self) == true
     }
 }

@@ -20,6 +20,11 @@ struct ControlStatementRule: Rule {
             Example("renderGif(data)"),
             Example("guard condition else {}"),
             Example("while condition {}"),
+            Example("""
+            if (abc == 1/* && cdf == 2*/) {
+                print("Hello, world!")
+            }
+            """),
             Example("do {} while condition {}"),
             Example("do { ; } while condition {}"),
             Example("switch foo {}"),
@@ -169,8 +174,16 @@ private extension ControlStatementRule {
 
 private extension ExprSyntax {
     var unwrapped: ExprSyntax? {
-        if let expr = `as`(TupleExprSyntax.self)?.elements.onlyElement?.expression {
-            return containsTrailingClosure(Syntax(expr)) ? nil : expr
+        if let tuple = `as`(TupleExprSyntax.self),
+           let expr = tuple.elements.onlyElement?.expression {
+            if containsTrailingClosure(Syntax(expr)) ||
+                expr.leadingTrivia.containsComments ||
+                expr.trailingTrivia.containsComments ||
+                tuple.leftParen.trailingTrivia.containsComments ||
+                tuple.rightParen.leadingTrivia.containsComments {
+                return nil
+            }
+            return expr
         }
         return nil
     }

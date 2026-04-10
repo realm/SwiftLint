@@ -89,6 +89,42 @@ final class IndentationWidthRuleTests: SwiftLintTestCase {
         assertNoViolation(in: "firstLine\n\tsecondLine\n\t\tthirdLine\n\t\t\tfourthLine\nfifthLine")
     }
 
+    func testClosingBraceIndentation() {
+        assert1Violation(in: """
+            import SwiftUI
+
+            struct TestView: View {
+                var body: some View {
+                    VStack {
+                        Text("Hello")
+                    }
+                    .onTapGesture {
+                        if true {
+                            print("inside if")
+                    }
+                    }
+                }
+            }
+            """)
+
+        assertNoViolation(in: """
+            import SwiftUI
+
+            struct TestView: View {
+                var body: some View {
+                    VStack {
+                        Text("Hello")
+                    }
+                    .onTapGesture {
+                        if true {
+                            print("inside if")
+                        }
+                    }
+                }
+            }
+            """)
+    }
+
     /// It's okay to have empty lines between iff the following indentations obey the rules.
     func testEmptyLinesBetween() {
         assertNoViolation(in: "firstLine\n\tsecondLine\n\n\tfourthLine")

@@ -76,7 +76,14 @@ private struct AccessibilityDeterminator {
             return true
         }
 
-        // 2. Check the parent hierarchy for exemptions
+        // 2. Check if the Image is inside a Label's icon: closure.
+        //    SwiftUI Label provides accessibility through its text content, so the
+        //    icon image is inherently labeled and needs no separate accessibility label.
+        if imageCall.isInsideLabelIconClosure() {
+            return true
+        }
+
+        // 3. Check the parent hierarchy for exemptions
         return imageCall.isExemptedByAncestors()
     }
 }
@@ -248,6 +255,27 @@ private extension FunctionCallExprSyntax {
         // Button exempts children if it has accessibility treatment
         if containerName == "Button" {
             return hasDirectAccessibilityTreatment()
+        }
+
+        return false
+    }
+
+    /// Check if this Image is inside the `icon:` closure argument of a SwiftUI Label.
+    /// In SwiftUI, Label provides accessibility through its text content, so any Image
+    /// in the icon closure is inherently labeled and does not need a separate label.
+    func isInsideLabelIconClosure() -> Bool {
+        var currentNode: Syntax? = Syntax(self)
+
+        while let node = currentNode {
+            if let labeledExpr = node.as(LabeledExprSyntax.self),
+               labeledExpr.label?.text == "icon",
+               let argList = labeledExpr.parent?.as(LabeledExprListSyntax.self),
+               let funcCall = argList.parent?.as(FunctionCallExprSyntax.self),
+               let identifier = funcCall.calledExpression.as(DeclReferenceExprSyntax.self),
+               identifier.baseName.text == "Label" {
+                return true
+            }
+            currentNode = node.parent
         }
 
         return false

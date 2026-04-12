@@ -12,6 +12,10 @@
 
 ### Enhancements
 
+* Add new `redundant_final_actor` rule that warns when the `final` modifier is applied to an `actor` declaration. Since actors are implicitly `final` per [SE-0306](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0306-actors.md), the modifier is always redundant.  
+  [VDurocher](https://github.com/VDurocher)
+  [#6407](https://github.com/realm/SwiftLint/issues/6407)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

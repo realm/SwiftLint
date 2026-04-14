@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceIntoRule.description)
+    }
+}
+
 final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)
@@ -148,11 +154,5 @@ final class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
 final class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)
-    }
-}
-
-final class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StaticOverFinalClassRule.description)
     }
 }

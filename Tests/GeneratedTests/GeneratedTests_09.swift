@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class StaticOverFinalClassRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StaticOverFinalClassRule.description)
+    }
+}
+
 final class StrictFilePrivateRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrictFilePrivateRule.description)
@@ -148,11 +154,5 @@ final class UnneededEscapingRuleGeneratedTests: SwiftLintTestCase {
 final class UnneededOverrideRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededOverrideRule.description)
-    }
-}
-
-final class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }
 }

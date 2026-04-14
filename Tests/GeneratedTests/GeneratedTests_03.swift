@@ -67,6 +67,12 @@ final class ExplicitInitRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class ExplicitReturnRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ExplicitReturnRule.description)
+    }
+}
+
 final class ExplicitSelfRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitSelfRule.description)
@@ -148,11 +154,5 @@ final class FirstWhereRuleGeneratedTests: SwiftLintTestCase {
 final class FlatMapOverMapReduceRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)
-    }
-}
-
-final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ForWhereRule.description)
     }
 }

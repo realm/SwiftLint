@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class UnneededParenthesesInClosureArgumentRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    }
+}
+
 final class UnneededSynthesizedInitializerRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededSynthesizedInitializerRule.description)

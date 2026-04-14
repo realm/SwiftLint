@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class ForWhereRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ForWhereRule.description)
+    }
+}
+
 final class ForceCastRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ForceCastRule.description)
@@ -148,11 +154,5 @@ final class LargeTupleRuleGeneratedTests: SwiftLintTestCase {
 final class LastWhereRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
-    }
-}
-
-final class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(LeadingWhitespaceRule.description)
     }
 }

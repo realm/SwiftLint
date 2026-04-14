@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class LeadingWhitespaceRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LeadingWhitespaceRule.description)
+    }
+}
+
 final class LegacyCGGeometryFunctionsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
@@ -148,11 +154,5 @@ final class MultilineParametersRuleGeneratedTests: SwiftLintTestCase {
 final class MultipleClosuresWithTrailingClosureRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultipleClosuresWithTrailingClosureRule.description)
-    }
-}
-
-final class NSLocalizedStringKeyRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(NSLocalizedStringKeyRule.description)
     }
 }

@@ -7,6 +7,8 @@ public enum IdentifierDeclaration: Hashable {
     case parameter(name: TokenSyntax)
     /// Local variable declaration with a name token.
     case localVariable(name: TokenSyntax)
+    /// A member variable declaration with a name token.
+    case memberVariable(name: TokenSyntax)
     /// A variable that is implicitly added by the compiler (e.g. `error` in `catch` clauses).
     case implicitVariable(name: String)
     /// A variable hidden from scope because its name is a wildcard `_`.
@@ -19,6 +21,7 @@ public enum IdentifierDeclaration: Hashable {
         switch self {
         case let .parameter(name): name.text
         case let .localVariable(name): name.text
+        case let .memberVariable(name): name.text
         case let .implicitVariable(name): name
         case .wildcard: "_"
         case .lookupBoundary: ""
@@ -50,6 +53,10 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     /// A type that remembers the declared identifiers (in order) up to the current position in the code.
     public typealias Scope = Stack<[IdentifierDeclaration]>
 
+    /// Whether to include class/struct/actor/enum member declarations in the scope. If `false`, only function-local 
+    /// scopes are tracked.
+    public let includeMembers: Bool
+
     /// The hierarchical stack of identifiers declared up to the current position in the code.
     public var scope: Scope
 
@@ -58,9 +65,14 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     /// - Parameters:
     ///   - configuration: Configuration of a rule.
     ///   - file: File from which the syntax tree stems from.
+    ///   - includeMembers: Whether to include class/struct/actor/enum member declarations in the scope.
     ///   - scope: A (potentially already pre-filled) scope to collect identifiers into.
     @inlinable
-    public init(configuration: Configuration, file: SwiftLintFile, scope: Scope = Scope()) {
+    public init(configuration: Configuration,
+                file: SwiftLintFile,
+                includeMembers: Bool = false,
+                scope: Scope = Scope()) {
+        self.includeMembers = includeMembers
         self.scope = scope
         super.init(configuration: configuration, file: file)
     }
@@ -123,11 +135,22 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
         if node.belongsToTypeDefinableInFunction {
             scope.push([.lookupBoundary])
         }
+        if includeMembers {
+            scope.openChildScope()
+            for binding in node.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) }).flatMap(\.bindings) {
+                if let id = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier {
+                    scope.addToCurrentScope(.memberVariable(name: id))
+                }
+            }
+        }
         return .visitChildren
     }
 
     override open func visitPost(_ node: MemberBlockSyntax) {
         if node.belongsToTypeDefinableInFunction {
+            scope.pop()
+        }
+        if includeMembers {
             scope.pop()
         }
     }

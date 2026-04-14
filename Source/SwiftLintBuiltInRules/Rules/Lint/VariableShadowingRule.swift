@@ -35,8 +35,8 @@ struct VariableShadowingRule: Rule {
             for i in 1...10 {
                 print(i)
             }
-            for j in 1...10 {
-                print(j)
+            for i in 1...10 {
+                print(i)
             }
             """),
             Example("""
@@ -54,52 +54,6 @@ struct VariableShadowingRule: Rule {
                 func test(a: String?) {
                     print(a)
                 }
-            }
-            """),
-            Example("""
-            var outer: String = "hello"
-            if let inner = Optional(outer) {
-                print(inner)
-            }
-            """),
-            Example("""
-            var a: String = "outer"
-            let (b, c) = ("first", "second")
-            print(a, b, c)
-            """),
-            Example("""
-            class Test {
-                var property: String = "class property"
-                func test() {
-                    var localVar = "local"
-                    print(property, localVar)
-                }
-            }
-            """),
-            Example("""
-            func outer() {
-                func inner() {
-                    print("no shadowing")
-                }
-            }
-            """),
-            Example("""
-            var result: String?
-            if let unwrappedResult = result {
-                print(unwrappedResult)
-            }
-            """),
-            Example("""
-            var value: Int? = 10
-            guard let safeValue = value else {
-                return
-            }
-            print(safeValue)
-            """),
-            Example("""
-            var data: [Int?] = [1, nil, 3]
-            for case let item? in data {
-                print(item)
             }
             """),
             Example("""
@@ -121,62 +75,28 @@ struct VariableShadowingRule: Rule {
             }
             """),
             Example("""
-            func test() {
-                var a = 1
-                var b = 2
+            var a = 1
+            if let a = self.a {
+                print(a)
+            }
+            """),
+            Example("""
+            struct S {
+                static let c: Int? = nil
+                var a: Int?
+                var b: Int {
+                    if let a = self.a { a }
+                    else if let c = Self.c { c }
+                    else { 0 }
+                }
             }
             """),
         ],
         triggeringExamples: [
             Example("""
-            var outer: String = "hello"
-            func test() {
-                let ↓outer = "world"
-                print(outer)
-            }
-            """),
-            Example("""
-            var x = 1
-            do {
-                let ↓x = 2
-                print(x)
-            }
-            """),
-            Example("""
-            var counter = 0
-            func incrementCounter() {
-                var ↓counter = 1
-                counter += 1
-            }
-            """),
-            Example("""
-            func outer() {
-                var value = 10
-                do {
-                    let ↓value = 20
-                    print(value)
-                }
-            }
-            """),
-            Example("""
-            var globalName = "global"
-            func test() {
-                for item in [1, 2, 3] {
-                    var ↓globalName = "local"
-                    print(globalName)
-                }
-            }
-            """),
-            Example("""
             var foo = 1
             do {
                 let ↓foo = 2
-            }
-            """),
-            Example("""
-            var bar = 1
-            func test() {
-                let ↓bar = 2
             }
             """),
             Example("""
@@ -194,8 +114,8 @@ struct VariableShadowingRule: Rule {
             }
             """),
             Example("""
+            var a = 1
             func test() {
-                var a = 1
                 do {
                     var ↓a = 2
                     print(a)
@@ -205,7 +125,7 @@ struct VariableShadowingRule: Rule {
             Example("""
             func test() {
                 var a = 1
-                if true {
+                if var ↓a = Optional(2) {
                     var ↓a = 2
                     print(a)
                 }
@@ -214,7 +134,7 @@ struct VariableShadowingRule: Rule {
             Example("""
             func test() {
                 var a = 1
-                for _ in 0..<1 {
+                for ↓a in 0..<1 {
                     var ↓a = 2
                     print(a)
                 }
@@ -230,16 +150,9 @@ struct VariableShadowingRule: Rule {
             }
             """),
             Example("""
-            var a = 1
-            if let ↓a = Optional(2) {}
-            """),
-            Example("""
-            var i = 1
-            for ↓i in 1...3 {}
-            """),
-            Example("""
             var a: String?
             func test(↓a: String?) {
+                let ↓a = ""
                 print(a)
             }
             """, configuration: ["ignore_parameters": false]),
@@ -257,8 +170,8 @@ struct VariableShadowingRule: Rule {
             while let ↓a = Optional("hello") {}
             """),
             Example("""
-            var a: String?
-            guard let ↓a = Optional("hello") else { return }
+            var a = "outer"
+            let (↓a, c) = ("first", "second")
             """),
         ]
     )
@@ -266,9 +179,14 @@ struct VariableShadowingRule: Rule {
 
 private extension VariableShadowingRule {
     final class Visitor: DeclaredIdentifiersTrackingVisitor<VariableShadowingConfiguration> {
+        init(configuration: ConfigurationType, file: SwiftLintFile) {
+            super.init(configuration: configuration, file: file, includeMembers: true)
+        }
+
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
             if node.parent?.is(MemberBlockItemSyntax.self) == false {
-                node.bindings.forEach { binding in
+                let isUnmodifiable = node.bindingSpecifier.tokenKind == .keyword(.let)
+                for binding in node.bindings where isUnmodifiable || !binding.isIdentity {
                     checkForShadowing(in: binding.pattern)
                 }
             }
@@ -319,32 +237,15 @@ private extension VariableShadowingRule {
             return super.visit(node)
         }
 
-        override func visit(_ node: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
-            let result = super.visit(node)
-            if let parent = node.parent,
-               [.actorDecl, .classDecl, .enumDecl, .structDecl].contains(parent.kind) {
-                for member in node.members {
-                    if let varDecl = member.decl.as(VariableDeclSyntax.self) {
-                        for binding in varDecl.bindings {
-                            if let id = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier {
-                                scope.modifyLast { $0.append(.localVariable(name: id)) }
-                            }
-                        }
-                    }
-                }
-            }
-            return result
-        }
-
         // Checking shadowing in both variable declarations and optional bindings.
         // For optional bindings, skips idiomatic patterns (if let a / if let a = a).
         private func checkForShadowing(in pattern: PatternSyntax, binding: OptionalBindingConditionSyntax? = nil) {
             if let identifier = pattern.as(IdentifierPatternSyntax.self) {
-                let identifierText = identifier.identifier.text
-                if let binding, isIdiomatic(pattern: identifier, binding: binding) {
+                let name = identifier.identifier.text
+                if let binding, binding.initializer?.isBindingFor(name: name) != false {
                     return
                 }
-                if hasSeenDeclaration(for: identifierText) {
+                if hasSeenDeclaration(for: name) {
                     violations.append(identifier.identifier.positionAfterSkippingLeadingTrivia)
                 }
             } else if let tuple = pattern.as(TuplePatternSyntax.self) {
@@ -355,18 +256,28 @@ private extension VariableShadowingRule {
                 checkForShadowing(in: valueBinding.pattern, binding: binding)
             }
         }
+    }
+}
 
-        // Idiomatic: shorthand (if let a) or identity (if let a = a)
-        private func isIdiomatic(
-            pattern: IdentifierPatternSyntax,
-            binding: OptionalBindingConditionSyntax
-        ) -> Bool {
-            let patternName = pattern.identifier.text
-            guard let initializer = binding.initializer else { return true }
-            if let identifierExpr = initializer.value.as(DeclReferenceExprSyntax.self) {
-                return identifierExpr.baseName.text == patternName
-            }
+private extension PatternBindingSyntax {
+    var isIdentity: Bool {
+        guard let initializer, let identifierPattern = pattern.as(IdentifierPatternSyntax.self) else {
             return false
         }
+        return initializer.isBindingFor(name: identifierPattern.identifier.text)
+    }
+}
+
+private extension InitializerClauseSyntax {
+    func isBindingFor(name: String) -> Bool {
+        if let identifierExpr = value.as(DeclReferenceExprSyntax.self) {
+            return identifierExpr.baseName.text == name
+        }
+        if let memberAccessExpr = value.as(MemberAccessExprSyntax.self),
+           let baseName = memberAccessExpr.base?.as(DeclReferenceExprSyntax.self)?.baseName.text,
+           ["self", "Self"].contains(baseName) {
+            return memberAccessExpr.declName.baseName.text == name
+        }
+        return false
     }
 }

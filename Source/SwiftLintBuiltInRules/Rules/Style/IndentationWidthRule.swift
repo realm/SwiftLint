@@ -17,6 +17,28 @@ struct IndentationWidthRule: OptInRule {
         }
     }
 
+    /// Parsed information about a line's leading whitespace.
+    private struct IndentationPrefix {
+        let tabCount: Int
+        let spaceCount: Int
+
+        var combinedCount: Int { tabCount + spaceCount }
+
+        init(line: Line, length: Int) {
+            var tabs = 0
+            var spaces = 0
+            for char in line.content.prefix(length) {
+                if char == "\t" { tabs += 1 } else if char == " " { spaces += 1 }
+            }
+            self.tabCount = tabs
+            self.spaceCount = spaces
+        }
+
+        func spacesEquivalent(indentationWidth: Int) -> Int {
+            spaceCount + tabCount * indentationWidth
+        }
+    }
+
     // MARK: - Properties
     var configuration = IndentationWidthConfiguration()
 
@@ -79,10 +101,11 @@ struct IndentationWidthRule: OptInRule {
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
             if shouldSkipLine(line: line, indentationCharacterCount: indentationCharacterCount, in: file) { continue }
 
+            let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
+
             if let expectedColumn = conditionContinuationInfo[line.index] {
                 if let violation = checkMultilineConditionAlignment(
-                    line: line, expectedColumn: expectedColumn,
-                    indentationCharacterCount: indentationCharacterCount, file: file
+                    line: line, expectedColumn: expectedColumn, prefix: prefix, file: file
                 ) {
                     violations.append(violation)
                 }
@@ -90,9 +113,7 @@ struct IndentationWidthRule: OptInRule {
             }
 
             // Determine indentation from prefix
-            let (indentation, mixedViolation) = parseIndentation(
-                line: line, indentationCharacterCount: indentationCharacterCount, file: file
-            )
+            let (indentation, mixedViolation) = parseIndentation(line: line, prefix: prefix, file: file)
             if let mixedViolation { violations.append(mixedViolation) }
 
             // Catch indented first line
@@ -158,40 +179,32 @@ struct IndentationWidthRule: OptInRule {
     }
 
     private func parseIndentation(
-        line: Line, indentationCharacterCount: Int, file: SwiftLintFile
+        line: Line, prefix: IndentationPrefix, file: SwiftLintFile
     ) -> (Indentation, StyleViolation?) {
-        let prefix = String(line.content.prefix(indentationCharacterCount))
-        let tabCount = prefix.filter { $0 == "\t" }.count
-        let spaceCount = prefix.filter { $0 == " " }.count
-        if tabCount != 0, spaceCount != 0 {
-            let violation = StyleViolation(
-                ruleDescription: Self.description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, characterOffset: line.range.location),
+        if prefix.tabCount != 0, prefix.spaceCount != 0 {
+            let violation = makeViolation(
+                file: file,
+                line: line,
                 reason: "Code should be indented with tabs or " +
                     "\(configuration.indentationWidth) spaces, but not both in the same line"
             )
-            return (.spaces(spaceCount + tabCount * configuration.indentationWidth), violation)
+            return (.spaces(prefix.spacesEquivalent(indentationWidth: configuration.indentationWidth)), violation)
         }
-        if tabCount != 0 {
-            return (.tabs(tabCount), nil)
+        if prefix.tabCount != 0 {
+            return (.tabs(prefix.tabCount), nil)
         }
-        return (.spaces(spaceCount), nil)
+        return (.spaces(prefix.spaceCount), nil)
     }
 
     private func checkMultilineConditionAlignment(
-        line: Line, expectedColumn: Int, indentationCharacterCount: Int, file: SwiftLintFile
+        line: Line, expectedColumn: Int, prefix: IndentationPrefix, file: SwiftLintFile
     ) -> StyleViolation? {
         if !configuration.includeMultilineConditions { return nil }
-        let prefix = String(line.content.prefix(indentationCharacterCount))
-        let spaceCount = prefix.filter { $0 == " " }.count
-        let tabCount = prefix.filter { $0 == "\t" }.count
-        let actualColumn = spaceCount + tabCount * configuration.indentationWidth
+        let actualColumn = prefix.spacesEquivalent(indentationWidth: configuration.indentationWidth)
         guard actualColumn != expectedColumn else { return nil }
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severityConfiguration.severity,
-            location: Location(file: file, characterOffset: line.range.location),
+        return makeViolation(
+            file: file,
+            line: line,
             reason: "Multi-line condition should be aligned with the first condition " +
                 "(expected \(expectedColumn) spaces, got \(actualColumn))"
         )

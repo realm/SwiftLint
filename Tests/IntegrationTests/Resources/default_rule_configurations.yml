@@ -902,6 +902,11 @@ prefer_condition_list:
   meta:
     opt-in: true
     correctable: true
+prefer_if_and_switch_expressions:
+  severity: warning
+  meta:
+    opt-in: false
+    correctable: false
 prefer_key_path:
   severity: warning
   restrict_to_standard_functions: true

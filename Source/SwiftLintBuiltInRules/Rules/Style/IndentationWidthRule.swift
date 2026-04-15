@@ -140,7 +140,8 @@ struct IndentationWidthRule: OptInRule {
         } ?? true
         let indentWidth = configuration.indentationWidth
         return makeViolation(
-            file: file, line: line,
+            file: file, 
+            line: line,
             reason: isIndentation ?
                 "Code should be indented using one tab or \(indentWidth) spaces" :
                 "Code should be unindented by multiples of one tab or multiples of \(indentWidth) spaces"

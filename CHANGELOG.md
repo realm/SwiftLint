@@ -42,8 +42,8 @@
 
 ### Bug Fixes
 
-* Skip `control_statement` corrections for parenthesized conditions that contain
-  comments, avoiding comment loss during `swiftlint --fix`.  
+* Preserve inline comments when `control_statement` removes parentheses during
+  `swiftlint --fix`.
   [theamodhshetty](https://github.com/theamodhshetty)
   [#6207](https://github.com/realm/SwiftLint/issues/6207)
 

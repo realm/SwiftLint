@@ -43,6 +43,12 @@ final class PreferNimbleRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferScaledToFitRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferScaledToFitRule.description)
+    }
+}
+
 final class PreferSelfInStaticReferencesRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferSelfInStaticReferencesRule.description)
@@ -148,11 +154,5 @@ final class QuickDiscouragedPendingTestRuleGeneratedTests: SwiftLintTestCase {
 final class RawValueForCamelCasedCodableEnumRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)
-    }
-}
-
-final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReduceBooleanRule.description)
     }
 }

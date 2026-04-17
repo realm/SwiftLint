@@ -914,6 +914,11 @@ prefer_nimble:
   meta:
     opt-in: true
     correctable: false
+prefer_scaled_to_fit:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: false
 prefer_self_in_static_references:
   severity: warning
   meta:

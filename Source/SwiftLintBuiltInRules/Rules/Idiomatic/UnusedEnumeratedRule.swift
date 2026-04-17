@@ -32,6 +32,11 @@ struct UnusedEnumeratedRule: Rule {
             }?.offset
             """),
             Example("""
+            (list.enumerated().first {
+                $0.element.isNumber
+            })?.offset
+            """),
+            Example("""
             list.enumerated().max {
                 $0.element < $1.element
             }?.offset
@@ -175,7 +180,7 @@ private extension UnusedEnumeratedRule {
                 pendingClosure = PendingClosure(
                     id: trailingClosure.id,
                     enumeratedPosition: enumeratedPosition,
-                    usedEnumeratedResultMembers: parentCall.usedEnumeratedResultMembers
+                    usedEnumeratedResultMembers: ExprSyntax(parentCall).usedEnumeratedResultMembers
                 )
             }
 
@@ -196,7 +201,7 @@ private extension UnusedEnumeratedRule {
         }
 
         override func visitPost(_: ClosureExprSyntax) {
-            guard let closure = popTrackedClosure() else { return }
+            guard let closure = closures.pop().flatMap(\.self) else { return }
 
             let zeroPosition = closure.zeroPosition
                 ?? (closure.usedEnumeratedResultMembers.zero ? closure.enumeratedPosition : nil)
@@ -213,42 +218,30 @@ private extension UnusedEnumeratedRule {
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             guard
-                currentTrackedClosure != nil,
+                closures.peek().flatMap(\.self) != nil,
                 node.baseName.text == "$0" || node.baseName.text == "$1"
             else {
                 return
             }
 
-            modifyTrackedClosure {
+            closures.modifyLast { trackedClosure in
+                guard var closure = trackedClosure else { return }
+
                 if node.baseName.text == "$0" {
                     let member = node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text
                     if member == "element" || member == "1" {
-                        $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                        closure.onePosition = node.positionAfterSkippingLeadingTrivia
                     } else {
-                        $0.zeroPosition = node.positionAfterSkippingLeadingTrivia
+                        closure.zeroPosition = node.positionAfterSkippingLeadingTrivia
                         if node.isUnpacked {
-                            $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                            closure.onePosition = node.positionAfterSkippingLeadingTrivia
                         }
                     }
                 } else {
-                    $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                    closure.onePosition = node.positionAfterSkippingLeadingTrivia
                 }
-            }
-        }
 
-        private var currentTrackedClosure: Closure? {
-            closures.peek().flatMap(\.self)
-        }
-
-        private func popTrackedClosure() -> Closure? {
-            closures.pop().flatMap(\.self)
-        }
-
-        private func modifyTrackedClosure(_ modifier: (inout Closure) -> Void) {
-            closures.modifyLast {
-                guard var closure = $0 else { return }
-                modifier(&closure)
-                $0 = closure
+                trackedClosure = closure
             }
         }
 
@@ -299,31 +292,37 @@ private extension FunctionCallExprSyntax {
         && additionalTrailingClosures.isEmpty
         && arguments.isEmpty
     }
+}
 
+private extension ExprSyntax {
     var usedEnumeratedResultMembers: (zero: Bool, one: Bool) {
-        var currentNode: Syntax? = Syntax(self)
+        if let tupleElement = parent?.as(LabeledExprSyntax.self),
+           tupleElement.expression.id == id,
+           let tuple = tupleElement.parent?.parent?.as(TupleExprSyntax.self),
+           tuple.elements.onlyElement?.id == tupleElement.id {
+            return ExprSyntax(tuple).usedEnumeratedResultMembers
+        }
 
-        while let node = currentNode, let parent = node.parent {
-            if let memberAccess = parent.as(MemberAccessExprSyntax.self),
-               memberAccess.base?.id == node.id {
-                switch memberAccess.declName.baseName.text {
-                case "offset", "0":
-                    return (true, false)
-                case "element", "1":
-                    return (false, true)
-                default:
-                    break
-                }
+        guard let parent = parent?.as(ExprSyntax.self) else {
+            return (false, false)
+        }
+
+        if let memberAccess = parent.as(MemberAccessExprSyntax.self),
+           memberAccess.base?.id == id {
+            switch memberAccess.declName.baseName.text {
+            case "offset", "0":
+                return (true, false)
+            case "element", "1":
+                return (false, true)
+            default:
+                return parent.usedEnumeratedResultMembers
             }
+        }
 
-            guard parent.is(OptionalChainingExprSyntax.self)
-                || parent.is(ForceUnwrapExprSyntax.self)
-                || parent.is(MemberAccessExprSyntax.self)
-            else {
-                return (false, false)
-            }
-
-            currentNode = parent
+        if parent.as(OptionalChainingExprSyntax.self)?.expression.id == id
+            || parent.as(ForceUnwrapExprSyntax.self)?.expression.id == id
+            || parent.as(TupleExprSyntax.self)?.elements.onlyElement?.expression.id == id {
+            return parent.usedEnumeratedResultMembers
         }
 
         return (false, false)

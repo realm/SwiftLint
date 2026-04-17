@@ -158,6 +158,7 @@ public let builtInRules: [any Rule.Type] = [
     PreferConditionListRule.self,
     PreferKeyPathRule.self,
     PreferNimbleRule.self,
+    PreferScaledToFitRule.self,
     PreferSelfInStaticReferencesRule.self,
     PreferSelfTypeOverTypeOfSelfRule.self,
     PreferTypeCheckingRule.self,

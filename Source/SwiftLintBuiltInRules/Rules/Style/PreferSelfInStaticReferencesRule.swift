@@ -37,16 +37,15 @@ private extension PreferSelfInStaticReferencesRule {
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var parentDeclScopes = Stack<ParentDeclBehavior>()
-        private var shadowingNestedTypeScopes = Stack<Bool>()
         private var variableDeclScopes = Stack<VariableDeclBehavior>()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.likeClass(name: node.name.text), for: node.name.text, memberBlock: node.memberBlock)
+            pushParentDeclScope(.likeClass(name: node.name.text), memberBlock: node.memberBlock)
             return .skipChildren
         }
 
         override func visitPost(_: ActorDeclSyntax) {
-            popParentDeclScope()
+            parentDeclScopes.pop()
         }
 
         override func visit(_: AttributeSyntax) -> SyntaxVisitorContinueKind {
@@ -57,12 +56,12 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.likeClass(name: node.name.text), for: node.name.text, memberBlock: node.memberBlock)
+            pushParentDeclScope(.likeClass(name: node.name.text), memberBlock: node.memberBlock)
             return .visitChildren
         }
 
         override func visitPost(_: ClassDeclSyntax) {
-            popParentDeclScope()
+            parentDeclScopes.pop()
         }
 
         override func visit(_: CodeBlockItemListSyntax) -> SyntaxVisitorContinueKind {
@@ -75,21 +74,21 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.likeStruct(node.name.text), for: node.name.text, memberBlock: node.memberBlock)
+            pushParentDeclScope(.likeStruct(node.name.text), memberBlock: node.memberBlock)
             return .visitChildren
         }
 
         override func visitPost(_: EnumDeclSyntax) {
-            popParentDeclScope()
+            parentDeclScopes.pop()
         }
 
         override func visit(_: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.skipReferences)
+            parentDeclScopes.push(.skipReferences)
             return .visitChildren
         }
 
         override func visitPost(_: ExtensionDeclSyntax) {
-            popParentDeclScope()
+            parentDeclScopes.pop()
         }
 
         override func visit(_ node: MemberAccessExprSyntax) -> SyntaxVisitorContinueKind {
@@ -147,12 +146,12 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.skipReferences)
+            parentDeclScopes.push(.skipReferences)
             return .skipChildren
         }
 
         override func visitPost(_: ProtocolDeclSyntax) {
-            popParentDeclScope()
+            parentDeclScopes.pop()
         }
 
         override func visit(_: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
@@ -163,12 +162,12 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.likeStruct(node.name.text), for: node.name.text, memberBlock: node.memberBlock)
+            pushParentDeclScope(.likeStruct(node.name.text), memberBlock: node.memberBlock)
             return .visitChildren
         }
 
         override func visitPost(_: StructDeclSyntax) {
-            popParentDeclScope()
+            parentDeclScopes.pop()
         }
 
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
@@ -214,8 +213,7 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         private func addViolation(on node: TokenSyntax) {
-            if shadowingNestedTypeScopes.peek() != true,
-               let parentName = parentDeclScopes.peek()?.parentName,
+            if let parentName = parentDeclScopes.peek()?.parentName,
                node.tokenKind == .identifier(parentName) {
                 violations.append(
                     at: node.positionAfterSkippingLeadingTrivia,
@@ -228,39 +226,20 @@ private extension PreferSelfInStaticReferencesRule {
             }
         }
 
-        private func pushParentDeclScope(
-            _ behavior: ParentDeclBehavior,
-            for name: String? = nil,
-            memberBlock: MemberBlockSyntax? = nil
-        ) {
-            parentDeclScopes.push(behavior)
-            let hasShadowingNestedType: Bool
-            if let name, let memberBlock {
-                hasShadowingNestedType = containsSameNamedNestedType(named: name, in: memberBlock)
-            } else {
-                hasShadowingNestedType = false
-            }
-            shadowingNestedTypeScopes.push(hasShadowingNestedType)
-        }
-
-        private func popParentDeclScope() {
-            parentDeclScopes.pop()
-            shadowingNestedTypeScopes.pop()
+        private func pushParentDeclScope(_ behavior: ParentDeclBehavior, memberBlock: MemberBlockSyntax) {
+            let hasShadowingNestedType =
+                if let name = behavior.parentName {
+                    containsSameNamedNestedType(named: name, in: memberBlock)
+                } else {
+                    false
+                }
+            parentDeclScopes.push(hasShadowingNestedType ? .skipReferences : behavior)
         }
 
         private func containsSameNamedNestedType(named name: String, in memberBlock: MemberBlockSyntax) -> Bool {
             memberBlock.members.contains { member in
-                if let actor = member.decl.as(ActorDeclSyntax.self) {
-                    return actor.name.text == name
-                }
-                if let classDecl = member.decl.as(ClassDeclSyntax.self) {
-                    return classDecl.name.text == name
-                }
-                if let enumDecl = member.decl.as(EnumDeclSyntax.self) {
-                    return enumDecl.name.text == name
-                }
-                if let structDecl = member.decl.as(StructDeclSyntax.self) {
-                    return structDecl.name.text == name
+                if member.decl.isProtocol((any DeclGroupSyntax).self) || member.decl.is(TypeAliasDeclSyntax.self) {
+                    return member.decl.asProtocol((any NamedDeclSyntax).self)?.name.text == name
                 }
 
                 return false

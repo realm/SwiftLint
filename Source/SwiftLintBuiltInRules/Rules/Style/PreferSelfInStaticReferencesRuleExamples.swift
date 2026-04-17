@@ -107,6 +107,12 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 var s = S1()
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            struct S1 {
+                var s = S1()
+                struct S1 {}
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

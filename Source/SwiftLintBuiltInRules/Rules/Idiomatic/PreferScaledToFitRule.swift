@@ -8,7 +8,8 @@ struct PreferScaledToFitRule: Rule {
     static let description = RuleDescription(
         identifier: "prefer_scaled_to_fit",
         name: "Prefer Scaled To Fit",
-        description: "Prefer `scaledToFit()` or `scaledToFill()` over `aspectRatio(contentMode:)` with a constant content mode",
+        description: "Prefer `scaledToFit()` or `scaledToFill()` over " +
+        "`aspectRatio(contentMode:)` with a constant content mode",
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("view.aspectRatio(ratio, contentMode: .fit)"),

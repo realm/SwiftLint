@@ -132,6 +132,10 @@
   [theamodhshetty](https://github.com/theamodhshetty)
   [#5917](https://github.com/realm/SwiftLint/issues/5917)
 
+* Fix `explicit_self` false positives around string interpolation.  
+  [jffmrk](https://github.com/jffmrk)
+  [#6611](https://github.com/realm/SwiftLint/issues/6611)
+
 ## 0.63.2: High-Speed Extraction
 
 ### Breaking

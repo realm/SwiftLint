@@ -35,6 +35,43 @@ struct ExplicitSelfRuleExamples {
             A(p1: 10).$p1
         }
         """),
+        Example("""
+        class StringInterpolation {
+            let foo = "foo"
+
+            var description: String {
+                return "StringInterpolation{foo: \\(self.foo)}"
+            }
+        }
+        """),
+        Example("""
+        class StringInterpolationRawStringLiteral {
+            let foo = "foo"
+
+            var description: String {
+                return #"StringInterpolation{foo: \\#(self.foo)}"#
+            }
+        }
+        """),
+        Example("""
+        class LocalStringInterpolation {
+            var bar: String
+
+            init() {
+                let a = "a"
+                let b = "b"
+                self.bar = "\\(a)\\(b)".uppercased()
+            }
+        }
+        """),
+        Example("""
+        class StringConcatenation {
+            var description: String {
+                let number = 1
+                return "\\(number)" + " count"
+            }
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -79,6 +116,24 @@ struct ExplicitSelfRuleExamples {
         }
         func f1() {
             A(p1: 10).$p1
+        }
+        """),
+        Example("""
+        class StringInterpolation {
+            let foo = "foo"
+
+            var description: String {
+                return "StringInterpolation{foo: \\(↓foo)}"
+            }
+        }
+        """),
+        Example("""
+        class StringInterpolationRawStringLiteral {
+            let foo = "foo"
+
+            var description: String {
+                return #"StringInterpolation{foo: \\#(↓foo)}"#
+            }
         }
         """),
     ]
@@ -167,6 +222,40 @@ struct ExplicitSelfRuleExamples {
         }
         func f1() {
             A(p1: 10).$p1
+        }
+        """),
+        Example("""
+        class StringInterpolation {
+            let foo = "foo"
+
+            var description: String {
+                return "StringInterpolation{foo: \\(↓foo)}"
+            }
+        }
+        """): Example("""
+        class StringInterpolation {
+            let foo = "foo"
+
+            var description: String {
+                return "StringInterpolation{foo: \\(self.foo)}"
+            }
+        }
+        """),
+        Example("""
+        class StringInterpolationRawStringLiteral {
+            let foo = "foo"
+
+            var description: String {
+                return #"StringInterpolation{foo: \\#(↓foo)}"#
+            }
+        }
+        """): Example("""
+        class StringInterpolationRawStringLiteral {
+            let foo = "foo"
+
+            var description: String {
+                return #"StringInterpolation{foo: \\#(self.foo)}"#
+            }
         }
         """),
     ]

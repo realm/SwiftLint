@@ -66,11 +66,11 @@ private extension ClosureEndIndentationRule {
                             ""
                         )
                     } else {
-                        // If no newline, we need to add one. The replacement will be inserted
-                        // after the previous token and before the closing brace.
+                        // If no newline, we need to add one. Preserve the file's
+                        // line-ending style so CRLF files don't get corrupted.
                         (
                             node.rightBrace.positionAfterSkippingLeadingTrivia,
-                            "\n"
+                            file.contents.contains("\r\n") ? "\r\n" : "\n"
                         )
                     }
 
@@ -198,7 +198,7 @@ private extension ClosureEndIndentationRule {
             guard lineNumber > 0, lineNumber <= file.lines.count else {
                 return 1 // Should not happen
             }
-            let lineContent = file.lines[lineNumber - 1].content
+            let lineContent = file.lines[lineNumber - 1].content.replacingOccurrences(of: "\r", with: "")
 
             if let firstCharIndex = lineContent.firstIndex(where: { !$0.isWhitespace }) {
                 return lineContent.distance(from: lineContent.startIndex, to: firstCharIndex) + 1

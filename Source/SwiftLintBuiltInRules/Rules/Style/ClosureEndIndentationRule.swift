@@ -198,7 +198,7 @@ private extension ClosureEndIndentationRule {
             guard lineNumber > 0, lineNumber <= file.lines.count else {
                 return 1 // Should not happen
             }
-            let lineContent = file.lines[lineNumber - 1].content.replacingOccurrences(of: "\r", with: "")
+            let lineContent = file.lines[lineNumber - 1].content.filter { $0 != "\r" }
 
             if let firstCharIndex = lineContent.firstIndex(where: { !$0.isWhitespace }) {
                 return lineContent.distance(from: lineContent.startIndex, to: firstCharIndex) + 1

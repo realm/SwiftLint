@@ -118,6 +118,7 @@
 * `multiline_call_arguments` no longer reports violations for enum-case patterns in
   pattern matching (e.g. if case, switch case, for case, catch).  
   [GandaLF2006](https://github.com/GandaLF2006)
+
 * Avoid false positives in `prefer_self_in_static_references` when a nested type
   shadows its enclosing type name.  
   [theamodhshetty](https://github.com/theamodhshetty)

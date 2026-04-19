@@ -2,6 +2,11 @@
 
 ## Main
 
+* Fix closure_end_indentation corrupting CRLF files.  
+  [HttpGetBinary](https://github.com/HttpGetBinary)  
+  [#6598](https://github.com/realm/SwiftLint/issues/6598)
+
+
 ### Breaking
 
 * None.

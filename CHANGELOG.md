@@ -332,6 +332,10 @@
   content mode.  
   [DemiDevv](https://github.com/DemiDevv)
   [#5713](https://github.com/realm/SwiftLint/issues/5713)
+* Add autocorrection support to `indentation_width` rule to automatically fix
+  indentation violations using the `--fix` option.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6497](https://github.com/realm/SwiftLint/issues/6497)
 
 * Support access level modifiers on imports in `unused_imports` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

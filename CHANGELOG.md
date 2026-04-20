@@ -345,6 +345,10 @@
 * Improve the opt-in `pattern_matching_keywords` rule by extending support
   beyond `switch case` and refining nested pattern handling.  
   [GandaLF2006](https://github.com/GandaLF2006)
+* Add autocorrection support to `indentation_width` rule to automatically fix
+  indentation violations using the `--fix` option.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6497](https://github.com/realm/SwiftLint/issues/6497)
 
 ### Bug Fixes
 

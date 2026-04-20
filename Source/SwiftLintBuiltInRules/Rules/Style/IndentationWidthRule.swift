@@ -3,7 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 
 @DisabledWithoutSourceKit
-struct IndentationWidthRule: OptInRule {
+struct IndentationWidthRule: OptInRule, CorrectableRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs(Int)
@@ -278,6 +278,103 @@ struct IndentationWidthRule: OptInRule {
                 (lastSpaceEquivalent - currentSpaceEquivalent).isMultiple(of: configuration.indentationWidth)
             ) // Allow unindent if it stays in the grid
         )
+    }
+
+    // MARK: - Methods: Correction
+    func correct(file: SwiftLintFile) -> Int {
+        var corrections = 0
+        var previousLineIndentations: [Indentation] = []
+        var correctedLines = file.lines.map(\.content)
+
+        for (lineIndex, line) in file.lines.enumerated() {
+            corrections += correctLine(
+                at: lineIndex,
+                line: line,
+                file: file,
+                in: &correctedLines,
+                trackingIndentations: &previousLineIndentations
+            )
+        }
+
+        if corrections > 0 {
+            let correctedContent = correctedLines.joined(separator: "\n")
+            file.write(correctedContent)
+        }
+
+        return corrections
+    }
+
+    private func correctLine(
+        at lineIndex: Int,
+        line: Line,
+        file: SwiftLintFile,
+        in correctedLines: inout [String],
+        trackingIndentations previousLineIndentations: inout [Indentation]
+    ) -> Int {
+        if ignoreCompilerDirective(line: line, in: file) { return 0 }
+        let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+        if line.content.count == indentationCharacterCount { return 0 }
+        if ignoreComment(line: line, in: file) || ignoreMultilineStrings(line: line, in: file) { return 0 }
+
+        let prefix = String(line.content.prefix(indentationCharacterCount))
+        let tabCount = prefix.filter { $0 == "\t" }.count
+        let spaceCount = prefix.filter { $0 == " " }.count
+
+        if tabCount != 0, spaceCount != 0 { return 0 }
+
+        let indentation: Indentation = tabCount != 0 ? .tabs(tabCount) : .spaces(spaceCount)
+
+        guard previousLineIndentations.isNotEmpty else {
+            previousLineIndentations = [indentation]
+            if indentation != .spaces(0) {
+                correctedLines[lineIndex] = String(line.content.dropFirst(indentationCharacterCount))
+                return 1
+            }
+            return 0
+        }
+
+        let linesValidationResult = previousLineIndentations.map {
+            validate(indentation: indentation, comparingTo: $0)
+        }
+
+        if linesValidationResult.contains(true) {
+            if linesValidationResult.first == true {
+                previousLineIndentations = [indentation]
+            } else {
+                previousLineIndentations.append(indentation)
+            }
+            return 0
+        }
+
+        guard let lastValidIndentation = previousLineIndentations.first else { return 0 }
+
+        let correctIndentLevel = lastValidIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+        let shouldUseTabs = tabCount > 0
+        let correctIndent = generateIndentation(spaceCount: correctIndentLevel, usesTabs: shouldUseTabs)
+        let lineContent = String(line.content.dropFirst(indentationCharacterCount))
+        correctedLines[lineIndex] = correctIndent + lineContent
+
+        let correctedIndentation: Indentation = shouldUseTabs
+            ? .tabs(correctIndent.filter { $0 == "\t" }.count)
+            : .spaces(correctIndent.filter { $0 == " " }.count)
+        previousLineIndentations = [correctedIndentation]
+
+        return 1
+    }
+
+    /// Generates an indentation string based on the number of spaces and whether tabs should be used.
+    ///
+    /// - parameter spaceCount: The number of space-equivalents needed.
+    /// - parameter usesTabs:   Whether the indentation should use tabs.
+    ///
+    /// - returns: The generated indentation string.
+    private func generateIndentation(spaceCount: Int, usesTabs: Bool) -> String {
+        if usesTabs {
+            let tabCount = spaceCount / configuration.indentationWidth
+            let remainingSpaces = spaceCount % configuration.indentationWidth
+            return String(repeating: "\t", count: tabCount) + String(repeating: " ", count: remainingSpaces)
+        }
+        return String(repeating: " ", count: spaceCount)
     }
 }
 

@@ -19,6 +19,7 @@ struct ClosureEndIndentationRule: Rule {
 
 private extension ClosureEndIndentationRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var lineEnding: String = file.contents.contains("\r\n") ? "\r\n" : "\n"
         override func visitPost(_ node: ClosureExprSyntax) {
             // Get locations of opening and closing braces
             let leftBraceLocation = locationConverter.location(
@@ -70,7 +71,7 @@ private extension ClosureEndIndentationRule {
                         // line-ending style so CRLF files don't get corrupted.
                         (
                             node.rightBrace.positionAfterSkippingLeadingTrivia,
-                            file.contents.contains("\r\n") ? "\r\n" : "\n"
+                            lineEnding
                         )
                     }
 

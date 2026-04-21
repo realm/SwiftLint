@@ -44,6 +44,7 @@ package struct LintOrAnalyzeOptions {
     let reporter: String?
     let baseline: String?
     let writeBaseline: String?
+    let strictBaseline: Bool
     let workingDirectory: String?
     let quiet: Bool
     let output: String?
@@ -73,6 +74,7 @@ package struct LintOrAnalyzeOptions {
                  reporter: String?,
                  baseline: String?,
                  writeBaseline: String?,
+                 strictBaseline: Bool,
                  workingDirectory: String?,
                  quiet: Bool,
                  output: String?,
@@ -101,6 +103,7 @@ package struct LintOrAnalyzeOptions {
         self.reporter = reporter
         self.baseline = baseline
         self.writeBaseline = writeBaseline
+        self.strictBaseline = strictBaseline
         self.workingDirectory = workingDirectory
         self.quiet = quiet
         self.output = output
@@ -150,6 +153,7 @@ package struct LintOrAnalyzeCommand {
         if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
             try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
         }
+        appendFixedBaselineViolations(builder: builder)
         let numberOfSeriousViolations = try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)
         }
@@ -165,6 +169,7 @@ package struct LintOrAnalyzeCommand {
         let options = builder.options
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         let baseline = try baseline(options, builder.configuration)
+        builder.baseline = baseline
         return try await builder.configuration.visitLintableFiles(options: options, cache: builder.cache,
                                                                   storage: builder.storage) { linter in
             let currentViolations: [StyleViolation]
@@ -234,6 +239,22 @@ package struct LintOrAnalyzeCommand {
         return numberOfSeriousViolations
     }
 
+    private static func appendFixedBaselineViolations(builder: LintOrAnalyzeResultBuilder) {
+        let options = builder.options
+        let configuration = builder.configuration
+        guard options.strictBaseline || configuration.strictBaseline,
+              let baseline = builder.baseline else {
+            return
+        }
+        let currentBaseline = Baseline(violations: builder.unfilteredViolations)
+        let fixedViolations = currentBaseline.compare(baseline).map(createFixedBaselineViolation)
+        guard fixedViolations.isNotEmpty else {
+            return
+        }
+        builder.violations += fixedViolations
+        builder.report(violations: fixedViolations, realtimeCondition: true)
+    }
+
     private static func baseline(_ options: LintOrAnalyzeOptions, _ configuration: Configuration) throws -> Baseline? {
         if let baselinePath = options.baseline ?? configuration.baseline {
             do {
@@ -264,6 +285,24 @@ package struct LintOrAnalyzeCommand {
         guard let warningThreshold = configuration.warningThreshold else { return false }
         let numberOfWarningViolations = violations.filter({ $0.severity == .warning }).count
         return numberOfWarningViolations >= warningThreshold
+    }
+
+    private static func createFixedBaselineViolation(fromBaseline violation: StyleViolation) -> StyleViolation {
+        let description = RuleDescription(
+            identifier: "fixed_baseline_violation",
+            name: "Fixed Baseline",
+            description: "A violation recorded in the baseline has been fixed or is no longer detected",
+            kind: .lint
+        )
+        return StyleViolation(
+            ruleDescription: description,
+            severity: .error,
+            location: violation.location,
+            reason: """
+                Violation previously recorded in the baseline for '\(violation.ruleIdentifier)' is no longer \
+                detected. Regenerate the baseline to acknowledge this fix
+                """
+        )
     }
 
     private static func createThresholdViolation(threshold: Int) -> StyleViolation {
@@ -374,6 +413,7 @@ private class LintOrAnalyzeResultBuilder {
     var unfilteredViolations = [StyleViolation]()
     /// The violations to be reported, possibly filtered by a baseline, plus any threshold violations.
     var violations = [StyleViolation]()
+    var baseline: Baseline?
     let storage = RuleStorage()
     let configuration: Configuration
     let reporter: any Reporter.Type

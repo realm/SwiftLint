@@ -47,6 +47,9 @@ public struct Configuration {
     /// The path to write a baseline to.
     public let writeBaseline: String?
 
+    /// Fail linting when violations recorded in the baseline are no longer detected.
+    public let strictBaseline: Bool
+
     /// Check for updates.
     public let checkForUpdates: Bool
 
@@ -89,6 +92,7 @@ public struct Configuration {
         lenient: Bool,
         baseline: String?,
         writeBaseline: String?,
+        strictBaseline: Bool,
         checkForUpdates: Bool
     ) {
         self.rulesWrapper = rulesWrapper
@@ -104,6 +108,7 @@ public struct Configuration {
         self.lenient = lenient
         self.baseline = baseline
         self.writeBaseline = writeBaseline
+        self.strictBaseline = strictBaseline
         self.checkForUpdates = checkForUpdates
     }
 
@@ -125,6 +130,7 @@ public struct Configuration {
         lenient = configuration.lenient
         baseline = configuration.baseline
         writeBaseline = configuration.writeBaseline
+        strictBaseline = configuration.strictBaseline
         checkForUpdates = configuration.checkForUpdates
     }
 
@@ -170,6 +176,7 @@ public struct Configuration {
         lenient: Bool = false,
         baseline: String? = nil,
         writeBaseline: String? = nil,
+        strictBaseline: Bool = false,
         checkForUpdates: Bool = false
     ) {
         if let pinnedVersion, pinnedVersion != Version.current.value {
@@ -200,6 +207,7 @@ public struct Configuration {
             lenient: lenient,
             baseline: baseline,
             writeBaseline: writeBaseline,
+            strictBaseline: strictBaseline,
             checkForUpdates: checkForUpdates
         )
     }
@@ -316,6 +324,7 @@ extension Configuration: Hashable {
         hasher.combine(lenient)
         hasher.combine(baseline)
         hasher.combine(writeBaseline)
+        hasher.combine(strictBaseline)
         hasher.combine(checkForUpdates)
         hasher.combine(basedOnCustomConfigurationFiles)
         hasher.combine(cachePath)
@@ -338,6 +347,7 @@ extension Configuration: Hashable {
             lhs.lenient == rhs.lenient &&
             lhs.baseline == rhs.baseline &&
             lhs.writeBaseline == rhs.writeBaseline &&
+            lhs.strictBaseline == rhs.strictBaseline &&
             lhs.checkForUpdates == rhs.checkForUpdates &&
             lhs.rulesMode == rhs.rulesMode
     }

@@ -742,6 +742,10 @@ baseline: Baseline.json
 # The path to save detected violations to as a new baseline.
 write_baseline: Baseline.json
 
+# If true, SwiftLint will fail when violations recorded in the baseline are no
+# longer detected, encouraging the baseline to be regenerated after fixes.
+strict_baseline: false
+
 # If true, SwiftLint will check for updates after linting or analyzing.
 check_for_updates: true
 

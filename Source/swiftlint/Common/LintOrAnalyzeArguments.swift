@@ -46,6 +46,11 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var baseline: String?
     @Option(help: "The path to save detected violations to as a new baseline.")
     var writeBaseline: String?
+    @Flag(help: """
+        Pretty-print the baseline output with sorted keys and unescaped slashes, \
+        producing stable, reviewable diffs. Only applies when writing a baseline.
+        """)
+    var prettyBaseline = false
     @Option(help: "The working directory to use when running SwiftLint.")
     var workingDirectory: String?
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")
@@ -62,6 +67,12 @@ struct LintOrAnalyzeArguments: ParsableArguments {
                 """
     )
     var onlyRule: [String] = []
+
+    func validate() throws {
+        if prettyBaseline, writeBaseline == nil {
+            throw ValidationError("'--pretty-baseline' requires '--write-baseline <path>'.")
+        }
+    }
 }
 
 // MARK: - Common Argument Help

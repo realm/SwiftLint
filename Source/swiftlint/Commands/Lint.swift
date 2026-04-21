@@ -51,6 +51,7 @@ extension SwiftLint {
                 reporter: common.reporter,
                 baseline: common.baseline,
                 writeBaseline: common.writeBaseline,
+                prettyBaseline: common.prettyBaseline,
                 workingDirectory: common.workingDirectory,
                 quiet: quiet,
                 output: common.output,

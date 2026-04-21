@@ -29,6 +29,7 @@ extension Configuration {
             lenient: childConfiguration.lenient,
             baseline: childConfiguration.baseline,
             writeBaseline: childConfiguration.writeBaseline,
+            prettyBaseline: childConfiguration.prettyBaseline,
             checkForUpdates: childConfiguration.checkForUpdates
         )
     }

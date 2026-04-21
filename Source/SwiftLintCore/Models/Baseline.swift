@@ -63,8 +63,17 @@ public struct Baseline: Equatable {
     /// Writes a `Baseline` to disk in JSON format.
     ///
     /// - parameter toPath: The path to write to.
-    public func write(toPath path: String) throws {
-        let data = try JSONEncoder().encode(sortedBaselineViolations)
+    /// - parameter pretty: If `true`, output is pretty-printed with sorted keys
+    ///                     and unescaped slashes, producing stable, reviewable
+    ///                     diffs. Defaults to `false` for backwards
+    ///                     compatibility with baselines written by older
+    ///                     versions of SwiftLint.
+    public func write(toPath path: String, pretty: Bool = false) throws {
+        let encoder = JSONEncoder()
+        if pretty {
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        }
+        let data = try encoder.encode(sortedBaselineViolations)
         try data.write(to: URL(fileURLWithPath: path))
     }
 

@@ -9,10 +9,8 @@ struct LegacyNSGeometryFunctionsRule: Rule {
         name: "Legacy NSGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
         rationale: """
-        The CGRect extension properties are a more modern API (and are available on NSRect, which
-        is a typealias for CGRect), and are supported on all Swift platforms.
-
-        The legacy functions are only supported on macOS and Mac Catalyst.
+        Prefer the more modern extension properties API for consistency and portability. The legacy 
+        functions are only supported on macOS and Mac Catalyst.
         """,
         kind: .idiomatic,
         nonTriggeringExamples: [

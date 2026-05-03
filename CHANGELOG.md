@@ -12,9 +12,6 @@
 
 ### Enhancements
 
-* Add support for Swift 6.3.1.  
-  [SimplyDanny](https://github.com/SimplyDanny)
-
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

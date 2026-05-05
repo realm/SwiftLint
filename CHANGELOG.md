@@ -90,6 +90,10 @@
   [William-Laverty](https://github.com/William-Laverty)
   [#5803](https://github.com/realm/SwiftLint/pull/5803)
 
+* Properly taint variables in tuples for `unneeded_escaping` rule.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6621](https://github.com/realm/SwiftLint/issues/6621)
+
 * Ensure that disable commands work for `redundant_nil_coalescing` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6465](https://github.com/realm/SwiftLint/issues/6465)

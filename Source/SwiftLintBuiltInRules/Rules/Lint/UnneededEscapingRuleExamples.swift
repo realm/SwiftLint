@@ -19,6 +19,11 @@ struct UnneededEscapingRuleExamples {
         }
         """),
         Example("""
+        func outer(closure: @escaping () -> String) {
+            inner(tuple: (closure, 42))
+        }
+        """),
+        Example("""
         func returning(_ work: @escaping () -> Void) -> () -> Void { return work }
         """),
         Example("""
@@ -44,6 +49,25 @@ struct UnneededEscapingRuleExamples {
         func capture(completion: @escaping () -> Void) {
             let closure = { completion() }
             closure()
+        }
+        """),
+        Example("""
+        func assignToLocal(completion: @escaping () -> Void) {
+            let (local, _) = (completion, 17)
+            self.local = local
+        }
+        """),
+        Example("""
+        func assignToLocal(completion: @escaping () -> Void) {
+            let local = (completion, 17)
+            self.local = local
+        }
+        """),
+        Example("""
+        func assignToLocal(completion: @escaping () -> Void) {
+            let local = (completion, 17)
+            let (c, n) = local
+            self.c = c
         }
         """),
         Example("""
@@ -154,6 +178,12 @@ struct UnneededEscapingRuleExamples {
         Example("""
         func assignToLocal(completion: ↓@escaping () -> Void) {
             let local = completion
+            local()
+        }
+        """),
+        Example("""
+        func assignToLocal(completion: ↓@escaping () -> Void) {
+            let (local, _) = (completion, 17)
             local()
         }
         """),

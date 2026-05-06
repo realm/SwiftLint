@@ -81,13 +81,13 @@ struct UnusedImportRuleExamples {
         class A {}
         """),
         Example("""
-        ↓import Foundation
+        ↓public import Foundation
         import UnknownModule
         func foo(error: Swift.Error) {}
         """),
         Example("""
-        ↓import Swift
-        ↓import SwiftShims
+        ↓internal import Swift
+        ↓private import SwiftShims
         func foo(error: Swift.Error) {}
         """),
     ]

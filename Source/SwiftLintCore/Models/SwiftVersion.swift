@@ -87,6 +87,8 @@ public extension SwiftVersion {
     static let sixDotThree = SwiftVersion(rawValue: "6.3.0")
     /// Swift 6.3.1
     static let sixDotThreeDotOne = SwiftVersion(rawValue: "6.3.1")
+    /// Swift 6.3.2
+    static let sixDotThreeDotTwo = SwiftVersion(rawValue: "6.3.2")
 
     /// The current detected Swift compiler version, based on the currently accessible SourceKit version.
     ///

@@ -82,6 +82,7 @@
   statements for the `statement_position` rule.  
   [theamodhshetty](https://github.com/theamodhshetty)
   [#6153](https://github.com/realm/SwiftLint/issues/6153)
+
 * Avoid false positives from `unused_enumerated` when higher-order calls on
   `.enumerated()` use result members like `?.offset` after the closure.  
   [theamodhshetty](https://github.com/theamodhshetty)

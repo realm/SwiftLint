@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_26.4.app
+  DEVELOPER_DIR: /Applications/Xcode_26.5.app
   RELEASE_BRANCH: release/${{ inputs.version }}
   MIMALLOC_VERSION: 3.0.10
 
@@ -142,7 +142,7 @@ jobs:
     steps:
       - *checkout-release-branch
       - name: Install SDK
-        run: swift sdk install https://download.swift.org/swift-6.2.3-release/static-sdk/swift-6.2.3-RELEASE/swift-6.2.3-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum f30ec724d824ef43b5546e02ca06a8682dafab4b26a99fbb0e858c347e507a2c
+        run: swift sdk install https://download.swift.org/swift-6.3.2-release/static-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz --checksum 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
       - name: Build mimalloc object
         run: |
           set -euxo pipefail
@@ -206,7 +206,7 @@ jobs:
     runs-on: windows-${{ matrix.windows-version }}
     env:
       SWIFT_VERSION: development
-      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-03-16-a
+      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-05-07-a
     strategy:
       fail-fast: false
       matrix:

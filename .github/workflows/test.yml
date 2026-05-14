@@ -13,9 +13,9 @@ env:
 
 jobs:
   spm_linux:
-    name: SPM, Linux, Swift 6.2
+    name: SPM, Linux, Swift 6.3
     runs-on: ubuntu-24.04
-    container: swift:6.2-noble
+    container: swift:6.3-noble
     steps:
       - &checkout-step
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -46,7 +46,7 @@ jobs:
           - macOS: '15'
             xcode: '16.4'
           - macOS: '26'
-            xcode: '26.4'
+            xcode: '26.5'
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app
     steps:

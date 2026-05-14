@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   bazel_linux:
-    name: Bazel, Linux, Swift 6.2 # pre-installed
+    name: Bazel, Linux, Swift 6.3 # pre-installed
     runs-on: ubuntu-24.04
     steps:
       - &checkout-step
@@ -41,6 +41,8 @@ jobs:
             version: '6.1'
           - image: swift:6.2-noble
             version: '6.2'
+          - image: swift:6.3-noble
+            version: '6.3'
     container: ${{ matrix.image }}
     steps:
       - *checkout-step

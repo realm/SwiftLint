@@ -320,8 +320,8 @@ private extension ExprSyntax {
         }
 
         if parent.as(OptionalChainingExprSyntax.self)?.expression.id == id
-            || parent.as(ForceUnwrapExprSyntax.self)?.expression.id == id
-            || parent.as(TupleExprSyntax.self)?.elements.onlyElement?.expression.id == id {
+           || parent.as(ForceUnwrapExprSyntax.self)?.expression.id == id
+           || parent.as(TupleExprSyntax.self)?.elements.onlyElement?.expression.id == id {
             return parent.usedEnumeratedResultMembers
         }
 

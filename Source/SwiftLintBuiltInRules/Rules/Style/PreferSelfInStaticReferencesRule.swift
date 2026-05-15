@@ -82,13 +82,33 @@ private extension PreferSelfInStaticReferencesRule {
             parentDeclScopes.pop()
         }
 
-        override func visit(_: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-            parentDeclScopes.push(.skipReferences)
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            // Treat the extended type as a class. Without knowing the exact
+            // declaration kind, this is the most conservative scope that still
+            // surfaces violations on member-access expressions inside methods,
+            // computed properties and closure bodies. Cases the class scope
+            // already skips (e.g. stored-property initializers, function
+            // signatures) remain skipped to avoid false positives.
+            if let name = extendedTypeName(of: node.extendedType) {
+                pushParentDeclScope(.likeClass(name: name), memberBlock: node.memberBlock)
+            } else {
+                parentDeclScopes.push(.skipReferences)
+            }
             return .visitChildren
         }
 
         override func visitPost(_: ExtensionDeclSyntax) {
             parentDeclScopes.pop()
+        }
+
+        private func extendedTypeName(of type: TypeSyntax) -> String? {
+            if let identifier = type.as(IdentifierTypeSyntax.self) {
+                return identifier.name.text
+            }
+            if let memberType = type.as(MemberTypeSyntax.self) {
+                return memberType.name.text
+            }
+            return nil
         }
 
         override func visit(_ node: MemberAccessExprSyntax) -> SyntaxVisitorContinueKind {
@@ -179,6 +199,12 @@ private extension PreferSelfInStaticReferencesRule {
 
         override func visitPost(_ node: IdentifierTypeSyntax) {
             guard let parent = node.parent else {
+                return
+            }
+            // Don't flag identifiers that belong to the extension declaration
+            // header (the extended type itself); the new class-like scope
+            // pushed for the extension would otherwise rewrite it to `Self`.
+            if parent.is(ExtensionDeclSyntax.self) {
                 return
             }
             if case .likeClass = parentDeclScopes.peek(), parent.is(GenericArgumentSyntax.self) {

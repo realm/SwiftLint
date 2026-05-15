@@ -113,6 +113,15 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 struct S1 {}
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class Foo {
+                static let i = 0
+            }
+            class Bar {}
+            extension Bar {
+                func f() -> Int { Foo.i }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -235,6 +244,25 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class C {
+                static let i = 0
+            }
+            extension C {
+                func f() -> Int { ↓C.i }
+                var v: Int { ↓C.i }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class Outer {
+                class Inner {
+                    static let i = 0
+                }
+            }
+            extension Outer.Inner {
+                func f() -> Int { ↓Inner.i }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let corrections = [
@@ -275,6 +303,21 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     let k = Self  . j
                     static func f(_ l: Int = Self.i) -> Int { l*Self.j }
                     func g() { Self.i + Self.f() + k }
+                }
+                """),
+        Example("""
+            class C {
+                static let i = 0
+            }
+            extension C {
+                func f() -> Int { ↓C.i }
+            }
+            """): Example("""
+                class C {
+                    static let i = 0
+                }
+                extension C {
+                    func f() -> Int { Self.i }
                 }
                 """),
     ]

@@ -78,6 +78,11 @@
 
 ### Bug Fixes
 
+* Enable `ignore_typealiases_and_associatedtypes` by default in the `nesting` rule
+  so typealiases and associated types no longer count toward type nesting depth.  
+  [leno23](https://github.com/leno23)
+  [#3183](https://github.com/realm/SwiftLint/issues/3183)
+
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  
   [theamodhshetty](https://github.com/theamodhshetty)

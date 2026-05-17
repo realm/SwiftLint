@@ -511,7 +511,7 @@ final class NestingRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["check_nesting_in_closures_and_statements": false])
     }
 
-    func testNestingWithoutTypealiasAndAssociatedtype() {
+    func testNestingIgnoresTypealiasesAndAssociatedtypesByDefault() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
             [
@@ -553,6 +553,25 @@ final class NestingRuleTests: SwiftLintTestCase {
 
         let description = NestingRule.description.with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": true])
+        verifyRule(description)
+    }
+
+    func testNestingCountsTypealiasesWhenNotIgnored() {
+        let triggeringExamples = detectingTypes.flatMap { type -> [Example] in
+            [
+                .init("""
+                    \(type) Example_0 {
+                        \(type) Example_1 {
+                            ↓typealias Example_2_Type = Example_2.Type
+                        }
+                        \(type) Example_2 {}
+                    }
+                """),
+            ]
+        }
+
+        let description = NestingRule.description.with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignore_typealiases_and_associatedtypes": false])
     }
 }

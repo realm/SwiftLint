@@ -13,7 +13,7 @@ struct NestingConfiguration: RuleConfiguration {
     @ConfigurationElement(key: "always_allow_one_type_in_functions")
     private(set) var alwaysAllowOneTypeInFunctions = false
     @ConfigurationElement(key: "ignore_typealiases_and_associatedtypes")
-    private(set) var ignoreTypealiasesAndAssociatedtypes = false
+    private(set) var ignoreTypealiasesAndAssociatedtypes = true
     @ConfigurationElement(key: "ignore_coding_keys")
     private(set) var ignoreCodingKeys = false
 

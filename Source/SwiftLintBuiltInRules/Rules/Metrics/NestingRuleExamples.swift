@@ -4,6 +4,7 @@ private let detectingTypes = ["actor", "class", "struct", "enum"]
 
 internal struct NestingRuleExamples {
     static let nonTriggeringExamples = nonTriggeringTypeExamples
+        + nonTriggeringTypeAliasExamples
         + nonTriggeringFunctionExamples
         + nonTriggeringClosureAndStatementExamples
         + nonTriggeringProtocolExamples
@@ -52,6 +53,17 @@ internal struct NestingRuleExamples {
                     """),
             ]
         }
+
+    private static let nonTriggeringTypeAliasExamples: [Example] = [
+        .init("""
+        struct AStruct {
+            struct BStruct {
+                typealias GreatType = C.Type
+            }
+            struct CStruct {}
+        }
+        """),
+    ]
 
     private static let nonTriggeringFunctionExamples: [Example] = [
         // default maximum function nesting level

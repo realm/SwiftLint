@@ -12,6 +12,16 @@
 
 ### Enhancements
 
+* Add `excluded_members` configuration to `empty_enum_arguments` to skip members
+  that require empty parentheses (e.g. HealthKit static functions).  
+  [leno23](https://github.com/leno23)
+  [#5269](https://github.com/realm/SwiftLint/issues/5269)
+
+* Fix `unused_enumerated` false positives when offset and element are used in
+  separate chained trailing closures after `.enumerated()`.  
+  [leno23](https://github.com/leno23)
+  [#5600](https://github.com/realm/SwiftLint/issues/5600)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

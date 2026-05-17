@@ -319,7 +319,8 @@ struct IndentationWidthRule: OptInRule, CorrectableRule {
 
             // Indentation is wrong, fix it
             let lastValidIndentation = previousLineIndentations[0]
-            let correctIndentLevel = lastValidIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+            let correctIndentLevel = lastValidIndentation.spacesEquivalent(
+                indentationWidth: configuration.indentationWidth)
             let shouldUseTabs = prefix.tabCount > 0
             let correctIndent = generateIndentation(spaceCount: correctIndentLevel, usesTabs: shouldUseTabs)
             let lineContent = String(line.content.dropFirst(indentationCharacterCount))

@@ -58,6 +58,10 @@
   rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)
   [#3993](https://github.com/realm/SwiftLint/issues/3993)
+* Fix `redundant_self` false positive when `self` is used in labeled string interpolation
+  expressions such as os.Logger privacy arguments.  
+  [leno23](https://github.com/leno23)
+  [#6542](https://github.com/realm/SwiftLint/issues/6542)
 
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)

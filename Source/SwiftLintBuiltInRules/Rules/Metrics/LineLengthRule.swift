@@ -7,6 +7,11 @@ import SwiftSyntax
 struct LineLengthRule: Rule {
     var configuration = LineLengthConfiguration()
 
+    private static let longMacroDeclaration = """
+        @freestanding(expression)
+        public macro obfuscate(_ value: String) -> String = #externalMacro(module: "ObfuscatedStringMacros", type: "ObfuscationMacro")
+        """
+
     static let description = RuleDescription(
         identifier: "line_length",
         name: "Line Length",
@@ -16,11 +21,16 @@ struct LineLengthRule: Rule {
             Example(String(repeating: "/", count: 120) + ""),
             Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + ""),
             Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + ""),
+            Example(
+                longMacroDeclaration,
+                configuration: ["ignores_function_declarations": true, "warning": 120]
+            ),
         ],
         triggeringExamples: [
             Example(String(repeating: "/", count: 121) + ""),
             Example(String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + ""),
             Example(String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + ""),
+            Example(longMacroDeclaration, configuration: ["warning": 120]),
         ].skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 }
@@ -35,7 +45,7 @@ private extension LineLengthRule {
         private var regexLiteralLines = Set<Int>()
 
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
-            // Populate functionDeclarationLines if ignores_function_declarations is true
+            // Populate declaration lines for functions and macros when ignoring function declarations
             if configuration.ignoresFunctionDeclarations {
                 let funcVisitor = FunctionLineVisitor(locationConverter: locationConverter)
                 functionDeclarationLines = funcVisitor.walk(tree: node, handler: \.lines)
@@ -147,7 +157,7 @@ private extension LineLengthRule {
 
 // MARK: - Helper Visitors for Pre-computation
 
-// Visitor to find lines spanned by function declaration signatures
+// Visitor to find lines spanned by function and macro declaration signatures
 private final class FunctionLineVisitor: SyntaxVisitor {
     let locationConverter: SourceLocationConverter
     var lines = Set<Int>()
@@ -178,6 +188,13 @@ private final class FunctionLineVisitor: SyntaxVisitor {
             from: node.positionAfterSkippingLeadingTrivia,
             to: node.genericWhereClause?.endPositionBeforeTrailingTrivia
                 ?? node.returnClause.endPositionBeforeTrailingTrivia
+        )
+    }
+
+    override func visitPost(_ node: MacroDeclSyntax) {
+        collectLines(
+            from: node.positionAfterSkippingLeadingTrivia,
+            to: node.endPositionBeforeTrailingTrivia
         )
     }
 

@@ -286,14 +286,51 @@ struct IndentationWidthRule: OptInRule, CorrectableRule {
         var previousLineIndentations: [Indentation] = []
         var correctedLines = file.lines.map(\.content)
 
-        for (lineIndex, line) in file.lines.enumerated() {
-            corrections += correctLine(
-                at: lineIndex,
-                line: line,
-                file: file,
-                in: &correctedLines,
-                trackingIndentations: &previousLineIndentations
-            )
+        let conditionContinuationInfo = multilineConditionInfo(in: file)
+
+        for line in file.lines {
+            let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            if shouldSkipLine(line: line, indentationCharacterCount: indentationCharacterCount, in: file) { continue }
+
+            // Skip multiline condition continuation lines (they have specific alignment, don't auto-correct)
+            if conditionContinuationInfo[line.index] != nil { continue }
+
+            let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
+            let (indentation, mixedViolation) = parseIndentation(line: line, prefix: prefix, file: file)
+
+            // Skip lines with mixed tabs/spaces
+            if mixedViolation != nil { continue }
+
+            // Catch indented first line
+            guard previousLineIndentations.isNotEmpty else {
+                previousLineIndentations = [indentation]
+                if indentation != .spaces(0) {
+                    correctedLines[line.index] = String(line.content.dropFirst(indentationCharacterCount))
+                    corrections += 1
+                }
+                continue
+            }
+
+            // Check if indentation is valid
+            if validate(indentation: indentation, comparingTo: previousLineIndentations[0]) {
+                previousLineIndentations = [indentation]
+                continue
+            }
+
+            // Indentation is wrong, fix it
+            let lastValidIndentation = previousLineIndentations[0]
+            let correctIndentLevel = lastValidIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+            let shouldUseTabs = prefix.tabCount > 0
+            let correctIndent = generateIndentation(spaceCount: correctIndentLevel, usesTabs: shouldUseTabs)
+            let lineContent = String(line.content.dropFirst(indentationCharacterCount))
+            correctedLines[line.index] = correctIndent + lineContent
+
+            let correctedIndentation: Indentation = shouldUseTabs
+                ? .tabs(correctIndent.filter { $0 == "\t" }.count)
+                : .spaces(correctIndent.filter { $0 == " " }.count)
+            previousLineIndentations = [correctedIndentation]
+
+            corrections += 1
         }
 
         if corrections > 0 {
@@ -302,64 +339,6 @@ struct IndentationWidthRule: OptInRule, CorrectableRule {
         }
 
         return corrections
-    }
-
-    private func correctLine(
-        at lineIndex: Int,
-        line: Line,
-        file: SwiftLintFile,
-        in correctedLines: inout [String],
-        trackingIndentations previousLineIndentations: inout [Indentation]
-    ) -> Int {
-        if ignoreCompilerDirective(line: line, in: file) { return 0 }
-        let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
-        if line.content.count == indentationCharacterCount { return 0 }
-        if ignoreComment(line: line, in: file) || ignoreMultilineStrings(line: line, in: file) { return 0 }
-
-        let prefix = String(line.content.prefix(indentationCharacterCount))
-        let tabCount = prefix.filter { $0 == "\t" }.count
-        let spaceCount = prefix.filter { $0 == " " }.count
-
-        if tabCount != 0, spaceCount != 0 { return 0 }
-
-        let indentation: Indentation = tabCount != 0 ? .tabs(tabCount) : .spaces(spaceCount)
-
-        guard previousLineIndentations.isNotEmpty else {
-            previousLineIndentations = [indentation]
-            if indentation != .spaces(0) {
-                correctedLines[lineIndex] = String(line.content.dropFirst(indentationCharacterCount))
-                return 1
-            }
-            return 0
-        }
-
-        let linesValidationResult = previousLineIndentations.map {
-            validate(indentation: indentation, comparingTo: $0)
-        }
-
-        if linesValidationResult.contains(true) {
-            if linesValidationResult.first == true {
-                previousLineIndentations = [indentation]
-            } else {
-                previousLineIndentations.append(indentation)
-            }
-            return 0
-        }
-
-        guard let lastValidIndentation = previousLineIndentations.first else { return 0 }
-
-        let correctIndentLevel = lastValidIndentation.spacesEquivalent(indentationWidth: configuration.indentationWidth)
-        let shouldUseTabs = tabCount > 0
-        let correctIndent = generateIndentation(spaceCount: correctIndentLevel, usesTabs: shouldUseTabs)
-        let lineContent = String(line.content.dropFirst(indentationCharacterCount))
-        correctedLines[lineIndex] = correctIndent + lineContent
-
-        let correctedIndentation: Indentation = shouldUseTabs
-            ? .tabs(correctIndent.filter { $0 == "\t" }.count)
-            : .spaces(correctIndent.filter { $0 == " " }.count)
-        previousLineIndentations = [correctedIndentation]
-
-        return 1
     }
 
     /// Generates an indentation string based on the number of spaces and whether tabs should be used.

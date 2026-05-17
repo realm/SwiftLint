@@ -118,6 +118,18 @@ struct RedundantSelfRuleExamples {
             }
             """),
         Example("""
+            import os
+
+            class Name {
+                private let test = ""
+
+                func testLog() {
+                    Logger(subsystem: "sub", category: "cat")
+                        .warning("test: \\(self.test, privacy: .private(mask: .hash))")
+                }
+            }
+            """),
+        Example("""
             struct S {
                 var x = 0, y = 0
                 init() {

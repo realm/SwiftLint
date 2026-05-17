@@ -113,6 +113,9 @@ private extension RedundantSelfRule {
             if configuration.keepInInitializers, initializerScopes.peek() == true {
                 return
             }
+            if requiresExplicitSelf(node) {
+                return
+            }
             if closureExprScopes.isNotEmpty, !isSelfRedundant {
                 return
             }
@@ -156,6 +159,21 @@ private extension RedundantSelfRule {
             return closureType == .anonymousCall
                 || selfCapture == .strong && SwiftVersion.current >= .fiveDotThree
                 || selfCapture == .weak && SwiftVersion.current >= .fiveDotEight
+        }
+
+        private func requiresExplicitSelf(_ node: MemberAccessExprSyntax) -> Bool {
+            guard node.isBaseSelf else {
+                return false
+            }
+            var current: Syntax? = Syntax(node)
+            while let parent = current?.parent {
+                if let labeledExpr = parent.as(LabeledExprSyntax.self),
+                   labeledExpr.label?.text == "privacy" {
+                    return true
+                }
+                current = parent
+            }
+            return false
         }
     }
 }

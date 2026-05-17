@@ -76,6 +76,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6620](https://github.com/realm/SwiftLint/issues/6620)
 
+* Add autocorrection support to `indentation_width` rule to automatically fix
+  indentation violations using the `--fix` option.  
+  [nadeemnali](https://github.com/nadeemnali)
+  [#6497](https://github.com/realm/SwiftLint/issues/6497)
+
 ### Bug Fixes
 
 * Detect and autocorrect missing whitespace before `else` in `guard`

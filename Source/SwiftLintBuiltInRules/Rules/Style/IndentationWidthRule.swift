@@ -3,7 +3,7 @@ import SourceKittenFramework
 import SwiftSyntax
 
 @DisabledWithoutSourceKit
-struct IndentationWidthRule: OptInRule {
+struct IndentationWidthRule: OptInRule, CorrectableRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs(Int)
@@ -278,6 +278,83 @@ struct IndentationWidthRule: OptInRule {
                 (lastSpaceEquivalent - currentSpaceEquivalent).isMultiple(of: configuration.indentationWidth)
             ) // Allow unindent if it stays in the grid
         )
+    }
+
+    // MARK: - Methods: Correction
+    func correct(file: SwiftLintFile) -> Int {
+        var corrections = 0
+        var previousLineIndentations: [Indentation] = []
+        var correctedLines = file.lines.map(\.content)
+
+        let conditionContinuationInfo = multilineConditionInfo(in: file)
+
+        for line in file.lines {
+            let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            if shouldSkipLine(line: line, indentationCharacterCount: indentationCharacterCount, in: file) { continue }
+
+            // Skip multiline condition continuation lines (they have specific alignment, don't auto-correct)
+            if conditionContinuationInfo[line.index] != nil { continue }
+
+            let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
+            let (indentation, mixedViolation) = parseIndentation(line: line, prefix: prefix, file: file)
+
+            // Skip lines with mixed tabs/spaces
+            if mixedViolation != nil { continue }
+
+            // Catch indented first line
+            guard previousLineIndentations.isNotEmpty else {
+                previousLineIndentations = [indentation]
+                if indentation != .spaces(0) {
+                    correctedLines[line.index] = String(line.content.dropFirst(indentationCharacterCount))
+                    corrections += 1
+                }
+                continue
+            }
+
+            // Check if indentation is valid
+            if validate(indentation: indentation, comparingTo: previousLineIndentations[0]) {
+                previousLineIndentations = [indentation]
+                continue
+            }
+
+            // Indentation is wrong, fix it
+            let lastValidIndentation = previousLineIndentations[0]
+            let correctIndentLevel = lastValidIndentation.spacesEquivalent(
+                indentationWidth: configuration.indentationWidth)
+            let shouldUseTabs = prefix.tabCount > 0
+            let correctIndent = generateIndentation(spaceCount: correctIndentLevel, usesTabs: shouldUseTabs)
+            let lineContent = String(line.content.dropFirst(indentationCharacterCount))
+            correctedLines[line.index] = correctIndent + lineContent
+
+            let correctedIndentation: Indentation = shouldUseTabs
+                ? .tabs(correctIndent.filter { $0 == "\t" }.count)
+                : .spaces(correctIndent.filter { $0 == " " }.count)
+            previousLineIndentations = [correctedIndentation]
+
+            corrections += 1
+        }
+
+        if corrections > 0 {
+            let correctedContent = correctedLines.joined(separator: "\n")
+            file.write(correctedContent)
+        }
+
+        return corrections
+    }
+
+    /// Generates an indentation string based on the number of spaces and whether tabs should be used.
+    ///
+    /// - parameter spaceCount: The number of space-equivalents needed.
+    /// - parameter usesTabs:   Whether the indentation should use tabs.
+    ///
+    /// - returns: The generated indentation string.
+    private func generateIndentation(spaceCount: Int, usesTabs: Bool) -> String {
+        if usesTabs {
+            let tabCount = spaceCount / configuration.indentationWidth
+            let remainingSpaces = spaceCount % configuration.indentationWidth
+            return String(repeating: "\t", count: tabCount) + String(repeating: " ", count: remainingSpaces)
+        }
+        return String(repeating: " ", count: spaceCount)
     }
 }
 

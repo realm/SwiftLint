@@ -12,6 +12,10 @@
 
 ### Enhancements
 
+* Fix `missing_docs` not reporting undocumented members when `excludes_inherited_types` is enabled.  
+  [leno23](https://github.com/leno23)
+  [#5633](https://github.com/realm/SwiftLint/issues/5633)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

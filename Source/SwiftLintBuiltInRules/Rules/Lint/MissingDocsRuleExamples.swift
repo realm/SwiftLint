@@ -69,6 +69,12 @@ struct MissingDocsRuleExamples {
         public func f() async {}
         #endif
         """, excludeFromDocumentation: true),
+        Example("""
+        /// My type.
+        public struct MyType: Identifiable {
+            public var id: String
+        }
+        """, configuration: ["excludes_inherited_types": true]),
     ]
 
     static let triggeringExamples = [
@@ -90,6 +96,13 @@ struct MissingDocsRuleExamples {
             public let b: Int
         }
         """),
+        Example("""
+        /// My type.
+        public struct MyType: Identifiable {
+            public var id: String
+            public ↓var name: String
+        }
+        """, configuration: ["excludes_inherited_types": true]),
         // Violation marker is on `static` keyword.
         Example("""
         /// a doc

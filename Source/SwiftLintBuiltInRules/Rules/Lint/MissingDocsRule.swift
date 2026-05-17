@@ -26,11 +26,9 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            if node.inherits, configuration.excludesInheritedTypes {
-                _ = super.visit(node)
-                return .skipChildren
+            if !(node.inherits && configuration.excludesInheritedTypes) {
+                collectViolation(from: node, on: node.actorKeyword)
             }
-            collectViolation(from: node, on: node.actorKeyword)
             return super.visit(node)
         }
 
@@ -71,11 +69,9 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
-            if node.inherits, configuration.excludesInheritedTypes {
-                _ = super.visit(node)
-                return .skipChildren
+            if !(node.inherits && configuration.excludesInheritedTypes) {
+                collectViolation(from: node, on: node.enumKeyword)
             }
-            collectViolation(from: node, on: node.enumKeyword)
             return super.visit(node)
         }
 
@@ -103,20 +99,16 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-            if node.inherits, configuration.excludesInheritedTypes {
-                _ = super.visit(node)
-                return .skipChildren
+            if !(node.inherits && configuration.excludesInheritedTypes) {
+                collectViolation(from: node, on: node.protocolKeyword)
             }
-            collectViolation(from: node, on: node.protocolKeyword)
             return super.visit(node)
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
-            if node.inherits, configuration.excludesInheritedTypes {
-                _ = super.visit(node)
-                return .skipChildren
+            if !(node.inherits && configuration.excludesInheritedTypes) {
+                collectViolation(from: node, on: node.structKeyword)
             }
-            collectViolation(from: node, on: node.structKeyword)
             return super.visit(node)
         }
 

@@ -26,7 +26,7 @@ private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UIn
 
 @SwiftSyntaxRule(explicitRewriter: true)
 struct EmptyEnumArgumentsRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = EmptyEnumArgumentsConfiguration()
 
     static let description = RuleDescription(
         identifier: "empty_enum_arguments",
@@ -61,6 +61,7 @@ struct EmptyEnumArgumentsRule: Rule {
                 return true
             }
             """),
+            Example("if case .gram() = foo {}", configuration: ["excluded_members": ["gram"]]),
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -117,13 +118,19 @@ struct EmptyEnumArgumentsRule: Rule {
 private extension EmptyEnumArgumentsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
-            if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
+            if let violationPosition = node.pattern.emptyEnumArgumentsViolation(
+                rewrite: false,
+                excludedMembers: configuration.excludedMembers
+            )?.position {
                 violations.append(violationPosition)
             }
         }
 
         override func visitPost(_ node: MatchingPatternConditionSyntax) {
-            if let violationPosition = node.pattern.emptyEnumArgumentsViolation(rewrite: false)?.position {
+            if let violationPosition = node.pattern.emptyEnumArgumentsViolation(
+                rewrite: false,
+                excludedMembers: configuration.excludedMembers
+            )?.position {
                 violations.append(violationPosition)
             }
         }
@@ -131,7 +138,10 @@ private extension EmptyEnumArgumentsRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: SwitchCaseItemSyntax) -> SwitchCaseItemSyntax {
-            guard let (_, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
+            guard let (_, newPattern) = node.pattern.emptyEnumArgumentsViolation(
+                rewrite: true,
+                excludedMembers: configuration.excludedMembers
+            ) else {
                 return super.visit(node)
             }
             numberOfCorrections += 1
@@ -139,7 +149,10 @@ private extension EmptyEnumArgumentsRule {
         }
 
         override func visit(_ node: MatchingPatternConditionSyntax) -> MatchingPatternConditionSyntax {
-            guard let (_, newPattern) = node.pattern.emptyEnumArgumentsViolation(rewrite: true) else {
+            guard let (_, newPattern) = node.pattern.emptyEnumArgumentsViolation(
+                rewrite: true,
+                excludedMembers: configuration.excludedMembers
+            ) else {
                 return super.visit(node)
             }
             numberOfCorrections += 1
@@ -149,7 +162,10 @@ private extension EmptyEnumArgumentsRule {
 }
 
 private extension PatternSyntax {
-    func emptyEnumArgumentsViolation(rewrite: Bool) -> (position: AbsolutePosition, pattern: PatternSyntax)? {
+    func emptyEnumArgumentsViolation(
+        rewrite: Bool,
+        excludedMembers: Set<String>
+    ) -> (position: AbsolutePosition, pattern: PatternSyntax)? {
         guard
             var pattern = `as`(ExpressionPatternSyntax.self),
             let expression = pattern.expression.as(FunctionCallExprSyntax.self),
@@ -158,6 +174,15 @@ private extension PatternSyntax {
             calledExpression.base == nil,
             let violationPosition = expression.innermostFunctionCall.leftParen?.positionAfterSkippingLeadingTrivia
         else {
+            return nil
+        }
+
+        let memberName = expression.innermostFunctionCall.calledExpression
+            .as(MemberAccessExprSyntax.self)?
+            .declName
+            .baseName
+            .text
+        if let memberName, excludedMembers.contains(memberName) {
             return nil
         }
 

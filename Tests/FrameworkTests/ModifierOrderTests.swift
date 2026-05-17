@@ -408,6 +408,12 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 }
                 """),
                 Example("""
+                @MainActor
+                class Foo {
+                    isolated public func bar() {}
+                }
+                """),
+                Example("""
                 class RegularClass {
                     @MainActor public func bar() {}
                 }
@@ -426,6 +432,12 @@ final class ModifierOrderTests: SwiftLintTestCase {
                     private nonisolated func heavyWork() {}
                 }
                 """),
+                Example("""
+                @MainActor
+                class Foo {
+                    public isolated func bar() {}
+                }
+                """),
             ])
             .with(corrections: [
                 Example("""
@@ -438,6 +450,18 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 @MainActor
                 class Foo {
                     nonisolated public func bar() {}
+                }
+                """),
+                Example("""
+                @MainActor
+                class Foo {
+                    public isolated func bar() {}
+                }
+                """):
+                Example("""
+                @MainActor
+                class Foo {
+                    isolated public func bar() {}
                 }
                 """),
             ])

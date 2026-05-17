@@ -40,6 +40,13 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             @unknown default: print("x is out of this world")
             }
             """),
+        Example("""
+            switch myEnum {
+            case .a: print("a")
+            // Now we handle b.
+            case .b: print("b")
+            }
+            """),
         // Testing handling of trailing spaces
         Example("""
             switch x {    \("")

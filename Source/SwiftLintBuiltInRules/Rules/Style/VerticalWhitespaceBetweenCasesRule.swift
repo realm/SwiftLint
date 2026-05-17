@@ -1,3 +1,4 @@
+import Foundation
 import SwiftBasicFormat
 import SwiftSyntax
 
@@ -126,9 +127,52 @@ private extension VerticalWhitespaceBetweenCasesRule {
             let currentIsOneLiner = currentCaseStartLine == currentCaseEndLine
             let nextIsOneLiner = nextCaseStartLine == nextCaseEndLine
 
-            // Skip if both are one-liners on consecutive lines.
-            return currentIsOneLiner && nextIsOneLiner && nextCaseStartLine == currentCaseStartLine + 1
+            guard currentIsOneLiner, nextIsOneLiner else {
+                return false
+            }
+
+            // Skip if both are one-liners with only empty or comment-only lines between them.
+            if nextCaseStartLine == currentCaseStartLine + 1 {
+                return true
+            }
+
+            return linesBetweenContainOnlyCommentsOrAreEmpty(
+                startingLine: currentCaseEndLine + 1,
+                endingLine: nextCaseStartLine - 1
+            )
         }
+
+        private func linesBetweenContainOnlyCommentsOrAreEmpty(startingLine: Int, endingLine: Int) -> Bool {
+            guard startingLine <= endingLine else {
+                return true
+            }
+
+            for lineNumber in startingLine...endingLine {
+                if emptyLines.contains(lineNumber) {
+                    continue
+                }
+
+                let line = locationConverter.sourceLines[lineNumber - 1]
+                if !line.isCommentOnly {
+                    return false
+                }
+            }
+
+            return true
+        }
+    }
+}
+
+private extension String {
+    var isCommentOnly: Bool {
+        let trimmed = trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty {
+            return true
+        }
+
+        return trimmed.hasPrefix("//")
+            || trimmed.hasPrefix("/*")
+            || trimmed.hasPrefix("*")
     }
 }
 

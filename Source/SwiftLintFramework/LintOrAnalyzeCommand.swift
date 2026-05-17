@@ -34,6 +34,7 @@ package struct LintOrAnalyzeOptions {
     let paths: [String]
     let useSTDIN: Bool
     let configurationFiles: [String]
+    let parentConfig: [String]
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
@@ -63,6 +64,7 @@ package struct LintOrAnalyzeOptions {
                  paths: [String],
                  useSTDIN: Bool,
                  configurationFiles: [String],
+                 parentConfig: [String] = [],
                  strict: Bool,
                  lenient: Bool,
                  forceExclude: Bool,
@@ -91,6 +93,7 @@ package struct LintOrAnalyzeOptions {
         self.paths = paths
         self.useSTDIN = useSTDIN
         self.configurationFiles = configurationFiles
+        self.parentConfig = parentConfig
         self.strict = strict
         self.lenient = lenient
         self.forceExclude = forceExclude

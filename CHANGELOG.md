@@ -12,6 +12,11 @@
 
 ### Enhancements
 
+* Add `--parent-config` to `lint` and `analyze` to merge parent configuration files
+  without specifying `parent_config` in `.swiftlint.yml`.  
+  [leno23](https://github.com/leno23)
+  [#5421](https://github.com/realm/SwiftLint/issues/5421)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

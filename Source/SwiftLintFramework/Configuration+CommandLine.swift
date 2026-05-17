@@ -287,9 +287,29 @@ extension Configuration {
 
     // MARK: LintOrAnalyze Command
 
+    /// Resolves configuration file paths when `--parent-config` is used on the command line.
+    ///
+    /// Parent configs are prepended so they are merged before the child configuration,
+    /// matching the `parent_config` YAML key behavior.
+    package static func resolvedConfigurationFiles(
+        parentConfig: [String],
+        configurationFiles: [String]
+    ) -> [String] {
+        guard parentConfig.isNotEmpty else {
+            return configurationFiles
+        }
+        let childConfigurationFiles = configurationFiles.isEmpty
+            ? [Self.defaultFileName]
+            : configurationFiles
+        return parentConfig + childConfigurationFiles
+    }
+
     init(options: LintOrAnalyzeOptions) {
         self.init(
-            configurationFiles: options.configurationFiles,
+            configurationFiles: Self.resolvedConfigurationFiles(
+                parentConfig: options.parentConfig,
+                configurationFiles: options.configurationFiles
+            ),
             enableAllRules: options.enableAllRules,
             onlyRule: options.onlyRule,
             cachePath: options.cachePath

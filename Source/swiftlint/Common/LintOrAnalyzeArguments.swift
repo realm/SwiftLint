@@ -20,6 +20,8 @@ enum LeniencyOptions: String, EnumerableFlag {
 struct LintOrAnalyzeArguments: ParsableArguments {
     @Option(help: "The path to one or more SwiftLint configuration files, evaluated as a parent-child hierarchy.")
     var config = [String]()
+    @Option(help: "The path to one or more parent configuration files to merge before the child configuration.")
+    var parentConfig = [String]()
     @Flag(name: [.long, .customLong("autocorrect")], help: "Correct violations whenever possible.")
     var fix = false
 

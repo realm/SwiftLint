@@ -54,6 +54,11 @@ struct UnusedEnumeratedRule: Rule {
                 print(i)
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            rules.enumerated()
+                .first { $0.element.isValid() == false }
+                .flatMap { messages[$0.offset] }
+            """),
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
@@ -108,7 +113,7 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     private struct Closure {
-        let enumeratedPosition: AbsolutePosition
+        let enumeratedCall: FunctionCallExprSyntax
         let usedEnumeratedResultMembers: (zero: Bool, one: Bool)
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
@@ -116,7 +121,7 @@ private extension UnusedEnumeratedRule {
 
     private struct PendingClosure {
         let id: SyntaxIdentifier
-        let enumeratedPosition: AbsolutePosition
+        let enumeratedCall: FunctionCallExprSyntax
         let usedEnumeratedResultMembers: (zero: Bool, one: Bool)
     }
 
@@ -176,10 +181,10 @@ private extension UnusedEnumeratedRule {
                     zeroPosition: firstTokenIsUnderscore ? firstElement.positionAfterSkippingLeadingTrivia : nil,
                     onePosition: firstTokenIsUnderscore ? nil : secondElement.positionAfterSkippingLeadingTrivia
                 )
-            } else if let enumeratedPosition = node.enumeratedPosition {
+            } else if node.enumeratedPosition != nil {
                 pendingClosure = PendingClosure(
                     id: trailingClosure.id,
-                    enumeratedPosition: enumeratedPosition,
+                    enumeratedCall: node,
                     usedEnumeratedResultMembers: ExprSyntax(parentCall).usedEnumeratedResultMembers
                 )
             }
@@ -190,7 +195,7 @@ private extension UnusedEnumeratedRule {
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
             if let pendingClosure, pendingClosure.id == node.id {
                 closures.push(Closure(
-                    enumeratedPosition: pendingClosure.enumeratedPosition,
+                    enumeratedCall: pendingClosure.enumeratedCall,
                     usedEnumeratedResultMembers: pendingClosure.usedEnumeratedResultMembers
                 ))
                 self.pendingClosure = nil
@@ -203,16 +208,24 @@ private extension UnusedEnumeratedRule {
         override func visitPost(_: ClosureExprSyntax) {
             guard let closure = closures.pop().flatMap(\.self) else { return }
 
+            let chainUsage = closure.enumeratedCall.memberUsageInChainedTrailingClosures()
+            let zeroUsed = closure.zeroPosition != nil
+                || closure.usedEnumeratedResultMembers.zero
+                || chainUsage.zero
+            let oneUsed = closure.onePosition != nil
+                || closure.usedEnumeratedResultMembers.one
+                || chainUsage.one
+            guard zeroUsed != oneUsed else { return }
+
             let zeroPosition = closure.zeroPosition
-                ?? (closure.usedEnumeratedResultMembers.zero ? closure.enumeratedPosition : nil)
+                ?? (zeroUsed && !oneUsed ? closure.enumeratedCall.enumeratedPosition : nil)
             let onePosition = closure.onePosition
-                ?? (closure.usedEnumeratedResultMembers.one ? closure.enumeratedPosition : nil)
-            guard (zeroPosition != nil) != (onePosition != nil) else { return }
+                ?? (oneUsed && !zeroUsed ? closure.enumeratedCall.enumeratedPosition : nil)
 
             addViolation(
                 zeroPosition: onePosition,
                 onePosition: zeroPosition,
-                enumeratedPosition: closure.enumeratedPosition
+                enumeratedPosition: closure.enumeratedCall.enumeratedPosition
             )
         }
 
@@ -271,7 +284,59 @@ private extension UnusedEnumeratedRule {
     }
 }
 
+private extension ClosureExprSyntax {
+    func enumeratedTupleMemberUsage() -> (zero: Bool, one: Bool) {
+        var zero = false
+        var one = false
+        for statement in body.statements {
+            zero = zero || statement.containsEnumeratedTupleMember(named: "offset", or: "0")
+            one = one || statement.containsEnumeratedTupleMember(named: "element", or: "1")
+        }
+        return (zero, one)
+    }
+}
+
+private extension SyntaxProtocol {
+    func containsEnumeratedTupleMember(named primary: String, or alternate: String) -> Bool {
+        var found = false
+        for child in children(viewMode: .sourceAccurate) {
+            if let memberAccess = child.as(MemberAccessExprSyntax.self),
+               memberAccess.declName.baseName.text == primary || memberAccess.declName.baseName.text == alternate,
+               memberAccess.base?.as(DeclReferenceExprSyntax.self)?.baseName.text == "$0" {
+                return true
+            }
+            if child.containsEnumeratedTupleMember(named: primary, or: alternate) {
+                found = true
+            }
+        }
+        return found
+    }
+}
+
 private extension FunctionCallExprSyntax {
+    func memberUsageInChainedTrailingClosures() -> (zero: Bool, one: Bool) {
+        var zero = false
+        var one = false
+        var call: FunctionCallExprSyntax? = self
+        while let current = call, let outer = current.enclosingCallChainedFromSelf {
+            if let closure = outer.trailingClosure {
+                let usage = closure.enumeratedTupleMemberUsage()
+                zero = zero || usage.zero
+                one = one || usage.one
+            }
+            call = outer
+        }
+        return (zero, one)
+    }
+
+    var enclosingCallChainedFromSelf: FunctionCallExprSyntax? {
+        guard let memberAccess = parent?.as(MemberAccessExprSyntax.self),
+              memberAccess.base?.as(FunctionCallExprSyntax.self)?.id == id else {
+            return nil
+        }
+        return memberAccess.parent?.as(FunctionCallExprSyntax.self)
+    }
+
     var isEnumerated: Bool {
         enumeratedPosition != nil
     }

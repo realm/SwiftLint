@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<testsuites><testsuite>
+<testsuites failures="1" errors="3" tests="4">
+<testsuite name="SwiftLint" failures="1" errors="3" tests="4">
 	<testcase name='warning: line_length in filename:1'>
 		<failure>Severity: warning
 Rule: line_length

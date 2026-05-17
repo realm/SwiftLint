@@ -7,7 +7,13 @@ struct GitLabJUnitReporter: Reporter {
     static let description = "Reports violations as JUnit XML supported by GitLab."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
+        let warningCount = violations.filter({ $0.severity == .warning }).count
+        let errorCount = violations.filter({ $0.severity == .error }).count
+        let testCount = warningCount + errorCount
+
+        return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            "<testsuites failures=\"\(warningCount)\" errors=\"\(errorCount)\" tests=\"\(testCount)\">" +
+            "<testsuite name=\"SwiftLint\" failures=\"\(warningCount)\" errors=\"\(errorCount)\" tests=\"\(testCount)\">" +
             violations.map({ violation -> String in
                 let fileName = (violation.location.relativeFile ?? "<nopath>").escapedForXML()
                 let line = violation.location.line.map(String.init)

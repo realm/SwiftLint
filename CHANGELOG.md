@@ -12,6 +12,9 @@
 
 ### Enhancements
 
+* Add `tests`, `failures`, `errors`, and `name` attributes to the GitLab JUnit reporter output.  
+  [leno23](https://github.com/leno23)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

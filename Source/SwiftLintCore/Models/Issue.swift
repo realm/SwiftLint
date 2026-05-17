@@ -122,6 +122,8 @@ public enum Issue: LocalizedError, Equatable {
             return "error: \(message)"
         case .genericWarning:
             return "warning: \(message)"
+        case .yamlParsing:
+            return "warning: \(message)"
         default:
             return Self.genericWarning(message).errorDescription
         }

@@ -116,7 +116,8 @@ extension Configuration {
             // Ignore parent_config / child_config specifications of nested configs
             var childConfiguration = Configuration(
                 configurationFiles: [configurationSearchPath],
-                ignoreParentAndChildConfigs: true
+                ignoreParentAndChildConfigs: true,
+                useDefaultConfigOnFailure: true
             )
             childConfiguration.fileGraph = FileGraph(rootDirectory: directory)
             config = merged(withChild: childConfiguration, rootDirectory: rootDirectory)

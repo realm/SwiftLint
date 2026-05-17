@@ -234,6 +234,18 @@ extension ConfigurationTests {
         )
     }
 
+    func testNestedConfigurationWithInvalidYamlFallsBackToDefault() async throws {
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.duplicateYamlKeys))
+
+        let console = try await Issue.captureConsole {
+            let config = Configuration(configurationFiles: [])
+            _ = config.configuration(for: SwiftLintFile(path: Mock.Swift.duplicateYamlKeysSub)!)
+        }
+
+        XCTAssertTrue(console.contains("Cannot parse YAML file"))
+        XCTAssertTrue(console.contains("Falling back to default configuration"))
+    }
+
     func testNestedConfigurationForOnePathPassedIn() {
         // If a path to one or more configuration files is specified, nested configurations should be ignored
         let config = Configuration(configurationFiles: [Mock.Yml._0])

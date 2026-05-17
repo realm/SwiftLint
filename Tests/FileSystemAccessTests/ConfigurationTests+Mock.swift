@@ -33,6 +33,7 @@ internal extension ConfigurationTests {
             static var remoteConfigLocalRef: String { level0.stringByAppendingPathComponent("RemoteConfig/LocalRef") }
             static var remoteConfigCycle: String { level0.stringByAppendingPathComponent("RemoteConfig/Cycle") }
             static var emptyFolder: String { level0.stringByAppendingPathComponent("EmptyFolder") }
+            static var duplicateYamlKeys: String { level0.stringByAppendingPathComponent("DuplicateYamlKeys") }
 
             static var exclusionTests: String { testResourcesPath.stringByAppendingPathComponent("ExclusionTests") }
             static var directory: String { exclusionTests.stringByAppendingPathComponent("directory") }
@@ -65,6 +66,9 @@ internal extension ConfigurationTests {
             static var _2: String { Dir.level2.stringByAppendingPathComponent("Level2.swift") }
             static var _3: String { Dir.level3.stringByAppendingPathComponent("Level3.swift") }
             static var nestedSub: String { Dir.nestedSub.stringByAppendingPathComponent("Sub.swift") }
+            static var duplicateYamlKeysSub: String {
+                Dir.duplicateYamlKeys.stringByAppendingPathComponent("subdir/a.swift")
+            }
         }
 
         // MARK: Configurations

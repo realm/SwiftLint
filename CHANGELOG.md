@@ -78,6 +78,12 @@
 
 ### Bug Fixes
 
+* Apply `attributes_with_arguments_always_on_line_above` to functions and types,
+  allowing attributes without arguments on the same line while requiring a new
+  line when arguments are present.  
+  [leno23](https://github.com/leno23)
+  [#5011](https://github.com/realm/SwiftLint/issues/5011)
+
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  
   [theamodhshetty](https://github.com/theamodhshetty)

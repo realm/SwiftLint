@@ -86,6 +86,17 @@ internal struct AttributesRuleExamples {
         @MainActor
         final class AppDelegate: NSAppDelegate {}
         """),
+        Example("""
+        @objc(Foo)
+        class Foo: NSObject {
+            @objc func foo() {}
+        }
+        """),
+        Example("""
+        @objc class Foo: NSObject {
+            @objc func foo() {}
+        }
+        """),
         Example(#"""
         @_spi(Private) import SomeFramework
 
@@ -112,6 +123,8 @@ internal struct AttributesRuleExamples {
         Example("@NSManaged\n ↓func addSomeObject(book: SomeObject)"),
         Example("@IBAction\n ↓func buttonPressed(button: UIButton)"),
         Example("@IBAction\n @objc\n ↓func buttonPressed(button: UIButton)"),
+        Example("@objc(Foo) ↓class Foo: NSObject {}"),
+        Example("@objc(Foo) ↓func foo() {}"),
         Example("@available(iOS 9.0, *) ↓func animate(view: UIStackView)"),
         Example("@nonobjc final ↓class X {}"),
         Example("@available(iOS 9.0, *) ↓class UIStackView {}"),

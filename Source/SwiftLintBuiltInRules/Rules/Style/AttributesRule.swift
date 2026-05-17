@@ -162,7 +162,7 @@ private struct RuleHelper {
                     linesWithAttributes.contains(attributeStartLine)
                 linesWithAttributes.insert(attributeStartLine)
                 if hasViolation {
-                    if attributesWithArgumentsAlwaysOnNewLine, shouldBeOnSameLine {
+                    if attributesWithArgumentsAlwaysOnNewLine, attribute.arguments != nil {
                         return .argumentsAlwaysOnNewLineViolation
                     }
                     return .violation
@@ -185,6 +185,11 @@ private extension AttributeListSyntax {
                 }
                 if configuration.alwaysOnNewLine.contains(atPrefixedName) {
                     return (attribute, .dedicatedLine)
+                }
+                if configuration.attributesWithArgumentsAlwaysOnNewLine, !shouldBeOnSameLine {
+                    return attribute.arguments != nil
+                        ? (attribute, .dedicatedLine)
+                        : (attribute, .sameLineAsDeclaration)
                 }
                 if attribute.arguments != nil, configuration.attributesWithArgumentsAlwaysOnNewLine {
                     return (attribute, .dedicatedLine)

@@ -246,15 +246,83 @@ private extension FunctionCallExprSyntax {
     }
 
     private static func expressionContainsButtonOrLinkTrait(_ expression: ExprSyntax) -> Bool {
+        if expressionProvidesButtonOrLinkTrait(expression) {
+            return true
+        }
+
+        if let ifExpr = expression.as(IfExprSyntax.self) {
+            return expressionProvidesButtonOrLinkTraitInAllBranches(ifExpr)
+        }
+
+        if let closure = expression.as(ClosureExprSyntax.self) {
+            return codeBlockProvidesButtonOrLinkTrait(closure.statements)
+        }
+
+        if let functionCall = expression.as(FunctionCallExprSyntax.self),
+           let closure = functionCall.calledExpression.as(ClosureExprSyntax.self) {
+            return codeBlockProvidesButtonOrLinkTrait(closure.statements)
+        }
+
+        return false
+    }
+
+    private static func expressionProvidesButtonOrLinkTrait(_ expression: ExprSyntax) -> Bool {
         if let memberAccess = expression.as(MemberAccessExprSyntax.self) {
             let traitName = memberAccess.declName.baseName.text
             return traitName == "isButton" || traitName == "isLink"
         }
+
         if let arrayExpr = expression.as(ArrayExprSyntax.self) {
             return arrayExpr.elements.contains { element in
-                self.expressionContainsButtonOrLinkTrait(element.expression)
+                expressionProvidesButtonOrLinkTrait(element.expression)
             }
         }
+
+        return false
+    }
+
+    private static func expressionProvidesButtonOrLinkTraitInAllBranches(_ ifExpr: IfExprSyntax) -> Bool {
+        guard codeBlockProvidesButtonOrLinkTrait(ifExpr.body.statements) else {
+            return false
+        }
+
+        guard let elseBody = ifExpr.elseBody else {
+            return false
+        }
+
+        switch elseBody {
+        case .ifExpr(let elseIfExpr):
+            return expressionProvidesButtonOrLinkTraitInAllBranches(elseIfExpr)
+        case .codeBlock(let codeBlock):
+            return codeBlockProvidesButtonOrLinkTrait(codeBlock.statements)
+        }
+    }
+
+    private static func codeBlockProvidesButtonOrLinkTrait(_ statements: CodeBlockItemListSyntax) -> Bool {
+        for statement in statements {
+            switch statement.item {
+            case .expr(let expression):
+                if !expressionContainsButtonOrLinkTrait(expression) {
+                    return false
+                }
+            case .stmt(let statementSyntax):
+                if !statementProvidesButtonOrLinkTrait(statementSyntax) {
+                    return false
+                }
+            default:
+                return false
+            }
+        }
+
+        return !statements.isEmpty
+    }
+
+    private static func statementProvidesButtonOrLinkTrait(_ statement: StmtSyntax) -> Bool {
+        if let expressionStatement = statement.as(ExpressionStmtSyntax.self),
+           let ifExpr = expressionStatement.expression.as(IfExprSyntax.self) {
+            return expressionProvidesButtonOrLinkTraitInAllBranches(ifExpr)
+        }
+
         return false
     }
 

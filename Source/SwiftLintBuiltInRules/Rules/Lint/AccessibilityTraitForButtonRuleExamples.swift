@@ -169,6 +169,23 @@ internal struct AccessibilityTraitForButtonRuleExamples {
             }
         }
         """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                Text("Learn more")
+                    .onTapGesture {
+                        print("tapped")
+                    }
+                    .accessibilityAddTraits({
+                        if #available(iOS 17, *) {
+                            [.isToggle, .isButton]
+                        } else {
+                            .isButton
+                        }
+                    }())
+            }
+        }
+        """),
     ]
 
     static let triggeringExamples = [

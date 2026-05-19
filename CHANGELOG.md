@@ -76,6 +76,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6620](https://github.com/realm/SwiftLint/issues/6620)
 
+* Add `name="SwiftLint"` to JUnit `testsuites` and `testsuite` output for
+  better CI parser compatibility.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6161](https://github.com/realm/SwiftLint/issues/6161)
+
 ### Bug Fixes
 
 * Detect and autocorrect missing whitespace before `else` in `guard`

@@ -75,8 +75,7 @@
 * Support access level modifiers on imports in `unused_imports` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6620](https://github.com/realm/SwiftLint/issues/6620)
-* Add `name` on JUnit `testsuite` output and include a `line` attribute on
-  each `failure` element for better CI parser compatibility.  
+
 * Add `name="SwiftLint"` to JUnit `testsuites` and `testsuite` output for
   better CI parser compatibility.  
   [theamodhshetty](https://github.com/theamodhshetty)

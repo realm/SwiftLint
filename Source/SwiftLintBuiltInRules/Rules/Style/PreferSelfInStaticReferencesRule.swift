@@ -16,17 +16,37 @@ struct PreferSelfInStaticReferencesRule: Rule {
 }
 
 private extension PreferSelfInStaticReferencesRule {
+    private enum ExtendedType {
+        /// A type named by a plain identifier, e.g. `extension Foo`.
+        case identifier(String)
+        /// A member type, e.g. `extension Foo.Bar`, stored as its component path.
+        case memberType([String])
+    }
+
     private enum ParentDeclBehavior {
-        case likeClass(name: String)
+        case likeClass(ExtendedType)
         case likeStruct(String)
         case skipReferences
 
+        /// The single identifier matched for token-based violations and for the
+        /// nested-type shadowing check. `nil` for member-type extensions, which
+        /// are matched structurally instead.
         var parentName: String? {
             switch self {
-            case let .likeClass(name): return name
+            case let .likeClass(.identifier(name)): return name
+            case .likeClass(.memberType): return nil
             case let .likeStruct(name): return name
             case .skipReferences: return nil
             }
+        }
+
+        /// The component path of a member-type extension, e.g. `["Foo", "Bar"]`,
+        /// or `nil` for any other scope.
+        var memberTypeComponents: [String]? {
+            if case let .likeClass(.memberType(components)) = self {
+                return components
+            }
+            return nil
         }
     }
 
@@ -40,7 +60,7 @@ private extension PreferSelfInStaticReferencesRule {
         private var variableDeclScopes = Stack<VariableDeclBehavior>()
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.likeClass(name: node.name.text), memberBlock: node.memberBlock)
+            pushParentDeclScope(.likeClass(.identifier(node.name.text)), memberBlock: node.memberBlock)
             return .skipChildren
         }
 
@@ -56,7 +76,7 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-            pushParentDeclScope(.likeClass(name: node.name.text), memberBlock: node.memberBlock)
+            pushParentDeclScope(.likeClass(.identifier(node.name.text)), memberBlock: node.memberBlock)
             return .visitChildren
         }
 
@@ -89,8 +109,8 @@ private extension PreferSelfInStaticReferencesRule {
             // computed properties and closure bodies. Cases the class scope
             // already skips (e.g. stored-property initializers, function
             // signatures) remain skipped to avoid false positives.
-            if let name = extendedTypeName(of: node.extendedType) {
-                pushParentDeclScope(.likeClass(name: name), memberBlock: node.memberBlock)
+            if let type = extendedType(of: node.extendedType) {
+                pushParentDeclScope(.likeClass(type), memberBlock: node.memberBlock)
             } else {
                 parentDeclScopes.push(.skipReferences)
             }
@@ -101,12 +121,12 @@ private extension PreferSelfInStaticReferencesRule {
             parentDeclScopes.pop()
         }
 
-        private func extendedTypeName(of type: TypeSyntax) -> String? {
+        private func extendedType(of type: TypeSyntax) -> ExtendedType? {
             if let identifier = type.as(IdentifierTypeSyntax.self) {
-                return identifier.name.text
+                return .identifier(identifier.name.text)
             }
-            if let memberType = type.as(MemberTypeSyntax.self) {
-                return memberType.name.text
+            if let memberType = type.as(MemberTypeSyntax.self), let tokens = memberTypeChain(memberType) {
+                return .memberType(tokens.map(\.text))
             }
             return nil
         }
@@ -116,6 +136,17 @@ private extension PreferSelfInStaticReferencesRule {
                 if node.declName.baseName.tokenKind == .keyword(.self) {
                     return .skipChildren
                 }
+            }
+            // In a member-type extension (e.g. `extension Foo.Bar`), the only
+            // valid reference to the extended type is the full member path, so
+            // match the access chain structurally rather than a single token.
+            // A path used to call an initializer (`Foo.Bar()`) is left alone.
+            if let components = parentDeclScopes.peek()?.memberTypeComponents,
+               node.parent?.is(FunctionCallExprSyntax.self) != true,
+               let tokens = memberAccessChain(node),
+               tokens.map(\.text) == components {
+                addMemberTypeViolation(spanning: tokens)
+                return .skipChildren
             }
             return .visitChildren
         }
@@ -217,6 +248,19 @@ private extension PreferSelfInStaticReferencesRule {
             }
         }
 
+        override func visitPost(_ node: MemberTypeSyntax) {
+            guard let components = parentDeclScopes.peek()?.memberTypeComponents else {
+                return
+            }
+            // Don't flag the extended type in the extension header itself.
+            if node.parent?.is(ExtensionDeclSyntax.self) == true {
+                return
+            }
+            if let tokens = memberTypeChain(node), tokens.map(\.text) == components {
+                addMemberTypeViolation(spanning: tokens)
+            }
+        }
+
         override func visit(_: TypeAliasDeclSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
@@ -250,6 +294,61 @@ private extension PreferSelfInStaticReferencesRule {
                     )
                 )
             }
+        }
+
+        private func addMemberTypeViolation(spanning tokens: [TokenSyntax]) {
+            guard let first = tokens.first, let last = tokens.last else {
+                return
+            }
+            let start = first.positionAfterSkippingLeadingTrivia
+            violations.append(
+                at: start,
+                correction: .init(
+                    start: start,
+                    end: last.endPositionBeforeTrailingTrivia,
+                    replacement: "Self"
+                )
+            )
+        }
+
+        /// Flattens an expression member-access chain (e.g. `Foo.Bar`) into its
+        /// component tokens, or `nil` if the chain is not a plain type path.
+        private func memberAccessChain(_ node: MemberAccessExprSyntax) -> [TokenSyntax]? {
+            var tokens = [node.declName.baseName]
+            var base = node.base
+            while let member = base?.as(MemberAccessExprSyntax.self) {
+                tokens.insert(member.declName.baseName, at: 0)
+                base = member.base
+            }
+            guard let reference = base?.as(DeclReferenceExprSyntax.self) else {
+                return nil
+            }
+            tokens.insert(reference.baseName, at: 0)
+            return tokens
+        }
+
+        /// Flattens a member type (e.g. `Foo.Bar`) into its component tokens, or
+        /// `nil` if the type is not a plain member path. Member types carrying
+        /// generic arguments are excluded, since `Self` cannot stand in for them.
+        private func memberTypeChain(_ node: MemberTypeSyntax) -> [TokenSyntax]? {
+            guard node.genericArgumentClause == nil else {
+                return nil
+            }
+            var tokens = [node.name]
+            var base = node.baseType
+            while let member = base.as(MemberTypeSyntax.self) {
+                guard member.genericArgumentClause == nil else {
+                    return nil
+                }
+                tokens.insert(member.name, at: 0)
+                base = member.baseType
+            }
+            guard let identifier = base.as(IdentifierTypeSyntax.self),
+                  identifier.genericArgumentClause == nil else {
+                return nil
+            }
+            tokens.insert(identifier.name, at: 0)
+            return tokens
         }
 
         private func pushParentDeclScope(_ behavior: ParentDeclBehavior, memberBlock: MemberBlockSyntax) {

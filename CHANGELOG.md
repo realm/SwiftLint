@@ -12,11 +12,8 @@
 
 ### Enhancements
 
-* Surface violations of `prefer_self_in_static_references` inside
-  extensions of types whose name is a plain identifier or a member type
-  (e.g. `extension Foo` or `extension Foo.Bar`). Stored-property
-  initializers and function signatures remain exempt — matching the
-  rule's existing behaviour for top-level class declarations.  
+* Treat extensions like classes in the `prefer_self_in_static_references`
+  rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)
   [#3993](https://github.com/realm/SwiftLint/issues/3993)
 

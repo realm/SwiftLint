@@ -122,6 +122,30 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f() -> Int { Foo.i }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class Outer {
+                class Inner {
+                    static let i = 0
+                }
+                class Other {
+                    static let i = 0
+                }
+            }
+            extension Outer.Inner {
+                func f() -> Int { Outer.Other.i }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            enum Outer {
+                static let i = 0
+                struct Inner {
+                    static let j = 0
+                }
+            }
+            extension Outer.Inner {
+                func f() -> Int { Outer.i }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -260,7 +284,19 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
             }
             extension Outer.Inner {
-                func f() -> Int { ↓Inner.i }
+                func f() -> Int { ↓Outer.Inner.i }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            enum Outer {
+                enum Middle {
+                    struct Inner {
+                        static let i = 0
+                    }
+                }
+            }
+            extension Outer.Middle.Inner {
+                func f() -> Int { ↓Outer.Middle.Inner.i }
             }
             """, excludeFromDocumentation: true),
     ]
@@ -317,6 +353,25 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     static let i = 0
                 }
                 extension C {
+                    func f() -> Int { Self.i }
+                }
+                """),
+        Example("""
+            class Outer {
+                class Inner {
+                    static let i = 0
+                }
+            }
+            extension Outer.Inner {
+                func f() -> Int { ↓Outer.Inner.i }
+            }
+            """): Example("""
+                class Outer {
+                    class Inner {
+                        static let i = 0
+                    }
+                }
+                extension Outer.Inner {
                     func f() -> Int { Self.i }
                 }
                 """),

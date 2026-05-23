@@ -18,6 +18,7 @@ extension Configuration {
         case lenient = "lenient"
         case baseline = "baseline"
         case writeBaseline = "write_baseline"
+        case prettyBaseline = "pretty_baseline"
         case checkForUpdates = "check_for_updates"
         case childConfig = "child_config"
         case parentConfig = "parent_config"
@@ -108,6 +109,7 @@ extension Configuration {
             lenient: dict[Key.lenient.rawValue] as? Bool ?? false,
             baseline: dict[Key.baseline.rawValue] as? String,
             writeBaseline: dict[Key.writeBaseline.rawValue] as? String,
+            prettyBaseline: dict[Key.prettyBaseline.rawValue] as? Bool ?? false,
             checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false
         )
     }

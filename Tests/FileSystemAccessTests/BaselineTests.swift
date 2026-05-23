@@ -54,6 +54,23 @@ final class BaselineTests: XCTestCase {
         ruleDescriptions.violations(for: filePath)
     }
 
+    /// Violations across two synthetic files, intentionally returned in
+    /// reverse order to prove the baseline serializer sorts by file and
+    /// location before writing.
+    private static func twoFileViolations(for filePath: String) -> [StyleViolation] {
+        let other = "other" + filePath.bridge().lastPathComponent
+        return [
+            StyleViolation(
+                ruleDescription: BlockBasedKVORule.description,
+                location: Location(file: other, line: 4, character: 1)
+            ),
+            StyleViolation(
+                ruleDescription: ArrayInitRule.description,
+                location: Location(file: filePath, line: 2, character: 1)
+            ),
+        ]
+    }
+
     private static func baseline(for filePath: String) -> Baseline {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
@@ -80,6 +97,84 @@ final class BaselineTests: XCTestCase {
             }
             let newBaseline = try Baseline(fromPath: baselinePath)
             XCTAssertEqual(newBaseline, Self.baseline(for: sourceFilePath))
+        }
+    }
+
+    func testBaselineFileIsCompactByDefault() throws {
+        // The default output must stay backwards-compatible: a single minified
+        // line (no newlines, no indentation, no blank lines). A byte-level
+        // snapshot isn't viable because `JSONEncoder`'s compact output has
+        // non-deterministic key order — that's one of the reasons the opt-in
+        // pretty mode uses `.sortedKeys`. This test asserts the format
+        // properties; `testBaselineFileIsPrettyPrintedWhenRequested` asserts
+        // the exact serialized output for the opt-in mode.
+        try withExampleFileCreated { sourceFilePath in
+            let baselinePath = temporaryDirectoryPath.stringByAppendingPathComponent(UUID().uuidString)
+            try Baseline(violations: Self.twoFileViolations(for: sourceFilePath))
+                .write(toPath: baselinePath)
+            defer { try? FileManager.default.removeItem(atPath: baselinePath) }
+            let contents = try String(contentsOf: URL(fileURLWithPath: baselinePath), encoding: .utf8)
+            let fileName = sourceFilePath.bridge().lastPathComponent
+
+            XCTAssertFalse(contents.contains("\n"), "Default baseline output must be a single line")
+            XCTAssertFalse(contents.contains("  "), "Default baseline output must not be indented")
+
+            // Structurally equivalent to the pretty output, minus formatting.
+            let decoded = try JSONSerialization.jsonObject(with: Data(contents.utf8)) as? [[String: Any]]
+            let files = decoded?.compactMap { ($0["violation"] as? [String: Any])?["location"] as? [String: Any] }
+                .compactMap { $0["file"] as? String }
+            XCTAssertEqual(files, [fileName, "other\(fileName)"])
+        }
+    }
+
+    func testBaselineFileIsPrettyPrintedWhenRequested() throws {
+        try withExampleFileCreated { sourceFilePath in
+            let baselinePath = temporaryDirectoryPath.stringByAppendingPathComponent(UUID().uuidString)
+            try Baseline(violations: Self.twoFileViolations(for: sourceFilePath))
+                .write(toPath: baselinePath, pretty: true)
+            defer { try? FileManager.default.removeItem(atPath: baselinePath) }
+            let contents = try String(contentsOf: URL(fileURLWithPath: baselinePath), encoding: .utf8)
+            let fileName = sourceFilePath.bridge().lastPathComponent
+
+            // Pretty output: sorted keys, two-space indent, sorted by file and
+            // then by location, unescaped slashes.
+            // swiftlint:disable line_length
+            let expected = """
+                [
+                  {
+                    "text" : "import SwiftLintFramework",
+                    "violation" : {
+                      "location" : {
+                        "character" : 1,
+                        "file" : "\(fileName)",
+                        "line" : 2
+                      },
+                      "reason" : "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
+                      "ruleDescription" : "Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array",
+                      "ruleIdentifier" : "array_init",
+                      "ruleName" : "Array Init",
+                      "severity" : "warning"
+                    }
+                  },
+                  {
+                    "text" : "",
+                    "violation" : {
+                      "location" : {
+                        "character" : 1,
+                        "file" : "other\(fileName)",
+                        "line" : 4
+                      },
+                      "reason" : "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later",
+                      "ruleDescription" : "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later",
+                      "ruleIdentifier" : "block_based_kvo",
+                      "ruleName" : "Block Based KVO",
+                      "severity" : "warning"
+                    }
+                  }
+                ]
+                """
+            // swiftlint:enable line_length
+            XCTAssertEqual(contents, expected)
         }
     }
 

@@ -742,6 +742,10 @@ baseline: Baseline.json
 # The path to save detected violations to as a new baseline.
 write_baseline: Baseline.json
 
+# If true, the baseline produced by write_baseline is pretty-printed with
+# sorted keys, producing stable diffs when regenerated. Defaults to false.
+pretty_baseline: false
+
 # If true, SwiftLint will check for updates after linting or analyzing.
 check_for_updates: true
 

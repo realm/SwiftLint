@@ -12,6 +12,13 @@
 
 ### Enhancements
 
+* Add `--pretty-baseline` flag (and matching `pretty_baseline`
+  configuration key) that writes baseline files as pretty-printed JSON
+  with sorted keys, producing stable, reviewable diffs when the baseline
+  is regenerated. Default behaviour is unchanged so existing baselines
+  remain byte-identical.  
+  [swizzlr](https://github.com/swizzlr)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

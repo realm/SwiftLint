@@ -44,6 +44,7 @@ package struct LintOrAnalyzeOptions {
     let reporter: String?
     let baseline: String?
     let writeBaseline: String?
+    let prettyBaseline: Bool
     let workingDirectory: String?
     let quiet: Bool
     let output: String?
@@ -73,6 +74,7 @@ package struct LintOrAnalyzeOptions {
                  reporter: String?,
                  baseline: String?,
                  writeBaseline: String?,
+                 prettyBaseline: Bool,
                  workingDirectory: String?,
                  quiet: Bool,
                  output: String?,
@@ -101,6 +103,7 @@ package struct LintOrAnalyzeOptions {
         self.reporter = reporter
         self.baseline = baseline
         self.writeBaseline = writeBaseline
+        self.prettyBaseline = prettyBaseline
         self.workingDirectory = workingDirectory
         self.quiet = quiet
         self.output = output
@@ -148,7 +151,8 @@ package struct LintOrAnalyzeCommand {
         let builder = LintOrAnalyzeResultBuilder(options)
         let files = try await collectViolations(builder: builder)
         if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
-            try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
+            let pretty = options.prettyBaseline || builder.configuration.prettyBaseline
+            try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath, pretty: pretty)
         }
         let numberOfSeriousViolations = try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
             try postProcessViolations(files: files, builder: builder)

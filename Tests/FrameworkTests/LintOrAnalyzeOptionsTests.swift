@@ -54,6 +54,7 @@ private extension LintOrAnalyzeOptions {
                   reporter: nil,
                   baseline: nil,
                   writeBaseline: nil,
+                  strictBaseline: false,
                   workingDirectory: nil,
                   quiet: false,
                   output: nil,

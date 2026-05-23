@@ -46,6 +46,12 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     var baseline: String?
     @Option(help: "The path to save detected violations to as a new baseline.")
     var writeBaseline: String?
+    @Flag(help: """
+        Fail linting if violations previously recorded in the baseline are no longer \
+        detected. Encourages keeping the baseline up-to-date by regenerating it \
+        once baselined violations have been fixed.
+        """)
+    var strictBaseline = false
     @Option(help: "The working directory to use when running SwiftLint.")
     var workingDirectory: String?
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")

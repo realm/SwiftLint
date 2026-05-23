@@ -137,6 +137,20 @@ final class BaselineTests: XCTestCase {
         }
     }
 
+    func testCompareDetectsFixedViolations() throws {
+        try withExampleFileCreated { sourceFilePath in
+            let originalViolations = Self.violations(for: sourceFilePath)
+            let oldBaseline = Baseline(violations: originalViolations)
+            // Simulate some baselined violations being fixed.
+            let remainingViolations = Array(originalViolations.dropFirst(2))
+            let newBaseline = Baseline(violations: remainingViolations)
+            // `newBaseline.compare(oldBaseline)` yields violations in the old
+            // baseline that are no longer detected — i.e., fixed violations.
+            let fixed = newBaseline.compare(oldBaseline)
+            XCTAssertEqual(fixed.count, 2)
+        }
+    }
+
     func testCompare() throws {
         try withExampleFileCreated { sourceFilePath in
             let ruleDescriptions = Self.ruleDescriptions + Self.ruleDescriptions

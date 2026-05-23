@@ -12,6 +12,13 @@
 
 ### Enhancements
 
+* Add `--strict-baseline` command-line flag (and `strict_baseline` configuration
+  key) that fails linting when violations recorded in the baseline are no longer
+  detected, encouraging users to regenerate the baseline once baselined
+  violations have been fixed.  
+  [swizzlr](https://github.com/swizzlr)
+  [#6511](https://github.com/realm/SwiftLint/issues/6511)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

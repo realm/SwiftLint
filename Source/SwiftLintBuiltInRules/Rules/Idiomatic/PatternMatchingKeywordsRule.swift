@@ -162,7 +162,7 @@ private enum PatternViolationCollector {
     ) {
         let categories = expressions.map(GroupCategoryResolver.category(for:))
 
-        if categories.contains(where: \.isReference) {
+        if categories.contains(.reference) {
             return
         }
 
@@ -183,19 +183,10 @@ private enum PatternViolationCollector {
     }
 }
 
-private enum GroupCategory {
+private enum GroupCategory: Equatable {
     case binding(specifier: TokenSyntax)
     case reference
     case neutral
-
-    var isReference: Bool {
-        switch self {
-        case .reference:
-            return true
-        default:
-            return false
-        }
-    }
 
     var bindingSpecifier: TokenSyntax? {
         switch self {
@@ -230,7 +221,7 @@ private enum GroupCategoryResolver {
     private static func liftedCategory(for expressions: [ExprSyntax]) -> GroupCategory {
         let categories = expressions.map(category(for:))
 
-        if categories.contains(where: \.isReference) {
+        if categories.contains(.reference) {
             return .neutral
         }
 

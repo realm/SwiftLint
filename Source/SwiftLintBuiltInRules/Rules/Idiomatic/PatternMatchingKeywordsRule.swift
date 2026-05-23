@@ -9,7 +9,7 @@ struct PatternMatchingKeywordsRule: Rule {
         name: "Pattern Matching Keywords",
         description: "Combine multiple pattern matching bindings by moving keywords out of tuples",
         kind: .idiomatic,
-        nonTriggeringExamples: switchWrapped(examples: [
+        nonTriggeringExamples: [
             Example("default"),
             Example("case 1"),
             Example("case bar"),
@@ -34,7 +34,7 @@ struct PatternMatchingKeywordsRule: Rule {
             Example("case .foo(bar: let x, baz: var y)"),
             Example("case (.yamlParsing(var x), (.yamlParsing(var y), z))"),
             Example("case (.foo(let x), (y, let z))"),
-        ]) + [
+        ].map(wrapInSwitch) + [
             Example("if case let (x, y) = foo {}"),
             Example("guard case let (x, y) = foo else { return }"),
             Example("while case let (x, y) = foo {}"),
@@ -44,7 +44,7 @@ struct PatternMatchingKeywordsRule: Rule {
             Example("do {} catch let Pattern.error(x, y) {}"),
             Example("do {} catch (foo, let x) {}"),
         ],
-        triggeringExamples: switchWrapped(examples: [
+        triggeringExamples: [
             Example("case (↓let x, ↓let y)"),
             Example("case (↓let x, ↓let y, .foo)"),
             Example("case (↓let x, ↓let y, _)"),
@@ -65,7 +65,7 @@ struct PatternMatchingKeywordsRule: Rule {
             Example("case .foo(.bar(↓let x), .bar(↓let y), .baz)"),
             Example("case .foo(↓let x, ↓let y), .bar(↓let x, ↓let y)"),
             Example("case .foo(↓var x, ↓var y), .bar(↓var x, ↓var y)"),
-        ]) + [
+        ].map(wrapInSwitch) + [
             Example("if case (↓let x, ↓let y) = foo {}"),
             Example("guard case (↓let x, ↓let y) = foo else { return }"),
             Example("while case (↓let x, ↓let y) = foo {}"),
@@ -77,16 +77,13 @@ struct PatternMatchingKeywordsRule: Rule {
         ]
     )
 
-    private static func switchWrapped(examples: [Example]) -> [Example] {
-        examples.map { example in
-            example.with(
-                code: """
-                switch foo {
-                    \(example.code): break
-                }
-                """
-            )
-        }
+    private static func wrapInSwitch(_ example: Example) -> Example {
+        example.with(code: """
+            switch foo {
+                \(example.code): break
+            }
+            """
+        )
     }
 }
 

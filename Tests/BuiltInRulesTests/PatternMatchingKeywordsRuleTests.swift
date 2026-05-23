@@ -11,7 +11,7 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 2)
         XCTAssertEqual(
             violations.first?.reason,
-            "Combine multiple pattern matching bindings by moving keywords out of tuples"
+            PatternMatchingKeywordsRule.Reason.tuples
         )
     }
 
@@ -23,9 +23,10 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 2)
         XCTAssertEqual(
             violations.first?.reason,
-            "Combine multiple pattern matching bindings by moving keywords out of enum associated values"
+            PatternMatchingKeywordsRule.Reason.enumAssociatedValues
         )
     }
+
     func testRegressionExamples() {
         let triggering = [
             "switch foo { case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break }",

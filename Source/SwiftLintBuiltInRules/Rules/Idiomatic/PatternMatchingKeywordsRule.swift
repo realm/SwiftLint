@@ -4,6 +4,12 @@ import SwiftSyntax
 struct PatternMatchingKeywordsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
+    enum Reason {
+        static let tuples = "Combine multiple pattern matching bindings by moving keywords out of tuples"
+        static let enumAssociatedValues =
+            "Combine multiple pattern matching bindings by moving keywords out of enum associated values"
+    }
+
     static let description = RuleDescription(
         identifier: "pattern_matching_keywords",
         name: "Pattern Matching Keywords",
@@ -90,11 +96,11 @@ struct PatternMatchingKeywordsRule: Rule {
 private extension PatternMatchingKeywordsRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: SwitchCaseItemSyntax) {
-            appendViolations(from: node.pattern)
+            collectViolations(from: node.pattern)
         }
 
         override func visitPost(_ node: MatchingPatternConditionSyntax) {
-            appendViolations(from: node.pattern)
+            collectViolations(from: node.pattern)
         }
 
         override func visitPost(_ node: ForStmtSyntax) {
@@ -102,7 +108,7 @@ private extension PatternMatchingKeywordsRule {
                 return
             }
 
-            appendViolations(from: node.pattern)
+            collectViolations(from: node.pattern)
         }
 
         override func visitPost(_ node: CatchItemSyntax) {
@@ -110,78 +116,55 @@ private extension PatternMatchingKeywordsRule {
                 return
             }
 
-            appendViolations(from: pattern)
+            collectViolations(from: pattern)
         }
 
-        private func appendViolations(from pattern: PatternSyntax) {
-            violations.append(contentsOf: PatternViolationCollector.collect(in: pattern))
-        }
-    }
-}
-
-private enum PatternViolationCollector {
-    static func collect(in pattern: PatternSyntax) -> [ReasonedRuleViolation] {
-        var violations: [ReasonedRuleViolation] = []
-        collect(from: pattern, into: &violations)
-        return violations
-    }
-
-    private static func collect(from pattern: PatternSyntax, into violations: inout [ReasonedRuleViolation]) {
-        if let binding = pattern.as(ValueBindingPatternSyntax.self) {
-            collect(from: binding.pattern, into: &violations)
-            return
-        }
-
-        guard let expression = pattern.as(ExpressionPatternSyntax.self)?.expression else {
-            return
-        }
-
-        collect(from: expression, into: &violations)
-    }
-
-    private static func collect(from expression: ExprSyntax, into violations: inout [ReasonedRuleViolation]) {
-        if let childExpressions = expression.immediatePatternGroupChildren {
-            appendViolationsIfBindingsCanBeLifted(from: childExpressions, into: &violations, isTuple: expression.is(TupleExprSyntax.self))
-
-            for childExpression in childExpressions {
-                collect(from: childExpression, into: &violations)
+        private func collectViolations(from pattern: PatternSyntax) {
+            if let binding = pattern.as(ValueBindingPatternSyntax.self) {
+                collectViolations(from: binding.pattern)
+                return
             }
 
-            return
+            guard let expression = pattern.as(ExpressionPatternSyntax.self)?.expression else {
+                return
+            }
+
+            collectViolations(from: expression)
         }
 
-        if let pattern = expression.as(PatternExprSyntax.self)?.pattern {
-            collect(from: pattern, into: &violations)
-        }
-    }
+        private func collectViolations(from expression: ExprSyntax) {
+            guard let childExpressions = expression.immediatePatternGroupChildren else {
+                if let pattern = expression.as(PatternExprSyntax.self)?.pattern {
+                    collectViolations(from: pattern)
+                }
 
-    private static func appendViolationsIfBindingsCanBeLifted(
-        from expressions: [ExprSyntax],
-        into violations: inout [ReasonedRuleViolation],
-        isTuple: Bool
-    ) {
-        let categories = expressions.map(GroupCategory.from(expression:))
+                return
+            }
 
-        if categories.contains(.reference) {
-            return
-        }
+            let categories = childExpressions.map(GroupCategory.from(expression:))
 
-        let specifiers = categories.compactMap {
-            if case let .binding(specifier) = $0 { return specifier }
-            return nil
-        }
-        guard specifiers.count > 1, let first = specifiers.first else {
-            return
-        }
+            if !categories.contains(.reference) {
+                let specifiers = categories.compactMap {
+                    if case let .binding(specifier) = $0 { return specifier }
+                    return nil
+                }
 
-        if specifiers.allSatisfy({ $0.tokenKind == first.tokenKind }) {
-            let reason = isTuple
-                ? "Combine multiple pattern matching bindings by moving keywords out of tuples"
-                : "Combine multiple pattern matching bindings by moving keywords out of enum associated values"
+                if specifiers.count > 1,
+                   let first = specifiers.first,
+                   specifiers.allSatisfy({ $0.tokenKind == first.tokenKind }) {
+                    let reason = expression.is(TupleExprSyntax.self)
+                        ? Reason.tuples
+                        : Reason.enumAssociatedValues
 
-            violations.append(contentsOf: specifiers.map {
-                ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
-            })
+                    violations.append(contentsOf: specifiers.map {
+                        ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
+                    })
+                }
+            }
+
+            for childExpression in childExpressions {
+                collectViolations(from: childExpression)
+            }
         }
     }
 }

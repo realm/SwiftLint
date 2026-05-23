@@ -166,7 +166,10 @@ private enum PatternViolationCollector {
             return
         }
 
-        let specifiers = categories.compactMap(\.bindingSpecifier)
+        let specifiers = categories.compactMap {
+            if case let .binding(specifier) = $0 { return specifier }
+            return nil
+        }
         guard specifiers.count > 1, let first = specifiers.first else {
             return
         }
@@ -187,15 +190,6 @@ private enum GroupCategory: Equatable {
     case binding(specifier: TokenSyntax)
     case reference
     case neutral
-
-    var bindingSpecifier: TokenSyntax? {
-        switch self {
-        case let .binding(specifier):
-            return specifier
-        default:
-            return nil
-        }
-    }
 }
 
 private enum GroupCategoryResolver {
@@ -225,7 +219,10 @@ private enum GroupCategoryResolver {
             return .neutral
         }
 
-        let specifiers = categories.compactMap(\.bindingSpecifier)
+        let specifiers = categories.compactMap {
+            if case let .binding(specifier) = $0 { return specifier }
+            return nil
+        }
         guard let first = specifiers.first else {
             return .neutral
         }

@@ -1,7 +1,31 @@
 @testable import SwiftLintBuiltInRules
 import TestHelpers
+import XCTest
 
 final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
+    func testViolationReasonForTuples() throws {
+        let config = try XCTUnwrap(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
+        let example = Example("switch foo { case (let x, let y): break }")
+        let violations = violations(example, config: config)
+
+        XCTAssertEqual(violations.count, 2)
+        XCTAssertEqual(
+            violations.first?.reason,
+            "Combine multiple pattern matching bindings by moving keywords out of tuples"
+        )
+    }
+
+    func testViolationReasonForEnumAssociatedValues() throws {
+        let config = try XCTUnwrap(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
+        let example = Example("switch foo { case .bar(let x, let y): break }")
+        let violations = violations(example, config: config)
+
+        XCTAssertEqual(violations.count, 2)
+        XCTAssertEqual(
+            violations.first?.reason,
+            "Combine multiple pattern matching bindings by moving keywords out of enum associated values"
+        )
+    }
     func testRegressionExamples() {
         let triggering = [
             "switch foo { case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break }",

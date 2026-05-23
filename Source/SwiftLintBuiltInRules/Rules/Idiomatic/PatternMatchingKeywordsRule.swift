@@ -7,10 +7,7 @@ struct PatternMatchingKeywordsRule: Rule {
     static let description = RuleDescription(
         identifier: "pattern_matching_keywords",
         name: "Pattern Matching Keywords",
-        description: """
-            Combine multiple pattern matching bindings by moving keywords out of tuples
-            and enum associated values
-            """,
+        description: "Combine multiple pattern matching bindings by moving keywords out of tuples",
         kind: .idiomatic,
         nonTriggeringExamples: switchWrapped(examples: [
             Example("default"),
@@ -126,13 +123,13 @@ private extension PatternMatchingKeywordsRule {
 }
 
 private enum PatternViolationCollector {
-    static func collect(in pattern: PatternSyntax) -> [AbsolutePosition] {
-        var violations: [AbsolutePosition] = []
+    static func collect(in pattern: PatternSyntax) -> [ReasonedRuleViolation] {
+        var violations: [ReasonedRuleViolation] = []
         collect(from: pattern, into: &violations)
         return violations
     }
 
-    private static func collect(from pattern: PatternSyntax, into violations: inout [AbsolutePosition]) {
+    private static func collect(from pattern: PatternSyntax, into violations: inout [ReasonedRuleViolation]) {
         if let binding = pattern.as(ValueBindingPatternSyntax.self) {
             collect(from: binding.pattern, into: &violations)
             return
@@ -145,9 +142,9 @@ private enum PatternViolationCollector {
         collect(from: expression, into: &violations)
     }
 
-    private static func collect(from expression: ExprSyntax, into violations: inout [AbsolutePosition]) {
+    private static func collect(from expression: ExprSyntax, into violations: inout [ReasonedRuleViolation]) {
         if let childExpressions = expression.immediatePatternGroupChildren {
-            appendViolationsIfBindingsCanBeLifted(from: childExpressions, into: &violations)
+            appendViolationsIfBindingsCanBeLifted(from: childExpressions, into: &violations, isTuple: expression.is(TupleExprSyntax.self))
 
             for childExpression in childExpressions {
                 collect(from: childExpression, into: &violations)
@@ -163,7 +160,8 @@ private enum PatternViolationCollector {
 
     private static func appendViolationsIfBindingsCanBeLifted(
         from expressions: [ExprSyntax],
-        into violations: inout [AbsolutePosition]
+        into violations: inout [ReasonedRuleViolation],
+        isTuple: Bool
     ) {
         let categories = expressions.map(GroupCategoryResolver.category(for:))
 
@@ -177,7 +175,13 @@ private enum PatternViolationCollector {
         }
 
         if specifiers.allSatisfy({ $0.tokenKind == first.tokenKind }) {
-            violations.append(contentsOf: specifiers.map(\.positionAfterSkippingLeadingTrivia))
+            let reason = isTuple
+                ? "Combine multiple pattern matching bindings by moving keywords out of tuples"
+                : "Combine multiple pattern matching bindings by moving keywords out of enum associated values"
+
+            violations.append(contentsOf: specifiers.map {
+                ReasonedRuleViolation(position: $0.positionAfterSkippingLeadingTrivia, reason: reason)
+            })
         }
     }
 }

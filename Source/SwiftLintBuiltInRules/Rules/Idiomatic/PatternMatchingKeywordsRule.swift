@@ -160,7 +160,7 @@ private enum PatternViolationCollector {
         into violations: inout [ReasonedRuleViolation],
         isTuple: Bool
     ) {
-        let categories = expressions.map(GroupCategoryResolver.category(for:))
+        let categories = expressions.map(GroupCategory.from(expression:))
 
         if categories.contains(.reference) {
             return
@@ -190,10 +190,8 @@ private enum GroupCategory: Equatable {
     case binding(specifier: TokenSyntax)
     case reference
     case neutral
-}
 
-private enum GroupCategoryResolver {
-    static func category(for expression: ExprSyntax) -> GroupCategory {
+    static func from(expression: ExprSyntax) -> Self {
         if let binding = expression.as(PatternExprSyntax.self)?.pattern.as(ValueBindingPatternSyntax.self) {
             return .binding(specifier: binding.bindingSpecifier)
         }
@@ -206,14 +204,14 @@ private enum GroupCategoryResolver {
         }
 
         if let childExpressions = expression.immediatePatternGroupChildren {
-            return liftedCategory(for: childExpressions)
+            return liftedCategory(from: childExpressions)
         }
 
         return .neutral
     }
 
-    private static func liftedCategory(for expressions: [ExprSyntax]) -> GroupCategory {
-        let categories = expressions.map(category(for:))
+    private static func liftedCategory(from expressions: [ExprSyntax]) -> Self {
+        let categories = expressions.map { from(expression: $0) }
 
         if categories.contains(.reference) {
             return .neutral

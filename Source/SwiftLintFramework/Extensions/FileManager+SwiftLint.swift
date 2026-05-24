@@ -55,7 +55,6 @@ extension FileManager: LintableFileManager {
         .isSymbolicLinkKey,
     ]
     private static let enumeratorOptions: DirectoryEnumerationOptions = [
-        .producesRelativePathURLs,
         .skipsPackageDescendants,
         .skipsSubdirectoryDescendants,
     ]
@@ -93,14 +92,11 @@ extension FileManager: LintableFileManager {
         for case var element as URL in enumerator {
             var resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
             if resourceValues?.isSymbolicLink == true {
+                element = element.standardizedFileURL
                 if excluder.excludes(path: element) {
                     continue
                 }
                 element.resolveSymlinksInPath()
-                element = URL(
-                    fileURLWithPath: element.lastPathComponent,
-                    relativeTo: element.deletingLastPathComponent()
-                )
                 resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
             }
             if resourceValues?.isRegularFile == true {

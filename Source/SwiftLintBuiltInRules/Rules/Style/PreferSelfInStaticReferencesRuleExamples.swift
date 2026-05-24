@@ -146,6 +146,17 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f() -> Int { Outer.i }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class Outer {
+                class Inner<T> {
+                    static let i = 0
+                }
+            }
+            extension Outer.Inner {
+                func f() { _ = Outer.Inner<Int>() }
+                func g() { _ = Outer.Inner<Int>.i }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

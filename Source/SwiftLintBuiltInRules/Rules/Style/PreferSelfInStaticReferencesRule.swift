@@ -137,12 +137,15 @@ private extension PreferSelfInStaticReferencesRule {
                     return .skipChildren
                 }
             }
-            // In a member-type extension (e.g. `extension Foo.Bar`), the only
-            // valid reference to the extended type is the full member path, so
-            // match the access chain structurally rather than a single token.
-            // A path used to call an initializer (`Foo.Bar()`) is left alone.
+            // In a member-type extension (e.g. `extension Foo.Bar`), match the
+            // extended-type access chain structurally; a single token can't
+            // disambiguate `Outer.Inner.x` from `Other.Inner.x`. Skip when the
+            // path is the callee of a call or carries explicit generic
+            // arguments (`Foo.Bar()`, `Foo.Bar<Int>()`), since `Self` doesn't
+            // substitute for those.
             if let components = parentDeclScopes.peek()?.memberTypeComponents,
                node.parent?.is(FunctionCallExprSyntax.self) != true,
+               node.parent?.is(GenericSpecializationExprSyntax.self) != true,
                let tokens = memberAccessChain(node),
                tokens.map(\.text) == components {
                 addMemberTypeViolation(spanning: tokens)
@@ -254,6 +257,12 @@ private extension PreferSelfInStaticReferencesRule {
             }
             // Don't flag the extended type in the extension header itself.
             if node.parent?.is(ExtensionDeclSyntax.self) == true {
+                return
+            }
+            // Mirror the single-identifier rule: a type appearing as a generic
+            // argument is left alone, since `Self` may not be available in that
+            // position (e.g. an extension's own inheritance clause).
+            if node.parent?.is(GenericArgumentSyntax.self) == true {
                 return
             }
             if let tokens = memberTypeChain(node), tokens.map(\.text) == components {

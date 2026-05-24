@@ -90,13 +90,17 @@ extension FileManager: LintableFileManager {
         var files = [URL]()
         var directoriesToWalk = [URL]()
 
-        while var element = (enumerator.nextObject() as? URL)?.relative(to: absolutePath) {
+        for case var element as URL in enumerator {
             var resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
             if resourceValues?.isSymbolicLink == true {
                 if excluder.excludes(path: element) {
                     continue
                 }
                 element.resolveSymlinksInPath()
+                element = URL(
+                    fileURLWithPath: element.lastPathComponent,
+                    relativeTo: element.deletingLastPathComponent()
+                )
                 resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
             }
             if resourceValues?.isRegularFile == true {

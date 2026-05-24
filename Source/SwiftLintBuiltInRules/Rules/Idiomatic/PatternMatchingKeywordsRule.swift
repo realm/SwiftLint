@@ -5,15 +5,21 @@ struct PatternMatchingKeywordsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     enum Reason {
-        static let tuples = "Combine multiple pattern matching bindings by moving keywords out of tuples"
-        static let enumAssociatedValues =
-            "Combine multiple pattern matching bindings by moving keywords out of enum associated values"
+        static let tuples = """
+            Combine multiple pattern bindings by moving binding keywords out of tuple
+            """
+        static let enumAssociatedValues = """
+            Combine multiple pattern bindings by moving binding keywords out of associated values
+            """
     }
 
     static let description = RuleDescription(
         identifier: "pattern_matching_keywords",
         name: "Pattern Matching Keywords",
-        description: "Combine multiple pattern matching bindings by moving keywords out of tuples",
+        description: """
+            Combine multiple pattern matching bindings by moving binding keywords out of tuples and associated values
+            in enum cases to reduce visual noise.
+            """,
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("default"),

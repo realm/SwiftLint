@@ -122,6 +122,6 @@ private extension Int {
     }()
     var formattedString: String {
         // swiftlint:disable:next legacy_objc_type
-        Int.numberFormatter.string(from: NSNumber(value: self)) ?? ""
+        Self.numberFormatter.string(from: NSNumber(value: self)) ?? ""
     }
 }

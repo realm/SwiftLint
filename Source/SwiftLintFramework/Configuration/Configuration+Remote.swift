@@ -60,7 +60,7 @@ internal extension Configuration.FileGraph.FilePath {
         let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: rootDirectory)
 
         let configString: String
-        if let mockedValue = Configuration.FileGraph.FilePath.mockedNetworkResults[urlString] {
+        if let mockedValue = Self.mockedNetworkResults[urlString] {
             configString = mockedValue
         } else {
             // Handle wrong url format
@@ -206,7 +206,7 @@ internal extension Configuration.FileGraph.FilePath {
             adjustedUrlString = adjustedUrlString.replacingOccurrences(of: char, with: "_")
         }
         adjustedUrlString = adjustedUrlString.trimmingCharacters(in: CharacterSet(charactersIn: "."))
-        let path = Configuration.FileGraph.FilePath.versionedRemoteCachePath + "/\(adjustedUrlString).yml"
+        let path = Self.versionedRemoteCachePath + "/\(adjustedUrlString).yml"
         return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
     }
 
@@ -225,7 +225,7 @@ internal extension Configuration.FileGraph.FilePath {
 
     private func maintainRemoteConfigCache(rootDirectory: String) throws {
         // Create directory if needed
-        let directory = Configuration.FileGraph.FilePath.versionedRemoteCachePath
+        let directory = Self.versionedRemoteCachePath
             .bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
         if !FileManager.default.fileExists(atPath: directory) {
             try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
@@ -234,7 +234,7 @@ internal extension Configuration.FileGraph.FilePath {
         // Delete all cache folders except for the current version's folder
         let directoryWithoutVersionNum = directory.components(separatedBy: "/").dropLast().joined(separator: "/")
         try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum)).forEach {
-            if !$0.contains("/"), $0 != Configuration.FileGraph.FilePath.remoteCacheVersionNumber {
+            if !$0.contains("/"), $0 != Self.remoteCacheVersionNumber {
                 try FileManager.default.removeItem(atPath:
                     $0.bridge().absolutePathRepresentation(rootDirectory: directoryWithoutVersionNum)
                 )
@@ -242,23 +242,23 @@ internal extension Configuration.FileGraph.FilePath {
         }
 
         // Add gitignore entry if needed
-        let requiredGitignoreAppendix = "\(Configuration.FileGraph.FilePath.remoteCachePath)"
+        let requiredGitignoreAppendix = "\(Self.remoteCachePath)"
         let newGitignoreAppendix = "# SwiftLint Remote Config Cache\n\(requiredGitignoreAppendix)"
 
-        if !FileManager.default.fileExists(atPath: Configuration.FileGraph.FilePath.gitignorePath) {
+        if !FileManager.default.fileExists(atPath: Self.gitignorePath) {
             guard FileManager.default.createFile(
-                atPath: Configuration.FileGraph.FilePath.gitignorePath,
+                atPath: Self.gitignorePath,
                 contents: Data(newGitignoreAppendix.utf8),
                 attributes: [:]
             ) else {
                 throw Issue.genericWarning("Issue maintaining remote config cache.")
             }
         } else {
-            var contents = try String(contentsOfFile: Configuration.FileGraph.FilePath.gitignorePath, encoding: .utf8)
+            var contents = try String(contentsOfFile: Self.gitignorePath, encoding: .utf8)
             if !contents.contains(requiredGitignoreAppendix) {
                 contents += "\n\n\(newGitignoreAppendix)"
                 try contents.write(
-                    toFile: Configuration.FileGraph.FilePath.gitignorePath,
+                    toFile: Self.gitignorePath,
                     atomically: true,
                     encoding: .utf8
                 )

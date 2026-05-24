@@ -12,6 +12,11 @@
 
 ### Enhancements
 
+* Treat extensions like classes in the `prefer_self_in_static_references`
+  rule.  
+  [itsybitsybootsy](https://github.com/itsybitsybootsy)
+  [#3993](https://github.com/realm/SwiftLint/issues/3993)
+
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

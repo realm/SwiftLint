@@ -209,8 +209,8 @@ jobs:
     needs: prepare-release
     runs-on: windows-${{ matrix.windows-version }}
     env:
-      SWIFT_VERSION: development
-      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-05-20-a
+      SWIFT_VERSION: swift-6.3.2-release
+      SWIFT_BUILD: 6.3.2-RELEASE
     strategy:
       fail-fast: false
       matrix:

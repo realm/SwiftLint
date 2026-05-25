@@ -112,6 +112,11 @@
   existing `@TestInjected` and `@TestWeakly` exclusions.  
   [William-Laverty](https://github.com/William-Laverty)
   [#5803](https://github.com/realm/SwiftLint/pull/5803)
+  
+* Fix `explicit_self` false positives around string interpolation.  
+  [jffmrk](https://github.com/jffmrk)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6611](https://github.com/realm/SwiftLint/issues/6611)
 
 * Properly taint variables in tuples for `unneeded_escaping` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

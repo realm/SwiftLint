@@ -146,7 +146,7 @@ jobs:
     steps:
       - *checkout-release-branch
       - name: Install SDK
-        run: swift sdk install https://download.swift.org/swift-${{ matrix.swift_sdk_version }}/static-sdk/swift-${{ matrix.swift_sdk_version }}-RELEASE/swift-${{ matrix.swift_sdk_version }}-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum ${{ matrix.swift_sdk_checksum }}
+        run: swift sdk install https://download.swift.org/swift-${{ matrix.swift_sdk_version }}-release/static-sdk/swift-${{ matrix.swift_sdk_version }}-RELEASE/swift-${{ matrix.swift_sdk_version }}-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum ${{ matrix.swift_sdk_checksum }}
       - name: Build mimalloc object
         run: |
           set -euxo pipefail

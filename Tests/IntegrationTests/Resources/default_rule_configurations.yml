@@ -1148,6 +1148,7 @@ sorted_first_last:
 sorted_imports:
   severity: warning
   grouping: names
+  sort_order: case_insensitive
   meta:
     opt-in: true
     correctable: true

@@ -110,7 +110,7 @@ jobs:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
       - name: Install dependencies
-        run: sudo apt-get install -y libcurl4-openssl-dev libxml2-dev
+        run: sudo apt update && sudo apt install -y libcurl4-openssl-dev
       - name: Build binary
         run: make --debug spm_linux_build
       - name: Upload binary
@@ -130,10 +130,14 @@ jobs:
           - arch: ARM64
             runner: ubuntu-24.04-arm
             swift_sdk: aarch64-swift-linux-musl
+            swift_sdk_version: 6.2.3
+            swift_sdk_checksum: f30ec724d824ef43b5546e02ca06a8682dafab4b26a99fbb0e858c347e507a2c
             artifact_name: swiftlint-static-arm64
           - arch: AMD64
             runner: ubuntu-24.04
             swift_sdk: x86_64-swift-linux-musl
+            swift_sdk_version: 6.3.1
+            swift_sdk_checksum: fac05271c1f7d060bd203240ce5251d5ca902d30ac899f553765dbb3a88b97ad
             artifact_name: swiftlint-static-amd64
     permissions:
       contents: read
@@ -142,7 +146,7 @@ jobs:
     steps:
       - *checkout-release-branch
       - name: Install SDK
-        run: swift sdk install https://download.swift.org/swift-6.3.2-release/static-sdk/swift-6.3.2-RELEASE/swift-6.3.2-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz --checksum 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
+        run: swift sdk install https://download.swift.org/swift-${{ matrix.swift_sdk_version }}/static-sdk/swift-${{ matrix.swift_sdk_version }}-RELEASE/swift-${{ matrix.swift_sdk_version }}-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz --checksum ${{ matrix.swift_sdk_checksum }}
       - name: Build mimalloc object
         run: |
           set -euxo pipefail
@@ -206,7 +210,7 @@ jobs:
     runs-on: windows-${{ matrix.windows-version }}
     env:
       SWIFT_VERSION: development
-      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-05-07-a
+      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-05-20-a
     strategy:
       fail-fast: false
       matrix:

@@ -186,6 +186,16 @@
   be ordered via the `isolation` entry in `preferred_modifier_order`.  
   [leno23](https://github.com/leno23)
   [#6164](https://github.com/realm/SwiftLint/issues/6164)
+* Make `Glob.expandGlobstar` tolerant of unreadable directory entries on
+  large trees. `subpathsOfDirectory(atPath:)` aborted the entire glob
+  expansion on the first unreadable entry (permission denied, dangling
+  symlink, file removed mid-scan), causing most files in large projects to
+  be silently ignored. Replace the directory walk with a lazy `URL`
+  enumerator that has a per-item error handler so unreadable items are
+  skipped individually. Also dedupe glob results in linear time by adding
+  a `Hashable` overload of `Array.unique`, removing a quadratic dedup that
+  previously effectively hung 50k-file projects.  
+  [Chupik](https://github.com/Chupik)
 
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  

@@ -101,16 +101,27 @@ struct Glob {
             return []
         }
         let searchPath = firstPart.isEmpty ? fileManager.currentDirectoryPath : firstPart
-        var directories = [String]()
-        do {
-            directories = try fileManager.subpathsOfDirectory(atPath: searchPath).compactMap { subpath in
-                let fullPath = firstPart.bridge().appendingPathComponent(subpath)
-                guard isDirectory(path: fullPath) else { return nil }
-                return fullPath
+        // Enumerate lazily with a per-item error handler. `subpathsOfDirectory(atPath:)`, used
+        // previously, is all-or-nothing: a single unreadable entry (permission denied, dangling
+        // symlink, a file removed mid-scan, …) makes it throw, discarding every directory found
+        // so far. On large trees (50k+ files) hitting such an entry is likely, which left only
+        // the root directory to be globbed and silently ignored all nested files.
+        let enumerator = fileManager.enumerator(
+            at: URL(fileURLWithPath: searchPath, isDirectory: true),
+            includingPropertiesForKeys: [.isDirectoryKey],
+            options: [],
+            errorHandler: { _, error in
+                Issue.genericWarning("Error parsing file system item: \(error)").print()
+                return true
             }
-        } catch {
-            Issue.genericWarning("Error parsing file system item: \(error)").print()
-        }
+        )
+        var directories: [String] = enumerator?.compactMap { item in
+            guard let url = item as? URL,
+                  (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true else {
+                return nil
+            }
+            return url.path
+        } ?? []
 
         // Check the base directory for the glob star as well.
         directories.insert(firstPart, at: 0)
@@ -135,12 +146,6 @@ struct Glob {
         }
 
         return results
-    }
-
-    private static func isDirectory(path: String) -> Bool {
-        var isDirectoryBool = ObjCBool(false)
-        let isDirectory = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectoryBool)
-        return isDirectory && isDirectoryBool.boolValue
     }
 
 #if !os(Windows)

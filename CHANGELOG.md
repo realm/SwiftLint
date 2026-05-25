@@ -92,6 +92,16 @@
 
 ### Bug Fixes
 
+* Make `--only-rule` and `only_rules:` actually run custom rules.
+  `activateCustomRuleIdentifiers` previously only expanded custom rules for
+  the `only_rules:` config key when `custom_rules` itself was listed,
+  never for the `--only-rule` command-line flag or for an individual
+  custom rule identifier. As a result `--only-rule custom_rules`,
+  `--only-rule <a_custom_rule>` and `only_rules: [<a_custom_rule>]`
+  silently produced no violations. Now any of these enables the parent
+  `custom_rules` rule together with the requested custom rules.  
+  [Chupik](https://github.com/Chupik)
+
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  
   [theamodhshetty](https://github.com/theamodhshetty)

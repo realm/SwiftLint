@@ -19,7 +19,7 @@ let targetedConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurr
 let swiftLintPluginDependencies: [Target.Dependency]
 
 // Workaround for a download issue on Linux with Swift 5.10.
-#if !os(windows) && (compiler(>=6) || compiler(<5.10) || !os(Linux))
+#if !os(Windows) && (compiler(>=6) || compiler(<5.10) || !os(Linux))
 swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
 #else
 swiftLintPluginDependencies = [.target(name: "swiftlint")]
@@ -236,7 +236,7 @@ let package = Package(
 )
 
 // Workaround for a download issue on Linux with Swift 5.10.
-#if !os(windows) && (compiler(>=6) || compiler(<5.10) || !os(Linux))
+#if !os(Windows) && (compiler(>=6) || compiler(<5.10) || !os(Linux))
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",

@@ -89,7 +89,7 @@
   [nadeemnali](https://github.com/nadeemnali)
   [#6228](https://github.com/realm/SwiftLint/issues/6228)
   
-* Add `legacy_uigraphics_functions` rule to encourage the use of modern
+* Add `legacy_uigraphics_function` rule to encourage the use of modern
   `UIGraphicsImageRenderer` instead of the legacy `UIGraphics{Begin|End}ImageContext`.
   The modern replacement is safer, cleaner, Retina-aware and more performant.  
   [Dimitri Dupuis-Latour](https://github.com/DimDL)

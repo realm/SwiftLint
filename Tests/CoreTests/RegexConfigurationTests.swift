@@ -5,33 +5,33 @@ import XCTest
 final class RegexConfigurationTests: SwiftLintTestCase {
     func testShouldValidateIsTrueByDefault() {
         let config = RegexConfiguration<MockRule>(identifier: "example")
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
-    func testShouldValidateWithSingleExluded() throws {
+    func testShouldValidateWithSingleExcluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
-            "excluded": "Tests/.*\\.swift",
+            "excluded": "ExcludedFolder/.*\\.swift",
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
-    func testShouldValidateWithArrayExluded() throws {
+    func testShouldValidateWithArrayExcluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": [
-                "^Tests/.*\\.swift",
-                "^MyFramework/Tests/.*\\.swift",
+                "ExcludedFolder/.*\\.swift",
+                "MyFramework/ExcludedFolder/.*\\.swift",
             ] as Any,
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
+        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
     func testShouldValidateWithSingleIncluded() throws {
@@ -41,9 +41,9 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             "included": "App/.*\\.swift",
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
+        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
+        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
     func testShouldValidateWithArrayIncluded() throws {
@@ -56,9 +56,9 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift"))
+        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
+        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift".url()))
     }
 
     func testShouldValidateWithIncludedAndExcluded() throws {
@@ -70,16 +70,16 @@ final class RegexConfigurationTests: SwiftLintTestCase {
                 "MyFramework/.*\\.swift",
             ] as Any,
             "excluded": [
-                "Tests/.*\\.swift",
+                "ExcludedFolder/.*\\.swift",
                 "App/Fixtures/.*\\.swift",
             ] as Any,
         ])
 
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift"))
-        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift"))
+        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
+        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift".url()))
 
-        XCTAssertFalse(config.shouldValidate(filePath: "App/Fixtures/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "Tests/file.swift"))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/Tests/file.swift"))
+        XCTAssertFalse(config.shouldValidate(filePath: "App/Fixtures/file.swift".url()))
+        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
     }
 }

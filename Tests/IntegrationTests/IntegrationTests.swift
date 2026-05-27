@@ -12,7 +12,7 @@ private let config: Configuration = {
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
     _ = FileManager.default.changeCurrentDirectoryPath(rootProjectDirectory)
-    return Configuration(configurationFiles: [Configuration.defaultFileName])
+    return Configuration(configurationFiles: [Configuration.defaultFileName.url()])
 }()
 
 final class IntegrationTests: SwiftLintTestCase {
@@ -23,11 +23,11 @@ final class IntegrationTests: SwiftLintTestCase {
         )
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(
-            inPath: "",
+            inPath: URL.cwd,
             forceExclude: false,
             excludeByPrefix: false)
         XCTAssert(
-            swiftFiles.contains(where: { #filePath.bridge().absolutePathRepresentation() == $0.path }),
+            swiftFiles.contains(where: { $0.path?.filepath.hasSuffix(#filePath) == true }),
             "current file should be included"
         )
 
@@ -36,7 +36,7 @@ final class IntegrationTests: SwiftLintTestCase {
             Linter(file: $0, configuration: config).collect(into: storage).styleViolations(using: storage)
         }
         violations.forEach { violation in
-            violation.location.file!.withStaticString {
+            violation.location.file!.relativePath.withStaticString {
                 XCTFail(violation.reason, file: $0, line: UInt(violation.location.line!))
             }
         }
@@ -48,7 +48,7 @@ final class IntegrationTests: SwiftLintTestCase {
             "Corrections are not verified in CI"
         )
         let swiftFiles = config.lintableFiles(
-            inPath: "",
+            inPath: URL.cwd,
             forceExclude: false,
             excludeByPrefix: false)
         let storage = RuleStorage()

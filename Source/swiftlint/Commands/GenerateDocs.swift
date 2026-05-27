@@ -11,7 +11,7 @@ extension SwiftLint {
         @Option(help: "The directory where the documentation should be saved")
         var path = "rule_docs"
         @Option(help: "The path to a SwiftLint configuration file")
-        var config: String?
+        var config: URL?
         @OptionGroup
         var rulesFilterOptions: RulesFilterOptions
 
@@ -21,7 +21,7 @@ extension SwiftLint {
             let rules = rulesFilter.getRules(excluding: rulesFilterOptions.excludingOptions)
 
             try RuleListDocumentation(rules)
-                .write(to: URL(fileURLWithPath: path, isDirectory: true))
+                .write(to: URL(filePath: path, directoryHint: .isDirectory))
         }
     }
 }

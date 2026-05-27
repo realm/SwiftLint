@@ -19,7 +19,7 @@ struct Benchmark {
     }
 
     mutating func record(file: SwiftLintFile, from start: Date) {
-        record(id: file.path ?? "<nopath>", time: -start.timeIntervalSinceNow)
+        record(id: file.path?.filepath ?? "<nopath>", time: -start.timeIntervalSinceNow)
     }
 
     func save() {
@@ -33,7 +33,7 @@ struct Benchmark {
             "\(numberFormatter.string(from: NSNumber(value: time))!): \(id)"
         }
         let string: String = lines.joined(separator: "\n") + "\n"
-        let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt", isDirectory: false)
+        let url = URL(filePath: "benchmark_\(name)_\(timestamp).txt", directoryHint: .notDirectory)
         try? string.data(using: .utf8)?.write(to: url, options: [.atomic])
     }
 }

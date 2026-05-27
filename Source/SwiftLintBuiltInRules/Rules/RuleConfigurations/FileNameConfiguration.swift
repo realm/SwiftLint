@@ -21,13 +21,12 @@ struct FileNameConfiguration: SeverityBasedRuleConfiguration {
 }
 
 extension FileNameConfiguration {
-    func shouldExclude(filePath: String) -> Bool {
-        let fileName = filePath.bridge().lastPathComponent
-        if excluded.contains(fileName) {
+    func shouldExclude(filePath: URL) -> Bool {
+        if excluded.contains(filePath.lastPathComponent) {
             return true
         }
         return excludedPaths.contains {
-            $0.regex.firstMatch(in: filePath, range: filePath.fullNSRange) != nil
+            $0.regex.firstMatch(in: filePath.path, range: filePath.path.fullNSRange) != nil
         }
     }
 }

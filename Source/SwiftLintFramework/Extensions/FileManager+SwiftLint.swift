@@ -13,7 +13,7 @@ public protocol LintableFileManager {
     /// - parameter excluder:     The excluder used to filter out files that should not be linted.
     ///
     /// - returns: Files to lint.
-    func filesToLint(inPath path: String, rootDirectory: String?, excluder: Excluder) -> [String]
+    func filesToLint(inPath path: URL, excluder: Excluder) -> [URL]
 
     /// Returns the date when the file at the specified path was last modified. Returns `nil` if the file cannot be
     /// found or its last modification date cannot be determined.
@@ -21,7 +21,7 @@ public protocol LintableFileManager {
     /// - parameter path: The file whose modification date should be determined.
     ///
     /// - returns: A date, if one was determined.
-    func modificationDate(forFileAtPath path: String) -> Date?
+    func modificationDate(forFileAtPath path: URL) -> Date?
 }
 
 /// An excluder for filtering out files that should not be linted.
@@ -33,75 +33,85 @@ public enum Excluder {
     /// An excluder that does not exclude any files.
     case noExclusion
 
-    func excludes(path: String) -> Bool {
+    func excludes(path: URL) -> Bool {
         switch self {
         case let .matching(matchers):
-            matchers.contains(where: { $0.match(filename: path) })
+            matchers.contains(where: { $0.match(filename: path.path) })
         case let .byPrefix(prefixes):
-            prefixes.contains(where: { path.hasPrefix($0) })
+            prefixes.contains(where: { path.path.hasPrefix($0) })
         case .noExclusion:
             false
         }
     }
 }
 
-extension FileManager: LintableFileManager, @unchecked @retroactive Sendable {
-    public func filesToLint(inPath path: String,
-                            rootDirectory: String? = nil,
-                            excluder: Excluder) -> [String] {
-        let absolutePath = URL(
-            fileURLWithPath: path.absolutePathRepresentation(rootDirectory: rootDirectory ?? currentDirectoryPath)
-        )
+#if os(macOS)
+extension FileManager: @unchecked @retroactive Sendable {}
+#endif
 
+extension FileManager: LintableFileManager {
+    private static let enumeratorProperties: Set<URLResourceKey> = [
+        .isRegularFileKey,
+        .isSymbolicLinkKey,
+    ]
+    private static let enumeratorOptions: DirectoryEnumerationOptions = [
+        .skipsPackageDescendants,
+        .skipsSubdirectoryDescendants,
+    ]
+
+    public func filesToLint(inPath path: URL, excluder: Excluder) -> [URL] {
         // If path is a file, filter and return it directly.
-        if absolutePath.isSwiftFile {
-            let filePath = absolutePath.standardized.filepath
-            return excluder.excludes(path: filePath) ? [] : [filePath]
+        if path.isSwiftFile {
+            return excluder.excludes(path: path) ? [] : [path]
         }
 
         // Fast path when there are no exclusions.
         if case .noExclusion = excluder {
-            return subpaths(atPath: absolutePath.filepath)?.parallelCompactMap { element in
-                let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
-                return absoluteElementPath.isSwiftFile ? absoluteElementPath.standardized.filepath : nil
+            return subpaths(atPath: path.filepath)?.parallelCompactMap { element in
+                let absoluteElementPath = element.url(relativeTo: path)
+                return absoluteElementPath.isSwiftFile ? absoluteElementPath : nil
             } ?? []
         }
 
-        return collectFiles(atPath: absolutePath, excluder: excluder)
+        return collectFiles(atPath: path, excluder: excluder)
     }
 
-    private func collectFiles(atPath absolutePath: URL, excluder: Excluder) -> [String] {
-        guard let root = absolutePath.filepathGuarded, let enumerator = enumerator(atPath: root) else {
+    private func collectFiles(atPath absolutePath: URL, excluder: Excluder) -> [URL] {
+        let enumerator = enumerator(
+            at: absolutePath,
+            includingPropertiesForKeys: Array(Self.enumeratorProperties),
+            options: Self.enumeratorOptions
+        )
+        guard let enumerator else {
             return []
         }
 
-        var files = [String]()
-        var directoriesToWalk = [String]()
+        var files = [URL]()
+        var directoriesToWalk = [URL]()
 
-        while let element = enumerator.nextObject() as? String {
-            let absoluteElementPath = URL(fileURLWithPath: element, relativeTo: absolutePath)
-            guard let absoluteStandardizedElementPath = absoluteElementPath.standardized.filepathGuarded else {
-                continue
+        for case var element as URL in enumerator {
+            var resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
+            if resourceValues?.isSymbolicLink == true {
+                element = element.standardizedFileURL
+                if excluder.excludes(path: element) {
+                    continue
+                }
+                element.resolveSymlinksInPath()
+                resourceValues = try? element.resourceValues(forKeys: Self.enumeratorProperties)
             }
-            if absoluteElementPath.path.isFile {
-                if absoluteElementPath.pathExtension == "swift",
-                   !excluder.excludes(path: absoluteStandardizedElementPath) {
-                    files.append(absoluteStandardizedElementPath)
+            if resourceValues?.isRegularFile == true {
+                if element.pathExtension == "swift", !excluder.excludes(path: element) {
+                    files.append(element)
                 }
-            } else {
-                enumerator.skipDescendants()
-                if !excluder.excludes(path: absoluteStandardizedElementPath) {
-                    directoriesToWalk.append(absoluteStandardizedElementPath)
-                }
+            } else if resourceValues != nil, !excluder.excludes(path: element) {
+                directoriesToWalk.append(element)
             }
         }
 
-        return files + directoriesToWalk.parallelFlatMap {
-            collectFiles(atPath: URL(fileURLWithPath: $0, isDirectory: true), excluder: excluder)
-        }
+        return files + directoriesToWalk.parallelFlatMap { collectFiles(atPath: $0, excluder: excluder) }
     }
 
-    public func modificationDate(forFileAtPath path: String) -> Date? {
-        (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
+    public func modificationDate(forFileAtPath path: URL) -> Date? {
+        (try? attributesOfItem(atPath: path.filepath))?[.modificationDate] as? Date
     }
 }

@@ -7,28 +7,29 @@ import XCTest
 
 final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
     private func fixturePath(_ scenario: String) -> URL {
-        URL(fileURLWithPath: #filePath)
+        #filePath.url(directoryHint: .isDirectory)
             .deletingLastPathComponent()
-            .appending(path: "Resources")
-            .appending(component: scenario)
+            .appending(path: "Resources", directoryHint: .isDirectory)
+            .appending(path: scenario, directoryHint: .isDirectory)
     }
 
     /// Returns the paths of lintable files relative to the fixture directory.
-    private func lintableFilePaths(in scenario: String, configFile: String? = nil, inPath: String = ".") -> [String] {
-        let scenarioPath = fixturePath(scenario).filepath
+    private func lintableFilePaths(in scenario: String, configFile: String? = nil, inPath: String? = nil) -> [String] {
+        let scenarioPath = fixturePath(scenario)
 
         let previousDir = FileManager.default.currentDirectoryPath
-        XCTAssert(FileManager.default.changeCurrentDirectoryPath(scenarioPath))
         defer { _ = FileManager.default.changeCurrentDirectoryPath(previousDir) }
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(scenarioPath.filepath))
 
-        let config = Configuration(configurationFiles: configFile.map { [$0] } ?? [])
+        let config = Configuration(configurationFiles: configFile.map { [$0.url()] } ?? [])
         let files = config.lintableFiles(
-            inPath: inPath,
+            inPath: inPath.map { $0.url() } ?? URL.cwd,
             forceExclude: false,
             excludeByPrefix: false
         )
 
-        return files.map { $0.path!.path(relativeTo: scenarioPath) }.sorted()
+        // swiftlint:disable:next force_try
+        return files.map { $0.path!.path.replacing(try! Regex(".+/\(scenario)/"), with: "") }.sorted()
     }
 
     func testParentChildSameDirectory() {
@@ -135,10 +136,10 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         let config = Configuration(configurationFiles: [])
 
         let moduleAFile = SwiftLintFile(
-            path: scenarioPath.appending(path: "ModuleA/File.swift").filepath
+            path: scenarioPath.appending(path: "ModuleA/File.swift")
         )!
         let moduleBFile = SwiftLintFile(
-            path: scenarioPath.appending(path: "ModuleB/File.swift").filepath
+            path: scenarioPath.appending(path: "ModuleB/File.swift")
         )!
 
         XCTAssertTrue(
@@ -158,11 +159,11 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         let scenarioPath = fixturePath("_4_nested_basic")
 
         let moduleAFile = SwiftLintFile(
-            path: scenarioPath.appending(path: "ModuleB/File.swift").filepath
+            path: scenarioPath.appending(path: "ModuleB/File.swift")
         )!
 
         XCTAssertFalse(
-            Configuration(configurationFiles: [scenarioPath.appending(path: "root.yml").filepath])
+            Configuration(configurationFiles: [scenarioPath.appending(path: "root.yml")])
                 .configuration(for: moduleAFile)
                 .rules
                 .map { type(of: $0).identifier }
@@ -170,8 +171,47 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         )
     }
 
-    #if !os(Windows)
-    func testUnicodePrivateUseAreaCharacterInPath() async throws {
+    func testSymlinkedFileAndFolderAreFollowed() throws {
+        #if os(Windows)
+        throw XCTSkip("Symlinks in fixture folder are not supported on Windows")
+        #endif
+        try XCTSkipIf(
+            ProcessInfo.processInfo.environment["SWIFTLINT_BAZEL_TEST"] != nil,
+            "Bazel's sandboxed environment uses symlinks heavily breaking the fixture setup"
+        )
+
+        let expectedPaths = ["Real/Folder/Nested.swift", "Real/Target.swift"]
+
+        // With symlinks
+        XCTAssertEqual(lintableFilePaths(in: "_9_symlinked_paths", configFile: ".swiftlint.yml"), expectedPaths)
+
+        let fixture = fixturePath("_9_symlinked_paths")
+        let fileLink = fixture.appending(path: "LinkToFile.swift", directoryHint: .notDirectory)
+        var folderLink = fixture.appending(path: "LinkToFolder", directoryHint: .isDirectory)
+        let targetFile = fixture.appending(path: "Real/Target.swift", directoryHint: .notDirectory)
+        let targetFolder = fixture.appending(path: "Real/Folder", directoryHint: .isDirectory)
+
+        let fileManager = FileManager.default
+        XCTAssert(fileManager.fileExists(atPath: fileLink.filepath))
+        XCTAssert(fileManager.fileExists(atPath: folderLink.filepath))
+        XCTAssert(try fileLink.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == true)
+        XCTAssert(try folderLink.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == true)
+        XCTAssertEqual(fileLink.resolvingSymlinksInPath(), targetFile)
+
+        XCTAssertNotEqual(folderLink, targetFile)
+        folderLink.resolveSymlinksInPath()
+        XCTAssert(try folderLink.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == false)
+        XCTAssertEqual(folderLink, targetFolder)
+
+        // Without symlinks
+        XCTAssertEqual(lintableFilePaths(in: "_9_symlinked_paths", configFile: ".swiftlint.yml"), expectedPaths)
+    }
+
+    func testUnicodePrivateUseAreaCharacterInPath() throws {
+        #if os(Windows)
+        throw XCTSkip("Windows unzip does not support PUA characters in paths")
+        #endif
+
         let fixture = fixturePath("_8_unicode_private_use_area")
 
         let process = Process()
@@ -181,24 +221,9 @@ final class ConfigPathResolutionTests: SwiftLintTestCase, @unchecked Sendable {
         process.waitUntilExit()
         defer { try? FileManager.default.removeItem(at: fixture.appending(path: "App")) }
 
-        if #available(macOS 26, *) {
-            XCTAssertEqual(
-                lintableFilePaths(in: "_8_unicode_private_use_area/App"),
-                ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
-            )
-        } else {
-            let console = await Issue.captureConsole {
-                XCTAssert(lintableFilePaths(in: "_8_unicode_private_use_area/App").isEmpty)
-            }
-            XCTAssert(
-                console.contains(
-                    """
-                    error: File with URL 'androidx.core:core-bundle.swift' \
-                    cannot be represented as a file system path; skipping it
-                    """
-                )
-            )
-        }
+        XCTAssertEqual(
+            lintableFilePaths(in: "_8_unicode_private_use_area/App"),
+            ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
+        )
     }
-    #endif
 }

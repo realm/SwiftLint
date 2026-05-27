@@ -270,7 +270,7 @@ public extension AccessorBlockSyntax {
 }
 
 public extension InheritanceClauseSyntax? {
-    func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
+    func contains(inheritedTypes: Set<String>) -> Bool {
         self?.inheritedTypes.contains { elem in
             guard let simpleType = elem.type.as(IdentifierTypeSyntax.self) else {
                 return false

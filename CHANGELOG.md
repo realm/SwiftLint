@@ -34,6 +34,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6670](https://github.com/realm/SwiftLint/issues/6670)
 
+* Rewrite the following rules with SwiftSyntax:
+  * `file_types_order`
+  <!-- Keep empty line to have the contributors on a separate line. -->
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 ### Bug Fixes
 
 * Avoid false positives in `prefer_self_in_static_references` for generic

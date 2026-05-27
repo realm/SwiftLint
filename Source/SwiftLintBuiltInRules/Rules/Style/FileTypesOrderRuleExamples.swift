@@ -180,7 +180,7 @@ internal struct FileTypesOrderRuleExamples {
         }
 
         // Extensions
-        ↓extension TestViewController: UITableViewDataSource {
+        private ↓extension TestViewController: UITableViewDataSource {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                 return 1
             }
@@ -197,7 +197,7 @@ internal struct FileTypesOrderRuleExamples {
         """),
         Example("""
         // Preview Provider
-        ↓struct ContentView_Previews: PreviewProvider {
+        public ↓struct ContentView_Previews: PreviewProvider {
             static var previews: some View { ContentView() }
         }
 

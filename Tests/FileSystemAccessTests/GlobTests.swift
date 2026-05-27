@@ -112,4 +112,64 @@ final class GlobTests: SwiftLintTestCase {
         assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/c/MyTest2.swift")
         assertGlobMatch(root: "/", pattern: "**/*Test*", filename: "/a/b/MyTests/c.swift")
     }
+
+    /// One unreadable subdirectory in the search tree must not cause the entire glob to drop every
+    /// nested file. The previous implementation used `subpathsOfDirectory(atPath:)`, which throws
+    /// on the first item it cannot access and discards everything collected so far — on a 50k-file
+    /// project that left only the search root globbed, silently ignoring all nested files.
+    func testGlobstarToleratesUnreadableSubdirectory() throws {
+        try XCTSkipIf(
+            getuid() == 0,
+            "Permission-bit tests cannot exercise the tolerance fix when running as root."
+        )
+
+        let fileManager = FileManager.default
+        let root = NSTemporaryDirectory().stringByAppendingPathComponent(
+            "SwiftLintGlobTolerance-\(UUID().uuidString)"
+        )
+        let unreadableDir = root.stringByAppendingPathComponent("a/b/c")
+        let openDir = root.stringByAppendingPathComponent("a/x")
+        try fileManager.createDirectory(atPath: unreadableDir, withIntermediateDirectories: true)
+        try fileManager.createDirectory(atPath: openDir, withIntermediateDirectories: true)
+
+        for path in [
+            root.stringByAppendingPathComponent("top.swift"),
+            root.stringByAppendingPathComponent("a/inA.swift"),
+            root.stringByAppendingPathComponent("a/b/inB.swift"),
+            unreadableDir.stringByAppendingPathComponent("inC.swift"),
+            openDir.stringByAppendingPathComponent("inX.swift"),
+        ] {
+            try "let x = 1".write(toFile: path, atomically: true, encoding: .utf8)
+        }
+
+        // Make `a/b/c` unreadable. This is what previously made
+        // `subpathsOfDirectory(atPath:)` throw and drop every directory it had
+        // collected so far, leaving only the search root globbed.
+        try fileManager.setAttributes([.posixPermissions: 0o000], ofItemAtPath: unreadableDir)
+        defer {
+            // Restore permissions so cleanup can remove the tree even if the test fails.
+            try? fileManager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: unreadableDir)
+            try? fileManager.removeItem(atPath: root)
+        }
+
+        let matches = Glob.resolveGlob(root.stringByAppendingPathComponent("**/*.swift"))
+
+        // Siblings of the unreadable subtree must still resolve. Without the fix only top.swift
+        // (the search-root's own pattern) would have matched.
+        XCTAssertTrue(matches.contains { $0.hasSuffix("/top.swift") }, "top.swift missing")
+        XCTAssertTrue(
+            matches.contains { $0.hasSuffix("/a/inA.swift") }, "a/inA.swift missing — tolerance regressed"
+        )
+        XCTAssertTrue(
+            matches.contains { $0.hasSuffix("/a/b/inB.swift") }, "a/b/inB.swift missing — tolerance regressed"
+        )
+        XCTAssertTrue(
+            matches.contains { $0.hasSuffix("/a/x/inX.swift") }, "a/x/inX.swift missing — tolerance regressed"
+        )
+
+        // The unreadable subtree is genuinely inaccessible.
+        XCTAssertFalse(
+            matches.contains { $0.hasSuffix("/inC.swift") }, "inC.swift should not be reachable"
+        )
+    }
 }

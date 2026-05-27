@@ -40,6 +40,11 @@
   can be even higher (3-4x).  
   [SimplyDanny](https://github.com/SimplyDanny)
 
+* Rewrite the following rules with SwiftSyntax:
+  * `file_types_order`
+  <!-- Keep empty line to have the contributors on a separate line. -->
+  [SimplyDanny](https://github.com/SimplyDanny)
+
 ### Bug Fixes
 
 * Fix `literal_expression_end_indentation` autocorrection deleting source code

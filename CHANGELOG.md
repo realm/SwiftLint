@@ -21,6 +21,11 @@
 
 * None.
 
+* Rename `allow_implicit_init` to `include_implicit_init` for the
+  `optional_data_string_conversion` rule to convey its purpose more clearly.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6670](https://github.com/realm/SwiftLint/issues/6670)
+
 ### Bug Fixes
 
 * None.

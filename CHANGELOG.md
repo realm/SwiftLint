@@ -4,7 +4,15 @@
 
 ### Breaking
 
-* None.
+* The `ignored_literal_argument_functions` option of the `force_unwrapping` rule now
+  uses the configured value as-is instead of always merging in the five built-in defaults
+  (`URL(string:)`, `NSURL(string:)`, `UIImage(named:)`, `NSImage(named:)`, `Data(hexString:)`).
+  Those five functions remain the default when the option is not configured, but setting
+  `ignored_literal_argument_functions` to any explicit list — including `[]` — now fully
+  replaces the defaults. Configurations that add functions on top of the defaults must now
+  explicitly include the five previously-default functions in their list.
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6675](https://github.com/realm/SwiftLint/issues/6675)
 
 ### Experimental
 

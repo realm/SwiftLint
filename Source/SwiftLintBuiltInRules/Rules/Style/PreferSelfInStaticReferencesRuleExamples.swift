@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 enum PreferSelfInStaticReferencesRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -72,6 +74,20 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 let i = 1
                 let c: C = C()
                 func f(c: C) -> KeyPath<C, Int> { \\Self.i }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol P {}
+            struct S: P {}
+            extension P {
+                func f<A>() -> some P where A: P { S() }
+                func g<A: P>() -> some P { S() }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class C<A> {
+                func f() where A: C {}
+                func g<B: C>() {}
             }
             """, excludeFromDocumentation: true),
         Example("""

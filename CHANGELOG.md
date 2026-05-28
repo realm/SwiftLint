@@ -28,7 +28,11 @@
 
 ### Bug Fixes
 
-* None.
+* Avoid false positives in `prefer_self_in_static_references` for generic
+  constraints and generic parameter bounds such as `where A: P` and `<A: P>`
+  in classes and extensions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6674](https://github.com/realm/SwiftLint/issues/6674)
 
 ## 0.63.3: High-Speed Extraction
 

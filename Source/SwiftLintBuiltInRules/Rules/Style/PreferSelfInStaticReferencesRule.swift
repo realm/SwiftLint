@@ -231,6 +231,20 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
+        override func visit(_: GenericParameterListSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        override func visit(_: GenericRequirementListSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
         override func visitPost(_ node: IdentifierTypeSyntax) {
             guard let parent = node.parent else {
                 return
@@ -239,10 +253,6 @@ private extension PreferSelfInStaticReferencesRule {
             // header (the extended type itself); the new class-like scope
             // pushed for the extension would otherwise rewrite it to `Self`.
             if parent.is(ExtensionDeclSyntax.self) {
-                return
-            }
-            if case .likeClass = parentDeclScopes.peek(), parent.is(GenericArgumentSyntax.self) {
-                // Type is a generic parameter in a class.
                 return
             }
             if node.genericArguments == nil {

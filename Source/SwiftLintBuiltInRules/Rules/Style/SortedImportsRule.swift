@@ -25,7 +25,12 @@ private extension SortedImportsRule {
 
         override func visitPost(_ node: ImportDeclSyntax) {
             imports.append(
-                Import.from(importDecl: node, grouping: configuration.grouping, locationConverter: locationConverter)
+                Import.from(
+                    importDecl: node,
+                    grouping: configuration.grouping,
+                    sortOrder: configuration.sortOrder,
+                    locationConverter: locationConverter
+                )
             )
         }
 
@@ -78,6 +83,7 @@ private extension SortedImportsRule {
                     let `import` = Import.from(
                         importDecl: importDecl,
                         grouping: configuration.grouping,
+                        sortOrder: configuration.sortOrder,
                         locationConverter: locationConverter
                     )
                     if let lastImport = imports.last, !`import`.isDirectlyAfter(previous: lastImport, in: file) {
@@ -121,6 +127,7 @@ private extension SortedImportsRule {
                 let firstImportWithoutComment = Import.from(
                     importDecl: firstImport.importDecl.with(\.leadingTrivia, leadingTrivia.second),
                     grouping: configuration.grouping,
+                    sortOrder: configuration.sortOrder,
                     locationConverter: locationConverter
                 )
                 let imports = [firstImportWithoutComment] + imports.dropFirst()
@@ -183,6 +190,7 @@ private struct Import: Comparable {
     let offset: Int
     let attributes: String
     let modifier: UInt8
+    let sortOrder: SortedImportsConfiguration.SortOrder
 
     var violationPosition: AbsolutePosition {
         importDecl.path.positionAfterSkippingLeadingTrivia
@@ -194,6 +202,7 @@ private struct Import: Comparable {
 
     static func from(importDecl: ImportDeclSyntax,
                      grouping: SortedImportsConfiguration.Grouping,
+                     sortOrder: SortedImportsConfiguration.SortOrder,
                      locationConverter: SourceLocationConverter) -> Self {
         let attributes: [String] =
             if grouping == .attributes {
@@ -231,7 +240,8 @@ private struct Import: Comparable {
             line: startLine,
             offset: locationConverter.location(for: importDecl.path.endPositionBeforeTrailingTrivia).line - startLine,
             attributes: attributes.joined(),
-            modifier: modifier
+            modifier: modifier,
+            sortOrder: sortOrder
         )
     }
 
@@ -257,6 +267,11 @@ private struct Import: Comparable {
             }
             return rhs.modifier == 0 || lhs.modifier < rhs.modifier
         }
-        return lhs.symbol.caseInsensitiveCompare(rhs.symbol) == .orderedAscending
+        switch lhs.sortOrder {
+        case .caseInsensitive:
+            return lhs.symbol.caseInsensitiveCompare(rhs.symbol) == .orderedAscending
+        case .lexicographic:
+            return lhs.symbol.lexicographicallyPrecedes(rhs.symbol)
+        }
     }
 }

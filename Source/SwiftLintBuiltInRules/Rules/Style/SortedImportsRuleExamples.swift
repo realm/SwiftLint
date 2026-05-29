@@ -1,5 +1,6 @@
 internal struct SortedImportsRuleExamples {
     private static let groupByAttributesConfiguration = ["grouping": "attributes"]
+    private static let lexicographicSortConfiguration = ["sort_order": "lexicographic"]
 
     static let nonTriggeringExamples = [
         Example("""
@@ -16,6 +17,12 @@ internal struct SortedImportsRuleExamples {
         import labc
         import Ldef
         """),
+        Example("""
+        import AVFoundation
+        import AppTypes
+        import Base
+        import Logging
+        """, configuration: lexicographicSortConfiguration, excludeFromDocumentation: true),
         Example("""
         // comment
         import AAA
@@ -136,6 +143,12 @@ internal struct SortedImportsRuleExamples {
         import BBB
         """),
         Example("""
+        import AppTypes
+        import ↓AVFoundation
+        import Base
+        import Logging
+        """, configuration: lexicographicSortConfiguration, excludeFromDocumentation: true),
+        Example("""
           @testable import BBB
         @testable import ↓AAA
         """, configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
@@ -237,6 +250,17 @@ internal struct SortedImportsRuleExamples {
             #endif
             import AAA
             import BBB
+            """),
+        Example("""
+        import AppTypes
+        import AVFoundation
+        import Base
+        import Logging
+        """, configuration: lexicographicSortConfiguration, testMultiByteOffsets: false): Example("""
+            import AVFoundation
+            import AppTypes
+            import Base
+            import Logging
             """),
         Example("""
           // comment

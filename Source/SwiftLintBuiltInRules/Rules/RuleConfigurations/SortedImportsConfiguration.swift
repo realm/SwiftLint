@@ -11,8 +11,18 @@ struct SortedImportsConfiguration: SeverityBasedRuleConfiguration {
         case names
     }
 
+    @AcceptableByConfigurationElement
+    enum SortOrder: String {
+        /// Sorts import lines based on a case insensitive comparison of the imported module name.
+        case caseInsensitive = "case_insensitive"
+        /// Sorts import lines based on a lexicographic comparison of the imported module name.
+        case lexicographic
+    }
+
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
     @ConfigurationElement(key: "grouping")
     private(set) var grouping = Grouping.names
+    @ConfigurationElement(key: "sort_order")
+    private(set) var sortOrder = SortOrder.caseInsensitive
 }

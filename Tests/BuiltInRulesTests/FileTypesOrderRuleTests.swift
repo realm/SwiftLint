@@ -154,7 +154,7 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
         extension Main {}
 
         #if canImport(Darwin)
-        struct Helper {}
+        typealias Helper = Int
         #endif
 
         struct Main {

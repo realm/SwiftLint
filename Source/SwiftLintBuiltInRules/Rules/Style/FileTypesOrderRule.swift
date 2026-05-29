@@ -138,12 +138,28 @@ private extension FileTypesOrderRule {
 
 extension ExtensionDeclSyntax: @retroactive NamedDeclSyntax {
     public var name: TokenSyntax {
-        get {
-            TokenSyntax(extendedGraphemeClusterLiteral: extendedType.trimmedDescription)
-        }
+        get { TokenSyntax(extendedGraphemeClusterLiteral: extendedType.trimmedDescription) }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
+    }
+}
 
-        set {
-            // swiftlint:disable:previous unused_setter_value
-        }
+extension TypeAliasDeclSyntax: @retroactive DeclGroupSyntax {
+    public var introducer: SwiftSyntax.TokenSyntax {
+        get { typealiasKeyword }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
+    }
+
+    public var inheritanceClause: SwiftSyntax.InheritanceClauseSyntax? {
+        get { nil }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
+    }
+
+    public var memberBlock: SwiftSyntax.MemberBlockSyntax {
+        get { MemberBlockSyntax(members: []) }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
     }
 }

@@ -119,6 +119,20 @@ internal struct FileTypesOrderRuleExamples {
         extension Bar {
         }
         """),
+        Example(
+            """
+            #if canImport(Darwin)
+            typealias Helper = Int
+            #endif
+
+            struct Main {
+                let value: Int
+            }
+
+            extension Main {}
+            """,
+            excludeFromDocumentation: true
+        ),
         Example("""
         // Main Type
         struct ContentView: View {
@@ -228,7 +242,7 @@ internal struct FileTypesOrderRuleExamples {
             ↓extension Main {}
 
             #if canImport(Darwin)
-            struct Helper {}
+            typealias Helper = Int
             #endif
 
             struct Main {

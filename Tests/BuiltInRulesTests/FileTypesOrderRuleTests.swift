@@ -1,5 +1,6 @@
 @testable import SwiftLintBuiltInRules
 import TestHelpers
+import XCTest
 
 final class FileTypesOrderRuleTests: SwiftLintTestCase {
     // swiftlint:disable:next function_body_length
@@ -146,5 +147,32 @@ final class FileTypesOrderRuleTests: SwiftLintTestCase {
                 "order": ["main_type", ["extension", "supporting_type"] as Any, "preview_provider"] as Any
             ]
         )
+    }
+
+    func testConditionalCompilationKeepsSupportingTypeViolationReason() {
+        let example = Example("""
+        extension Main {}
+
+        #if canImport(Darwin)
+        struct Helper {}
+        #endif
+
+        struct Main {
+            let value: Int
+        }
+        """)
+
+        let violations = ruleViolations(example)
+        XCTAssertEqual(
+            violations.first?.reason,
+            "An 'extension' should not be placed amongst the file type(s) 'supporting_type'"
+        )
+    }
+
+    private func ruleViolations(_ example: Example, ruleConfiguration: Any? = nil) -> [StyleViolation] {
+        guard let config = makeConfig(ruleConfiguration, FileTypesOrderRule.identifier) else {
+            return []
+        }
+        return violations(example, config: config)
     }
 }

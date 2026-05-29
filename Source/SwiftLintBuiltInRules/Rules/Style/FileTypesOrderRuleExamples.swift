@@ -223,5 +223,19 @@ internal struct FileTypesOrderRuleExamples {
             }
         }
         """),
+        Example(
+            """
+            ↓extension Main {}
+
+            #if canImport(Darwin)
+            struct Helper {}
+            #endif
+
+            struct Main {
+                let value: Int
+            }
+            """,
+            excludeFromDocumentation: true
+        ),
     ]
 }

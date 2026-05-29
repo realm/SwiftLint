@@ -89,14 +89,14 @@ private extension FileTypesOrderRule {
         private func declarations(in statements: CodeBlockItemListSyntax) -> [NamedGroupDecl] {
             var collectedDeclarations = [NamedGroupDecl]()
             for statement in statements {
-                guard let declaration = statement.item.asProtocol((any DeclGroupSyntax).self) else {
-                    continue
-                }
-                if let ifConfig = declaration.as(IfConfigDeclSyntax.self) {
+                if let ifConfig = statement.item.as(IfConfigDeclSyntax.self) {
                     for clause in ifConfig.clauses {
                         let clauseStatements = clause.elements?.as(CodeBlockItemListSyntax.self) ?? []
                         collectedDeclarations.append(contentsOf: declarations(in: clauseStatements))
                     }
+                    continue
+                }
+                guard let declaration = statement.item.asProtocol((any DeclGroupSyntax).self) else {
                     continue
                 }
                 if let namedDecl = declaration.asProtocol((any NamedDeclSyntax).self) as? NamedGroupDecl {

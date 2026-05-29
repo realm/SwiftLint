@@ -47,6 +47,9 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     func testDescriptionFromConfiguration() throws {
         var configuration = MockConfiguration()
         try configuration.apply(configuration: Void()) // Configure to set keys.
+
+        XCTAssertEqual(configuration.list, ["STRING1", "STRING2"], "Postprocessor hasn't been applied to `list`.")
+
         let description = RuleConfigurationDescription.from(configuration: configuration)
 
         XCTAssertEqual(description.oneLiner(), """
@@ -56,7 +59,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             integer: 2; \
             my_double: 2.1; \
             severity: warning; \
-            list: ["STRING1", "STRING2"]; \
+            list: ["string1", "string2"]; \
             set: [1, 2, 3]; \
             set_of_doubles: [1.0, 2.0, 3.0, 4.7]; \
             severity: error; \
@@ -124,7 +127,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             list
             </td>
             <td>
-            [&quot;STRING1&quot;, &quot;STRING2&quot;]
+            [&quot;string1&quot;, &quot;string2&quot;]
             </td>
             </tr>
             <tr>
@@ -208,7 +211,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             integer: 2
             my_double: 2.1
             severity: warning
-            list: ["STRING1", "STRING2"]
+            list: ["string1", "string2"]
             set: [1, 2, 3]
             set_of_doubles: [1.0, 2.0, 3.0, 4.7]
             severity: error

@@ -38,7 +38,7 @@ attributes:
     correctable: false
 balanced_xctest_lifecycle:
   severity: warning
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
+  test_parent_classes: []
   meta:
     opt-in: true
     correctable: false
@@ -213,7 +213,7 @@ discouraged_default_parameter:
     correctable: false
 discouraged_direct_init:
   severity: warning
-  types: ["Bundle", "Bundle.init", "NSError", "NSError.init", "UIDevice", "UIDevice.init"]
+  types: ["Bundle", "NSError", "UIDevice"]
   meta:
     opt-in: false
     correctable: false
@@ -297,7 +297,7 @@ empty_string:
     correctable: false
 empty_xctest_method:
   severity: warning
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
+  test_parent_classes: []
   meta:
     opt-in: true
     correctable: false
@@ -405,7 +405,7 @@ file_types_order:
     correctable: false
 final_test_case:
   severity: warning
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
+  test_parent_classes: []
   meta:
     opt-in: true
     correctable: true
@@ -501,7 +501,7 @@ identifier_name:
   allowed_symbols: []
   unallowed_symbols_severity: error
   validates_start_with_lowercase: error
-  additional_operators: ["!", "%", "&", "*", "+", "-", ".", "/", "<", "=", ">", "?", "^", "|", "~"]
+  additional_operators: []
   meta:
     opt-in: false
     correctable: false
@@ -536,7 +536,7 @@ inclusive_language:
     correctable: false
 incompatible_concurrency_annotation:
   severity: warning
-  global_actors: ["MainActor"]
+  global_actors: []
   meta:
     opt-in: true
     correctable: true
@@ -557,7 +557,7 @@ invalid_swiftlint_command:
     correctable: false
 invisible_character:
   severity: error
-  additional_code_points: ["200B", "200C", "FEFF"]
+  additional_code_points: []
   meta:
     opt-in: false
     correctable: true
@@ -771,8 +771,8 @@ no_grouping_extension:
     correctable: false
 no_magic_numbers:
   severity: warning
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
-  allowed_numbers: [0.0, 1.0, 100.0]
+  test_parent_classes: []
+  allowed_numbers: []
   meta:
     opt-in: true
     correctable: false
@@ -970,7 +970,7 @@ private_swiftui_state:
     correctable: true
 private_unit_test:
   severity: warning
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
+  test_parent_classes: []
   meta:
     opt-in: false
     correctable: true
@@ -1132,7 +1132,7 @@ shorthand_optional_binding:
     correctable: true
 single_test_class:
   severity: warning
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
+  test_parent_classes: []
   meta:
     opt-in: true
     correctable: false
@@ -1208,7 +1208,7 @@ syntactic_sugar:
 test_case_accessibility:
   severity: warning
   allowed_prefixes: []
-  test_parent_classes: ["QuickSpec", "XCTestCase"]
+  test_parent_classes: []
   meta:
     opt-in: true
     correctable: true
@@ -1356,7 +1356,7 @@ unused_control_flow_label:
 unused_declaration:
   severity: error
   include_public_and_open: false
-  related_usrs_to_skip: ["s:7SwiftUI15PreviewProviderP"]
+  related_usrs_to_skip: []
   meta:
     opt-in: true
     correctable: false

@@ -429,10 +429,15 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                 Issue.deprecatedConfigurationOption(ruleID: id, key: key, alternative: name).print()
             }
             if wrappedValue != oldValue {
+                rawWrappedValue = wrappedValue
                 postprocessor(&wrappedValue)
             }
         }
     }
+
+    /// The original value without postprocessing applied. It will be used for documentation to not mislead users with
+    /// values that are modified by the postprocessor for internal reasons.
+    private var rawWrappedValue: T
 
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
@@ -513,6 +518,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                  deprecationNotice: DeprecationNotice? = nil,
                  postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         // swiftlint:disable:previous no_empty_block
+        self.rawWrappedValue = wrappedValue
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline
@@ -527,7 +533,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
 extension ConfigurationElement: AnyConfigurationElement {
     fileprivate var description: RuleConfigurationDescription {
-        wrappedValue.asDescription(with: key)
+        rawWrappedValue.asDescription(with: key)
     }
 }
 

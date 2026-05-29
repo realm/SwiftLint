@@ -24,10 +24,15 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
         var severity = ViolationSeverity.warning
         @ConfigurationElement(
             key: "list",
+            documentPostprocessedValue: false,
             postprocessor: { list in list = list.map { $0.uppercased() } }
         )
         var list = ["string1", "string2"]
-        @ConfigurationElement(key: "set", deprecationNotice: .suggestAlternative(ruleID: "my_rule", name: "other_opt"))
+        @ConfigurationElement(
+            key: "set",
+            deprecationNotice: .suggestAlternative(ruleID: "my_rule", name: "other_opt"),
+            postprocessor: { set in set = Set(set.map { $0 * 2 }) }
+        )
         var set: Set<Int> = [1, 2, 3]
         @ConfigurationElement(key: "set_of_doubles")
         var setOfDoubles: Set<Double> = [1, 2, 3, 4.7]
@@ -47,6 +52,9 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
     func testDescriptionFromConfiguration() throws {
         var configuration = MockConfiguration()
         try configuration.apply(configuration: Void()) // Configure to set keys.
+
+        XCTAssertEqual(configuration.list, ["STRING1", "STRING2"], "Postprocessor hasn't been applied to `list`.")
+
         let description = RuleConfigurationDescription.from(configuration: configuration)
 
         XCTAssertEqual(description.oneLiner(), """
@@ -56,8 +64,8 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             integer: 2; \
             my_double: 2.1; \
             severity: warning; \
-            list: ["STRING1", "STRING2"]; \
-            set: [1, 2, 3]; \
+            list: ["string1", "string2"]; \
+            set: [2, 4, 6]; \
             set_of_doubles: [1.0, 2.0, 3.0, 4.7]; \
             severity: error; \
             SEVERITY: warning; \
@@ -124,7 +132,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             list
             </td>
             <td>
-            [&quot;STRING1&quot;, &quot;STRING2&quot;]
+            [&quot;string1&quot;, &quot;string2&quot;]
             </td>
             </tr>
             <tr>
@@ -132,7 +140,7 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             set
             </td>
             <td>
-            [1, 2, 3]
+            [2, 4, 6]
             </td>
             </tr>
             <tr>
@@ -208,8 +216,8 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
             integer: 2
             my_double: 2.1
             severity: warning
-            list: ["STRING1", "STRING2"]
-            set: [1, 2, 3]
+            list: ["string1", "string2"]
+            set: [2, 4, 6]
             set_of_doubles: [1.0, 2.0, 3.0, 4.7]
             severity: error
             SEVERITY: warning
@@ -493,11 +501,15 @@ final class RuleConfigurationDescriptionTests: SwiftLintTestCase {
         XCTAssertEqual(configuration.myDouble, 5.1)
         XCTAssertEqual(configuration.severity, .error)
         XCTAssertEqual(configuration.list, ["STRING3", "STRING4"])
-        XCTAssertEqual(configuration.set, [4, 5, 6])
+        XCTAssertEqual(configuration.set, [8, 10, 12])
         XCTAssertEqual(configuration.severityConfig, .error)
         XCTAssertEqual(configuration.renamedSeverityConfig, .error)
         XCTAssertEqual(configuration.inlinedSeverityLevels, SeverityLevelsConfiguration(warning: 12))
         XCTAssertEqual(configuration.nestedSeverityLevels, SeverityLevelsConfiguration(warning: 6, error: 7))
+
+        let oneLiner = RuleConfigurationDescription.from(configuration: configuration).oneLiner()
+        XCTAssert(oneLiner.contains("[\"string3\", \"string4\"]"))
+        XCTAssert(oneLiner.contains("[8, 10, 12]"))
     }
 
     func testDeprecationWarning() async throws {

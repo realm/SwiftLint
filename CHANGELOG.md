@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `unused_setter_value` false positives for empty setter bodies, including
+  `set() { }` and protocol witness implementations with `set { }`.  
+  [leno23](https://github.com/leno23)
+  [#3863](https://github.com/realm/SwiftLint/issues/3863)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

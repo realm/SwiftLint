@@ -62,6 +62,18 @@ struct UnusedSetterValueRule: Rule {
                 set {}
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            private var abc: Int {
+                get { 123 }
+                set() { }
+            }
+            """),
+            Example("""
+            var aPointPosition: TimeInterval? {
+                get { nil }
+                set { }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -140,12 +152,9 @@ private extension UnusedSetterValueRule {
 
             let variableName = node.parameters?.name.text ?? "newValue"
             let visitor = NewValueUsageVisitor(variableName: variableName)
-            if !visitor.walk(tree: node, handler: \.isVariableUsed) {
-                if Syntax(node).closestVariableOrSubscript()?.modifiers?.contains(keyword: .override) == true,
-                   let body = node.body, body.statements.isEmpty {
-                    return
-                }
-
+            if !visitor.walk(tree: node, handler: \.isVariableUsed),
+               let body = node.body,
+               !body.statements.isEmpty {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }

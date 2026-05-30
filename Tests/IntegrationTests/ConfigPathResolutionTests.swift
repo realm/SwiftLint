@@ -212,7 +212,7 @@ struct ConfigPathResolutionTests {
 
     #if !os(Windows)
     @Test
-    func unicodePrivateUseAreaCharacterInPath() async throws {
+    func unicodePrivateUseAreaCharacterInPath() throws {
         let fixture = fixturePath("_8_unicode_private_use_area")
 
         let process = Process()
@@ -222,24 +222,10 @@ struct ConfigPathResolutionTests {
         process.waitUntilExit()
         defer { try? FileManager.default.removeItem(at: fixture.appending(path: "App")) }
 
-        if #available(macOS 26, *) {
-            #expect(
-                lintableFilePaths(in: "_8_unicode_private_use_area/App")
+        #expect(
+            lintableFilePaths(in: "_8_unicode_private_use_area/App")
                 == ["Resources/Settings.bundle/androidx.core:core-bundle.swift"]
-            )
-        } else {
-            let console = await Issue.captureConsole {
-                #expect(lintableFilePaths(in: "_8_unicode_private_use_area/App").isEmpty)
-            }
-            #expect(
-                console.contains(
-                    """
-                    error: File with URL 'androidx.core:core-bundle.swift' \
-                    cannot be represented as a file system path; skipping it
-                    """
-                )
-            )
-        }
+        )
     }
     #endif
 }

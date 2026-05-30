@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `unneeded_throws_rethrows` false positives when `throws` is required by a
+  protocol conformance in the same file.  
+  [leno23](https://github.com/leno23)
+  [#6437](https://github.com/realm/SwiftLint/issues/6437)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

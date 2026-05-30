@@ -36,6 +36,17 @@ struct UnneededThrowsRuleExamples { // swiftlint:disable:this type_body_length
             }
             """),
         Example("""
+            protocol Throwing {
+                func doSomething() throws
+            }
+
+            struct SomeType: Throwing {
+                func doSomething() throws {
+                    print("Hello")
+                }
+            }
+            """),
+        Example("""
             func foo() throws {
                 guard false else {
                     throw Example.failure

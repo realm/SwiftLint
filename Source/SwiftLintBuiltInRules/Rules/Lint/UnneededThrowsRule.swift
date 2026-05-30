@@ -23,6 +23,8 @@ private extension UnneededThrowsRule {
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var scopes = Stack<Scope>()
+        private var conformedProtocolsStack = Stack<[String]>()
+        private lazy var throwingProtocolRequirements = ThrowingProtocolRequirementsCollector.requirements(in: file)
 
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] {
             [
@@ -63,13 +65,53 @@ private extension UnneededThrowsRule {
             }
         }
 
+        override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
+            conformedProtocolsStack.push(node.inheritedProtocolNames)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ActorDeclSyntax) {
+            conformedProtocolsStack.closeScope()
+        }
+
+        override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+            conformedProtocolsStack.push(node.inheritedProtocolNames)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ClassDeclSyntax) {
+            conformedProtocolsStack.closeScope()
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            conformedProtocolsStack.push(node.inheritedProtocolNames)
+            return .visitChildren
+        }
+
+        override func visitPost(_: StructDeclSyntax) {
+            conformedProtocolsStack.closeScope()
+        }
+
+        override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+            conformedProtocolsStack.push(node.inheritedProtocolNames)
+            return .visitChildren
+        }
+
+        override func visitPost(_: ExtensionDeclSyntax) {
+            conformedProtocolsStack.closeScope()
+        }
+
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
             scopes.openScope(with: node.signature.effectSpecifiers?.throwsClause)
             return .visitChildren
         }
 
-        override func visitPost(_: FunctionDeclSyntax) {
+        override func visitPost(_ node: FunctionDeclSyntax) {
             if let closedScope = scopes.closeScope() {
+                guard !isThrowsRequiredByProtocolConformance(functionName: node.name.text) else {
+                    return
+                }
+
                 validate(
                     scope: closedScope,
                     construct: "body of this function"
@@ -165,6 +207,16 @@ private extension UnneededThrowsRule {
             scopes.markCurrentScopeAsThrowing()
         }
 
+        private func isThrowsRequiredByProtocolConformance(functionName: String) -> Bool {
+            for protocolName in conformedProtocolsStack.flatMap({ $0 }) {
+                if throwingProtocolRequirements[protocolName]?.contains(functionName) == true {
+                    return true
+                }
+            }
+
+            return false
+        }
+
         private func validate(scope: Scope, construct: String) {
             guard let throwsClause = scope.throwsClause else { return }
             violations.append(
@@ -180,6 +232,72 @@ private extension UnneededThrowsRule {
                 )
             )
         }
+    }
+}
+
+private enum ThrowingProtocolRequirementsCollector {
+    static func requirements(in file: SwiftLintFile) -> [String: Set<String>] {
+        ThrowingProtocolRequirementsVisitor(viewMode: .sourceAccurate)
+            .walk(tree: file.syntaxTree, handler: \.requirements)
+    }
+}
+
+private final class ThrowingProtocolRequirementsVisitor: SyntaxVisitor {
+    private(set) var requirements = [String: Set<String>]()
+
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        var throwingMethods = Set<String>()
+
+        for member in node.memberBlock.members {
+            guard let function = member.decl.as(FunctionDeclSyntax.self),
+                  function.signature.effectSpecifiers?.throwsClause != nil else {
+                continue
+            }
+
+            throwingMethods.insert(function.name.text)
+        }
+
+        if throwingMethods.isNotEmpty {
+            requirements[node.name.text] = throwingMethods
+        }
+    }
+}
+
+private extension Stack where Element == [String] {
+    mutating func closeScope() {
+        pop()
+    }
+}
+
+private extension InheritedTypeListSyntax {
+    var protocolNames: [String] {
+        compactMap { inheritedType in
+            inheritedType.type.as(IdentifierTypeSyntax.self)?.name.text
+        }
+    }
+}
+
+private extension ActorDeclSyntax {
+    var inheritedProtocolNames: [String] {
+        inheritanceClause?.inheritedTypes.protocolNames ?? []
+    }
+}
+
+private extension ClassDeclSyntax {
+    var inheritedProtocolNames: [String] {
+        inheritanceClause?.inheritedTypes.protocolNames ?? []
+    }
+}
+
+private extension StructDeclSyntax {
+    var inheritedProtocolNames: [String] {
+        inheritanceClause?.inheritedTypes.protocolNames ?? []
+    }
+}
+
+private extension ExtensionDeclSyntax {
+    var inheritedProtocolNames: [String] {
+        inheritanceClause?.inheritedTypes.protocolNames ?? []
     }
 }
 

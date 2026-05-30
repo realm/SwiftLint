@@ -60,6 +60,15 @@ internal struct VerticalParameterAlignmentRuleExamples {
                  bar: String)
         }
         """),
+        // Regression: Cyrillic function name must not affect UTF-8 vs display column alignment (#5037).
+        Example("""
+        func сheckprofileexistence(_ param: Bool,
+                                   param1: Bool,
+                                   param2: Bool,
+                                   param3: Bool) -> Bool {
+            false
+        }
+        """),
     ]
 
     static let triggeringExamples: [Example] = [

@@ -36,6 +36,12 @@
 
 ### Bug Fixes
 
+* Fix `vertical_parameter_alignment` false positives when function names contain
+  multi-byte UTF-8 characters by comparing character columns instead of UTF-8
+  byte columns.  
+  [leno23](https://github.com/leno23)
+  [#5037](https://github.com/realm/SwiftLint/issues/5037)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

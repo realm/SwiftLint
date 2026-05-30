@@ -37,15 +37,42 @@ private extension VerticalParameterAlignmentRule {
 
             guard let firstParamLoc = paramLocations.first else { return [] }
 
+            let firstParamCharacterColumn = characterColumn(
+                onLine: firstParamLoc.line,
+                utf8Column: firstParamLoc.column
+            )
+
             var violations: [AbsolutePosition] = []
             for (index, paramLoc) in paramLocations.enumerated() where index > 0 && paramLoc.line > firstParamLoc.line {
                 let previousParamLoc = paramLocations[index - 1]
-                if previousParamLoc.line < paramLoc.line, firstParamLoc.column != paramLoc.column {
+                let paramCharacterColumn = characterColumn(onLine: paramLoc.line, utf8Column: paramLoc.column)
+                if previousParamLoc.line < paramLoc.line,
+                   firstParamCharacterColumn != paramCharacterColumn {
                     violations.append(paramLoc.position)
                 }
             }
 
             return violations
+        }
+
+        private func characterColumn(onLine lineNumber: Int, utf8Column: Int) -> Int {
+            let line = locationConverter.sourceLines[lineNumber - 1]
+            guard utf8Column > 0 else { return 0 }
+
+            let utf8Offset = utf8Column - 1
+            var byteCount = 0
+            var characterCount = 0
+
+            for character in line {
+                let characterUtf8Length = character.utf8.count
+                if byteCount + characterUtf8Length > utf8Offset {
+                    return characterCount
+                }
+                byteCount += characterUtf8Length
+                characterCount += 1
+            }
+
+            return characterCount
         }
     }
 }

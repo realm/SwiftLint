@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `xct_specific_matcher` false positives when comparing optional `Bool` values to
+  `true` or `false` using `XCTAssertEqual`.  
+  [leno23](https://github.com/leno23)
+  [#3575](https://github.com/realm/SwiftLint/issues/3575)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

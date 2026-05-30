@@ -60,6 +60,20 @@ final class XCTSpecificMatcherRuleTests: SwiftLintTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testEqualOptionalBoolProperty() {
+        let example = Example("""
+        class TestTests: XCTestCase {
+            var optionalBoolean: Bool? { false }
+            func testExample() {
+                XCTAssertEqual(self.optionalBoolean, true)
+            }
+        }
+        """)
+        let violations = violations(example)
+
+        XCTAssertEqual(violations.count, 0)
+    }
+
     func testEqualUnwrappedOptionalFalse() {
         let example = Example("XCTAssertEqual(a!.b, false)")
         let violations = violations(example)

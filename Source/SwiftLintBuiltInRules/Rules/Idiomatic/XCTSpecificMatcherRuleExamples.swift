@@ -39,6 +39,14 @@ internal struct XCTSpecificMatcherRuleExamples {
         Example("XCTAssertNotEqual(  foo, \"false\")"),
 
         // Optionals
+        Example("""
+        class TestTests: XCTestCase {
+            var optionalBoolean: Bool? { false }
+            func testExample() {
+                XCTAssertEqual(self.optionalBoolean, true)
+            }
+        }
+        """),
         Example("XCTAssertEqual(foo?.bar, false)"),
         Example("XCTAssertEqual(foo?.bar, true)"),
         Example("XCTAssertNil(foo?.bar)"),

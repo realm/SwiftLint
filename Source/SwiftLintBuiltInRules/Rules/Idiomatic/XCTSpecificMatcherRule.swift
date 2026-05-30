@@ -27,9 +27,14 @@ struct XCTSpecificMatcherRule: Rule {
 
 private extension XCTSpecificMatcherRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var optionalBoolBindings = OptionalBoolBindingsCollector.bindings(in: file)
+
         override func visitPost(_ node: FunctionCallExprSyntax) {
             if configuration.matchers.contains(.twoArgumentAsserts),
-               let suggestion = TwoArgsXCTAssert.violations(in: node) {
+               let suggestion = TwoArgsXCTAssert.violations(
+                   in: node,
+                   optionalBoolBindings: optionalBoolBindings
+               ) {
                 violations.append(ReasonedRuleViolation(
                     position: node.positionAfterSkippingLeadingTrivia,
                     reason: "Prefer the specific matcher '\(suggestion)' instead"
@@ -122,50 +127,134 @@ private enum TwoArgsXCTAssert: String {
         }
     }
 
-    static func violations(in node: FunctionCallExprSyntax) -> String? {
+    static func violations(in node: FunctionCallExprSyntax, optionalBoolBindings: Set<String>) -> String? {
         guard let name = node.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text,
               let matcher = Self(rawValue: name) else {
             return nil
         }
 
-        //
-        //  - Gets the first two arguments and creates an array where the protected
-        //    word is the first one (if any).
-        //
-        //  Examples:
-        //
-        //  - XCTAssertEqual(foo, true) -> [true, foo]
-        //  - XCTAssertEqual(true, foo) -> [true, foo]
-        //  - XCTAssertEqual(foo, true, "toto") -> [true, foo]
-        //  - XCTAssertEqual(1, 2, accuracy: 0.1, "toto") -> [1, 2]
-        //
-        let arguments = node.arguments
-            .prefix(2)
-            .map(\.expression.trimmedDescription)
-            .sorted { arg1, _ -> Bool in
-                protectedArguments.contains(arg1)
-            }
+        let twoArguments = Array(node.arguments.prefix(2))
+        guard twoArguments.count == 2 else {
+            return nil
+        }
 
-        //
-        //  - Checks if the number of arguments is two (otherwise there's no need to continue).
-        //  - Checks if the first argument is a protected word (otherwise there's no need to continue).
-        //  - Gets the suggestion for the given protected word (taking in consideration the presence of
-        //    optionals.
-        //
-        //  Examples:
-        //
-        //  - equal, [true, foo.bar] -> XCTAssertTrue
-        //  - equal, [true, foo?.bar] -> no violation
-        //  - equal, [nil, foo.bar] -> XCTAssertNil
-        //  - equal, [nil, foo?.bar] -> XCTAssertNil
-        //  - equal, [1, 2] -> no violation
-        //
-        guard arguments.count == 2,
-              let argument = arguments.first, protectedArguments.contains(argument),
-              let hasOptional = arguments.last?.contains("?"),
-              let suggestedMatcher = matcher.suggestion(for: argument, hasOptional: hasOptional) else {
+        let firstDescription = twoArguments[0].expression.trimmedDescription
+        let secondDescription = twoArguments[1].expression.trimmedDescription
+
+        let protectedArgument: String
+        let otherExpression: ExprSyntax
+
+        if protectedArguments.contains(firstDescription) {
+            protectedArgument = firstDescription
+            otherExpression = twoArguments[1].expression
+        } else if protectedArguments.contains(secondDescription) {
+            protectedArgument = secondDescription
+            otherExpression = twoArguments[0].expression
+        } else {
+            return nil
+        }
+
+        let hasOptional = isOptionalExpression(
+            otherExpression,
+            optionalBoolBindings: optionalBoolBindings
+        )
+
+        guard let suggestedMatcher = matcher.suggestion(
+            for: protectedArgument,
+            hasOptional: hasOptional
+        ) else {
             return nil
         }
         return suggestedMatcher
+    }
+
+    private static func isOptionalExpression(
+        _ expression: ExprSyntax,
+        optionalBoolBindings: Set<String>
+    ) -> Bool {
+        if expression.is(OptionalChainingExprSyntax.self) {
+            return true
+        }
+        if let forceUnwrap = expression.as(ForceUnwrapExprSyntax.self) {
+            return isOptionalExpression(forceUnwrap.expression, optionalBoolBindings: optionalBoolBindings)
+        }
+        if expression.trimmedDescription.contains("?") {
+            return true
+        }
+        return referencesOptionalBoolBinding(expression, bindings: optionalBoolBindings)
+    }
+
+    private static func referencesOptionalBoolBinding(
+        _ expression: ExprSyntax,
+        bindings: Set<String>
+    ) -> Bool {
+        if let memberAccess = expression.as(MemberAccessExprSyntax.self) {
+            if let base = memberAccess.base,
+               referencesOptionalBoolBinding(base, bindings: bindings) {
+                return true
+            }
+            return bindings.contains(memberAccess.declName.baseName.text)
+        }
+        if let declReference = expression.as(DeclReferenceExprSyntax.self) {
+            return bindings.contains(declReference.baseName.text)
+        }
+        return false
+    }
+}
+
+private enum OptionalBoolBindingsCollector {
+    static func bindings(in file: SwiftLintFile) -> Set<String> {
+        let visitor = Visitor(viewMode: .sourceAccurate)
+        visitor.walk(file.syntaxTree)
+        return visitor.bindings
+    }
+
+    private final class Visitor: SyntaxVisitor {
+        private(set) var bindings = Set<String>()
+
+        override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            for binding in node.bindings {
+                guard let type = binding.typeAnnotation?.type, type.isOptionalBoolType else {
+                    continue
+                }
+                bindings.formUnion(binding.pattern.optionalBindingNames)
+            }
+            return .skipChildren
+        }
+
+        override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
+            if let returnType = node.signature.returnClause?.type, returnType.isOptionalBoolType {
+                bindings.insert(node.name.text)
+            }
+            return .skipChildren
+        }
+    }
+}
+
+private extension TypeSyntax {
+    var isOptionalBoolType: Bool {
+        if let optionalType = self.as(OptionalTypeSyntax.self) {
+            return optionalType.wrappedType.representsBoolType
+        }
+        if let implicitOptional = self.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
+            return implicitOptional.wrappedType.representsBoolType
+        }
+        return false
+    }
+
+    var representsBoolType: Bool {
+        if let identifierType = self.as(IdentifierTypeSyntax.self) {
+            return identifierType.name.text == "Bool"
+        }
+        return false
+    }
+}
+
+private extension PatternSyntax {
+    var optionalBindingNames: Set<String> {
+        if let identifierPattern = self.as(IdentifierPatternSyntax.self) {
+            return [identifierPattern.identifier.text]
+        }
+        return []
     }
 }

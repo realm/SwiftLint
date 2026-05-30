@@ -178,6 +178,10 @@ private extension SwiftLintFile {
             }
         }
 
+        if kind == .class, indexEntity.isSystemDelegateType {
+            return nil
+        }
+
         let cursorInfo = cursorInfo(at: nameOffset, compilerArguments: compilerArguments)
 
         if cursorInfo?.annotatedDeclaration?.contains("@objc ") == true {
@@ -194,8 +198,14 @@ private extension SwiftLintFile {
         // with "related names", which appears to be similarly named declarations (i.e. overloads) that are
         // programmatically unrelated to the current cursor-info declaration. Those similarly named declarations
         // aren't in `key.related` so confirm that that one is also populated.
-        if cursorInfo?.value["key.related_decls"] != nil, indexEntity.value["key.related"] != nil {
-            return nil
+        if cursorInfo?.value["key.related_decls"] != nil {
+            if indexEntity.value["key.related"] != nil {
+                return nil
+            }
+            if SwiftDeclarationKind.functionKinds.contains(kind),
+               cursorInfo?.hasSystemDelegateProtocolWitness == true {
+                return nil
+            }
         }
 
         return .init(usr: usr, nameOffset: nameOffset)
@@ -328,6 +338,19 @@ private extension SourceKittenDictionary {
         return resultBuilderStaticMethods.contains(name)
     }
 
+    var isSystemDelegateType: Bool {
+        inheritedTypes.contains { $0.isSystemDelegateProtocolName }
+    }
+
+    var hasSystemDelegateProtocolWitness: Bool {
+        guard let relatedDecls = value["key.related_decls"] as? [[String: any SourceKitRepresentable]] else {
+            return false
+        }
+        return relatedDecls.contains { relatedEntity in
+            SourceKittenDictionary(relatedEntity).typeName?.isSystemDelegateProtocolName == true
+        }
+    }
+
     func extends(reference other: Self) -> Bool {
         if let kind, kind.starts(with: "source.lang.swift.decl.extension") {
             let extendedKind = kind.components(separatedBy: ".").last
@@ -341,5 +364,12 @@ private extension SourceKittenDictionary {
             return kind.components(separatedBy: ".").last
         }
         return nil
+    }
+}
+
+
+private extension String {
+    var isSystemDelegateProtocolName: Bool {
+        hasSuffix("Delegate") && (hasPrefix("UI") || hasPrefix("WK") || hasPrefix("NS"))
     }
 }

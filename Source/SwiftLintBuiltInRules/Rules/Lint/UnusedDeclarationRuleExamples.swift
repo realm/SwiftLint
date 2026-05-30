@@ -80,6 +80,20 @@ struct UnusedDeclarationRuleExamples {
             S().f()
         """),
         Example("""
+        protocol SomethingProtocol {
+            func someFunction1()
+            func someFunction3()
+        }
+
+        final class Something: SomethingProtocol {
+            func someFunction1() {}
+        }
+
+        extension Something {
+            func someFunction3() {}
+        }
+        """),
+        Example("""
         enum Component {
           case string(StaticString)
           indirect case array([Component])

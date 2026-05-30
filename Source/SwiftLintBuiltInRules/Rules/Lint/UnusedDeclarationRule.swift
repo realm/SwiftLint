@@ -194,8 +194,14 @@ private extension SwiftLintFile {
         // with "related names", which appears to be similarly named declarations (i.e. overloads) that are
         // programmatically unrelated to the current cursor-info declaration. Those similarly named declarations
         // aren't in `key.related` so confirm that that one is also populated.
-        if cursorInfo?.value["key.related_decls"] != nil, indexEntity.value["key.related"] != nil {
-            return nil
+        if cursorInfo?.value["key.related_decls"] != nil {
+            if indexEntity.value["key.related"] != nil {
+                return nil
+            }
+            if SwiftDeclarationKind.functionKinds.contains(kind),
+               cursorInfo?.satisfiesProtocolRequirementWitness == true {
+                return nil
+            }
         }
 
         return .init(usr: usr, nameOffset: nameOffset)
@@ -326,6 +332,22 @@ private extension SourceKittenDictionary {
         ]
 
         return resultBuilderStaticMethods.contains(name)
+    }
+
+    var satisfiesProtocolRequirementWitness: Bool {
+        guard let relatedDecls = value["key.related_decls"] as? [[String: any SourceKitRepresentable]] else {
+            return false
+        }
+        return relatedDecls.contains { relatedEntity in
+            let entity = SourceKittenDictionary(relatedEntity)
+            if entity.typeName?.hasSuffix("Protocol") == true {
+                return true
+            }
+            if let kind = entity.kind, kind.contains("protocol") {
+                return true
+            }
+            return false
+        }
     }
 
     func extends(reference other: Self) -> Bool {

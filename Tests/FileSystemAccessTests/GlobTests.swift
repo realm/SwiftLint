@@ -7,8 +7,9 @@ import Testing
 
 private let mockPath = Constants.Dir.level0
 
-extension FileSystemAccessTestSuite.GlobTests {
-    @Test
+@Suite(.rulesRegistered, .workingDirectory(mockPath))
+struct GlobTests {
+   @Test
     func nonExistingDirectory() {
         #expect(Glob.resolveGlob("./bar/**".url()).isEmpty)
     }

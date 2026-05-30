@@ -6,7 +6,7 @@ import Testing
 
 @testable import SwiftLintCore
 
-@Suite(.serialized, .rulesRegistered)
+@Suite(.rulesRegistered)
 struct ConfigPathResolutionTests {
     private func fixturePath(_ scenario: String) -> URL {
         #filePath.url(directoryHint: .isDirectory)
@@ -18,20 +18,17 @@ struct ConfigPathResolutionTests {
     /// Returns the paths of lintable files relative to the fixture directory.
     private func lintableFilePaths(in scenario: String, configFile: String? = nil, inPath: String? = nil) -> [String] {
         let scenarioPath = fixturePath(scenario)
+        return CurrentWorkingDirectory.$url.withValue(scenarioPath) {
+            let config = Configuration(configurationFiles: configFile.map { [$0.url()] } ?? [])
+            let files = config.lintableFiles(
+                inPath: inPath.map { $0.url() } ?? URL.cwd,
+                forceExclude: false,
+                excludeByPrefix: false
+            )
 
-        let previousDir = FileManager.default.currentDirectoryPath
-        #expect(FileManager.default.changeCurrentDirectoryPath(scenarioPath.filepath))
-        defer { _ = FileManager.default.changeCurrentDirectoryPath(previousDir) }
-
-        let config = Configuration(configurationFiles: configFile.map { [$0.url()] } ?? [])
-        let files = config.lintableFiles(
-            inPath: inPath.map { $0.url() } ?? URL.cwd,
-            forceExclude: false,
-            excludeByPrefix: false
-        )
-
-        // swiftlint:disable:next force_try
-        return files.map { $0.path!.path.replacing(try! Regex(".+/\(scenario)/"), with: "") }.sorted()
+            // swiftlint:disable:next force_try
+            return files.map { $0.path!.path.replacing(try! Regex(".+/\(scenario)/"), with: "") }.sorted()
+        }
     }
 
     @Test
@@ -138,31 +135,28 @@ struct ConfigPathResolutionTests {
     @Test
     func nestedConfigurationAppliesOnlyToSubdirectory() throws {
         let scenarioPath = fixturePath("_4_nested_basic")
+        try CurrentWorkingDirectory.$url.withValue(scenarioPath) {
+            let config = Configuration(configurationFiles: [])
 
-        let previousDir = FileManager.default.currentDirectoryPath
-        #expect(FileManager.default.changeCurrentDirectoryPath(scenarioPath.filepath))
-        defer { _ = FileManager.default.changeCurrentDirectoryPath(previousDir) }
+            let moduleAFile = try #require(
+                SwiftLintFile(path: scenarioPath.appending(path: "ModuleA/File.swift"))
+            )
+            let moduleBFile = try #require(
+                SwiftLintFile(path: scenarioPath.appending(path: "ModuleB/File.swift"))
+            )
 
-        let config = Configuration(configurationFiles: [])
+            #expect(
+                config.configuration(for: moduleAFile).rules
+                    .map { type(of: $0).identifier }
+                    .contains("explicit_type_interface")
+            )
 
-        let moduleAFile = try #require(
-            SwiftLintFile(path: scenarioPath.appending(path: "ModuleA/File.swift"))
-        )
-        let moduleBFile = try #require(
-            SwiftLintFile(path: scenarioPath.appending(path: "ModuleB/File.swift"))
-        )
-
-        #expect(
-            config.configuration(for: moduleAFile).rules
-                .map { type(of: $0).identifier }
-                .contains("explicit_type_interface")
-        )
-
-        #expect(
-            !config.configuration(for: moduleBFile).rules
-                .map { type(of: $0).identifier }
-                .contains("explicit_type_interface")
-        )
+            #expect(
+                !config.configuration(for: moduleBFile).rules
+                    .map { type(of: $0).identifier }
+                    .contains("explicit_type_interface")
+            )
+        }
     }
 
     @Test

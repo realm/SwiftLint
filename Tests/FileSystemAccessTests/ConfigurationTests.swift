@@ -9,15 +9,19 @@ import Testing
 
 private let optInRules = RuleRegistry.shared.list.list.filter({ $0.1.init() is any OptInRule }).map(\.0)
 
-extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:this type_body_length
+@Suite(.rulesRegistered)
+struct ConfigurationTests { // swiftlint:disable:this type_body_length
+    init() {
+        Configuration.resetCache()
+    }
+
     @Test
     func basicInit() throws {
         _ = try Configuration(dict: [:])
         _ = try Configuration(dict: ["a": 1, "b": 2])
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.emptyFolder)
+    @Test(.workingDirectory(Constants.Dir.emptyFolder))
     func useDefaultIfNoConfiguration() {
         #expect(Configuration(configurationFiles: []) == Configuration.default)
     }
@@ -42,8 +46,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         #expect(!config.checkForUpdates)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func initWithRelativePathAndRootPath() {
         let expectedConfig = Constants.Config._0
 
@@ -233,8 +236,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         )
     }
 
-    @Test(.disabled(if: isRunningWithBazel))
-    @WorkingDirectory(path: Constants.Dir.level1)
+    @Test(.disabled(if: isRunningWithBazel), .workingDirectory(Constants.Dir.level1))
     func includedExcludedRelativeLocationLevel1() {
         // The included path "File.swift" should be put relative to the configuration file
         // (~> Resources/ProjectMock/File.swift) and not relative to the path where
@@ -249,8 +251,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         #expect(actualExcludedPath == desiredExcludedPath)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func includedExcludedRelativeLocationLevel0() {
         // Same as testIncludedPathRelatedToConfigurationFileLocationLevel1(),
         // but run from the directory the config file resides in
@@ -264,8 +265,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         #expect(actualExcludedPath == desiredExcludedPath)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.exclusionTests)
+    @Test(.workingDirectory(Constants.Dir.exclusionTests))
     func excludedPaths() {
         let configuration = Configuration(
             includedPaths: ["directory".url()],
@@ -281,8 +281,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         assertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.exclusionTests)
+    @Test(.workingDirectory(Constants.Dir.exclusionTests))
     func forceExcludesFile() {
         let configuration = Configuration(excludedPaths: ["directory/ExcludedFile.swift".url()])
 
@@ -295,8 +294,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         #expect(paths.isEmpty)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.exclusionTests)
+    @Test(.workingDirectory(Constants.Dir.exclusionTests))
     func forceExcludesFileNotPresentInExcluded() {
         let configuration = Configuration(
             includedPaths: ["directory".url()],
@@ -312,8 +310,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         assertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.exclusionTests)
+    @Test(.workingDirectory(Constants.Dir.exclusionTests))
     func forceExcludesDirectory() {
         let configuration = Configuration(excludedPaths: ["directory/excluded".url()])
 
@@ -326,8 +323,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         assertEqual(["directory/File1.swift", "directory/File2.swift", "directory/ExcludedFile.swift"], paths)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.exclusionTests)
+    @Test(.workingDirectory(Constants.Dir.exclusionTests))
     func forceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
         let configuration = Configuration(excludedPaths: ["directory/ExcludedFile.swift".url()])
 
@@ -355,8 +351,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         #expect(Set(expectedFilenames) == Set(filenames))
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func globIncludePaths() {
         let configuration = Configuration(includedPaths: ["**/Level2".url()])
         let paths = configuration.lintablePaths(inPath: Constants.Dir.level0,
@@ -368,9 +363,8 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         #expect(Set(expectedFilenames) == Set(filenames))
     }
 
-	@Test
+	@Test(.workingDirectory(Constants.Dir.level0))
     func duplicatedGlobIncludePaths() {
-        #expect(FileManager.default.changeCurrentDirectoryPath(Constants.Dir.level0.filepath))
         let configuration = Configuration(includedPaths: ["**/Level2".url(), "**/Level2".url()])
         let paths = configuration.lintablePaths(inPath: Constants.Dir.level0,
                                                 forceExclude: true,
@@ -506,12 +500,8 @@ extension FileSystemAccessTestSuite.ConfigurationTests { // swiftlint:disable:th
         let configuration = try Configuration(dict: ["check_for_updates": true])
         #expect(configuration.checkForUpdates)
     }
-}
 
-// MARK: - ExcludeByPrefix option tests
-extension FileSystemAccessTestSuite.ConfigurationTests {
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func excludeByPrefixExcludedPaths() {
         let configuration = Configuration(
             includedPaths: ["Level1".url()],
@@ -535,8 +525,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         #expect(paths.isEmpty)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func excludeByPrefixForceExcludesFileNotPresentInExcluded() {
         let configuration = Configuration(
             includedPaths: ["Level1".url()],
@@ -550,8 +539,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         #expect(["Level2.swift", "Level3.swift"] == filenames)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func excludeByPrefixForceExcludesDirectory() {
         let configuration = Configuration(
             excludedPaths: [
@@ -567,8 +555,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         #expect(["Level0.swift", "Level1.swift"] == filenames)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func excludeByPrefixForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
         let configuration = Configuration(
             excludedPaths: [
@@ -584,8 +571,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         #expect(["Level0.swift"] == filenames)
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func excludeByPrefixGlobExcludePaths() {
         let configuration = Configuration(
             includedPaths: ["Level1".url()],
@@ -628,12 +614,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         #expect(configuration.cachePath == "cache/path/1")
     }
 
-    // This test demonstrates an existing bug: when the Configuration is obtained from the in-memory cache, the
-    // cachePath is not taken into account
-    //
-    // This issue may not be reproducible under normal execution: the cache is in memory, so when a user changes
-    // the cachePath from command line and re-runs swiftlint, cache is not reused leading to the correct behavior
-    @Test
+    @Test(.temporaryDirectory)
     func mainInitWithCachePathAndCachedConfig() {
         let configuration1 = Configuration(
             configurationFiles: [],
@@ -646,7 +627,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         )
 
         #expect(configuration1.cachePath == "cache/path/1")
-        #expect(configuration2.cachePath == "cache/path/1")
+        #expect(configuration2.cachePath == "cache/path/2")
     }
 
     private func assertEqual(_ relativeExpectedPaths: [String],
@@ -663,7 +644,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
 private extension Sequence where Element == String {
     func absolutePathsStandardized() -> [String] {
         // In Bazel builds, absolute paths might be prefixed with `/private`.
-        map { URL(filePath: $0).standardizedFileURL.resolvingSymlinksInPath().relativeDisplayPath }
+        map { $0.url().standardizedFileURL.resolvingSymlinksInPath().relativeDisplayPath }
     }
 }
 

@@ -17,8 +17,7 @@ struct IntegrationTests {
     @Test(.enabled(
         if: ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
         "Will be covered by separate linting job"
-    ))
-    @WorkingDirectory(path: rootProjectDirectory)
+    ), .workingDirectory(rootProjectDirectory))
     func lint() throws {
         // This is as close as we're ever going to get to a self-hosting linter.
         let config = Configuration(configurationFiles: [Configuration.defaultFileName.url()])
@@ -51,8 +50,7 @@ struct IntegrationTests {
     @Test(.enabled(
         if: ProcessInfo.processInfo.environment["SKIP_INTEGRATION_TESTS"] == nil,
         "Corrections are not verified in CI"
-    ))
-    @WorkingDirectory(path: rootProjectDirectory)
+    ), .workingDirectory(rootProjectDirectory))
     func correct() throws {
         let config = Configuration(configurationFiles: [Configuration.defaultFileName.url()])
         let swiftFiles = config.lintableFiles(

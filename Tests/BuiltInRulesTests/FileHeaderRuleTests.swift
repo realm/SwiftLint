@@ -38,10 +38,15 @@ struct FileHeaderRuleTests {
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["required_string": "**Header"],
-                   stringDoesntViolate: false, skipCommentTests: true,
-                   skipDisableCommandTests: true, testMultiByteOffsets: false,
-                   testShebang: false)
+        verifyRule(
+            description,
+            ruleConfiguration: ["required_string": "**Header"],
+            stringDoesntViolate: false,
+            skipCommentTests: true,
+            skipDisableCommandTests: true,
+            testMultiByteOffsets: false,
+            testShebang: false
+        )
     }
 
     @Test

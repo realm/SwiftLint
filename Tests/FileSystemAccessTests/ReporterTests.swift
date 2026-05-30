@@ -6,7 +6,8 @@ import Testing
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintFramework
 
-extension FileSystemAccessTestSuite.ReporterTests {
+@Suite(.rulesRegistered)
+struct ReporterTests {
     private static var violations: [StyleViolation] {
         [
             StyleViolation(

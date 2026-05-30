@@ -2,7 +2,7 @@ import SwiftLintCore
 import TestHelpers
 import Testing
 
-@Suite
+@Suite(.rulesRegistered)
 struct LineEndingTests {
     @Test
     func carriageReturnDoesNotCauseError() {

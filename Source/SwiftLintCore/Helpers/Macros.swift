@@ -78,15 +78,3 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
     module: "SwiftLintCoreMacros",
     type: "SwiftSyntaxRule"
 )
-
-@attached(body)
-package macro TemporaryDirectory() = #externalMacro(
-    module: "SwiftLintCoreMacros",
-    type: "TemporaryDirectory"
-)
-
-@attached(body)
-package macro WorkingDirectory(path: URL) = #externalMacro(
-    module: "SwiftLintCoreMacros",
-    type: "WorkingDirectory"
-)

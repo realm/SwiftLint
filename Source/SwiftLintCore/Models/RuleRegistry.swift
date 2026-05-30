@@ -10,7 +10,7 @@ public final class RuleRegistry: @unchecked Sendable {
     ///
     /// - note: Adding registering more rules after this was first
     ///         accessed will not work.
-    public private(set) lazy var list = RuleList(rules: registeredRules)
+    public private(set) var list: RuleList! // swiftlint:disable:this implicitly_unwrapped_optional
 
     private init() { /* To guarantee that this is singleton. */ }
 
@@ -18,7 +18,10 @@ public final class RuleRegistry: @unchecked Sendable {
     ///
     /// - parameter rules: The rules to register.
     public func register(rules: [any Rule.Type]) {
-        registeredRules.append(contentsOf: rules)
+        if list != nil {
+            queuedFatalError("Rules cannot be registered after the rule list has been accessed.")
+        }
+        list = RuleList(rules: rules)
     }
 
     /// Look up a rule for a given ID.

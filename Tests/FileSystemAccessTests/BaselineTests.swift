@@ -9,7 +9,8 @@ import Testing
 // swiftlint:disable:next blanket_disable_command
 // swiftlint:disable contains_over_filter_is_empty
 
-extension FileSystemAccessTestSuite.BaselineTests {
+@Suite(.rulesRegistered)
+struct BaselineTests {
     private static let example = """
         import Foundation
         import SwiftLintFramework
@@ -49,8 +50,7 @@ extension FileSystemAccessTestSuite.BaselineTests {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
-    @Test
-    @TemporaryDirectory
+    @Test(.temporaryDirectory)
     func writingAndReading() throws {
         try withExampleFileCreated { sourceFilePath in
             let baselinePath = URL.temporaryDirectory.appending(path: UUID().uuidString)

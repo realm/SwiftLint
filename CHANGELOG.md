@@ -20,6 +20,14 @@
 
 ### Enhancements
 
+* Replace process-wide `FileManager.default.changeCurrentDirectoryPath` in tests with a
+  `@TaskLocal` `CurrentWorkingDirectory.url` that `URL.cwd` consults first. A new
+  `TestDirectory` Swift Testing trait (`.workingDirectory(_:)` / `.temporaryDirectory`)
+  sets the task-local value per test, enabling full parallel test execution without
+  serialization.
+  [dannysheridan](https://github.com/dannysheridan)
+  [#6048](https://github.com/realm/SwiftLint/pull/6048)
+
 * SwiftLint can now be built and run on Windows. It is expected to work in the same way as
   on other platforms. The only restrictions are missing support for `?[]` glob patterns in
   include/exclude patterns and the requirement for `\n` as line ending in all linted files.  

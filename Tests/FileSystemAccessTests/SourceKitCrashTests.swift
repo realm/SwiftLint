@@ -4,9 +4,9 @@ import Testing
 
 @testable import SwiftLintFramework
 
-extension FileSystemAccessTestSuite.SourceKitCrashTests {
+@Suite(.rulesRegistered)
+struct SourceKitCrashTests {
     @Test(.sourceKitRequestsWithoutRule)
-    @TemporaryDirectory
     func assertHandlerIsNotCalledOnNormalFile() {
         let file = SwiftLintFile(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false
@@ -19,7 +19,6 @@ extension FileSystemAccessTestSuite.SourceKitCrashTests {
     }
 
     @Test(.sourceKitRequestsWithoutRule)
-    @TemporaryDirectory
     func assertHandlerIsCalledOnFileThatCrashedSourceKitService() {
         let file = SwiftLintFile(contents: "A file crashed SourceKitService")
         file.sourcekitdFailed = true
@@ -31,8 +30,7 @@ extension FileSystemAccessTestSuite.SourceKitCrashTests {
         #expect(assertHandlerCalled, "Expects assert handler was called on accessing SwiftLintFile.syntaxMap")
     }
 
-    @Test(.sourceKitRequestsWithoutRule)
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.sourceKitRequestsWithoutRule, .workingDirectory(Constants.Dir.level0))
     func rulesWithFileThatCrashedSourceKitService() throws {
         let file = try #require(SwiftLintFile(path: "Level0.swift".url()))
         file.sourcekitdFailed = true

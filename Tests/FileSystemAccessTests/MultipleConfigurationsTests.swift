@@ -13,11 +13,10 @@ private extension Configuration {
     }
 }
 
-// swiftlint:disable:next type_body_length
-extension FileSystemAccessTestSuite.ConfigurationTests {
+@Suite(.rulesRegistered)
+struct MultipleConfigurationsTests { // swiftlint:disable:this type_body_length
     // MARK: - Rules Merging
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func merge() {
         let config0Merge2 = Constants.Config._0.merged(withChild: Constants.Config._2)
 
@@ -200,8 +199,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
     }
 
     // MARK: - Nested Configurations
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func level0() {
         #expect(
             Constants.Config._0.configuration(for: SwiftLintFile(path: Constants.Swift._0)!)
@@ -209,8 +207,7 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         )
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.level0)
+    @Test(.workingDirectory(Constants.Dir.level0))
     func level1() {
         #expect(
             Constants.Config._0.configuration(for: SwiftLintFile(path: Constants.Swift._1)!)
@@ -258,43 +255,42 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
         .disabled(if: isRunningWithBazel),
         arguments: [Constants.Dir.childConfigTest1, Constants.Dir.childConfigTest2],
     )
-    @WorkingDirectory(path: Constants.Dir.emptyFolder)
     func validChildConfig(_ path: URL) {
-        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
-        assertEqualExceptForFileGraph(
-            Configuration(configurationFiles: ["main.yml".url()]),
-            Configuration(configurationFiles: ["expected.yml".url()])
-        )
+        CurrentWorkingDirectory.$url.withValue(path) {
+            assertEqualExceptForFileGraph(
+                Configuration(configurationFiles: ["main.yml".url()]),
+                Configuration(configurationFiles: ["expected.yml".url()])
+            )
+        }
     }
 
     @Test(arguments: [Constants.Dir.parentConfigTest1, Constants.Dir.parentConfigTest2])
-    @WorkingDirectory(path: Constants.Dir.emptyFolder)
     func validParentConfig(_ path: URL) {
-        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
-
-        assertEqualExceptForFileGraph(
-            Configuration(configurationFiles: ["main.yml".url()]),
-            Configuration(configurationFiles: ["expected.yml".url()])
-        )
+        CurrentWorkingDirectory.$url.withValue(path) {
+            assertEqualExceptForFileGraph(
+                Configuration(configurationFiles: ["main.yml".url()]),
+                Configuration(configurationFiles: ["expected.yml".url()])
+            )
+        }
     }
 
     @Test(
         .disabled(if: isRunningWithBazel),
         arguments: [Constants.Dir.childConfigTest1, Constants.Dir.childConfigTest2],
     )
-    @WorkingDirectory(path: Constants.Dir.emptyFolder)
     func commandLineChildConfigs(_ path: URL) {
-        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
-        assertEqualExceptForFileGraph(
-            Configuration(
-                configurationFiles: [
-                    "main.yml".url(),
-                    "child1.yml".url(),
-                    "child2.yml".url(),
-                ]
-            ),
-            Configuration(configurationFiles: ["expected.yml".url()])
-        )
+        CurrentWorkingDirectory.$url.withValue(path) {
+            assertEqualExceptForFileGraph(
+                Configuration(
+                    configurationFiles: [
+                        "main.yml".url(),
+                        "child1.yml".url(),
+                        "child2.yml".url(),
+                    ]
+                ),
+                Configuration(configurationFiles: ["expected.yml".url()])
+            )
+        }
     }
 
     @Test(
@@ -307,16 +303,14 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
             Constants.Dir.parentConfigCycle3,
         ],
     )
-    @WorkingDirectory(path: Constants.Dir.emptyFolder)
     func configCycleDetection(_ path: URL) {
-        #expect(FileManager.default.changeCurrentDirectoryPath(path.filepath))
-
-        // If the cycle is properly detected, the config should equal the default config.
-        #expect(Configuration(configurationFiles: []) == Configuration())
+        CurrentWorkingDirectory.$url.withValue(path) {
+            // If the cycle is properly detected, the config should equal the default config.
+            #expect(Configuration(configurationFiles: []) == Configuration())
+        }
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.childConfigCycle4)
+    @Test(.workingDirectory(Constants.Dir.childConfigCycle4))
     func commandLineConfigsCycleDetection() {
         // If the cycle is properly detected, the config should equal the default config.
         assertEqualExceptForFileGraph(
@@ -551,84 +545,81 @@ extension FileSystemAccessTestSuite.ConfigurationTests {
     }
 
     // MARK: - Remote Configs
-    @Test
-    @WorkingDirectory(path: Constants.Dir.remoteConfigChild)
+    @Test(.temporaryDirectory(withFixture: Constants.Dir.remoteConfigChild))
     func validRemoteChildConfig() {
+        let mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            included:
+              - Test/Test1/Test/Test
+              - Test/Test2/Test/Test
+            """,
+        ]
+        let remoteConfig = Configuration.FileGraph.FilePath.$mockedNetworkResults.withValue(mockedNetworkResults) {
+            Configuration(configurationFiles: ["main.yml".url()])
+        }
         assertEqualExceptForFileGraph(
-            Configuration(
-                configurationFiles: ["main.yml".url()],
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    included:
-                      - Test/Test1/Test/Test
-                      - Test/Test2/Test/Test
-                    """,
-                ]
-            ),
+            remoteConfig,
             Configuration(configurationFiles: ["expected.yml".url()])
         )
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.remoteConfigParent)
+    @Test(.temporaryDirectory(withFixture: Constants.Dir.remoteConfigParent))
     func validRemoteParentConfig() {
+        let mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            included:
+              - Test/Test1
+              - Test/Test2
+
+            excluded:
+              - Test/Test1/Test
+              - Test/Test2/Test
+
+            line_length: 80
+            """,
+        ]
+        let remoteConfig = Configuration.FileGraph.FilePath.$mockedNetworkResults.withValue(mockedNetworkResults) {
+            Configuration(configurationFiles: ["main.yml".url()])
+        }
         assertEqualExceptForFileGraph(
-            Configuration(
-                configurationFiles: ["main.yml".url()],
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    included:
-                      - Test/Test1
-                      - Test/Test2
-
-                    excluded:
-                      - Test/Test1/Test
-                      - Test/Test2/Test
-
-                    line_length: 80
-                    """,
-                ]
-            ),
+            remoteConfig,
             Configuration(configurationFiles: ["expected.yml".url()])
         )
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.remoteConfigLocalRef)
+    @Test(.temporaryDirectory(withFixture: Constants.Dir.remoteConfigLocalRef))
     func remoteConfigNotAllowedToReferenceLocalConfig() {
-        // If the remote file is not allowed to reference a local file, the config should equal the default config.
-        #expect(
-            Configuration(
-                configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    line_length: 60
+        let mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            line_length: 60
 
-                    child_config: child2.yml
-                    """,
-                ]
-            ) == Configuration()
-        )
+            child_config: child.yml
+            """,
+        ]
+        let remoteConfig = Configuration.FileGraph.FilePath.$mockedNetworkResults.withValue(mockedNetworkResults) {
+            Configuration(configurationFiles: []) // Not specifying a file means the .swiftlint.yml will be used.
+        }
+
+        // If the remote file is not allowed to reference a local file, the config should equal the default config.
+        #expect(remoteConfig == Configuration())
     }
 
-    @Test
-    @WorkingDirectory(path: Constants.Dir.remoteConfigCycle)
+    @Test(.temporaryDirectory(withFixture: Constants.Dir.remoteConfigCycle))
     func remoteConfigCycleDetection() {
+        let mockedNetworkResults = [
+            "https://www.mock.com":
+            """
+            child_config: https://www.mock.com
+            """,
+        ]
+        let remoteConfig = Configuration.FileGraph.FilePath.$mockedNetworkResults.withValue(mockedNetworkResults) {
+            Configuration(configurationFiles: []) // Not specifying a file means the .swiftlint.yml will be used.
+        }
         // If the cycle is properly detected, the config should equal the default config.
-        #expect(
-            Configuration(
-                configurationFiles: [], // not specifying a file means the .swiftlint.yml will be used
-                mockedNetworkResults: [
-                    "https://www.mock.com":
-                    """
-                    child_config: https://www.mock.com
-                    """,
-                ]
-            ) == Configuration()
-        )
+        #expect(remoteConfig == Configuration())
     }
 
     // MARK: - Helpers

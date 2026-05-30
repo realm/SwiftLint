@@ -134,6 +134,10 @@ private extension SwiftLintFile {
             .genericTypeParam,
         ]
 
+        if indexEntity.name == "_modify" {
+            return nil
+        }
+
         guard let stringKind = indexEntity.kind,
               stringKind.starts(with: "source.lang.swift.decl."),
               !stringKind.contains(".accessor."),

@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `redundant_nil_coalescing` false positives when the left-hand side is a double
+  optional (`?? nil` is not redundant).  
+  [leno23](https://github.com/leno23)
+  [#4738](https://github.com/realm/SwiftLint/issues/4738)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

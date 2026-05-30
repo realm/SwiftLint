@@ -36,6 +36,14 @@ internal struct AttributesRuleExamples {
             public var optional: Bool { fatalError() }
         }
         """),
+        // attribute with comment line between attribute and declaration (#4596)
+        Example("""
+        extension Property {
+            @available(*, unavailable, renamed: \"isOptional\")
+            // Hello world
+            public var optional: Bool { fatalError() }
+        }
+        """),
         Example("@GKInspectable var maxSpeed: Float"),
         Example("@discardableResult\n func a() -> Int"),
         Example("@objc\n @discardableResult\n func a() -> Int"),

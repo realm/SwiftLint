@@ -73,14 +73,23 @@ private extension AttributesRule {
                 break
             }
 
-            let linesForAttributes = attributesAndPlacements
+            let attributeEndLines = attributesAndPlacements
                 .filter { $1 == .dedicatedLine }
-                .map { $0.0.endLine(locationConverter: locationConverter) }
+                .compactMap { $0.0.endLine(locationConverter: locationConverter) }
 
-            if linesForAttributes.isEmpty {
+            if attributeEndLines.isEmpty {
                 return
             }
-            if !linesForAttributes.contains(helper.keywordLine - 1) {
+            let hasAcceptableAttributeSpacing = if helper.shouldBeOnSameLine {
+                helper.hasAcceptableGapBeforeKeyword(
+                    attributeEndLines: attributeEndLines,
+                    locationConverter: locationConverter
+                )
+            } else {
+                attributeEndLines.contains(helper.keywordLine - 1)
+            }
+
+            if !hasAcceptableAttributeSpacing {
                 violations.append(helper.violationPosition)
                 return
             }
@@ -113,6 +122,12 @@ private extension SyntaxProtocol {
 private extension Trivia {
     var hasMultipleNewlines: Bool {
         reduce(0, { $0 + $1.numberOfNewlines }) > 1
+    }
+}
+
+private extension String {
+    var trimmingWhitespaceAndNewlines: String {
+        String(drop(while: \.isWhitespace).reversed().drop(while: \.isWhitespace).reversed())
     }
 }
 
@@ -170,6 +185,40 @@ private struct RuleHelper {
             }
         }
         return .noViolation
+    }
+
+    func hasAcceptableGapBeforeKeyword(
+        attributeEndLines: [Int],
+        locationConverter: SourceLocationConverter
+    ) -> Bool {
+        guard let lineAboveKeyword = lineAboveKeywordSkippingCommentsAndBlanks(
+            locationConverter: locationConverter
+        ) else {
+            return false
+        }
+        return attributeEndLines.contains(lineAboveKeyword)
+    }
+
+    private func lineAboveKeywordSkippingCommentsAndBlanks(
+        locationConverter: SourceLocationConverter
+    ) -> Int? {
+        var line = keywordLine - 1
+        while line > 0 {
+            let sourceLine = locationConverter.sourceLines[line - 1]
+            let trimmed = sourceLine.trimmingWhitespaceAndNewlines
+            if isCommentOnlyLine(trimmed) {
+                line -= 1
+                continue
+            }
+            return line
+        }
+        return nil
+    }
+
+    private func isCommentOnlyLine(_ trimmed: String) -> Bool {
+        trimmed.hasPrefix("//")
+            || trimmed.hasPrefix("/*")
+            || trimmed.hasSuffix("*/")
     }
 }
 

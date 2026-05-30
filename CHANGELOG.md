@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `unused_declaration` false positives for `projectedValue` and `wrappedValue` in
+  `@propertyWrapper` types.  
+  [leno23](https://github.com/leno23)
+  [#3237](https://github.com/realm/SwiftLint/issues/3237)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

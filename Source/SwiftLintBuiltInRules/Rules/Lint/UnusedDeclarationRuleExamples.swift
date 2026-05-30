@@ -80,6 +80,17 @@ struct UnusedDeclarationRuleExamples {
             S().f()
         """),
         Example("""
+        @propertyWrapper
+        final class LockedWhenRead<Value: Equatable> {
+            var projectedValue: LockedWhenRead<Value> { self }
+
+            var wrappedValue: Value {
+                get { fatalError() }
+                set { fatalError() }
+            }
+        }
+        """),
+        Example("""
         enum Component {
           case string(StaticString)
           indirect case array([Component])

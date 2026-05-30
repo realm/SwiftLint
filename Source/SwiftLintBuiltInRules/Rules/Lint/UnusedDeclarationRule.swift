@@ -110,13 +110,19 @@ private extension SwiftLintFile {
                       editorOpen: SourceKittenDictionary,
                       compilerArguments: [String],
                       configuration: UnusedDeclarationConfiguration) -> Set<UnusedDeclarationRule.DeclaredUSR> {
-        Set(index.traverseEntitiesDepthFirst { _, indexEntity in
-            self.declaredUSR(indexEntity: indexEntity, editorOpen: editorOpen, compilerArguments: compilerArguments,
-                             configuration: configuration)
+        Set(index.traverseEntitiesDepthFirst { parentEntity, indexEntity in
+            self.declaredUSR(
+                indexEntity: indexEntity,
+                parentEntity: parentEntity,
+                editorOpen: editorOpen,
+                compilerArguments: compilerArguments,
+                configuration: configuration
+            )
         })
     }
 
     func declaredUSR(indexEntity: SourceKittenDictionary,
+                     parentEntity: SourceKittenDictionary,
                      editorOpen: SourceKittenDictionary,
                      compilerArguments: [String],
                      configuration: UnusedDeclarationConfiguration) -> UnusedDeclarationRule.DeclaredUSR? {
@@ -146,7 +152,11 @@ private extension SwiftLintFile {
             return nil
         }
 
-        if shouldIgnoreEntity(indexEntity, relatedUSRsToSkip: configuration.relatedUSRsToSkip) {
+        if shouldIgnoreEntity(
+            indexEntity,
+            parentEntity: parentEntity,
+            relatedUSRsToSkip: configuration.relatedUSRsToSkip
+        ) {
             return nil
         }
 
@@ -208,7 +218,13 @@ private extension SwiftLintFile {
         return (try? request.sendIfNotDisabled()).map(SourceKittenDictionary.init)
     }
 
-    private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary, relatedUSRsToSkip: Set<String>) -> Bool {
+    private func shouldIgnoreEntity(_ indexEntity: SourceKittenDictionary,
+                                    parentEntity: SourceKittenDictionary,
+                                    relatedUSRsToSkip: Set<String>) -> Bool {
+        if indexEntity.shouldSkipPropertyWrapperMember(in: parentEntity) {
+            return true
+        }
+
         let declarationAttributesToSkip: Set<SwiftDeclarationAttributeKind> = [
             .ibsegueaction,
             .ibaction,
@@ -326,6 +342,23 @@ private extension SourceKittenDictionary {
         ]
 
         return resultBuilderStaticMethods.contains(name)
+    }
+
+    func shouldSkipPropertyWrapperMember(in parentEntity: SourceKittenDictionary) -> Bool {
+        guard let name, name == "projectedValue" || name == "wrappedValue" else {
+            return false
+        }
+
+        return parentEntity.hasPropertyWrapperAttribute
+    }
+
+    var hasPropertyWrapperAttribute: Bool {
+        swiftAttributes.contains { attributeEntity in
+            guard let attribute = attributeEntity.attribute else {
+                return false
+            }
+            return attribute.lowercased().contains("propertywrapper")
+        }
     }
 
     func extends(reference other: Self) -> Bool {

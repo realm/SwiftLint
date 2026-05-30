@@ -78,6 +78,11 @@
 
 ### Bug Fixes
 
+* Fix `unavailable_function` false positives on base class methods that are
+  overridden in a subclass in the same file.  
+  [leno23](https://github.com/leno23)
+  [#6222](https://github.com/realm/SwiftLint/issues/6222)
+
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  
   [theamodhshetty](https://github.com/theamodhshetty)

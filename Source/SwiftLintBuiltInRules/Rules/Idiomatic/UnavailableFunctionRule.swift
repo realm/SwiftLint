@@ -37,6 +37,14 @@ struct UnavailableFunctionRule: Rule {
                 fatalError("Onboarding re-start crash.")
             }
             """),
+            Example("""
+            class Base {
+                func greet() { fatalError("Subclasses must override greet()") }
+            }
+            class Derived: Base {
+                override func greet() { print("Hello World") }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -74,11 +82,14 @@ struct UnavailableFunctionRule: Rule {
 
 private extension UnavailableFunctionRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var overriddenMethods = OverriddenMethodCollector.overriddenMethods(in: file)
+
         override func visitPost(_ node: FunctionDeclSyntax) {
             guard !node.returnsNever,
                   !node.attributes.hasUnavailableAttribute,
                   node.body.containsTerminatingCall,
-                  !node.body.containsReturn else {
+                  !node.body.containsReturn,
+                  !node.isOverridden(in: overriddenMethods) else {
                 return
             }
 
@@ -88,12 +99,112 @@ private extension UnavailableFunctionRule {
         override func visitPost(_ node: InitializerDeclSyntax) {
             guard !node.attributes.hasUnavailableAttribute,
                   node.body.containsTerminatingCall,
-                  !node.body.containsReturn else {
+                  !node.body.containsReturn,
+                  !node.isOverridden(in: overriddenMethods) else {
                 return
             }
 
             violations.append(node.initKeyword.positionAfterSkippingLeadingTrivia)
         }
+    }
+}
+
+private struct OverriddenMethodKey: Hashable {
+    let className: String
+    let methodName: String
+}
+
+private enum OverriddenMethodCollector {
+    static func overriddenMethods(in file: SwiftLintFile) -> Set<OverriddenMethodKey> {
+        OverriddenMethodVisitor(viewMode: .sourceAccurate)
+            .walk(tree: file.syntaxTree, handler: \.overriddenMethods)
+    }
+}
+
+private final class OverriddenMethodVisitor: SyntaxVisitor {
+    private(set) var overriddenMethods = Set<OverriddenMethodKey>()
+    private var classInheritance = [String: [String]]()
+
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        classInheritance[node.name.text] = node.inheritedTypeNames
+        return .visitChildren
+    }
+
+    override func visitPost(_ node: FunctionDeclSyntax) {
+        guard node.modifiers.contains(keyword: .override),
+              let subclassName = node.parentClassDecl?.name.text else {
+            return
+        }
+
+        for className in allAncestors(of: subclassName) {
+            overriddenMethods.insert(OverriddenMethodKey(className: className, methodName: node.name.text))
+        }
+    }
+
+    override func visitPost(_ node: InitializerDeclSyntax) {
+        guard node.modifiers.contains(keyword: .override),
+              let subclassName = node.parentClassDecl?.name.text else {
+            return
+        }
+
+        for className in allAncestors(of: subclassName) {
+            overriddenMethods.insert(OverriddenMethodKey(className: className, methodName: "init"))
+        }
+    }
+
+    private func allAncestors(of className: String) -> [String] {
+        var ancestors = [String]()
+        var pending = classInheritance[className] ?? []
+
+        while let ancestor = pending.popLast() {
+            ancestors.append(ancestor)
+            pending.append(contentsOf: classInheritance[ancestor] ?? [])
+        }
+
+        return ancestors
+    }
+}
+
+private extension ClassDeclSyntax {
+    var inheritedTypeNames: [String] {
+        inheritanceClause?.inheritedTypes.compactMap {
+            $0.type.as(IdentifierTypeSyntax.self)?.name.text
+        } ?? []
+    }
+}
+
+private extension SyntaxProtocol {
+    var parentClassDecl: ClassDeclSyntax? {
+        var current: Syntax? = Syntax(self)
+
+        while let node = current {
+            if let classDecl = node.as(ClassDeclSyntax.self) {
+                return classDecl
+            }
+            current = node.parent
+        }
+
+        return nil
+    }
+}
+
+private extension FunctionDeclSyntax {
+    func isOverridden(in overriddenMethods: Set<OverriddenMethodKey>) -> Bool {
+        guard let className = parentClassDecl?.name.text else {
+            return false
+        }
+
+        return overriddenMethods.contains(OverriddenMethodKey(className: className, methodName: name.text))
+    }
+}
+
+private extension InitializerDeclSyntax {
+    func isOverridden(in overriddenMethods: Set<OverriddenMethodKey>) -> Bool {
+        guard let className = parentClassDecl?.name.text else {
+            return false
+        }
+
+        return overriddenMethods.contains(OverriddenMethodKey(className: className, methodName: "init"))
     }
 }
 

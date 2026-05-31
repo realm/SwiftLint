@@ -36,6 +36,16 @@
 
 ### Bug Fixes
 
+* Fix `overridden_super_call` false positives when `super` is called once per mutually
+  exclusive branch (e.g. in an `if` completion handler and in the `else` branch).  
+  [leno23](https://github.com/leno23)
+  [#5655](https://github.com/realm/SwiftLint/issues/5655)
+
+* Fix `unused_setter_value` false positives for empty setter bodies, including
+  `set() { }` and protocol witness implementations with `set { }`.  
+  [leno23](https://github.com/leno23)
+  [#3863](https://github.com/realm/SwiftLint/issues/3863)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

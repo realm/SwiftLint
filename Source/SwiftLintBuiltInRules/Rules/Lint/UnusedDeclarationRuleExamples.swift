@@ -237,27 +237,6 @@ struct UnusedDeclarationRuleExamples {
         }
         """),
         Example("""
-        import UIKit
-        import WebKit
-
-        class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-            var window: UIWindow?
-        }
-
-        class ParentWebViewCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {}
-
-        class WebViewCoordinator: ParentWebViewCoordinator {
-            func webView(
-                _ webView: WKWebView,
-                runJavaScriptAlertPanelWithMessage message: String,
-                initiatedByFrame frame: WKFrameInfo,
-                completionHandler: @escaping () -> Void
-            ) {
-                completionHandler()
-            }
-        }
-        """),
-        Example("""
         import Foundation
 
         public final class Foo: NSObject {
@@ -299,7 +278,35 @@ struct UnusedDeclarationRuleExamples {
             }
         }
         """),
+    ] + uiKitWebKitNonTriggeringExamples
+
+#if canImport(UIKit) && canImport(WebKit)
+    private static let uiKitWebKitNonTriggeringExamples = [
+        Example("""
+        import UIKit
+        import WebKit
+
+        class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+            var window: UIWindow?
+        }
+
+        class ParentWebViewCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {}
+
+        class WebViewCoordinator: ParentWebViewCoordinator {
+            func webView(
+                _ webView: WKWebView,
+                runJavaScriptAlertPanelWithMessage message: String,
+                initiatedByFrame frame: WKFrameInfo,
+                completionHandler: @escaping () -> Void
+            ) {
+                completionHandler()
+            }
+        }
+        """),
     ]
+#else
+    private static let uiKitWebKitNonTriggeringExamples = [Example]()
+#endif
 
     private static let platformSpecificTriggeringExamples = [
         Example("""

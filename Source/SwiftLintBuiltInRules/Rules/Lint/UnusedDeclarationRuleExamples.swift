@@ -80,7 +80,7 @@ struct UnusedDeclarationRuleExamples {
             S().f()
         """),
         Example("""
-        struct Box<T> {
+        struct Box {
             private var _data: [String: Any] = [:]
 
             subscript<T: Hashable>(key: String) -> T {

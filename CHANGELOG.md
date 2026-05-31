@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `redundant_self` false positive when `self` is used in labeled string interpolation
+  expressions such as os.Logger privacy arguments.  
+  [leno23](https://github.com/leno23)
+  [#6542](https://github.com/realm/SwiftLint/issues/6542)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  
@@ -58,11 +63,6 @@
   rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)
   [#3993](https://github.com/realm/SwiftLint/issues/3993)
-* Fix `redundant_self` false positive when `self` is used in labeled string interpolation
-  expressions such as os.Logger privacy arguments.  
-  [leno23](https://github.com/leno23)
-  [#6542](https://github.com/realm/SwiftLint/issues/6542)
-
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6501](https://github.com/realm/SwiftLint/issues/6501)

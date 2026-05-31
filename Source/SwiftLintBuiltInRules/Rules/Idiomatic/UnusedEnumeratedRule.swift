@@ -54,6 +54,11 @@ struct UnusedEnumeratedRule: Rule {
                 print(i)
             }
             """, excludeFromDocumentation: true),
+            Example("""
+            rules.enumerated()
+                .first { $0.element.isValid() == false }
+                .flatMap { messages[$0.offset] }
+            """),
         ],
         triggeringExamples: [
             Example("for (↓_, foo) in bar.enumerated() { }"),
@@ -110,6 +115,7 @@ private extension UnusedEnumeratedRule {
     private struct Closure {
         let enumeratedPosition: AbsolutePosition
         let usedEnumeratedResultMembers: (zero: Bool, one: Bool)
+        let enclosingCall: FunctionCallExprSyntax
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
     }
@@ -118,6 +124,7 @@ private extension UnusedEnumeratedRule {
         let id: SyntaxIdentifier
         let enumeratedPosition: AbsolutePosition
         let usedEnumeratedResultMembers: (zero: Bool, one: Bool)
+        let enclosingCall: FunctionCallExprSyntax
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
@@ -180,7 +187,8 @@ private extension UnusedEnumeratedRule {
                 pendingClosure = PendingClosure(
                     id: trailingClosure.id,
                     enumeratedPosition: enumeratedPosition,
-                    usedEnumeratedResultMembers: ExprSyntax(parentCall).usedEnumeratedResultMembers
+                    usedEnumeratedResultMembers: ExprSyntax(parentCall).usedEnumeratedResultMembers,
+                    enclosingCall: parentCall
                 )
             }
 
@@ -191,7 +199,8 @@ private extension UnusedEnumeratedRule {
             if let pendingClosure, pendingClosure.id == node.id {
                 closures.push(Closure(
                     enumeratedPosition: pendingClosure.enumeratedPosition,
-                    usedEnumeratedResultMembers: pendingClosure.usedEnumeratedResultMembers
+                    usedEnumeratedResultMembers: pendingClosure.usedEnumeratedResultMembers,
+                    enclosingCall: pendingClosure.enclosingCall
                 ))
                 self.pendingClosure = nil
             } else {
@@ -200,13 +209,18 @@ private extension UnusedEnumeratedRule {
             return .visitChildren
         }
 
-        override func visitPost(_: ClosureExprSyntax) {
+        override func visitPost(_ node: ClosureExprSyntax) {
             guard let closure = closures.pop().flatMap(\.self) else { return }
 
+            let chainedUsage = closure.enclosingCall.enumeratedMembersUsedInChainedClosures(
+                excluding: node.id
+            )
             let zeroPosition = closure.zeroPosition
-                ?? (closure.usedEnumeratedResultMembers.zero ? closure.enumeratedPosition : nil)
+                ?? (closure.usedEnumeratedResultMembers.zero || chainedUsage.zero
+                    ? closure.enumeratedPosition : nil)
             let onePosition = closure.onePosition
-                ?? (closure.usedEnumeratedResultMembers.one ? closure.enumeratedPosition : nil)
+                ?? (closure.usedEnumeratedResultMembers.one || chainedUsage.one
+                    ? closure.enumeratedPosition : nil)
             guard (zeroPosition != nil) != (onePosition != nil) else { return }
 
             addViolation(
@@ -338,6 +352,74 @@ private extension TuplePatternElementSyntax {
 private extension ClosureShorthandParameterSyntax {
     var isUnderscore: Bool {
         name.tokenKind == .wildcard
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    func enumeratedMembersUsedInChainedClosures(
+        excluding closureId: SyntaxIdentifier
+    ) -> (zero: Bool, one: Bool) {
+        var usesOffset = false
+        var usesElement = false
+        var current: FunctionCallExprSyntax? = self
+
+        while let call = current,
+              let outerCall = call.outerFunctionCallWithTrailingClosure,
+              let trailingClosure = outerCall.trailingClosure,
+              trailingClosure.id != closureId {
+            let usage = trailingClosure.enumeratedTupleMembersUsed()
+            usesOffset = usesOffset || usage.zero
+            usesElement = usesElement || usage.one
+            current = outerCall
+        }
+
+        return (usesOffset, usesElement)
+    }
+
+    var outerFunctionCallWithTrailingClosure: FunctionCallExprSyntax? {
+        guard let memberAccess = parent?.as(MemberAccessExprSyntax.self),
+              let outerCall = memberAccess.parent?.as(FunctionCallExprSyntax.self),
+              outerCall.trailingClosure != nil else {
+            return nil
+        }
+        return outerCall
+    }
+}
+
+private extension ClosureExprSyntax {
+    func enumeratedTupleMembersUsed() -> (zero: Bool, one: Bool) {
+        EnumeratedTupleUsageScanner()
+            .walk(tree: Syntax(self), handler: \.usage)
+    }
+}
+
+private final class EnumeratedTupleUsageScanner: SyntaxVisitor {
+    private(set) var usage = (zero: false, one: false)
+
+    init() {
+        super.init(viewMode: .sourceAccurate)
+    }
+
+    override func visitPost(_ node: DeclReferenceExprSyntax) {
+        guard node.baseName.text == "$0" || node.baseName.text == "$1" else {
+            return
+        }
+
+        if node.baseName.text == "$0" {
+            let member = node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text
+            if member == "element" || member == "1" {
+                usage.one = true
+            } else if member == "offset" || member == "0" {
+                usage.zero = true
+            } else if node.isUnpacked {
+                usage.zero = true
+                usage.one = true
+            } else {
+                usage.zero = true
+            }
+        } else {
+            usage.one = true
+        }
     }
 }
 

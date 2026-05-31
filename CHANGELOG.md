@@ -36,6 +36,31 @@
 
 ### Bug Fixes
 
+* Fix `unused_enumerated` false positives when `offset` and `element` are used in separate
+  trailing closures chained after `.enumerated()` (e.g. `.first` then `.flatMap`).  
+  [leno23](https://github.com/leno23)
+  [#5600](https://github.com/realm/SwiftLint/issues/5600)
+
+* Fix `overridden_super_call` false positives when `super` is called once per mutually
+  exclusive branch (e.g. in an `if` completion handler and in the `else` branch).  
+  [leno23](https://github.com/leno23)
+  [#5655](https://github.com/realm/SwiftLint/issues/5655)
+
+* Fix `void_function_in_ternary` false positives in `switch` and `if` expression branches that
+  implicitly return non-Void values.  
+  [leno23](https://github.com/leno23)
+  [#5611](https://github.com/realm/SwiftLint/issues/5611)
+
+* Fix `unused_parameter` false positives for `$`-prefixed closure binding parameters when the
+  projected name is used (e.g. `$historyItem` with `historyItem.url`).  
+  [leno23](https://github.com/leno23)
+  [#5740](https://github.com/realm/SwiftLint/issues/5740)
+
+* Fix `unused_setter_value` false positives for empty setter bodies, including
+  `set() { }` and protocol witness implementations with `set { }`.  
+  [leno23](https://github.com/leno23)
+  [#3863](https://github.com/realm/SwiftLint/issues/3863)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

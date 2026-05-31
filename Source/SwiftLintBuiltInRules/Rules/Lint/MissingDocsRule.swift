@@ -26,7 +26,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
-            if node.inherits, configuration.excludesInheritedTypes {
+            if node.explicitlyConformsToActor, configuration.excludesInheritedTypes {
                 _ = super.visit(node)
                 return .skipChildren
             }
@@ -91,7 +91,7 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
-            collectViolation(from: node, on: node.funcKeyword)
+            collectViolation(from: node, on: node.funcKeyword, memberName: node.name.text, syntax: Syntax(node))
             return .skipChildren
         }
 
@@ -130,12 +130,24 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-            collectViolation(from: node, on: node.bindingSpecifier)
+            let memberName = node.bindings.first?.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+            collectViolation(from: node, on: node.bindingSpecifier, memberName: memberName, syntax: Syntax(node))
             return .skipChildren
         }
 
-        private func collectViolation(from node: some WithModifiersSyntax, on token: TokenSyntax) {
+        private func collectViolation(
+            from node: some WithModifiersSyntax,
+            on token: TokenSyntax,
+            memberName: String? = nil,
+            syntax syntaxForActorCheck: Syntax? = nil
+        ) {
             if node.modifiers.contains(keyword: .override) || node.hasDocComment {
+                return
+            }
+            if let memberName,
+               configuration.excludesInheritedTypes,
+               configuration.excludedImplicitActorMembers.contains(memberName),
+               syntaxForActorCheck?.isInImplicitActorDecl == true {
                 return
             }
             let acl = effectiveAccessControlLevel(for: node.modifiers)
@@ -152,16 +164,26 @@ private extension MissingDocsRule {
     }
 }
 
-private extension DeclGroupSyntax {
-    var inherits: Bool {
-        if let types = inheritanceClause?.inheritedTypes, types.isNotEmpty {
-            return types.contains { !$0.type.is(SuppressedTypeSyntax.self) }
-        }
-        return false
+private extension ActorDeclSyntax {
+    var explicitlyConformsToActor: Bool {
+        inheritanceClause?.inheritedTypes.contains { inheritedType in
+            inheritedType.type.as(IdentifierTypeSyntax.self)?.name.text == "Actor"
+        } ?? false
     }
 }
 
 private extension SyntaxProtocol {
+    var isInImplicitActorDecl: Bool {
+        var current: Syntax? = Syntax(self)
+        while let node = current {
+            if let actor = node.as(ActorDeclSyntax.self) {
+                return !actor.explicitlyConformsToActor
+            }
+            current = node.parent
+        }
+        return false
+    }
+
     var hasDocComment: Bool {
         switch leadingTrivia.pieces.last(where: { !$0.isWhitespace }) {
         case .docBlockComment, .docLineComment:
@@ -181,5 +203,14 @@ private extension SyntaxProtocol {
             }
             return false
         }
+    }
+}
+
+private extension DeclGroupSyntax {
+    var inherits: Bool {
+        if let types = inheritanceClause?.inheritedTypes, types.isNotEmpty {
+            return types.contains { !$0.type.is(SuppressedTypeSyntax.self) }
+        }
+        return false
     }
 }

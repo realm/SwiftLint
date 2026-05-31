@@ -69,6 +69,12 @@ struct MissingDocsRuleExamples {
         public func f() async {}
         #endif
         """, excludeFromDocumentation: true),
+        Example("""
+        /// Documentation for MyActor.
+        public actor MyActor {
+            public nonisolated var unownedExecutor: Int { 0 }
+        }
+        """),
     ]
 
     static let triggeringExamples = [
@@ -90,6 +96,12 @@ struct MissingDocsRuleExamples {
             public let b: Int
         }
         """),
+        Example("""
+        /// Documentation for MyActor.
+        public actor MyActor {
+            public nonisolated ↓var unownedExecutor: Int { 0 }
+        }
+        """, configuration: ["excludes_inherited_types": false]),
         // Violation marker is on `static` keyword.
         Example("""
         /// a doc

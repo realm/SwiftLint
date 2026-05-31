@@ -16,6 +16,8 @@ struct MissingDocsConfiguration: RuleConfiguration {
     private(set) var excludesTrivialInit = false
     @ConfigurationElement(key: "evaluate_effective_access_control_level")
     private(set) var evaluateEffectiveAccessControlLevel = false
+    @ConfigurationElement(key: "excluded_implicit_actor_members")
+    private(set) var excludedImplicitActorMembers = Set(["unownedExecutor"])
 
     var parameterDescription: RuleConfigurationDescription? {
         let parametersDescription = parameters.group { $0.severity }
@@ -29,6 +31,7 @@ struct MissingDocsConfiguration: RuleConfiguration {
         $excludesInheritedTypes.key => .flag(excludesInheritedTypes)
         $excludesTrivialInit.key => .flag(excludesTrivialInit)
         $evaluateEffectiveAccessControlLevel.key => .flag(evaluateEffectiveAccessControlLevel)
+        $excludedImplicitActorMembers.key => .list(excludedImplicitActorMembers.sorted().map { .symbol($0) })
     }
 
     mutating func apply(configuration: Any) throws(Issue) {
@@ -50,6 +53,10 @@ struct MissingDocsConfiguration: RuleConfiguration {
 
         if let evaluateEffectiveAccessControlLevel = dict[$evaluateEffectiveAccessControlLevel.key] as? Bool {
             self.evaluateEffectiveAccessControlLevel = evaluateEffectiveAccessControlLevel
+        }
+
+        if let excludedImplicitActorMembers = [String].array(of: dict[$excludedImplicitActorMembers.key]) {
+            self.excludedImplicitActorMembers = Set(excludedImplicitActorMembers)
         }
 
         if let parameters = try parameters(from: dict) {

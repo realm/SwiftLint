@@ -36,6 +36,12 @@
 
 ### Bug Fixes
 
+* Treat implicit `Actor` conformance in `missing_docs` when `excludes_inherited_types`
+  is enabled, skipping documentation requirements for known inherited members such as
+  `unownedExecutor` without skipping all actor members.  
+  [leno23](https://github.com/leno23)
+  [#5422](https://github.com/realm/SwiftLint/issues/5422)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

@@ -9,7 +9,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
             "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -19,7 +20,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: false; " +
             "excludes_inherited_types: false; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -29,7 +31,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: false; " +
             "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -43,7 +46,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
             "excludes_inherited_types: false; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: true"
+            "evaluate_effective_access_control_level: true; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -54,7 +58,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; excludes_extensions: true; " +
             "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -69,7 +74,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "error: [open]; warning: [public]; excludes_extensions: true; " +
             "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -84,7 +90,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
             "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 
@@ -94,7 +101,8 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             configuration.parameterDescription?.oneLiner(),
             "warning: [open, public]; excludes_extensions: true; " +
             "excludes_inherited_types: true; excludes_trivial_init: true; " +
-            "evaluate_effective_access_control_level: false"
+            "evaluate_effective_access_control_level: false; " +
+            "excluded_implicit_actor_members: [unownedExecutor]"
         )
     }
 

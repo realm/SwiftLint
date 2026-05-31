@@ -36,6 +36,10 @@
 
 ### Bug Fixes
 
+* Fix `unused_parameter` false positives for binding closure parameters.  
+  [leno23](https://github.com/leno23)
+  [#5740](https://github.com/realm/SwiftLint/issues/5740)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

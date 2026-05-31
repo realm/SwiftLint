@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `duplicated_key_in_dictionary_literal` false positives when dictionary keys use a
+  computed property that returns a different value on each access.  
+  [leno23](https://github.com/leno23)
+  [#5077](https://github.com/realm/SwiftLint/issues/5077)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

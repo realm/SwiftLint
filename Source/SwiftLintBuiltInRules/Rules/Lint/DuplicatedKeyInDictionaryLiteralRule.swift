@@ -40,6 +40,20 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
                     #line: "2"
                 ]
                 """),
+            Example("""
+                var currentValue = 0
+                var generateNewValue: Int {
+                    let current = currentValue
+                    currentValue += 1
+                    return current
+                }
+
+                let testDict = [
+                    generateNewValue: "",
+                    generateNewValue: "",
+                    generateNewValue: "",
+                ]
+                """),
         ],
         triggeringExamples: [
             Example("""
@@ -81,9 +95,27 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
 
 private extension DuplicatedKeyInDictionaryLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private var computedPropertyNames = Set<String>()
+
+        override func visitPost(_ node: VariableDeclSyntax) {
+            for binding in node.bindings {
+                guard binding.accessorBlock != nil,
+                      let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else {
+                    continue
+                }
+
+                computedPropertyNames.insert(pattern.identifier.text)
+            }
+        }
+
         override func visitPost(_ list: DictionaryElementListSyntax) {
             let keys = list.map(\.key).compactMap { expr -> DictionaryKey? in
-                expr.stringContent.map {
+                if let identifier = expr.as(DeclReferenceExprSyntax.self),
+                   computedPropertyNames.contains(identifier.baseName.text) {
+                    return nil
+                }
+
+                return expr.stringContent.map {
                     DictionaryKey(position: expr.positionAfterSkippingLeadingTrivia, content: $0)
                 }
             }

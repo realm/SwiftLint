@@ -7,9 +7,12 @@ import SwiftSyntax
 struct LineLengthRule: Rule {
     var configuration = LineLengthConfiguration()
 
+    private static let longMacroLine =
+        "public macro obfuscate(_ value: String) -> String = " +
+        "#externalMacro(module: \"ObfuscatedStringMacros\", type: \"ObfuscationMacro\")"
     private static let longMacroDeclaration = """
         @freestanding(expression)
-        public macro obfuscate(_ value: String) -> String = #externalMacro(module: "ObfuscatedStringMacros", type: "ObfuscationMacro")
+        \(longMacroLine)
         """
 
     static let description = RuleDescription(

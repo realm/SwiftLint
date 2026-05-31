@@ -60,6 +60,23 @@ struct VoidFunctionInTernaryConditionRule: Rule {
                 index == 0 ? defaultValue() : compute(index)
             """),
             Example("""
+            func size(isEditing: Bool, section: Int) -> CGSize {
+                switch section {
+                case 0: isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                default: .zero
+                }
+            }
+            """),
+            Example("""
+            func size(isEditing: Bool, section: Int) -> CGSize {
+                if section == 0 {
+                    isEditing ? CGSize(width: 150, height: 20) : CGSize(width: 100, height: 20)
+                } else {
+                    .zero
+                }
+            }
+            """),
+            Example("""
             var a = b ? c() : d()
             a += b ? c() : d()
             a -= b ? c() : d()
@@ -184,7 +201,35 @@ private extension CodeBlockItemSyntax {
     var isImplicitReturn: Bool {
         isClosureImplicitReturn || isFunctionImplicitReturn ||
         isVariableImplicitReturn || isSubscriptImplicitReturn ||
-        isAccessorImplicitReturn
+        isAccessorImplicitReturn || isIfExprBranchImplicitReturn || isSwitchCaseImplicitReturn
+    }
+
+    var isIfExprBranchImplicitReturn: Bool {
+        guard let itemList = parent?.as(CodeBlockItemListSyntax.self),
+              itemList.children(viewMode: .sourceAccurate).count == 1,
+              let codeBlock = itemList.parent?.as(CodeBlockSyntax.self),
+              let ifExpr = codeBlock.parent?.as(IfExprSyntax.self) else {
+            return false
+        }
+
+        if ifExpr.body == codeBlock {
+            return true
+        }
+        if case let .codeBlock(elseBody) = ifExpr.elseBody, elseBody == codeBlock {
+            return true
+        }
+        return false
+    }
+
+    var isSwitchCaseImplicitReturn: Bool {
+        guard let itemList = parent?.as(CodeBlockItemListSyntax.self),
+              itemList.children(viewMode: .sourceAccurate).count == 1,
+              let switchCase = itemList.parent?.as(SwitchCaseSyntax.self),
+              switchCase.statements == itemList,
+              switchCase.parent?.parent?.is(SwitchExprSyntax.self) == true else {
+            return false
+        }
+        return true
     }
 
     var isClosureImplicitReturn: Bool {

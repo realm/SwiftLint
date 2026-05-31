@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `empty_string` false positives when the left-hand side of `==` / `!=` is not a
+  string expression, such as Nimble `expect(value) == ""` matchers.  
+  [leno23](https://github.com/leno23)
+  [#4249](https://github.com/realm/SwiftLint/issues/4249)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

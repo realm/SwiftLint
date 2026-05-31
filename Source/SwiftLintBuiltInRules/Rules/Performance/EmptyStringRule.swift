@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-@SwiftSyntaxRule(optIn: true)
+@SwiftSyntaxRule(foldExpressions: true, optIn: true)
 struct EmptyStringRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
@@ -13,6 +13,11 @@ struct EmptyStringRule: Rule {
             Example("myString.isEmpty"),
             Example("!myString.isEmpty"),
             Example("\"\"\"\nfoo==\n\"\"\""),
+            Example("""
+                func expect<T>(_ value: T) -> T { value }
+                let outputText = 1
+                _ = expect(outputText) == ""
+                """),
         ],
         triggeringExamples: [
             Example(#"myString↓ == """#),
@@ -26,20 +31,47 @@ struct EmptyStringRule: Rule {
 
 private extension EmptyStringRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: StringLiteralExprSyntax) {
-            guard
-                // Empty string literal: `""`, `#""#`, etc.
-                node.segments.onlyElement?.trimmedLength == .zero,
-                let previousToken = node.previousToken(viewMode: .sourceAccurate),
-                // On the rhs of an `==` or `!=` operator
-                previousToken.tokenKind.isEqualityComparison,
-                let secondPreviousToken = previousToken.previousToken(viewMode: .sourceAccurate)
-            else {
+        override func visitPost(_ node: InfixOperatorExprSyntax) {
+            guard node.operator.isEqualityComparisonOperator,
+                  let rhs = node.rightOperand.as(StringLiteralExprSyntax.self),
+                  rhs.isEmptyString,
+                  node.leftOperand.isPlausibleStringEmptyCheckOperand else {
                 return
             }
 
-            let violationPosition = secondPreviousToken.endPositionBeforeTrailingTrivia
-            violations.append(violationPosition)
+            violations.append(node.leftOperand.endPositionBeforeTrailingTrivia)
         }
+    }
+}
+
+private extension ExprSyntax {
+    var isEqualityComparisonOperator: Bool {
+        `as`(BinaryOperatorExprSyntax.self)?.operator.tokenKind.isEqualityComparison == true
+    }
+
+    var isPlausibleStringEmptyCheckOperand: Bool {
+        if `as`(FunctionCallExprSyntax.self) != nil {
+            return false
+        }
+
+        if `as`(InfixOperatorExprSyntax.self) != nil {
+            return false
+        }
+
+        if `as`(TupleExprSyntax.self) != nil {
+            return false
+        }
+
+        if `as`(SequenceExprSyntax.self) != nil {
+            return false
+        }
+
+        if `as`(TernaryExprSyntax.self) != nil {
+            return false
+        }
+
+        return `as`(DeclReferenceExprSyntax.self) != nil
+            || `as`(MemberAccessExprSyntax.self) != nil
+            || `as`(OptionalChainingExprSyntax.self) != nil
     }
 }

@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Treat macro declarations like function declarations for `line_length` when
+  `ignores_function_declarations` is enabled.  
+  [leno23](https://github.com/leno23)
+  [#5648](https://github.com/realm/SwiftLint/issues/5648)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  
@@ -58,20 +63,6 @@
   rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)
   [#3993](https://github.com/realm/SwiftLint/issues/3993)
-* Add `excluded_members` configuration to `empty_enum_arguments` to skip members
-  that require empty parentheses (e.g. HealthKit static functions).  
-  [leno23](https://github.com/leno23)
-  [#5269](https://github.com/realm/SwiftLint/issues/5269)
-
-* Fix `unused_enumerated` false positives when offset and element are used in
-  separate chained trailing closures after `.enumerated()`.  
-  [leno23](https://github.com/leno23)
-  [#5600](https://github.com/realm/SwiftLint/issues/5600)
-
-* Treat macro declarations like function declarations for `line_length` when
-  `ignores_function_declarations` is enabled.  
-  [leno23](https://github.com/leno23)
-  [#5648](https://github.com/realm/SwiftLint/issues/5648)
 
 * Print fixed code read from stdin to stdout.  
   [SimplyDanny](https://github.com/SimplyDanny)

@@ -391,6 +391,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
         }
     }
 
+    // swiftlint:disable:next function_body_length
     func testIsolationModifierOrder() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [

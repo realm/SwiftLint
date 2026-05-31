@@ -80,27 +80,6 @@ struct UnusedDeclarationRuleExamples {
             S().f()
         """),
         Example("""
-        import UIKit
-        import WebKit
-
-        class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-            var window: UIWindow?
-        }
-
-        class ParentWebViewCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {}
-
-        class WebViewCoordinator: ParentWebViewCoordinator {
-            func webView(
-                _ webView: WKWebView,
-                runJavaScriptAlertPanelWithMessage message: String,
-                initiatedByFrame frame: WKFrameInfo,
-                completionHandler: @escaping () -> Void
-            ) {
-                completionHandler()
-            }
-        }
-        """),
-        Example("""
         enum Component {
           case string(StaticString)
           indirect case array([Component])
@@ -255,6 +234,27 @@ struct UnusedDeclarationRuleExamples {
         final class AppDelegate: NSObject, NSApplicationDelegate {
             func applicationWillFinishLaunching(_ notification: Notification) {}
             func applicationWillBecomeActive(_ notification: Notification) {}
+        }
+        """),
+        Example("""
+        import UIKit
+        import WebKit
+
+        class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+            var window: UIWindow?
+        }
+
+        class ParentWebViewCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {}
+
+        class WebViewCoordinator: ParentWebViewCoordinator {
+            func webView(
+                _ webView: WKWebView,
+                runJavaScriptAlertPanelWithMessage message: String,
+                initiatedByFrame frame: WKFrameInfo,
+                completionHandler: @escaping () -> Void
+            ) {
+                completionHandler()
+            }
         }
         """),
         Example("""

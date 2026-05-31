@@ -67,6 +67,13 @@ struct UnusedParameterRule: Rule {
             Example("""
             func f(_a: Int) {}
             """, configuration: allowUnderscorePrefixedNames),
+            Example("""
+            func f(_ history: [Item]) {
+                List($history) { $historyItem in
+                    Foo(url: historyItem.url)
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -184,8 +191,14 @@ private extension UnusedParameterRule {
         // MARK: Reference collection
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
-            if node.keyPathInParent != \MemberAccessExprSyntax.declName {
-                addReference(node.baseName.text)
+            guard node.keyPathInParent != \MemberAccessExprSyntax.declName else {
+                return
+            }
+
+            let name = node.baseName.text
+            addReference(name)
+            if name.hasPrefix("$"), name.count > 1 {
+                addReference(String(name.dropFirst()))
             }
         }
 

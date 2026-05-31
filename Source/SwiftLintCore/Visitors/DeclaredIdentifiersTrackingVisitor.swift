@@ -41,9 +41,27 @@ public enum IdentifierDeclaration: Hashable {
         }
         if disregardBackticks {
             let backticks = CharacterSet(charactersIn: "`")
-            return id.trimmingCharacters(in: backticks) == name.trimmingCharacters(in: backticks)
+            let normalizedId = id.trimmingCharacters(in: backticks)
+            let normalizedName = name.trimmingCharacters(in: backticks)
+            if normalizedId == normalizedName {
+                return true
+            }
+            if case .parameter = self,
+               normalizedName.hasPrefix("$"),
+               normalizedId == String(normalizedName.dropFirst()) {
+                return true
+            }
+            return false
         }
-        return id == name
+        if id == name {
+            return true
+        }
+        if case .parameter = self,
+           name.hasPrefix("$"),
+           id == String(name.dropFirst()) {
+            return true
+        }
+        return false
     }
 }
 

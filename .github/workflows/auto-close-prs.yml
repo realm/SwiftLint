@@ -41,10 +41,9 @@ jobs:
               "",
               "I'm automatically closing it because there are earlier PRs from your account with open review discussions that haven't received a reply yet.",
               "",
-              "There is nothing wrong with using tools to help — but open source thrives on collaboration and engagement.",
-              "Please read and respond to reviewer feedback rather than opening new PRs without addressing earlier discussions.",
+              "There is nothing wrong with using AI tools to help — but open source thrives on collaboration and engagement. Please read and respond to reviewer feedback rather than opening new PRs without addressing earlier discussions.",
               "",
-              "Once you've addressed the open threads in your previous PRs, feel free to open a new one.",
+              "Once you've addressed the open threads in your previous PRs, feel free to reopen this one.",
             ].join("\n")
 
             await github.rest.issues.createComment({

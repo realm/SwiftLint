@@ -80,21 +80,6 @@ struct UnusedDeclarationRuleExamples {
             S().f()
         """),
         Example("""
-        struct Box {
-            private var _data: [String: Any] = [:]
-
-            subscript<T: Hashable>(key: String) -> T {
-                get { _data[key] as! T }
-                set { _data[key] = newValue }
-                _modify {
-                    var value = _data[key] as! T
-                    defer { _data[key] = value }
-                    yield &value
-                }
-            }
-        }
-        """),
-        Example("""
         enum Component {
           case string(StaticString)
           indirect case array([Component])

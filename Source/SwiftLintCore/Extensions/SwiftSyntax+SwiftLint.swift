@@ -235,12 +235,34 @@ public extension FunctionDeclSyntax {
     /// How many times this function calls the `super` implementation in its body.
     /// Returns 0 if the function has no body.
     func numberOfCallsToSuper() -> Int {
+        superCallExpressions().count
+    }
+
+    /// All `super.<name>(...)` call expressions in the function body.
+    func superCallExpressions() -> [FunctionCallExprSyntax] {
         guard let body else {
-            return 0
+            return []
         }
 
         return SuperCallVisitor(expectedFunctionName: name.text)
-            .walk(tree: body, handler: \.superCallsCount)
+            .walk(tree: body, handler: \.superCalls)
+    }
+
+    /// True when every `super` call sits in mutually exclusive control-flow branches (e.g. if/else).
+    func superCallsAreOnlyInMutuallyExclusiveBranches() -> Bool {
+        let calls = superCallExpressions()
+        guard calls.count > 1 else {
+            return true
+        }
+
+        for index in calls.indices {
+            for otherIndex in calls.index(after: index)..<calls.count {
+                if !calls[index].isInMutuallyExclusiveBranch(comparedTo: calls[otherIndex]) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 }
 
@@ -406,7 +428,7 @@ private extension String {
 
 private class SuperCallVisitor: SyntaxVisitor {
     private let expectedFunctionName: String
-    private(set) var superCallsCount = 0
+    private(set) var superCalls = [FunctionCallExprSyntax]()
 
     init(expectedFunctionName: String) {
         self.expectedFunctionName = expectedFunctionName
@@ -420,6 +442,70 @@ private class SuperCallVisitor: SyntaxVisitor {
             return
         }
 
-        superCallsCount += 1
+        superCalls.append(node)
+    }
+}
+
+private enum SuperCallControlFlowMarker: Equatable {
+    case ifThen(SyntaxIdentifier)
+    case ifElse(SyntaxIdentifier)
+    case switchCase(SyntaxIdentifier)
+
+    func isMutuallyExclusive(with other: SuperCallControlFlowMarker) -> Bool {
+        switch (self, other) {
+        case let (.ifThen(id), .ifElse(otherId)), let (.ifElse(id), .ifThen(otherId)):
+            return id == otherId
+        case let (.switchCase(id), .switchCase(otherId)):
+            return id != otherId
+        default:
+            return false
+        }
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    func isInMutuallyExclusiveBranch(comparedTo other: FunctionCallExprSyntax) -> Bool {
+        let path = controlFlowPath()
+        let otherPath = other.controlFlowPath()
+        let sharedLength = min(path.count, otherPath.count)
+
+        for index in 0..<sharedLength where path[index] != otherPath[index] {
+            return path[index].isMutuallyExclusive(with: otherPath[index])
+        }
+        return false
+    }
+
+    func controlFlowPath() -> [SuperCallControlFlowMarker] {
+        var markers = [SuperCallControlFlowMarker]()
+        var current = Syntax(self).parent
+
+        while let parent = current {
+            if let ifExpr = parent.as(IfExprSyntax.self) {
+                let nodeSyntax = Syntax(self)
+                if ifExpr.body.containsDescendant(nodeSyntax) {
+                    markers.append(.ifThen(ifExpr.id))
+                } else if let elseBody = ifExpr.elseBody, elseBody.containsDescendant(nodeSyntax) {
+                    markers.append(.ifElse(ifExpr.id))
+                }
+            } else if let switchCase = parent.as(SwitchCaseSyntax.self) {
+                markers.append(.switchCase(switchCase.id))
+            }
+            current = parent.parent
+        }
+
+        return markers.reversed()
+    }
+}
+
+private extension SyntaxProtocol {
+    func containsDescendant(_ descendant: Syntax) -> Bool {
+        var current: Syntax? = descendant
+        while let node = current {
+            if node.id == id {
+                return true
+            }
+            current = node.parent
+        }
+        return false
     }
 }

@@ -36,6 +36,10 @@
 
 ### Bug Fixes
 
+* Fix `overridden_super_call` false positives when `super` is called once per mutually exclusive branch.  
+  [leno23](https://github.com/leno23)
+  [#5655](https://github.com/realm/SwiftLint/issues/5655)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

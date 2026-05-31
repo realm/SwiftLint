@@ -47,6 +47,21 @@ struct OverriddenSuperCallRule: Rule {
                 }
             }
             """),
+            Example("""
+            class VC: UIViewController {
+                override func viewWillAppear(_ animated: Bool) {
+                    if animated {
+                        UIView.transition(with: view, duration: 0.25, options: .curveEaseInOut, animations: {
+                            self.view.transform = .identity
+                        }, completion: { _ in
+                            super.viewWillAppear(true)
+                        })
+                    } else {
+                        super.viewWillAppear(false)
+                    }
+                }
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -95,7 +110,7 @@ private extension OverriddenSuperCallRule {
                     position: body.leftBrace.endPositionBeforeTrailingTrivia,
                     reason: "Method '\(name)' should call to super function"
                 ))
-            } else if superCallsCount > 1 {
+            } else if superCallsCount > 1, !node.superCallsAreOnlyInMutuallyExclusiveBranches() {
                 violations.append(ReasonedRuleViolation(
                     position: body.leftBrace.endPositionBeforeTrailingTrivia,
                     reason: "Method '\(name)' should call to super only once"

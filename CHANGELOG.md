@@ -36,6 +36,11 @@
 
 ### Bug Fixes
 
+* Fix `redundant_void_return` autocorrect breaking closures that use an explicit `Void`
+  return type to preserve a `() -> Void` type when the body returns a non-Void value.  
+  [leno23](https://github.com/leno23)
+  [#5609](https://github.com/realm/SwiftLint/issues/5609)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

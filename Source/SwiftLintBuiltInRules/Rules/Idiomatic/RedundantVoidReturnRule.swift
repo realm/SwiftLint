@@ -33,6 +33,15 @@ struct RedundantVoidReturnRule: Rule {
                 print(arg)
             }
             """, configuration: ["include_closures": false]),
+            Example("""
+            func takesClosure(_ closure: () -> Void) {}
+
+            func returnsInt() -> Int { 42 }
+
+            let testClosure = { () -> Void in returnsInt() }
+
+            takesClosure(testClosure)
+            """),
         ],
         triggeringExamples: [
             Example("func foo()↓ -> Void {}"),
@@ -77,6 +86,10 @@ private extension RedundantVoidReturnRule {
                 return
             }
 
+            if node.shouldSkipClosureRedundantVoidRemoval {
+                return
+            }
+
             if node.containsRedundantVoidViolation,
                let tokenBeforeOutput = node.previousToken(viewMode: .sourceAccurate) {
                 violations.append(tokenBeforeOutput.endPositionBeforeTrailingTrivia)
@@ -86,15 +99,10 @@ private extension RedundantVoidReturnRule {
 
     final class Rewriter: ViolationsSyntaxRewriter<ConfigurationType> {
         override func visit(_ node: ClosureSignatureSyntax) -> ClosureSignatureSyntax {
-            guard configuration.includeClosures,
-                  let output = node.returnClause,
-                  output.previousToken(viewMode: .sourceAccurate) != nil,
-                  output.containsRedundantVoidViolation
-            else {
-                return super.visit(node)
-            }
-            numberOfCorrections += 1
-            return super.visit(node.with(\.returnClause, nil).removingTrailingSpaceIfNeeded())
+            // Closures may use an explicit `Void` return to keep a `() -> Void` type when the body
+            // returns a non-Void value (e.g. `{ () -> Void in returnsInt() }`). Removing the
+            // annotation changes the inferred closure type and breaks call sites.
+            super.visit(node)
         }
 
         override func visit(_ node: FunctionSignatureSyntax) -> FunctionSignatureSyntax {
@@ -111,6 +119,27 @@ private extension RedundantVoidReturnRule {
 }
 
 private extension ReturnClauseSyntax {
+    var shouldSkipClosureRedundantVoidRemoval: Bool {
+        guard parent?.is(ClosureSignatureSyntax.self) == true,
+              let closure = Syntax(self).enclosingClosure() else {
+            return false
+        }
+
+        if closure.statements.contains(where: \.containsReturnStatement) {
+            return true
+        }
+
+        guard let expression = closure.singleExpressionBody else {
+            return false
+        }
+
+        if let call = expression.as(FunctionCallExprSyntax.self) {
+            return !call.isKnownVoidProducingCall
+        }
+
+        return true
+    }
+
     var containsRedundantVoidViolation: Bool {
         if parent?.is(FunctionTypeSyntax.self) == true {
             return false
@@ -122,6 +151,60 @@ private extension ReturnClauseSyntax {
             return tupleReturnType.elements.isEmpty
         }
         return false
+    }
+}
+
+private extension CodeBlockItemSyntax {
+    var containsReturnStatement: Bool {
+        item.is(ReturnStmtSyntax.self)
+    }
+}
+
+private extension ClosureExprSyntax {
+    var singleExpressionBody: ExprSyntax? {
+        guard statements.count == 1,
+              let statement = statements.onlyElement,
+              case let .expr(expression) = statement.item else {
+            return nil
+        }
+
+        return expression
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    var isKnownVoidProducingCall: Bool {
+        let name = calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text
+            ?? calledExpression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
+
+        guard let name else {
+            return false
+        }
+
+        return Self.knownVoidProducingFunctions.contains(name)
+    }
+
+    private static let knownVoidProducingFunctions: Set<String> = [
+        "print",
+        "debugPrint",
+        "dump",
+        "fatalError",
+        "preconditionFailure",
+        "assertionFailure",
+        "withExtendedLifetime",
+    ]
+}
+
+private extension Syntax {
+    func enclosingClosure() -> ClosureExprSyntax? {
+        var syntax: Syntax? = self
+        while let current = syntax {
+            if let closure = current.as(ClosureExprSyntax.self) {
+                return closure
+            }
+            syntax = current.parent
+        }
+        return nil
     }
 }
 

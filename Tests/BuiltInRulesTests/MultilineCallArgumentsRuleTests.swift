@@ -242,7 +242,9 @@ extension MultilineCallArgumentsRuleTests {
         XCTAssertThrowsError(try MultilineCallArgumentsRule(
             configuration: ["max_number_of_single_line_parameters": -1]))
         XCTAssertThrowsError(try MultilineCallArgumentsRule(configuration: [
-            "allows_single_line": false, "max_number_of_single_line_parameters": 2]))
+            "allows_single_line": false,
+            "max_number_of_single_line_parameters": 2,
+        ]))
     }
     func testConfiguration_indentationTab_isValid() throws {
         let rule = try MultilineCallArgumentsRule(configuration: ["indentation": "tab"])

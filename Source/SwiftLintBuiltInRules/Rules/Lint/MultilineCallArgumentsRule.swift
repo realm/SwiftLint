@@ -36,9 +36,9 @@ struct MultilineCallArgumentsRule: Rule {
         Keeping each argument on its own line in multi-line calls improves readability and \
         reduces merge conflicts. Requiring a newline after commas makes the call's structure \
         immediately visible and avoids ambiguous layouts where arguments appear to share a line.
-        
+
         ## Configuration
-        
+
         - `allows_single_line`: Allow calls with multiple arguments on a single line \
         (default: `true`)
         - `max_number_of_single_line_parameters`: Max arguments allowed on a single line \
@@ -46,9 +46,9 @@ struct MultilineCallArgumentsRule: Rule {
         - `indentation`: Indentation width for corrected lines \
         (integer for spaces, e.g. `4`, `2`, `8`; or the string `"tab"`); \
         `0` and negative values are invalid and will cause a configuration error
-        
+
         ## Behavior details
-        
+
         - When `allows_single_line: false`, any call with 2+ arguments on one line triggers \
         a violation
         - Setting `allows_single_line: false` with `max_number_of_single_line_parameters > 1` \
@@ -57,9 +57,9 @@ struct MultilineCallArgumentsRule: Rule {
         - `max_number_of_single_line_parameters` only affects single-line calls; \
         in multi-line calls each argument must always start on its own line
         - Both labeled and unlabeled (positional) arguments are subject to the same rules
-        
+
         ## Auto-correction
-        
+
         - Single-line calls are reformatted to place each argument on its own line with proper \
         indentation; the closing parenthesis moves to its own line at the call's base indent
         - Indentation is calculated relative to the call's start line; exactly one level of \
@@ -73,9 +73,9 @@ struct MultilineCallArgumentsRule: Rule {
         - Auto-correction does not reformat the internal content of arguments (e.g., closures, \
         array literals); the closing delimiter of such expressions may end up on its own line \
         after the split, requiring a subsequent manual adjustment
-        
+
         ## Skipped cases
-        
+
         - When an argument's expression ends with `}` or `]` (e.g., a closure or array literal), \
         the comma-newline check is skipped — the argument is considered properly terminated
         - Pattern-matching positions (`if case let`, `switch case`, `for case let`, `catch`) \

@@ -643,12 +643,9 @@ private func verifyExamples(triggers: [Example],
 }
 
 // file and line parameters are first so we can use trailing closure syntax with the closure
-public func checkError<T: Error & Equatable>(fileID: String = #fileID,
-                                             file: StaticString = #filePath,
-                                             line: UInt = #line,
+public func checkError<T: Error & Equatable>(sourceLocation: Testing.SourceLocation = #_sourceLocation,
                                              _ error: T,
                                              closure: () throws -> Void) {
-    let sourceLocation = SourceLocation(fileID: fileID, filePath: String(describing: file), line: Int(line), column: 1)
     do {
         try closure()
         Testing.Issue.record("No error caught", sourceLocation: sourceLocation)

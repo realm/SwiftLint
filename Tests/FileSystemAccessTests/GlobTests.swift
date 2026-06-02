@@ -105,7 +105,7 @@ struct GlobTests {
 
     @Test
     func createFilenameMatchers() {
-        func assertGlobMatch(pattern: String, filename: String, line: Int = #line) {
+        func assertGlobMatch(pattern: String, filename: String, sourceLocation: SourceLocation = #_sourceLocation) {
             #if os(Windows)
             guard let driveLetter = ProcessInfo.processInfo.environment["SystemDrive"] else {
                 return
@@ -119,7 +119,7 @@ struct GlobTests {
             let matchers = Glob.createFilenameMatchers(pattern: resolvedPattern)
             #expect(
                 matchers.anyMatch(filename: resolvedFilename),
-                sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: line, column: 1)
+                sourceLocation: sourceLocation
             )
         }
         assertGlobMatch(pattern: "/a/b/c/*.swift", filename: "/a/b/c/d.swift")
@@ -142,13 +142,13 @@ struct GlobTests {
     }
 
     // swiftlint:disable:next identifier_name
-    private func AssertEqualInAnyOrder(_ lhs: [URL], _ rhs: [URL], line: Int = #line) {
+    private func AssertEqualInAnyOrder(_ lhs: [URL], _ rhs: [URL], sourceLocation: SourceLocation = #_sourceLocation) {
         func compare(lhs: URL, rhs: URL) -> Bool {
             lhs.path < rhs.path
         }
         #expect(
             lhs.sorted(by: compare) == rhs.sorted(by: compare),
-            sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: line, column: 1)
+            sourceLocation: sourceLocation
         )
     }
 }

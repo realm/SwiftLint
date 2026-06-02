@@ -18,8 +18,7 @@ struct FunctionNameWhitespaceRuleTests {
         _ source: String,
         configuration: [String: String]? = nil,
         expected: String,
-        file: String = #filePath,
-        line: UInt = #line
+        sourceLocation: SourceLocation = #_sourceLocation
     ) {
         let example = configuration == nil
             ? Example(source)
@@ -28,7 +27,7 @@ struct FunctionNameWhitespaceRuleTests {
         let violations = ruleViolations(example)
         #expect(
             violations.first?.reason == expected,
-            sourceLocation: SourceLocation(fileID: #fileID, filePath: file, line: Int(line), column: 1)
+            sourceLocation: sourceLocation
         )
     }
 

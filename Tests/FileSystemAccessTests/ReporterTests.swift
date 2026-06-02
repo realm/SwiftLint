@@ -251,8 +251,7 @@ struct ReporterTests {
         referenceFile: String,
         reporterType: any Reporter.Type,
         stringConverter: (String) throws -> some Equatable = \.self,
-        file: StaticString = #filePath,
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) throws {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -286,6 +285,7 @@ struct ReporterTests {
         }
         #expect(
             convertedReference == convertedReporterOutput,
-            sourceLocation: SourceLocation(fileID: #fileID, filePath: file.description, line: Int(line), column: 1))
+            sourceLocation: sourceLocation
+        )
     }
 }

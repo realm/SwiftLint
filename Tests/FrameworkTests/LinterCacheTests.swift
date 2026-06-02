@@ -79,52 +79,48 @@ final class LinterCacheTests {
     private func cacheAndValidate(violations: [StyleViolation],
                                   forFile: URL,
                                   configuration: Configuration,
-                                  file: String = #filePath,
-                                  line: UInt = #line) {
+                                  sourceLocation: SourceLocation = #_sourceLocation) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
         cache = cache.flushed()
         #expect(
             cache.violations(forFile: forFile, configuration: configuration)! == violations,
-            sourceLocation: SourceLocation(fileID: #fileID, filePath: file, line: Int(line), column: 1)
+            sourceLocation: sourceLocation
         )
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
-                                                      file: String = #filePath,
-                                                      line: UInt = #line) {
+                                                      sourceLocation: SourceLocation = #_sourceLocation) {
         let (file1, file2) = ("file1.swift".url(), "file2.swift".url())
         // swiftlint:disable:next force_cast
         let fileManager = cache.fileManager as! TestFileManager
         fileManager.stubbedModificationDateByPath = [file1: Date(), file2: Date()]
 
-        cacheAndValidate(violations: [], forFile: file1, configuration: configuration, file: file, line: line)
-        cacheAndValidate(violations: [], forFile: file2, configuration: configuration, file: file, line: line)
+        cacheAndValidate(violations: [], forFile: file1, configuration: configuration, sourceLocation: sourceLocation)
+        cacheAndValidate(violations: [], forFile: file2, configuration: configuration, sourceLocation: sourceLocation)
     }
 
     private func validateNewConfigDoesntHitCache(dict: [String: Any],
                                                  initialConfig: Configuration,
-                                                 file: String = #filePath,
-                                                 line: UInt = #line) throws {
-        let newConfig = try Configuration(dict: dict)
+                                                 sourceLocation: SourceLocation = #_sourceLocation) throws {
         let (file1, file2) = ("file1.swift".url(), "file2.swift".url())
-        let location = SourceLocation(fileID: #fileID, filePath: file, line: Int(line), column: 1)
+        let newConfig = try Configuration(dict: dict)
 
         #expect(
             cache.violations(forFile: file1, configuration: newConfig) == nil,
-            sourceLocation: location
+            sourceLocation: sourceLocation
         )
         #expect(
             cache.violations(forFile: file2, configuration: newConfig) == nil,
-            sourceLocation: location
+            sourceLocation: sourceLocation
         )
 
         #expect(
             cache.violations(forFile: file1, configuration: initialConfig)!.isEmpty,
-            sourceLocation: location
+            sourceLocation: sourceLocation
         )
         #expect(
             cache.violations(forFile: file2, configuration: initialConfig)!.isEmpty,
-            sourceLocation: location
+            sourceLocation: sourceLocation
         )
     }
 

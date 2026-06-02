@@ -328,8 +328,7 @@ struct IndentationWidthRuleTests {
         includeCompilerDirectives: Bool = true,
         includeMultilineStrings: Bool = true,
         includeMultilineConditions: Bool = false,
-        file _: StaticString = #filePath,
-        line _: UInt = #line
+        sourceLocation: SourceLocation = #_sourceLocation
     ) -> Int {
         var configDict: [String: Any] = [:]
         if let indentationWidth {
@@ -341,7 +340,7 @@ struct IndentationWidthRuleTests {
         configDict["include_multiline_conditions"] = includeMultilineConditions
 
         guard let config = makeConfig(configDict, IndentationWidthRule.identifier) else {
-            Testing.Issue.record("Unable to create rule configuration.")
+            Testing.Issue.record("Unable to create rule configuration.", sourceLocation: sourceLocation)
             return 0
         }
 
@@ -357,7 +356,8 @@ struct IndentationWidthRuleTests {
         includeMultilineStrings: Bool = true,
         includeMultilineConditions: Bool = false,
         file: StaticString = #filePath,
-        line: UInt = #line
+        line: UInt = #line,
+        sourceLocation: SourceLocation = #_sourceLocation
     ) {
         #expect(
             countViolations(
@@ -367,15 +367,9 @@ struct IndentationWidthRuleTests {
                 includeCompilerDirectives: includeCompilerDirectives,
                 includeMultilineStrings: includeMultilineStrings,
                 includeMultilineConditions: includeMultilineConditions,
-                file: file,
-                line: line
+                sourceLocation: sourceLocation
             ) == expectedCount,
-            sourceLocation: SourceLocation(
-                fileID: #fileID,
-                filePath: String(describing: file),
-                line: Int(line),
-                column: 1
-            )
+            sourceLocation: sourceLocation
         )
     }
 

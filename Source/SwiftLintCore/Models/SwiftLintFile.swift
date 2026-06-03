@@ -14,6 +14,9 @@ public final class SwiftLintFile: Sendable {
     /// A file is virtual if it is not backed by a filesystem path.
     public let isVirtual: Bool
 
+    /// A cache for storing expensive computations related to this file.
+    let fileCache = FileCache()
+
     /// Creates a `SwiftLintFile` with a SourceKitten `File`.
     ///
     /// - parameter file: A file from SourceKitten.

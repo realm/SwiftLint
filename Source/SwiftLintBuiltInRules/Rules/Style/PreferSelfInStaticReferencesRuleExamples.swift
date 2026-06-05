@@ -173,6 +173,28 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func g() { _ = Outer.Inner<Int>.i }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is any A }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            protocol B {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is any A & B }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class Outer {
+                class Inner {}
+            }
+            protocol B {}
+            extension Outer.Inner {
+                func f(_ x: Any) -> Bool { x is Outer.Inner & B }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [

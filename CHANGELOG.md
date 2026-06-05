@@ -42,6 +42,13 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6674](https://github.com/realm/SwiftLint/issues/6674)
 
+* Don't rewrite a type reference to `Self` in `prefer_self_in_static_references`
+  when it appears in a protocol composition (such as `any A & B`) or as the
+  constraint of an existential or opaque type (such as `any A` or `some A`),
+  since the named type is not interchangeable with `Self` in those positions.  
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6748](https://github.com/realm/SwiftLint/issues/6748)
+
 ## 0.63.3: High-Speed Extraction
 
 ### Breaking

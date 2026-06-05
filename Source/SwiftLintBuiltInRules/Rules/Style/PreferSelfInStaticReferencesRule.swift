@@ -255,6 +255,19 @@ private extension PreferSelfInStaticReferencesRule {
             if parent.is(ExtensionDeclSyntax.self) {
                 return
             }
+            // Don't flag a type that is one element of a protocol composition
+            // (e.g. `A` in `any A & B`). `Self` is not interchangeable with the
+            // named type inside a composition, so rewriting it would change the
+            // composition's meaning.
+            if parent.is(CompositionTypeElementSyntax.self) {
+                return
+            }
+            // Don't flag the constraint of an existential or opaque type (e.g.
+            // `A` in `any A` or `some A`); `any Self`/`some Self` is not valid in
+            // place of the named protocol.
+            if parent.is(SomeOrAnyTypeSyntax.self) {
+                return
+            }
             if node.genericArguments == nil {
                 // Type is specialized.
                 addViolation(on: node.name)
@@ -273,6 +286,17 @@ private extension PreferSelfInStaticReferencesRule {
             // argument is left alone, since `Self` may not be available in that
             // position (e.g. an extension's own inheritance clause).
             if node.parent?.is(GenericArgumentSyntax.self) == true {
+                return
+            }
+            // Likewise, a type that is one element of a composition (e.g.
+            // `Outer.Inner` in `Outer.Inner & B`) must not be rewritten to
+            // `Self`, since that changes the composition's meaning.
+            if node.parent?.is(CompositionTypeElementSyntax.self) == true {
+                return
+            }
+            // The same holds for the constraint of an existential or opaque type
+            // (e.g. `any Outer.Inner`): `any Self`/`some Self` is not valid.
+            if node.parent?.is(SomeOrAnyTypeSyntax.self) == true {
                 return
             }
             if let tokens = memberTypeChain(node), tokens.map(\.text) == components {

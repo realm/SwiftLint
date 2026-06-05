@@ -21,7 +21,15 @@ private typealias SourceKitResponse = [String: any SourceKitRepresentable]
 /// Wraps a cached value, distinguishing "not yet computed" from "computed (possibly nil)".
 private enum Cached<T> {
     case notComputed
+    case computing(DispatchGroup)
     case computed(T)
+}
+
+private enum CacheLookup<T> {
+    case hit(T)
+    case miss
+    case wait(DispatchGroup)
+    case compute(DispatchGroup)
 }
 
 /// Per-file cache storing all derived artifacts. One instance lives on each `SwiftLintFile`.
@@ -29,8 +37,8 @@ private enum Cached<T> {
 /// **Locking strategy**: a concurrent `DispatchQueue` guards all slots.
 /// Reads use a plain `sync` (concurrent); writes use `sync(flags: .barrier)` (exclusive).
 /// Each accessor computes its value *outside* the lock so that factories may safely access
-/// other cached properties without risk of deadlock. A double-checked store
-/// prevents duplicate work when two threads race on a cold slot.
+/// other cached properties without risk of deadlock. Cold slots are marked as computing
+/// under a barrier so concurrent first readers wait for the same result.
 final class FileCache: @unchecked Sendable {
     fileprivate let queue = DispatchQueue(label: "io.realm.swiftlint.fileCache", attributes: .concurrent)
 
@@ -55,14 +63,60 @@ final class FileCache: @unchecked Sendable {
     /// TODO: [06/05/2028] We can convert the explicit getters and setters to a keypath-based subscript once the Swift
     /// compiler bug https://github.com/swiftlang/swift/issues/69386 is resolved.
     fileprivate func getOrCompute<T>(factory: () -> T, get: () -> Cached<T>, set: (Cached<T>) -> Void) -> T {
-        if case .computed(let value) = queue.sync(execute: { get() }) {
-            return value
+        // swiftlint:disable:previous cyclomatic_complexity
+
+        let initialState = queue.sync { () -> CacheLookup<T> in
+            switch get() {
+            case .computed(let value):
+                return .hit(value)
+            case .computing(let group):
+                return .wait(group)
+            case .notComputed:
+                return .miss
+            }
         }
-        let value = factory()
-        return queue.sync(flags: .barrier) { () -> T in
-            if case .computed(let existing) = get() { return existing }
-            set(.computed(value))
+
+        switch initialState {
+        case .hit(let value):
             return value
+        case .wait(let group):
+            group.wait()
+            return getOrCompute(factory: factory, get: get, set: set)
+        case .miss, .compute:
+            break
+        }
+
+        let lookup = queue.sync(flags: .barrier) { () -> CacheLookup<T> in
+            switch get() {
+            case .computed(let value):
+                return .hit(value)
+            case .computing(let group):
+                return .wait(group)
+            case .notComputed:
+                let group = DispatchGroup()
+                group.enter()
+                set(.computing(group))
+                return .compute(group)
+            }
+        }
+
+        switch lookup {
+        case .hit(let value):
+            return value
+        case .wait(let group):
+            group.wait()
+            return getOrCompute(factory: factory, get: get, set: set)
+        case .compute(let group):
+            let value = factory()
+            queue.sync(flags: .barrier) {
+                defer { group.leave() }
+                if case .computing(let currentGroup) = get(), currentGroup === group {
+                    set(.computed(value))
+                }
+            }
+            return value
+        case .miss:
+            queuedFatalError("Impossible state: missed then compute")
         }
     }
 

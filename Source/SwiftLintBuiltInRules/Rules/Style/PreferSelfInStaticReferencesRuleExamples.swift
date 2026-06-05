@@ -1,5 +1,6 @@
 // swiftlint:disable file_length
 
+// swiftlint:disable:next type_body_length
 enum PreferSelfInStaticReferencesRuleExamples {
     static let nonTriggeringExamples = [
         Example("""

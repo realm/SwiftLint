@@ -1,5 +1,6 @@
 // swiftlint:disable file_length
 
+// swiftlint:disable:next type_body_length
 enum PreferSelfInStaticReferencesRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -173,6 +174,34 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func g() { _ = Outer.Inner<Int>.i }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is any A }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A.Protocol }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            protocol B {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is any A & B }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class Outer {
+                class Inner {}
+            }
+            protocol B {}
+            extension Outer.Inner {
+                func f(_ x: Any) -> Bool { x is Outer.Inner & B }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -326,6 +355,12 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f() -> Int { ↓Outer.Middle.Inner.i }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is ↓A.Type }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let corrections = [
@@ -400,6 +435,17 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 extension Outer.Inner {
                     func f() -> Int { Self.i }
+                }
+                """),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is ↓A.Type }
+            }
+            """): Example("""
+                protocol A {}
+                extension A {
+                    func f(_ x: Any) -> Bool { x is Self.Type }
                 }
                 """),
     ]

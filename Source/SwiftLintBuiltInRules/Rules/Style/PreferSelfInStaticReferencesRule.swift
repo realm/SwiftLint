@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
@@ -222,6 +224,38 @@ private extension PreferSelfInStaticReferencesRule {
 
         override func visitPost(_: StructDeclSyntax) {
             parentDeclScopes.pop()
+        }
+
+        // A composition (`A & B`) must not have the enclosing type rewritten to
+        // `Self`: that changes the composition's meaning (and `Self & B` is not
+        // even valid when the enclosing type is a protocol). Skip the whole
+        // construct so neither identifier nor member-type components are flagged.
+        override func visit(_: CompositionTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        // The constraint of an existential or opaque type (`any A`, `some A`, and
+        // the composition in `any A & B`) must not be rewritten to `Self`:
+        // `any Self`/`some Self` is not valid. Skip the whole construct.
+        override func visit(_: SomeOrAnyTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        // The base of an existential metatype `P.Protocol` must not be rewritten
+        // to `Self`: `Self.Protocol` is invalid because `Self` is a concrete type.
+        // Only `.Protocol` is skipped; `.Type` metatypes stay correctable, since
+        // `Self.Type` is valid.
+        override func visit(_ node: MetatypeTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek(), node.metatypeSpecifier.tokenKind == .keyword(.Protocol) {
+                return .skipChildren
+            }
+            return .visitChildren
         }
 
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {

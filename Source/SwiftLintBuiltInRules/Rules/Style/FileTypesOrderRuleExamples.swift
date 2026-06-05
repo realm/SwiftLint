@@ -119,6 +119,20 @@ internal struct FileTypesOrderRuleExamples {
         extension Bar {
         }
         """),
+        Example(
+            """
+            #if canImport(Darwin)
+            typealias Helper = Int
+            #endif
+
+            struct Main {
+                let value: Int
+            }
+
+            extension Main {}
+            """,
+            excludeFromDocumentation: true
+        ),
         Example("""
         // Main Type
         struct ContentView: View {
@@ -180,7 +194,7 @@ internal struct FileTypesOrderRuleExamples {
         }
 
         // Extensions
-        ↓extension TestViewController: UITableViewDataSource {
+        private ↓extension TestViewController: UITableViewDataSource {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                 return 1
             }
@@ -197,7 +211,7 @@ internal struct FileTypesOrderRuleExamples {
         """),
         Example("""
         // Preview Provider
-        ↓struct ContentView_Previews: PreviewProvider {
+        public ↓struct ContentView_Previews: PreviewProvider {
             static var previews: some View { ContentView() }
         }
 
@@ -223,5 +237,19 @@ internal struct FileTypesOrderRuleExamples {
             }
         }
         """),
+        Example(
+            """
+            ↓extension Main {}
+
+            #if canImport(Darwin)
+            typealias Helper = Int
+            #endif
+
+            struct Main {
+                let value: Int
+            }
+            """,
+            excludeFromDocumentation: true
+        ),
     ]
 }

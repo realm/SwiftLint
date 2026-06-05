@@ -63,7 +63,7 @@ private extension FinalTestCaseRule {
 
 private extension ClassDeclSyntax {
     func isNonFinalTestClass(parentClasses: Set<String>) -> Bool {
-           inheritanceClause.containsInheritedType(inheritedTypes: parentClasses)
+           inheritanceClause.contains(inheritedTypes: parentClasses)
         && !modifiers.contains(keyword: .open)
         && !modifiers.contains(keyword: .final)
     }

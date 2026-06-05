@@ -226,12 +226,10 @@ private extension PreferSelfInStaticReferencesRule {
             parentDeclScopes.pop()
         }
 
-        // The surrounding type must not be rewritten to `Self` when it appears in
-        // a composition (`A & B`, `any A & B`) or as the constraint of an
-        // existential or opaque type (`any A`, `some A`): `Self` is not
-        // interchangeable with the named type in a composition, and
-        // `any Self`/`some Self` is not valid. Skip these whole type constructs
-        // so neither their identifier nor member-type components are flagged.
+        // A composition (`A & B`) must not have the enclosing type rewritten to
+        // `Self`: that changes the composition's meaning (and `Self & B` is not
+        // even valid when the enclosing type is a protocol). Skip the whole
+        // construct so neither identifier nor member-type components are flagged.
         override func visit(_: CompositionTypeSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
@@ -239,6 +237,9 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
+        // The constraint of an existential or opaque type (`any A`, `some A`, and
+        // the composition in `any A & B`) must not be rewritten to `Self`:
+        // `any Self`/`some Self` is not valid. Skip the whole construct.
         override func visit(_: SomeOrAnyTypeSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren

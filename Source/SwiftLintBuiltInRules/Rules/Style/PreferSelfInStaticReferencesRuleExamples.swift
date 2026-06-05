@@ -355,6 +355,12 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f() -> Int { ↓Outer.Middle.Inner.i }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is ↓A.Type }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let corrections = [
@@ -429,6 +435,17 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 extension Outer.Inner {
                     func f() -> Int { Self.i }
+                }
+                """),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is ↓A.Type }
+            }
+            """): Example("""
+                protocol A {}
+                extension A {
+                    func f(_ x: Any) -> Bool { x is Self.Type }
                 }
                 """),
     ]

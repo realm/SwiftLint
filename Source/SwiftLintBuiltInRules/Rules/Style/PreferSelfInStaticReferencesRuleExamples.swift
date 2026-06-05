@@ -182,6 +182,12 @@ enum PreferSelfInStaticReferencesRuleExamples {
             """, excludeFromDocumentation: true),
         Example("""
             protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A.Protocol }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
             protocol B {}
             extension A {
                 func f(_ x: Any) -> Bool { x is any A & B }

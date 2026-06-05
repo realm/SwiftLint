@@ -43,9 +43,10 @@
   [#6674](https://github.com/realm/SwiftLint/issues/6674)
 
 * Don't rewrite a type reference to `Self` in `prefer_self_in_static_references`
-  when it appears in a protocol composition (such as `any A & B`) or as the
-  constraint of an existential or opaque type (such as `any A` or `some A`),
-  since the named type is not interchangeable with `Self` in those positions.  
+  when it appears in a protocol composition (such as `any A & B`), as the
+  constraint of an existential or opaque type (such as `any A` or `some A`), or
+  as the base of an existential metatype (such as `A.Protocol`), since the named
+  type is not interchangeable with `Self` in those positions.  
   [Brett-Best](https://github.com/Brett-Best)
   [#6748](https://github.com/realm/SwiftLint/issues/6748)
 

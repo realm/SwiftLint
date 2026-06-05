@@ -246,6 +246,17 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
+        // The base of an existential metatype `P.Protocol` must not be rewritten
+        // to `Self`: `Self.Protocol` is invalid because `Self` is a concrete type.
+        // Only `.Protocol` is skipped; `.Type` metatypes stay correctable, since
+        // `Self.Type` is valid.
+        override func visit(_ node: MetatypeTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek(), node.metatypeSpecifier.tokenKind == .keyword(.Protocol) {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren

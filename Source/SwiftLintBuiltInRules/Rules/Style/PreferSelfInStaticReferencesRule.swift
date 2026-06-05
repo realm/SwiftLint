@@ -226,6 +226,26 @@ private extension PreferSelfInStaticReferencesRule {
             parentDeclScopes.pop()
         }
 
+        // The surrounding type must not be rewritten to `Self` when it appears in
+        // a composition (`A & B`, `any A & B`) or as the constraint of an
+        // existential or opaque type (`any A`, `some A`): `Self` is not
+        // interchangeable with the named type in a composition, and
+        // `any Self`/`some Self` is not valid. Skip these whole type constructs
+        // so neither their identifier nor member-type components are flagged.
+        override func visit(_: CompositionTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        override func visit(_: SomeOrAnyTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
@@ -257,9 +277,6 @@ private extension PreferSelfInStaticReferencesRule {
             if parent.is(ExtensionDeclSyntax.self) {
                 return
             }
-            if isNonSubstitutableTypeContext(parent) {
-                return
-            }
             if node.genericArguments == nil {
                 // Type is specialized.
                 addViolation(on: node.name)
@@ -278,9 +295,6 @@ private extension PreferSelfInStaticReferencesRule {
             // argument is left alone, since `Self` may not be available in that
             // position (e.g. an extension's own inheritance clause).
             if node.parent?.is(GenericArgumentSyntax.self) == true {
-                return
-            }
-            if isNonSubstitutableTypeContext(node.parent) {
                 return
             }
             if let tokens = memberTypeChain(node), tokens.map(\.text) == components {
@@ -336,20 +350,6 @@ private extension PreferSelfInStaticReferencesRule {
                     replacement: "Self"
                 )
             )
-        }
-
-        /// Whether `parent` is a type position in which a reference to the
-        /// surrounding type must not be rewritten to `Self`, because `Self` is
-        /// not interchangeable with the named type there:
-        /// - one element of a composition (`A & B`, `any A & B`), where swapping
-        ///   in `Self` would change the composition's meaning, and
-        /// - the constraint of an existential or opaque type (`any A`, `some A`),
-        ///   where `any Self`/`some Self` is not valid.
-        private func isNonSubstitutableTypeContext(_ parent: Syntax?) -> Bool {
-            guard let parent else {
-                return false
-            }
-            return parent.is(CompositionTypeElementSyntax.self) || parent.is(SomeOrAnyTypeSyntax.self)
         }
 
         /// Flattens an expression member-access chain (e.g. `Foo.Bar`) into its

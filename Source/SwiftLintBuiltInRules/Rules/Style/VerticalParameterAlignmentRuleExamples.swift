@@ -60,6 +60,14 @@ internal struct VerticalParameterAlignmentRuleExamples {
                  bar: String)
         }
         """),
+        Example("""
+        func сheckprofileexistence(_ param: Bool,
+                                   param1: Bool,
+                                   param2: Bool,
+                                   param3: Bool) -> Bool {
+            return false
+        }
+        """),
     ]
 
     static let triggeringExamples: [Example] = [

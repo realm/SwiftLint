@@ -61,11 +61,10 @@ internal struct VerticalParameterAlignmentRuleExamples {
         }
         """),
         Example("""
-        func сheckprofileexistence(_ param: Bool,
-                                   param1: Bool,
-                                   param2: Bool,
-                                   param3: Bool) -> Bool {
-            return false
+        func résuméBuilder(_ name: String,
+                           title: String,
+                           summary: String) -> String {
+            return name
         }
         """),
     ]

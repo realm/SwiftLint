@@ -36,6 +36,13 @@
 
 ### Bug Fixes
 
+* Avoid false positives in `vertical_parameter_alignment` when a parameter is
+  preceded by multi-byte characters, such as a function name containing
+  non-ASCII letters. Alignment is now compared by visible column rather than by
+  UTF-8 byte offset.  
+  [systemBlue](https://github.com/systemblueio)
+  [#5037](https://github.com/realm/SwiftLint/issues/5037)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

@@ -1,6 +1,3 @@
-#if canImport(Darwin)
-import Darwin
-#endif
 import Foundation
 import SourceKittenFramework
 import SwiftDiagnostics
@@ -10,120 +7,158 @@ import SwiftParser
 import SwiftParserDiagnostics
 import SwiftSyntax
 
-private typealias FileCacheKey = UUID
-
-private let responseCache = Cache { file -> [String: any SourceKitRepresentable]? in
-    do {
-        return try Request.editorOpen(file: file.file).sendIfNotDisabled()
-    } catch let error as Request.Error {
-        queuedPrintError(error.description)
-        return nil
-    } catch {
-        return nil
-    }
-}
-private let structureDictionaryCache = Cache { file in
-    responseCache.get(file).map(Structure.init).map { SourceKittenDictionary($0.dictionary) }
-}
-private let syntaxTreeCache = Cache { file -> SourceFileSyntax in
-    Parser.parse(source: file.contents)
-}
-private let foldedSyntaxTreeCache = Cache { file -> SourceFileSyntax? in
-    OperatorTable.standardOperators
-        .foldAll(file.syntaxTree) { _ in /* Don't handle errors. */ }
-        .as(SourceFileSyntax.self)
-}
-private let locationConverterCache = Cache { file -> SourceLocationConverter in
-    SourceLocationConverter(fileName: file.path?.filepath ?? "<nopath>", tree: file.syntaxTree)
-}
-private let commandsCache = Cache { file -> [Command] in
-    guard file.contents.contains("swiftlint:") else {
-        return []
-    }
-    return CommandVisitor(locationConverter: file.locationConverter)
-        .walk(file: file, handler: \.commands)
-}
-private let syntaxMapCache = Cache { file in
-    responseCache.get(file).map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) }
-}
-private let syntaxClassificationsCache = Cache { $0.syntaxTree.classifications }
-private let linesWithTokensCache = Cache { $0.computeLinesWithTokens() }
-private let swiftSyntaxTokensCache = Cache { file -> [SwiftLintSyntaxToken]? in
-    // Use SwiftSyntaxKindBridge to derive SourceKitten-compatible tokens from SwiftSyntax
-    SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: file)
-}
-private let commentLinesCache = Cache { CommentLinesVisitor.commentLines(in: $0) }
-private let emptyLinesCache = Cache { EmptyLinesVisitor.emptyLines(in: $0) }
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable closure_end_indentation opening_brace
 
 package typealias AssertHandler = () -> Void
+
 // Re-enable once all parser diagnostics in tests have been addressed.
 // https://github.com/realm/SwiftLint/issues/3348
 @TaskLocal package var parserDiagnosticsDisabledForTests = false
 
-private let assertHandlerCache = Cache { (_: SwiftLintFile) -> AssertHandler? in nil }
+private typealias SourceKitResponse = [String: any SourceKitRepresentable]
 
-private final class Cache<T>: Sendable {
-    nonisolated(unsafe) private var values = [FileCacheKey: T]()
-    private let factory: @Sendable (SwiftLintFile) -> T
-    private let lock = PlatformLock()
+/// Wraps a cached value, distinguishing "not yet computed" from "computed (possibly nil)".
+private enum Cached<T> {
+    case notComputed
+    case computing(DispatchGroup)
+    case computed(T)
+}
 
-    fileprivate init(_ factory: @escaping @Sendable (SwiftLintFile) -> T) {
-        self.factory = factory
-    }
+private enum CacheLookup<T> {
+    case hit(T)
+    case miss
+    case wait(DispatchGroup)
+    case compute(DispatchGroup)
+}
 
-    fileprivate func get(_ file: SwiftLintFile) -> T {
-        let key = file.cacheKey
-        return lock.doLocked {
-            if let cachedValue = values[key] {
-                return cachedValue
+/// Per-file cache storing all derived artifacts. One instance lives on each `SwiftLintFile`.
+///
+/// **Locking strategy**: a concurrent `DispatchQueue` guards all slots.
+/// Reads use a plain `sync` (concurrent); writes use `sync(flags: .barrier)` (exclusive).
+/// Each accessor computes its value *outside* the lock so that factories may safely access
+/// other cached properties without risk of deadlock. Cold slots are marked as computing
+/// under a barrier so concurrent first readers wait for the same result.
+final class FileCache: @unchecked Sendable {
+    fileprivate let queue = DispatchQueue(label: "io.realm.swiftlint.fileCache", attributes: .concurrent)
+
+    fileprivate var syntaxTree = Cached<SourceFileSyntax>.notComputed
+    fileprivate var locationConverter = Cached<SourceLocationConverter>.notComputed
+    fileprivate var commands = Cached<[Command]>.notComputed
+    fileprivate var syntaxClassifications = Cached<SyntaxClassifications>.notComputed
+    fileprivate var linesWithTokens = Cached<Set<Int>>.notComputed
+    fileprivate var commentLines = Cached<Set<Int>>.notComputed
+    fileprivate var emptyLines = Cached<Set<Int>>.notComputed
+    fileprivate var response = Cached<SourceKitResponse?>.notComputed
+    fileprivate var structureDictionary = Cached<SourceKittenDictionary?>.notComputed
+    fileprivate var foldedSyntaxTree = Cached<SourceFileSyntax?>.notComputed
+    fileprivate var syntaxMap = Cached<SwiftLintSyntaxMap?>.notComputed
+    fileprivate var swiftSyntaxTokens = Cached<[SwiftLintSyntaxToken]?>.notComputed
+    fileprivate var assertHandlerSlot = Cached<AssertHandler?>.notComputed
+
+    /// Returns the cached value for a slot, computing it via `factory` on a cache miss.
+    /// The factory runs *outside* the lock, so it may safely access other cached properties.
+    /// On a concurrent first access the winner's result is kept; the loser's is discarded.
+    ///
+    /// TODO: [06/05/2028] We can convert the explicit getters and setters to a keypath-based subscript once the Swift
+    /// compiler bug https://github.com/swiftlang/swift/issues/69386 is resolved.
+    fileprivate func getOrCompute<T>(factory: () -> T, get: () -> Cached<T>, set: (Cached<T>) -> Void) -> T {
+        // swiftlint:disable:previous cyclomatic_complexity
+
+        let initialState = queue.sync { () -> CacheLookup<T> in
+            switch get() {
+            case .computed(let value):
+                return .hit(value)
+            case .computing(let group):
+                return .wait(group)
+            case .notComputed:
+                return .miss
             }
-            let value = factory(file)
-            values[key] = value
+        }
+
+        switch initialState {
+        case .hit(let value):
             return value
+        case .wait(let group):
+            group.wait()
+            return getOrCompute(factory: factory, get: get, set: set)
+        case .miss, .compute:
+            break
+        }
+
+        let lookup = queue.sync(flags: .barrier) { () -> CacheLookup<T> in
+            switch get() {
+            case .computed(let value):
+                return .hit(value)
+            case .computing(let group):
+                return .wait(group)
+            case .notComputed:
+                let group = DispatchGroup()
+                group.enter()
+                set(.computing(group))
+                return .compute(group)
+            }
+        }
+
+        switch lookup {
+        case .hit(let value):
+            return value
+        case .wait(let group):
+            group.wait()
+            return getOrCompute(factory: factory, get: get, set: set)
+        case .compute(let group):
+            let value = factory()
+            queue.sync(flags: .barrier) {
+                defer { group.leave() }
+                if case .computing(let currentGroup) = get(), currentGroup === group {
+                    set(.computed(value))
+                }
+            }
+            return value
+        case .miss:
+            queuedFatalError("Impossible state: missed then compute")
         }
     }
 
-    fileprivate func invalidate(_ file: SwiftLintFile) {
-        lock.doLocked { values.removeValue(forKey: file.cacheKey) }
-    }
-
-    fileprivate func clear() {
-        lock.doLocked { values.removeAll(keepingCapacity: false) }
-    }
-
-    fileprivate func set(key: FileCacheKey, value: T) {
-        lock.doLocked { values[key] = value }
-    }
-
-    fileprivate func unset(key: FileCacheKey) {
-        lock.doLocked { values.removeValue(forKey: key) }
+    /// Resets all slots to `.notComputed`, forcing recomputation on next access.
+    fileprivate func invalidateAll() {
+        queue.sync(flags: .barrier) {
+            syntaxTree = .notComputed
+            locationConverter = .notComputed
+            commands = .notComputed
+            syntaxClassifications = .notComputed
+            linesWithTokens = .notComputed
+            commentLines = .notComputed
+            emptyLines = .notComputed
+            response = .notComputed
+            structureDictionary = .notComputed
+            foldedSyntaxTree = .notComputed
+            syntaxMap = .notComputed
+            swiftSyntaxTokens = .notComputed
+            assertHandlerSlot = .notComputed
+        }
     }
 }
 
 extension SwiftLintFile {
-    fileprivate var cacheKey: FileCacheKey {
-        id
-    }
-
     public var sourcekitdFailed: Bool {
-        get {
-            responseCache.get(self) == nil
-        }
+        get { cachedResponse == nil }
         set {
-            if newValue {
-                responseCache.set(key: cacheKey, value: nil)
-            } else {
-                responseCache.unset(key: cacheKey)
+            fileCache.queue.sync(flags: .barrier) {
+                fileCache.response = newValue ? .computed(nil) : .notComputed
             }
         }
     }
 
     package var assertHandler: AssertHandler? {
         get {
-            assertHandlerCache.get(self)
+            fileCache.getOrCompute
+                { nil }
+                get: { fileCache.assertHandlerSlot }
+                set: { fileCache.assertHandlerSlot = $0 }
         }
         set {
-            assertHandlerCache.set(key: cacheKey, value: newValue)
+            fileCache.queue.sync(flags: .barrier) { fileCache.assertHandlerSlot = .computed(newValue) }
         }
     }
 
@@ -131,116 +166,140 @@ extension SwiftLintFile {
         if parserDiagnosticsDisabledForTests {
             return []
         }
-
         return ParseDiagnosticsGenerator.diagnostics(for: syntaxTree)
             .filter { $0.diagMessage.severity == .error }
             .map(\.message)
     }
 
-    public var linesWithTokens: Set<Int> { linesWithTokensCache.get(self) }
+    public var linesWithTokens: Set<Int> {
+        fileCache.getOrCompute
+            { computeLinesWithTokens() }
+            get: { fileCache.linesWithTokens }
+            set: { fileCache.linesWithTokens = $0 }
+    }
 
     public var structureDictionary: SourceKittenDictionary {
-        guard let structureDictionary = structureDictionaryCache.get(self) else {
+        let value = fileCache.getOrCompute
+            { cachedResponse.map(Structure.init).map { SourceKittenDictionary($0.dictionary) } }
+            get: { fileCache.structureDictionary }
+            set: { fileCache.structureDictionary = $0 }
+        guard let value else {
             if let handler = assertHandler {
                 handler()
                 return SourceKittenDictionary([:])
             }
             queuedFatalError("Never call this for file that sourcekitd fails.")
         }
-        return structureDictionary
+        return value
     }
 
-    public var syntaxClassifications: SyntaxClassifications { syntaxClassificationsCache.get(self) }
+    public var syntaxClassifications: SyntaxClassifications {
+        fileCache.getOrCompute
+            { syntaxTree.classifications }
+            get: { fileCache.syntaxClassifications }
+            set: { fileCache.syntaxClassifications = $0 }
+    }
 
     public var syntaxMap: SwiftLintSyntaxMap {
-        guard let syntaxMap = syntaxMapCache.get(self) else {
+        let value = fileCache.getOrCompute
+            { cachedResponse.map { SwiftLintSyntaxMap(value: SyntaxMap(sourceKitResponse: $0)) } }
+            get: { fileCache.syntaxMap }
+            set: { fileCache.syntaxMap = $0 }
+        guard let value else {
             if let handler = assertHandler {
                 handler()
                 return SwiftLintSyntaxMap(value: SyntaxMap(data: []))
             }
             queuedFatalError("Never call this for file that sourcekitd fails.")
         }
-        return syntaxMap
+        return value
     }
 
-    public var syntaxTree: SourceFileSyntax { syntaxTreeCache.get(self) }
+    public var syntaxTree: SourceFileSyntax {
+        fileCache.getOrCompute
+            { Parser.parse(source: contents) }
+            get: { fileCache.syntaxTree }
+            set: { fileCache.syntaxTree = $0 }
+    }
 
-    public var foldedSyntaxTree: SourceFileSyntax? { foldedSyntaxTreeCache.get(self) }
+    public var foldedSyntaxTree: SourceFileSyntax? {
+        fileCache.getOrCompute
+            {
+                OperatorTable.standardOperators
+                    .foldAll(syntaxTree) { _ in /* Don't handle errors. */ }
+                    .as(SourceFileSyntax.self)
+            }
+            get: { fileCache.foldedSyntaxTree }
+            set: { fileCache.foldedSyntaxTree = $0 }
+    }
 
-    public var locationConverter: SourceLocationConverter { locationConverterCache.get(self) }
+    public var locationConverter: SourceLocationConverter {
+        fileCache.getOrCompute
+            { SourceLocationConverter(fileName: path?.filepath ?? "<nopath>", tree: syntaxTree) }
+            get: { fileCache.locationConverter }
+            set: { fileCache.locationConverter = $0 }
+    }
 
-    public var commands: [Command] { commandsCache.get(self).filter(\.isValid) }
+    public var commands: [Command] { cachedCommands.filter(\.isValid) }
 
-    public var invalidCommands: [Command] { commandsCache.get(self).filter { !$0.isValid } }
+    public var invalidCommands: [Command] { cachedCommands.filter { !$0.isValid } }
 
     public var swiftSyntaxDerivedSourceKittenTokens: [SwiftLintSyntaxToken]? {
-        swiftSyntaxTokensCache.get(self)
+        fileCache.getOrCompute
+            { SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: self) }
+            get: { fileCache.swiftSyntaxTokens }
+            set: { fileCache.swiftSyntaxTokens = $0 }
     }
 
-    public var commentLines: Set<Int> { commentLinesCache.get(self) }
-    public var emptyLines: Set<Int> { emptyLinesCache.get(self) }
+    public var commentLines: Set<Int> {
+        fileCache.getOrCompute
+            { CommentLinesVisitor.commentLines(in: self) }
+            get: { fileCache.commentLines }
+            set: { fileCache.commentLines = $0 }
+    }
+
+    public var emptyLines: Set<Int> {
+        fileCache.getOrCompute
+            { EmptyLinesVisitor.emptyLines(in: self) }
+            get: { fileCache.emptyLines }
+            set: { fileCache.emptyLines = $0 }
+    }
 
     /// Invalidates all cached data for this file.
     public func invalidateCache() {
         if !isVirtual {
             file.clearCaches()
         }
-        responseCache.invalidate(self)
-        assertHandlerCache.invalidate(self)
-        structureDictionaryCache.invalidate(self)
-        syntaxClassificationsCache.invalidate(self)
-        syntaxMapCache.invalidate(self)
-        swiftSyntaxTokensCache.invalidate(self)
-        syntaxTreeCache.invalidate(self)
-        foldedSyntaxTreeCache.invalidate(self)
-        locationConverterCache.invalidate(self)
-        commandsCache.invalidate(self)
-        linesWithTokensCache.invalidate(self)
-        commentLinesCache.invalidate(self)
-        emptyLinesCache.invalidate(self)
+        fileCache.invalidateAll()
     }
 
-    package static func clearCaches() {
-        responseCache.clear()
-        assertHandlerCache.clear()
-        structureDictionaryCache.clear()
-        syntaxClassificationsCache.clear()
-        syntaxMapCache.clear()
-        swiftSyntaxTokensCache.clear()
-        syntaxTreeCache.clear()
-        foldedSyntaxTreeCache.clear()
-        locationConverterCache.clear()
-        commandsCache.clear()
-        linesWithTokensCache.clear()
-        commentLinesCache.clear()
-        emptyLinesCache.clear()
-    }
-}
+    // MARK: - Private helpers
 
-private final class PlatformLock: Sendable {
-#if canImport(Darwin)
-    nonisolated(unsafe) private let primitiveLock: UnsafeMutablePointer<os_unfair_lock>
-#else
-    private let primitiveLock = NSLock()
-#endif
-
-    init() {
-#if canImport(Darwin)
-        primitiveLock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
-        primitiveLock.initialize(to: os_unfair_lock())
-#endif
+    /// The raw SourceKit response for this file (cached).
+    private var cachedResponse: SourceKitResponse? {
+        fileCache.getOrCompute
+            {
+                do {
+                    return try Request.editorOpen(file: file).sendIfNotDisabled()
+                } catch let error as Request.Error {
+                    queuedPrintError(error.description)
+                    return nil
+                } catch {
+                    return nil
+                }
+            }
+            get: { fileCache.response }
+            set: { fileCache.response = $0 }
     }
 
-    @discardableResult
-    func doLocked<U>(_ closure: () -> U) -> U {
-#if canImport(Darwin)
-        os_unfair_lock_lock(primitiveLock)
-        defer { os_unfair_lock_unlock(primitiveLock) }
-        return closure()
-#else
-        primitiveLock.lock()
-        defer { primitiveLock.unlock() }
-        return closure()
-#endif
+    private var cachedCommands: [Command] {
+        fileCache.getOrCompute
+            {
+                contents.contains("swiftlint:")
+                    ? CommandVisitor(locationConverter: locationConverter).walk(file: self, handler: \.commands)
+                    : []
+            }
+            get: { fileCache.commands }
+            set: { fileCache.commands = $0 }
     }
 }

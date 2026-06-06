@@ -33,6 +33,12 @@
   `optional_data_string_conversion` rule to convey its purpose more clearly.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6670](https://github.com/realm/SwiftLint/issues/6670)
+  
+* Improve linting performance by 10-15%, especially when running with many
+  threads, by optimizing cache locking and reducing contention. Depending on
+  the project and and level of concurrency, the performance improvement
+  can be even higher (3-4x).  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

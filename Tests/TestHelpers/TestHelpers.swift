@@ -111,7 +111,6 @@ public extension Configuration {
 public func violations(_ example: Example,
                        config inputConfig: Configuration = Configuration.default,
                        requiresFileOnDisk: Bool = false) -> [StyleViolation] {
-    SwiftLintFile.clearCaches()
     let config = inputConfig.applyingConfiguration(from: example)
     let stringStrippingMarkers = example.removingViolationMarkers()
     guard requiresFileOnDisk else {

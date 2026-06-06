@@ -155,6 +155,11 @@
 
 ### Bug Fixes
 
+* Recognize `isolated` as an isolation modifier in `modifier_order`, so it can
+  be ordered via the `isolation` entry in `preferred_modifier_order`.  
+  [leno23](https://github.com/leno23)
+  [#6164](https://github.com/realm/SwiftLint/issues/6164)
+
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  
   [theamodhshetty](https://github.com/theamodhshetty)

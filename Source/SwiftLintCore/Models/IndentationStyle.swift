@@ -1,9 +1,14 @@
+/// The style of indentation used in a Swift project.
 public enum IndentationStyle: Hashable, Sendable {
+    /// Swift source code should be indented using tabs.
     case tabs
+    /// Swift source code should be indented using spaces with the specified count per indentation level.
     case spaces(count: Int)
 
+    /// The default indentation style if none is explicitly provided.
     package static let `default` = spaces(count: 4)
 
+    /// The string representation of one level of indentation.
     public var indentationString: String {
         switch self {
         case .tabs: return "\t"
@@ -11,6 +16,7 @@ public enum IndentationStyle: Hashable, Sendable {
         }
     }
 
+    /// Creates an indentation style based on an untyped configuration value.
     package init?(_ object: Any?) {
         switch object {
         case let value as Int: self = .spaces(count: value)
@@ -20,6 +26,7 @@ public enum IndentationStyle: Hashable, Sendable {
     }
 }
 
+/// Conformance to ``AcceptableByConfigurationElement`` for use in rule configurations.
 extension IndentationStyle: AcceptableByConfigurationElement {
     public func asOption() -> OptionType {
         switch self {

@@ -20,13 +20,13 @@ struct MultilineCallArgumentsRuleExamples {
             configuration: ["max_number_of_single_line_parameters": 2]
         ),
         Example("""
-            # Configuration: indentation: "tab"
+            # Configuration: indentation: "tabs"
             foo(
             \tparam1: 1,
             \tparam2: false
             )
             """,
-            configuration: ["allows_single_line": false, "indentation": "tab"]
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
         ),
 
         // MARK: - Baseline: multi-line OK
@@ -546,7 +546,7 @@ struct MultilineCallArgumentsRuleExamples {
         // MARK: - Tab indentation
         Example(
             "foo(param1: 1, ↓param2: false)",
-            configuration: ["allows_single_line": false, "indentation": "tab"]
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
         ),
         Example("""
             class Test {
@@ -557,7 +557,7 @@ struct MultilineCallArgumentsRuleExamples {
                 }
             }
             """,
-            configuration: ["allows_single_line": false, "indentation": "tab"]
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
         ),
         // MARK: - Comments between arguments (violation detected, no auto-correction)
         Example(
@@ -773,7 +773,7 @@ struct MultilineCallArgumentsRuleExamples {
         // MARK: - Tab indentation corrections
         Example(
             "foo(param1: 1, ↓param2: false)",
-            configuration: ["allows_single_line": false, "indentation": "tab"]
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
         ): Example("""
             foo(
             \tparam1: 1,

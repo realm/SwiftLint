@@ -210,7 +210,7 @@ extension MultilineCallArgumentsRuleTests {
     func testIndentationStyle_initializationAndIndentationString() throws {
         let style = try IndentationStyle(fromAny: 4, context: "test_rule")
         XCTAssertEqual(style.indentationString, "    ")
-        let tabStyle = try IndentationStyle(fromAny: "tab", context: "test_rule")
+        let tabStyle = try IndentationStyle(fromAny: "tabs", context: "test_rule")
         XCTAssertEqual(tabStyle.indentationString, "\t")
         XCTAssertEqual(IndentationStyle.spaces(count: 1).indentationString, " ")
         XCTAssertEqual(IndentationStyle.spaces(count: 2).indentationString, "  ")
@@ -228,10 +228,10 @@ extension MultilineCallArgumentsRuleTests {
     }
     func testIndentationStyle_asOptionAndEquality() {
         XCTAssertEqual(IndentationStyle.spaces(count: 4).asOption(), .integer(4))
-        XCTAssertEqual(IndentationStyle.tab.asOption(), .string("tab"))
+        XCTAssertEqual(IndentationStyle.tabs.asOption(), .string("tabs"))
         XCTAssertEqual(IndentationStyle.spaces(count: 4), IndentationStyle.spaces(count: 4))
         XCTAssertNotEqual(IndentationStyle.spaces(count: 4), IndentationStyle.spaces(count: 2))
-        XCTAssertNotEqual(IndentationStyle.tab, IndentationStyle.spaces(count: 4))
+        XCTAssertNotEqual(IndentationStyle.tabs, IndentationStyle.spaces(count: 4))
     }
     func testConfiguration_invalidValues_throw() {
         XCTAssertThrowsError(try MultilineCallArgumentsRule(configuration: ["indentation": 0]))
@@ -247,8 +247,8 @@ extension MultilineCallArgumentsRuleTests {
         ]))
     }
     func testConfiguration_indentationTab_isValid() throws {
-        let rule = try MultilineCallArgumentsRule(configuration: ["indentation": "tab"])
-        XCTAssertEqual(rule.configuration.indentationStyle, .tab)
+        let rule = try MultilineCallArgumentsRule(configuration: ["indentation": "tabs"])
+        XCTAssertEqual(rule.configuration.indentationStyle, .tabs)
     }
     func testConfiguration_indentationInt_isValid() throws {
         let rule = try MultilineCallArgumentsRule(configuration: ["indentation": 2])

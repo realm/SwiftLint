@@ -44,7 +44,7 @@ struct MultilineCallArgumentsRule: Rule {
         - `max_number_of_single_line_parameters`: Max arguments allowed on a single line \
         (default: `nil` — unlimited)
         - `indentation`: Indentation width for corrected lines \
-        (integer for spaces, e.g. `4`, `2`, `8`; or the string `"tab"`); \
+        (integer for spaces, e.g. `4`, `2`, `8`; or the string `"tabs"`); \
         `0` and negative values are invalid and will cause a configuration error
 
         ## Behavior details

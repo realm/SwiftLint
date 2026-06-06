@@ -54,7 +54,7 @@ spm_build_plugins:
 	swift build -c release --product SwiftLintBuildToolPlugin
 
 spm_test:
-	swift test --no-parallel --explicit-target-dependency-import-check warn -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
+	swift test --explicit-target-dependency-import-check warn -Xswiftc -DDISABLE_FOCUSED_EXAMPLES
 
 write_xcodebuild_log:
 	xcodebuild -scheme swiftlint clean build-for-testing -destination "platform=macOS" > xcodebuild.log

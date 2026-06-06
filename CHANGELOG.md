@@ -42,6 +42,12 @@
 
 ### Bug Fixes
 
+* Honor `allow_zero_lintable_files: true` when it is set in a parent
+  configuration. A child configuration that does not mention the key no longer
+  resets the parent's value back to `false`.  
+  [systemBlue](https://github.com/systemblueio)
+  [#6240](https://github.com/realm/SwiftLint/issues/6240)
+
 * Avoid false positives in `vertical_parameter_alignment` when a parameter is
   preceded by multi-byte characters, such as a function name containing
   non-ASCII letters. Alignment is now compared by visible column rather than by

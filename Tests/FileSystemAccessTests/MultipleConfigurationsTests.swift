@@ -48,6 +48,24 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
     }
 
     // MARK: - Merging Aspects
+    func testAllowZeroLintableFilesMerging() {
+        func configuration(allowingZeroLintableFiles: Bool) -> Configuration {
+            Configuration(
+                reporter: XcodeReporter.identifier,
+                allowZeroLintableFiles: allowingZeroLintableFiles
+            )
+        }
+        // A parent that allows zero lintable files is not silently un-set by a child that omits the key.
+        XCTAssertTrue(configuration(allowingZeroLintableFiles: true)
+            .merged(withChild: configuration(allowingZeroLintableFiles: false)).allowZeroLintableFiles)
+        XCTAssertTrue(configuration(allowingZeroLintableFiles: false)
+            .merged(withChild: configuration(allowingZeroLintableFiles: true)).allowZeroLintableFiles)
+        XCTAssertTrue(configuration(allowingZeroLintableFiles: true)
+            .merged(withChild: configuration(allowingZeroLintableFiles: true)).allowZeroLintableFiles)
+        XCTAssertFalse(configuration(allowingZeroLintableFiles: false)
+            .merged(withChild: configuration(allowingZeroLintableFiles: false)).allowZeroLintableFiles)
+    }
+
     func testWarningThresholdMerging() {
         func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
             Configuration(

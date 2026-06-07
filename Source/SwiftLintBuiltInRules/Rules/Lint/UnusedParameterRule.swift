@@ -67,6 +67,16 @@ struct UnusedParameterRule: Rule {
             Example("""
             func f(_a: Int) {}
             """, configuration: allowUnderscorePrefixedNames),
+            Example("""
+            list($items) { $item in
+                row(item.title)
+            }
+            """),
+            Example("""
+            list($items) { $item in
+                bind($item)
+            }
+            """),
         ],
         triggeringExamples: [
             Example("""
@@ -157,6 +167,14 @@ private extension UnusedParameterRule {
                     continue
                 }
                 if configuration.allowUnderscorePrefixedNames, name.text.hasPrefix("_") {
+                    continue
+                }
+                if name.text.hasPrefix("$") {
+                    // A `$`-prefixed closure parameter is a property-wrapper projection
+                    // (e.g. `{ $item in }`): Swift binds both the projected value `$item`
+                    // and the wrapped value `item`, and the latter can be referenced
+                    // without the prefix. The rule cannot tell whether that implicit
+                    // binding is used, so such a parameter is never reported as unused.
                     continue
                 }
                 let startPosReplacement =

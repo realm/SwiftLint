@@ -42,6 +42,13 @@
 
 ### Bug Fixes
 
+* Stop `unused_parameter` from flagging `$`-prefixed closure parameters (e.g.
+  `list($items) { $item in ... }`). Such a parameter also binds the wrapped value
+  `item`, which can be used without the prefix, so it is no longer reported as
+  unused.  
+  [systemBlue](https://github.com/systemblueio)
+  [#5740](https://github.com/realm/SwiftLint/issues/5740)
+
 * Avoid false positives in `vertical_parameter_alignment` when a parameter is
   preceded by multi-byte characters, such as a function name containing
   non-ASCII letters. Alignment is now compared by visible column rather than by

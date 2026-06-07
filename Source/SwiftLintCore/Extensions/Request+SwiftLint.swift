@@ -1,8 +1,77 @@
 import Foundation
 import SourceKittenFramework
 
+/// Tracks whether sourcekitd has wedged in the current process.
+///
+/// Under Swift Testing the suite runs as many concurrent tasks on a small cooperative executor.
+/// Each linted file issues a synchronous, blocking sourcekitd request; if the daemon wedges — as it
+/// does on the macOS CI runners — every concurrent caller blocks on it and the whole run hangs. To
+/// bound that, ``Request/sendIfNotDisabled()`` runs each request with a timeout, and the first time
+/// one times out this status latches so subsequent requests skip sourcekitd instead of each paying
+/// the timeout. A healthy daemon answers immediately, so the latch never trips and behaviour is
+/// unchanged. See PR #6048.
+public enum SourceKitStatus {
+    nonisolated(unsafe) private static var timedOut = false
+    private static let lock = NSLock()
+
+    /// Test-only override scoped to the current task tree, letting tests force the unavailable state
+    /// deterministically and in isolation from other tests running in parallel.
+    @TaskLocal package static var forceUnavailableForTesting = false
+
+    /// Whether SourceKit requests should be skipped rather than issued.
+    public static var isUnavailable: Bool {
+        if forceUnavailableForTesting {
+            return true
+        }
+        lock.lock()
+        defer { lock.unlock() }
+        return timedOut
+    }
+
+    /// Records that a request timed out, latching sourcekitd as unavailable for the rest of the run.
+    static func recordTimeout() {
+        lock.lock()
+        defer { lock.unlock() }
+        timedOut = true
+    }
+}
+
+/// Thrown by ``Request/sendIfNotDisabled()`` when sourcekitd has already timed out, so that callers
+/// skip the request instead of issuing another one that would block.
+public struct SourceKitUnavailableError: Error, Equatable {}
+
+/// Thrown when sourcekitd does not answer a request within the timeout.
+public struct SourceKitRequestTimedOutError: Error, Equatable {
+    public let timeout: TimeInterval
+}
+
+private struct UncheckedSendableValue<Value>: @unchecked Sendable {
+    let value: Value
+}
+
+private final class SourceKitResponseBox: @unchecked Sendable {
+    private let lock = NSLock()
+    private var result: Result<[String: any SourceKitRepresentable], any Error>?
+
+    func store(_ result: Result<[String: any SourceKitRepresentable], any Error>) {
+        lock.lock()
+        defer { lock.unlock() }
+        self.result = result
+    }
+
+    func load() -> Result<[String: any SourceKitRepresentable], any Error>? {
+        lock.lock()
+        defer { lock.unlock() }
+        return result
+    }
+}
+
 public extension Request {
     nonisolated(unsafe) static var disableSourceKitOverride = false
+
+    /// How long to wait for a single sourcekitd request before giving up and treating the daemon as
+    /// wedged.
+    static let sourceKitRequestTimeout: TimeInterval = 30
 
     static var disableSourceKit: Bool {
         #if SWIFTLINT_DISABLE_SOURCEKIT
@@ -49,7 +118,34 @@ public extension Request {
         guard !Self.disableSourceKit else {
             queuedFatalError("SourceKit is disabled by configuration.")
         }
-        return try send()
+        // Once a sourcekitd request has wedged, skip the rest. Re-issuing a blocking request for
+        // every file would otherwise starve the bounded test executor and hang the run. See PR #6048.
+        guard !SourceKitStatus.isUnavailable else {
+            throw SourceKitUnavailableError()
+        }
+        do {
+            return try sendWithTimeout(Self.sourceKitRequestTimeout)
+        } catch let error as SourceKitRequestTimedOutError {
+            SourceKitStatus.recordTimeout()
+            throw error
+        }
+    }
+
+    /// Runs `send()` on a background queue and waits up to `timeout` seconds for a response, so a
+    /// wedged sourcekitd request cannot block the calling (cooperative executor) thread forever.
+    private func sendWithTimeout(_ timeout: TimeInterval) throws -> [String: any SourceKitRepresentable] {
+        let request = UncheckedSendableValue(value: self)
+        let box = SourceKitResponseBox()
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global(qos: .userInitiated).async {
+            box.store(Result { try request.value.send() })
+            semaphore.signal()
+        }
+
+        guard semaphore.wait(timeout: .now() + timeout) == .success, let result = box.load() else {
+            throw SourceKitRequestTimedOutError(timeout: timeout)
+        }
+        return try result.get()
     }
 
     static func cursorInfoWithoutSymbolGraph(file: String, offset: ByteCount, arguments: [String]) -> Request {

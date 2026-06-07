@@ -84,7 +84,7 @@ private extension SwiftLintFile {
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
         path
             .flatMap { path in
-                try? Request.index(file: path.filepath, arguments: compilerArguments).send()
+                try? Request.index(file: path.filepath, arguments: compilerArguments).sendIfNotDisabled()
             }
             .map(SourceKittenDictionary.init)
     }

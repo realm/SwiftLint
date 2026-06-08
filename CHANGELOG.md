@@ -42,6 +42,15 @@
 
 ### Bug Fixes
 
+* Don't rewrite the type operand of an `is` / `as?` / `as!` cast (such as
+  `x is A`) to `Self` in `prefer_self_in_static_references` when inside a
+  class-like scope. `Self` is the dynamic type, so the rewrite silently changed
+  runtime behavior for non-final classes (`x is Self` is not equivalent to
+  `x is A`). Mirrors the rule's existing `X.self` skip; static member references
+  such as `A.f()` are still corrected.  
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6764](https://github.com/realm/SwiftLint/issues/6764)
+
 * Avoid false positives in `vertical_parameter_alignment` when a parameter is
   preceded by multi-byte characters, such as a function name containing
   non-ASCII letters. Alignment is now compared by visible column rather than by

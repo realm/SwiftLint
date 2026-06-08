@@ -258,6 +258,19 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
+        // The type operand of an `is` / `as?` / `as!` cast must not be rewritten to
+        // `Self` in a class-like scope: `Self` is the dynamic type, so `x is Self`
+        // is not equivalent to `x is A` for a non-final class (an instance of a
+        // subclass satisfies `is Self` but not the intended base type). This
+        // mirrors the `X.self` skip; static member references (`A.f()`) are
+        // unaffected because they are not cast operands.
+        override func visit(_ node: TypeExprSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek(), isCastOperand(node) {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
@@ -333,6 +346,24 @@ private extension PreferSelfInStaticReferencesRule {
                 }
             }
             return .skipChildren
+        }
+
+        /// Whether `node` is the type operand of an `is` / `as` / `as?` / `as!`
+        /// cast, i.e. it directly follows an unresolved `is`/`as` operator in a
+        /// sequence expression (`x is T`, `x as? T`).
+        private func isCastOperand(_ node: TypeExprSyntax) -> Bool {
+            guard let list = node.parent?.as(ExprListSyntax.self) else {
+                return false
+            }
+            var previous: ExprSyntax?
+            for element in list {
+                if element.id == node.id {
+                    return previous?.is(UnresolvedIsExprSyntax.self) == true
+                        || previous?.is(UnresolvedAsExprSyntax.self) == true
+                }
+                previous = element
+            }
+            return false
         }
 
         private func addViolation(on node: TokenSyntax) {

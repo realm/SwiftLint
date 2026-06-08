@@ -202,6 +202,28 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f(_ x: Any) -> Bool { x is Outer.Inner & B }
             }
             """, excludeFromDocumentation: true),
+        Example("""
+            class A {}
+            class B: A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A }
+                func g(_ x: Any) -> A? { x as? A }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A.Type }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class T {
+                let child: T
+                init(input: Any) {
+                    child = (input as! T).child
+                }
+            }
+            """, excludeFromDocumentation: true),
     ]
 
     static let triggeringExamples = [
@@ -317,14 +339,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
             }
             """, excludeFromDocumentation: true),
         Example("""
-            class T {
-                let child: T
-                init(input: Any) {
-                    child = (input as! T).child
-                }
-            }
-            """, excludeFromDocumentation: true),
-        Example("""
             class C {
                 static let i = 0
             }
@@ -353,12 +367,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
             }
             extension Outer.Middle.Inner {
                 func f() -> Int { ↓Outer.Middle.Inner.i }
-            }
-            """, excludeFromDocumentation: true),
-        Example("""
-            protocol A {}
-            extension A {
-                func f(_ x: Any) -> Bool { x is ↓A.Type }
             }
             """, excludeFromDocumentation: true),
     ]
@@ -435,17 +443,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 extension Outer.Inner {
                     func f() -> Int { Self.i }
-                }
-                """),
-        Example("""
-            protocol A {}
-            extension A {
-                func f(_ x: Any) -> Bool { x is ↓A.Type }
-            }
-            """): Example("""
-                protocol A {}
-                extension A {
-                    func f(_ x: Any) -> Bool { x is Self.Type }
                 }
                 """),
     ]

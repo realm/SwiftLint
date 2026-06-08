@@ -204,7 +204,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
             """, excludeFromDocumentation: true),
         Example("""
             class A {}
-            class B: A {}
             extension A {
                 func f(_ x: Any) -> Bool { x is A }
                 func g(_ x: Any) -> A? { x as? A }

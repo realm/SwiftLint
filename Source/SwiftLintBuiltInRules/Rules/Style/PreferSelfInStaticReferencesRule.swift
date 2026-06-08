@@ -258,6 +258,19 @@ private extension PreferSelfInStaticReferencesRule {
             return .visitChildren
         }
 
+        // The type operand of an `is` / `as` / `as?` / `as!` cast must not be
+        // rewritten to `Self` in a class-like scope: `Self` is the dynamic type,
+        // so `x is Self` is not equivalent to `x is A` for a non-final class (an
+        // instance of a subclass satisfies `is Self` but not the intended base
+        // type). This mirrors the `X.self` skip; static member references
+        // (`A.f()`) are unaffected because they are not cast operands.
+        override func visit(_ node: TypeExprSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek(), isCastOperand(node) {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
@@ -333,6 +346,15 @@ private extension PreferSelfInStaticReferencesRule {
                 }
             }
             return .skipChildren
+        }
+
+        /// Whether `node` is the type operand of an `is` / `as` / `as?` / `as!`
+        /// cast. A bare type expression only ends up as an element of a sequence
+        /// expression in that position, and `ExprListSyntax` is used solely for a
+        /// sequence's elements, so the parent check is sufficient (and avoids
+        /// scanning the sequence).
+        private func isCastOperand(_ node: TypeExprSyntax) -> Bool {
+            node.parent?.is(ExprListSyntax.self) == true
         }
 
         private func addViolation(on node: TokenSyntax) {

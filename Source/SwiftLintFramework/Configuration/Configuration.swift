@@ -207,6 +207,10 @@ public struct Configuration {
     ///
     /// - parameter configurationFiles:         The path on disk to one or multiple configuration files. If this array
     ///                                         is empty, the default `.swiftlint.yml` file will be used.
+    /// - parameter parentConfigurationFiles:   The path on disk to one or more parent SwiftLint configuration files.
+    ///                                         Equivalent to declaring `parent_config:` inside the resolved config,
+    ///                                         but injected at the command line so the parent path can be supplied
+    ///                                         dynamically. Ignored when `ignoreParentAndChildConfigs` is `true`.
     /// - parameter enableAllRules:             Enable all available rules.
     /// - parameter cachePath:                  The location of the persisted cache to use whith this configuration.
     /// - parameter ignoreParentAndChildConfigs:If `true`, child and parent config references will be ignored.
@@ -216,6 +220,7 @@ public struct Configuration {
     ///                                         This is only intended for tests checking whether invalid configs fail.
     public init(
         configurationFiles: [URL], // No default value here to avoid ambiguous Configuration() initializer
+        parentConfigurationFiles: [URL] = [],
         enableAllRules: Bool = false,
         onlyRule: [String] = [],
         cachePath: String? = nil,
@@ -248,7 +253,7 @@ public struct Configuration {
         }
 
         // Try obtaining cached config
-        let cacheIdentifier = "\(currentWorkingDirectory) - \(configurationFiles)"
+        let cacheIdentifier = "\(currentWorkingDirectory) - \(configurationFiles) - \(parentConfigurationFiles)"
         if let cachedConfig = Self.getCached(forIdentifier: cacheIdentifier) {
             self.init(copying: cachedConfig)
             return
@@ -258,6 +263,7 @@ public struct Configuration {
         do {
             var fileGraph = FileGraph(
                 commandLineChildConfigs: configurationFiles,
+                commandLineParentConfigs: parentConfigurationFiles,
                 rootDirectory: currentWorkingDirectory,
                 ignoreParentAndChildConfigs: ignoreParentAndChildConfigs
             )

@@ -25,6 +25,7 @@ enum Mock {
         static var childConfigCycle4: URL { level0.appending(path: "ChildConfig/Cycle4/") }
         static var parentConfigTest1: URL { level0.appending(path: "ParentConfig/Test1/") }
         static var parentConfigTest2: URL { level0.appending(path: "ParentConfig/Test2/") }
+        static var parentConfigCommandLine: URL { level0.appending(path: "ParentConfig/CommandLine/") }
         static var parentConfigCycle1: URL { level0.appending(path: "ParentConfig/Cycle1/") }
         static var parentConfigCycle2: URL { level0.appending(path: "ParentConfig/Cycle2/") }
         static var parentConfigCycle3: URL { level0.appending(path: "ParentConfig/Cycle3/") }

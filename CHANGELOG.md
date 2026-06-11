@@ -42,6 +42,14 @@
 
 ### Bug Fixes
 
+* Fix `literal_expression_end_indentation` autocorrection deleting source code
+  when the closing bracket of a multiline literal shares a line with the end of
+  a multiline last element (e.g. `...))]`). The corrector assumed everything
+  before the bracket on that line was indentation and replaced it; it now moves
+  only the bracket to its own line at the expected indentation.  
+  [Luan Câmara](https://github.com/luancamara)
+  [#2823](https://github.com/realm/SwiftLint/issues/2823)
+
 * Don't rewrite the type operand of an `is` / `as?` / `as!` cast (such as
   `x is A`) to `Self` in `prefer_self_in_static_references` when inside a
   class-like scope. `Self` is the dynamic type, so the rewrite silently changed

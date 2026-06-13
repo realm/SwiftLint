@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ReduceBooleanRule.description)
+    }
+}
+
 final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ReduceIntoRule.description)
@@ -148,11 +154,5 @@ final class SortedFirstLastRuleGeneratedTests: SwiftLintTestCase {
 final class SortedImportsRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
-    }
-}
-
-final class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(StatementPositionRule.description)
     }
 }

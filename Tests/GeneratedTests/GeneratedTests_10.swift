@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class UnneededEscapingRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnneededEscapingRule.description)
+    }
+}
+
 final class UnneededOverrideRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededOverrideRule.description)
@@ -148,11 +154,5 @@ final class VoidFunctionInTernaryConditionRuleGeneratedTests: SwiftLintTestCase 
 final class VoidReturnRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)
-    }
-}
-
-final class WeakDelegateRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(WeakDelegateRule.description)
     }
 }

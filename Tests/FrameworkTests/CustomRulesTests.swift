@@ -13,12 +13,6 @@ final class CustomRulesTests: SwiftLintTestCase {
         SwiftLintFile(path: TestResources.path().appending(path: "test.txt", directoryHint: .notDirectory))!
     }
 
-    override func invokeTest() {
-        CurrentRule.$allowSourceKitRequestWithoutRule.withValue(true) {
-            super.invokeTest()
-        }
-    }
-
     func testCustomRuleConfigurationSetsCorrectlyWithMatchKinds() {
         let configDict = [
             "my_custom_rule": [

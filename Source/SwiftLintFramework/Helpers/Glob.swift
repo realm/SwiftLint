@@ -61,7 +61,7 @@ struct Glob {
                 baseDirPath = String(native[..<lastSep])
                 remainder = String(native[native.index(after: lastSep)...])
             } else {
-                baseDirPath = FileManager.default.currentDirectoryPath
+                baseDirPath = URL.cwd.path
                 remainder = String(native)
             }
         } else {
@@ -148,7 +148,7 @@ struct Glob {
         guard firstPart.isEmpty || fileManager.fileExists(atPath: firstPart) else {
             return []
         }
-        let searchPath = firstPart.isEmpty ? fileManager.currentDirectoryPath : firstPart
+        let searchPath = firstPart.isEmpty ? URL.cwd.path : firstPart
         var directories = [URL]()
         do {
             directories = try fileManager.subpathsOfDirectory(atPath: searchPath).compactMap { subpath in

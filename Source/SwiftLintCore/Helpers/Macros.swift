@@ -1,3 +1,5 @@
+import Foundation
+
 /// Macro to be attached to rule configurations. It generates the configuration parsing logic
 /// automatically based on the defined `@ConfigurationElement`s.
 @attached(
@@ -75,16 +77,4 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
                              optIn: Bool = false) = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "SwiftSyntaxRule"
-)
-
-@attached(body)
-macro TemporaryDirectory() = #externalMacro(
-    module: "SwiftLintCoreMacros",
-    type: "TemporaryDirectory"
-)
-
-@attached(body)
-macro WorkingDirectory(path: String) = #externalMacro(
-    module: "SwiftLintCoreMacros",
-    type: "WorkingDirectory"
 )

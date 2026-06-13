@@ -10,4 +10,4 @@ For some rules, there are dedicated tests in `Tests/BuiltInRulesTests`. However,
 
 The functionality of configurations does not need to be tested explicitly either. But all options should be verified in the provided examples with the `configuration:` parameter as well.
 
-All changes need to pass `swift test --parallel` as well as running SwiftLint on itself. The command `swift run swiftlint` run in the root directory of the project does that.
+All changes need to pass `swift test` as well as running SwiftLint on itself. The command `swift run swiftlint` run in the root directory of the project does that.

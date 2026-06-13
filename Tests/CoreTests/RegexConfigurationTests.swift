@@ -1,25 +1,29 @@
-@testable import SwiftLintCore
+import SwiftLintCore
 import TestHelpers
-import XCTest
+import Testing
 
-final class RegexConfigurationTests: SwiftLintTestCase {
-    func testShouldValidateIsTrueByDefault() {
+@Suite
+struct RegexConfigurationTests {
+    @Test
+    func shouldValidateIsTrueByDefault() {
         let config = RegexConfiguration<MockRule>(identifier: "example")
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
-    func testShouldValidateWithSingleExcluded() throws {
+    @Test
+    func shouldValidateWithSingleExluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "excluded": "ExcludedFolder/.*\\.swift",
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
-    func testShouldValidateWithArrayExcluded() throws {
+    @Test
+    func shouldValidateWithArrayExluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
@@ -29,24 +33,26 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
-    func testShouldValidateWithSingleIncluded() throws {
+    @Test
+    func shouldValidateWithSingleIncluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
             "included": "App/.*\\.swift",
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "MyFramework/Tests/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "App/file.swift".url()))
     }
 
-    func testShouldValidateWithArrayIncluded() throws {
+    @Test
+    func shouldValidateWithArrayIncluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
@@ -56,12 +62,13 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
-        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "Tests/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "App/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "MyFramework/file.swift".url()))
     }
 
-    func testShouldValidateWithIncludedAndExcluded() throws {
+    @Test
+    func shouldValidateWithIncludedAndExcluded() throws {
         var config = RegexConfiguration<MockRule>(identifier: "example")
         try config.apply(configuration: [
             "regex": "try!",
@@ -75,11 +82,11 @@ final class RegexConfigurationTests: SwiftLintTestCase {
             ] as Any,
         ])
 
-        XCTAssertTrue(config.shouldValidate(filePath: "App/file.swift".url()))
-        XCTAssertTrue(config.shouldValidate(filePath: "MyFramework/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "App/file.swift".url()))
+        #expect(config.shouldValidate(filePath: "MyFramework/file.swift".url()))
 
-        XCTAssertFalse(config.shouldValidate(filePath: "App/Fixtures/file.swift".url()))
-        XCTAssertFalse(config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
-        XCTAssertFalse(config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "App/Fixtures/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "ExcludedFolder/file.swift".url()))
+        #expect(!config.shouldValidate(filePath: "MyFramework/ExcludedFolder/file.swift".url()))
     }
 }

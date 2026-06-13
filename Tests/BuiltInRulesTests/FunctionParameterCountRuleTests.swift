@@ -1,5 +1,7 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
+
+@testable import SwiftLintBuiltInRules
 
 private func funcWithParameters(_ parameters: String,
                                 violates: Bool = false,
@@ -10,8 +12,10 @@ private func funcWithParameters(_ parameters: String,
     return Example("func \(marker)abc(\(parameters)) {}\n", file: file, line: line)
 }
 
-final class FunctionParameterCountRuleTests: SwiftLintTestCase {
-    func testFunctionParameterCount() {
+@Suite(.rulesRegistered)
+struct FunctionParameterCountRuleTests {
+    @Test
+    func functionParameterCount() {
         let baseDescription = FunctionParameterCountRule.description
         let nonTriggeringExamples = [
             funcWithParameters(repeatElement("x: Int, ", count: 3).joined() + "x: Int")
@@ -27,7 +31,8 @@ final class FunctionParameterCountRuleTests: SwiftLintTestCase {
         verifyRule(description)
     }
 
-    func testDefaultFunctionParameterCount() {
+    @Test
+    func defaultFunctionParameterCount() {
         let baseDescription = FunctionParameterCountRule.description
         let nonTriggeringExamples = [
             funcWithParameters(repeatElement("x: Int, ", count: 3).joined() + "x: Int")

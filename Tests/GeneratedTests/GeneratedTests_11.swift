@@ -3,24 +3,32 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class XCTFailMessageRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct XCTFailMessageRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(XCTFailMessageRule.description)
     }
 }
 
-final class XCTSpecificMatcherRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct XCTSpecificMatcherRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(XCTSpecificMatcherRule.description)
     }
 }
 
-final class YodaConditionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct YodaConditionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(YodaConditionRule.description)
     }
 }

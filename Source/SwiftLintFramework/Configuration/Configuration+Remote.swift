@@ -28,7 +28,7 @@ internal extension Configuration.FileGraph.FilePath {
 
     /// This dictionary has URLs as its keys and contents of those URLs as its values
     /// In production mode, this should be empty. For tests, it may be filled.
-    static var mockedNetworkResults: [String: String] = [:]
+    @TaskLocal static var mockedNetworkResults = [String: String]()
 
     // MARK: - Methods: Resolving
     mutating func resolve(
@@ -53,11 +53,8 @@ internal extension Configuration.FileGraph.FilePath {
         remoteConfigTimeout: Double,
         remoteConfigTimeoutIfCached: Double
     ) throws -> String {
-        // Always use top level as root directory for remote files
-        let rootDirectory = FileManager.default.currentDirectoryPath.bridge().standardizingPath
-
         // Get cache path
-        let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: rootDirectory)
+        let cachedFilePath = getCachedFilePath(urlString: urlString, rootDirectory: URL.cwd)
 
         let configString: String
         if let mockedValue = Self.mockedNetworkResults[urlString] {
@@ -112,18 +109,18 @@ internal extension Configuration.FileGraph.FilePath {
         }
 
         // Handle file write failure
-        guard let filePath = cache(configString: configString, from: urlString, rootDirectory: rootDirectory) else {
+        guard let filePath = cache(configString: configString, from: urlString, rootDirectory: URL.cwd) else {
             return try handleFileWriteFailure(urlString: urlString, cachedFilePath: cachedFilePath)
         }
 
         // Handle success
-        self = .existing(path: filePath)
-        return filePath
+        self = .existing(path: filePath.filepath)
+        return filePath.filepath
     }
 
     private mutating func handleWrongData(
         urlString: String,
-        cachedFilePath: String?,
+        cachedFilePath: URL?,
         taskDone: Bool,
         timeout: TimeInterval
     ) throws -> String {
@@ -139,8 +136,8 @@ internal extension Configuration.FileGraph.FilePath {
                 )
             }
 
-            self = .existing(path: cachedFilePath)
-            return cachedFilePath
+            self = .existing(path: cachedFilePath.filepath)
+            return cachedFilePath.filepath
         }
         if taskDone {
             throw Issue.genericWarning(
@@ -154,13 +151,13 @@ internal extension Configuration.FileGraph.FilePath {
         )
     }
 
-    private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: String?) throws -> String {
+    private mutating func handleFileWriteFailure(urlString: String, cachedFilePath: URL?) throws -> String {
         if let cachedFilePath {
             queuedPrintError(
                 "warning: Unable to cache remote config from \"\(urlString)\". Using cached version as a fallback."
             )
-            self = .existing(path: cachedFilePath)
-            return cachedFilePath
+            self = .existing(path: cachedFilePath.filepath)
+            return cachedFilePath.filepath
         }
         throw Issue.genericWarning(
             "Unable to cache remote config from \"\(urlString)\". Also didn't found cached version to fallback to."
@@ -168,12 +165,12 @@ internal extension Configuration.FileGraph.FilePath {
     }
 
     // MARK: Caching
-    private func getCachedFilePath(urlString: String, rootDirectory: String) -> String? {
+    private func getCachedFilePath(urlString: String, rootDirectory: URL) -> URL? {
         let path = filePath(for: urlString, rootDirectory: rootDirectory)
-        return FileManager.default.fileExists(atPath: path) ? path : nil
+        return path.exists ? path : nil
     }
 
-    private func cache(configString: String, from urlString: String, rootDirectory: String) -> String? {
+    private func cache(configString: String, from urlString: String, rootDirectory: URL) -> URL? {
         // Do cache maintenance
         do {
             try maintainRemoteConfigCache(rootDirectory: rootDirectory)
@@ -192,51 +189,40 @@ internal extension Configuration.FileGraph.FilePath {
 
         // Create file
         let path = filePath(for: urlString, rootDirectory: rootDirectory)
-        return FileManager.default.createFile(
-            atPath: path,
-            contents: Data(configString.utf8),
-            attributes: [:]
-        ) ? path : nil
+        do {
+            try configString.write(to: path, atomically: true, encoding: .utf8)
+            return path
+        } catch {
+            queuedPrintError("Failed cache for for remote configuration at path '\(path)'")
+            return nil
+        }
     }
 
-    private func filePath(for urlString: String, rootDirectory: String) -> String {
+    private func filePath(for urlString: String, rootDirectory: URL) -> URL {
         let invalidCharacters = [":", "<", ">", "\"", "/", "\\", "|", "?", "*"]
         var adjustedUrlString = urlString
         for char in invalidCharacters {
             adjustedUrlString = adjustedUrlString.replacingOccurrences(of: char, with: "_")
         }
         adjustedUrlString = adjustedUrlString.trimmingCharacters(in: CharacterSet(charactersIn: "."))
-        let path = Self.versionedRemoteCachePath + "/\(adjustedUrlString).yml"
-        return path.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+        return rootDirectory
+            .appending(path: Self.versionedRemoteCachePath, directoryHint: .isDirectory)
+            .appending(path: adjustedUrlString + ".yml")
     }
 
-    /// As a safeguard, this method only works when there are mocked network results.
-    /// It deletes both the .gitignore and the remote cache that may have got created by a test.
-    static func deleteGitignoreAndSwiftlintCache() {
-        guard !mockedNetworkResults.isEmpty else { return }
-
-        try? FileManager.default.removeItem(atPath: gitignorePath)
-        try? FileManager.default.removeItem(atPath: remoteCachePath)
-
-        if (try? FileManager.default.contentsOfDirectory(atPath: swiftlintPath))?.isEmpty == true {
-            try? FileManager.default.removeItem(atPath: swiftlintPath)
-        }
-    }
-
-    private func maintainRemoteConfigCache(rootDirectory: String) throws {
+    private func maintainRemoteConfigCache(rootDirectory: URL) throws {
         // Create directory if needed
-        let directory = Self.versionedRemoteCachePath
-            .bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
-        if !FileManager.default.fileExists(atPath: directory) {
-            try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
+        let directory = rootDirectory.appending(path: Self.versionedRemoteCachePath, directoryHint: .isDirectory)
+        if !directory.exists {
+            try FileManager.default.createDirectory(atPath: directory.filepath, withIntermediateDirectories: true)
         }
 
         // Delete all cache folders except for the current version's folder
-        let directoryWithoutVersionNum = directory.components(separatedBy: "/").dropLast().joined(separator: "/")
-        try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum)).forEach {
+        let directoryWithoutVersionNum = directory.deletingLastPathComponent()
+        try (try FileManager.default.subpathsOfDirectory(atPath: directoryWithoutVersionNum.filepath)).forEach {
             if !$0.contains("/"), $0 != Self.remoteCacheVersionNumber {
-                try FileManager.default.removeItem(atPath:
-                    $0.bridge().absolutePathRepresentation(rootDirectory: directoryWithoutVersionNum)
+                try FileManager.default.removeItem(
+                    atPath: directoryWithoutVersionNum.appending(path: $0, directoryHint: .isDirectory).filepath
                 )
             }
         }
@@ -244,25 +230,16 @@ internal extension Configuration.FileGraph.FilePath {
         // Add gitignore entry if needed
         let requiredGitignoreAppendix = "\(Self.remoteCachePath)"
         let newGitignoreAppendix = "# SwiftLint Remote Config Cache\n\(requiredGitignoreAppendix)"
+        let gitignoreFile = rootDirectory.appending(path: Self.gitignorePath, directoryHint: .notDirectory)
 
-        if !FileManager.default.fileExists(atPath: Self.gitignorePath) {
-            guard FileManager.default.createFile(
-                atPath: Self.gitignorePath,
-                contents: Data(newGitignoreAppendix.utf8),
-                attributes: [:]
-            ) else {
-                throw Issue.genericWarning("Issue maintaining remote config cache.")
-            }
-        } else {
-            var contents = try String(contentsOfFile: Self.gitignorePath, encoding: .utf8)
+        if gitignoreFile.exists {
+            var contents = try String(contentsOf: gitignoreFile, encoding: .utf8)
             if !contents.contains(requiredGitignoreAppendix) {
                 contents += "\n\n\(newGitignoreAppendix)"
-                try contents.write(
-                    toFile: Self.gitignorePath,
-                    atomically: true,
-                    encoding: .utf8
-                )
+                try contents.write(to: gitignoreFile, atomically: true, encoding: .utf8)
             }
+        } else {
+            try newGitignoreAppendix.write(to: gitignoreFile, atomically: true, encoding: .utf8)
         }
     }
 }

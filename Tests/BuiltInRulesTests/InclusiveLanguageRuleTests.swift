@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class InclusiveLanguageRuleTests: SwiftLintTestCase {
-    func testNonTriggeringExamplesWithNonDefaultConfig() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct InclusiveLanguageRuleTests {
+    @Test
+    func nonTriggeringExamplesWithNonDefaultConfig() {
         InclusiveLanguageRuleExamples.nonTriggeringExamplesWithConfig.forEach { example in
             let description = InclusiveLanguageRule.description
                 .with(nonTriggeringExamples: [example])
@@ -11,7 +15,8 @@ final class InclusiveLanguageRuleTests: SwiftLintTestCase {
         }
     }
 
-    func testTriggeringExamplesWithNonDefaultConfig() {
+    @Test
+    func triggeringExamplesWithNonDefaultConfig() {
         InclusiveLanguageRuleExamples.triggeringExamplesWithConfig.forEach { example in
             let description = InclusiveLanguageRule.description
                 .with(nonTriggeringExamples: [])

@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class PrefixedTopLevelConstantRuleTests: SwiftLintTestCase {
-    func testPrivateOnly() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct PrefixedTopLevelConstantRuleTests {
+    @Test
+    func privateOnly() {
         let triggeringExamples = [
             Example("private let ↓Foo = 20.0"),
             Example("fileprivate let ↓foo = 20.0"),

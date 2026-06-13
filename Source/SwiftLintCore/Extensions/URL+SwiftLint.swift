@@ -1,8 +1,29 @@
 import Foundation
 
+/// A namespace for the task-local current working directory.
+///
+/// In test code, set this per-task via `CurrentWorkingDirectory.$url.withValue(someURL) { ... }`
+/// (or use the `.workingDirectory(_:)` / `.temporaryDirectory` test traits) instead of mutating
+/// the process-wide `FileManager.default.currentDirectoryPath`. This allows tests that depend on
+/// the working directory to run in parallel without interfering with each other.
+public enum CurrentWorkingDirectory {
+    /// The current working directory for the running task.
+    ///
+    /// `nil` means "use the process-wide CWD" (`FileManager.default.currentDirectoryPath`).
+    @TaskLocal public static var url: URL?
+}
+
 public extension URL {
+    /// The current working directory.
+    ///
+    /// Returns the task-local override set via `CurrentWorkingDirectory.$url.withValue(_:)` when
+    /// present, and falls back to the process-wide `FileManager.default.currentDirectoryPath`
+    /// otherwise. Use this instead of reading `FileManager.default.currentDirectoryPath` directly.
     static var cwd: URL {
-        FileManager.default.currentDirectoryPath.url(directoryHint: .isDirectory)
+        if let url = CurrentWorkingDirectory.url {
+            return url
+        }
+        return URL(filePath: FileManager.default.currentDirectoryPath, directoryHint: .isDirectory)
     }
 
     var filepath: String {
@@ -72,14 +93,12 @@ public extension URL {
 
 public extension String {
     func url(relativeTo base: URL? = nil, directoryHint: URL.DirectoryHint = .inferFromPath) -> URL {
-        guard var base else {
-            return URL(filePath: self, directoryHint: directoryHint).standardizedFileURL
+        var resolvedBase = base ?? URL.cwd
+        if resolvedBase.isDirectory {
+            let lastComponent = resolvedBase.lastPathComponent
+            resolvedBase.deleteLastPathComponent()
+            resolvedBase.append(path: lastComponent, directoryHint: .isDirectory)
         }
-        if base.isDirectory {
-            let lastComponent = base.lastPathComponent
-            base.deleteLastPathComponent()
-            base.append(path: lastComponent, directoryHint: .isDirectory)
-        }
-        return URL(filePath: self, directoryHint: directoryHint, relativeTo: base).standardizedFileURL
+        return URL(filePath: self, directoryHint: directoryHint, relativeTo: resolvedBase).standardizedFileURL
     }
 }

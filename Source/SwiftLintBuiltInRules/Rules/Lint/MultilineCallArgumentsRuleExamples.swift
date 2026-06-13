@@ -2,6 +2,33 @@
 // swiftlint:disable type_body_length
 struct MultilineCallArgumentsRuleExamples {
     static let nonTriggeringExamples: [Example] = [
+        // MARK: - All configuration options shown
+        Example("""
+            # Configuration: allows_single_line: false, indentation: 4
+            foo(
+                param1: 1,
+                param2: false,
+                param3: []
+            )
+            """,
+            configuration: ["allows_single_line": false, "indentation": 4]
+        ),
+        Example("""
+            # Configuration: max_number_of_single_line_parameters: 2
+            foo(param1: 1, param2: false)
+            """,
+            configuration: ["max_number_of_single_line_parameters": 2]
+        ),
+        Example("""
+            # Configuration: indentation: "tabs"
+            foo(
+            \tparam1: 1,
+            \tparam2: false
+            )
+            """,
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
+        ),
+
         // MARK: - Baseline: multi-line OK
         Example("""
             foo(param1: 1,
@@ -404,6 +431,14 @@ struct MultilineCallArgumentsRuleExamples {
             )
             """),
 
+        // MARK: - Multi-line: multiple duplicate argument start lines
+        Example("""
+            foo(
+                a: 1, ↓b: 2,
+                c: 3, ↓d: 4
+            )
+            """),
+
         // MARK: - Enum-case constructor calls are linted like normal calls
         Example("""
             enum EnumCase {
@@ -508,21 +543,270 @@ struct MultilineCallArgumentsRuleExamples {
             """,
                 configuration: ["max_number_of_single_line_parameters": 2]
                ),
+        // MARK: - Tab indentation
+        Example(
+            "foo(param1: 1, ↓param2: false)",
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
+        ),
         Example("""
-            func foo(a: Int, b: Int, c: Int) -> Int { a + b + c }
-            enum EnumCase: Error { case caseOne(Int, Int, Int, Int) }
-
-            func mayThrow() throws {
-            }
-
-            do {
-                try mayThrow()
-            } catch let EnumCase.caseOne(_, _, _, _) {
-                _ = foo(a: 1, b: 2, ↓c: 3)
+            class Test {
+                func method() {
+                    if condition {
+                        foo(param1: 1, ↓param2: false)
+                    }
+                }
             }
             """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
+        ),
+        // MARK: - Comments between arguments (violation detected, no auto-correction)
+        Example(
+            "foo(param1: 1, /* comment */ ↓param2: false)",
+            configuration: ["allows_single_line": false]
+        ),
+        // MARK: - Nested single-line calls (both violate, inner correction suppressed)
+        Example(
+            "foo(bar(1, ↓2), ↓baz: 3)",
+            configuration: ["allows_single_line": false]
+        ),
+    ]
+
+    static let corrections: [Example: Example] = [
+        // MARK: - Single-line corrections
+        Example(
+            "foo(param1: 1, ↓param2: false)",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            foo(
+                param1: 1,
+                param2: false
+            )
+            """),
+        Example(
+            "foo(param1: 1, param2: false, ↓param3: [])",
+            configuration: ["max_number_of_single_line_parameters": 2]
+        ): Example("""
+            foo(
+                param1: 1,
+                param2: false,
+                param3: []
+            )
+            """),
+        Example(
+            "foo(1, ↓2)",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            foo(
+                1,
+                2
+            )
+            """),
+        Example(
+            "foo(1, b: 2, ↓3)",
+            configuration: ["max_number_of_single_line_parameters": 2]
+        ): Example("""
+            foo(
+                1,
+                b: 2,
+                3
+            )
+            """),
+        // MARK: - Multi-line: duplicate argument start line
+        Example("""
+            foo(
+                a: 1, ↓b: 2,
+                c: 3
+            )
+            """): Example("""
+            foo(
+                a: 1,
+                b: 2,
+                c: 3
+            )
+            """),
+        // MARK: - Multi-line: four args, two on same line
+        Example("""
+            foo(
+                a: 1, ↓b: 2,
+                c: 3,
+                d: 4
+            )
+            """): Example("""
+            foo(
+                a: 1,
+                b: 2,
+                c: 3,
+                d: 4
+            )
+            """),
+        // MARK: - Multi-line: multiple duplicate argument start lines
+        Example("""
+            foo(
+                a: 1, ↓b: 2,
+                c: 3, ↓d: 4
+            )
+            """): Example("""
+            foo(
+                a: 1,
+                b: 2,
+                c: 3,
+                d: 4
+            )
+            """),
+        // MARK: - Multi-line: newline after comma
+        Example("""
+            foo(
+                a: 1,
+                b: 2, ↓c: 3
+            )
+            """): Example("""
+            foo(
+                a: 1,
+                b: 2,
+                c: 3
+            )
+            """),
+        // MARK: - Call with trailing closure
+        Example(
+            "foo(a: 1, ↓b: 2) { _ in }",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            foo(
+                a: 1,
+                b: 2
+            ) { _ in }
+            """),
+        // MARK: - Closure as argument
+        Example(
+            "foo(a: 1, ↓b: { x in x })",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            foo(
+                a: 1,
+                b: { x in x }
+            )
+            """),
+        // MARK: - Enum case call
+        Example(
+            "Enum.foo(param1: 1, ↓param2: false)",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            Enum.foo(
+                param1: 1,
+                param2: false
+            )
+            """),
+        // MARK: - Tuple argument (stays on same line)
+        Example(
+            "foo(a: (1, 2), ↓b: 3)",
+            configuration: ["max_number_of_single_line_parameters": 1]
+        ): Example("""
+            foo(
+                a: (1, 2),
+                b: 3
+            )
+            """),
+        // MARK: - Enum-case constructor call
+        Example(
+            "EnumCase.first(one: 1, ↓two: 2)",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            EnumCase.first(
+                one: 1,
+                two: 2
+            )
+            """),
+        // MARK: - Multi-line with tuple argument
+        Example("""
+            foo(
+                a: (1, 2), ↓b: 3
+            )
+            """, configuration: ["max_number_of_single_line_parameters": 1]): Example("""
+            foo(
+                a: (1, 2),
+                b: 3
+            )
+            """),
+        // MARK: - Custom indentation_width (2 spaces)
+        Example(
+            "foo(param1: 1, ↓param2: false)",
+            configuration: ["allows_single_line": false, "indentation": 2]
+        ): Example("""
+            foo(
+              param1: 1,
+              param2: false
+            )
+            """),
+        // MARK: - Custom indentation_width (8 spaces)
+        Example(
+            "foo(param1: 1, ↓param2: false)",
+            configuration: ["allows_single_line": false, "indentation": 8]
+        ): Example("""
+            foo(
+                    param1: 1,
+                    param2: false
+            )
+            """),
+        // MARK: - Nested indentation (4 spaces default)
+        Example("""
+            class Test {
+                func method() {
+                    if condition {
+                        foo(param1: 1, ↓param2: false)
+                    }
+                }
+            }
+            """,
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            class Test {
+                func method() {
+                    if condition {
+                        foo(
+                            param1: 1,
+                            param2: false
+                        )
+                    }
+                }
+            }
+            """),
+        // MARK: - Tab indentation corrections
+        Example(
+            "foo(param1: 1, ↓param2: false)",
+            configuration: ["allows_single_line": false, "indentation": "tabs"]
+        ): Example("""
+            foo(
+            \tparam1: 1,
+            \tparam2: false
+            )
+            """),
+        // MARK: - Nested calls (inner call already correct, outer has violation)
+        Example(
+            "foo(bar(1), ↓baz: 3)",
+            configuration: ["allows_single_line": false]
+        ): Example("""
+            foo(
+                bar(1),
+                baz: 3
+            )
+            """),
+        // MARK: - Nested multiline (inner call already multiline, outer duplicate start line)
+        Example("""
+            foo(
+                bar(
+                    1,
+                    2
+                ), ↓baz: 3
+            )
+            """): Example("""
+            foo(
+                bar(
+                    1,
+                    2
+                ),
+                baz: 3
+            )
+            """),
     ]
 }
 // swiftlint:enable type_body_length

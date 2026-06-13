@@ -8,6 +8,10 @@ struct LegacyNSGeometryFunctionsRule: Rule {
         identifier: "legacy_nsgeometry_functions",
         name: "Legacy NSGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
+        rationale: """
+        Prefer the more modern extension properties API for consistency and portability. The legacy
+        functions are only supported on macOS and Mac Catalyst.
+        """,
         kind: .idiomatic,
         nonTriggeringExamples: [
             Example("rect.width"),

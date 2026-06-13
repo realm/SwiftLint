@@ -315,6 +315,33 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
         }
     }
 
+    func testCommandLineParentConfigs() {
+        guard !isRunningWithBazel else {
+            return
+        }
+
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.parentConfigCommandLine.filepath))
+
+        // Supplying the parent config via the command line should produce the same merged
+        // configuration as declaring `parent_config:` inside the child config itself.
+        assertEqualExceptForFileGraph(
+            Configuration(
+                configurationFiles: ["child.yml".url()],
+                parentConfigurationFiles: ["parent.yml".url()]
+            ),
+            Configuration(configurationFiles: ["main_with_inline_parent.yml".url()])
+        )
+
+        // And both must equal the pre-merged expected output.
+        assertEqualExceptForFileGraph(
+            Configuration(
+                configurationFiles: ["child.yml".url()],
+                parentConfigurationFiles: ["parent.yml".url()]
+            ),
+            Configuration(configurationFiles: ["expected.yml".url()])
+        )
+    }
+
     func testConfigCycleDetection() {
         for path in [
             Mock.Dir.childConfigCycle1,

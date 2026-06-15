@@ -83,6 +83,9 @@ final class GlobTests: SwiftLintTestCase {
             "Level1/Level2/Level3/Level3.swift",
             "NestedConfig/Test/Main.swift",
             "NestedConfig/Test/Sub/Sub.swift",
+            "NestedParentConfig/Test/Chain/Chain.swift",
+            "NestedParentConfig/Test/Child/Child.swift",
+            "NestedParentConfig/Test/Sub/Sub.swift",
         ].map { mockPath.appending(path: $0) }
 
         let files = Glob.resolveGlob(mockPath.appending(path: "**/*.swift"))

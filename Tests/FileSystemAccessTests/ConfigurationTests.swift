@@ -354,6 +354,7 @@ final class ConfigurationTests: SwiftLintTestCase { // swiftlint:disable:this ty
                                                         excludeByPrefix: false)
         let filenames = paths.map(\.lastPathComponent).sorted()
         let expectedFilenames = [
+            "Chain.swift", "Child.swift",
             "DirectoryLevel1.swift",
             "Level0.swift", "Level1.swift", "Level2.swift", "Level3.swift",
             "Main.swift", "Sub.swift",
@@ -542,6 +543,7 @@ final class ConfigurationTests: SwiftLintTestCase { // swiftlint:disable:this ty
                 "ChildConfig".url(),
                 "ParentConfig".url(),
                 "NestedConfig".url(),
+                "NestedParentConfig".url(),
             ]
         )
         let paths = configuration.lintablePaths(inPath: URL.cwd,
@@ -560,6 +562,7 @@ final class ConfigurationTests: SwiftLintTestCase { // swiftlint:disable:this ty
                 "ChildConfig".url(),
                 "ParentConfig".url(),
                 "NestedConfig".url(),
+                "NestedParentConfig".url(),
             ]
         )
         let paths = configuration.lintablePaths(inPath: URL.cwd,

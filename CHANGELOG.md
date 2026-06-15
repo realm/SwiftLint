@@ -42,6 +42,15 @@
 
 ### Bug Fixes
 
+* Honor `parent_config` and `child_config` keys in nested `.swiftlint.yml`
+  files. Previously these keys were silently dropped when the file was
+  discovered as a nested config during linting, causing per-directory
+  configs that pointed to a shared rule set (a common pattern for monorepos
+  and package fleets) to fall back to the parent's rules with no warning.
+  Nested configs are now resolved through the same `parent_config` /
+  `child_config` graph as the main config, with per-graph cycle detection.
+  [#3540](https://github.com/realm/SwiftLint/issues/3540)
+
 * Fix `literal_expression_end_indentation` autocorrection deleting source code
   when the closing bracket of a multiline literal shares a line with the end of
   a multiline last element (e.g. `...))]`). The corrector assumed everything

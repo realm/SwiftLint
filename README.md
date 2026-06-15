@@ -1060,8 +1060,12 @@ main configuration).
 `.swiftlint.yml` files are only considered as a nested configuration if they
 have not been used to build the main configuration already (e. g. by having
 been referenced via something like `child_config: Folder/.swiftlint.yml`).
-Also, `parent_config`/`child_config` specifications of nested configurations
-are getting ignored because there's no sense to that.
+
+Nested configurations may use `parent_config` and `child_config` references the
+same way as the main configuration — this is useful when several directories
+should share a delta on top of the same upstream rule set, for example a
+central `tests.yml` referenced from every `Tests/.swiftlint.yml` via
+`parent_config:`.
 
 If one (or more) SwiftLint file(s) are explicitly specified via the `--config`
 parameter, that configuration will be treated as an override, no matter whether

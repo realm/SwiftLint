@@ -25,6 +25,10 @@ enum Mock {
         static var childConfigCycle4: URL { level0.appending(path: "ChildConfig/Cycle4/") }
         static var parentConfigTest1: URL { level0.appending(path: "ParentConfig/Test1/") }
         static var parentConfigTest2: URL { level0.appending(path: "ParentConfig/Test2/") }
+        static var nestedParentConfig: URL { level0.appending(path: "NestedParentConfig/Test/") }
+        static var nestedParentConfigSub: URL { nestedParentConfig.appending(path: "Sub/") }
+        static var nestedParentConfigChild: URL { nestedParentConfig.appending(path: "Child/") }
+        static var nestedParentConfigChain: URL { nestedParentConfig.appending(path: "Chain/") }
         static var parentConfigCycle1: URL { level0.appending(path: "ParentConfig/Cycle1/") }
         static var parentConfigCycle2: URL { level0.appending(path: "ParentConfig/Cycle2/") }
         static var parentConfigCycle3: URL { level0.appending(path: "ParentConfig/Cycle3/") }
@@ -56,6 +60,9 @@ enum Mock {
         }
         static var _3: URL { Dir.level3.appending(path: Configuration.defaultFileName) }
         static var nested: URL { Dir.nested.appending(path: Configuration.defaultFileName) }
+        static var nestedParentConfig: URL {
+            Dir.nestedParentConfig.appending(path: Configuration.defaultFileName)
+        }
     }
 
     // MARK: Swift File Paths
@@ -65,6 +72,9 @@ enum Mock {
         static var _2: URL { Dir.level2.appending(path: "Level2.swift") }
         static var _3: URL { Dir.level3.appending(path: "Level3.swift") }
         static var nestedSub: URL { Dir.nestedSub.appending(path: "Sub.swift") }
+        static var nestedParentConfigSub: URL { Dir.nestedParentConfigSub.appending(path: "Sub.swift") }
+        static var nestedParentConfigChild: URL { Dir.nestedParentConfigChild.appending(path: "Child.swift") }
+        static var nestedParentConfigChain: URL { Dir.nestedParentConfigChain.appending(path: "Chain.swift") }
     }
 
     // MARK: Configurations
@@ -84,5 +94,8 @@ enum Mock {
         }
         static var _3: Configuration { Configuration(configurationFiles: [Yml._3]) }
         static var nested: Configuration { Configuration(configurationFiles: [Yml.nested]) }
+        static var nestedParentConfig: Configuration {
+            Configuration(configurationFiles: [Yml.nestedParentConfig])
+        }
     }
 }

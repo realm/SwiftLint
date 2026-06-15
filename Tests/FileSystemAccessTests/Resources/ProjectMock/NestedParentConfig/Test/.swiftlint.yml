@@ -1,0 +1,3 @@
+line_length: 80
+disabled_rules:
+  - todo

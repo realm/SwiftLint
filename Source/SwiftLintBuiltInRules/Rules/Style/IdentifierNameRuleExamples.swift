@@ -2,6 +2,7 @@ internal struct IdentifierNameRuleExamples {
     static let nonTriggeringExamples = [
         Example("let myLet = 0"),
         Example("var myVar = 0"),
+        Example("let `my 🤷‍♂️ id` = 0", configuration: ["excluded": ["`.+`"]]),
         Example("private let _myLet = 0"),
         Example("private func _myFunc() {}"),
         Example("fileprivate let _myLet = 0"),
@@ -46,6 +47,7 @@ internal struct IdentifierNameRuleExamples {
         Example("private let ↓_myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
         Example("let ↓i = 0"),
         Example("var ↓aa = 0"),
+        Example("let ↓`my 🤷‍♂️ id` = 0"),
         Example("private let ↓_i = 0"),
         Example(
             "func ↓IsOperator(name: String) -> Bool",

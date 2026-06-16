@@ -26,7 +26,7 @@ private extension IdentifierNameRule {
         private lazy var nameConfiguration = configuration.nameConfiguration
 
         override func visitPost(_ node: AccessorParametersSyntax) {
-            collectViolations(from: .variable(name: node.name.text, isStatic: false, isPrivate: false), on: node.name)
+            collectViolations(from: .variable(name: node.name, isStatic: false, isPrivate: false), on: node.name)
         }
 
         override func visitPost(_ node: ClosureParameterSyntax) {
@@ -35,31 +35,31 @@ private extension IdentifierNameRule {
             }
             let name = node.secondName ?? node.firstName
             collectViolations(
-                from: .variable(name: name.text.leadingDollarStripped, isStatic: false, isPrivate: false),
+                from: .closureParameter(name: name),
                 on: name
             )
         }
 
         override func visitPost(_ node: ClosureShorthandParameterSyntax) {
             collectViolations(
-                from: .variable(name: node.name.text.leadingDollarStripped, isStatic: false, isPrivate: false),
+                from: .closureParameter(name: node.name),
                 on: node.name
             )
         }
 
         override func visitPost(_ node: EnumCaseElementSyntax) {
-            collectViolations(from: .enumElement(name: node.name.text), on: node.name)
+            collectViolations(from: .enumElement(name: node.name), on: node.name)
         }
 
         override func visitPost(_ node: EnumCaseParameterSyntax) {
             if let name = node.secondName ?? node.firstName {
-                collectViolations(from: .variable(name: name.text, isStatic: false, isPrivate: false), on: name)
+                collectViolations(from: .variable(name: name, isStatic: false, isPrivate: false), on: name)
             }
         }
 
         override func visitPost(_ node: FunctionDeclSyntax) {
-            let name = node.name.text
-            if node.modifiers.contains(keyword: .override) || isOperator(name: name) {
+            let name = node.name
+            if node.modifiers.contains(keyword: .override) || isOperator(name: name.text) {
                 return
             }
             let type = NamedDeclType.function(
@@ -76,7 +76,7 @@ private extension IdentifierNameRule {
             }
             let name = (node.secondName ?? node.firstName)
             collectViolations(
-                from: .variable(name: name.text, isStatic: false, isPrivate: false),
+                from: .variable(name: name, isStatic: false, isPrivate: false),
                 on: name
             )
         }
@@ -86,7 +86,7 @@ private extension IdentifierNameRule {
                 return
             }
             collectViolations(
-                from: .variable(name: node.name.text, isStatic: false, isPrivate: false),
+                from: .variable(name: node.name, isStatic: false, isPrivate: false),
                 on: node.name
             )
         }
@@ -97,7 +97,7 @@ private extension IdentifierNameRule {
                 return
             }
             let type = NamedDeclType.variable(
-                name: node.identifier.text,
+                name: node.identifier,
                 isStatic: varDecl?.modifiers.contains(keyword: .static) ?? false,
                 isPrivate: varDecl?.modifiers.containsPrivateOrFileprivate() ?? false
             )
@@ -115,7 +115,7 @@ private extension IdentifierNameRule {
         }
 
         private func violates(_ type: NamedDeclType) -> (reason: String, severity: ViolationSeverity)? {
-            guard !nameConfiguration.shouldExclude(name: type.name), type.name != "_",
+            guard !nameConfiguration.shouldExclude(name: type.tokenText), type.name != "_",
                   let firstCharacter = type.name.first else {
                 return nil
             }
@@ -176,21 +176,23 @@ private extension IdentifierPatternSyntax {
 }
 
 private enum NamedDeclType: CustomStringConvertible {
-    case function(name: String, resolvedName: String, isPrivate: Bool)
-    case enumElement(name: String)
-    case variable(name: String, isStatic: Bool, isPrivate: Bool)
+    case function(name: TokenSyntax, resolvedName: String, isPrivate: Bool)
+    case enumElement(name: TokenSyntax)
+    case variable(name: TokenSyntax, isStatic: Bool, isPrivate: Bool)
+    case closureParameter(name: TokenSyntax)
 
     var description: String {
         switch self {
         case let .function(_, resolvedName, _): "Function name '\(resolvedName)'"
-        case let .enumElement(name): "Enum element name '\(name)'"
-        case let .variable(name, _, _): "Variable name '\(name)'"
+        case .enumElement: "Enum element name '\(tokenText)'"
+        case .variable: "Variable name '\(tokenText)'"
+        case .closureParameter: "Variable name '\(tokenText)'"
         }
     }
 
     var isStatic: Bool {
         switch self {
-        case .function, .enumElement: false
+        case .function, .enumElement, .closureParameter: false
         case let .variable(_, isStatic, _): isStatic
         }
     }
@@ -198,18 +200,22 @@ private enum NamedDeclType: CustomStringConvertible {
     var isPrivate: Bool {
         switch self {
         case let .function(_, _, isPrivate): isPrivate
-        case .enumElement: false
+        case .enumElement, .closureParameter: false
         case let .variable(_, _, isPrivate): isPrivate
         }
     }
 
-    var name: String {
-        let name = switch self {
-        case let .function(name, _, _): name
-        case let .enumElement(name): name
-        case let .variable(name, _, _): name
+    var tokenText: String {
+        switch self {
+        case let .function(name, _, _): name.text
+        case let .enumElement(name): name.text
+        case let .variable(name, _, _): name.text
+        case let .closureParameter(name): name.text.leadingDollarStripped
         }
-        return name
+    }
+
+    var name: String {
+        tokenText
             .trimmingCharacters(in: CharacterSet(charactersIn: "`"))
             .strippingLeadingUnderscore(if: isPrivate)
     }

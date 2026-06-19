@@ -22,7 +22,7 @@ jobs:
     outputs:
       base-branch: ${{ steps.extract.outputs.base-branch }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.event.release.tag_name }}
           persist-credentials: false
@@ -56,7 +56,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ needs.extract-base-branch.outputs.base-branch }}
           token: ${{ secrets[format('PERSONAL_GITHUB_TOKEN_{0}', needs.setup-credentials.outputs.author_uppercase)] }}
@@ -107,7 +107,7 @@ jobs:
       contents: read
     steps:
       - &checkout-step
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.event.release.tag_name }}
           persist-credentials: false

@@ -45,9 +45,6 @@ struct InvisibleCharacterRule: Rule {
             Example(#"let s = "Hel↓‌lo" + "World" // string concatenation with U+200C"#),
             Example(#"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#),
             Example("""
-            //
-            // additional_code_points: ["00AD"]
-            //
             let s = "Hello↓­World"
             """,
             configuration: [
@@ -55,9 +52,6 @@ struct InvisibleCharacterRule: Rule {
             ]
             ),
             Example("""
-            //
-            // additional_code_points: ["200D"]
-            //
             let s = "Hello↓‍World"
             """,
             configuration: [

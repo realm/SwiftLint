@@ -237,8 +237,7 @@ internal struct FileTypesOrderRuleExamples {
             }
         }
         """),
-        Example(
-            """
+        Example("""
             ↓extension Main {}
 
             #if canImport(Darwin)
@@ -248,6 +247,25 @@ internal struct FileTypesOrderRuleExamples {
             struct Main {
                 let value: Int
             }
+            """,
+            excludeFromDocumentation: true
+        ),
+        Example("""
+            import Foundation
+            ↓extension S { struct C {} }
+            struct S: View {}
+            extension S { struct D {} }
+            #Preview { S() }
+            """,
+            excludeFromDocumentation: true
+        ),
+        Example("""
+            import Foundation
+            protocol P {}
+            ↓extension P {}
+            ↓struct S {}
+            func f() {}
+            actor A {}
             """,
             excludeFromDocumentation: true
         ),

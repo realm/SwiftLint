@@ -28,17 +28,13 @@ private extension FileTypesOrderRule {
                 return
             }
 
-            let orderedFileTypePositions = fileTypePositions.sorted { lhs, rhs in
-                lhs.position < rhs.position
-            }
-
             var lastMatchingIndex = -1
             for expectedTypes in configuration.order {
                 var potentialViolatingIndexes = [Int]()
 
                 let startIndex = lastMatchingIndex + 1
-                for index in startIndex..<orderedFileTypePositions.count {
-                    let fileType = orderedFileTypePositions[index].fileType
+                for index in startIndex..<fileTypePositions.count {
+                    let fileType = fileTypePositions[index].fileType
                     if expectedTypes.contains(fileType) {
                         lastMatchingIndex = index
                     } else {
@@ -48,13 +44,13 @@ private extension FileTypesOrderRule {
 
                 let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
                 for index in violatingIndexes {
-                    let fileType = orderedFileTypePositions[index].fileType.rawValue
+                    let fileType = fileTypePositions[index].fileType.rawValue
                     let expected = expectedTypes.map(\.rawValue).joined(separator: ",")
                     let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1))
                         ? "An"
                         : "A"
                     violations.append(.init(
-                        position: orderedFileTypePositions[index].position,
+                        position: fileTypePositions[index].position,
                         reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'"
                     ))
                 }

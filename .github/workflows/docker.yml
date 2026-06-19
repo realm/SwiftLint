@@ -64,12 +64,12 @@ jobs:
     needs: set-context
     steps:
       - &checkout-step-pr
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: needs.set-context.outputs.checkout-ref == 'pr'
         with:
           persist-credentials: false
       - &checkout-step-ref
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: needs.set-context.outputs.checkout-ref != 'pr'
         with:
           ref: ${{ needs.set-context.outputs.checkout-ref }}

@@ -114,7 +114,7 @@ private extension FileTypesOrderRule {
         }
 
         private func mainTypeCandidateInfo(for decl: NamedGroupDecl) -> (id: SyntaxIdentifier, bodyLength: Int)? {
-            if [.enumDecl, .classDecl, .structDecl].contains(decl.kind),
+            if [.actorDecl, .classDecl, .enumDecl, .structDecl].contains(decl.kind),
                !hasExcludedInheritedType(decl.inheritanceClause) {
                 return (id: decl.id, bodyLength: bodyLength(of: decl.memberBlock))
             }

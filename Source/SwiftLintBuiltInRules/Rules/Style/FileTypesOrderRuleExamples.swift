@@ -252,9 +252,17 @@ internal struct FileTypesOrderRuleExamples {
         ),
         Example("""
             import Foundation
-            ↓extension S { struct C {} }
-            struct S: View {}
-            extension S { struct D {} }
+            ↓extension S {
+                struct C {
+
+                }
+            }
+            struct S: View {
+
+            }
+            extension S {
+                struct D {}
+            }
             #Preview { S() }
             """,
             excludeFromDocumentation: true
@@ -263,9 +271,11 @@ internal struct FileTypesOrderRuleExamples {
             import Foundation
             protocol P {}
             ↓extension P {}
-            ↓struct S {}
+            struct S {}
             func f() {}
-            actor A {}
+            actor A {
+                // Empty.
+            }
             """,
             excludeFromDocumentation: true
         ),

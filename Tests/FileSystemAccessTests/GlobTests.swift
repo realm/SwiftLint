@@ -130,11 +130,14 @@ final class GlobTests: SwiftLintTestCase {
         XCTAssertEqual(lhs.sorted(by: compare), rhs.sorted(by: compare), file: file, line: line)
     }
 
+    // swiftlint:disable:next function_body_length
     func testGlobstarToleratesUnreadableSubdirectory() throws {
+#if !os(Windows)
         try XCTSkipIf(
             getuid() == 0,
             "Permission-bit tests cannot exercise the tolerance fix when running as root."
         )
+#endif
 
         let fileManager = FileManager.default
         let root = fileManager.temporaryDirectory.appendingPathComponent(
@@ -157,6 +160,43 @@ final class GlobTests: SwiftLintTestCase {
             try "let x = 1".write(to: path, atomically: true, encoding: .utf8)
         }
 
+#if os(Windows)
+        let username = ProcessInfo.processInfo.environment["USERNAME"] ?? ""
+        try XCTSkipIf(username.isEmpty, "Cannot determine current Windows username to set ACLs.")
+
+        // Deny read/list permissions for this directory to trigger traversal errors.
+        let icaclsPath = URL(filePath: "C:/Windows/System32/icacls.exe", directoryHint: .notDirectory)
+        func runIcacls(_ arguments: [String]) throws -> Int32 {
+            let process = Process()
+            process.executableURL = icaclsPath
+            process.arguments = arguments
+            try process.run()
+            process.waitUntilExit()
+            return process.terminationStatus
+        }
+
+        let denyExitCode = try runIcacls([
+            unreadableDir.filepath,
+            "/deny",
+            "\(username):(RX)",
+        ])
+        try XCTSkipIf(denyExitCode != 0, "Failed to make test directory unreadable on Windows.")
+
+        defer {
+            _ = try? runIcacls([
+                unreadableDir.filepath,
+                "/remove:d",
+                username,
+            ])
+            try? fileManager.removeItem(atPath: root.filepath)
+        }
+
+        let canStillAccess = (try? fileManager.contentsOfDirectory(atPath: unreadableDir.filepath)) != nil
+        try XCTSkipIf(
+            canStillAccess,
+            "User has elevated privileges allowing bypass of deny ACLs; cannot test tolerance on Windows runners."
+        )
+#else
         // Make `a/b/c` unreadable. This is what previously made
         // `subpathsOfDirectory(atPath:)` throw and drop every directory it had
         // collected so far, leaving only the search root globbed.
@@ -166,6 +206,7 @@ final class GlobTests: SwiftLintTestCase {
             try? fileManager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: unreadableDir.filepath)
             try? fileManager.removeItem(atPath: root.filepath)
         }
+#endif
 
         let matches = Glob.resolveGlob(root.appending(components: "**", "*.swift"))
 

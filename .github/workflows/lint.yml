@@ -16,12 +16,14 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - uses: ./.github/actions/bazel-linux-build
-        name: Build SwiftLint with Bazel
+      - uses: ./.github/actions/bazel-linux
+        name: Run SwiftLint with Bazel
+        with:
+          mode: run
+          target: //:swiftlint
+          args: lint --reporter github-actions-logging --strict 2> /dev/null
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
-      - name: Lint
-        run: ./bazel-bin/swiftlint lint --reporter github-actions-logging --strict 2> /dev/null
   lint-markdown:
     name: Markdown
     runs-on: ubuntu-slim

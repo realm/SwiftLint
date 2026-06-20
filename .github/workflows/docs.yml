@@ -19,8 +19,9 @@ jobs:
         with:
           bundler-cache: true
       - name: Build SwiftLint and SourceKitten
-        uses: ./.github/actions/bazel-linux-build
+        uses: ./.github/actions/bazel-linux
         with:
+          mode: build
           target: "//:swiftlint @SourceKittenFramework//:sourcekitten"
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}

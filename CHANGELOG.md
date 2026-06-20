@@ -102,6 +102,11 @@
 
 ### Enhancements
 
+* Add a `sort_order` option to the `sorted_imports` rule for choosing between
+  case-insensitive and lexicographic import ordering.
+  [ayushnagpal570-ai](https://github.com/ayushnagpal570-ai)
+  [#4810](https://github.com/realm/SwiftLint/issues/4810)
+
 * Treat extensions like classes in the `prefer_self_in_static_references`
   rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)

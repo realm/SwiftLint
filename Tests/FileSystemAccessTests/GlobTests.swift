@@ -130,10 +130,6 @@ final class GlobTests: SwiftLintTestCase {
         XCTAssertEqual(lhs.sorted(by: compare), rhs.sorted(by: compare), file: file, line: line)
     }
 
-    /// One unreadable subdirectory in the search tree must not cause the entire glob to drop every
-    /// nested file. The previous implementation used `subpathsOfDirectory(atPath:)`, which throws
-    /// on the first item it cannot access and discards everything collected so far — on a 50k-file
-    /// project that left only the search root globbed, silently ignoring all nested files.
     func testGlobstarToleratesUnreadableSubdirectory() throws {
         try XCTSkipIf(
             getuid() == 0,
@@ -141,52 +137,54 @@ final class GlobTests: SwiftLintTestCase {
         )
 
         let fileManager = FileManager.default
-        let root = NSTemporaryDirectory().stringByAppendingPathComponent(
+        let root = fileManager.temporaryDirectory.appendingPathComponent(
             "SwiftLintGlobTolerance-\(UUID().uuidString)"
         )
-        let unreadableDir = root.stringByAppendingPathComponent("a/b/c")
-        let openDir = root.stringByAppendingPathComponent("a/x")
-        try fileManager.createDirectory(atPath: unreadableDir, withIntermediateDirectories: true)
-        try fileManager.createDirectory(atPath: openDir, withIntermediateDirectories: true)
+        let unreadableDir = root.appending(path: "a/b/c")
+        let openDir = root.appending(path: "a/x")
+        try fileManager.createDirectory(at: unreadableDir, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: openDir, withIntermediateDirectories: true)
 
-        for path in [
-            root.stringByAppendingPathComponent("top.swift"),
-            root.stringByAppendingPathComponent("a/inA.swift"),
-            root.stringByAppendingPathComponent("a/b/inB.swift"),
-            unreadableDir.stringByAppendingPathComponent("inC.swift"),
-            openDir.stringByAppendingPathComponent("inX.swift"),
-        ] {
-            try "let x = 1".write(toFile: path, atomically: true, encoding: .utf8)
+        let paths = [
+            root.appending(path: "top.swift"),
+            root.appending(path: "a/inA.swift"),
+            root.appending(path: "a/b/inB.swift"),
+            unreadableDir.appending(path: "inC.swift"),
+            openDir.appending(path: "inX.swift"),
+        ]
+
+        for path in paths {
+            try "let x = 1".write(to: path, atomically: true, encoding: .utf8)
         }
 
         // Make `a/b/c` unreadable. This is what previously made
         // `subpathsOfDirectory(atPath:)` throw and drop every directory it had
         // collected so far, leaving only the search root globbed.
-        try fileManager.setAttributes([.posixPermissions: 0o000], ofItemAtPath: unreadableDir)
+        try fileManager.setAttributes([.posixPermissions: 0o000], ofItemAtPath: unreadableDir.filepath)
         defer {
             // Restore permissions so cleanup can remove the tree even if the test fails.
-            try? fileManager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: unreadableDir)
-            try? fileManager.removeItem(atPath: root)
+            try? fileManager.setAttributes([.posixPermissions: 0o755], ofItemAtPath: unreadableDir.filepath)
+            try? fileManager.removeItem(atPath: root.filepath)
         }
 
-        let matches = Glob.resolveGlob(root.stringByAppendingPathComponent("**/*.swift"))
+        let matches = Glob.resolveGlob(root.appending(components: "**", "*.swift"))
 
         // Siblings of the unreadable subtree must still resolve. Without the fix only top.swift
         // (the search-root's own pattern) would have matched.
-        XCTAssertTrue(matches.contains { $0.hasSuffix("/top.swift") }, "top.swift missing")
+        XCTAssertTrue(matches.contains { $0.lastPathComponent == "top.swift" }, "top.swift missing")
         XCTAssertTrue(
-            matches.contains { $0.hasSuffix("/a/inA.swift") }, "a/inA.swift missing — tolerance regressed"
+            matches.contains { $0.path.hasSuffix("/a/inA.swift") }, "a/inA.swift missing — tolerance regressed"
         )
         XCTAssertTrue(
-            matches.contains { $0.hasSuffix("/a/b/inB.swift") }, "a/b/inB.swift missing — tolerance regressed"
+            matches.contains { $0.path.hasSuffix("/a/b/inB.swift") }, "a/b/inB.swift missing — tolerance regressed"
         )
         XCTAssertTrue(
-            matches.contains { $0.hasSuffix("/a/x/inX.swift") }, "a/x/inX.swift missing — tolerance regressed"
+            matches.contains { $0.path.hasSuffix("/a/x/inX.swift") }, "a/x/inX.swift missing — tolerance regressed"
         )
 
         // The unreadable subtree is genuinely inaccessible.
         XCTAssertFalse(
-            matches.contains { $0.hasSuffix("/inC.swift") }, "inC.swift should not be reachable"
+            matches.contains { $0.lastPathComponent == "inC.swift" }, "inC.swift should not be reachable"
         )
     }
 }

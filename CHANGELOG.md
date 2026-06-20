@@ -76,6 +76,15 @@
   [leno23](https://github.com/leno23)
   [#5648](https://github.com/realm/SwiftLint/issues/5648)
 
+* Make `Glob.expandGlobstar` tolerant of unreadable directory entries on
+  large trees. `subpathsOfDirectory(atPath:)` aborted the entire glob
+  expansion on the first unreadable entry (permission denied, dangling
+  symlink, file removed mid-scan), causing most files in large projects to
+  be silently ignored. Replace the directory walk with a lazy `URL`
+  enumerator that has a per-item error handler so unreadable items are
+  skipped individually.  
+  [Chupik](https://github.com/Chupik)
+
 * Avoid false positives in `prefer_self_in_static_references` for generic
   constraints and generic parameter bounds such as `where A: P` and `<A: P>`
   in classes and extensions.  

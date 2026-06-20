@@ -144,31 +144,35 @@ struct Glob {
         }
         var parts = pattern.filepath.components(separatedBy: "**")
         let firstPart = parts.removeFirst()
-        let fileManager = FileManager.default
-        guard firstPart.isEmpty || fileManager.fileExists(atPath: firstPart) else {
+        guard firstPart.isEmpty || firstPart.url().exists else {
             return []
         }
-        let searchPath = firstPart.isEmpty ? fileManager.currentDirectoryPath : firstPart
-        var directories = [URL]()
-        do {
-            directories = try fileManager.subpathsOfDirectory(atPath: searchPath).compactMap { subpath in
-                let fullPath = firstPart.url().appending(path: subpath)
-                guard fullPath.isDirectory else { return nil }
-                return fullPath
+        let searchPath = firstPart.isEmpty ? URL.cwd : firstPart.url(directoryHint: .isDirectory)
+        let enumerator = FileManager.default.enumerator(
+            at: searchPath,
+            includingPropertiesForKeys: [.isDirectoryKey],
+            errorHandler: { _, error in
+                Issue.genericWarning("Error parsing file system item: \(error)").print()
+                return true
             }
-        } catch {
-            Issue.genericWarning("Error parsing file system item: \(error)").print()
-        }
+        )
+        var directories = enumerator?.compactMap { item -> URL? in
+            guard let url = item as? URL,
+                  (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true else {
+                return nil
+            }
+            return url
+        } ?? []
 
         // Check the base directory for the glob star as well.
-        directories.insert(firstPart.url(), at: 0)
+        directories.insert(firstPart.url(directoryHint: .isDirectory), at: 0)
 
         var lastPart = parts.joined(separator: "**")
         var results = [URL]()
 
         // Include the globstar root directory ("dir/") in a pattern like "dir/**" or "dir/**/"
         if lastPart.isEmpty {
-            results.append(firstPart.url())
+            results.append(firstPart.url(directoryHint: .isDirectory))
             lastPart = "*"
         }
 

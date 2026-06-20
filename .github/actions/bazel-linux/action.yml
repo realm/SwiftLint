@@ -1,0 +1,38 @@
+name: Bazel Linux
+description: Common steps to build and/or run Bazel targets with SwiftLint on GitHub Linux runners
+inputs:
+  target:
+    description: The Bazel target to build/run
+    default: //:swiftlint
+  mode:
+    description: Mode of operation - 'build' to build the target, 'run' to build and run it
+    default: build
+  args:
+    description: Arguments passed to the active command (build or run)
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Create ci.bazelrc file
+      shell: bash
+      run: echo "$CI_BAZELRC_FILE_CONTENT" | base64 -d > ci.bazelrc
+      env:
+        CI_BAZELRC_FILE_CONTENT: ${{ env.CI_BAZELRC_FILE_CONTENT }}
+    - name: Apply patch
+      shell: bash
+      run: |
+        git apply --ignore-whitespace .bcr/patches/no-warnings-as-errors.patch
+        git update-index --assume-unchanged BUILD
+    - name: Update environment
+      shell: bash
+      run: |
+        echo "/usr/share/swift/usr/bin" >> $GITHUB_PATH
+        echo "CC=clang" >> $GITHUB_ENV
+    - name: Build with Bazel
+      if: ${{ inputs.mode == 'build' }}
+      shell: bash
+      run: bazel build --config release ${{ inputs.target }} ${{ inputs.args }}
+    - name: Run with Bazel
+      if: ${{ inputs.mode == 'run' }}
+      shell: bash
+      run: bazel run --config release ${{ inputs.target }} -- ${{ inputs.args }}

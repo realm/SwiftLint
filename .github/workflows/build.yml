@@ -10,8 +10,15 @@ permissions:
 
 jobs:
   bazel_linux:
-    name: Bazel, Linux, Swift 6.3 # pre-installed
+    name: Bazel ${{ matrix.bazel_version }}, Linux, Swift 6.3 # pre-installed
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - bazel_version: 7.6.1
+          - bazel_version: 8.7.0
+          - bazel_version: 9.1.1
     steps:
       - &checkout-step
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -20,6 +27,7 @@ jobs:
       - uses: ./.github/actions/bazel-linux
         name: Build SwiftLint with Bazel
         env:
+          USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Verify SourceKit dynamic loading behavior
         run: bash tools/verify-sourcekit-loading.sh bazel-bin/swiftlint .

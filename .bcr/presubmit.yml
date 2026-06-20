@@ -1,8 +1,14 @@
+matrix:
+  bazel:
+    - 7.x
+    - 8.x
+    - 9.x
+
 tasks:
   verify_targets_linux:
-    name: Verify Targets (Linux)
+    name: Verify Targets (Linux), Bazel ${{ matrix.bazel }}
     platform: ubuntu2004
-    bazel: 7.x
+    bazel: ${{ matrix.bazel }}
     environment:
       CC: "clang"
       SWIFT_VERSION: "6.0.3"
@@ -17,9 +23,9 @@ tasks:
     build_targets:
       - '@swiftlint//:swiftlint'
   verify_targets_macos:
-    name: Verify Targets (macOS)
+    name: Verify Targets (macOS), Bazel ${{ matrix.bazel }}
     platform: macos
-    bazel: 7.x
+    bazel: ${{ matrix.bazel }}
     build_targets:
       - '@swiftlint//:swiftlint'
     build_flags:

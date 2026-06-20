@@ -1,10 +1,11 @@
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
 
-private typealias FileTypeOffset = (fileType: FileTypesOrderConfiguration.FileType, offset: ByteCount)
+private typealias FileTypePosition = (fileType: FileTypesOrderConfiguration.FileType, position: AbsolutePosition)
+private typealias NamedGroupDecl = any DeclGroupSyntax & NamedDeclSyntax
 
-@DisabledWithoutSourceKit
-struct FileTypesOrderRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct FileTypesOrderRule: Rule {
     var configuration = FileTypesOrderConfiguration()
 
     static let description = RuleDescription(
@@ -15,168 +16,146 @@ struct FileTypesOrderRule: OptInRule {
         nonTriggeringExamples: FileTypesOrderRuleExamples.nonTriggeringExamples,
         triggeringExamples: FileTypesOrderRuleExamples.triggeringExamples
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
-              let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
+private extension FileTypesOrderRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
-        let extensionsSubstructures = extensionsSubstructures(
-            in: file,
-            mainTypeSubstructure: mainTypeSubstructure
-        )
+        override func visitPost(_ node: SourceFileSyntax) {
+            let fileTypePositions = collectFileTypePositions(in: node)
+            guard fileTypePositions.contains(where: { $0.fileType == .mainType }) else {
+                return
+            }
 
-        let supportingTypesSubstructures = supportingTypesSubstructures(
-            in: file,
-            mainTypeSubstructure: mainTypeSubstructure
-        )
+            var lastMatchingIndex = -1
+            for expectedTypes in configuration.order {
+                var potentialViolatingIndexes = [Int]()
 
-        let previewProviderSubstructures = substructures(
-            in: file,
-            withInheritedType: "PreviewProvider"
-        )
+                let startIndex = lastMatchingIndex + 1
+                for index in startIndex..<fileTypePositions.count {
+                    let fileType = fileTypePositions[index].fileType
+                    if expectedTypes.contains(fileType) {
+                        lastMatchingIndex = index
+                    } else {
+                        potentialViolatingIndexes.append(index)
+                    }
+                }
 
-        let libraryContentSubstructures = substructures(
-            in: file,
-            withInheritedType: "LibraryContentProvider"
-        )
-
-        let mainTypeOffset: [FileTypeOffset] = [(.mainType, mainTypeSubstuctureOffset)]
-        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.offsets(for: .extension)
-        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.offsets(for: .supportingType)
-        let previewProviderOffsets: [FileTypeOffset] = previewProviderSubstructures.offsets(for: .previewProvider)
-        let libraryContentOffsets: [FileTypeOffset] = libraryContentSubstructures.offsets(for: .libraryContentProvider)
-
-        let allOffsets = mainTypeOffset
-            + extensionOffsets
-            + supportingTypeOffsets
-            + previewProviderOffsets
-            + libraryContentOffsets
-
-        let orderedFileTypeOffsets = allOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
-
-        var violations = [StyleViolation]()
-
-        var lastMatchingIndex = -1
-        for expectedTypes in configuration.order {
-            var potentialViolatingIndexes = [Int]()
-
-            let startIndex = lastMatchingIndex + 1
-            (startIndex..<orderedFileTypeOffsets.count).forEach { index in
-                let fileType = orderedFileTypeOffsets[index].fileType
-                if expectedTypes.contains(fileType) {
-                    lastMatchingIndex = index
-                } else {
-                    potentialViolatingIndexes.append(index)
+                let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
+                for index in violatingIndexes {
+                    let fileType = fileTypePositions[index].fileType.rawValue
+                    let expected = expectedTypes.map(\.rawValue).joined(separator: ",")
+                    let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1))
+                        ? "An"
+                        : "A"
+                    violations.append(.init(
+                        position: fileTypePositions[index].position,
+                        reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'"
+                    ))
                 }
             }
+        }
 
-            let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
-            violatingIndexes.forEach { index in
-                let fileTypeOffset = orderedFileTypeOffsets[index]
+        private func collectFileTypePositions(in node: SourceFileSyntax) -> [FileTypePosition] {
+            let declarations = declarations(in: node.statements)
+            let fileName = file.path?.deletingPathExtension().lastPathComponent
+            let mainTypeID = resolveMainTypeID(in: declarations, fileName: fileName)
 
-                let fileType = fileTypeOffset.fileType.rawValue
-                let expected = expectedTypes.map(\.rawValue).joined(separator: ",")
-                let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1)) ? "An" : "A"
-
-                let styleViolation = StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, byteOffset: fileTypeOffset.offset),
-                    reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'"
-                )
-                violations.append(styleViolation)
+            var fileTypePositions = [FileTypePosition]()
+            for declaration in declarations {
+                let position = declaration.introducer.positionAfterSkippingLeadingTrivia
+                let fileTypePosition: FileTypePosition =
+                    if declaration.is(ExtensionDeclSyntax.self) {
+                        (fileType: .extension, position: position)
+                    } else if mainTypeID == declaration.id {
+                        (fileType: .mainType, position: position)
+                    } else if declaration.inheritanceClause.contains(inheritedTypes: ["PreviewProvider"]) {
+                        (fileType: .previewProvider, position: position)
+                    } else if declaration.inheritanceClause.contains(inheritedTypes: ["LibraryContentProvider"]) {
+                        (fileType: .libraryContentProvider, position: position)
+                    } else {
+                        (fileType: .supportingType, position: position)
+                    }
+                fileTypePositions.append(fileTypePosition)
             }
+            return fileTypePositions
         }
 
-        return violations
-    }
-
-    private func extensionsSubstructures(
-        in file: SwiftLintFile,
-        mainTypeSubstructure: SourceKittenDictionary
-    ) -> [SourceKittenDictionary] {
-        let dict = file.structureDictionary
-        return dict.substructure.filter { substructure in
-            guard let kind = substructure.kind else { return false }
-            return substructure.offset != mainTypeSubstructure.offset
-                && kind.contains(SwiftDeclarationKind.extension.rawValue)
-        }
-    }
-
-    private func supportingTypesSubstructures(
-        in file: SwiftLintFile,
-        mainTypeSubstructure: SourceKittenDictionary
-    ) -> [SourceKittenDictionary] {
-        var supportingTypeKinds = SwiftDeclarationKind.typeKinds
-        supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
-
-        let dict = file.structureDictionary
-        return dict.substructure.filter { substructure in
-            guard let declarationKind = substructure.declarationKind else { return false }
-            guard !substructure.hasExcludedInheritedType else { return false }
-
-            return substructure.offset != mainTypeSubstructure.offset
-                && supportingTypeKinds.contains(declarationKind)
-        }
-    }
-
-    private func substructures(
-        in file: SwiftLintFile,
-        withInheritedType inheritedType: String
-    ) -> [SourceKittenDictionary] {
-        file.structureDictionary.substructure.filter { substructure in
-            substructure.inheritedTypes.contains(inheritedType)
-        }
-    }
-
-    private func mainTypeSubstructure(in file: SwiftLintFile) -> SourceKittenDictionary? {
-        let dict = file.structureDictionary
-
-        guard let filePath = file.path else {
-            return mainTypeSubstructure(in: dict)
+        private func declarations(in statements: CodeBlockItemListSyntax) -> [NamedGroupDecl] {
+            var collectedDeclarations = [NamedGroupDecl]()
+            for statement in statements {
+                if let ifConfig = statement.item.as(IfConfigDeclSyntax.self) {
+                    for clause in ifConfig.clauses {
+                        let clauseStatements = clause.elements?.as(CodeBlockItemListSyntax.self) ?? []
+                        collectedDeclarations.append(contentsOf: declarations(in: clauseStatements))
+                    }
+                    continue
+                }
+                guard let declaration = statement.item.asProtocol((any DeclGroupSyntax).self) else {
+                    continue
+                }
+                if let namedDecl = declaration.asProtocol((any NamedDeclSyntax).self) as? NamedGroupDecl {
+                    collectedDeclarations.append(namedDecl)
+                }
+            }
+            return collectedDeclarations
         }
 
-        let fileName = filePath.lastPathComponent.replacingOccurrences(of: ".swift", with: "")
-        guard let mainTypeSubstructure = dict.substructure.first(where: { $0.name == fileName }) else {
-            return mainTypeSubstructure(in: file.structureDictionary)
+        private func resolveMainTypeID(in declarations: [NamedGroupDecl], fileName: String?) -> SyntaxIdentifier? {
+            if let fileName,
+               let matchingIdentifier = declarations.first(where: { $0.name.text == fileName })?.id {
+                return matchingIdentifier
+            }
+            return declarations
+                .compactMap(mainTypeCandidateInfo)
+                .max(by: { lhs, rhs in lhs.bodyLength < rhs.bodyLength })?
+                .id
         }
 
-        // specify type with name matching the files name as main type
-        return mainTypeSubstructure
-    }
-
-    private func mainTypeSubstructure(in dict: SourceKittenDictionary) -> SourceKittenDictionary? {
-        let priorityKinds: [SwiftDeclarationKind] = [.class, .enum, .struct]
-
-        let priorityKindSubstructures = dict.substructure.filter { substructure in
-            guard let kind = substructure.declarationKind else { return false }
-            guard !substructure.hasExcludedInheritedType else { return false }
-
-            return priorityKinds.contains(kind)
+        private func mainTypeCandidateInfo(for decl: NamedGroupDecl) -> (id: SyntaxIdentifier, bodyLength: Int)? {
+            if [.actorDecl, .classDecl, .enumDecl, .structDecl].contains(decl.kind),
+               !hasExcludedInheritedType(decl.inheritanceClause) {
+                return (id: decl.id, bodyLength: bodyLength(of: decl.memberBlock))
+            }
+            return nil
         }
 
-        let substructuresSortedByBodyLength = priorityKindSubstructures.sorted { lhs, rhs in
-            (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
+        private func hasExcludedInheritedType(_ inheritanceClause: InheritanceClauseSyntax?) -> Bool {
+            inheritanceClause.contains(inheritedTypes: ["PreviewProvider", "LibraryContentProvider"])
         }
 
-        // specify class, enum or struct with longest body as main type
-        return substructuresSortedByBodyLength.first
-    }
-}
-
-private extension SourceKittenDictionary {
-    var hasExcludedInheritedType: Bool {
-        inheritedTypes.contains { inheritedType in
-            inheritedType == "PreviewProvider" || inheritedType == "LibraryContentProvider"
+        private func bodyLength(of memberBlock: MemberBlockSyntax) -> Int {
+            memberBlock.endPositionBeforeTrailingTrivia.utf8Offset
+                - memberBlock.positionAfterSkippingLeadingTrivia.utf8Offset
         }
     }
 }
 
-private extension Array where Element == SourceKittenDictionary {
-    func offsets(for fileType: FileTypesOrderConfiguration.FileType) -> [FileTypeOffset] {
-        compactMap { substructure in
-            guard let offset = substructure.offset else { return nil }
-            return (fileType, offset)
-        }
+extension ExtensionDeclSyntax: @retroactive NamedDeclSyntax {
+    public var name: TokenSyntax {
+        get { TokenSyntax(extendedGraphemeClusterLiteral: extendedType.trimmedDescription) }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
+    }
+}
+
+extension TypeAliasDeclSyntax: @retroactive DeclGroupSyntax {
+    public var introducer: SwiftSyntax.TokenSyntax {
+        get { typealiasKeyword }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
+    }
+
+    public var inheritanceClause: SwiftSyntax.InheritanceClauseSyntax? {
+        get { nil }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
+    }
+
+    public var memberBlock: SwiftSyntax.MemberBlockSyntax {
+        get { MemberBlockSyntax(members: []) }
+        // swiftlint:disable:next unused_setter_value no_empty_block
+        set {}
     }
 }

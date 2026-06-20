@@ -13,15 +13,6 @@ public extension Array where Element: Equatable {
 }
 
 public extension Array where Element: Hashable {
-    /// The elements in this array, discarding duplicates after the first one.
-    /// Order-preserving. Runs in linear time; the `Equatable` overload above
-    /// is quadratic and is selected automatically only when the element type
-    /// does not also conform to `Hashable`.
-    var unique: [Element] {
-        var seen = Set<Element>()
-        return filter { seen.insert($0).inserted }
-    }
-
     /// Produces an array containing the passed `obj` value.
     /// If `obj` is an array already, return it.
     /// If `obj` is a set, copy its elements to a new array.

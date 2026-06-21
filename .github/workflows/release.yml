@@ -129,17 +129,17 @@ jobs:
         include:
           - arch: ARM64
             runner: ubuntu-24.04-arm
-            swift_version: 6.2.3
+            swift_version: 6.3.2
             swift_sdk: aarch64-swift-linux-musl
-            swift_sdk_version: 0.0.1
-            swift_sdk_checksum: f30ec724d824ef43b5546e02ca06a8682dafab4b26a99fbb0e858c347e507a2c
+            swift_sdk_version: 0.1.0
+            swift_sdk_checksum: 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
             artifact_name: swiftlint-static-arm64
           - arch: AMD64
             runner: ubuntu-24.04
-            swift_version: 6.3.1
+            swift_version: 6.3.2
             swift_sdk: x86_64-swift-linux-musl
             swift_sdk_version: 0.1.0
-            swift_sdk_checksum: fac05271c1f7d060bd203240ce5251d5ca902d30ac899f553765dbb3a88b97ad
+            swift_sdk_checksum: 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
             artifact_name: swiftlint-static-amd64
     permissions:
       contents: read

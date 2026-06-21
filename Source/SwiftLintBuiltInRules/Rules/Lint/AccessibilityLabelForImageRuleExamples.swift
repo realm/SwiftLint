@@ -274,22 +274,7 @@ internal struct AccessibilityLabelForImageRuleExamples {
         Example("""
         struct MyView: View {
             var body: some View {
-                Label {
-                    Text("Download")
-                } icon: {
-                    Image("custom-download-icon")
-                }
-            }
-        }
-        """),
-        Example("""
-        struct MyView: View {
-            var body: some View {
-                Label {
-                    Text("Profile")
-                } icon: {
-                    Image(uiImage: profileImage)
-                }
+                Label(content: { Text("Download") }, icon: { Image("custom-download-icon") })
             }
         }
         """),

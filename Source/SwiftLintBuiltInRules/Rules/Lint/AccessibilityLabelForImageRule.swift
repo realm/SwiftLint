@@ -288,6 +288,10 @@ private extension FunctionCallExprSyntax {
                 return true
             }
 
+            if node.parent?.is(DeclSyntax.self) == true {
+                break
+            }
+
             currentNode = node.parent
         }
 

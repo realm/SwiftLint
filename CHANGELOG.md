@@ -36,8 +36,8 @@
   
 * Improve linting performance by 10-15%, especially when running with many
   threads, by optimizing cache locking and reducing contention. Depending on
-  the project and and level of concurrency, the performance improvement
-  can be even higher (3-4x).  
+  the project and level of concurrency, the performance improvement can be even
+  higher (3-4x).  
   [SimplyDanny](https://github.com/SimplyDanny)
 
 * Rewrite the following rules with SwiftSyntax:

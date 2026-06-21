@@ -44,6 +44,12 @@
   * `file_types_order`
   <!-- Keep empty line to have the contributors on a separate line. -->
   [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Fix false positive in `accessibility_label_for_image` rule for images inside
+  SwiftUI `Label`'s `icon:` closure, which are inherently labeled by the
+  `Label`'s text content.  
+  [sutheesh](https://github.com/sutheesh)
+  [#6420](https://github.com/realm/SwiftLint/issues/6420)
 
 ### Bug Fixes
 

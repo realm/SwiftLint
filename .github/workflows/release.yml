@@ -133,14 +133,14 @@ jobs:
             swift_sdk: aarch64-swift-linux-musl
             swift_sdk_version: 0.1.0
             swift_sdk_checksum: 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
-            artifact_name: swiftlint-static-arm64
+            artifact_name: swiftlint-linux-static-arm64
           - arch: AMD64
             runner: ubuntu-24.04
             swift_version: 6.3.2
             swift_sdk: x86_64-swift-linux-musl
             swift_sdk_version: 0.1.0
             swift_sdk_checksum: 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
-            artifact_name: swiftlint-static-amd64
+            artifact_name: swiftlint-linux-static-amd64
     permissions:
       contents: read
     env:
@@ -318,11 +318,11 @@ jobs:
           # Move Linux artifacts.
           mv -f swiftlint-linux-amd64/swiftlint swiftlint_linux_amd64
           mv -f swiftlint-linux-arm64/swiftlint swiftlint_linux_arm64
-          mv -f swiftlint-static-amd64/swiftlint swiftlint_static_amd64
-          mv -f swiftlint-static-arm64/swiftlint swiftlint_static_arm64
+          mv -f swiftlint-linux-static-amd64/swiftlint swiftlint_static_amd64
+          mv -f swiftlint-linux-static-arm64/swiftlint swiftlint_static_arm64
 
           # Just pick one of the licenses.
-          mv -f swiftlint-static-amd64/LICENSE.mimalloc .
+          mv -f swiftlint-linux-static-amd64/LICENSE.mimalloc .
 
           # Move Windows artifacts.
           mv -f swiftlint-windows-{arm,amd}64/*.{msi,zip} .

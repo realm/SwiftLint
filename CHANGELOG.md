@@ -16,7 +16,11 @@
 
 ### Bug Fixes
 
-* None.
+* Honor `excluded` paths when the linted project is located under a system directory
+  on macOS that resolves through a symlink, such as `/var` and `/tmp` (which point
+  to `/private/var` and `/private/tmp`).  
+  [tumata](https://github.com/tumata)
+  [#6782](https://github.com/realm/SwiftLint/issues/6782)
 
 ## 0.64.0: All Windows Opened
 

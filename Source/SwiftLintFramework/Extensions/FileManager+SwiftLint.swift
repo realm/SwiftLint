@@ -33,15 +33,36 @@ public enum Excluder {
     /// An excluder that does not exclude any files.
     case noExclusion
 
+    private static let privatePrefix = "/private"
+
     func excludes(path: URL) -> Bool {
-        switch self {
-        case let .matching(matchers):
-            matchers.contains(where: { $0.match(filename: path.path) })
-        case let .byPrefix(prefixes):
-            prefixes.contains(where: { path.path.hasPrefix($0) })
-        case .noExclusion:
-            false
+        if case .noExclusion = self {
+            return false
         }
+
+        // Exclusion matchers and prefixes are derived from standardized URLs (see `String.url()`),
+        // which on macOS drops a leading `/private` from paths under firmlinks such as `/tmp` and
+        // `/var`. Paths produced by `FileManager`'s directory enumerator keep that prefix, so a
+        // file under a `/private`-resolved directory (e.g. CI workspaces or `mktemp` directories)
+        // would never match. Compare against the path with and without the `/private` prefix to
+        // bridge the gap without touching the filesystem; standardizing every candidate via
+        // `standardizedFileURL` would `stat` each path and is measurably slower.
+        let fullPath = path.path
+        let strippedPath = fullPath.hasPrefix(Self.privatePrefix + "/")
+            ? String(fullPath.dropFirst(Self.privatePrefix.count))
+            : nil
+        return switch self {
+            case let .matching(matchers):
+                matchers.contains { matcher in
+                    matcher.match(filename: fullPath) || strippedPath.map { matcher.match(filename: $0) } == true
+                }
+            case let .byPrefix(prefixes):
+                prefixes.contains { prefix in
+                    fullPath.hasPrefix(prefix) || strippedPath?.hasPrefix(prefix) == true
+                }
+            case .noExclusion:
+                queuedFatalError("Unreachable case; should have been handled at the beginning of the method")
+            }
     }
 }
 

@@ -293,6 +293,33 @@ final class ConfigurationTests: SwiftLintTestCase { // swiftlint:disable:this ty
         assertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
+    // On macOS the system temporary directory resolves through a `/private` symlink (e.g.
+    // `/var/folders/…` -> `/private/var/folders/…`). The directory enumerator yields file
+    // paths carrying the `/private` prefix, whereas exclusion patterns are standardized
+    // without it. Excludes must still be honored regardless of the `/private` discrepancy.
+    func testExcludedPathsUnderSymlinkedDirectory() throws {
+        let rootDir = URL.temporaryDirectory
+            .appending(path: "SwiftLintExcludeTest-" + UUID().uuidString, directoryHint: .isDirectory)
+        let nestedDir = rootDir.appending(path: "Sources/Nested", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: nestedDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: rootDir) }
+        try Data().write(to: rootDir.appending(path: "Sources/Included.swift"))
+        try Data().write(to: nestedDir.appending(path: "Excluded.swift"))
+
+        let configuration = Configuration(
+            includedPaths: [rootDir.appending(path: "Sources")],
+            excludedPaths: [rootDir.appending(path: "Sources/**/Excluded.swift")]
+        )
+
+        let paths = configuration.lintablePaths(
+            inPath: rootDir,
+            forceExclude: false,
+            excludeByPrefix: false
+        )
+
+        XCTAssertEqual(Set(paths.map(\.lastPathComponent)), ["Included.swift"])
+    }
+
     func testForceExcludesFile() {
         XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.exclusionTests.filepath))
         let configuration = Configuration(excludedPaths: ["directory/ExcludedFile.swift".url()])

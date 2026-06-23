@@ -60,6 +60,14 @@
 
 ### Enhancements
 
+* Add `--parent-config` command-line option to the `lint` and `analyze` commands.
+  Equivalent to declaring `parent_config:` inside the resolved config, but supplied
+  at the command line so the parent path can be passed in dynamically (e.g. when it
+  lives in a temporary directory whose location isn't known when the child config
+  is authored). Can be repeated to layer multiple parent configurations.  
+  [tsushanth](https://github.com/tsushanth)
+  [#5421](https://github.com/realm/SwiftLint/issues/5421)
+
 * SwiftLint can now be built and run on Windows. It is expected to work in the same way as
   on other platforms. The only restrictions are missing support for `?[]` glob patterns in
   include/exclude patterns and the requirement for `\n` as line ending in all linted files.  

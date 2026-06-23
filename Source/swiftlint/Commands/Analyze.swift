@@ -25,6 +25,7 @@ extension SwiftLint {
                 paths: allPaths,
                 useSTDIN: false,
                 configurationFiles: common.config,
+                parentConfigurationFiles: common.parentConfig,
                 strict: common.leniency == .strict,
                 lenient: common.leniency == .lenient,
                 forceExclude: common.forceExclude,

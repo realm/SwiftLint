@@ -16,12 +16,32 @@ package extension Configuration {
         private var isBuilt = false
 
         // MARK: - Initializers
-        internal init(commandLineChildConfigs: [URL], rootDirectory: URL, ignoreParentAndChildConfigs: Bool) {
-            let verticesArray = commandLineChildConfigs.map { config in
+        internal init(
+            commandLineChildConfigs: [URL],
+            commandLineParentConfigs: [URL] = [],
+            rootDirectory: URL,
+            ignoreParentAndChildConfigs: Bool
+        ) {
+            let childVertices = commandLineChildConfigs.map { config in
                 Vertex(string: config.filepath, rootDirectory: rootDirectory.filepath, isInitialVertex: true)
             }
-            vertices = Set(verticesArray)
-            edges = Set(zip(verticesArray, verticesArray.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
+            let parentVertices = commandLineParentConfigs.map { config in
+                Vertex(string: config.filepath, rootDirectory: rootDirectory.filepath, isInitialVertex: true)
+            }
+            vertices = Set(childVertices).union(parentVertices)
+
+            // Edges within the user-supplied child configs (each one is the parent of the next).
+            var allEdges = Set(zip(childVertices, childVertices.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
+
+            // Each --parent-config becomes the parent of the first --config (or of the default
+            // `.swiftlint.yml` when no --config is provided). This mirrors `parent_config:`
+            // semantics while letting the parent path be supplied at the command line.
+            if let firstChild = childVertices.first {
+                for parent in parentVertices {
+                    allEdges.insert(Edge(parent: parent, child: firstChild))
+                }
+            }
+            edges = allEdges
 
             self.rootDirectory = rootDirectory
             self.ignoreParentAndChildConfigs = ignoreParentAndChildConfigs
@@ -31,6 +51,7 @@ package extension Configuration {
         internal init(rootDirectory: URL) {
             self.init(
                 commandLineChildConfigs: [],
+                commandLineParentConfigs: [],
                 rootDirectory: rootDirectory,
                 ignoreParentAndChildConfigs: false
             )

@@ -258,13 +258,52 @@ final class MultipleConfigurationsTests: SwiftLintTestCase {
         )
     }
 
-    func testParentConfigIsIgnoredAsNestedConfiguration() {
-        // If a configuration has already been used to build the main config,
-        // it should not again be regarded as a nested config
+    func testNestedConfigAlreadyInMainGraphIsSkipped() {
+        // If a configuration file has already been used to build the main config (e.g. as a
+        // parent_config), discovering the same file as a nested config during linting must not
+        // re-merge it; the per-file configuration must equal the main config unchanged.
         XCTAssertEqual(
             Mock.Config.nested.configuration(for: SwiftLintFile(path: Mock.Swift.nestedSub)!),
             Mock.Config.nested
         )
+    }
+
+    // MARK: - Nested Configs with parent_config / child_config (issue #3540)
+    func testNestedConfigHonorsParentConfig() {
+        // A nested .swiftlint.yml may reference a parent_config. The resolved per-file
+        // configuration must equal "main merged with the parent's contents on top".
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.nestedParentConfig.filepath))
+        let mainConfig = Configuration(configurationFiles: [])
+        let actual = mainConfig.configuration(for: SwiftLintFile(path: Mock.Swift.nestedParentConfigSub)!)
+        let expected = Configuration(
+            configurationFiles: [".swiftlint.yml".url(), "refinements.yml".url()]
+        )
+        assertEqualExceptForFileGraph(actual, expected)
+    }
+
+    func testNestedConfigHonorsChildConfig() {
+        // A nested .swiftlint.yml may reference a child_config. The child wins over the
+        // nested file itself, then the combined result is merged on top of the main config.
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.nestedParentConfig.filepath))
+        let mainConfig = Configuration(configurationFiles: [])
+        let actual = mainConfig.configuration(for: SwiftLintFile(path: Mock.Swift.nestedParentConfigChild)!)
+        let expected = Configuration(
+            configurationFiles: [".swiftlint.yml".url(), "child_refinements.yml".url()]
+        )
+        assertEqualExceptForFileGraph(actual, expected)
+    }
+
+    func testNestedConfigParentChain() {
+        // A nested .swiftlint.yml whose parent_config itself has a parent_config: the full
+        // chain must be merged in order (deepest ancestor first) before being applied on top
+        // of the main config.
+        XCTAssert(FileManager.default.changeCurrentDirectoryPath(Mock.Dir.nestedParentConfig.filepath))
+        let mainConfig = Configuration(configurationFiles: [])
+        let actual = mainConfig.configuration(for: SwiftLintFile(path: Mock.Swift.nestedParentConfigChain)!)
+        let expected = Configuration(
+            configurationFiles: [".swiftlint.yml".url(), "chain_base.yml".url(), "chain_refinements.yml".url()]
+        )
+        assertEqualExceptForFileGraph(actual, expected)
     }
 
     // MARK: - Child & Parent Configs

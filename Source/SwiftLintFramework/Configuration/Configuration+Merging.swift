@@ -95,10 +95,13 @@ extension Configuration {
             // Use self merged with the nested config that was found
             // iff that nested config has not already been used to build the main config
 
-            // Ignore parent_config / child_config specifications of nested configs
+            // Resolve parent_config / child_config of nested configs the same way as for the main
+            // config. Cycle detection is scoped per nested file by FileGraph, and the
+            // `!fileGraph.includesFile(atPath:)` guard above prevents re-merging a file already in
+            // the main config chain.
             var childConfiguration = Configuration(
                 configurationFiles: [configurationSearchPath],
-                ignoreParentAndChildConfigs: true
+                ignoreParentAndChildConfigs: false
             )
             childConfiguration.fileGraph = FileGraph(rootDirectory: directory)
             config = merged(withChild: childConfiguration, rootDirectory: rootDirectory)

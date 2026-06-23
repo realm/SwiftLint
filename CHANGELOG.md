@@ -12,6 +12,151 @@
 
 ### Enhancements
 
+* None.
+
+### Bug Fixes
+
+* None.
+
+## 0.64.1: All Windows Opened
+
+### Breaking
+
+* None.
+
+### Experimental
+
+* None.
+
+### Enhancements
+
+* None.
+
+### Bug Fixes
+
+* Honor `excluded` paths when the linted project is located under a system directory
+  on macOS that resolves through a symlink, such as `/var` and `/tmp` (which point
+  to `/private/var` and `/private/tmp`).  
+  [tumata](https://github.com/tumata)
+  [#6782](https://github.com/realm/SwiftLint/issues/6782)
+
+## 0.64.0: All Windows Opened
+
+### Breaking
+
+* The `ignored_literal_argument_functions` option of the `force_unwrapping` rule now
+  uses the configured value as-is instead of always merging in the five built-in defaults
+  (`URL(string:)`, `NSURL(string:)`, `UIImage(named:)`, `NSImage(named:)`, `Data(hexString:)`).
+  Those five functions remain the default when the option is not configured, but setting
+  `ignored_literal_argument_functions` to any explicit list — including `[]` — now fully
+  replaces the defaults. Configurations that add functions on top of the defaults must now
+  explicitly include the five previously-default functions in their list.
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6675](https://github.com/realm/SwiftLint/issues/6675)
+
+### Experimental
+
+* None.
+
+### Enhancements
+
+* SwiftLint can now be built and run on Windows. It is expected to work in the same way as
+  on other platforms. The only restrictions are missing support for `?[]` glob patterns in
+  include/exclude patterns and the requirement for `\n` as line ending in all linted files.  
+  [compnerd](https://github.com/compnerd)
+  [roman-bcny](https://github.com/roman-bcny)
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6351](https://github.com/realm/SwiftLint/issues/6351)
+  [#6352](https://github.com/realm/SwiftLint/issues/6352)
+
+* Rename `allow_implicit_init` to `include_implicit_init` for the
+  `optional_data_string_conversion` rule to convey its purpose more clearly.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6670](https://github.com/realm/SwiftLint/issues/6670)
+  
+* Improve linting performance by 10-15%, especially when running with many
+  threads, by optimizing cache locking and reducing contention. Depending on
+  the project and level of concurrency, the performance improvement can be even
+  higher (3-4x).  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Rewrite the following rules with SwiftSyntax:
+  * `file_types_order`
+  <!-- Keep empty line to have the contributors on a separate line. -->
+  [SimplyDanny](https://github.com/SimplyDanny)
+  
+* Fix false positive in `accessibility_label_for_image` rule for images inside
+  SwiftUI `Label`'s `icon:` closure, which are inherently labeled by the
+  `Label`'s text content.  
+  [sutheesh](https://github.com/sutheesh)
+  [#6420](https://github.com/realm/SwiftLint/issues/6420)
+
+### Bug Fixes
+
+* Fix `literal_expression_end_indentation` autocorrection deleting source code
+  when the closing bracket of a multiline literal shares a line with the end of
+  a multiline last element (e.g. `...))]`). The corrector assumed everything
+  before the bracket on that line was indentation and replaced it; it now moves
+  only the bracket to its own line at the expected indentation.  
+  [Luan Câmara](https://github.com/luancamara)
+  [#2823](https://github.com/realm/SwiftLint/issues/2823)
+
+* Don't rewrite the type operand of an `is` / `as?` / `as!` cast (such as
+  `x is A`) to `Self` in `prefer_self_in_static_references` when inside a
+  class-like scope. `Self` is the dynamic type, so the rewrite silently changed
+  runtime behavior for non-final classes (`x is Self` is not equivalent to
+  `x is A`). Mirrors the rule's existing `X.self` skip; static member references
+  such as `A.f()` are still corrected.  
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6764](https://github.com/realm/SwiftLint/issues/6764)
+
+* Avoid false positives in `vertical_parameter_alignment` when a parameter is
+  preceded by multi-byte characters, such as a function name containing
+  non-ASCII letters. Alignment is now compared by visible column rather than by
+  UTF-8 byte offset.  
+  [systemBlue](https://github.com/systemblueio)
+  [#5037](https://github.com/realm/SwiftLint/issues/5037)
+
+* Treat macro declarations like function declarations for `line_length` when
+  `ignores_function_declarations` is enabled.  
+  [leno23](https://github.com/leno23)
+  [#5648](https://github.com/realm/SwiftLint/issues/5648)
+
+* Make `Glob.expandGlobstar` tolerant of unreadable directory entries on
+  large trees. `subpathsOfDirectory(atPath:)` aborted the entire glob
+  expansion on the first unreadable entry (permission denied, dangling
+  symlink, file removed mid-scan), causing most files in large projects to
+  be silently ignored. Replace the directory walk with a lazy `URL`
+  enumerator that has a per-item error handler so unreadable items are
+  skipped individually.  
+  [Chupik](https://github.com/Chupik)
+
+* Avoid false positives in `prefer_self_in_static_references` for generic
+  constraints and generic parameter bounds such as `where A: P` and `<A: P>`
+  in classes and extensions.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6674](https://github.com/realm/SwiftLint/issues/6674)
+
+* Don't rewrite a type reference to `Self` in `prefer_self_in_static_references`
+  when it appears in a protocol composition (such as `any A & B`), as the
+  constraint of an existential or opaque type (such as `any A` or `some A`), or
+  as the base of an existential metatype (such as `A.Protocol`), since the named
+  type is not interchangeable with `Self` in those positions.  
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6748](https://github.com/realm/SwiftLint/issues/6748)
+
+## 0.63.3: High-Speed Extraction
+
+### Breaking
+
+* None.
+
+### Experimental
+
+* None.
+
+### Enhancements
+
 * Treat extensions like classes in the `prefer_self_in_static_references`
   rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)
@@ -71,7 +216,7 @@
   [nadeemnali](https://github.com/nadeemnali)
   [#6228](https://github.com/realm/SwiftLint/issues/6228)
   
-* Add `legacy_uigraphics_functions` rule to encourage the use of modern
+* Add `legacy_uigraphics_function` rule to encourage the use of modern
   `UIGraphicsImageRenderer` instead of the legacy `UIGraphics{Begin|End}ImageContext`.
   The modern replacement is safer, cleaner, Retina-aware and more performant.  
   [Dimitri Dupuis-Latour](https://github.com/DimDL)
@@ -101,6 +246,11 @@
   silently produced no violations. Now any of these enables the parent
   `custom_rules` rule together with the requested custom rules.  
   [Chupik](https://github.com/Chupik)
+  
+* Recognize `isolated` as an isolation modifier in `modifier_order`, so it can
+  be ordered via the `isolation` entry in `preferred_modifier_order`.  
+  [leno23](https://github.com/leno23)
+  [#6164](https://github.com/realm/SwiftLint/issues/6164)
 
 * Detect and autocorrect missing whitespace before `else` in `guard`
   statements for the `statement_position` rule.  

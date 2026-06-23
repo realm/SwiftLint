@@ -3,11 +3,11 @@
 	<file name="&lt;nopath&gt;">
 		<error line="0" column="0" severity="error" message="Colons should be next to the identifier when specifying a type and next to the key in dictionary literals" source="swiftlint.rules.colon"/>
 	</file>
-	<file name="${CURRENT_WORKING_DIRECTORY}/path/file.swift">
-		<error line="1" column="2" severity="error" message="Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;" source="swiftlint.rules.syntactic_sugar"/>
-	</file>
-	<file name="filename">
+	<file name="${CURRENT_WORKING_DIRECTORY}/filename">
 		<error line="1" column="1" severity="warning" message="Violation Reason 1" source="swiftlint.rules.line_length"/>
 		<error line="1" column="0" severity="error" message="Violation Reason 2" source="swiftlint.rules.line_length"/>
+	</file>
+	<file name="${CURRENT_WORKING_DIRECTORY}/path/file.swift">
+		<error line="1" column="2" severity="error" message="Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;" source="swiftlint.rules.syntactic_sugar"/>
 	</file>
 </checkstyle>

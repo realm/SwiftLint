@@ -501,7 +501,7 @@ identifier_name:
   allowed_symbols: []
   unallowed_symbols_severity: error
   validates_start_with_lowercase: error
-  additional_operators: ["!", "%", "&", "*", "+", "-", ".", "/", "<", "=", ">", "?", "^", "|", "~"]
+  additional_operators: []
   meta:
     opt-in: false
     correctable: false
@@ -557,7 +557,7 @@ invalid_swiftlint_command:
     correctable: false
 invisible_character:
   severity: error
-  additional_code_points: ["200B", "200C", "FEFF"]
+  additional_code_points: []
   meta:
     opt-in: false
     correctable: true
@@ -856,6 +856,7 @@ operator_usage_whitespace:
     correctable: true
 optional_data_string_conversion:
   severity: warning
+  include_implicit_init: false
   allow_implicit_init: false
   meta:
     opt-in: false

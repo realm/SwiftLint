@@ -36,7 +36,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.6.1")),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "604.0.0-prerelease-2026-04-21"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "605.0.0-prerelease-2026-06-08"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMajor(from: "0.37.2")),
         .package(url: "https://github.com/jpsim/Yams.git", .upToNextMajor(from: "6.0.2")),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", .upToNextMajor(from: "0.9.0")),
@@ -240,8 +240,8 @@ let package = Package(
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.63.2/SwiftLintBinary.artifactbundle.zip",
-        checksum: "12befab676fc972ffde2ec295d016d53c3a85f64aabd9c7fee0032d681e307e9"
+        url: "https://github.com/realm/SwiftLint/releases/download/0.64.1/SwiftLintBinary.artifactbundle.zip",
+        checksum: "e04529befaa6d3c50d7acdb28cdfa61b3788d99da94a1bfc1132f267a94679b6"
     )
 )
 #endif

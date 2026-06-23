@@ -17,6 +17,7 @@ struct GenericTypeNameRule: Rule {
         nonTriggeringExamples: [
             Example("func foo<T>() {}"),
             Example("func foo<T>() -> T {}"),
+            Example("func foo<`func`>() {}", configuration: ["excluded": ["`.+`"]]),
             Example("func foo<T, U>(param: U) -> T {}"),
             Example("func foo<T: Hashable, U: Rule>(param: U) -> T {}"),
             Example("struct Foo<T> {}"),
@@ -34,6 +35,7 @@ struct GenericTypeNameRule: Rule {
         ],
         triggeringExamples: [
             Example("func foo<↓T_Foo>() {}"),
+            Example("func foo<↓`func`>() {}"),
             Example("func foo<T, ↓U_Foo>(param: U_Foo) -> T {}"),
             Example("func foo<↓\(String(repeating: "T", count: 21))>() {}"),
             Example("func foo<↓type>() {}"),

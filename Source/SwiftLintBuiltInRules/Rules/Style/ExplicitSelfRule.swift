@@ -39,7 +39,7 @@ struct ExplicitSelfRule: CorrectableRule, AnalyzerRule {
     }
 
     private func violationRanges(in file: SwiftLintFile, compilerArguments: [String]) -> [NSRange] {
-        guard compilerArguments.isNotEmpty, let filePath = file.path else {
+        guard compilerArguments.isNotEmpty, let filePath = file.path?.filepath else {
             Issue.missingCompilerArguments(path: file.path, ruleID: Self.identifier).print()
             return []
         }

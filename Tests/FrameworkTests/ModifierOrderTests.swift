@@ -391,6 +391,7 @@ final class ModifierOrderTests: SwiftLintTestCase {
         }
     }
 
+    // swiftlint:disable:next function_body_length
     func testIsolationModifierOrder() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [
@@ -405,6 +406,12 @@ final class ModifierOrderTests: SwiftLintTestCase {
                     nonisolated var description: String {
                         "MyActor instance"
                     }
+                }
+                """),
+                Example("""
+                @MainActor
+                class Foo {
+                    isolated public func bar() {}
                 }
                 """),
                 Example("""
@@ -426,6 +433,12 @@ final class ModifierOrderTests: SwiftLintTestCase {
                     private nonisolated func heavyWork() {}
                 }
                 """),
+                Example("""
+                @MainActor
+                class Foo {
+                    public isolated func bar() {}
+                }
+                """),
             ])
             .with(corrections: [
                 Example("""
@@ -438,6 +451,18 @@ final class ModifierOrderTests: SwiftLintTestCase {
                 @MainActor
                 class Foo {
                     nonisolated public func bar() {}
+                }
+                """),
+                Example("""
+                @MainActor
+                class Foo {
+                    public isolated func bar() {}
+                }
+                """):
+                Example("""
+                @MainActor
+                class Foo {
+                    isolated public func bar() {}
                 }
                 """),
             ])

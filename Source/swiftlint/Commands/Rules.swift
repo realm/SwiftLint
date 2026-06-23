@@ -13,7 +13,7 @@ extension SwiftLint {
         static let configuration = CommandConfiguration(abstract: "Display the list of rules and their identifiers")
 
         @Option(help: "The path to a SwiftLint configuration file")
-        var config: String?
+        var config: URL?
         @OptionGroup
         var rulesFilterOptions: RulesFilterOptions
         @Flag(name: .shortAndLong, help: "Display full configuration details")

@@ -64,12 +64,12 @@ jobs:
     needs: set-context
     steps:
       - &checkout-step-pr
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: needs.set-context.outputs.checkout-ref == 'pr'
         with:
           persist-credentials: false
       - &checkout-step-ref
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         if: needs.set-context.outputs.checkout-ref != 'pr'
         with:
           ref: ${{ needs.set-context.outputs.checkout-ref }}
@@ -111,7 +111,7 @@ jobs:
         pattern: digests-*
         merge-multiple: true
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+      uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
     - name: Login to GitHub registry
       uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
       with:

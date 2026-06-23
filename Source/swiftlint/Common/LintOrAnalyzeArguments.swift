@@ -19,7 +19,7 @@ enum LeniencyOptions: String, EnumerableFlag {
 
 struct LintOrAnalyzeArguments: ParsableArguments {
     @Option(help: "The path to one or more SwiftLint configuration files, evaluated as a parent-child hierarchy.")
-    var config = [String]()
+    var config = [URL]()
     @Flag(name: [.long, .customLong("autocorrect")], help: "Correct violations whenever possible.")
     var fix = false
 
@@ -43,13 +43,13 @@ struct LintOrAnalyzeArguments: ParsableArguments {
     @Option(help: "The reporter used to log errors and warnings.")
     var reporter: String?
     @Option(help: "The path to a baseline file, which will be used to filter out detected violations.")
-    var baseline: String?
+    var baseline: URL?
     @Option(help: "The path to save detected violations to as a new baseline.")
-    var writeBaseline: String?
+    var writeBaseline: URL?
     @Option(help: "The working directory to use when running SwiftLint.")
     var workingDirectory: String?
     @Option(help: "The file where violations should be saved. Prints to stdout by default.")
-    var output: String?
+    var output: URL?
     @Flag(help: "Show a live-updating progress bar instead of each file being processed.")
     var progress = false
     @Flag(help: "Check whether a later version of SwiftLint is available after processing all files.")
@@ -75,4 +75,10 @@ func pathsArgumentDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
 
 func quietOptionDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
     "Don't print status logs like '\(mode.verb.capitalized) <file>' & 'Done \(mode.verb)'."
+}
+
+extension URL: @retroactive ExpressibleByArgument {
+    public init?(argument: String) {
+        self.init(filePath: argument)
+    }
 }

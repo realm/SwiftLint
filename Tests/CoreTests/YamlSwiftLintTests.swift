@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import TestHelpers
 import XCTest
 import Yams
@@ -40,6 +41,9 @@ final class YamlSwiftLintTests: SwiftLintTestCase {
     }
 
     private func getTestYaml() throws -> String {
-        try String(contentsOfFile: "\(TestResources.path())/test.yml", encoding: .utf8)
+        try String(
+            contentsOf: TestResources.path().appending(path: "test.yml", directoryHint: .notDirectory),
+            encoding: .utf8
+        )
     }
 }

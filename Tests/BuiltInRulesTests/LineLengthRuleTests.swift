@@ -60,6 +60,14 @@ final class LineLengthRuleTests: SwiftLintTestCase {
             """),
     ]
 
+    private let longMacroDeclarations = [
+        Example("""
+            @freestanding(expression)
+            public macro obfuscate(_ value: String) -> String \
+            = #externalMacro(module: \"ObfuscatedStringMacros\", type: \"ObfuscationMacro\")
+            """),
+    ]
+
     private let longComment = Example(String(repeating: "/", count: 121) + "\n")
     private let longBlockComment = Example("/*" + String(repeating: " ", count: 121) + "*/\n")
     private let longRealBlockComment = Example("""
@@ -133,7 +141,10 @@ final class LineLengthRuleTests: SwiftLintTestCase {
     func testLineLengthWithIgnoreFunctionDeclarationsEnabled() {
         let baseDescription = LineLengthRule.description
         let description = baseDescription.with(
-            nonTriggeringExamples: baseDescription.nonTriggeringExamples + longFunctionDeclarations,
+            nonTriggeringExamples:
+                baseDescription.nonTriggeringExamples +
+                longFunctionDeclarations +
+                longMacroDeclarations,
             triggeringExamples: longFunctionCalls
         )
 
@@ -147,14 +158,19 @@ final class LineLengthRuleTests: SwiftLintTestCase {
 
     func testLineLengthWithIgnoreCommentsEnabled() {
         let baseDescription = LineLengthRule.description
-        let triggeringExamples = longFunctionDeclarations + [declarationWithTrailingLongComment]
+        let triggeringExamples = longFunctionDeclarations + [declarationWithTrailingLongComment] + longMacroDeclarations
         let nonTriggeringExamples = [longComment, longBlockComment, longRealBlockComment]
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["ignores_comments": true],
-                   commentDoesntViolate: false, stringDoesntViolate: false, skipCommentTests: true)
+        verifyRule(
+            description,
+            ruleConfiguration: ["ignores_comments": true],
+            commentDoesntViolate: false,
+            stringDoesntViolate: false,
+            skipCommentTests: true
+        )
     }
 
     func testLineLengthWithIgnoreURLsEnabled() {

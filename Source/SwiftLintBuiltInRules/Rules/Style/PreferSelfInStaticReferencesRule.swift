@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
@@ -224,7 +226,66 @@ private extension PreferSelfInStaticReferencesRule {
             parentDeclScopes.pop()
         }
 
+        // A composition (`A & B`) must not have the enclosing type rewritten to
+        // `Self`: that changes the composition's meaning (and `Self & B` is not
+        // even valid when the enclosing type is a protocol). Skip the whole
+        // construct so neither identifier nor member-type components are flagged.
+        override func visit(_: CompositionTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        // The constraint of an existential or opaque type (`any A`, `some A`, and
+        // the composition in `any A & B`) must not be rewritten to `Self`:
+        // `any Self`/`some Self` is not valid. Skip the whole construct.
+        override func visit(_: SomeOrAnyTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        // The base of an existential metatype `P.Protocol` must not be rewritten
+        // to `Self`: `Self.Protocol` is invalid because `Self` is a concrete type.
+        // Only `.Protocol` is skipped; `.Type` metatypes stay correctable, since
+        // `Self.Type` is valid.
+        override func visit(_ node: MetatypeTypeSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek(), node.metatypeSpecifier.tokenKind == .keyword(.Protocol) {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        // The type operand of an `is` / `as` / `as?` / `as!` cast must not be
+        // rewritten to `Self` in a class-like scope: `Self` is the dynamic type,
+        // so `x is Self` is not equivalent to `x is A` for a non-final class (an
+        // instance of a subclass satisfies `is Self` but not the intended base
+        // type). This mirrors the `X.self` skip; static member references
+        // (`A.f()`) are unaffected because they are not cast operands.
+        override func visit(_ node: TypeExprSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek(), isCastOperand(node) {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
         override func visit(_: GenericArgumentListSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        override func visit(_: GenericParameterListSyntax) -> SyntaxVisitorContinueKind {
+            if case .likeClass = parentDeclScopes.peek() {
+                return .skipChildren
+            }
+            return .visitChildren
+        }
+
+        override func visit(_: GenericRequirementListSyntax) -> SyntaxVisitorContinueKind {
             if case .likeClass = parentDeclScopes.peek() {
                 return .skipChildren
             }
@@ -239,10 +300,6 @@ private extension PreferSelfInStaticReferencesRule {
             // header (the extended type itself); the new class-like scope
             // pushed for the extension would otherwise rewrite it to `Self`.
             if parent.is(ExtensionDeclSyntax.self) {
-                return
-            }
-            if case .likeClass = parentDeclScopes.peek(), parent.is(GenericArgumentSyntax.self) {
-                // Type is a generic parameter in a class.
                 return
             }
             if node.genericArguments == nil {
@@ -289,6 +346,15 @@ private extension PreferSelfInStaticReferencesRule {
                 }
             }
             return .skipChildren
+        }
+
+        /// Whether `node` is the type operand of an `is` / `as` / `as?` / `as!`
+        /// cast. A bare type expression only ends up as an element of a sequence
+        /// expression in that position, and `ExprListSyntax` is used solely for a
+        /// sequence's elements, so the parent check is sufficient (and avoids
+        /// scanning the sequence).
+        private func isCastOperand(_ node: TypeExprSyntax) -> Bool {
+            node.parent?.is(ExprListSyntax.self) == true
         }
 
         private func addViolation(on node: TokenSyntax) {

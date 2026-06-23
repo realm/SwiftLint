@@ -1,3 +1,6 @@
+// swiftlint:disable file_length
+
+// swiftlint:disable:next type_body_length
 enum PreferSelfInStaticReferencesRuleExamples {
     static let nonTriggeringExamples = [
         Example("""
@@ -72,6 +75,20 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 let i = 1
                 let c: C = C()
                 func f(c: C) -> KeyPath<C, Int> { \\Self.i }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol P {}
+            struct S: P {}
+            extension P {
+                func f<A>() -> some P where A: P { S() }
+                func g<A: P>() -> some P { S() }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class C<A> {
+                func f() where A: C {}
+                func g<B: C>() {}
             }
             """, excludeFromDocumentation: true),
         Example("""
@@ -155,6 +172,55 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Inner {
                 func f() { _ = Outer.Inner<Int>() }
                 func g() { _ = Outer.Inner<Int>.i }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is any A }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A.Protocol }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            protocol B {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is any A & B }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class Outer {
+                class Inner {}
+            }
+            protocol B {}
+            extension Outer.Inner {
+                func f(_ x: Any) -> Bool { x is Outer.Inner & B }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A }
+                func g(_ x: Any) -> A? { x as? A }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            protocol A {}
+            extension A {
+                func f(_ x: Any) -> Bool { x is A.Type }
+            }
+            """, excludeFromDocumentation: true),
+        Example("""
+            class T {
+                let child: T
+                init(input: Any) {
+                    child = (input as! T).child
+                }
             }
             """, excludeFromDocumentation: true),
     ]
@@ -269,14 +335,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     return f
                 }
                 func g(a: [↓S]) -> [↓S] { a }
-            }
-            """, excludeFromDocumentation: true),
-        Example("""
-            class T {
-                let child: T
-                init(input: Any) {
-                    child = (input as! T).child
-                }
             }
             """, excludeFromDocumentation: true),
         Example("""

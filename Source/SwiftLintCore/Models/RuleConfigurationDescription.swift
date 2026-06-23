@@ -429,10 +429,15 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                 Issue.deprecatedConfigurationOption(ruleID: id, key: key, alternative: name).print()
             }
             if wrappedValue != oldValue {
+                rawWrappedValue = wrappedValue
                 postprocessor(&wrappedValue)
             }
         }
     }
+
+    /// The original value without postprocessing applied. It will be used for documentation to not mislead users with
+    /// values that are modified by the postprocessor for internal reasons.
+    private var rawWrappedValue: T
 
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
@@ -448,6 +453,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     public let inline: Bool
 
     private let deprecationNotice: DeprecationNotice?
+    private let documentPostprocessedValue: Bool
     private let postprocessor: @Sendable (inout T) -> Void
 
     /// Default constructor.
@@ -457,11 +463,18 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
     ///   - deprecationNotice: An optional deprecation notice in case an option is outdated and/or has been replaced by
     ///                        an alternative.
+    ///   - documentPostprocessedValue: Whether the value after postprocessing should be used for documentation. By
+    ///                                 default, the value after postprocessing is used, but in some cases, it may be
+    ///                                 desirable to document the original value without modifications applied by the
+    ///                                 postprocessor. In this case, set this parameter to `false`. Note that the
+    ///                                 postprocessor will still be applied to the wrapped value and the original value
+    ///                                 will only be used for documentation.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     @preconcurrency
     public init(wrappedValue value: T,
                 key: String,
                 deprecationNotice: DeprecationNotice? = nil,
+                documentPostprocessedValue: Bool = true,
                 postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         // swiftlint:disable:previous no_empty_block
         self.init(
@@ -469,6 +482,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
             key: key,
             inline: false,
             deprecationNotice: deprecationNotice,
+            documentPostprocessedValue: documentPostprocessedValue,
             postprocessor: postprocessor
         )
 
@@ -511,12 +525,15 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                  key: String,
                  inline: Bool,
                  deprecationNotice: DeprecationNotice? = nil,
+                 documentPostprocessedValue: Bool = true,
                  postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         // swiftlint:disable:previous no_empty_block
+        self.rawWrappedValue = wrappedValue
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline
         self.deprecationNotice = deprecationNotice
+        self.documentPostprocessedValue = documentPostprocessedValue
         self.postprocessor = postprocessor
     }
 
@@ -527,7 +544,7 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
 extension ConfigurationElement: AnyConfigurationElement {
     fileprivate var description: RuleConfigurationDescription {
-        wrappedValue.asDescription(with: key)
+        (documentPostprocessedValue ? wrappedValue : rawWrappedValue).asDescription(with: key)
     }
 }
 

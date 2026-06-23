@@ -155,7 +155,7 @@ swift_library(
     name = "IntegrationTests.library",
     package_name = "SwiftLint",
     testonly = True,
-    srcs = ["IntegrationTests/IntegrationTests.swift"],
+    srcs = glob(["IntegrationTests/*.swift"]),
     copts = TARGETED_COPTS,  # Set to strict once SwiftLintFramework is updated
     module_name = "IntegrationTests",
     deps = [
@@ -165,10 +165,10 @@ swift_library(
 
 swift_test(
     name = "IntegrationTests",
-    data = [
-        "IntegrationTests/Resources/default_rule_configurations.yml",
-        "//:LintInputs",
-    ],
+    data = ["//:LintInputs"] + glob(["IntegrationTests/Resources/**"], allow_empty = True),
     visibility = ["//visibility:public"],
     deps = [":IntegrationTests.library"],
+    env = {
+        "SWIFTLINT_BAZEL_TEST": "true",
+    },
 )

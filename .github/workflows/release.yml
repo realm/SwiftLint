@@ -34,7 +34,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.ref_name }}
           persist-credentials: true
@@ -71,12 +71,12 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_15.0.1.app # Supports iOS 17.0 simulator selected by CocoaPods.
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.ref_name }}
           persist-credentials: false
       - name: Set up Ruby and Bundler
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
+        uses: ruby/setup-ruby@89f90524b88a01fe6e0b732220432cc6142926af # v1.313.0
         with:
           bundler-cache: true
       - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.
@@ -105,7 +105,7 @@ jobs:
       contents: read
     steps:
       - &checkout-release-branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
@@ -129,18 +129,18 @@ jobs:
         include:
           - arch: ARM64
             runner: ubuntu-24.04-arm
-            swift_version: 6.2.3
+            swift_version: 6.3.2
             swift_sdk: aarch64-swift-linux-musl
-            swift_sdk_version: 0.0.1
-            swift_sdk_checksum: f30ec724d824ef43b5546e02ca06a8682dafab4b26a99fbb0e858c347e507a2c
-            artifact_name: swiftlint-static-arm64
+            swift_sdk_version: 0.1.0
+            swift_sdk_checksum: 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
+            artifact_name: swiftlint-linux-static-arm64
           - arch: AMD64
             runner: ubuntu-24.04
-            swift_version: 6.3.1
+            swift_version: 6.3.2
             swift_sdk: x86_64-swift-linux-musl
             swift_sdk_version: 0.1.0
-            swift_sdk_checksum: fac05271c1f7d060bd203240ce5251d5ca902d30ac899f553765dbb3a88b97ad
-            artifact_name: swiftlint-static-amd64
+            swift_sdk_checksum: 3fd798bef6f4408f1ea5a6f94ce4d4052830c4326ab85ebc04f983f01b3da407
+            artifact_name: swiftlint-linux-static-amd64
     permissions:
       contents: read
     env:
@@ -258,11 +258,12 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path artifacts -Force | Out-Null
-          Copy-Item ".build/${{ matrix.target-triple }}/release/swiftlint.exe" "artifacts/swiftlint.exe" -Force
       - name: Create portable zip
         shell: pwsh
         run: |
-          Compress-Archive -Path "artifacts/swiftlint.exe" -DestinationPath "artifacts/SwiftLint.${{ matrix.arch }}.zip" -Force
+          Compress-Archive `
+            -Path ".build/${{ matrix.target-triple }}/release/swiftlint.exe" `
+            -DestinationPath "artifacts/SwiftLint.${{ matrix.arch }}.zip" -Force
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
       - name: Build WiX MSI
@@ -300,7 +301,7 @@ jobs:
       actions: read
       contents: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: true
@@ -318,11 +319,11 @@ jobs:
           # Move Linux artifacts.
           mv -f swiftlint-linux-amd64/swiftlint swiftlint_linux_amd64
           mv -f swiftlint-linux-arm64/swiftlint swiftlint_linux_arm64
-          mv -f swiftlint-static-amd64/swiftlint swiftlint_static_amd64
-          mv -f swiftlint-static-arm64/swiftlint swiftlint_static_arm64
+          mv -f swiftlint-linux-static-amd64/swiftlint swiftlint_static_amd64
+          mv -f swiftlint-linux-static-arm64/swiftlint swiftlint_static_arm64
 
           # Just pick one of the licenses.
-          mv -f swiftlint-static-amd64/LICENSE.mimalloc .
+          mv -f swiftlint-linux-static-amd64/LICENSE.mimalloc .
 
           # Move Windows artifacts.
           mv -f swiftlint-windows-{arm,amd}64/*.{msi,zip} .

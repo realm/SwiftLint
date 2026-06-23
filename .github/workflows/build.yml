@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - &checkout-step
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - uses: ./.github/actions/bazel-linux-build
+      - uses: ./.github/actions/bazel-linux
         name: Build SwiftLint with Bazel
         env:
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
@@ -32,17 +32,17 @@ jobs:
       matrix:
         include:
           - image: swift:5.9-jammy
-            version: '5.9'
+            version: "5.9"
           - image: swift:5.10-noble
-            version: '5.10'
+            version: "5.10"
           - image: swift:6.0-noble
-            version: '6.0'
+            version: "6.0"
           - image: swift:6.1-noble
-            version: '6.1'
+            version: "6.1"
           - image: swift:6.2-noble
-            version: '6.2'
+            version: "6.2"
           - image: swift:6.3-noble
-            version: '6.3'
+            version: "6.3"
     container: ${{ matrix.image }}
     steps:
       - *checkout-step

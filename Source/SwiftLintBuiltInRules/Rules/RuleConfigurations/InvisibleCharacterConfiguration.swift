@@ -12,9 +12,8 @@ struct InvisibleCharacterConfiguration: SeverityBasedRuleConfiguration {
     private(set) var severityConfiguration = SeverityConfiguration<Parent>.error
     @ConfigurationElement(
         key: "additional_code_points",
-        postprocessor: {
-            $0.formUnion(defaultCharacterDescriptions.keys)
-        }
+        documentPostprocessedValue: false,
+        postprocessor: { $0.formUnion(defaultCharacterDescriptions.keys) }
     )
     private(set) var violatingCharacters = Set<UnicodeScalar>()
 }

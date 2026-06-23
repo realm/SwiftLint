@@ -18,7 +18,7 @@ jobs:
     container: swift:6.3-noble
     steps:
       - &checkout-step
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - name: Get Swift version
@@ -63,8 +63,8 @@ jobs:
     name: SPM, Windows ${{ matrix.windows-display-name }}
     runs-on: windows-${{ matrix.windows-version }}
     env:
-      SWIFT_VERSION: development
-      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-03-16-a
+      SWIFT_VERSION: swift-6.3.2-release
+      SWIFT_BUILD: 6.3.2-RELEASE
     strategy:
       fail-fast: false
       matrix:
@@ -81,7 +81,7 @@ jobs:
           swift-version: ${{ env.SWIFT_VERSION }}
           swift-build: ${{ env.SWIFT_BUILD }}
           build_arch: ${{ matrix.arch }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -89,8 +89,7 @@ jobs:
           key: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
           restore-keys: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-
           path: .build
-      - name: Build all targets
-        run: swift build --build-tests
-      - name: Run selected tests
-        run: swift test --skip IntegrationTests --skip FileSystemAccessTests --skip FrameworkTests --skip BuiltInRulesTests
-      # To be extended with test execution and linting ...
+      - name: Run tests
+        run: swift test --parallel
+      - name: Lint codebase
+        run: swift run swiftlint lint --strict

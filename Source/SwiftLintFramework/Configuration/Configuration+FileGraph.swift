@@ -6,7 +6,7 @@ package extension Configuration {
         private static let defaultRemoteConfigTimeout: TimeInterval = 2
         private static let defaultRemoteConfigTimeoutIfCached: TimeInterval = 1
 
-        internal let rootDirectory: String
+        internal let rootDirectory: URL
 
         private let ignoreParentAndChildConfigs: Bool
 
@@ -16,9 +16,9 @@ package extension Configuration {
         private var isBuilt = false
 
         // MARK: - Initializers
-        internal init(commandLineChildConfigs: [String], rootDirectory: String, ignoreParentAndChildConfigs: Bool) {
+        internal init(commandLineChildConfigs: [URL], rootDirectory: URL, ignoreParentAndChildConfigs: Bool) {
             let verticesArray = commandLineChildConfigs.map { config in
-                Vertex(string: config, rootDirectory: rootDirectory, isInitialVertex: true)
+                Vertex(string: config.filepath, rootDirectory: rootDirectory.filepath, isInitialVertex: true)
             }
             vertices = Set(verticesArray)
             edges = Set(zip(verticesArray, verticesArray.dropFirst()).map { Edge(parent: $0.0, child: $0.1) })
@@ -28,7 +28,7 @@ package extension Configuration {
         }
 
         /// Dummy init to get a FileGraph that just represents a root directory
-        internal init(rootDirectory: String) {
+        internal init(rootDirectory: URL) {
             self.init(
                 commandLineChildConfigs: [],
                 rootDirectory: rootDirectory,
@@ -57,12 +57,12 @@ package extension Configuration {
             )
         }
 
-        internal func includesFile(atPath path: String) -> Bool {
+        internal func includesFile(atPath path: URL) -> Bool {
             guard isBuilt else { return false }
 
             return vertices.contains { vertex in
                 if case let .existing(filePath) = vertex.filePath {
-                    return path == filePath
+                    return path.filepath == filePath
                 }
 
                 return false
@@ -137,12 +137,16 @@ package extension Configuration {
             remoteConfigTimeoutOverride: TimeInterval?,
             remoteConfigTimeoutIfCachedOverride: TimeInterval?
         ) throws {
-            let key = type == .childConfig ? Configuration.Key.childConfig.rawValue
+            let key = type == .childConfig
+                ? Configuration.Key.childConfig.rawValue
                 : Configuration.Key.parentConfig.rawValue
 
             if let reference = vertex.configurationDict[key] as? String {
-                let referencedVertex = Vertex(string: reference, rootDirectory: vertex.rootDirectory,
-                                              isInitialVertex: false)
+                let referencedVertex = Vertex(
+                    string: reference,
+                    rootDirectory: vertex.rootDirectory,
+                    isInitialVertex: false
+                )
 
                 // Local vertices are allowed to have local / remote references
                 // Remote vertices are only allowed to have remote references
@@ -150,7 +154,7 @@ package extension Configuration {
                     throw Issue.genericWarning("Remote configs are not allowed to reference local configs.")
                 }
                 let existingVertex = findPossiblyExistingVertex(sameAs: referencedVertex)
-                let existingVertexCopy = existingVertex.map { $0.copy(withNewRootDirectory: rootDirectory) }
+                let existingVertexCopy = existingVertex.map { $0.copy(withNewRootDirectory: rootDirectory.filepath) }
 
                 edges.insert(
                     type == .childConfig
@@ -189,7 +193,7 @@ package extension Configuration {
         // MARK: Validating
         /// Validates the Graph and throws failures
         /// If successful, returns array of configuration dicts that represents the graph
-        private func validate() throws -> [(configurationDict: [String: Any], rootDirectory: String)] {
+        private func validate() throws -> [(configurationDict: [String: Any], rootDirectory: URL)] {
             // Detect cycles via back-edge detection during DFS
             func walkDown(stack: [Vertex]) throws {
                 // Please note that the equality check (`==`), not the identity check (`===`) is used
@@ -241,25 +245,26 @@ package extension Configuration {
             return verticesToMerge.map {
                 (
                     configurationDict: $0.configurationDict,
-                    rootDirectory: $0.rootDirectory
+                    rootDirectory: $0.rootDirectory.url(directoryHint: .isDirectory)
                 )
             }
         }
 
         // MARK: Merging
         private func merged(
-            configurationData: [(configurationDict: [String: Any], rootDirectory: String)],
+            configurationData: [(configurationDict: [String: Any], rootDirectory: URL)],
             enableAllRules: Bool,
             onlyRule: [String],
             cachePath: String?
         ) throws -> Configuration {
             // Split into first & remainder; use empty dict for first if the array is empty
-            let firstConfigurationData = configurationData.first ?? (configurationDict: [:], rootDirectory: "")
+            let firstConfigurationData = configurationData.first ?? (configurationDict: [:], rootDirectory: URL.cwd)
             let configurationData = Array(configurationData.dropFirst())
 
             // Build first configuration
             var firstConfiguration = try Configuration(
                 dict: firstConfigurationData.configurationDict,
+                location: firstConfigurationData.rootDirectory,
                 enableAllRules: enableAllRules,
                 onlyRule: onlyRule,
                 cachePath: cachePath
@@ -269,16 +274,14 @@ package extension Configuration {
             // firstConfigurationData.rootDirectory may be different from rootDirectory,
             // e. g. when ../file.yml is passed as the first config
             firstConfiguration.fileGraph = Self(rootDirectory: rootDirectory)
-            firstConfiguration.makeIncludedAndExcludedPaths(
-                relativeTo: rootDirectory,
-                previousBasePath: firstConfigurationData.rootDirectory
-            )
+            firstConfiguration.makeIncludedAndExcludedPaths(relativeTo: rootDirectory)
 
             // Build succeeding configurations
             return try configurationData.reduce(firstConfiguration) {
                 var childConfiguration = try Configuration(
                     parentConfiguration: $0,
                     dict: $1.configurationDict,
+                    location: $1.rootDirectory,
                     enableAllRules: enableAllRules,
                     onlyRule: onlyRule,
                     cachePath: cachePath

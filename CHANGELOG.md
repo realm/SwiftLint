@@ -1,6 +1,6 @@
 # Changelog
 
-## Main
+## 0.64.1: All Windows Opened
 
 ### Breaking
 

@@ -7,24 +7,24 @@ matrix:
 tasks:
   verify_targets_linux:
     name: Verify Targets (Linux), Bazel ${{ matrix.bazel }}
-    platform: ubuntu2004
+    platform: ubuntu2404_arm64
     bazel: ${{ matrix.bazel }}
     environment:
       CC: "clang"
-      SWIFT_VERSION: "6.0.3"
+      SWIFT_VERSION: "6.3.2"
       SWIFT_HOME: "$HOME/swift-$SWIFT_VERSION"
       PATH: "$PATH:$SWIFT_HOME/usr/bin"
     shell_commands:
       - "echo --- Downloading and extracting Swift $SWIFT_VERSION to $SWIFT_HOME"
       - "mkdir $SWIFT_HOME"
-      - "curl https://download.swift.org/swift-${SWIFT_VERSION}-release/ubuntu2004/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu20.04.tar.gz | tar xvz --strip-components=1 -C $SWIFT_HOME"
+      - "curl https://download.swift.org/swift-${SWIFT_VERSION}-release/ubuntu2404-aarch64/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu24.04-aarch64.tar.gz | tar xvz --strip-components=1 -C $SWIFT_HOME"
     build_flags:
       - "--action_env=PATH"
     build_targets:
       - '@swiftlint//:swiftlint'
   verify_targets_macos:
     name: Verify Targets (macOS), Bazel ${{ matrix.bazel }}
-    platform: macos
+    platform: macos_arm64
     bazel: ${{ matrix.bazel }}
     build_targets:
       - '@swiftlint//:swiftlint'

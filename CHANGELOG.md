@@ -221,6 +221,12 @@
   The modern replacement is safer, cleaner, Retina-aware and more performant.  
   [Dimitri Dupuis-Latour](https://github.com/DimDL)
   [#6268](https://github.com/realm/SwiftLint/issues/6268)
+  
+* Add `prefer_scaled_to_fit` opt-in rule to prefer `scaledToFit()` and
+  `scaledToFill()` over `aspectRatio(contentMode:)` with a constant
+  content mode.  
+  [DemiDevv](https://github.com/DemiDevv)
+  [#5713](https://github.com/realm/SwiftLint/issues/5713)
 
 * Support access level modifiers on imports in `unused_imports` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)

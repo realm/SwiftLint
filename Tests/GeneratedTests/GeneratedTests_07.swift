@@ -31,6 +31,12 @@ final class PreferConditionListRuleGeneratedTests: SwiftLintTestCase {
     }
 }
 
+final class PreferIfAndSwitchExpressionsRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(PreferIfAndSwitchExpressionsRule.description)
+    }
+}
+
 final class PreferKeyPathRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PreferKeyPathRule.description)
@@ -148,11 +154,5 @@ final class QuickDiscouragedPendingTestRuleGeneratedTests: SwiftLintTestCase {
 final class RawValueForCamelCasedCodableEnumRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)
-    }
-}
-
-final class ReduceBooleanRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ReduceBooleanRule.description)
     }
 }

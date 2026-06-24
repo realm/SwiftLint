@@ -7,6 +7,12 @@
 @testable import SwiftLintCore
 import TestHelpers
 
+final class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StatementPositionRule.description)
+    }
+}
+
 final class StaticOperatorRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StaticOperatorRule.description)
@@ -148,11 +154,5 @@ final class UnhandledThrowingTaskRuleGeneratedTests: SwiftLintTestCase {
 final class UnneededBreakInSwitchRuleGeneratedTests: SwiftLintTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)
-    }
-}
-
-final class UnneededEscapingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(UnneededEscapingRule.description)
     }
 }

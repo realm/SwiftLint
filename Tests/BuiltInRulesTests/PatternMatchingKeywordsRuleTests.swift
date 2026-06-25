@@ -1,33 +1,32 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
-    func testViolationReasonForTuples() throws {
-        let config = try XCTUnwrap(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct PatternMatchingKeywordsRuleTests {
+    @Test
+    func violationReasonForTuples() throws {
+        let config = try #require(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
         let example = Example("switch foo { case (let x, let y): break }")
         let violations = violations(example, config: config)
 
-        XCTAssertEqual(violations.count, 2)
-        XCTAssertEqual(
-            violations.first?.reason,
-            PatternMatchingKeywordsRule.Reason.tuples
-        )
+        #expect(violations.count == 2)
+        #expect(violations.first?.reason == PatternMatchingKeywordsRule.Reason.tuples)
     }
 
-    func testViolationReasonForEnumAssociatedValues() throws {
-        let config = try XCTUnwrap(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
+    @Test
+    func violationReasonForEnumAssociatedValues() throws {
+        let config = try #require(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
         let example = Example("switch foo { case .bar(let x, let y): break }")
         let violations = violations(example, config: config)
 
-        XCTAssertEqual(violations.count, 2)
-        XCTAssertEqual(
-            violations.first?.reason,
-            PatternMatchingKeywordsRule.Reason.enumAssociatedValues
-        )
+        #expect(violations.count == 2)
+        #expect(violations.first?.reason == PatternMatchingKeywordsRule.Reason.enumAssociatedValues)
     }
 
-    func testRegressionExamples() {
+    @Test
+    func regressionExamples() {
         let triggering = [
             "switch foo { case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break }",
             "switch foo { case (.yamlParsing(↓var x), (.yamlParsing(↓var y), _)): break }",
@@ -50,7 +49,8 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testLabeledAssociatedValues() {
+    @Test
+    func labeledAssociatedValues() {
         let triggering = [
             "switch foo { case .foo(bar: ↓let lhs, baz: ↓let rhs): break }",
             "switch foo { case .foo(bar: ↓var lhs, baz: ↓var rhs): break }",
@@ -73,7 +73,8 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSingleBindingDoesNotTrigger() {
+    @Test
+    func singleBindingDoesNotTrigger() {
         let examples = [
             "switch foo { case (let x, y): break }",
             "switch foo { case .foo(let x, y): break }",
@@ -87,7 +88,8 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testNeutralElementsDoNotBlockLift() {
+    @Test
+    func neutralElementsDoNotBlockLift() {
         let examples = [
             "switch foo { case (↓let x, ↓let y, _): break }",
             "switch foo { case (↓let x, ↓let y, 1): break }",
@@ -104,7 +106,8 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testThreeAlternativeMultiPatternCase() {
+    @Test
+    func threeAlternativeMultiPatternCase() {
         let triggering = [
             "switch foo { case .foo(↓let x, ↓let y), .bar(↓let x, ↓let y), .baz(↓let x, ↓let y): break }",
         ]
@@ -121,7 +124,8 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testForCaseWithEnumAssociatedValues() {
+    @Test
+    func forCaseWithEnumAssociatedValues() {
         let triggering = [
             "for case .foo(↓let x, ↓let y) in values {}",
         ]
@@ -139,7 +143,8 @@ final class PatternMatchingKeywordsRuleTests: SwiftLintTestCase {
         )
     }
 
-    func testSanityChecksForNonInterestingPatterns() {
+    @Test
+    func sanityChecksForNonInterestingPatterns() {
         let examples = [
             "switch foo { case _: break }",
             "switch foo { case .foo: break }",

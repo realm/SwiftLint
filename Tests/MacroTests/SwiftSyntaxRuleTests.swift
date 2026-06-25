@@ -1,7 +1,6 @@
 import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacrosGenericTestSupport
-import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
 
 @testable import SwiftLintCoreMacros
 
@@ -9,8 +8,10 @@ private let macros = [
     "SwiftSyntaxRule": MacroSpec(type: SwiftSyntaxRule.self)
 ]
 
-final class SwiftSyntaxRuleTests: XCTestCase {
-    func testNoArguments() {
+@Suite
+struct SwiftSyntaxRuleTests {
+    @Test
+    func noArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule
@@ -26,11 +27,12 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testFalseArguments() {
+    @Test
+    func falseArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(foldExpressions: false, explicitRewriter: false, correctable: false, optIn: false)
@@ -46,11 +48,12 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testTrueArguments() {
+    @Test
+    func trueArguments() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(foldExpressions: true, explicitRewriter: true, correctable: true, optIn: true)
@@ -81,11 +84,12 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testCorrectableWithoutExplcitRewriter() {
+    @Test
+    func correctableWithoutExplcitRewriter() {
         assertMacroExpansion(
             """
             @SwiftSyntaxRule(correctable: true)
@@ -104,11 +108,12 @@ final class SwiftSyntaxRuleTests: XCTestCase {
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testArbitraryArguments() {
+    @Test
+    func arbitraryArguments() {
         // Fail with a diagnostic because the macro definition explicitly requires bool arguments.
         assertMacroExpansion(
             """
@@ -131,7 +136,7 @@ final class SwiftSyntaxRuleTests: XCTestCase {
                 DiagnosticSpec(message: SwiftLintCoreMacroError.noBooleanLiteral.message, line: 1, column: 88),
             ],
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 }

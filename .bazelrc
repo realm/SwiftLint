@@ -4,11 +4,12 @@ try-import %workspace%/ci.bazelrc
 try-import %workspace%/user.bazelrc
 
 build --enable_platform_specific_config
+
 build:macos --apple_crosstool_top=@local_config_apple_cc//:toolchain
 build:macos --crosstool_top=@local_config_apple_cc//:toolchain
 build:macos --host_crosstool_top=@local_config_apple_cc//:toolchain
+build:macos --macos_minimum_os=14.8 --host_macos_minimum_os=14.8 # Swift Testing libraries are compiled for macOS 14+.
 
-build --macos_minimum_os=13.5 --host_macos_minimum_os=13.5
 build --disk_cache=~/.bazel_cache
 build --remote_cache_compression
 build --remote_build_event_upload=minimal

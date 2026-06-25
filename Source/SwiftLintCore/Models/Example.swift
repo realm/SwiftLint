@@ -30,6 +30,8 @@ public struct Example: Sendable {
     public private(set) var testOnLinux: Bool
     /// Whether the example should be tested on Windows
     public private(set) var testOnWindows: Bool
+    /// The ID of the file in which the example was created
+    public private(set) var fileID: String
     /// The path to the file where the example was created
     public private(set) var file: StaticString
     /// The line in the file where the example was created
@@ -59,6 +61,7 @@ public extension Example {
     ///   - testDisableCommand:   Whether tests shall verify that the disabled rule (comment in the example) doesn't
     ///                           trigger.
     ///   - testOnLinux:          Whether the example should be tested on Linux.
+    ///   - fileID:               ID of the file in which the example is located.
     ///   - file:                 The path to the file where the example is located.
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
@@ -71,6 +74,7 @@ public extension Example {
          testDisableCommand: Bool = true,
          testOnLinux: Bool = true,
          testOnWindows: Bool = true,
+         fileID: String = #fileID,
          file: StaticString = #filePath,
          line: UInt = #line,
          excludeFromDocumentation: Bool = false) {
@@ -79,6 +83,7 @@ public extension Example {
         self.testMultiByteOffsets = testMultiByteOffsets
         self.testOnLinux = testOnLinux
         self.testOnWindows = testOnWindows
+        self.fileID = fileID
         self.file = file
         self.line = line
         self.excludeFromDocumentation = excludeFromDocumentation

@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class ReduceIntoRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ReduceIntoRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ReduceIntoRule.description)
     }
 }
 
-final class RedundantDiscardableLetRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantDiscardableLetRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)
     }
 }
 
-final class RedundantFinalRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantFinalRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantFinalRule.description)
     }
 }
 
-final class RedundantNilCoalescingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantNilCoalescingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantNilCoalescingRule.description)
     }
 }
 
-final class RedundantObjcAttributeRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantObjcAttributeRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantObjcAttributeRule.description)
     }
 }
 
-final class RedundantSelfRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantSelfRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantSelfRule.description)
     }
 }
 
-final class RedundantSendableRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantSendableRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantSendableRule.description)
     }
 }
 
-final class RedundantSetAccessControlRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantSetAccessControlRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantSetAccessControlRule.description)
     }
 }
 
-final class RedundantStringEnumValueRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantStringEnumValueRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantStringEnumValueRule.description)
     }
 }
 
-final class RedundantTypeAnnotationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantTypeAnnotationRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantTypeAnnotationRule.description)
     }
 }
 
-final class RedundantVoidReturnRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RedundantVoidReturnRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RedundantVoidReturnRule.description)
     }
 }
 
-final class RequiredDeinitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RequiredDeinitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RequiredDeinitRule.description)
     }
 }
 
-final class RequiredEnumCaseRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct RequiredEnumCaseRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(RequiredEnumCaseRule.description)
     }
 }
 
-final class ReturnArrowWhitespaceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ReturnArrowWhitespaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 }
 
-final class ReturnValueFromVoidFunctionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ReturnValueFromVoidFunctionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ReturnValueFromVoidFunctionRule.description)
     }
 }
 
-final class SelfBindingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct SelfBindingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(SelfBindingRule.description)
     }
 }
 
-final class SelfInPropertyInitializationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct SelfInPropertyInitializationRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(SelfInPropertyInitializationRule.description)
     }
 }
 
-final class ShorthandArgumentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ShorthandArgumentRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ShorthandArgumentRule.description)
     }
 }
 
-final class ShorthandOperatorRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ShorthandOperatorRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ShorthandOperatorRule.description)
     }
 }
 
-final class ShorthandOptionalBindingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ShorthandOptionalBindingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ShorthandOptionalBindingRule.description)
     }
 }
 
-final class SingleTestClassRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct SingleTestClassRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(SingleTestClassRule.description)
     }
 }
 
-final class SortedEnumCasesRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct SortedEnumCasesRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(SortedEnumCasesRule.description)
     }
 }
 
-final class SortedFirstLastRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct SortedFirstLastRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)
     }
 }
 
-final class SortedImportsRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct SortedImportsRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
     }
 }
 
-final class StatementPositionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct StatementPositionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(StatementPositionRule.description)
     }
 }

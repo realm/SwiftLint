@@ -16,6 +16,7 @@ jobs:
     name: SPM, Linux, Swift 6.3
     runs-on: ubuntu-24.04
     container: swift:6.3-noble
+    timeout-minutes: 10
     steps:
       - &checkout-step
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -37,12 +38,11 @@ jobs:
   spm_macos:
     name: SPM, macOS ${{ matrix.macOS }}, Xcode ${{ matrix.xcode }}
     runs-on: macos-${{ matrix.macOS }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         include:
-          - macOS: '14'
-            xcode: '16.2'
           - macOS: '15'
             xcode: '16.4'
           - macOS: '26'
@@ -62,6 +62,7 @@ jobs:
   spm_windows:
     name: SPM, Windows ${{ matrix.windows-display-name }}
     runs-on: windows-${{ matrix.windows-version }}
+    timeout-minutes: 30
     env:
       SWIFT_VERSION: swift-6.3.2-release
       SWIFT_BUILD: 6.3.2-RELEASE
@@ -90,6 +91,6 @@ jobs:
           restore-keys: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-
           path: .build
       - name: Run tests
-        run: swift test --parallel
+        run: swift test
       - name: Lint codebase
         run: swift run swiftlint lint --strict

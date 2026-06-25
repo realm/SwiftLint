@@ -4,7 +4,10 @@
 
 ### Breaking
 
-* None.
+* SwiftLint now requires a Swift 6.1 or higher compiler to build. The
+  [Swift Package Manager plugins](https://github.com/SimplyDanny/SwiftLintPlugins) continue
+  to work with all versions down to Swift 5.9.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Experimental
 

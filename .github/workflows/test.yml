@@ -91,6 +91,6 @@ jobs:
           restore-keys: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-
           path: .build
       - name: Run tests
-        run: swift test
+        run: swift test --no-parallel
       - name: Lint codebase
         run: swift run swiftlint lint --strict

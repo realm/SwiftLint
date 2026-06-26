@@ -15,7 +15,8 @@
 
 ### Enhancements
 
-* None.
+* SwiftLint now builds with Bazel versions 7 to 9.  
+  [SimplyDanny](https://github.com/SimplyDanny)
 
 ### Bug Fixes
 

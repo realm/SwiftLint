@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG SWIFT_VERSION=6.1.2
+ARG SWIFT_VERSION=6.3.2
 ARG UBUNTU_VERSION=noble
 
 # Builder image
@@ -29,6 +29,7 @@ COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftCompilerPlugin
 COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftDiagnostics.so /usr/lib
 COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftIDEUtils.so /usr/lib
 COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftIfConfig.so /usr/lib
+COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftLexicalLookup.so /usr/lib
 COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftOperators.so /usr/lib
 COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftParser.so /usr/lib
 COPY --from=builder /usr/lib/swift/host/compiler/lib_CompilerSwiftParserDiagnostics.so /usr/lib
@@ -48,6 +49,7 @@ COPY --from=builder /usr/lib/swift/linux/libswiftCore.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftDispatch.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftGlibc.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswiftSynchronization.so /usr/lib
+COPY --from=builder /usr/lib/swift/linux/libswift_Builtin_float.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswift_Concurrency.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswift_RegexParser.so /usr/lib
 COPY --from=builder /usr/lib/swift/linux/libswift_StringProcessing.so /usr/lib

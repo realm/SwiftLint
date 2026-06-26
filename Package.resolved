@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "fc2eb919465fd4fc9e1629e52e24d1242954f309",
-        "version" : "605.0.0-prerelease-2026-06-08"
+        "revision" : "a8b1c535647243d603b6772e7e8306c993a0c188",
+        "version" : "605.0.0-prerelease-2026-06-26"
       }
     },
     {

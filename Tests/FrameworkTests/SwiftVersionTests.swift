@@ -7,6 +7,8 @@ struct SwiftVersionTests {
     func detectSwiftVersion() { // swiftlint:disable:this function_body_length
 #if compiler(>=6.4)
         let version = "6.4.0"
+#elseif compiler(>=6.3.3)
+        let version = "6.3.3"
 #elseif compiler(>=6.3.2)
         let version = "6.3.2"
 #elseif compiler(>=6.3.1)

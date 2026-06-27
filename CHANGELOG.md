@@ -22,7 +22,8 @@
 
 ### Breaking
 
-* SwiftLint now requires a Swift 6.1 or higher compiler to build. The
+* SwiftLint now requires a Swift 6.1 or higher for development (to run tests). The
+  executable can still be built with a Swift 6 compiler. The
   [Swift Package Manager plugins](https://github.com/SimplyDanny/SwiftLintPlugins) continue
   to work with all versions down to Swift 5.9.  
   [SimplyDanny](https://github.com/SimplyDanny)

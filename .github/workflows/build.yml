@@ -32,6 +32,17 @@ jobs:
       - name: Verify SourceKit dynamic loading behavior
         run: bash tools/verify-sourcekit-loading.sh bazel-bin/swiftlint .
 
+  bazel_macos:
+    name: Bazel, macOS 14, Xcode 16.2 # default
+    runs-on: macos-14
+    steps:
+      - *checkout-step
+      - name: Build SwiftLint with Bazel
+        run: make --debug bazel_release
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_16.2.app
+
+
   plugins_linux:
     name: SPM plugins, Linux, Swift ${{ matrix.version }}
     runs-on: ubuntu-24.04

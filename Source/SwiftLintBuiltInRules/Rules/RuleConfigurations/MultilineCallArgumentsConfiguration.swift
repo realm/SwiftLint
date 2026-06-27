@@ -5,11 +5,21 @@ struct MultilineCallArgumentsConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
 
+    /// Whether calls with multiple arguments are allowed on a single line.
+    /// When `false`, any call with 2+ arguments on one line will trigger a violation.
     @ConfigurationElement(key: "allows_single_line")
     private(set) var allowsSingleLine = true
 
+    /// Maximum number of arguments allowed on a single line.
+    /// When set, calls with more than this number of arguments on one line will trigger a violation.
+    /// Has no effect when `allows_single_line` is `false`.
     @ConfigurationElement(key: "max_number_of_single_line_parameters")
     private(set) var maxNumberOfSingleLineParameters: Int?
+
+    /// Indentation style for corrected lines.
+    /// Can be an integer (number of spaces) or the string "tabs".
+    @ConfigurationElement(key: "indentation")
+    private(set) var indentationStyle: IndentationStyle = .spaces(count: 4)
 
     func validate() throws(Issue) {
         guard let maxNumberOfSingleLineParameters else { return }

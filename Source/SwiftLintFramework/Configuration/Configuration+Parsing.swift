@@ -125,7 +125,7 @@ extension Configuration {
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
         if let rawIndentation = dict[Key.indentation.rawValue] {
-            if let indentationStyle = Self.IndentationStyle(rawIndentation) {
+            if let indentationStyle = IndentationStyle(rawIndentation) {
                 return indentationStyle
             }
             Issue.invalidConfiguration(ruleID: Key.indentation.rawValue).print()

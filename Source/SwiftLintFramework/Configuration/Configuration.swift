@@ -156,7 +156,7 @@ public struct Configuration {
     package init(
         rulesMode: RulesMode = .defaultConfiguration(disabled: [], optIn: []),
         allRulesWrapped: [ConfigurationRuleWrapper]? = nil,
-        ruleList: RuleList = RuleRegistry.shared.list,
+        ruleList: RuleList? = nil,
         fileGraph: FileGraph? = nil,
         includedPaths: [URL] = [],
         excludedPaths: [URL] = [],
@@ -179,6 +179,8 @@ public struct Configuration {
             )
             exit(2)
         }
+
+        let ruleList: RuleList = ruleList ?? RuleRegistry.shared.list
 
         self.init(
             rulesWrapper: RulesWrapper(

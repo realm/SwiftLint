@@ -13,67 +13,67 @@ struct StaticOverFinalClassRule: Rule {
             about `open` being used in `final` classes.
             """,
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class C {
                 static func f() {}
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 static var i: Int { 0 }
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 static subscript(_: Int) -> Int { 0 }
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 class func f() {}
             }
-            """),
-            Example("""
+            """,
+            """
             final class C {}
-            """),
-            Example("""
+            """,
+            """
             final class C {
                 class D {
                   class func f() {}
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             class C {
                 ↓final class func f() {}
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 ↓final class var i: Int { 0 }
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 ↓final class subscript(_: Int) -> Int { 0 }
             }
-            """),
-            Example("""
+            """,
+            """
             final class C {
                 ↓class func f() {}
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 final class D {
                     ↓class func f() {}
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

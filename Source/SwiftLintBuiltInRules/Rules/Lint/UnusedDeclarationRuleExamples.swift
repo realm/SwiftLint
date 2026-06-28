@@ -1,10 +1,10 @@
 struct UnusedDeclarationRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         let kConstant = 0
         _ = kConstant
-        """),
-        Example("""
+        """,
+        """
         enum Change<T> {
           case insert(T)
           case delete(T)
@@ -24,8 +24,8 @@ struct UnusedDeclarationRuleExamples {
 
         let changes = [Change.insert(0), .delete(0)]
         _ = changes.deletes()
-        """),
-        Example("""
+        """,
+        """
         struct Item: Codable {}
         struct ResponseModel: Codable {
             let items: [Item]
@@ -36,18 +36,18 @@ struct UnusedDeclarationRuleExamples {
         }
 
         _ = ResponseModel(items: [Item()]).items
-        """),
-        Example("""
+        """,
+        """
         class ResponseModel {
             @objc func foo() {
             }
         }
         _ = ResponseModel()
-        """),
-        Example("""
+        """,
+        """
         public func foo() {}
-        """),
-        Example("""
+        """,
+        """
         protocol Foo {}
 
         extension Foo {
@@ -56,21 +56,21 @@ struct UnusedDeclarationRuleExamples {
 
         struct MyStruct: Foo {}
         MyStruct().bar()
-        """),
-        Example("""
+        """,
+        """
         import XCTest
         class MyTests: XCTestCase {
             func testExample() {}
         }
-        """),
-        Example("""
+        """,
+        """
         import XCTest
         open class BestTestCase: XCTestCase {}
         class MyTests: BestTestCase {
             func testExample() {}
         }
-        """),
-        Example("""
+        """,
+        """
             struct S {
                 var i: Int? = nil
                 func f() {
@@ -78,8 +78,8 @@ struct UnusedDeclarationRuleExamples {
                 }
             }
             S().f()
-        """),
-        Example("""
+        """,
+        """
         enum Component {
           case string(StaticString)
           indirect case array([Component])
@@ -136,8 +136,8 @@ struct UnusedDeclarationRuleExamples {
         acceptComponentBuilder {
           "hello"
         }
-        """),
-    ] + platformSpecificNonTriggeringExamples
+        """,
+    ]) + platformSpecificNonTriggeringExamples
 
     static let triggeringExamples = [
         Example("""
@@ -226,8 +226,8 @@ struct UnusedDeclarationRuleExamples {
     } + platformSpecificTriggeringExamples
 
 #if os(macOS)
-    private static let platformSpecificNonTriggeringExamples = [
-        Example("""
+    private static let platformSpecificNonTriggeringExamples = #examples([
+        """
         import Cocoa
 
         @NSApplicationMain
@@ -235,22 +235,22 @@ struct UnusedDeclarationRuleExamples {
             func applicationWillFinishLaunching(_ notification: Notification) {}
             func applicationWillBecomeActive(_ notification: Notification) {}
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         public final class Foo: NSObject {
             @IBAction private func foo() {}
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         public final class Foo: NSObject {
             @objc func foo() {}
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         public final class Foo: NSObject {
@@ -259,8 +259,8 @@ struct UnusedDeclarationRuleExamples {
                 get { return self.backgroundView.innerPaddingWidth }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         public final class Foo: NSObject {
@@ -277,11 +277,11 @@ struct UnusedDeclarationRuleExamples {
                 didSet { print("didSet") }
             }
         }
-        """),
-    ]
+        """,
+    ])
 
-    private static let platformSpecificTriggeringExamples = [
-        Example("""
+    private static let platformSpecificTriggeringExamples = #examples([
+        """
         import Cocoa
 
         @NSApplicationMain
@@ -289,38 +289,38 @@ struct UnusedDeclarationRuleExamples {
             func ↓appWillFinishLaunching(_ notification: Notification) {}
             func applicationWillBecomeActive(_ notification: Notification) {}
         }
-        """),
-        Example("""
+        """,
+        """
         import Cocoa
 
         final class ↓AppDelegate: NSObject, NSApplicationDelegate {
             func applicationWillFinishLaunching(_ notification: Notification) {}
             func applicationWillBecomeActive(_ notification: Notification) {}
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         public final class Foo: NSObject {
             @IBOutlet var ↓bar: NSObject!
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         public final class Foo: NSObject {
             @IBInspectable var ↓bar: String!
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         final class Foo: NSObject {}
         final class ↓Bar {
             var ↓foo = Foo()
         }
-        """),
-    ]
+        """,
+    ])
 #else
     private static let platformSpecificNonTriggeringExamples = [Example]()
     private static let platformSpecificTriggeringExamples = [Example]()

@@ -9,17 +9,17 @@ struct NoGroupingExtensionRule: Rule {
         name: "No Grouping Extension",
         description: "Extensions shouldn't be used to group code within the same source file",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("protocol Food {}\nextension Food {}"),
-            Example("class Apples {}\nextension Oranges {}"),
-            Example("class Box<T> {}\nextension Box where T: Vegetable {}"),
-        ],
-        triggeringExamples: [
-            Example("enum Fruit {}\n↓extension Fruit {}"),
-            Example("↓extension Tea: Error {}\nstruct Tea {}"),
-            Example("class Ham { class Spam {}}\n↓extension Ham.Spam {}"),
-            Example("extension External { struct Gotcha {}}\n↓extension External.Gotcha {}"),
-        ]
+        nonTriggeringExamples: #examples([
+            "protocol Food {}\nextension Food {}",
+            "class Apples {}\nextension Oranges {}",
+            "class Box<T> {}\nextension Box where T: Vegetable {}",
+        ]),
+        triggeringExamples: #examples([
+            "enum Fruit {}\n↓extension Fruit {}",
+            "↓extension Tea: Error {}\nstruct Tea {}",
+            "class Ham { class Spam {}}\n↓extension Ham.Spam {}",
+            "extension External { struct Gotcha {}}\n↓extension External.Gotcha {}",
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

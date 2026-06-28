@@ -9,24 +9,24 @@ struct FallthroughRule: Rule {
         name: "Fallthrough",
         description: "Fallthrough should be avoided",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             switch foo {
             case .bar, .bar2, .bar3:
               something()
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             switch foo {
             case .bar:
               ↓fallthrough
             case .bar2:
               something()
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

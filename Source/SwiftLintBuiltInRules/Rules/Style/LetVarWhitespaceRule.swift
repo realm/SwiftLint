@@ -121,32 +121,32 @@ struct LetVarWhitespaceRule: Rule {
                 @Flag(help: "help")
                 var useAlternativeExcluding = false
                 """#, excludeFromDocumentation: true),
-        ].map(Self.wrapIntoClass) + [
-            Example("""
+        ].map(Self.wrapIntoClass) + #examples([
+            """
                 a = 2
-                """),
-            Example("""
+                """,
+            """
                 a = 2
 
                 var b = 3
-                """),
-            Example("""
+                """,
+            """
                 #warning("message")
                 let a = 2
-                """),
-            Example("""
+                """,
+            """
                 #if os(macOS)
                 let a = 2
                 #endif
-                """),
+                """,
             // Don't trigger in closure bodies.
-            Example("""
+            """
                 f {
                     let a = 1
                     return a
                 }
-                """),
-            Example("""
+                """,
+            """
                 func f() {
                     #if os(macOS)
                     let a = 2
@@ -155,42 +155,42 @@ struct LetVarWhitespaceRule: Rule {
                     return 1
                     #endif
                 }
-                """),
-        ],
-        triggeringExamples: [
-            Example("""
+                """,
+        ]),
+        triggeringExamples: #examples([
+            """
                 let a
                 ↓func x() {}
-                """),
-            Example("""
+                """,
+            """
                 var x = 0
                 ↓@objc func f() {}
-                """),
-            Example("""
+                """,
+            """
                 var x = 0
                 ↓@objc
                 func f() {}
-                """),
-            Example("""
+                """,
+            """
                 @objc func f() {
                 }
                 ↓var x = 0
-                """),
-            Example("""
+                """,
+            """
                 func f() {}
                 ↓@Wapper
                 let isNumber = false
                 @Wapper
                 var isEnabled = true
                 ↓func g() {}
-                """),
-            Example("""
+                """,
+            """
                 #if os(macOS)
                 let a = 0
                 ↓func f() {}
                 #endif
-                """),
-        ].map(Self.wrapIntoClass) + [
+                """,
+        ]).map(Self.wrapIntoClass) + [
             Example("""
                 let a = 2
                 ↓b = 1

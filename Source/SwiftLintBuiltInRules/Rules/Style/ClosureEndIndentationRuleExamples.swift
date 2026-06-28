@@ -69,21 +69,21 @@ internal struct ClosureEndIndentationRuleExamples {
         """),
     ]
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         SignalProducer(values: [1, 2, 3])
            .startWithNext { number in
                print(number)
         ↓}
-        """),
-        Example("""
+        """,
+        """
         return match(pattern: pattern, with: [.comment]).flatMap { range in
            return Command(string: contents, range: range)
            ↓}.flatMap { command in
            return command.expand()
         }
-        """),
-        Example("""
+        """,
+        """
         function(
             closure: { x in
                 print(x)
@@ -91,22 +91,22 @@ internal struct ClosureEndIndentationRuleExamples {
             anotherClosure: { y in
                 print(y)
         ↓})
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         SignalProducer(values: [1, 2, 3])
             .startWithNext { number in
                 print(number)
         ↓}
-        """): Example("""
+        """: """
             SignalProducer(values: [1, 2, 3])
                 .startWithNext { number in
                     print(number)
                 }
-            """),
-        Example("""
+            """,
+        """
         SignalProducer(values: [1, 2, 3])
             .startWithNext { number in
                 print(number)
@@ -115,7 +115,7 @@ internal struct ClosureEndIndentationRuleExamples {
         ↓}.yetAnother { y in
                 print(y)
         ↓})
-        """): Example("""
+        """: """
             SignalProducer(values: [1, 2, 3])
                 .startWithNext { number in
                     print(number)
@@ -124,52 +124,52 @@ internal struct ClosureEndIndentationRuleExamples {
                 }.yetAnother { y in
                     print(y)
                 })
-            """),
-        Example("""
+            """,
+        """
         return match(pattern: pattern, with: [.comment]).flatMap { range in
         return Command(string: contents, range: range)
         ↓   }.flatMap { command in
         return command.expand()
         ↓}
-        """): Example("""
+        """: """
             return match(pattern: pattern, with: [.comment]).flatMap { range in
             return Command(string: contents, range: range)
             }.flatMap { command in
             return command.expand()
             }
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
                 print(x)
         ↓})
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x)
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
         ↓        print(x) })
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x) \("")
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
         ↓ab})
-        """): Example("""
+        """: """
             function(
                 closure: { x in
             ab
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
                 print(x)
@@ -177,7 +177,7 @@ internal struct ClosureEndIndentationRuleExamples {
             anotherClosure: { y in
                 print(y)
             })
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x)
@@ -185,8 +185,8 @@ internal struct ClosureEndIndentationRuleExamples {
                 anotherClosure: { y in
                     print(y)
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
                 print(x) // comment
@@ -195,7 +195,7 @@ internal struct ClosureEndIndentationRuleExamples {
             anotherClosure: { y in
                 print(y)
                 /* comment */})
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x) // comment
@@ -205,8 +205,8 @@ internal struct ClosureEndIndentationRuleExamples {
                     print(y)
                     /* comment */
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
                 print(x)
@@ -214,7 +214,7 @@ internal struct ClosureEndIndentationRuleExamples {
             anotherClosure: { y in
                 print(y)
             })
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x)
@@ -223,15 +223,15 @@ internal struct ClosureEndIndentationRuleExamples {
                 anotherClosure: { y in
                     print(y)
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
         ↓        print(x) },
             anotherClosure: { y in
                 print(y)
             })
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x) \("")
@@ -239,30 +239,30 @@ internal struct ClosureEndIndentationRuleExamples {
                 anotherClosure: { y in
                     print(y)
                 })
-            """),
-        Example("""
+            """,
+        """
         function(
             closure: { x in
                 print(x)
         ↓}, anotherClosure: { y in
             print(y)
         ↓})
-        """): Example("""
+        """: """
             function(
                 closure: { x in
                     print(x)
                 }, anotherClosure: { y in
                 print(y)
             })
-            """),
-        Example("""
+            """,
+        """
         f {
             // do something
             ↓}
-        """): Example("""
+        """: """
             f {
                 // do something
             }
-            """),
-    ]
+            """,
+    ])
 }

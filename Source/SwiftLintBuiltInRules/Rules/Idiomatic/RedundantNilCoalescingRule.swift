@@ -9,18 +9,18 @@ struct RedundantNilCoalescingRule: Rule {
         name: "Redundant Nil Coalescing",
         description: "Coalescing operator with right-hand side nil is redundant",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("var myVar: Int?; myVar ?? 0")
-        ],
-        triggeringExamples: [
-            Example("var myVar: Int? = nil; myVar ↓?? nil")
-        ],
-        corrections: [
-            Example("var myVar: Int? = nil; let foo = myVar ↓?? nil"):
-                Example("var myVar: Int? = nil; let foo = myVar"),
-            Example("let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing"):
-                Example("let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing"),
-        ]
+        nonTriggeringExamples: #examples([
+            "var myVar: Int?; myVar ?? 0"
+        ]),
+        triggeringExamples: #examples([
+            "var myVar: Int? = nil; myVar ↓?? nil"
+        ]),
+        corrections: #examplesDictionary([
+            "var myVar: Int? = nil; let foo = myVar ↓?? nil":
+                "var myVar: Int? = nil; let foo = myVar",
+            "let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing":
+                "let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing",
+        ])
     )
 }
 

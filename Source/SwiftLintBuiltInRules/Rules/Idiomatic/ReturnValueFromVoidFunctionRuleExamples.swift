@@ -149,56 +149,56 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
         """#, excludeFromDocumentation: true),
     ]
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         func foo() {
             ↓return bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> () {
             ↓return self.bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> Void {
             ↓return bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> Void {
             ↓return /* comment */ bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() {
             ↓return
             self.bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() {
             variable += 1
             ↓return
             variable += 1
         }
-        """),
-        Example("""
+        """,
+        """
         func initThing() {
             guard foo else {
                 ↓return print("")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         // Leading comment
         func test() {
             guard condition else {
                 ↓return assertionfailure("")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func test() -> Result<String, Error> {
             func other() {
                 guard false else {
@@ -207,8 +207,8 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
             func otherVoid() -> Void {}
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             guard conditionIsTrue else {
                 sideEffects()
@@ -219,24 +219,24 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
             differentSideEffect()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             guard otherCondition else {
                 ↓return assertionfailure(""); // comment
             }
             differentSideEffect()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           if x {
             ↓return foo()
           }
           bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           switch x {
             case .a:
@@ -246,8 +246,8 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           baz()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           if check {
             if otherCheck {
@@ -256,28 +256,28 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             ↓return foo()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           ↓return foo({
             return bar()
           })
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           guard x else {
             ↓return foo()
           }
           bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           let closure: () -> () = {
             return assert()
@@ -289,30 +289,30 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           ↓return foo()
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         func f() -> Void {
             ↓return g()
             // some comment
         }
-        """): Example("""
+        """: """
             func f() -> Void {
                 g()
                 return
                 // some comment
             }
-            """),
-        Example("""
+            """,
+        """
         func f(b: Bool) {
             if b {
                 // some comment
                 ↓return g()
             }
         }
-        """): Example("""
+        """: """
             func f(b: Bool) {
                 if b {
                     // some comment
@@ -320,6 +320,6 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                     return
                 }
             }
-            """),
-    ]
+            """,
+    ])
 }

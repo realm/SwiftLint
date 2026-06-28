@@ -48,125 +48,125 @@ struct OptionalEnumCaseMatchingRule: Rule {
             }
             """, excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             switch foo {
              case .bar↓?: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case Foo.bar↓?: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓?, .baz↓?: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (.bar↓?, .baz↓?): break
              case (.bar↓?, _): break
              case (_, .bar↓?): break
              default: break
             }
-            """),
-        ],
-        corrections: [
-            Example("""
+            """,
+        ]),
+        corrections: #examplesDictionary([
+            """
             switch foo {
              case .bar↓?: break
              case .baz: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case .bar: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case Foo.bar↓?: break
              case .baz: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case Foo.bar: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓?, .baz↓?: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case .bar, .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case .bar where x > 1: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (.bar↓?, .baz↓?): break
              case (.bar↓?, _): break
              case (_, .bar↓?): break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case (.bar, .baz): break
              case (.bar, _): break
              case (_, .bar): break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (true?, false?): break
              case (true?, _): break
              case (_, false?): break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case (true?, false?): break
              case (true?, _): break
              case (_, false?): break
              default: break
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

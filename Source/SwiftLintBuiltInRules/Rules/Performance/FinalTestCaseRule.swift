@@ -22,12 +22,12 @@ struct FinalTestCaseRule: Rule {
             Example("public class ↓Test: QuickSpec {}"),
             Example("class ↓Test: MyTestCase {}", configuration: ["test_parent_classes": "MyTestCase"]),
         ],
-        corrections: [
-            Example("class ↓Test: XCTestCase {}"):
-                Example("final class Test: XCTestCase {}"),
-            Example("internal class ↓Test: XCTestCase {}"):
-                Example("internal final class Test: XCTestCase {}"),
-        ]
+        corrections: #examplesDictionary([
+            "class ↓Test: XCTestCase {}":
+                "final class Test: XCTestCase {}",
+            "internal class ↓Test: XCTestCase {}":
+                "internal final class Test: XCTestCase {}",
+        ])
     )
 }
 

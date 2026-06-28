@@ -26,27 +26,27 @@ struct AnonymousArgumentInMultilineClosureRule: Rule {
         ```
         """,
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("closure { $0 }"),
-            Example("closure { print($0) }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "closure { $0 }",
+            "closure { print($0) }",
+            """
             closure { arg in
                 print(arg)
             }
-            """),
-            Example("""
+            """,
+            """
             closure { arg in
                 nestedClosure { $0 + arg }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             closure {
                 print(↓$0)
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

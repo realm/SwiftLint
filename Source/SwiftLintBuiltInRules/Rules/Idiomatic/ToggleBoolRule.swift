@@ -10,24 +10,24 @@ struct ToggleBoolRule: Rule {
         name: "Toggle Bool",
         description: "Prefer `someBool.toggle()` over `someBool = !someBool`",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("isHidden.toggle()"),
-            Example("view.clipsToBounds.toggle()"),
-            Example("func foo() { abc.toggle() }"),
-            Example("view.clipsToBounds = !clipsToBounds"),
-            Example("disconnected = !connected"),
-            Example("result = !result.toggle()"),
-        ],
-        triggeringExamples: [
-            Example("↓isHidden = !isHidden"),
-            Example("↓view.clipsToBounds = !view.clipsToBounds"),
-            Example("func foo() { ↓abc = !abc }"),
-        ],
-        corrections: [
-            Example("↓isHidden = !isHidden"): Example("isHidden.toggle()"),
-            Example("↓view.clipsToBounds = !view.clipsToBounds"): Example("view.clipsToBounds.toggle()"),
-            Example("func foo() { ↓abc = !abc }"): Example("func foo() { abc.toggle() }"),
-        ]
+        nonTriggeringExamples: #examples([
+            "isHidden.toggle()",
+            "view.clipsToBounds.toggle()",
+            "func foo() { abc.toggle() }",
+            "view.clipsToBounds = !clipsToBounds",
+            "disconnected = !connected",
+            "result = !result.toggle()",
+        ]),
+        triggeringExamples: #examples([
+            "↓isHidden = !isHidden",
+            "↓view.clipsToBounds = !view.clipsToBounds",
+            "func foo() { ↓abc = !abc }",
+        ]),
+        corrections: #examplesDictionary([
+            "↓isHidden = !isHidden": "isHidden.toggle()",
+            "↓view.clipsToBounds = !view.clipsToBounds": "view.clipsToBounds.toggle()",
+            "func foo() { ↓abc = !abc }": "func foo() { abc.toggle() }",
+        ])
     )
 }
 

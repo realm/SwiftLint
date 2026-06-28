@@ -50,33 +50,33 @@ struct ShorthandOptionalBindingRule: Rule {
                 while ↓var i = i { i = nil }
                 """),
         ],
-        corrections: [
-            Example("""
+        corrections: #examplesDictionary([
+            """
                 if ↓let i = i {}
-                """): Example("""
+                """: """
                     if let i {}
-                    """),
-            Example("""
+                    """,
+            """
                 if ↓let self = self {}
-                """): Example("""
+                """: """
                     if let self {}
-                    """),
-            Example("""
+                    """,
+            """
                 if ↓var `self` = `self` {}
-                """): Example("""
+                """: """
                     if var `self` {}
-                    """),
-            Example("""
+                    """,
+            """
                 guard ↓let i = i, ↓var j = j  , ↓let k  =k else {}
-                """): Example("""
+                """: """
                     guard let i, var j  , let k else {}
-                    """),
-            Example("""
+                    """,
+            """
                 while j > 0, ↓var i = i   { i = nil }
-                """): Example("""
+                """: """
                     while j > 0, var i   { i = nil }
-                    """),
-        ],
+                    """,
+        ]),
         deprecatedAliases: ["if_let_shadowing"]
     )
 }

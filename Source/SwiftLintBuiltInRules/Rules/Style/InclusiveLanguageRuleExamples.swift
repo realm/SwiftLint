@@ -1,44 +1,44 @@
 internal struct InclusiveLanguageRuleExamples {
     // MARK: - Default config
 
-    static let nonTriggeringExamples: [Example] = [
-        Example("let foo = \"abc\""),
-        Example("""
+    static let nonTriggeringExamples: [Example] = #examples([
+        "let foo = \"abc\"",
+        """
         enum AllowList {
             case foo, bar
         }
-        """),
-        Example("func updateAllowList(add: String) {}"),
-        Example("""
+        """,
+        "func updateAllowList(add: String) {}",
+        """
         enum WalletItemType {
             case visa
             case mastercard
         }
-        """),
-        Example("func chargeMasterCard(_ card: Card) {}"),
-    ]
+        """,
+        "func chargeMasterCard(_ card: Card) {}",
+    ])
 
-    static let triggeringExamples: [Example] = [
-        Example("let ↓slave = \"abc\""),
-        Example("""
+    static let triggeringExamples: [Example] = #examples([
+        "let ↓slave = \"abc\"",
+        """
         enum ↓BlackList {
             case foo, bar
         }
-        """),
-        Example("func ↓updateWhiteList(add: String) {}"),
-        Example("""
+        """,
+        "func ↓updateWhiteList(add: String) {}",
+        """
         enum ListType {
             case ↓whitelist
             case ↓blacklist
         }
-        """),
-        Example("init(↓master: String, ↓slave: String) {}"),
-        Example("""
+        """,
+        "init(↓master: String, ↓slave: String) {}",
+        """
         final class FooBar {
             func register<↓Master, ↓Slave>(one: Master, two: Slave) {}
         }
-        """),
-    ]
+        """,
+    ])
 
     // MARK: - Non-default config
 

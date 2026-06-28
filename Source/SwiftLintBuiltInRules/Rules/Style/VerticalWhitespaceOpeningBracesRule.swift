@@ -11,11 +11,11 @@ private extension SwiftLintFile {
 struct VerticalWhitespaceOpeningBracesRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
-    private static let nonTriggeringExamples = [
-        Example("[1, 2].map { $0 }.foo()"),
-        Example("[1, 2].map { $0 }.filter { num in true }"),
-        Example("// [1, 2].map { $0 }.filter { num in true }"),
-        Example("""
+    private static let nonTriggeringExamples = #examples([
+        "[1, 2].map { $0 }.foo()",
+        "[1, 2].map { $0 }.filter { num in true }",
+        "// [1, 2].map { $0 }.filter { num in true }",
+        """
         /*
             class X {
 
@@ -23,42 +23,42 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
 
             }
         */
-        """),
-    ]
+        """,
+    ])
 
-    private static let violatingToValidExamples: [Example: Example] = [
-        Example("""
+    private static let violatingToValidExamples: [Example: Example] = #examplesDictionary([
+        """
         if x == 5 {
         ↓
           print("x is 5")
         }
-        """): Example("""
+        """: """
             if x == 5 {
               print("x is 5")
             }
-            """),
-        Example("""
+            """,
+        """
         if x == 5 {
         ↓
 
           print("x is 5")
         }
-        """): Example("""
+        """: """
             if x == 5 {
               print("x is 5")
             }
-            """),
-        Example("""
+            """,
+        """
         struct MyStruct {
         ↓
           let x = 5
         }
-        """): Example("""
+        """: """
             struct MyStruct {
               let x = 5
             }
-            """),
-        Example("""
+            """,
+        """
         class X {
           struct Y {
         ↓
@@ -66,77 +66,77 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
             }
           }
         }
-        """): Example("""
+        """: """
             class X {
               struct Y {
                 class Z {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
         [
         ↓
         1,
         2,
         3
         ]
-        """): Example("""
+        """: """
             [
             1,
             2,
             3
             ]
-            """),
-        Example("""
+            """,
+        """
         foo(
         ↓
           x: 5,
           y:6
         )
-        """): Example("""
+        """: """
             foo(
               x: 5,
               y:6
             )
-            """),
-        Example("""
+            """,
+        """
         func foo() {
         ↓
           run(5) { x in
             print(x)
           }
         }
-        """): Example("""
+        """: """
             func foo() {
               run(5) { x in
                 print(x)
               }
             }
-            """),
-        Example("""
+            """,
+        """
         KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
         ↓
             guard let img = image else { return }
         }
-        """): Example("""
+        """: """
             KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
                 guard let img = image else { return }
             }
-            """),
-        Example("""
+            """,
+        """
         foo({ }) { _ in
         ↓
           self.dismiss(animated: false, completion: {
           })
         }
-        """): Example("""
+        """: """
             foo({ }) { _ in
               self.dismiss(animated: false, completion: {
               })
             }
-            """),
-    ]
+            """,
+    ])
 
     private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }

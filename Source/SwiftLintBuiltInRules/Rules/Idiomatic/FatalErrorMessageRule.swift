@@ -9,30 +9,30 @@ struct FatalErrorMessageRule: Rule {
         name: "Fatal Error Message",
         description: "A fatalError call should have a message",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func foo() {
               fatalError("Foo")
             }
-            """),
-            Example("""
+            """,
+            """
             func foo() {
               fatalError(x)
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             func foo() {
               ↓fatalError("")
             }
-            """),
-            Example("""
+            """,
+            """
             func foo() {
               ↓fatalError()
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

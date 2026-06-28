@@ -9,18 +9,18 @@ struct ProtocolPropertyAccessorsOrderRule: Rule {
         name: "Protocol Property Accessors Order",
         description: "When declaring properties in protocols, the order of accessors should be `get set`",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("protocol Foo {\n var bar: String { get set }\n }"),
-            Example("protocol Foo {\n var bar: String { get }\n }"),
-            Example("protocol Foo {\n var bar: String { set }\n }"),
-        ],
-        triggeringExamples: [
-            Example("protocol Foo {\n var bar: String { ↓set get }\n }")
-        ],
-        corrections: [
-            Example("protocol Foo {\n var bar: String { ↓set get }\n }"):
-                Example("protocol Foo {\n var bar: String { get set }\n }"),
-        ]
+        nonTriggeringExamples: #examples([
+            "protocol Foo {\n var bar: String { get set }\n }",
+            "protocol Foo {\n var bar: String { get }\n }",
+            "protocol Foo {\n var bar: String { set }\n }",
+        ]),
+        triggeringExamples: #examples([
+            "protocol Foo {\n var bar: String { ↓set get }\n }"
+        ]),
+        corrections: #examplesDictionary([
+            "protocol Foo {\n var bar: String { ↓set get }\n }":
+                "protocol Foo {\n var bar: String { get set }\n }",
+        ])
     )
 }
 

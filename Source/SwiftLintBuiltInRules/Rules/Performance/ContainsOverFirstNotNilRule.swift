@@ -10,21 +10,21 @@ struct ContainsOverFirstNotNilRule: Rule {
         description: "Prefer `contains` over `first(where:) != nil` and `firstIndex(where:) != nil`.",
         kind: .performance,
         nonTriggeringExamples: ["first", "firstIndex"].flatMap { method in
-            [
-                Example("let \(method) = myList.\(method)(where: { $0 % 2 == 0 })"),
-                Example("let \(method) = myList.\(method) { $0 % 2 == 0 }"),
-            ]
+            #examples([
+                "let \(method) = myList.\(method)(where: { $0 % 2 == 0 })",
+                "let \(method) = myList.\(method) { $0 % 2 == 0 }",
+            ])
         },
         triggeringExamples: ["first", "firstIndex"].flatMap { method in
             ["!=", "=="].flatMap { comparison in
-                [
-                    Example("↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil"),
-                    Example("↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil"),
-                    Example("↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil"),
-                    Example("↓myList.\(method)(where: someFunction) \(comparison) nil"),
-                    Example("↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil"),
-                    Example("(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil"),
-                ]
+                #examples([
+                    "↓myList.\(method) { $0 % 2 == 0 } \(comparison) nil",
+                    "↓myList.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil",
+                    "↓myList.map { $0 + 1 }.\(method)(where: { $0 % 2 == 0 }) \(comparison) nil",
+                    "↓myList.\(method)(where: someFunction) \(comparison) nil",
+                    "↓myList.map { $0 + 1 }.\(method) { $0 % 2 == 0 } \(comparison) nil",
+                    "(↓myList.\(method) { $0 % 2 == 0 }) \(comparison) nil",
+                ])
             }
         }
     )

@@ -10,103 +10,103 @@ struct PrivateUnitTestRule: Rule {
         name: "Private Unit Test",
         description: "Unit tests marked private are silently skipped",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
             }
-            """),
-            Example("""
+            """,
+            """
             internal class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
             }
-            """),
-            Example("""
+            """,
+            """
             public class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
             }
-            """),
-            Example("""
+            """,
+            """
             @objc private class FooTest: XCTestCase {
                 @objc private func test1() {}
                 internal func test2() {}
                 public func test3() {}
             }
-            """),
+            """,
             // Non-test classes
-            Example("""
+            """
             private class Foo: NSObject {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
             }
-            """),
-            Example("""
+            """,
+            """
             private class Foo {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
             }
-            """),
+            """,
             // Non-test methods
-            Example("""
+            """
             public class FooTest: XCTestCase {
                 private func test1(param: Int) {}
                 private func test2() -> String { "" }
                 private func atest() {}
                 private static func test3() {}
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             private ↓class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
                 private func test4() {}
             }
-            """),
-            Example("""
+            """,
+            """
             class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
                 private ↓func test4() {}
             }
-            """),
-            Example("""
+            """,
+            """
             internal class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
                 private ↓func test4() {}
             }
-            """),
-            Example("""
+            """,
+            """
             public class FooTest: XCTestCase {
                 func test1() {}
                 internal func test2() {}
                 public func test3() {}
                 private ↓func test4() {}
             }
-            """),
-        ],
-        corrections: [
-            Example("""
+            """,
+        ]),
+        corrections: #examplesDictionary([
+            """
 
                 ↓private class Test: XCTestCase {}
-                """): Example("""
+                """: """
 
                     class Test: XCTestCase {}
-                    """),
-            Example("""
+                    """,
+            """
                 class Test: XCTestCase {
 
                     ↓private func test1() {}
@@ -114,7 +114,7 @@ struct PrivateUnitTestRule: Rule {
                     @objc private func test3() {}
                     internal func test4() {}
                 }
-                """): Example("""
+                """: """
                     class Test: XCTestCase {
 
                         func test1() {}
@@ -122,8 +122,8 @@ struct PrivateUnitTestRule: Rule {
                         @objc private func test3() {}
                         internal func test4() {}
                     }
-                    """),
-        ]
+                    """,
+        ])
     )
 }
 

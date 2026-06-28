@@ -48,38 +48,38 @@ struct IndentationWidthRule: OptInRule {
         description: "Indent code using either one tab or the configured amount of spaces, " +
             "unindent to match previous indentations. Don't indent the first line.",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("firstLine\nsecondLine"),
-            Example("firstLine\n    secondLine"),
-            Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine"),
-            Example("firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine"),
-            Example("firstLine\n    secondLine\n        thirdLine\nfourthLine"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "firstLine\nsecondLine",
+            "firstLine\n    secondLine",
+            "firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine",
+            "firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine",
+            "firstLine\n    secondLine\n        thirdLine\nfourthLine",
+            """
                 guard let x = foo(),
                       let y = bar() else {
                     return
                 }
-                """),
-            Example("""
+                """,
+            """
                 if let x = foo(),
                    let y = bar() {
                     doSomething()
                 }
-                """),
-            Example("""
+                """,
+            """
                 while let x = foo(),
                       let y = bar() {
                     doSomething()
                 }
-                """),
-            Example("""
+                """,
+            """
                 if let x = foo(),
                    let y = bar(),
                    let z = baz() {
                     doSomething()
                 }
-                """),
-        ],
+                """,
+        ]),
         triggeringExamples: [
             Example("↓    firstLine", testMultiByteOffsets: false, testDisableCommand: false),
             Example("firstLine\n        secondLine"),

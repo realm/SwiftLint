@@ -31,56 +31,56 @@ internal enum SyntacticSugarRuleExamples {
         Example("func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }", excludeFromDocumentation: true),
     ]
 
-    static let triggering = [
-        Example("let x: ↓Array<String>"),
-        Example("let x: ↓Dictionary<Int, String>"),
-        Example("let x: ↓Optional<Int>"),
-        Example("let x: ↓Swift.Array<String>"),
+    static let triggering = #examples([
+        "let x: ↓Array<String>",
+        "let x: ↓Dictionary<Int, String>",
+        "let x: ↓Optional<Int>",
+        "let x: ↓Swift.Array<String>",
 
-        Example("func x(a: ↓Array<Int>, b: Int) -> [Int: Any]"),
-        Example("func x(a: ↓Swift.Array<Int>, b: Int) -> [Int: Any]"),
+        "func x(a: ↓Array<Int>, b: Int) -> [Int: Any]",
+        "func x(a: ↓Swift.Array<Int>, b: Int) -> [Int: Any]",
 
-        Example("func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>"),
-        Example("let x = y as? ↓Array<[String: Any]>"),
-        Example("let x = Box<Array<T>>()"),
-        Example("func x() -> Box<↓Array<T>>"),
-        Example("func x() -> ↓Dictionary<String, Any>?"),
+        "func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>",
+        "let x = y as? ↓Array<[String: Any]>",
+        "let x = Box<Array<T>>()",
+        "func x() -> Box<↓Array<T>>",
+        "func x() -> ↓Dictionary<String, Any>?",
 
-        Example("typealias Document = ↓Dictionary<String, T?>"),
-        Example("func x(_ y: inout ↓Array<T>)"),
-        Example("let x:↓Dictionary<String, ↓Dictionary<Int, Int>>"),
-        Example("func x() -> Any { return ↓Dictionary<Int, String>()}"),
+        "typealias Document = ↓Dictionary<String, T?>",
+        "func x(_ y: inout ↓Array<T>)",
+        "let x:↓Dictionary<String, ↓Dictionary<Int, Int>>",
+        "func x() -> Any { return ↓Dictionary<Int, String>()}",
 
-        Example("let x = ↓Array<String>.array(of: object)"),
-        Example("let x = ↓Swift.Array<String>.array(of: object)"),
+        "let x = ↓Array<String>.array(of: object)",
+        "let x = ↓Swift.Array<String>.array(of: object)",
 
-        Example("""
+        """
         @_specialize(where S == ↓Array<Character>)
         public init<S: Sequence>(_ elements: S)
-        """),
+        """,
 
-        Example("""
+        """
         let dict: [String: Any] = [:]
         _ = dict["key"] as? ↓Optional<String?> ?? Optional<String?>.none
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("let x: Array<String>"): Example("let x: [String]"),
-        Example("let x: Array< String >"): Example("let x: [String]"),
-        Example("let x: Dictionary<Int, String>"): Example("let x: [Int: String]"),
-        Example("let x: Optional<Int>"): Example("let x: Int?"),
-        Example("let x: Optional< Int >"): Example("let x: Int?"),
-        Example("func f() -> Optional<any Foo> {}"): Example("func f() -> (any Foo)? {}"),
-        Example("func f() -> Optional<some Foo> {}"): Example("func f() -> (some Foo)? {}"),
+    static let corrections = #examplesDictionary([
+        "let x: Array<String>": "let x: [String]",
+        "let x: Array< String >": "let x: [String]",
+        "let x: Dictionary<Int, String>": "let x: [Int: String]",
+        "let x: Optional<Int>": "let x: Int?",
+        "let x: Optional< Int >": "let x: Int?",
+        "func f() -> Optional<any Foo> {}": "func f() -> (any Foo)? {}",
+        "func f() -> Optional<some Foo> {}": "func f() -> (some Foo)? {}",
 
-        Example("let x: Dictionary<Int , String>"): Example("let x: [Int: String]"),
-        Example("let x: Swift.Optional<String>"): Example("let x: String?"),
-        Example("let x:↓Dictionary<String, ↓Dictionary<Int, Int>>"): Example("let x:[String: [Int: Int]]"),
-        Example("let x:↓Dictionary<↓Dictionary<Int, Int>, String>"): Example("let x:[[Int: Int]: String]"),
-        Example("let x:↓Dictionary<↓Dictionary<↓Dictionary<Int, Int>, Int>, String>"):
-            Example("let x:[[[Int: Int]: Int]: String]"),
-        Example("let x:↓Array<↓Dictionary<Int, Int>>"): Example("let x:[[Int: Int]]"),
-        Example("let x:↓Optional<↓Dictionary<Int, Int>>"): Example("let x:[Int: Int]?"),
-    ]
+        "let x: Dictionary<Int , String>": "let x: [Int: String]",
+        "let x: Swift.Optional<String>": "let x: String?",
+        "let x:↓Dictionary<String, ↓Dictionary<Int, Int>>": "let x:[String: [Int: Int]]",
+        "let x:↓Dictionary<↓Dictionary<Int, Int>, String>": "let x:[[Int: Int]: String]",
+        "let x:↓Dictionary<↓Dictionary<↓Dictionary<Int, Int>, Int>, String>":
+            "let x:[[[Int: Int]: Int]: String]",
+        "let x:↓Array<↓Dictionary<Int, Int>>": "let x:[[Int: Int]]",
+        "let x:↓Optional<↓Dictionary<Int, Int>>": "let x:[Int: Int]?",
+    ])
 }

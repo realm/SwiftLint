@@ -8,36 +8,36 @@ struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {
         name: "Override in Extension",
         description: "Extensions shouldn't override declarations",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("extension Person {\n  var age: Int { return 42 }\n}"),
-            Example("extension Person {\n  func celebrateBirthday() {}\n}"),
-            Example("class Employee: Person {\n  override func celebrateBirthday() {}\n}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "extension Person {\n  var age: Int { return 42 }\n}",
+            "extension Person {\n  func celebrateBirthday() {}\n}",
+            "class Employee: Person {\n  override func celebrateBirthday() {}\n}",
+            """
             class Foo: NSObject {}
             extension Foo {
                 override var description: String { return "" }
             }
-            """),
-            Example("""
+            """,
+            """
             struct Foo {
                 class Bar: NSObject {}
             }
             extension Foo.Bar {
                 override var description: String { return "" }
             }
-            """),
-            Example("""
+            """,
+            """
             @objc
             @implementation
             extension Person {
                 override func celebrateBirthday() {}
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("extension Person {\n  override ↓var age: Int { return 42 }\n}"),
-            Example("extension Person {\n  override ↓func celebrateBirthday() {}\n}"),
-        ]
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "extension Person {\n  override ↓var age: Int { return 42 }\n}",
+            "extension Person {\n  override ↓func celebrateBirthday() {}\n}",
+        ])
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {

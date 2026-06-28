@@ -78,16 +78,16 @@ struct SuperfluousElseRule: Rule {
             }
             """),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
                 if i > 0 {
                     return 1
                     // comment
                 } ↓else {
                     return 2
                 }
-                """),
-            Example("""
+                """,
+            """
                 if i > 0 {
                     return 1
                 } ↓else if i < 12 {
@@ -95,8 +95,8 @@ struct SuperfluousElseRule: Rule {
                 } ↓else if i > 18 {
                     return 3
                 }
-                """),
-            Example("""
+                """,
+            """
                 if i > 0 {
                     if i < 12 {
                         return 5
@@ -114,8 +114,8 @@ struct SuperfluousElseRule: Rule {
                 } ↓else {
                     return 3
                 }
-                """),
-            Example("""
+                """,
+            """
                 for i in list {
                     if i > 13 {
                         return
@@ -127,10 +127,10 @@ struct SuperfluousElseRule: Rule {
                         throw error
                     }
                 }
-                """),
-        ],
-        corrections: [
-            Example("""
+                """,
+        ]),
+        corrections: #examplesDictionary([
+            """
                 func f() -> Int {
                     if i > 0 {
                         return 1
@@ -141,7 +141,7 @@ struct SuperfluousElseRule: Rule {
                         // yet another comment
                     }
                 }
-                """): Example("""
+                """: """
                     func f() -> Int {
                         if i > 0 {
                             return 1
@@ -151,8 +151,8 @@ struct SuperfluousElseRule: Rule {
                         return 2
                         // yet another comment
                     }
-                    """),
-            Example("""
+                    """,
+            """
                 func f() -> Int {
                     if i > 0 {
                         return 1
@@ -163,7 +163,7 @@ struct SuperfluousElseRule: Rule {
                         return 3
                     }
                 }
-                """): Example("""
+                """: """
                     func f() -> Int {
                         if i > 0 {
                             return 1
@@ -174,8 +174,8 @@ struct SuperfluousElseRule: Rule {
                         }
                         return 3
                     }
-                    """),
-            Example("""
+                    """,
+            """
                 func f() -> Int {
 
                     if i > 0 {
@@ -186,7 +186,7 @@ struct SuperfluousElseRule: Rule {
                         return 2
                     }
                 }
-                """): Example("""
+                """: """
                     func f() -> Int {
 
                         if i > 0 {
@@ -198,8 +198,8 @@ struct SuperfluousElseRule: Rule {
                             return 2
                         }
                     }
-                    """),
-            Example("""
+                    """,
+            """
                 {
                     if i > 0 {
                         return 1
@@ -207,15 +207,15 @@ struct SuperfluousElseRule: Rule {
                         return 2
                     }
                 }()
-                """): Example("""
+                """: """
                     {
                         if i > 0 {
                             return 1
                         }
                         return 2
                     }()
-                    """),
-            Example("""
+                    """,
+            """
                 for i in list {
                     if i > 13 {
                         return
@@ -231,7 +231,7 @@ struct SuperfluousElseRule: Rule {
 
                     }
                 }
-                """): Example("""
+                """: """
                     for i in list {
                         if i > 13 {
                             return
@@ -248,8 +248,8 @@ struct SuperfluousElseRule: Rule {
                             throw error
                         }
                     }
-                    """),
-        ]
+                    """,
+        ])
     )
 }
 

@@ -10,54 +10,54 @@ struct ExplicitACLRule: Rule {
         name: "Explicit ACL",
         description: "All declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("internal enum A {}"),
-            Example("public final class B {}"),
-            Example("private struct C {}"),
-            Example("internal enum A { internal enum B {} }"),
-            Example("internal final class Foo {}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "internal enum A {}",
+            "public final class B {}",
+            "private struct C {}",
+            "internal enum A { internal enum B {} }",
+            "internal final class Foo {}",
+            """
             internal
             class Foo {
               private let bar = 5
             }
-            """),
-            Example("internal func a() { let a =  }"),
-            Example("private func a() { func innerFunction() { } }"),
-            Example("private enum Foo { enum Bar { } }"),
-            Example("private struct C { let d = 5 }"),
-            Example("""
+            """,
+            "internal func a() { let a =  }",
+            "private func a() { func innerFunction() { } }",
+            "private enum Foo { enum Bar { } }",
+            "private struct C { let d = 5 }",
+            """
             internal protocol A {
               func b()
             }
-            """),
-            Example("""
+            """,
+            """
             internal protocol A {
               var b: Int
             }
-            """),
-            Example("internal class A { deinit {} }"),
-            Example("extension A: Equatable {}"),
-            Example("extension A {}"),
-            Example("""
+            """,
+            "internal class A { deinit {} }",
+            "extension A: Equatable {}",
+            "extension A {}",
+            """
             extension Foo {
                 internal func bar() {}
             }
-            """),
-            Example("""
+            """,
+            """
             internal enum Foo {
                 case bar
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 public var isValid: Bool {
                     let result = true
                     return result
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 private var isValid: Bool {
                     get {
@@ -68,41 +68,41 @@ struct ExplicitACLRule: Rule {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             private extension Foo {
                 var isValid: Bool { true }
                 struct S {
                     let b = 2
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("↓enum A {}"),
-            Example("final ↓class B {}"),
-            Example("internal struct C { ↓let d = 5 }"),
-            Example("public struct C { private(set) ↓var d = 5 }"),
-            Example("internal struct C { static ↓let d = 5 }"),
-            Example("public struct C { ↓let d = 5 }"),
-            Example("public struct C { ↓init() }"),
-            Example("static ↓func a() {}"),
-            Example("internal let a = 0\n↓func b() {}"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "↓enum A {}",
+            "final ↓class B {}",
+            "internal struct C { ↓let d = 5 }",
+            "public struct C { private(set) ↓var d = 5 }",
+            "internal struct C { static ↓let d = 5 }",
+            "public struct C { ↓let d = 5 }",
+            "public struct C { ↓init() }",
+            "static ↓func a() {}",
+            "internal let a = 0\n↓func b() {}",
+            """
             extension Foo {
                 ↓func bar() {}
                 static ↓func baz() {}
             }
-            """),
-            Example("""
+            """,
+            """
             public extension E {
                 let a = 1
                 struct S {
                     ↓let b = 2
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

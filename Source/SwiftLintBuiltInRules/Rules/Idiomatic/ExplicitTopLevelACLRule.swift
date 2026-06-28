@@ -26,13 +26,13 @@ struct ExplicitTopLevelACLRule: Rule {
             Example("f { func f() {} }", excludeFromDocumentation: true),
             Example("do { func f() {} }", excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("↓enum A {}"),
-            Example("final ↓class B {}"),
-            Example("↓protocol P {}"),
-            Example("↓func a() {}"),
-            Example("internal let a = 0\n↓func b() {}"),
-        ]
+        triggeringExamples: #examples([
+            "↓enum A {}",
+            "final ↓class B {}",
+            "↓protocol P {}",
+            "↓func a() {}",
+            "internal let a = 0\n↓func b() {}",
+        ])
     )
 }
 

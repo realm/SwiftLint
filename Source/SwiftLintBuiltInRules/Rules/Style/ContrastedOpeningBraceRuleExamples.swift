@@ -2,45 +2,45 @@
 
 // swiftlint:disable:next type_body_length
 struct ContrastedOpeningBraceRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
             func abc()
             {
             }
-            """),
-        Example("""
+            """,
+        """
             [].map()
             {
                 $0
             }
-            """),
-        Example("""
+            """,
+        """
             [].map(
                 {
                 }
             )
-            """),
-        Example("""
+            """,
+        """
             if let a = b
             {
             }
-            """),
-        Example("""
+            """,
+        """
             while a == b
             {
             }
-            """),
-        Example("""
+            """,
+        """
             guard let a = b else
             {
             }
-            """),
-        Example("""
+            """,
+        """
             struct Rule
             {
             }
-            """),
-        Example("""
+            """,
+        """
             struct Parent
             {
                 struct Child
@@ -48,8 +48,8 @@ struct ContrastedOpeningBraceRuleExamples {
                     let foo: Int
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             func f(rect: CGRect)
             {
                 {
@@ -57,8 +57,8 @@ struct ContrastedOpeningBraceRuleExamples {
                     print(centre)
                 }()
             }
-            """),
-        Example("""
+            """,
+        """
             func f(rect: CGRect) -> () -> Void
             {
                 {
@@ -66,14 +66,14 @@ struct ContrastedOpeningBraceRuleExamples {
                     print(centre)
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             func f() -> () -> Void
             {
                 {}
             }
-            """),
-        Example("""
+            """,
+        """
             @MyProperty class Rule:
               NSObject
             {
@@ -82,29 +82,29 @@ struct ContrastedOpeningBraceRuleExamples {
                 return ""
               }
             }
-            """),
-        Example("""
+            """,
+        """
             self.foo(
                 (
                     "String parameter",
                     { "Do something here" }
                 )
             )
-            """),
-        Example(##"let pattern = #/(\{(?<key>\w+)\})/#"##),
-        Example("""
+            """,
+        ##"let pattern = #/(\{(?<key>\w+)\})/#"##,
+        """
             if c
             {}
             else
             {}
-            """),
-        Example("""
+            """,
+        """
             if c /* comment */
             {
                 return
             }
-        """),
-        Example("""
+        """,
+        """
             if c1
             {
               return
@@ -115,14 +115,14 @@ struct ContrastedOpeningBraceRuleExamples {
             {
               return
             }
-            """),
-        Example("""
+            """,
+        """
             let a = f.map
             { a in
                 a
             }
-            """),
-    ]
+            """,
+    ])
 
     static let triggeringExamples = [
         Example("""
@@ -237,20 +237,20 @@ struct ContrastedOpeningBraceRuleExamples {
             """),
     ]
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
             struct Rule{}
-            """): Example("""
+            """: """
                 struct Rule
                 {}
-                """),
-        Example("""
+                """,
+        """
             struct Parent {
                 struct Child {
                     let foo: Int
                 }
             }
-            """): Example("""
+            """: """
                 struct Parent
                 {
                     struct Child
@@ -258,46 +258,46 @@ struct ContrastedOpeningBraceRuleExamples {
                         let foo: Int
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
             [].map(){ $0 }
-            """): Example("""
+            """: """
                 [].map()
                 { $0 }
-                """),
-        Example("""
+                """,
+        """
             if a == b{ }
-            """): Example("""
+            """: """
                 if a == b
                 { }
-                """),
-        Example("""
+                """,
+        """
             @MyProperty actor MyActor<T>  {
 
             }
-            """): Example("""
+            """: """
                 @MyProperty actor MyActor<T>
                 {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             actor MyActor<T> where T: U  {
 
             }
-            """): Example("""
+            """: """
                 actor MyActor<T> where T: U
                 {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             do {
 
             } catch              {
 
             }
-            """): Example("""
+            """: """
                 do
                 {
 
@@ -305,14 +305,14 @@ struct ContrastedOpeningBraceRuleExamples {
                 {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             do {
 
             } catch MyError.unknown  {
 
             }
-            """): Example("""
+            """: """
                 do
                 {
 
@@ -320,42 +320,42 @@ struct ContrastedOpeningBraceRuleExamples {
                 {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             defer  {
 
             }
-            """): Example("""
+            """: """
                 defer
                 {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             for a in b where a == c {
 
             }
-            """): Example("""
+            """: """
                 for a in b where a == c
                 {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
                 || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
                 || !node.type.is(SimpleTypeIdentifierSyntax.self) { // Complex or collection type
                 return .visitChildren
             }
-            """): Example("""
+            """: """
                 if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
                     || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
                     || !node.type.is(SimpleTypeIdentifierSyntax.self)
                 { // Complex or collection type
                     return .visitChildren
                 }
-                """),
-        Example("""
+                """,
+        """
             @MyProperty class Rule
             {
               var a: String {
@@ -364,7 +364,7 @@ struct ContrastedOpeningBraceRuleExamples {
                 }
               }
             }
-            """): Example("""
+            """: """
                 @MyProperty class Rule
                 {
                   var a: String
@@ -375,28 +375,28 @@ struct ContrastedOpeningBraceRuleExamples {
                     }
                   }
                 }
-                """),
-        Example("""
+                """,
+        """
             precedencegroup Group{
               assignment: true
             }
-            """): Example("""
+            """: """
                 precedencegroup Group
                 {
                   assignment: true
                 }
-                """),
-        Example("""
+                """,
+        """
             if c /* comment */    {
                 return
             }
-            """): Example("""
+            """: """
                 if c /* comment */
                 {
                     return
                 }
-                """),
-        Example("""
+                """,
+        """
             func foo() {
                 if q1, q2 {
                     do1()
@@ -404,7 +404,7 @@ struct ContrastedOpeningBraceRuleExamples {
                     do2()
                 }
             }
-            """): Example("""
+            """: """
                 func foo()
                 {
                     if q1, q2
@@ -415,61 +415,61 @@ struct ContrastedOpeningBraceRuleExamples {
                         do2()
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
             if
                 "test".isEmpty
             // swiftlint:disable:next contrasted_opening_brace
               {
                 // code here
             }
-            """): Example("""
+            """: """
                 if
                     "test".isEmpty
                 // swiftlint:disable:next contrasted_opening_brace
                   {
                     // code here
                 }
-                """),
-        Example("""
+                """,
+        """
             private func f()
                 // comment
             {
                 let a = 1
             }
-            """): Example("""
+            """: """
                 private func f()
                     // comment
                 {
                     let a = 1
                 }
-                """),
-        Example("""
+                """,
+        """
             while true /* endless loop */ {
                 // nothing
             }
-            """): Example("""
+            """: """
                 while true /* endless loop */
                 {
                     // nothing
                 }
-                """),
-        Example("""
+                """,
+        """
             a.b { $0 }
              .c { $1 }
-            """): Example("""
+            """: """
                 a.b
                 { $0 }
                  .c
                  { $1 }
-                """),
-        Example("""
+                """,
+        """
             a {
                 $0
             } b: {
                 $1
             }
-            """): Example("""
+            """: """
                 a
                 {
                     $0
@@ -477,6 +477,6 @@ struct ContrastedOpeningBraceRuleExamples {
                 {
                     $1
                 }
-                """),
-    ]
+                """,
+    ])
 }

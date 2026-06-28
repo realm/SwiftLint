@@ -51,26 +51,26 @@ struct LegacyObjcTypeRule: Rule {
             }
             """#, configuration: ["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
         ],
-        triggeringExamples: [
-            Example("var array = ↓NSArray()"),
-            Example("var calendar: ↓NSCalendar? = nil"),
-            Example("_ = ↓NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#),
-            Example(#"""
+        triggeringExamples: #examples([
+            "var array = ↓NSArray()",
+            "var calendar: ↓NSCalendar? = nil",
+            "_ = ↓NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData",
+            #"_ = ↓NSNotification.Name("com.apple.Music.playerInfo")"#,
+            #"""
             let keyValuePair: (Int) -> (↓NSString, ↓NSString) = {
               let n = "\($0)" as ↓NSString; return (n, n)
             }
             dictionary = [↓NSString: ↓NSString](uniqueKeysWithValues:
               (1...10_000).lazy.map(keyValuePair))
-            """#),
-            Example("""
+            """#,
+            """
             extension Foundation.Notification.Name {
                 static var reachabilityChanged: Foundation.↓NSNotification.Name {
                     return Foundation.Notification.Name("org.wordpress.reachability.changed")
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

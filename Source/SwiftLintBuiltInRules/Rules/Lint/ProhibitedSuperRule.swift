@@ -9,21 +9,21 @@ struct ProhibitedSuperRule: Rule {
         name: "Prohibited Calls to Super",
         description: "Some methods should not call super.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class VC: UIViewController {
                 override func loadView() {
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class NSView {
                 func updateLayer() {
                     self.method1()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             public class FileProviderExtension: NSFileProviderExtension {
                 override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {
                     guard let identifier = persistentIdentifierForItem(at: url) else {
@@ -32,25 +32,25 @@ struct ProhibitedSuperRule: Rule {
                     }
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             class VC: UIViewController {
                 override func loadView() {↓
                     super.loadView()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: NSFileProviderExtension {
                 override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {↓
                     self.method1()
                     super.providePlaceholder(at:url, completionHandler: completionHandler)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: NSView {
                 override func updateLayer() {↓
                     self.method1()
@@ -58,8 +58,8 @@ struct ProhibitedSuperRule: Rule {
                     self.method2()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: NSView {
                 override func updateLayer() {↓
                     defer {
@@ -67,8 +67,8 @@ struct ProhibitedSuperRule: Rule {
                     }
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

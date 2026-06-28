@@ -9,35 +9,35 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
         name: "Local Doc Comment",
         description: "Prefer regular comments over doc comments in local scopes",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func foo() {
               // Local scope documentation should use normal comments.
               print("foo")
             }
-            """),
-            Example("""
+            """,
+            """
             /// My great property
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             /// Look here for more info: https://github.com.
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             func foo() {
               ↓/// Docstring inside a function declaration
               print("foo")
             }
-            """),
-        ]
+            """,
+        ])
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {

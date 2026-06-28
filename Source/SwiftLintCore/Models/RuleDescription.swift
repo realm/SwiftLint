@@ -84,9 +84,9 @@ public struct RuleDescription: Equatable, Sendable {
     /// - parameter description:           Sets the description's `description` property.
     /// - parameter kind:                  Sets the description's `kind` property.
     /// - parameter minSwiftVersion:       Sets the description's `minSwiftVersion` property.
-    /// - parameter nonTriggeringExamples: Sets the description's `nonTriggeringExamples` property.
-    /// - parameter triggeringExamples:    Sets the description's `triggeringExamples` property.
-    /// - parameter corrections:           Sets the description's `corrections` property.
+    /// - parameter nonTriggeringExamples: Sets the description's `nonTriggeringExamples` property. Use the `#examples([...])` macro to turn an array of strings into an array of `Example`s.
+    /// - parameter triggeringExamples:    Sets the description's `triggeringExamples` property. Use the `#examples([...])` macro to turn an array of strings into an array of `Example`s.
+    /// - parameter corrections:           Sets the description's `corrections` property. Use the `#examplesDictionary([...])` macro to turn a `[String: String]` dictionary into an `[Example: Example]` dictionary.
     /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
     /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.
     public init(identifier: String,

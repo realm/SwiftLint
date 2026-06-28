@@ -40,45 +40,45 @@ struct ArrayInitRule: Rule, @unchecked Sendable {
         consider using the `typesafe_array_init` analyzer rule instead.
         """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("Array(foo)"),
-            Example("foo.map { $0.0 }"),
-            Example("foo.map { $1 }"),
-            Example("foo.map { $0() }"),
-            Example("foo.map { ((), $0) }"),
-            Example("foo.map { $0! }"),
-            Example("foo.map { $0! /* force unwrap */ }"),
-            Example("foo.something { RouteMapper.map($0) }"),
-            Example("foo.map { !$0 }"),
-            Example("foo.map { /* a comment */ !$0 }"),
-        ],
-        triggeringExamples: [
-            Example("foo.↓map({ $0 })"),
-            Example("foo.↓map { $0 }"),
-            Example("foo.↓map { return $0 }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "Array(foo)",
+            "foo.map { $0.0 }",
+            "foo.map { $1 }",
+            "foo.map { $0() }",
+            "foo.map { ((), $0) }",
+            "foo.map { $0! }",
+            "foo.map { $0! /* force unwrap */ }",
+            "foo.something { RouteMapper.map($0) }",
+            "foo.map { !$0 }",
+            "foo.map { /* a comment */ !$0 }",
+        ]),
+        triggeringExamples: #examples([
+            "foo.↓map({ $0 })",
+            "foo.↓map { $0 }",
+            "foo.↓map { return $0 }",
+            """
                 foo.↓map { elem in
                     elem
                 }
-                """),
-            Example("""
+                """,
+            """
                 foo.↓map { elem in
                     return elem
                 }
-                """),
-            Example("""
+                """,
+            """
                 foo.↓map { (elem: String) in
                     elem
                 }
-                """),
-            Example("""
+                """,
+            """
                 foo.↓map { elem -> String in
                     elem
                 }
-                """),
-            Example("foo.↓map { $0 /* a comment */ }"),
-            Example("foo.↓map { /* a comment */ $0 }"),
-        ]
+                """,
+            "foo.↓map { $0 /* a comment */ }",
+            "foo.↓map { /* a comment */ $0 }",
+        ])
     )
 }
 

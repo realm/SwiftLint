@@ -9,54 +9,54 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
         name: "Duplicated Key in Dictionary Literal",
         description: "Dictionary literals with duplicated keys will crash at runtime",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
                 [
                     1: "1",
                     2: "2"
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     "1": 1,
                     "2": 2
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     foo: "1",
                     bar: "2"
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     UUID(): "1",
                     UUID(): "2"
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     #line: "1",
                     #line: "2"
                 ]
-                """),
-        ],
-        triggeringExamples: [
-            Example("""
+                """,
+        ]),
+        triggeringExamples: #examples([
+            """
                 [
                     1: "1",
                     2: "2",
                     ↓1: "one"
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     "1": 1,
                     "2": 2,
                     ↓"2": 2
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     foo: "1",
                     bar: "2",
@@ -64,8 +64,8 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
                     ↓foo: "4",
                     zaz: "5"
                 ]
-                """),
-            Example("""
+                """,
+            """
                 [
                     .one: "1",
                     .two: "2",
@@ -74,8 +74,8 @@ struct DuplicatedKeyInDictionaryLiteralRule: Rule {
                     .four: "4",
                     .five: "5"
                 ]
-                """),
-        ]
+                """,
+        ])
     )
 }
 

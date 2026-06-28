@@ -1,6 +1,6 @@
 internal struct NoFallthroughOnlyRuleExamples {
-    static let nonTriggeringExamples: [Example] = [
-        Example("""
+    static let nonTriggeringExamples: [Example] = #examples([
+        """
             switch myvar {
             case 1:
                 var a = 1
@@ -8,8 +8,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             case 2:
                 var a = 2
             }
-            """),
-        Example("""
+            """,
+        """
             switch myvar {
             case "a":
                 var one = 1
@@ -18,8 +18,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             case "b": /* comment */
                 var three = 3
             }
-            """),
-        Example("""
+            """,
+        """
             switch myvar {
             case 1:
                 let one = 1
@@ -27,8 +27,8 @@ internal struct NoFallthroughOnlyRuleExamples {
                 // comment
                 var two = 2
             }
-            """),
-        Example("""
+            """,
+        """
             switch myvar {
             case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
                 var three = 3
@@ -36,8 +36,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             default:
                 var three = 4
             }
-            """),
-        Example("""
+            """,
+        """
             switch myvar {
             case .alpha:
                 var one = 1
@@ -47,8 +47,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             default:
                 var four = 4
             }
-            """),
-        Example("""
+            """,
+        """
             let aPoint = (1, -1)
             switch aPoint {
             case let (x, y) where x == y:
@@ -59,8 +59,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             default:
                 let C = "C"
             }
-            """),
-        Example("""
+            """,
+        """
             switch myvar {
             case MyFun(with: { $1 }):
                 let one = 1
@@ -68,8 +68,8 @@ internal struct NoFallthroughOnlyRuleExamples {
             case "abc":
                 let two = 2
             }
-            """),
-        Example("""
+            """,
+        """
             switch enumInstance {
             case .caseA:
                 print("it's a")
@@ -78,19 +78,19 @@ internal struct NoFallthroughOnlyRuleExamples {
             @unknown default:
                 print("it's not a")
             }
-            """),
-    ]
+            """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         switch myvar {
         case 1:
             ↓fallthrough
         case 2:
             var a = 1
         }
-        """),
-        Example("""
+        """,
+        """
         switch myvar {
         case 1:
             var a = 2
@@ -99,14 +99,14 @@ internal struct NoFallthroughOnlyRuleExamples {
         case 3:
             var a = 3
         }
-        """),
-        Example("""
+        """,
+        """
         switch myvar {
         case 1: // comment
             ↓fallthrough
         }
-        """),
-        Example("""
+        """,
+        """
         switch myvar {
         case 1: /* multi
             line
@@ -115,16 +115,16 @@ internal struct NoFallthroughOnlyRuleExamples {
         case 2:
             var a = 2
         }
-        """),
-        Example("""
+        """,
+        """
         switch myvar {
         case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
             ↓fallthrough
         default:
             var three = 4
         }
-        """),
-        Example("""
+        """,
+        """
         switch myvar {
         case .alpha:
             var one = 1
@@ -135,8 +135,8 @@ internal struct NoFallthroughOnlyRuleExamples {
         default:
             var four = 4
         }
-        """),
-        Example("""
+        """,
+        """
         let aPoint = (1, -1)
         switch aPoint {
         case let (x, y) where x == y:
@@ -146,14 +146,14 @@ internal struct NoFallthroughOnlyRuleExamples {
         default:
             let B = "B"
         }
-        """),
-        Example("""
+        """,
+        """
         switch myvar {
         case MyFun(with: { $1 }):
             ↓fallthrough
         case "abc":
             let two = 2
         }
-        """),
-    ]
+        """,
+    ])
 }

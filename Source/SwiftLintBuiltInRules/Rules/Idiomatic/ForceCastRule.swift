@@ -9,10 +9,10 @@ struct ForceCastRule: Rule {
         name: "Force Cast",
         description: "Force casts should be avoided",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("NSNumber() as? Int")
-        ],
-        triggeringExamples: [ Example("NSNumber() ↓as! Int") ]
+        nonTriggeringExamples: #examples([
+            "NSNumber() as? Int"
+        ]),
+        triggeringExamples: #examples([ "NSNumber() ↓as! Int" ])
     )
 }
 

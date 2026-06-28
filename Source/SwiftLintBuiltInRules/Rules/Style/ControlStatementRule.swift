@@ -32,45 +32,45 @@ struct ControlStatementRule: Rule {
             Example("if ({ true }()) {}"),
             Example("if ({if i < 1 { true } else { false }}()) {}", excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("↓if (condition) {}"),
-            Example("↓if(condition) {}"),
-            Example("↓if (condition == endIndex) {}"),
-            Example("↓if ((a || b) && (c || d)) {}"),
-            Example("↓if ((min...max).contains(value)) {}"),
-            Example("↓guard (condition) else {}"),
-            Example("↓while (condition) {}"),
-            Example("↓while(condition) {}"),
-            Example("do { ; } ↓while(condition) {}"),
-            Example("do { ; } ↓while (condition) {}"),
-            Example("↓switch (foo) {}"),
-            Example("do {} ↓catch(let error as NSError) {}"),
-            Example("↓if (max(a, b) < c) {}"),
-        ],
-        corrections: [
-            Example("↓if (condition) {}"): Example("if condition {}"),
-            Example("↓if(condition) {}"): Example("if condition {}"),
-            Example("↓if (condition == endIndex) {}"): Example("if condition == endIndex {}"),
-            Example("↓if ((a || b) && (c || d)) {}"): Example("if (a || b) && (c || d) {}"),
-            Example("↓if ((min...max).contains(value)) {}"): Example("if (min...max).contains(value) {}"),
-            Example("↓guard (condition) else {}"): Example("guard condition else {}"),
-            Example("↓while (condition) {}"): Example("while condition {}"),
-            Example("↓while(condition) {}"): Example("while condition {}"),
-            Example("do {} ↓while (condition) {}"): Example("do {} while condition {}"),
-            Example("do {} ↓while(condition) {}"): Example("do {} while condition {}"),
-            Example("do { ; } ↓while(condition) {}"): Example("do { ; } while condition {}"),
-            Example("do { ; } ↓while (condition) {}"): Example("do { ; } while condition {}"),
-            Example("↓switch (foo) {}"): Example("switch foo {}"),
-            Example("do {} ↓catch(let error as NSError) {}"): Example("do {} catch let error as NSError {}"),
-            Example("↓if (max(a, b) < c) {}"): Example("if max(a, b) < c {}"),
-            Example("""
+        triggeringExamples: #examples([
+            "↓if (condition) {}",
+            "↓if(condition) {}",
+            "↓if (condition == endIndex) {}",
+            "↓if ((a || b) && (c || d)) {}",
+            "↓if ((min...max).contains(value)) {}",
+            "↓guard (condition) else {}",
+            "↓while (condition) {}",
+            "↓while(condition) {}",
+            "do { ; } ↓while(condition) {}",
+            "do { ; } ↓while (condition) {}",
+            "↓switch (foo) {}",
+            "do {} ↓catch(let error as NSError) {}",
+            "↓if (max(a, b) < c) {}",
+        ]),
+        corrections: #examplesDictionary([
+            "↓if (condition) {}": "if condition {}",
+            "↓if(condition) {}": "if condition {}",
+            "↓if (condition == endIndex) {}": "if condition == endIndex {}",
+            "↓if ((a || b) && (c || d)) {}": "if (a || b) && (c || d) {}",
+            "↓if ((min...max).contains(value)) {}": "if (min...max).contains(value) {}",
+            "↓guard (condition) else {}": "guard condition else {}",
+            "↓while (condition) {}": "while condition {}",
+            "↓while(condition) {}": "while condition {}",
+            "do {} ↓while (condition) {}": "do {} while condition {}",
+            "do {} ↓while(condition) {}": "do {} while condition {}",
+            "do { ; } ↓while(condition) {}": "do { ; } while condition {}",
+            "do { ; } ↓while (condition) {}": "do { ; } while condition {}",
+            "↓switch (foo) {}": "switch foo {}",
+            "do {} ↓catch(let error as NSError) {}": "do {} catch let error as NSError {}",
+            "↓if (max(a, b) < c) {}": "if max(a, b) < c {}",
+            """
             if (a),
                ( b == 1 ) {}
-            """): Example("""
+            """: """
                 if a,
                    b == 1 {}
-                """),
-        ]
+                """,
+        ])
     )
 }
 

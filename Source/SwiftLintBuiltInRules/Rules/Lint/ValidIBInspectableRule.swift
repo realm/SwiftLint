@@ -11,43 +11,43 @@ struct ValidIBInspectableRule: Rule {
             @IBInspectable should be applied to variables only, have its type explicit and be of a supported type
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class Foo {
               @IBInspectable private var x: Int
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private var x: String?
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private var x: String!
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private var count: Int = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               private var notInspectable = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               private let notInspectable: Int
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               private let notInspectable: UInt8
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 @IBInspectable var color: UIColor {
                     set {
@@ -59,8 +59,8 @@ struct ValidIBInspectableRule: Rule {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 @IBInspectable var borderColor: UIColor? = nil {
                     didSet {
@@ -68,45 +68,45 @@ struct ValidIBInspectableRule: Rule {
                     }
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             class Foo {
               @IBInspectable private ↓let count: Int
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private ↓var insets: UIEdgeInsets
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private ↓var count = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private ↓var count: Int?
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private ↓var count: Int!
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private ↓var count: Optional<Int>
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               @IBInspectable private ↓var x: Optional<String>
             }
-            """),
-        ]
+            """,
+        ])
     )
 
     fileprivate static let supportedTypes: Set<String> = {

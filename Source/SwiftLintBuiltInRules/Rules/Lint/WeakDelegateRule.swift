@@ -52,18 +52,18 @@ struct WeakDelegateRule: Rule {
             """, excludeFromDocumentation: true),
             Example("private var appDelegate: String?", excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("class Foo {\n  ↓var delegate: SomeProtocol?\n}"),
-            Example("class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}"),
-            Example("""
+        triggeringExamples: #examples([
+            "class Foo {\n  ↓var delegate: SomeProtocol?\n}",
+            "class Foo {\n  ↓var scrollDelegate: ScrollDelegate?\n}",
+            """
             class Foo {
                 ↓var delegate: SomeProtocol? {
                     didSet {
                         print("Updated delegate")
                     }
                }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

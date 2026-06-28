@@ -1,6 +1,6 @@
 internal struct QuickDiscouragedPendingTestRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -13,32 +13,32 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                }
            }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓xdescribe("foo") { }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓xcontext("foo") { }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓xit("foo") { }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -46,8 +46,8 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                context("foo") {
@@ -55,8 +55,8 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -66,27 +66,27 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓pending("foo")
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓xitBehavesLike("foo")
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpecSubclass {
            override func spec() {
                ↓xitBehavesLike("foo")
            }
         }
-        """),
-    ]
+        """,
+    ])
 }

@@ -105,16 +105,16 @@ extension SwitchCaseAlignmentRule {
         private var indentedCases: [Example] {
             let violationMarker = indentedCasesOption ? "" : violationMarker
 
-            return [
-                Example("""
+            return #examples([
+                """
                 switch someBool {
                     \(violationMarker)case true:
                         print("red")
                     \(violationMarker)case false:
                         print("blue")
                 }
-                """),
-                Example("""
+                """,
+                """
                 if aBool {
                     switch someBool {
                         \(violationMarker)case true:
@@ -123,8 +123,8 @@ extension SwitchCaseAlignmentRule {
                             print('blue')
                     }
                 }
-                """),
-                Example("""
+                """,
+                """
                 switch someInt {
                     \(violationMarker)case 0:
                         print('Zero')
@@ -133,21 +133,21 @@ extension SwitchCaseAlignmentRule {
                     \(violationMarker)default:
                         print('Some other number')
                 }
-                """),
-                Example("""
+                """,
+                """
                 let a = switch i {
                     \(violationMarker)case 1: 1
                     \(violationMarker)default: 2
                 }
-                """),
-            ]
+                """,
+            ])
         }
 
         private var nonIndentedCases: [Example] {
             let violationMarker = indentedCasesOption ? violationMarker : ""
 
-            return [
-                Example("""
+            return #examples([
+                """
                 switch someBool {
                 \(violationMarker)case true: // case 1
                     print('red')
@@ -162,8 +162,8 @@ extension SwitchCaseAlignmentRule {
                 enum SomeEnum {
                     case innocent
                 }
-                """),
-                Example("""
+                """,
+                """
                 if aBool {
                     switch someBool {
                     \(violationMarker)case true:
@@ -172,8 +172,8 @@ extension SwitchCaseAlignmentRule {
                         print('blue')
                     }
                 }
-                """),
-                Example("""
+                """,
+                """
                 switch someInt {
                 // comments ignored
                 \(violationMarker)case 0:
@@ -184,31 +184,31 @@ extension SwitchCaseAlignmentRule {
                 \(violationMarker)default:
                     print('Some other number')
                 }
-                """),
-                Example("""
+                """,
+                """
                 func f() -> Int {
                     return switch i {
                     \(violationMarker)case 1: 1
                     \(violationMarker)default: 2
                     }
                 }
-                """),
-            ]
+                """,
+            ])
         }
 
         private var invalidCases: [Example] {
             let indentation = indentedCasesOption ? "    " : ""
 
-            return [
-                Example("""
+            return #examples([
+                """
                 switch someBool {
                 \(indentation)case true:
                     \(indentation)print('red')
                     \(indentation)\(violationMarker)case false:
                         \(indentation)print('blue')
                 }
-                """),
-                Example("""
+                """,
+                """
                 if aBool {
                     switch someBool {
                         \(indentation)\(indentedCasesOption ? "" : violationMarker)case true:
@@ -217,14 +217,14 @@ extension SwitchCaseAlignmentRule {
                     \(indentation)print('blue')
                     }
                 }
-                """),
-                Example("""
+                """,
+                """
                 let a = switch i {
                 \(indentation)case 1: 1
                     \(indentation)\(indentedCasesOption ? "" : violationMarker)default: 2
                 }
-                """),
-            ]
+                """,
+            ])
         }
 
         private var validOneLiners: [Example] = [

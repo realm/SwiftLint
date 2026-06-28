@@ -63,8 +63,8 @@ struct UnusedSetterValueRule: Rule {
             }
             """, excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -73,8 +73,8 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var aValue: String {
                 ↓set {
                     Persister.shared.aValue = aValue
@@ -83,8 +83,8 @@ struct UnusedSetterValueRule: Rule {
                     return Persister.shared.aValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -93,8 +93,8 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var aValue: String {
                 get {
                     let newValue = Persister.shared.aValue
@@ -104,8 +104,8 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -114,8 +114,8 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             override var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -124,8 +124,8 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = aValue
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

@@ -9,16 +9,16 @@ struct IsDisjointRule: Rule {
         name: "Is Disjoint",
         description: "Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)"),
-            Example("let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)"),
-            Example("_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)"),
-            Example("_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)"),
-        ],
-        triggeringExamples: [
-            Example("_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty"),
-            Example("let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty"),
-        ]
+        nonTriggeringExamples: #examples([
+            "_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)",
+            "let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)",
+            "_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)",
+            "_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)",
+        ]),
+        triggeringExamples: #examples([
+            "_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty",
+            "let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty",
+        ])
     )
 }
 

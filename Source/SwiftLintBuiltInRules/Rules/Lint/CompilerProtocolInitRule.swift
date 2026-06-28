@@ -10,16 +10,16 @@ struct CompilerProtocolInitRule: Rule {
         description: "The initializers declared in compiler protocols such as `ExpressibleByArrayLiteral` " +
                      "shouldn't be called directly.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("let set: Set<Int> = [1, 2]"),
-            Example("let set = Set(array)"),
-        ],
-        triggeringExamples: [
-            Example("let set = ↓Set(arrayLiteral: 1, 2)"),
-            Example("let set = ↓Set (arrayLiteral: 1, 2)"),
-            Example("let set = ↓Set.init(arrayLiteral: 1, 2)"),
-            Example("let set = ↓Set.init(arrayLiteral : 1, 2)"),
-        ]
+        nonTriggeringExamples: #examples([
+            "let set: Set<Int> = [1, 2]",
+            "let set = Set(array)",
+        ]),
+        triggeringExamples: #examples([
+            "let set = ↓Set(arrayLiteral: 1, 2)",
+            "let set = ↓Set (arrayLiteral: 1, 2)",
+            "let set = ↓Set.init(arrayLiteral: 1, 2)",
+            "let set = ↓Set.init(arrayLiteral : 1, 2)",
+        ])
     )
 }
 

@@ -33,16 +33,16 @@ struct ClosureSpacingRule: Rule {
             var tapped: (UITapGestureRecognizer) -> Void = ↓{ _ in /* no-op */  }
             """, excludeFromDocumentation: true),
         ],
-        corrections: [
-            Example("[].filter(↓{$0.contains(location) })"):
-                Example("[].filter({ $0.contains(location) })"),
-            Example("[].map(↓{$0})"):
-                Example("[].map({ $0 })"),
-            Example("filter ↓{sorted ↓{ $0 < $1}}"):
-                Example("filter { sorted { $0 < $1 } }"),
-            Example("(↓{each in return result.contains(where: ↓{e in return 0})}).count"):
-                Example("({ each in return result.contains(where: { e in return 0 }) }).count"),
-        ]
+        corrections: #examplesDictionary([
+            "[].filter(↓{$0.contains(location) })":
+                "[].filter({ $0.contains(location) })",
+            "[].map(↓{$0})":
+                "[].map({ $0 })",
+            "filter ↓{sorted ↓{ $0 < $1}}":
+                "filter { sorted { $0 < $1 } }",
+            "(↓{each in return result.contains(where: ↓{e in return 0})}).count":
+                "({ each in return result.contains(where: { e in return 0 }) }).count",
+        ])
     )
 }
 

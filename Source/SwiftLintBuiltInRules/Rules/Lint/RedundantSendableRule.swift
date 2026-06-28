@@ -9,14 +9,14 @@ struct RedundantSendableRule: Rule {
         name: "Redundant Sendable",
         description: "Sendable conformance is redundant on an actor-isolated type",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("struct S: Sendable {}"),
-            Example("class C: Sendable {}"),
-            Example("actor A {}"),
-            Example("@MainActor struct S {}"),
-            Example("@MyActor enum E: Sendable { case a }"),
-            Example("@MainActor protocol P: Sendable {}"),
-        ],
+        nonTriggeringExamples: #examples([
+            "struct S: Sendable {}",
+            "class C: Sendable {}",
+            "actor A {}",
+            "@MainActor struct S {}",
+            "@MyActor enum E: Sendable { case a }",
+            "@MainActor protocol P: Sendable {}",
+        ]),
         triggeringExamples: [
             Example("@MainActor struct ↓S: Sendable {}"),
             Example("actor ↓A: Sendable {}"),

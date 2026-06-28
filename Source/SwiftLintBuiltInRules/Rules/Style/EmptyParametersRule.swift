@@ -9,27 +9,27 @@ struct EmptyParametersRule: Rule {
         name: "Empty Parameters",
         description: "Prefer `() -> ` over `Void -> `",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let abc: () -> Void = {}"),
-            Example("func foo(completion: () -> Void)"),
-            Example("func foo(completion: () throws -> Void)"),
-            Example("let foo: (ConfigurationTests) -> Void throws -> Void)"),
-            Example("let foo: (ConfigurationTests) ->   Void throws -> Void)"),
-            Example("let foo: (ConfigurationTests) ->Void throws -> Void)"),
-        ],
-        triggeringExamples: [
-            Example("let abc: ↓(Void) -> Void = {}"),
-            Example("func foo(completion: ↓(Void) -> Void)"),
-            Example("func foo(completion: ↓(Void) throws -> Void)"),
-            Example("let foo: ↓(Void) -> () throws -> Void)"),
-        ],
-        corrections: [
-            Example("let abc: ↓(Void) -> Void = {}"): Example("let abc: () -> Void = {}"),
-            Example("func foo(completion: ↓(Void) -> Void)"): Example("func foo(completion: () -> Void)"),
-            Example("func foo(completion: ↓(Void) throws -> Void)"):
-                Example("func foo(completion: () throws -> Void)"),
-            Example("let foo: ↓(Void) -> () throws -> Void)"): Example("let foo: () -> () throws -> Void)"),
-        ]
+        nonTriggeringExamples: #examples([
+            "let abc: () -> Void = {}",
+            "func foo(completion: () -> Void)",
+            "func foo(completion: () throws -> Void)",
+            "let foo: (ConfigurationTests) -> Void throws -> Void)",
+            "let foo: (ConfigurationTests) ->   Void throws -> Void)",
+            "let foo: (ConfigurationTests) ->Void throws -> Void)",
+        ]),
+        triggeringExamples: #examples([
+            "let abc: ↓(Void) -> Void = {}",
+            "func foo(completion: ↓(Void) -> Void)",
+            "func foo(completion: ↓(Void) throws -> Void)",
+            "let foo: ↓(Void) -> () throws -> Void)",
+        ]),
+        corrections: #examplesDictionary([
+            "let abc: ↓(Void) -> Void = {}": "let abc: () -> Void = {}",
+            "func foo(completion: ↓(Void) -> Void)": "func foo(completion: () -> Void)",
+            "func foo(completion: ↓(Void) throws -> Void)":
+                "func foo(completion: () throws -> Void)",
+            "let foo: ↓(Void) -> () throws -> Void)": "let foo: () -> () throws -> Void)",
+        ])
     )
 }
 

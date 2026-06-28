@@ -9,27 +9,27 @@ struct PrivateActionRule: Rule {
         name: "Private Actions",
         description: "IBActions should be private",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("class Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("struct Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("class Foo {\n\t@IBAction fileprivate func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("struct Foo {\n\t@IBAction fileprivate func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("private extension Foo {\n\t@IBAction func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("fileprivate extension Foo {\n\t@IBAction func barButtonTapped(_ sender: UIButton) {}\n}"),
-        ],
-        triggeringExamples: [
-            Example("class Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("struct Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("class Foo {\n\t@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("struct Foo {\n\t@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("class Foo {\n\t@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("struct Foo {\n\t@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("extension Foo {\n\t@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("extension Foo {\n\t@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("public extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-            Example("internal extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}"),
-        ]
+        nonTriggeringExamples: #examples([
+            "class Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}",
+            "struct Foo {\n\t@IBAction private func barButtonTapped(_ sender: UIButton) {}\n}",
+            "class Foo {\n\t@IBAction fileprivate func barButtonTapped(_ sender: UIButton) {}\n}",
+            "struct Foo {\n\t@IBAction fileprivate func barButtonTapped(_ sender: UIButton) {}\n}",
+            "private extension Foo {\n\t@IBAction func barButtonTapped(_ sender: UIButton) {}\n}",
+            "fileprivate extension Foo {\n\t@IBAction func barButtonTapped(_ sender: UIButton) {}\n}",
+        ]),
+        triggeringExamples: #examples([
+            "class Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "struct Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "class Foo {\n\t@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "struct Foo {\n\t@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "class Foo {\n\t@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "struct Foo {\n\t@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "extension Foo {\n\t@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "extension Foo {\n\t@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "public extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+            "internal extension Foo {\n\t@IBAction ↓func barButtonTapped(_ sender: UIButton) {}\n}",
+        ])
     )
 }
 

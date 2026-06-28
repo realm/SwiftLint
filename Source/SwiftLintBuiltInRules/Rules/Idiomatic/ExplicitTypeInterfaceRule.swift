@@ -36,38 +36,38 @@ struct ExplicitTypeInterfaceRule: Rule {
             }
             """, excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             class Foo {
               var ↓myVar = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               let ↓mylet = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               static var ↓myStaticVar = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               class var ↓myClassVar = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               let ↓myVar = Int(0), ↓s = ""
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               let ↓myVar = Set<Int>(0)
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

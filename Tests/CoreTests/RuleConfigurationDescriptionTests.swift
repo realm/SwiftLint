@@ -269,6 +269,51 @@ struct RuleConfigurationDescriptionTests {  // swiftlint:disable:this type_body_
     }
 
     @Test
+    func configurationElementDocumentationIsPropagatedToDescription() {
+        @AutoConfigParser
+        struct MockConfiguration: RuleConfiguration {
+            @ConfigurationElement(key: "documented", documentation: "Shown in docs")
+            var documented = true
+
+            @ConfigurationElement(key: "plain")
+            var plain = 2
+        }
+
+        #expect(
+            RuleConfigurationDescription.from(configuration: MockConfiguration()).markdown() == """
+                <table>
+                <thead>
+                <tr><th>Key</th><th>Value</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                <tr>
+                <td>
+                documented
+                </td>
+                <td>
+                true
+                </td>
+                <td>
+                Shown in docs
+                </td>
+                </tr>
+                <tr>
+                <td>
+                plain
+                </td>
+                <td>
+                2
+                </td>
+                <td>
+                -
+                </td>
+                </tr>
+                </tbody>
+                </table>
+                """)
+    }
+
+    @Test
     func emptyDescription() {
         let description = description { RuleConfigurationOption.noOptions }
 

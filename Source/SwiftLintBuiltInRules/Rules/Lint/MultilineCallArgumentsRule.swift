@@ -199,11 +199,14 @@ private extension MultilineCallArgumentsRule {
         }
 
         /// Returns the indentation string for argument lines: the call's base indent
-        /// plus one level of configured indentation.
+        /// plus one level of the global indentation from `CurrentRule.indentation`
+        /// (set by `Linter` from the top-level `Configuration.indentation`).
+        /// Falls back to `IndentationStyle.default` (4 spaces) when not set,
+        /// e.g. when the rule is invoked outside of a `Linter` context.
         private func argumentIndent(for callNode: FunctionCallExprSyntax) -> String {
             let callStartLine = line(for: callNode.positionAfterSkippingLeadingTrivia)
             let baseIndent = getLineIndent(lineNumber: callStartLine)
-            return baseIndent + configuration.indentationStyle.indentationString
+            return baseIndent + (CurrentRule.indentation ?? .default).indentationString
         }
 
         private func newlineAndIndentCorrection(

@@ -10,7 +10,7 @@ struct MultilineCallArgumentsRuleExamples {
                 param3: []
             )
             """,
-            configuration: ["allows_single_line": false, "indentation": 4]
+            configuration: ["allows_single_line": false]
         ),
         Example("""
             foo(param1: 1, param2: false)
@@ -23,7 +23,7 @@ struct MultilineCallArgumentsRuleExamples {
             \tparam2: false
             )
             """,
-            configuration: ["allows_single_line": false, "indentation": "tabs"]
+            configuration: ["allows_single_line": false]
         ),
 
         // MARK: - Baseline: multi-line OK
@@ -540,10 +540,10 @@ struct MultilineCallArgumentsRuleExamples {
             """,
                 configuration: ["max_number_of_single_line_parameters": 2]
                ),
-        // MARK: - Tab indentation
+        // MARK: - Tab indentation (uses global indentation setting)
         Example(
             "foo(param1: 1, ↓param2: false)",
-            configuration: ["allows_single_line": false, "indentation": "tabs"]
+            configuration: ["allows_single_line": false]
         ),
         Example("""
             class Test {
@@ -554,7 +554,7 @@ struct MultilineCallArgumentsRuleExamples {
                 }
             }
             """,
-            configuration: ["allows_single_line": false, "indentation": "tabs"]
+            configuration: ["allows_single_line": false]
         ),
         // MARK: - Comments between arguments (violation still detected)
         Example(
@@ -724,26 +724,6 @@ struct MultilineCallArgumentsRuleExamples {
                 b: 3
             )
             """),
-        // MARK: - Custom indentation_width (2 spaces)
-        Example(
-            "foo(param1: 1, ↓param2: false)",
-            configuration: ["allows_single_line": false, "indentation": 2]
-        ): Example("""
-            foo(
-              param1: 1,
-              param2: false
-            )
-            """),
-        // MARK: - Custom indentation_width (8 spaces)
-        Example(
-            "foo(param1: 1, ↓param2: false)",
-            configuration: ["allows_single_line": false, "indentation": 8]
-        ): Example("""
-            foo(
-                    param1: 1,
-                    param2: false
-            )
-            """),
         // MARK: - Nested indentation (4 spaces default)
         Example("""
             class Test {
@@ -766,16 +746,6 @@ struct MultilineCallArgumentsRuleExamples {
                     }
                 }
             }
-            """),
-        // MARK: - Tab indentation corrections
-        Example(
-            "foo(param1: 1, ↓param2: false)",
-            configuration: ["allows_single_line": false, "indentation": "tabs"]
-        ): Example("""
-            foo(
-            \tparam1: 1,
-            \tparam2: false
-            )
             """),
         // MARK: - Nested calls (inner call already correct, outer has violation)
         Example(

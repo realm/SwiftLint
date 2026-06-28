@@ -4,7 +4,7 @@ import Testing
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
 
-@Suite(.parserDiagnosticsEnabled(true))
+@Suite(.parserDiagnosticsEnabled(true), .rulesRegistered)
 struct ParserDiagnosticsTests {
     @Test
     func fileWithParserErrorDiagnostics() {

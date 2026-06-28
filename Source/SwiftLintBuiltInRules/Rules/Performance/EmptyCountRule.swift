@@ -11,6 +11,10 @@ struct EmptyCountRule: Rule {
         identifier: "empty_count",
         name: "Empty Count",
         description: "Prefer checking `isEmpty` over comparing `count` to zero",
+        rationale: """
+        For collections that do not conform to `RandomAccessCollection`, `count` is an O(n) operation,
+        whereas `isEmpty` is O(1).
+        """,
         kind: .performance,
         nonTriggeringExamples: [
             Example("var count = 0"),

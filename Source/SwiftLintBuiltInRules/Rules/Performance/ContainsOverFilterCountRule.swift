@@ -8,6 +8,10 @@ struct ContainsOverFilterCountRule: Rule {
         identifier: "contains_over_filter_count",
         name: "Contains over Filter Count",
         description: "Prefer `contains` over comparing `filter(where:).count` to 0",
+        rationale: """
+        Prefer `contains` for efficiency, because it can exit early if a match is found,
+        whereas `filter(where:).count` always needs to scan the entire collection.
+        """,
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
             [

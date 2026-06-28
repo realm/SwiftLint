@@ -10,105 +10,105 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
         name: "Literal Expression End Indentation",
         description: "Array and dictionary literal end should have the same indentation as the line that started it",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             [1, 2, 3]
-            """),
-            Example("""
+            """,
+            """
             [1,
              2
             ]
-            """),
-            Example("""
+            """,
+            """
             [
                1,
                2
             ]
-            """),
-            Example("""
+            """,
+            """
             [
                1,
                2]
-            """),
-            Example("""
+            """,
+            """
                let x = [
                    1,
                    2
                ]
-            """),
-            Example("""
+            """,
+            """
             [key: 2, key2: 3]
-            """),
-            Example("""
+            """,
+            """
             [key: 1,
              key2: 2
             ]
-            """),
-            Example("""
+            """,
+            """
             [
                key: 0,
                key2: 20
             ]
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             let x = [
                1,
                2
                ↓]
-            """),
-            Example("""
+            """,
+            """
                let x = [
                    1,
                    2
             ↓]
-            """),
-            Example("""
+            """,
+            """
             let x = [
                key: value
                ↓]
-            """),
-            Example("""
+            """,
+            """
             let x = [
                foo(
                   1,
                   2)↓]
-            """),
-        ],
-        corrections: [
-            Example("""
+            """,
+        ]),
+        corrections: #examplesDictionary([
+            """
             let x = [
                key: value
             ↓   ]
-            """): Example("""
+            """: """
             let x = [
                key: value
             ]
-            """),
-            Example("""
+            """,
+            """
                let x = [
                    1,
                    2
             ↓]
-            """): Example("""
+            """: """
                let x = [
                    1,
                    2
                ]
-            """),
-            Example("""
+            """,
+            """
             let x = [
                1,
                2
             ↓   ]
-            """): Example("""
+            """: """
             let x = [
                1,
                2
             ]
-            """),
-            Example("""
+            """,
+            """
             let x = [
                1,
                2
@@ -116,7 +116,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                3,
                4
             ↓   ]
-            """): Example("""
+            """: """
             let x = [
                1,
                2
@@ -124,20 +124,20 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                3,
                4
             ]
-            """),
-            Example("""
+            """,
+            """
             let x = [
                foo(
                   1,
                   2)↓]
-            """): Example("""
+            """: """
             let x = [
                foo(
                   1,
                   2)
             ]
-            """),
-        ]
+            """,
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

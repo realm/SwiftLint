@@ -54,15 +54,15 @@ struct UnusedImportRuleExamples {
         ], excludeFromDocumentation: true),
     ]
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         ↓import Dispatch
         struct A {
           static func dispatchMain() {}
         }
         A.dispatchMain()
-        """),
-        Example("""
+        """,
+        """
         ↓import Foundation // This is unused
         struct A {
           static func dispatchMain() {}
@@ -70,27 +70,27 @@ struct UnusedImportRuleExamples {
         A.dispatchMain()
         ↓import Dispatch
 
-        """),
-        Example("""
+        """,
+        """
         ↓import Foundation
         dispatchMain()
-        """),
-        Example("""
+        """,
+        """
         ↓import Foundation
         // @objc
         class A {}
-        """),
-        Example("""
+        """,
+        """
         ↓public import Foundation
         import UnknownModule
         func foo(error: Swift.Error) {}
-        """),
-        Example("""
+        """,
+        """
         ↓internal import Swift
         ↓private import SwiftShims
         func foo(error: Swift.Error) {}
-        """),
-    ]
+        """,
+    ])
 
     static let corrections = [
         Example("""

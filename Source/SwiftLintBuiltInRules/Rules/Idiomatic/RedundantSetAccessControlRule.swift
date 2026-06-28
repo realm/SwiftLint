@@ -31,32 +31,32 @@ struct RedundantSetAccessControlRule: Rule {
             }
             """),
         ],
-        triggeringExamples: [
-            Example("↓private(set) private var foo: Int"),
-            Example("↓fileprivate(set) fileprivate var foo: Int"),
-            Example("↓internal(set) internal var foo: Int"),
-            Example("↓public(set) public var foo: Int"),
-            Example("""
+        triggeringExamples: #examples([
+            "↓private(set) private var foo: Int",
+            "↓fileprivate(set) fileprivate var foo: Int",
+            "↓internal(set) internal var foo: Int",
+            "↓public(set) public var foo: Int",
+            """
             open class Foo {
               ↓open(set) open var bar: Int
             }
-            """),
-            Example("""
+            """,
+            """
             class A {
               ↓internal(set) var value: Int
             }
-            """),
-            Example("""
+            """,
+            """
             internal class A {
               ↓internal(set) var value: Int
             }
-            """),
-            Example("""
+            """,
+            """
             fileprivate class A {
               ↓fileprivate(set) var value: Int
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

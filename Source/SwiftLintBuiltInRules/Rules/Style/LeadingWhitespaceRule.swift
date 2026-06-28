@@ -9,13 +9,13 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("//")
-        ],
-        triggeringExamples: [
-            Example("\n//"),
-            Example(" //"),
-        ].skipMultiByteOffsetTests().skipDisableCommandTests(),
+        nonTriggeringExamples: #examples([
+            "//"
+        ]),
+        triggeringExamples: #examples([
+            "\n//",
+            " //",
+        ]).skipMultiByteOffsetTests().skipDisableCommandTests(),
         corrections: [
             Example("\n //", testMultiByteOffsets: false): Example("//")
         ]

@@ -40,34 +40,34 @@ struct UnavailableConditionRule: Rule {
             }
             """, excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             if ↓#available(iOS 14.0) {
 
             } else {
               oldIos13TrackingLogic(isEnabled: ASIdentifierManager.shared().isAdvertisingTrackingEnabled)
             }
-            """),
-            Example("""
+            """,
+            """
             if ↓#available(iOS 14.0) {
               // we don't need to do anything here
             } else {
               oldIos13TrackingLogic(isEnabled: ASIdentifierManager.shared().isAdvertisingTrackingEnabled)
             }
-            """),
-            Example("""
+            """,
+            """
             if ↓#available(iOS 13, *) {} else {
               loadMainWindow()
             }
-            """),
-            Example("""
+            """,
+            """
             if ↓#unavailable(iOS 13) {
               // Do nothing
             } else if i < 2 {
               loadMainWindow()
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

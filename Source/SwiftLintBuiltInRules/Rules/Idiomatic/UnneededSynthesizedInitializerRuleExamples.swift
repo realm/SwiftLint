@@ -252,8 +252,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
         """),
     ]
 
-    static let triggering = [
-        Example("""
+    static let triggering = #examples([
+        """
                 struct Foo {
                     let bar: String
 
@@ -261,8 +261,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Foo {
                     var bar: String
 
@@ -270,8 +270,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 private struct Foo {
                     let bar: String
 
@@ -279,8 +279,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 fileprivate struct Foo {
                     let bar: String
 
@@ -288,8 +288,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 internal struct Foo {
                     fileprivate var bar: String
 
@@ -297,8 +297,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 internal struct Foo {
                     private var bar: String
 
@@ -306,8 +306,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Foo {
                     var foo: String
                     var bar: String
@@ -317,8 +317,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 internal struct Foo {
                     var bar: String
 
@@ -326,8 +326,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Foo {
                     var bar: String = ""
 
@@ -336,8 +336,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         // when all vars have default values.
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Foo {
                     var bar: String = ""
 
@@ -349,8 +349,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Foo {
                     var bar = ""
 
@@ -358,8 +358,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Outer {
                     struct Inner {
                         let prop: Int
@@ -369,8 +369,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         }
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 class Foo {
                     struct Bar {
                         let baz: Int
@@ -380,8 +380,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         }
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
                 struct Foo {
                     let i: Int
                     struct Bar {
@@ -394,11 +394,11 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.i = i
                     }
                 }
-                """),
-    ]
+                """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
                 struct Foo {
                     let bar: String
 
@@ -411,7 +411,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         // Padding
                     }
                 }
-                """): Example("""
+                """: """
                               struct Foo {
                                   let bar: String
 
@@ -420,8 +420,8 @@ enum UnneededSynthesizedInitializerRuleExamples {
                                       // Padding
                                   }
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 struct Foo {
                     var bar: String
 
@@ -429,12 +429,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               struct Foo {
                                   var bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 private struct Foo {
                     let bar: String
 
@@ -442,12 +442,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               private struct Foo {
                                   let bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 fileprivate struct Foo {
                     let bar: String
 
@@ -455,12 +455,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               fileprivate struct Foo {
                                   let bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 internal struct Foo {
                     fileprivate var bar: String
 
@@ -468,12 +468,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               internal struct Foo {
                                   fileprivate var bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 internal struct Foo {
                     private var bar: String
 
@@ -481,12 +481,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               internal struct Foo {
                                   private var bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 struct Foo {
                     var foo: String
                     var bar: String
@@ -496,13 +496,13 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               struct Foo {
                                   var foo: String
                                   var bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 internal struct Foo {
                     var bar: String
 
@@ -510,12 +510,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         self.bar = bar
                     }
                 }
-                """): Example("""
+                """: """
                               internal struct Foo {
                                   var bar: String
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 struct Foo {
                     var bar: String = ""
 
@@ -524,12 +524,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         // when all vars have default values.
                     }
                 }
-                """): Example("""
+                """: """
                               struct Foo {
                                   var bar: String = ""
                               }
-                              """),
-        Example("""
+                              """,
+        """
                 struct Outer {
                     struct Inner {
                         let prop: Int
@@ -539,12 +539,12 @@ enum UnneededSynthesizedInitializerRuleExamples {
                         }
                     }
                 }
-                """): Example("""
+                """: """
                 struct Outer {
                     struct Inner {
                         let prop: Int
                     }
                 }
-                """),
-    ]
+                """,
+    ])
 }

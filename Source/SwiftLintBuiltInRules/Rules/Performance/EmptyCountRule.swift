@@ -73,40 +73,40 @@ struct EmptyCountRule: Rule {
                 }
                 """, excludeFromDocumentation: true),
         ],
-        corrections: [
-            Example("[].↓count == 0"):
-                Example("[].isEmpty"),
-            Example("0 == [].↓count"):
-                Example("[].isEmpty"),
-            Example("[Int]().↓count == 0"):
-                Example("[Int]().isEmpty"),
-            Example("0 == [Int]().↓count"):
-                Example("[Int]().isEmpty"),
-            Example("[Int]().↓count==0"):
-                Example("[Int]().isEmpty"),
-            Example("[Int]().↓count > 0"):
-                Example("![Int]().isEmpty"),
-            Example("[Int]().↓count != 0"):
-                Example("![Int]().isEmpty"),
-            Example("[Int]().↓count == 0x0"):
-                Example("[Int]().isEmpty"),
-            Example("[Int]().↓count == 0x00_00"):
-                Example("[Int]().isEmpty"),
-            Example("[Int]().↓count == 0b00"):
-                Example("[Int]().isEmpty"),
-            Example("[Int]().↓count == 0o00"):
-                Example("[Int]().isEmpty"),
-            Example("↓count == 0"):
-                Example("isEmpty"),
-            Example("↓count == 0 && [Int]().↓count == 0o00"):
-                Example("isEmpty && [Int]().isEmpty"),
-            Example("[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2"):
-                Example("[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2"),
-            Example("#ExampleMacro { $0.list.↓count == 0 }"):
-                Example("#ExampleMacro { $0.list.isEmpty }"),
-            Example("#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }"):
-                Example("#Rule(param1: \"param1\") { return $0.donations.isEmpty }"),
-        ]
+        corrections: #examplesDictionary([
+            "[].↓count == 0":
+                "[].isEmpty",
+            "0 == [].↓count":
+                "[].isEmpty",
+            "[Int]().↓count == 0":
+                "[Int]().isEmpty",
+            "0 == [Int]().↓count":
+                "[Int]().isEmpty",
+            "[Int]().↓count==0":
+                "[Int]().isEmpty",
+            "[Int]().↓count > 0":
+                "![Int]().isEmpty",
+            "[Int]().↓count != 0":
+                "![Int]().isEmpty",
+            "[Int]().↓count == 0x0":
+                "[Int]().isEmpty",
+            "[Int]().↓count == 0x00_00":
+                "[Int]().isEmpty",
+            "[Int]().↓count == 0b00":
+                "[Int]().isEmpty",
+            "[Int]().↓count == 0o00":
+                "[Int]().isEmpty",
+            "↓count == 0":
+                "isEmpty",
+            "↓count == 0 && [Int]().↓count == 0o00":
+                "isEmpty && [Int]().isEmpty",
+            "[Int]().count != 3 && [Int]().↓count != 0 || ↓count == 0 && [Int]().count > 2":
+                "[Int]().count != 3 && ![Int]().isEmpty || isEmpty && [Int]().count > 2",
+            "#ExampleMacro { $0.list.↓count == 0 }":
+                "#ExampleMacro { $0.list.isEmpty }",
+            "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }":
+                "#Rule(param1: \"param1\") { return $0.donations.isEmpty }",
+        ])
     )
 }
 

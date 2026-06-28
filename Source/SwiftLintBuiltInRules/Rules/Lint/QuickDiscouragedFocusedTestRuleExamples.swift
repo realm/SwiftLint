@@ -1,6 +1,6 @@
 internal struct QuickDiscouragedFocusedTestRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -13,32 +13,32 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                }
            }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓fdescribe("foo") { }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓fcontext("foo") { }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓fit("foo") { }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -46,8 +46,8 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                context("foo") {
@@ -55,8 +55,8 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -66,20 +66,20 @@ internal struct QuickDiscouragedFocusedTestRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                ↓fitBehavesLike("foo")
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpecSubclass {
            override func spec() {
                ↓fitBehavesLike("foo")
            }
         }
-        """),
-    ]
+        """,
+    ])
 }

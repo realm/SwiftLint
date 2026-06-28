@@ -11,17 +11,17 @@ struct NSNumberInitAsFunctionReferenceRule: Rule {
         description: "Passing `NSNumber.init` or `NSDecimalNumber.init` as a function reference is dangerous " +
                      "as it can cause the wrong initializer to be used, causing crashes; use `.init(value:)` instead",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("[0, 0.2].map(NSNumber.init(value:))"),
-            Example("let value = NSNumber.init(value: 0.0)"),
-            Example("[0, 0.2].map { NSNumber(value: $0) }"),
-            Example("[0, 0.2].map(NSDecimalNumber.init(value:))"),
-            Example("[0, 0.2].map { NSDecimalNumber(value: $0) }"),
-        ],
-        triggeringExamples: [
-            Example("[0, 0.2].map(↓NSNumber.init)"),
-            Example("[0, 0.2].map(↓NSDecimalNumber.init)"),
-        ]
+        nonTriggeringExamples: #examples([
+            "[0, 0.2].map(NSNumber.init(value:))",
+            "let value = NSNumber.init(value: 0.0)",
+            "[0, 0.2].map { NSNumber(value: $0) }",
+            "[0, 0.2].map(NSDecimalNumber.init(value:))",
+            "[0, 0.2].map { NSDecimalNumber(value: $0) }",
+        ]),
+        triggeringExamples: #examples([
+            "[0, 0.2].map(↓NSNumber.init)",
+            "[0, 0.2].map(↓NSDecimalNumber.init)",
+        ])
     )
 }
 

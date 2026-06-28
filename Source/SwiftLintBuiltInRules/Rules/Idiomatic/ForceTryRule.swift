@@ -9,20 +9,20 @@ struct ForceTryRule: Rule {
         name: "Force Try",
         description: "Force tries should be avoided",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func a() throws {}
             do {
               try a()
             } catch {}
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             func a() throws {}
             ↓try! a()
-            """),
-        ]
+            """,
+        ])
     )
 }
 

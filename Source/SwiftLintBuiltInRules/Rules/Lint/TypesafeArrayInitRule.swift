@@ -9,13 +9,13 @@ struct TypesafeArrayInitRule: AnalyzerRule {
         name: "Type-safe Array Init",
         description: ArrayInitRule.description.description,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
                 enum MyError: Error {}
                 let myResult: Result<String, MyError> = .success("")
                 let result: Result<Any, MyError> = myResult.map { $0 }
-                """),
-            Example("""
+                """,
+            """
                 struct IntArray {
                     let elements = [1, 2, 3]
                     func map<T>(_ transformer: (Int) throws -> T) rethrows -> [T] {
@@ -24,29 +24,29 @@ struct TypesafeArrayInitRule: AnalyzerRule {
                 }
                 let ints = IntArray()
                 let intsCopy = ints.map { $0 }
-                """),
-        ],
-        triggeringExamples: [
-            Example("""
+                """,
+        ]),
+        triggeringExamples: #examples([
+            """
                 func f<Seq: Sequence>(s: Seq) -> [Seq.Element] {
                     s.↓map({ $0 })
                 }
-                """),
-            Example("""
+                """,
+            """
                 func f(array: [Int]) -> [Int] {
                     array.↓map { $0 }
                 }
-                """),
-            Example("""
+                """,
+            """
                 let myInts = [1, 2, 3].↓map { return $0 }
-                """),
-            Example("""
+                """,
+            """
                 struct Generator: Sequence, IteratorProtocol {
                     func next() -> Int? { nil }
                 }
                 let array = Generator().↓map { i in i }
-                """),
-        ],
+                """,
+        ]),
         requiresFileOnDisk: true
     )
 

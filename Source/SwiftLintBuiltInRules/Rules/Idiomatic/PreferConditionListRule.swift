@@ -32,61 +32,61 @@ struct PreferConditionListRule: Rule {
             condition list elements. The scope of the parentheses is limited to the function call itself.
             """,
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("if a, b {}"),
-            Example("guard a || b && c {}"),
-            Example("if a && b || c {}"),
-            Example("let result = a && b"),
-            Example("repeat {} while a && b"),
-            Example("if (f {}) {}"),
-            Example("if f {} {}"),
-        ],
-        triggeringExamples: [
-            Example("if a ↓&& b {}"),
-            Example("if a ↓&& b ↓&& c {}"),
-            Example("while a ↓&& b {}"),
-            Example("guard a ↓&& b {}"),
-            Example("guard (a || b) ↓&& c {}"),
-            Example("if a ↓&& (b && c) {}"),
-            Example("guard a ↓&& b ↓&& c else {}"),
-            Example("if (a ↓&& b) {}"),
-            Example("if (a ↓&& f {}) {}"),
-        ],
-        corrections: [
-            Example("if a && b {}"):
-                Example("if a, b {}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "if a, b {}",
+            "guard a || b && c {}",
+            "if a && b || c {}",
+            "let result = a && b",
+            "repeat {} while a && b",
+            "if (f {}) {}",
+            "if f {} {}",
+        ]),
+        triggeringExamples: #examples([
+            "if a ↓&& b {}",
+            "if a ↓&& b ↓&& c {}",
+            "while a ↓&& b {}",
+            "guard a ↓&& b {}",
+            "guard (a || b) ↓&& c {}",
+            "if a ↓&& (b && c) {}",
+            "guard a ↓&& b ↓&& c else {}",
+            "if (a ↓&& b) {}",
+            "if (a ↓&& f {}) {}",
+        ]),
+        corrections: #examplesDictionary([
+            "if a && b {}":
+                "if a, b {}",
+            """
                 if a &&
                    b {}
-                """): Example("""
+                """: """
                 if a,
                    b {}
-                """),
-            Example("guard a && b && c else {}"):
-                Example("guard a, b, c else {}"),
-            Example("while a && b {}"):
-                Example("while a, b {}"),
-            Example("if a && b || c {}"):
-                Example("if a && b || c {}"),
-            Example("if (a && b) {}"):
-                Example("if a, b {}"),
-            Example("if a && (b && c) {}"):
-                Example("if a, b, c {}"),
-            Example("if (a && b) && c {}"):
-                Example("if a, b, c {}"),
-            Example("if (a && b), c {}"):
-                Example("if a, b, c {}"),
-            Example("guard (a || b) ↓&& c {}"):
-                Example("guard a || b, c {}"),
-            Example("if a && (b || c) {}"):
-                Example("if a, b || c {}"),
-            Example("if (a ↓&& f {}) {}"):
-                Example("if a, (f {}) {}"),
-            Example("if a ↓&& (b || f {}) {}"):
-                Example("if a, b || (f {}) {}"),
-            Example("if a ↓&& !f {} {}"):
-                Example("if a, !(f {}) {}"),
-        ]
+                """,
+            "guard a && b && c else {}":
+                "guard a, b, c else {}",
+            "while a && b {}":
+                "while a, b {}",
+            "if a && b || c {}":
+                "if a && b || c {}",
+            "if (a && b) {}":
+                "if a, b {}",
+            "if a && (b && c) {}":
+                "if a, b, c {}",
+            "if (a && b) && c {}":
+                "if a, b, c {}",
+            "if (a && b), c {}":
+                "if a, b, c {}",
+            "guard (a || b) ↓&& c {}":
+                "guard a || b, c {}",
+            "if a && (b || c) {}":
+                "if a, b || c {}",
+            "if (a ↓&& f {}) {}":
+                "if a, (f {}) {}",
+            "if a ↓&& (b || f {}) {}":
+                "if a, b || (f {}) {}",
+            "if a ↓&& !f {} {}":
+                "if a, !(f {}) {}",
+        ])
     )
 }
 

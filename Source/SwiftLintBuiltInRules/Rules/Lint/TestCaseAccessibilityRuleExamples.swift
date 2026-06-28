@@ -77,8 +77,8 @@ internal struct TestCaseAccessibilityRuleExamples {
         """),
     ]
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         class FooTests: XCTestCase {
             ↓typealias Bar = Foo.Bar
 
@@ -105,11 +105,11 @@ internal struct TestCaseAccessibilityRuleExamples {
         final class BarTests: XCTestCase {
             ↓class Nested {}
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         class TotoTests: XCTestCase {
             ↓var foo: Bar?
 
@@ -125,8 +125,8 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             ↓func helperFunction() {}
         }
-        """):
-        Example("""
+        """:
+        """
         class TotoTests: XCTestCase {
             private var foo: Bar?
 
@@ -142,6 +142,6 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             private func helperFunction() {}
         }
-        """),
-    ]
+        """,
+    ])
 }

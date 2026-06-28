@@ -15,14 +15,14 @@ struct RedundantFinalRule: Rule {
             Additionally, `final` is redundant on members of a `final class` since they cannot be overridden.
             """,
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("actor MyActor {}"),
-            Example("final class MyClass {}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "actor MyActor {}",
+            "final class MyClass {}",
+            """
             @globalActor
             actor MyGlobalActor {}
-            """),
-            Example("""
+            """,
+            """
             actor MyActor {
                 func doWork() {}
                 final class C1 {}
@@ -30,31 +30,31 @@ struct RedundantFinalRule: Rule {
                     final func doWork() {}
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class MyClass {
                 final func doWork() {}
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("↓final actor MyActor {}"),
-            Example("public ↓final actor DataStore {}"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "↓final actor MyActor {}",
+            "public ↓final actor DataStore {}",
+            """
             @globalActor
             ↓final actor MyGlobalActor {}
-            """),
-            Example("""
+            """,
+            """
             actor MyActor {
                 ↓final func doWork() {}
             }
-            """),
-            Example("""
+            """,
+            """
             actor MyActor {
                 ↓final var value: Int { 0 }
             }
-            """),
-            Example("""
+            """,
+            """
             final class C1 {
                 ↓final actor A1 {
                     ↓final func doWork() {}
@@ -64,16 +64,16 @@ struct RedundantFinalRule: Rule {
                     ↓final func doWork() {}
                 }
             }
-            """),
-        ],
-        corrections: [
-            Example("final actor MyActor {}"):
-                Example("actor MyActor {}"),
-            Example("public final actor DataStore {}"):
-                Example("public actor DataStore {}"),
-            Example("actor MyActor { final func doWork() {}}"):
-                Example("actor MyActor { func doWork() {}}"),
-        ]
+            """,
+        ]),
+        corrections: #examplesDictionary([
+            "final actor MyActor {}":
+                "actor MyActor {}",
+            "public final actor DataStore {}":
+                "public actor DataStore {}",
+            "actor MyActor { final func doWork() {}}":
+                "actor MyActor { func doWork() {}}",
+        ])
     )
 }
 

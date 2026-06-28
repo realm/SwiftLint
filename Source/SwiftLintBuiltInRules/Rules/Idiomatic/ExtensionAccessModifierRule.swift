@@ -10,120 +10,120 @@ struct ExtensionAccessModifierRule: Rule {
         name: "Extension Access Modifier",
         description: "Prefer to use extension access modifiers",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             extension Foo: SomeProtocol {
               public var bar: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               private var bar: Int { return 1 }
               public var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               private var bar: Int { return 1 }
               public func baz() {}
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               var bar: Int { return 1 }
               internal var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             internal extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             public extension Foo {
               var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             public extension Foo {
               var bar: Int { return 1 }
               internal var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               private var bar: Int { return 1 }
               private var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               open var bar: Int { return 1 }
               open var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 func setup() {}
                 public func update() {}
             }
-            """),
-            Example("""
+            """,
+            """
             private extension Foo {
               private var bar: Int { return 1 }
               var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               internal private(set) var bar: Int {
                 get { Foo.shared.bar }
                 set { Foo.shared.bar = newValue }
               }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
               private(set) internal var bar: Int {
                 get { Foo.shared.bar }
                 set { Foo.shared.bar = newValue }
               }
             }
-            """),
-            Example("""
+            """,
+            """
             public extension Foo {
               private(set) var value: Int { 1 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             ↓extension Foo {
                public var bar: Int { return 1 }
                public var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓extension Foo {
                public var bar: Int { return 1 }
                public func baz() {}
             }
-            """),
-            Example("""
+            """,
+            """
             public extension Foo {
               ↓public func bar() {}
               ↓public func baz() {}
             }
-            """),
-            Example("""
+            """,
+            """
             ↓extension Foo {
                public var bar: Int {
                   let value = 1
@@ -132,8 +132,8 @@ struct ExtensionAccessModifierRule: Rule {
 
                public var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓extension Array where Element: Equatable {
                 public var unique: [Element] {
                     var uniqueValues = [Element]()
@@ -143,8 +143,8 @@ struct ExtensionAccessModifierRule: Rule {
                     return uniqueValues
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓extension Foo {
                #if DEBUG
                public var bar: Int {
@@ -155,19 +155,19 @@ struct ExtensionAccessModifierRule: Rule {
 
                public var baz: Int { return 1 }
             }
-            """),
-            Example("""
+            """,
+            """
             public extension Foo {
               ↓private func bar() {}
               ↓private func baz() {}
             }
-            """),
-            Example("""
+            """,
+            """
             ↓extension Foo {
               private(set) public var value: Int { 1 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

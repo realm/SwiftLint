@@ -9,22 +9,22 @@ struct EmptyCollectionLiteralRule: Rule {
         name: "Empty Collection Literal",
         description: "Prefer checking `isEmpty` over comparing collection to an empty array or dictionary literal",
         kind: .performance,
-        nonTriggeringExamples: [
-            Example("myArray = []"),
-            Example("myArray.isEmpty"),
-            Example("!myArray.isEmpty"),
-            Example("myDict = [:]"),
-        ],
-        triggeringExamples: [
-            Example("myArray↓ == []"),
-            Example("myArray↓ != []"),
-            Example("myArray↓ == [ ]"),
-            Example("myDict↓ == [:]"),
-            Example("myDict↓ != [:]"),
-            Example("myDict↓ == [: ]"),
-            Example("myDict↓ == [ :]"),
-            Example("myDict↓ == [ : ]"),
-        ]
+        nonTriggeringExamples: #examples([
+            "myArray = []",
+            "myArray.isEmpty",
+            "!myArray.isEmpty",
+            "myDict = [:]",
+        ]),
+        triggeringExamples: #examples([
+            "myArray↓ == []",
+            "myArray↓ != []",
+            "myArray↓ == [ ]",
+            "myDict↓ == [:]",
+            "myDict↓ != [:]",
+            "myDict↓ == [: ]",
+            "myDict↓ == [ :]",
+            "myDict↓ == [ : ]",
+        ])
     )
 }
 

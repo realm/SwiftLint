@@ -68,24 +68,24 @@ struct UnusedParameterRule: Rule {
             func f(_a: Int) {}
             """, configuration: allowUnderscorePrefixedNames),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             func f(↓a: Int) {}
-            """),
-            Example("""
+            """,
+            """
             func f(↓_a: Int) {}
-            """),
-            Example("""
+            """,
+            """
             func f(↓a: Int, b ↓c: String) {}
-            """),
-            Example("""
+            """,
+            """
             func f(↓a: Int, b ↓c: String) {
                 func g(a: Int, ↓b: Double) {
                     _ = a
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             struct S {
                 let a: Int
 
@@ -94,16 +94,16 @@ struct UnusedParameterRule: Rule {
                     self.a = f(a: a, b: 0)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             struct S {
                 subscript(a: Int, ↓b: Int) {
                     func f(↓a: Int, b: Int) -> Int { b }
                     return f(a: a, b: 0)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             func f(↓a: Int, ↓b: Int, c: Int) -> Int {
                 struct S {
                     let b = 1
@@ -111,31 +111,31 @@ struct UnusedParameterRule: Rule {
                 }
                 return S().f(a: c)
             }
-            """),
-            Example("""
+            """,
+            """
             func f(↓a: Int, c: String) {
                 let a = 1
                 return a + c
             }
-            """),
-        ],
-        corrections: [
-            Example("""
+            """,
+        ]),
+        corrections: #examplesDictionary([
+            """
             func f(a: Int) {}
-            """): Example("""
+            """: """
             func f(a _: Int) {}
-            """),
-            Example("""
+            """,
+            """
             func f(a b: Int) {}
-            """): Example("""
+            """: """
             func f(a _: Int) {}
-            """),
-            Example("""
+            """,
+            """
             func f(_ a: Int) {}
-            """): Example("""
+            """: """
             func f(_: Int) {}
-            """),
-        ]
+            """,
+        ])
     )
 }
 

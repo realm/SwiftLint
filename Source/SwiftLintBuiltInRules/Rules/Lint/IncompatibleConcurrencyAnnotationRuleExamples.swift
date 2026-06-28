@@ -1,60 +1,58 @@
 // swiftlint:disable:next type_name
 struct IncompatibleConcurrencyAnnotationRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples = #examples([
         // Sendable conformance is fine
-        Example("public struct S: Sendable {}"),
-        Example("public class C: Sendable {}"),
-        Example("public actor A {}"),
+        "public struct S: Sendable {}",
+        "public class C: Sendable {}",
+        "public actor A {}",
 
         // Non-public declarations are fine
-        Example("private @MainActor struct S { }"),
-        Example("@MainActor struct S { }"),
-        Example("internal @MainActor func globalActor()"),
-        Example("private @MainActor init() {}"),
-        Example("internal subscript(index: Int) -> String where String: Sendable { get }"),
+        "private @MainActor struct S { }",
+        "@MainActor struct S { }",
+        "internal @MainActor func globalActor()",
+        "private @MainActor init() {}",
+        "internal subscript(index: Int) -> String where String: Sendable { get }",
 
         // @preconcurrency makes it compatible
-        Example("@preconcurrency @MainActor public struct S {}"),
-        Example("@preconcurrency @MainActor public class C {}"),
-        Example("@preconcurrency @MainActor public enum E { case a }"),
-        Example("@preconcurrency @MainActor public protocol P {}"),
-        Example("@preconcurrency @MainActor public func globalActor()"),
-        Example("@preconcurrency public func sendableClosure(_ block: @Sendable () -> Void)"),
-        Example("@preconcurrency public func globalActorClosure(_ block: @MainActor () -> Void)"),
-        Example("@preconcurrency public init(_ block: @Sendable () -> Void)"),
-        Example(
-            "@preconcurrency public subscript(index: Int) -> String where String: Sendable { get }"),
-        Example("@preconcurrency public func sendableReturningClosure() -> @Sendable () -> Void"),
-        Example(
-            "@preconcurrency public func globalActorReturningClosure() -> @MainActor () -> Void"),
-        Example("@preconcurrency public func sendingParameter(_ value: sending MyClass)"),
-        Example("""
+        "@preconcurrency @MainActor public struct S {}",
+        "@preconcurrency @MainActor public class C {}",
+        "@preconcurrency @MainActor public enum E { case a }",
+        "@preconcurrency @MainActor public protocol P {}",
+        "@preconcurrency @MainActor public func globalActor()",
+        "@preconcurrency public func sendableClosure(_ block: @Sendable () -> Void)",
+        "@preconcurrency public func globalActorClosure(_ block: @MainActor () -> Void)",
+        "@preconcurrency public init(_ block: @Sendable () -> Void)",
+        "@preconcurrency public subscript(index: Int) -> String where String: Sendable { get }",
+        "@preconcurrency public func sendableReturningClosure() -> @Sendable () -> Void",
+        "@preconcurrency public func globalActorReturningClosure() -> @MainActor () -> Void",
+        "@preconcurrency public func sendingParameter(_ value: sending MyClass)",
+        """
             @preconcurrency public func tupleParameterClosures(
                 _ handlers: (@Sendable () -> Void, @MainActor () -> Void)
             )
-            """),
-        Example("""
+            """,
+        """
             @preconcurrency public func tupleReturningClosures() -> (
                 @Sendable () -> Void,
                 @MainActor () -> Void
             )
-            """),
-        Example("""
+            """,
+        """
             @preconcurrency public func closureWithSendingArgument(
                 _ handler: (_ value: sending MyClass) -> Void
             )
-            """),
+            """,
 
         // Non-concurrency related cases
-        Example("public func nonSendableClosure(_ block: () -> Void)"),
-        Example("public func generic<T>() where T: Equatable"),
-        Example("public func generic<T: Hashable>()"),
-        Example("public init<T: Hashable>()"),
+        "public func nonSendableClosure(_ block: () -> Void)",
+        "public func generic<T>() where T: Equatable",
+        "public func generic<T: Hashable>()",
+        "public init<T: Hashable>()",
 
         // Custom global actors without configuration
-        Example("public @MyActor enum E { case a }"),
-        Example("public func customActor(_ block: @MyActor () -> Void)"),
-    ]
+        "public @MyActor enum E { case a }",
+        "public func customActor(_ block: @MyActor () -> Void)",
+    ])
 
     static let triggeringExamples = [
         // Global actor on public declarations

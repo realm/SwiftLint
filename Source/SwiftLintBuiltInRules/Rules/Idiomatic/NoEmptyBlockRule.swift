@@ -105,24 +105,24 @@ struct NoEmptyBlockRule: Rule {
             {}()
             """, configuration: ["disabled_block_types": ["closure_blocks"]]),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             func f() ↓{}
 
             var flag = true {
                 willSet ↓{}
             }
-            """),
+            """,
 
-            Example("""
+            """
             class Apple {
                 init() ↓{}
 
                 deinit ↓{}
             }
-            """),
+            """,
 
-            Example("""
+            """
             for _ in 0..<10 ↓{}
 
             do ↓{
@@ -141,14 +141,14 @@ struct NoEmptyBlockRule: Rule {
             repeat ↓{} while (flag)
 
             while i < 10 ↓{}
-            """),
-            Example("""
+            """,
+            """
             f ↓{}
-            """),
-            Example("""
+            """,
+            """
             Button ↓{} label: ↓{}
-            """),
-        ]
+            """,
+        ])
     )
 }
 

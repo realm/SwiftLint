@@ -24,10 +24,10 @@ struct TrailingWhitespaceRule: Rule {
             Example("let codeWithSpace = 123↓    \n", configuration: ["ignores_literals": true],
                     testWrappingInComment: false),
         ],
-        corrections: [
-            Example("let name: String↓ \n"): Example("let name: String\n"),
-            Example("/* */ let name: String↓ \n"): Example("/* */ let name: String\n"),
-        ]
+        corrections: #examplesDictionary([
+            "let name: String↓ \n": "let name: String\n",
+            "/* */ let name: String↓ \n": "/* */ let name: String\n",
+        ])
     )
 }
 

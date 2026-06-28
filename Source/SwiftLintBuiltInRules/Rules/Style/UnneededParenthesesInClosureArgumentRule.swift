@@ -61,16 +61,16 @@ struct UnneededParenthesesInClosureArgumentRule: Rule {
             }
             """, excludeFromDocumentation: true),
         ],
-        corrections: [
-            Example("call(arg: { ↓(bar) in })"): Example("call(arg: { bar in })"),
-            Example("call(arg: { ↓(bar, _) in })"): Example("call(arg: { bar, _ in })"),
-            Example("call(arg: { ↓(bar, _)in })"): Example("call(arg: { bar, _ in })"),
-            Example("let foo = { ↓(bar) -> Bool in return true }"):
-                Example("let foo = { bar -> Bool in return true }"),
-            Example("method { ↓(foo, bar) in }"): Example("method { foo, bar in }"),
-            Example("foo.map { ($0, $0) }.forEach { ↓(x, y) in }"): Example("foo.map { ($0, $0) }.forEach { x, y in }"),
-            Example("foo.bar { [weak self] ↓(x, y) in }"): Example("foo.bar { [weak self] x, y in }"),
-        ]
+        corrections: #examplesDictionary([
+            "call(arg: { ↓(bar) in })": "call(arg: { bar in })",
+            "call(arg: { ↓(bar, _) in })": "call(arg: { bar, _ in })",
+            "call(arg: { ↓(bar, _)in })": "call(arg: { bar, _ in })",
+            "let foo = { ↓(bar) -> Bool in return true }":
+                "let foo = { bar -> Bool in return true }",
+            "method { ↓(foo, bar) in }": "method { foo, bar in }",
+            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }": "foo.map { ($0, $0) }.forEach { x, y in }",
+            "foo.bar { [weak self] ↓(x, y) in }": "foo.bar { [weak self] x, y in }",
+        ])
     )
 }
 

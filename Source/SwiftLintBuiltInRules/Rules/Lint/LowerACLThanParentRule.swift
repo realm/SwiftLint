@@ -9,76 +9,76 @@ struct LowerACLThanParentRule: Rule {
         name: "Lower ACL than Parent",
         description: "Ensure declarations have a lower access control level than their enclosing parent",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("public struct Foo { public func bar() {} }"),
-            Example("internal struct Foo { func bar() {} }"),
-            Example("struct Foo { func bar() {} }"),
-            Example("struct Foo { internal func bar() {} }"),
-            Example("open class Foo { public func bar() {} }"),
-            Example("open class Foo { open func bar() {} }"),
-            Example("fileprivate struct Foo { private func bar() {} }"),
-            Example("private struct Foo { private func bar(id: String) }"),
-            Example("extension Foo { public func bar() {} }"),
-            Example("private struct Foo { fileprivate func bar() {} }"),
-            Example("private func foo(id: String) {}"),
-            Example("private class Foo { func bar() {} }"),
-            Example("public extension Foo { struct Bar { public func baz() {} }}"),
-            Example("public extension Foo { struct Bar { internal func baz() {} }}"),
-            Example("internal extension Foo { struct Bar { internal func baz() {} }}"),
-            Example("extension Foo { struct Bar { internal func baz() {} }}"),
-        ],
-        triggeringExamples: [
-            Example("struct Foo { ↓public func bar() {} }"),
-            Example("enum Foo { ↓public func bar() {} }"),
-            Example("public class Foo { ↓open func bar() }"),
-            Example("class Foo { ↓public private(set) var bar: String? }"),
-            Example("private struct Foo { ↓public func bar() {} }"),
-            Example("private class Foo { ↓public func bar() {} }"),
-            Example("private actor Foo { ↓public func bar() {} }"),
-            Example("fileprivate struct Foo { ↓public func bar() {} }"),
-            Example("class Foo { ↓public func bar() {} }"),
-            Example("actor Foo { ↓public func bar() {} }"),
-            Example("private struct Foo { ↓internal func bar() {} }"),
-            Example("fileprivate struct Foo { ↓internal func bar() {} }"),
-            Example("extension Foo { struct Bar { ↓public func baz() {} }}"),
-            Example("internal extension Foo { struct Bar { ↓public func baz() {} }}"),
-            Example("private extension Foo { struct Bar { ↓public func baz() {} }}"),
-            Example("fileprivate extension Foo { struct Bar { ↓public func baz() {} }}"),
-            Example("private extension Foo { struct Bar { ↓internal func baz() {} }}"),
-            Example("fileprivate extension Foo { struct Bar { ↓internal func baz() {} }}"),
-            Example("public extension Foo { struct Bar { struct Baz { ↓public func qux() {} }}}"),
-            Example("final class Foo { ↓public func bar() {} }"),
-        ],
-        corrections: [
-            Example("struct Foo { ↓public func bar() {} }"):
-                Example("struct Foo { func bar() {} }"),
-            Example("enum Foo { ↓public func bar() {} }"):
-                Example("enum Foo { func bar() {} }"),
-            Example("public class Foo { ↓open func bar() }"):
-                Example("public class Foo { public func bar() }"),
-            Example("class Foo { ↓public private(set) var bar: String? }"):
-                Example("class Foo { private(set) var bar: String? }"),
-            Example("private struct Foo { ↓public func bar() {} }"):
-                Example("private struct Foo { func bar() {} }"),
-            Example("private class Foo { ↓public func bar() {} }"):
-                Example("private class Foo { func bar() {} }"),
-            Example("private actor Foo { ↓public func bar() {} }"):
-                Example("private actor Foo { func bar() {} }"),
-            Example("class Foo { ↓public func bar() {} }"):
-                Example("class Foo { func bar() {} }"),
-            Example("actor Foo { ↓public func bar() {} }"):
-                Example("actor Foo { func bar() {} }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "public struct Foo { public func bar() {} }",
+            "internal struct Foo { func bar() {} }",
+            "struct Foo { func bar() {} }",
+            "struct Foo { internal func bar() {} }",
+            "open class Foo { public func bar() {} }",
+            "open class Foo { open func bar() {} }",
+            "fileprivate struct Foo { private func bar() {} }",
+            "private struct Foo { private func bar(id: String) }",
+            "extension Foo { public func bar() {} }",
+            "private struct Foo { fileprivate func bar() {} }",
+            "private func foo(id: String) {}",
+            "private class Foo { func bar() {} }",
+            "public extension Foo { struct Bar { public func baz() {} }}",
+            "public extension Foo { struct Bar { internal func baz() {} }}",
+            "internal extension Foo { struct Bar { internal func baz() {} }}",
+            "extension Foo { struct Bar { internal func baz() {} }}",
+        ]),
+        triggeringExamples: #examples([
+            "struct Foo { ↓public func bar() {} }",
+            "enum Foo { ↓public func bar() {} }",
+            "public class Foo { ↓open func bar() }",
+            "class Foo { ↓public private(set) var bar: String? }",
+            "private struct Foo { ↓public func bar() {} }",
+            "private class Foo { ↓public func bar() {} }",
+            "private actor Foo { ↓public func bar() {} }",
+            "fileprivate struct Foo { ↓public func bar() {} }",
+            "class Foo { ↓public func bar() {} }",
+            "actor Foo { ↓public func bar() {} }",
+            "private struct Foo { ↓internal func bar() {} }",
+            "fileprivate struct Foo { ↓internal func bar() {} }",
+            "extension Foo { struct Bar { ↓public func baz() {} }}",
+            "internal extension Foo { struct Bar { ↓public func baz() {} }}",
+            "private extension Foo { struct Bar { ↓public func baz() {} }}",
+            "fileprivate extension Foo { struct Bar { ↓public func baz() {} }}",
+            "private extension Foo { struct Bar { ↓internal func baz() {} }}",
+            "fileprivate extension Foo { struct Bar { ↓internal func baz() {} }}",
+            "public extension Foo { struct Bar { struct Baz { ↓public func qux() {} }}}",
+            "final class Foo { ↓public func bar() {} }",
+        ]),
+        corrections: #examplesDictionary([
+            "struct Foo { ↓public func bar() {} }":
+                "struct Foo { func bar() {} }",
+            "enum Foo { ↓public func bar() {} }":
+                "enum Foo { func bar() {} }",
+            "public class Foo { ↓open func bar() }":
+                "public class Foo { public func bar() }",
+            "class Foo { ↓public private(set) var bar: String? }":
+                "class Foo { private(set) var bar: String? }",
+            "private struct Foo { ↓public func bar() {} }":
+                "private struct Foo { func bar() {} }",
+            "private class Foo { ↓public func bar() {} }":
+                "private class Foo { func bar() {} }",
+            "private actor Foo { ↓public func bar() {} }":
+                "private actor Foo { func bar() {} }",
+            "class Foo { ↓public func bar() {} }":
+                "class Foo { func bar() {} }",
+            "actor Foo { ↓public func bar() {} }":
+                "actor Foo { func bar() {} }",
+            """
                 struct Foo {
                     ↓public func bar() {}
                 }
-                """):
-                Example("""
+                """:
+                """
                 struct Foo {
                     func bar() {}
                 }
-                """),
-        ]
+                """,
+        ])
     )
 }
 

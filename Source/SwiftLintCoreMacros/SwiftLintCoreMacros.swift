@@ -9,6 +9,8 @@ struct SwiftLintCoreMacros: CompilerPlugin {
         AutoConfigParser.self,
         AcceptableByConfigurationElement.self,
         DisabledWithoutSourceKit.self,
+        Examples.self,
+        ExamplesDictionary.self,
         SwiftSyntaxRule.self,
     ]
 }

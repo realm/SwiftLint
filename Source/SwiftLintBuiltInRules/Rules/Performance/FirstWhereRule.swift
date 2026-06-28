@@ -9,26 +9,26 @@ struct FirstWhereRule: Rule {
         name: "First Where",
         description: "Prefer using `.first(where:)` over `.filter { }.first` in collections",
         kind: .performance,
-        nonTriggeringExamples: [
-            Example("kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier"),
-            Example("myList.first(where: { $0 % 2 == 0 })"),
-            Example("match(pattern: pattern).filter { $0.first == .identifier }"),
-            Example("(myList.filter { $0 == 1 }.suffix(2)).first"),
-            Example(#"collection.filter("stringCol = '3'").first"#),
-            Example(#"realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first"#),
-            Example(#"if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }"#),
-        ],
-        triggeringExamples: [
-            Example("↓myList.filter { $0 % 2 == 0 }.first"),
-            Example("↓myList.filter({ $0 % 2 == 0 }).first"),
-            Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first"),
-            Example("↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()"),
-            Example("↓myList.filter(someFunction).first"),
-            Example("↓myList.filter({ $0 % 2 == 0 })\n.first"),
-            Example("(↓myList.filter { $0 == 1 }).first"),
-            Example(#"↓myListOfDict.filter { dict in dict["1"] }.first"#),
-            Example(#"↓myListOfDict.filter { $0["someString"] }.first"#),
-        ]
+        nonTriggeringExamples: #examples([
+            "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier",
+            "myList.first(where: { $0 % 2 == 0 })",
+            "match(pattern: pattern).filter { $0.first == .identifier }",
+            "(myList.filter { $0 == 1 }.suffix(2)).first",
+            #"collection.filter("stringCol = '3'").first"#,
+            #"realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first"#,
+            #"if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }"#,
+        ]),
+        triggeringExamples: #examples([
+            "↓myList.filter { $0 % 2 == 0 }.first",
+            "↓myList.filter({ $0 % 2 == 0 }).first",
+            "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first",
+            "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()",
+            "↓myList.filter(someFunction).first",
+            "↓myList.filter({ $0 % 2 == 0 })\n.first",
+            "(↓myList.filter { $0 == 1 }).first",
+            #"↓myListOfDict.filter { dict in dict["1"] }.first"#,
+            #"↓myListOfDict.filter { $0["someString"] }.first"#,
+        ])
     )
 }
 

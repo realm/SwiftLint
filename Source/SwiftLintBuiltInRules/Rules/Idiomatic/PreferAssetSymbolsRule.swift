@@ -16,35 +16,35 @@ struct PreferAssetSymbolsRule: Rule {
             """,
         kind: .idiomatic,
         minSwiftVersion: .fiveDotNine,
-        nonTriggeringExamples: [
+        nonTriggeringExamples: #examples([
             // UIKit - using asset symbols
-            Example("UIImage(resource: .someImage)"),
-            Example("UIImage(systemName: \"trash\")"),
+            "UIImage(resource: .someImage)",
+            "UIImage(systemName: \"trash\")",
             // SwiftUI - using asset symbols  
-            Example("Image(.someImage)"),
-            Example("Image(systemName: \"trash\")"),
+            "Image(.someImage)",
+            "Image(systemName: \"trash\")",
             // Dynamic strings (variables or interpolated)
-            Example("UIImage(named: imageName)"),
-            Example("UIImage(named: \"image_\\(suffix)\")"),
-            Example("Image(imageName)"),
-            Example("Image(\"image_\\(suffix)\")"),
-        ],
-        triggeringExamples: [
+            "UIImage(named: imageName)",
+            "UIImage(named: \"image_\\(suffix)\")",
+            "Image(imageName)",
+            "Image(\"image_\\(suffix)\")",
+        ]),
+        triggeringExamples: #examples([
             // UIKit examples
-            Example("↓UIImage(named: \"some_image\")"),
-            Example("↓UIImage(named: \"some image\")"),
-            Example("↓UIImage.init(named: \"someImage\")"),
+            "↓UIImage(named: \"some_image\")",
+            "↓UIImage(named: \"some image\")",
+            "↓UIImage.init(named: \"someImage\")",
             // UIKit with bundle parameters
-            Example("↓UIImage(named: \"someImage\", in: Bundle.main, compatibleWith: nil)"),
-            Example("↓UIImage(named: \"someImage\", in: .main)"),
+            "↓UIImage(named: \"someImage\", in: Bundle.main, compatibleWith: nil)",
+            "↓UIImage(named: \"someImage\", in: .main)",
             // SwiftUI examples  
-            Example("↓Image(\"some_image\")"),
-            Example("↓Image(\"some image\")"),
-            Example("↓Image.init(\"someImage\")"),
+            "↓Image(\"some_image\")",
+            "↓Image(\"some image\")",
+            "↓Image.init(\"someImage\")",
             // SwiftUI with bundle parameters
-            Example("↓Image(\"someImage\", bundle: Bundle.main)"),
-            Example("↓Image(\"someImage\", bundle: .main)"),
-        ]
+            "↓Image(\"someImage\", bundle: Bundle.main)",
+            "↓Image(\"someImage\", bundle: .main)",
+        ])
     )
 }
 

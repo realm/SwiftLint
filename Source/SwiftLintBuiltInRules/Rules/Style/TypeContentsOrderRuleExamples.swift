@@ -122,20 +122,20 @@ internal struct TypeContentsOrderRuleExamples {
             """,
     ]
 
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         class TestViewController: UIViewController {
         \(Self.defaultOrderParts.joined(separator: "\n\n")),
         }
-        """),
-        Example("""
+        """,
+        """
         struct ContentView: View {
             @available(SwiftUI_v5, *) // Availability macro syntax: https://github.com/swiftlang/swift/pull/65218
             var v5Body: some View { EmptyView() }
             var body: some View { EmptyView() }
         }
-        """),
-    ]
+        """,
+    ])
 
     static let triggeringExamples = [
         Example("""

@@ -146,82 +146,82 @@ struct UnneededOverrideRuleExamples {
         """, configuration: ["excluded_methods": ["setUp"]]),
     ]
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         class Foo {
             ↓override func bar() {
                 super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             ↓override func bar() {
                 return super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             ↓override func bar() {
                 super.bar()
                 // comments don't affect this
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             ↓override func bar() async {
                 await super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             ↓override func bar() throws {
                 try super.bar()
                 // comments don't affect this
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             ↓override func bar(arg: Bool) throws {
                 try super.bar(arg: arg)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             ↓override func bar(animated: Bool, completion: () -> Void) {
                 super.bar(animated: animated, completion: completion)
             }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         class Foo {
             ↓override func bar(animated: Bool, completion: () -> Void) {
                 super.bar(animated: animated, completion: completion)
             }
         }
-        """): Example("""
+        """: """
                       class Foo {
                       }
-                      """),
-        Example("""
+                      """,
+        """
         class Foo {
             ↓override func bar() {
                 super.bar()
             }
         }
-        """): Example("""
+        """: """
                       class Foo {
                       }
-                      """),
-        Example("""
+                      """,
+        """
         class Foo {
             ↓override func bar() {
                 super.bar()
@@ -230,27 +230,27 @@ struct UnneededOverrideRuleExamples {
             // This is another function
             func baz() {}
         }
-        """): Example("""
+        """: """
                       class Foo {
 
                           // This is another function
                           func baz() {}
                       }
-                      """),
+                      """,
         // Nothing happens to initializers by default.
-        Example("""
+        """
         class Foo {
             ↓override func foo() { super.foo() }
             override init(i: Int) {
                 super.init(i: i)
             }
         }
-        """): Example("""
+        """: """
                       class Foo {
                           override init(i: Int) {
                               super.init(i: i)
                           }
                       }
-                      """),
-    ]
+                      """,
+    ])
 }

@@ -9,20 +9,20 @@ struct TrailingSemicolonRule: Rule {
         name: "Trailing Semicolon",
         description: "Lines should not have trailing semicolons",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("let a = 0"),
-            Example("let a = 0; let b = 0"),
-        ],
-        triggeringExamples: [
-            Example("let a = 0↓;\n"),
-            Example("let a = 0↓;\nlet b = 1"),
-            Example("let a = 0↓; // a comment\n"),
-        ],
-        corrections: [
-            Example("let a = 0↓;\n"): Example("let a = 0\n"),
-            Example("let a = 0↓;\nlet b = 1"): Example("let a = 0\nlet b = 1"),
-            Example("let foo = 12↓;  // comment\n"): Example("let foo = 12  // comment\n"),
-        ]
+        nonTriggeringExamples: #examples([
+            "let a = 0",
+            "let a = 0; let b = 0",
+        ]),
+        triggeringExamples: #examples([
+            "let a = 0↓;\n",
+            "let a = 0↓;\nlet b = 1",
+            "let a = 0↓; // a comment\n",
+        ]),
+        corrections: #examplesDictionary([
+            "let a = 0↓;\n": "let a = 0\n",
+            "let a = 0↓;\nlet b = 1": "let a = 0\nlet b = 1",
+            "let foo = 12↓;  // comment\n": "let foo = 12  // comment\n",
+        ])
     )
 }
 

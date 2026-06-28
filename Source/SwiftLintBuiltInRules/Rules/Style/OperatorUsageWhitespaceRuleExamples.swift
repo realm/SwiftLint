@@ -93,71 +93,71 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         ),
     ]
 
-    static let triggeringExamples = [
-        Example("let foo = 1↓+2"),
-        Example("let foo = 1↓   + 2"),
-        Example("let foo = 1↓   +    2"),
-        Example("let foo = 1↓ +    2"),
-        Example("let foo↓=1↓+2"),
-        Example("let foo↓=1 + 2"),
-        Example("let foo↓=bar"),
-        Example("let range = 1↓ ..<  3"),
-        Example("let foo = bar↓   ?? 0"),
-        Example("let foo = bar↓ !=  0"),
-        Example("let foo = bar↓ !==  bar2"),
-        Example("let v8 = Int8(1)↓  << 6"),
-        Example("let v8 = 1↓ <<  (6)"),
-        Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2"),
-        Example("let foo↓  = [1]"),
-        Example("let foo↓  = \"1\""),
-        Example("let foo↓ =  \"1\""),
-        Example("""
+    static let triggeringExamples = #examples([
+        "let foo = 1↓+2",
+        "let foo = 1↓   + 2",
+        "let foo = 1↓   +    2",
+        "let foo = 1↓ +    2",
+        "let foo↓=1↓+2",
+        "let foo↓=1 + 2",
+        "let foo↓=bar",
+        "let range = 1↓ ..<  3",
+        "let foo = bar↓   ?? 0",
+        "let foo = bar↓ !=  0",
+        "let foo = bar↓ !==  bar2",
+        "let v8 = Int8(1)↓  << 6",
+        "let v8 = 1↓ <<  (6)",
+        "let v8 = 1↓ <<  (6)\n let foo = 1 > 2",
+        "let foo↓  = [1]",
+        "let foo↓  = \"1\"",
+        "let foo↓ =  \"1\"",
+        """
         enum Enum {
         case one↓  =  1
         case two  = 1
         }
-        """),
-        Example("""
+        """,
+        """
         enum Enum {
         case one  = 1
         case two↓  =  1
         }
-        """),
-        Example("""
+        """,
+        """
         enum Enum {
         case one↓   = 1
         case two↓  = 1
         }
-        """),
-        Example("typealias Foo↓ =  Bar"),
-        Example("""
+        """,
+        "typealias Foo↓ =  Bar",
+        """
         protocol A {
             associatedtype B↓  = C
         }
-        """),
-        Example("tabbedViewController.title↓  = nil"),
-        Example("let foo = bar ? 0↓:1"),
-        Example("let foo = bar↓ ?   0 : 1"),
-    ]
+        """,
+        "tabbedViewController.title↓  = nil",
+        "let foo = bar ? 0↓:1",
+        "let foo = bar↓ ?   0 : 1",
+    ])
 
-    static let corrections = [
-        Example("let foo = 1↓+2"): Example("let foo = 1 + 2"),
-        Example("let foo = 1↓   + 2"): Example("let foo = 1 + 2"),
-        Example("let foo = 1↓   +    2"): Example("let foo = 1 + 2"),
-        Example("let foo = 1↓ +    2"): Example("let foo = 1 + 2"),
-        Example("let foo↓=1↓+2"): Example("let foo = 1 + 2"),
-        Example("let foo↓=1 + 2"): Example("let foo = 1 + 2"),
-        Example("let foo↓=bar"): Example("let foo = bar"),
-        Example("let range = 1↓ ..<  3"): Example("let range = 1..<3"),
-        Example("let foo = bar↓   ?? 0"): Example("let foo = bar ?? 0"),
-        Example("let foo = bar↓ !=  0"): Example("let foo = bar != 0"),
-        Example("let foo = bar↓ !==  bar2"): Example("let foo = bar !== bar2"),
-        Example("let v8 = Int8(1)↓  << 6"): Example("let v8 = Int8(1) << 6"),
-        Example("let v8 = 1↓ <<  (6)"): Example("let v8 = 1 << (6)"),
-        Example("let v8 = 1↓ <<  (6)\n let foo = 1 > 2"): Example("let v8 = 1 << (6)\n let foo = 1 > 2"),
-        Example("let foo↓  = \"1\""): Example("let foo = \"1\""),
-        Example("let foo↓ =  \"1\""): Example("let foo = \"1\""),
-        Example("let foo = bar ? 0↓:1"): Example("let foo = bar ? 0 : 1"),
-        Example("let foo = bar↓ ?   0 : 1"): Example("let foo = bar ? 0 : 1"),
-    ]
+    static let corrections = #examplesDictionary([
+        "let foo = 1↓+2": "let foo = 1 + 2",
+        "let foo = 1↓   + 2": "let foo = 1 + 2",
+        "let foo = 1↓   +    2": "let foo = 1 + 2",
+        "let foo = 1↓ +    2": "let foo = 1 + 2",
+        "let foo↓=1↓+2": "let foo = 1 + 2",
+        "let foo↓=1 + 2": "let foo = 1 + 2",
+        "let foo↓=bar": "let foo = bar",
+        "let range = 1↓ ..<  3": "let range = 1..<3",
+        "let foo = bar↓   ?? 0": "let foo = bar ?? 0",
+        "let foo = bar↓ !=  0": "let foo = bar != 0",
+        "let foo = bar↓ !==  bar2": "let foo = bar !== bar2",
+        "let v8 = Int8(1)↓  << 6": "let v8 = Int8(1) << 6",
+        "let v8 = 1↓ <<  (6)": "let v8 = 1 << (6)",
+        "let v8 = 1↓ <<  (6)\n let foo = 1 > 2": "let v8 = 1 << (6)\n let foo = 1 > 2",
+        "let foo↓  = \"1\"": "let foo = \"1\"",
+        "let foo↓ =  \"1\"": "let foo = \"1\"",
+        "let foo = bar ? 0↓:1": "let foo = bar ? 0 : 1",
+        "let foo = bar↓ ?   0 : 1": "let foo = bar ? 0 : 1",
+    ])
 }

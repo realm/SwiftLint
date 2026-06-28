@@ -136,99 +136,99 @@ struct UnneededEscapingRuleExamples {
         """),
     ]
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         func f(c: ↓@escaping () -> Int) {
             print(c())
         }
-        """),
-        Example("""
+        """,
+        """
         func forEach(action: ↓@escaping (Int) -> Void) {
             for i in 0..<10 {
                 action(i)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func process(completion: ↓@escaping () -> Void) {
             completion()
         }
-        """),
-        Example("""
+        """,
+        """
         func apply(_ transform: ↓@escaping (Int) -> Int) -> Int {
             return transform(5)
         }
-        """),
-        Example("""
+        """,
+        """
         func optional(completion: (↓@escaping () -> Void)?) {
             completion?()
         }
-        """),
-        Example("""
+        """,
+        """
         func multiple(first: ↓@escaping () -> Void, second: ↓@escaping () -> Void) {
             first()
             second()
         }
-        """),
-        Example("""
+        """,
+        """
         subscript(transform: ↓@escaping (Int) -> String) -> String {
             transform(42)
         }
-        """),
-        Example("""
+        """,
+        """
         func assignToLocal(completion: ↓@escaping () -> Void) {
             let local = completion
             local()
         }
-        """),
-        Example("""
+        """,
+        """
         func assignToLocal(completion: ↓@escaping () -> Void) {
             let (local, _) = (completion, 17)
             local()
         }
-        """),
-        Example("""
+        """,
+        """
         func reassignLocal(completion: ↓@escaping () -> Void) {
             var local = { print(\"initial\") }
             local = completion
             local()
         }
-        """),
-        Example("""
+        """,
+        """
         func assignToLocal(completion: ↓@escaping () -> Void) {
             _ = completion
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         func forEach(action: ↓@escaping (Int) -> Void) {
             for i in 0..<10 {
                 action(i)
             }
         }
-        """): Example("""
+        """: """
             func forEach(action: (Int) -> Void) {
                 for i in 0..<10 {
                     action(i)
                 }
             }
-            """),
-        Example("""
+            """,
+        """
         func process(completion: ↓@escaping () -> Void) { completion() }
-        """): Example("""
+        """: """
             func process(completion: () -> Void) { completion() }
-            """),
-        Example("""
+            """,
+        """
         subscript(transform: ↓@escaping (Int) -> String) -> String { transform(42) }
-        """): Example("""
+        """: """
             subscript(transform: (Int) -> String) -> String { transform(42) }
-            """),
-        Example("""
+            """,
+        """
         func f(c: ↓@escaping() -> Void) { c() }
-        """): Example("""
+        """: """
             func f(c: () -> Void) { c() }
-            """),
-    ]
+            """,
+    ])
 }

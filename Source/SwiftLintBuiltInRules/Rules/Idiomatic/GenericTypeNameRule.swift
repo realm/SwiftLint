@@ -33,23 +33,23 @@ struct GenericTypeNameRule: Rule {
             Example("struct Foo<let count: Int> {}"),
             Example("struct Bar<let size: Int, T> {}"),
         ],
-        triggeringExamples: [
-            Example("func foo<↓T_Foo>() {}"),
-            Example("func foo<↓`func`>() {}"),
-            Example("func foo<T, ↓U_Foo>(param: U_Foo) -> T {}"),
-            Example("func foo<↓\(String(repeating: "T", count: 21))>() {}"),
-            Example("func foo<↓type>() {}"),
-            Example("typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>"),
-            Example("typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)"),
-            Example("typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>"),
-        ] + ["class", "struct", "enum"].flatMap { type -> [Example] in
-            [
-                Example("\(type) Foo<↓T_Foo> {}"),
-                Example("\(type) Foo<T, ↓U_Foo> {}"),
-                Example("\(type) Foo<↓T_Foo, ↓U_Foo> {}"),
-                Example("\(type) Foo<↓\(String(repeating: "T", count: 21))> {}"),
-                Example("\(type) Foo<↓type> {}"),
-            ]
+        triggeringExamples: #examples([
+            "func foo<↓T_Foo>() {}",
+            "func foo<↓`func`>() {}",
+            "func foo<T, ↓U_Foo>(param: U_Foo) -> T {}",
+            "func foo<↓\(String(repeating: "T", count: 21))>() {}",
+            "func foo<↓type>() {}",
+            "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>",
+            "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)",
+            "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>",
+        ]) + ["class", "struct", "enum"].flatMap { type -> [Example] in
+            #examples([
+                "\(type) Foo<↓T_Foo> {}",
+                "\(type) Foo<T, ↓U_Foo> {}",
+                "\(type) Foo<↓T_Foo, ↓U_Foo> {}",
+                "\(type) Foo<↓\(String(repeating: "T", count: 21))> {}",
+                "\(type) Foo<↓type> {}",
+            ])
         }
     )
 }

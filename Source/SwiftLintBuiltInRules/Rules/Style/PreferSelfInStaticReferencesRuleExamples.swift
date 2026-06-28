@@ -370,8 +370,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
             """, excludeFromDocumentation: true),
     ]
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
             final class CheckCellView: NSTableCellView {
                 @IBOutlet var checkButton: NSButton!
 
@@ -381,8 +381,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
 
                 @objc func check(_ button: AnyObject?) {}
             }
-            """):
-            Example("""
+            """:
+            """
                 final class CheckCellView: NSTableCellView {
                     @IBOutlet var checkButton: NSButton!
 
@@ -392,8 +392,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
 
                     @objc func check(_ button: AnyObject?) {}
                 }
-                """),
-        Example("""
+                """,
+        """
             struct S {
                 static let i = 1
                 static let j = ↓S.i
@@ -401,7 +401,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 static func f(_ l: Int = ↓S.i) -> Int { l*↓S.j }
                 func g() { ↓S.i + ↓S.f() + k }
             }
-            """): Example("""
+            """: """
                 struct S {
                     static let i = 1
                     static let j = Self.i
@@ -409,23 +409,23 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     static func f(_ l: Int = Self.i) -> Int { l*Self.j }
                     func g() { Self.i + Self.f() + k }
                 }
-                """),
-        Example("""
+                """,
+        """
             class C {
                 static let i = 0
             }
             extension C {
                 func f() -> Int { ↓C.i }
             }
-            """): Example("""
+            """: """
                 class C {
                     static let i = 0
                 }
                 extension C {
                     func f() -> Int { Self.i }
                 }
-                """),
-        Example("""
+                """,
+        """
             class Outer {
                 class Inner {
                     static let i = 0
@@ -434,7 +434,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Inner {
                 func f() -> Int { ↓Outer.Inner.i }
             }
-            """): Example("""
+            """: """
                 class Outer {
                     class Inner {
                         static let i = 0
@@ -443,6 +443,6 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 extension Outer.Inner {
                     func f() -> Int { Self.i }
                 }
-                """),
-    ]
+                """,
+    ])
 }

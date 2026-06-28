@@ -9,55 +9,55 @@ struct RedundantStringEnumValueRule: Rule {
         name: "Redundant String Enum Value",
         description: "String enum values can be omitted when they are equal to the enumcase name",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             enum Numbers: String {
               case one
               case two
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: Int {
               case one = 1
               case two = 2
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case one = "ONE"
               case two = "TWO"
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case one = "ONE"
               case two = "two"
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case one, two
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             enum Numbers: String {
               case one = ↓"one"
               case two = ↓"two"
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case one = ↓"one", two = ↓"two"
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case one, two = ↓"two"
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

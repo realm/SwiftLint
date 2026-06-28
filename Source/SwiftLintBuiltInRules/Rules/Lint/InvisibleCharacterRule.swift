@@ -14,22 +14,22 @@ struct InvisibleCharacterRule: Rule {
             in string literals as they can cause hard-to-debug issues.
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example(#"let s = "HelloWorld""#),
-            Example(#"let s = "Hello World""#),
-            Example(#"let url = "https://example.com/api""#),
-            Example(##"let s = #"Hello World"#"##),
-            Example("""
+        nonTriggeringExamples: #examples([
+            #"let s = "HelloWorld""#,
+            #"let s = "Hello World""#,
+            #"let url = "https://example.com/api""#,
+            ##"let s = #"Hello World"#"##,
+            """
             let multiline = \"\"\"
             Hello
             World
             \"\"\"
-            """),
-            Example(#"let empty = """#),
-            Example(#"let tab = "Hello\tWorld""#),
-            Example(#"let newline = "Hello\nWorld""#),
-            Example(#"let unicode = "Hello 👋 World""#),
-        ],
+            """,
+            #"let empty = """#,
+            #"let tab = "Hello\tWorld""#,
+            #"let newline = "Hello\nWorld""#,
+            #"let unicode = "Hello 👋 World""#,
+        ]),
         triggeringExamples: [
             Example(#"let s = "Hello↓​World" // U+200B zero-width space"#),
             Example(#"let s = "Hello↓‌World" // U+200C zero-width non-joiner"#),

@@ -10,50 +10,50 @@ struct PreferTypeCheckingRule: Rule {
         name: "Prefer Type Checking",
         description: "Prefer `a is X` to `a as? X != nil`",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("let foo = bar as? Foo"),
-            Example("bar is Foo"),
-            Example("2*x is X"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let foo = bar as? Foo",
+            "bar is Foo",
+            "2*x is X",
+            """
             if foo is Bar {
                 doSomeThing()
             }
-            """),
-            Example("""
+            """,
+            """
             if let bar = foo as? Bar {
                 foo.run()
             }
-            """),
-            Example("bar as Foo != nil"),
-            Example("nil != bar as Foo"),
-            Example("bar as Foo? != nil"),
-            Example("bar as? Foo? != nil"),
-        ],
-        triggeringExamples: [
-            Example("bar ↓as? Foo != nil"),
-            Example("2*x as? X != nil"),
-            Example("""
+            """,
+            "bar as Foo != nil",
+            "nil != bar as Foo",
+            "bar as Foo? != nil",
+            "bar as? Foo? != nil",
+        ]),
+        triggeringExamples: #examples([
+            "bar ↓as? Foo != nil",
+            "2*x as? X != nil",
+            """
             if foo ↓as? Bar != nil {
                 doSomeThing()
             }
-            """),
-            Example("nil != bar ↓as? Foo"),
-            Example("nil != 2*x ↓as? X"),
-        ],
-        corrections: [
-            Example("bar ↓as? Foo != nil"): Example("bar is Foo"),
-            Example("nil != bar ↓as? Foo"): Example("bar is Foo"),
-            Example("2*x ↓as? X != nil"): Example("2*x is X"),
-            Example("""
+            """,
+            "nil != bar ↓as? Foo",
+            "nil != 2*x ↓as? X",
+        ]),
+        corrections: #examplesDictionary([
+            "bar ↓as? Foo != nil": "bar is Foo",
+            "nil != bar ↓as? Foo": "bar is Foo",
+            "2*x ↓as? X != nil": "2*x is X",
+            """
             if foo ↓as? Bar != nil {
                 doSomeThing()
             }
-            """): Example("""
+            """: """
             if foo is Bar {
                 doSomeThing()
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

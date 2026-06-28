@@ -62,22 +62,22 @@ struct PrefixedTopLevelConstantRule: Rule {
             }
             """#),
         ],
-        triggeringExamples: [
-            Example("private let ↓Foo = 20.0"),
-            Example("public let ↓Foo = false"),
-            Example("internal let ↓Foo = \"Foo\""),
-            Example("let ↓Foo = true"),
-            Example("let ↓foo = 2, ↓bar = true"),
-            Example("""
+        triggeringExamples: #examples([
+            "private let ↓Foo = 20.0",
+            "public let ↓Foo = false",
+            "internal let ↓Foo = \"Foo\"",
+            "let ↓Foo = true",
+            "let ↓foo = 2, ↓bar = true",
+            """
             let
                 ↓foo = true
-            """),
-            Example("""
+            """,
+            """
             let ↓foo = {
                 return a + b
             }()
-            """),
-        ]
+            """,
+        ])
     )
 }
 

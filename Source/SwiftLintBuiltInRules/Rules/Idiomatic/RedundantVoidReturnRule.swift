@@ -34,39 +34,39 @@ struct RedundantVoidReturnRule: Rule {
             }
             """, configuration: ["include_closures": false]),
         ],
-        triggeringExamples: [
-            Example("func foo()↓ -> Void {}"),
-            Example("""
+        triggeringExamples: #examples([
+            "func foo()↓ -> Void {}",
+            """
             protocol Foo {
               func foo()↓ -> Void
             }
-            """),
-            Example("func foo()↓ -> () {}"),
-            Example("func foo()↓ -> ( ) {}"),
-            Example("""
+            """,
+            "func foo()↓ -> () {}",
+            "func foo()↓ -> ( ) {}",
+            """
             protocol Foo {
               func foo()↓ -> ()
             }
-            """),
-            Example("""
+            """,
+            """
             doSomething { arg↓ -> () in
                 print(arg)
             }
-            """),
-            Example("""
+            """,
+            """
             doSomething { arg↓ -> Void in
                 print(arg)
             }
-            """),
-        ],
-        corrections: [
-            Example("func foo()↓ -> Void {}"): Example("func foo() {}"),
-            Example("protocol Foo {\n func foo()↓ -> Void\n}"): Example("protocol Foo {\n func foo()\n}"),
-            Example("func foo()↓ -> () {}"): Example("func foo() {}"),
-            Example("protocol Foo {\n func foo()↓ -> ()\n}"): Example("protocol Foo {\n func foo()\n}"),
-            Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}"):
-                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}"),
-        ]
+            """,
+        ]),
+        corrections: #examplesDictionary([
+            "func foo()↓ -> Void {}": "func foo() {}",
+            "protocol Foo {\n func foo()↓ -> Void\n}": "protocol Foo {\n func foo()\n}",
+            "func foo()↓ -> () {}": "func foo() {}",
+            "protocol Foo {\n func foo()↓ -> ()\n}": "protocol Foo {\n func foo()\n}",
+            "protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}":
+                "protocol Foo {\n    #if true\n    func foo()\n    #endif\n}",
+        ])
     )
 }
 

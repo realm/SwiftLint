@@ -75,8 +75,8 @@ struct SelfInPropertyInitializationRule: Rule {
             }
             """, excludeFromDocumentation: true),
         ],
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             class View: UIView {
                 ↓var button: UIButton = {
                     let button = UIButton()
@@ -84,8 +84,8 @@ struct SelfInPropertyInitializationRule: Rule {
                     return button
                 }()
             }
-            """),
-            Example("""
+            """,
+            """
             class View: UIView {
                 ↓let button: UIButton = {
                     let button = UIButton()
@@ -93,8 +93,8 @@ struct SelfInPropertyInitializationRule: Rule {
                     return button
                 }()
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

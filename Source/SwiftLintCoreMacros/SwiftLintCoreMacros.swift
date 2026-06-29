@@ -8,9 +8,10 @@ struct SwiftLintCoreMacros: CompilerPlugin {
     let providingMacros: [any Macro.Type] = [
         AutoConfigParser.self,
         AcceptableByConfigurationElement.self,
-        DisabledWithoutSourceKit.self,
-        Examples.self,
         Corrections.self,
+        DisabledWithoutSourceKit.self,
+        Example.self,
+        Examples.self,
         SwiftSyntaxRule.self,
     ]
 }

@@ -74,10 +74,10 @@ public extension Example {
          testDisableCommand: Bool = true,
          testOnLinux: Bool = true,
          testOnWindows: Bool = true,
+         excludeFromDocumentation: Bool = false,
          fileID: String = #fileID,
          file: StaticString = #filePath,
-         line: UInt = #line,
-         excludeFromDocumentation: Bool = false) {
+         line: UInt = #line) {
         self.code = code
         self.configuration = configuration
         self.testMultiByteOffsets = testMultiByteOffsets
@@ -164,13 +164,13 @@ public extension String {
     /// Wraps this code in an `Example`, applying the specified properties.
     func asExample(
         configuration: [String: any Sendable]? = nil,
-        excludeFromDocumentation: Bool = false,
-        testWrappingInComment: Bool = true,
         testMultiByteOffsets: Bool = true,
+        testWrappingInComment: Bool = true,
         testWrappingInString: Bool = true,
         testDisableCommand: Bool = true,
         testOnLinux: Bool = true,
         testOnWindows: Bool = true,
+        excludeFromDocumentation: Bool = false,
         fileID: String = #fileID,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -184,10 +184,10 @@ public extension String {
             testDisableCommand: testDisableCommand,
             testOnLinux: testOnLinux,
             testOnWindows: testOnWindows,
+            excludeFromDocumentation: excludeFromDocumentation,
             fileID: fileID,
             file: file,
-            line: line,
-            excludeFromDocumentation: excludeFromDocumentation
+            line: line
         )
     }
 

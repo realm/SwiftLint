@@ -134,7 +134,7 @@ conditional_returns_on_newline:
   if_only: false
   meta:
     opt-in: true
-    correctable: false
+    correctable: true
 contains_over_filter_count:
   severity: warning
   meta:

@@ -74,10 +74,10 @@ public extension Example {
          testDisableCommand: Bool = true,
          testOnLinux: Bool = true,
          testOnWindows: Bool = true,
+         excludeFromDocumentation: Bool = false,
          fileID: String = #fileID,
          file: StaticString = #filePath,
-         line: UInt = #line,
-         excludeFromDocumentation: Bool = false) {
+         line: UInt = #line) {
         self.code = code
         self.configuration = configuration
         self.testMultiByteOffsets = testMultiByteOffsets

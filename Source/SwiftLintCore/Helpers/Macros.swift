@@ -76,3 +76,31 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
     module: "SwiftLintCoreMacros",
     type: "SwiftSyntaxRule"
 )
+
+/// Macro that allows to define an example for a rule. It generates an ``Example`` instance with the provided code,
+/// configuration and other options. Valuable is that the code passed as the example's body is compiled, thus making
+/// sure that the example is valid Swift code.
+///
+/// - Parameters:
+///   - configuration: The untyped configuration to apply to the rule, if deviating from the default configuration.
+///   - testMultiByteOffsets: Whether the example should be tested by prepending multi-byte grapheme clusters.
+///   - testWrappingInComment: Whether test shall verify that the example wrapped in a comment doesn't trigger.
+///   - testWrappingInString: Whether tests shall verify that the example wrapped into a string doesn't trigger.
+///   - testDisableCommand: Whether tests shall verify that the disabled rule (comment in the example) doesn't trigger.
+///   - testOnLinux: Whether the example should be tested on Linux.
+///   - testOnWindows: Whether the example should be tested on Windows.
+///   - excludeFromDocumentation: Whether the example should be excluded from the rule's documentation.
+///   - body: The body of the example, which is compiled to ensure that it is valid Swift code.
+@freestanding(expression)
+public macro example(configuration: [String: any Sendable]? = nil,
+                     testMultiByteOffsets: Bool = true,
+                     testWrappingInComment: Bool = true,
+                     testWrappingInString: Bool = true,
+                     testDisableCommand: Bool = true,
+                     testOnLinux: Bool = true,
+                     testOnWindows: Bool = true,
+                     excludeFromDocumentation: Bool = false,
+                     body: () -> Void) -> Example = #externalMacro(
+    module: "SwiftLintCoreMacros",
+    type: "Example"
+)

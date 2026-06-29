@@ -16,108 +16,109 @@ struct UnusedParameterRule: Rule {
             or replaced/shadowed by a wildcard '_' to indicate that they are being deliberately disregarded.
             """,
         kind: .lint,
+        // swiftlint:disable all
         nonTriggeringExamples: [
-            Example("""
-            func f(a: Int) {
-                _ = a
-            }
-            """),
-            Example("""
-            func f(case: Int) {
-                _ = `case`
-            }
-            """),
-            Example("""
-            func f(a _: Int) {}
-            """),
-            Example("""
-            func f(_: Int) {}
-            """),
-            Example("""
-            func f(a: Int, b c: String) {
-                func g() {
+            #example {
+                func f(a: Int) {
                     _ = a
-                    _ = c
                 }
-            }
-            """),
-            Example("""
-            func f(a: Int, c: Int) -> Int {
-                struct S {
-                    let b = 1
-                    func f(a: Int, b: Int = 2) -> Int { a + b }
+            },
+            #example {
+                func f(case: Int) {
+                    _ = `case`
                 }
-                return a + c
-            }
-            """),
-            Example("""
-            func f(a: Int?) {
-                if let a {}
-            }
-            """),
-            Example("""
-            func f(a: Int) {
-                let a = a
-                return a
-            }
-            """),
-            Example("""
-            func f(`operator`: Int) -> Int { `operator` }
-            """),
-            Example("""
-            func f(_a: Int) {}
-            """, configuration: allowUnderscorePrefixedNames),
+            },
+            #example {
+                func f(a _: Int) {}
+            },
+            #example {
+                func f(_: Int) {}
+            },
+            #example {
+                func f(a: Int, b c: String) {
+                    func g() {
+                        _ = a
+                        _ = c
+                    }
+                }
+            },
+            #example {
+                func f(a: Int, c: Int) -> Int {
+                    struct S {
+                        let b = 1
+                        func f(a: Int, b: Int = 2) -> Int { a + b }
+                    }
+                    return a + c
+                }
+            },
+            #example {
+                func f(a: Int?) {
+                    if let a {}
+                }
+            },
+            #example {
+                func f(a: Int) -> Int {
+                    let a = a
+                    return a
+                }
+            },
+            #example {
+                func f(`operator`: Int) -> Int { `operator` }
+            },
+            #example(configuration: allowUnderscorePrefixedNames) {
+                func f(_a: Int) {}
+            },
         ],
         triggeringExamples: [
-            Example("""
-            func f(↓a: Int) {}
-            """),
-            Example("""
-            func f(↓_a: Int) {}
-            """),
-            Example("""
-            func f(↓a: Int, b ↓c: String) {}
-            """),
-            Example("""
-            func f(↓a: Int, b ↓c: String) {
-                func g(a: Int, ↓b: Double) {
-                    _ = a
+            #example {
+                func f(/*>*/a: Int) {}
+            },
+            #example {
+                func f(/*>*/_a: Int) {}
+            },
+            #example {
+                func f(/*>*/a: Int, b /*>*/c: String) {}
+            },
+            #example {
+                func f(/*>*/a: Int, b /*>*/c: String) {
+                    func g(a: Int, /*>*/b: Double) {
+                        _ = a
+                    }
                 }
-            }
-            """),
-            Example("""
-            struct S {
-                let a: Int
-
-                init(a: Int, ↓b: Int) {
-                    func f(↓a: Int, b: Int) -> Int { b }
-                    self.a = f(a: a, b: 0)
-                }
-            }
-            """),
-            Example("""
-            struct S {
-                subscript(a: Int, ↓b: Int) {
-                    func f(↓a: Int, b: Int) -> Int { b }
-                    return f(a: a, b: 0)
-                }
-            }
-            """),
-            Example("""
-            func f(↓a: Int, ↓b: Int, c: Int) -> Int {
+            },
+            #example {
                 struct S {
-                    let b = 1
-                    func f(a: Int, ↓c: Int = 2) -> Int { a + b }
+                    let a: Int
+
+                    init(a: Int, /*>*/b: Int) {
+                        func f(/*>*/a: Int, b: Int) -> Int { b }
+                        self.a = f(a: a, b: 0)
+                    }
                 }
-                return S().f(a: c)
-            }
-            """),
-            Example("""
-            func f(↓a: Int, c: String) {
-                let a = 1
-                return a + c
-            }
-            """),
+            },
+            #example {
+                struct S {
+                    subscript(a: Int, /*>*/b: Int) -> Int {
+                        func f(/*>*/a: Int, b: Int) -> Int { b }
+                        return f(a: a, b: 0)
+                    }
+                }
+            },
+            #example {
+                func f(/*>*/a: Int, /*>*/b: Int, c: Int) -> Int {
+                    struct S {
+                        let b = 1
+                        func f(a: Int, /*>*/c: Int = 2) -> Int { a + b }
+                    }
+                    return S().f(a: c)
+                }
+            },
+            #example {
+                func f(/*>*/a: Int, c: String) -> Int {
+                    let a = 1
+                    return a + Int(c)!
+                }
+            },
         ],
         corrections: [
             Example("""
@@ -136,6 +137,7 @@ struct UnusedParameterRule: Rule {
             func f(_: Int) {}
             """),
         ]
+        //swiftlint:enable all
     )
 }
 

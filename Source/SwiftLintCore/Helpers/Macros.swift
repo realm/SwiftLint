@@ -77,9 +77,7 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
     type: "SwiftSyntaxRule"
 )
 
-/// Macro that expands an array of code strings into an array of ``Example``s, removing the per-element
-/// `Example(...)` boilerplate. Each element is wrapped in an ``Example`` that captures the file and line of that
-/// element, so test failures and rule documentation point at the right source location. Elements are usually
+/// Macro that expands an array of code strings into an array of ``Example``s. Elements are usually
 /// string literals, but any `String`-typed expression works.
 ///
 /// Use it for the common case where examples only carry code, e.g.

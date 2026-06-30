@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct StatementPositionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(StatementPositionRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct StaticOperatorRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct UnneededBreakInSwitchRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(UnneededBreakInSwitchRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct UnneededEscapingRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(UnneededEscapingRule.description)
     }
 }

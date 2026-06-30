@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct LeadingWhitespaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(LeadingWhitespaceRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct LegacyCGGeometryFunctionsRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct MultilineParametersRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(MultilineParametersRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct MultipleClosuresWithTrailingClosureRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
     }
 }

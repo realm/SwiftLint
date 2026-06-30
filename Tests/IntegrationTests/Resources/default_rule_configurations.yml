@@ -540,6 +540,11 @@ incompatible_concurrency_annotation:
   meta:
     opt-in: true
     correctable: true
+inconsistent_default_argument_in_file:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: false
 indentation_width:
   severity: warning
   indentation_width: 4

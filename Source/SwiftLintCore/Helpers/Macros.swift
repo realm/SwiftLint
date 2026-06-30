@@ -89,10 +89,8 @@ public macro examples(_ examples: [String]) -> [Example] = #externalMacro(
     type: "Examples"
 )
 
-/// Macro that expands a dictionary of code strings into a dictionary of ``Example``s, removing the per-element
-/// `Example(...)` boilerplate. Both the key and value of each pair are wrapped in an ``Example`` that captures the
-/// file and line of the corresponding entry. Keys and values are usually string literals, but any `String`-typed
-/// expression works.
+/// Macro that expands a dictionary of code strings into a dictionary of ``Example``s. Keys and values are usually
+/// string literals, but any `String`-typed expression works.
 ///
 /// Use it for a rule's `corrections`, e.g.
 /// `corrections: #examplesDictionary(["↓x": "y"])`. Pairs that need a custom configuration should keep using

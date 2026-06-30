@@ -60,15 +60,17 @@ private func makeExample(
     preservingTriviaOf triviaSource: ExprSyntax? = nil
 ) -> ExprSyntax {
     let code = expression.trimmed
-    let example: ExprSyntax = if let fileID = context.location(
-        of: expression, at: .afterLeadingTrivia, filePathMode: .fileID
-    ), let filePath = context.location(
-        of: expression, at: .afterLeadingTrivia, filePathMode: .filePath
-    ) {
-        "Example(\(code), fileID: \(fileID.file), file: \(filePath.file), line: \(filePath.line))"
-    } else {
-        "Example(\(code))"
+    let fileID = context.location(of: expression, at: .afterLeadingTrivia, filePathMode: .fileID)
+    let filePath = context.location(of: expression, at: .afterLeadingTrivia, filePathMode: .filePath)
+    guard let fileID else {
+        preconditionFailure("No fileID for \(context)")
     }
+    guard let filePath else {
+        preconditionFailure("No filePath for \(context)")
+    }
+
+    let example: ExprSyntax =
+        "Example(\(code), fileID: \(fileID.file), file: \(filePath.file), line: \(filePath.line))"
     guard let triviaSource else {
         return example
     }

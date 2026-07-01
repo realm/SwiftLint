@@ -201,7 +201,7 @@ struct UnneededEscapingRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         func forEach(action: ↓@escaping (Int) -> Void) {
             for i in 0..<10 {

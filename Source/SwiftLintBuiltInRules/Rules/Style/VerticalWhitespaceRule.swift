@@ -39,7 +39,7 @@ struct VerticalWhitespaceRule: Rule {
             import Foundation
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\nclass AAA {}\n",
             "let c = 0\n\n\nlet num = 1\n": "let c = 0\n\nlet num = 1\n",
             "// bca \n\n\n": "// bca \n\n",

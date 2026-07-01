@@ -52,7 +52,7 @@ struct LegacyNSGeometryFunctionsRule: Rule {
             "↓NSPointInRect(rect, point)",
             "↓NSIntersectsRect(rect1, rect2)",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓NSWidth( rect  )": "rect.width",
             "↓NSHeight(rect )": "rect.height",
             "↓NSMinX( rect)": "rect.minX",

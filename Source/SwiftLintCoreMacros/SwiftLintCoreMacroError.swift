@@ -13,7 +13,7 @@ enum SwiftLintCoreMacroError: String, DiagnosticMessage {
     case noBody = "Macro can only be applied to functions with a body"
     case missingPathArgument = "Missing required 'path' argument"
     case examplesNotArrayLiteral = "Macro argument must be an array literal"
-    case examplesNotDictionaryLiteral = "Macro argument must be a dictionary literal"
+    case correctionsNotDictionaryLiteral = "Macro argument must be a dictionary literal"
 
     var message: String {
         rawValue

@@ -200,7 +200,7 @@ struct UnneededOverrideRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         class Foo {
             ↓override func bar(animated: Bool, completion: () -> Void) {

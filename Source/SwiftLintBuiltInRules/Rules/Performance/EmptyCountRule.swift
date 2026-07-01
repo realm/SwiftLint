@@ -67,7 +67,7 @@ struct EmptyCountRule: Rule {
                 }
                 """.excludeFromDocumentation(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "[].↓count == 0":
                 "[].isEmpty",
             "0 == [].↓count":

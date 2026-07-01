@@ -93,10 +93,10 @@ public macro examples(_ examples: [Any]) -> [Example] = #externalMacro(
 /// string literals, but any `String`-typed expression or other instance of ``Example`` will work.
 ///
 /// Use it for a rule's `corrections`, e.g.
-/// `corrections: #examplesDictionary(["↓x": "y"])`. Pairs that need a custom configuration should keep using
+/// `corrections: #corrections(["↓x": "y"])`. Pairs that need a custom configuration should keep using
 /// ``Example`` directly.
 @freestanding(expression)
-public macro examplesDictionary(_ examples: [AnyHashable: Any]) -> [Example: Example] = #externalMacro(
+public macro corrections(_ examples: [AnyHashable: Any]) -> [Example: Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
-    type: "ExamplesDictionary"
+    type: "Corrections"
 )

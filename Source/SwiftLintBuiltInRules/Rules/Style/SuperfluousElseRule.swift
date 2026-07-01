@@ -129,7 +129,7 @@ struct SuperfluousElseRule: Rule {
                 }
                 """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
                 func f() -> Int {
                     if i > 0 {

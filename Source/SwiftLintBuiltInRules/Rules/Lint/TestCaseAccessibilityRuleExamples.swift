@@ -108,7 +108,7 @@ internal struct TestCaseAccessibilityRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         class TotoTests: XCTestCase {
             ↓var foo: Bar?

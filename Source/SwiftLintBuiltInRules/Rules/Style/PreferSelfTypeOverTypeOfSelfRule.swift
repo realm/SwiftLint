@@ -64,7 +64,7 @@ struct PreferSelfTypeOverTypeOfSelfRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
             class Foo {
                 func bar() {

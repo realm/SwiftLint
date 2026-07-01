@@ -32,7 +32,7 @@ struct EmptyCountRuleTests {
             "#ExampleMacro { $0.list.↓count == 0 }",
         ])
 
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "[].↓count == 0":
                 "[].isEmpty",
             "0 == [].↓count":

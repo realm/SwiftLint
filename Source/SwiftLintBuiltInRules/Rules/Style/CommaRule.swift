@@ -50,7 +50,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
             """,
             #"Logger.logError("Hat is too large"↓,  info: [])"#,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "func abc(a: String↓,b: String) {}": "func abc(a: String, b: String) {}",
             "abc(a: \"string\"↓,b: \"string\"": "abc(a: \"string\", b: \"string\"",
             "abc(a: \"string\"↓  ,  b: \"string\"": "abc(a: \"string\", b: \"string\"",

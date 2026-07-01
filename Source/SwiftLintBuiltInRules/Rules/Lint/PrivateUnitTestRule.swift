@@ -98,7 +98,7 @@ struct PrivateUnitTestRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
 
                 ↓private class Test: XCTestCase {}

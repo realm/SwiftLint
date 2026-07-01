@@ -26,7 +26,7 @@ struct StatementPositionRule: CorrectableRule {
             "↓}\n\t  catch {",
             "guard foo()↓else { return }",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓}\n else {": "} else {",
             "↓}\n   else if {": "} else if {",
             "↓}\n catch {": "} catch {",
@@ -56,7 +56,7 @@ struct StatementPositionRule: CorrectableRule {
             "↓  }\ncatch {",
             "↓}\n\t  catch {",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "  }else if {": "  }\n  else if {",
             "}\n  else {": "}\nelse {",
             "  }\ncatch {": "  }\n  catch {",

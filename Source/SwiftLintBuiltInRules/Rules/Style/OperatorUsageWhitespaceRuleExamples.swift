@@ -137,7 +137,7 @@ internal enum OperatorUsageWhitespaceRuleExamples {
         "let foo = bar↓ ?   0 : 1",
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "let foo = 1↓+2": "let foo = 1 + 2",
         "let foo = 1↓   + 2": "let foo = 1 + 2",
         "let foo = 1↓   +    2": "let foo = 1 + 2",

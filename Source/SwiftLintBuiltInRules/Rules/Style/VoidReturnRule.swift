@@ -37,7 +37,7 @@ struct VoidReturnRule: Rule {
             "func foo() async -> ↓()",
             "func foo() async throws -> ↓()",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let abc: () -> ↓() = {}": "let abc: () -> Void = {}",
             "let abc: () -> ↓(Void) = {}": "let abc: () -> Void = {}",
             "let abc: () -> ↓(   Void ) = {}": "let abc: () -> Void = {}",

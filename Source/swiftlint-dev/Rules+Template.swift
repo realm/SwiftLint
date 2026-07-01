@@ -143,7 +143,7 @@ private extension SwiftLintDev.Rules.Template {
         ]
         if correctable || rewriter {
             ruleDescriptionArguments.append("""
-                corrections: #examplesDictionary([
+                corrections: #corrections([
                     "\(noExamples ? "" : "let foo = 1")":
                         "\(noExamples ? "" : "let bar = 1")",
                 ])

@@ -131,7 +131,7 @@ internal struct FunctionNameWhitespaceRuleExamples {
         """.configuration(["generic_spacing": "leading_trailing_space"]),
     ])
 
-    static let corrections: [Example: Example] = #examplesDictionary([
+    static let corrections: [Example: Example] = #corrections([
         "func name /* comment */  <T>  /* comment */  (lhs: Int, rhs: Int) -> Int {}"
             .configuration(["generic_spacing": "no_space"]):
             "func name /* comment */ <T> /* comment */ (lhs: Int, rhs: Int) -> Int {}",

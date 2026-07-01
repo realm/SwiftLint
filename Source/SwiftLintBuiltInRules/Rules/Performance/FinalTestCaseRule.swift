@@ -22,7 +22,7 @@ struct FinalTestCaseRule: Rule {
             "public class ↓Test: QuickSpec {}",
             "class ↓Test: MyTestCase {}".configuration(["test_parent_classes": "MyTestCase"]),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "class ↓Test: XCTestCase {}":
                 "final class Test: XCTestCase {}",
             "internal class ↓Test: XCTestCase {}":

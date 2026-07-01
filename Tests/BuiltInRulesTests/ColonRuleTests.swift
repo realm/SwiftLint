@@ -41,7 +41,7 @@ struct ColonRuleTests {
             "let abc = [1: [3↓ : 2], 3: 4]\n",
             "let abc = [1: [3↓ : 2], 3:  4]\n",
         ])
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "let abc↓:Void\n": "let abc: Void\n",
             "let abc↓ :Void\n": "let abc: Void\n",
             "let abc↓ : Void\n": "let abc: Void\n",
@@ -106,7 +106,7 @@ struct ColonRuleTests {
             "func abc(def↓ : Void) {}\n",
             "func abc(def: Void, ghi↓ :Void) {}\n",
         ])
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "let abc↓:Void\n": "let abc: Void\n",
             "let abc↓:  Void\n": "let abc: Void\n",
             "let abc↓ :Void\n": "let abc: Void\n",

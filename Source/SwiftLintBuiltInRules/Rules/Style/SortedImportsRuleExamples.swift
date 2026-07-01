@@ -169,7 +169,7 @@ internal struct SortedImportsRuleExamples {
         """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         import AAA
         import ZZZ

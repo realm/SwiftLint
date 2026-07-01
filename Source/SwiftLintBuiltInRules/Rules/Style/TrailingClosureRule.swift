@@ -55,7 +55,7 @@ struct TrailingClosureRule: Rule {
             """.excludeFromDocumentation(),
             "foo.map(↓{ $0 + 1 })".configuration(onlySingleMutedConfig),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "foo.map(↓{ $0 + 1 })":
                 "foo.map { $0 + 1 }",
             "foo.reduce(0, combine: ↓{ $0 + 1 })":

@@ -65,7 +65,7 @@ internal struct MarkRuleExamples {
         issue1029Example,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "↓//MARK: comment": "// MARK: comment",
         "↓// MARK:  comment": "// MARK: comment",
         "↓// MARK:comment": "// MARK: comment",

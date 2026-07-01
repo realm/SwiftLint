@@ -292,7 +292,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         func f() -> Void {
             ↓return g()

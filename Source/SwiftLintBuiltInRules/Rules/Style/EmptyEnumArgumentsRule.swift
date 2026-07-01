@@ -86,7 +86,7 @@ struct EmptyEnumArgumentsRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓()"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"): wrapInSwitch("case .bar, .bar2"),

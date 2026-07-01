@@ -237,7 +237,7 @@ struct ContrastedOpeningBraceRuleExamples {
             """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
             struct Rule{}
             """: """

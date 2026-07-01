@@ -17,7 +17,7 @@ struct ClosingBraceRule: Rule {
             "[].map({ ↓} )",
             "[].map({ ↓}\t)",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "[].map({ ↓} )": "[].map({ })"
         ])
     )

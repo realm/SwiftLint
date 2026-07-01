@@ -26,7 +26,7 @@ struct VerticalWhitespaceOpeningBracesRule: Rule {
         """,
     ])
 
-    private static let violatingToValidExamples: [Example: Example] = #examplesDictionary([
+    private static let violatingToValidExamples: [Example: Example] = #corrections([
         """
         if x == 5 {
         ↓

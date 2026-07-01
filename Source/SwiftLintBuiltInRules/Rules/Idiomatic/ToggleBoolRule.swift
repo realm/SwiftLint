@@ -23,7 +23,7 @@ struct ToggleBoolRule: Rule {
             "↓view.clipsToBounds = !view.clipsToBounds",
             "func foo() { ↓abc = !abc }",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓isHidden = !isHidden": "isHidden.toggle()",
             "↓view.clipsToBounds = !view.clipsToBounds": "view.clipsToBounds.toggle()",
             "func foo() { ↓abc = !abc }": "func foo() { abc.toggle() }",

@@ -84,7 +84,7 @@ struct DirectReturnRule: Rule {
                 }
                 """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
                 func f() -> Int {
                     let b = 2

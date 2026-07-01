@@ -60,7 +60,7 @@ struct PreferKeyPathRule: Rule {
             "let f: (Int) -> Int = ↓{ $0.bigEndian }".configuration(extendedMode),
             "transform = ↓{ $0.a }",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "f.map { $0.a }": "f.map(\\.a)",
             """
             // begin

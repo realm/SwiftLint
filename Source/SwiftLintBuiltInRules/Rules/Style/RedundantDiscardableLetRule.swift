@@ -97,7 +97,7 @@ struct RedundantDiscardableLetRule: Rule {
                 }
                 """.configuration(["ignore_swiftui_view_bodies": true]).excludeFromDocumentation(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓let _ = foo()": "_ = foo()",
             "if _ = foo() { ↓let _ = bar() }": "if _ = foo() { _ = bar() }",
             """

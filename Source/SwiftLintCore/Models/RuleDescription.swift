@@ -91,7 +91,7 @@ public struct RuleDescription: Equatable, Sendable {
     ///                                    Use the `#examples([...])` macro to turn an array of strings
     ///                                    into an array of `Example`s.
     /// - parameter corrections:           Sets the description's `corrections` property.
-    ///                                    Use the `#examplesDictionary([...])` macro to turn
+    ///                                    Use the `#corrections([...])` macro to turn
     ///                                    a `[String: String]` dictionary into an `[Example: Example]` dictionary.
     /// - parameter deprecatedAliases:     Sets the description's `deprecatedAliases` property.
     /// - parameter requiresFileOnDisk:    Sets the description's `requiresFileOnDisk` property.

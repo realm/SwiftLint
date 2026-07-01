@@ -277,7 +277,7 @@ struct RedundantSelfRuleExamples {
             """.configuration(["only_in_closures": false]),
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
             struct S {
                 var x = 0

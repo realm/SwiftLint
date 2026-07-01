@@ -306,7 +306,7 @@ internal struct AsyncWithoutAwaitRuleExamples {
         "let x: (() ↓async -> Void)? = nil",
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "func test() ↓async {}": "func test() {}",
         "func test() ↓async throws {}": "func test() throws {}",
         """

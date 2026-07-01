@@ -94,7 +94,7 @@ internal struct ClosureEndIndentationRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         SignalProducer(values: [1, 2, 3])
             .startWithNext { number in

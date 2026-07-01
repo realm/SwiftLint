@@ -37,7 +37,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
             "// Triple. ↓  Quad. ↓   End.".skipWrappingInCommentTest(),
             "///   - code: Identifier of the error. ↓ Integer.".skipWrappingInCommentTest(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "/* Why. ↓ Symbol does nothing. */": "/* Why. Symbol does nothing. */",
             "// Why. ↓ Symbol does nothing.": "// Why. Symbol does nothing.",
             "// Single. Double. ↓ End.": "// Single. Double. End.",

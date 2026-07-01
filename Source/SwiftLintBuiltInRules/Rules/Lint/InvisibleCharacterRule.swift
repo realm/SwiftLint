@@ -55,7 +55,7 @@ struct InvisibleCharacterRule: Rule {
                 "additional_code_points": ["200D"],
             ]),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             #"let s = "Hello​World""#: #"let s = "HelloWorld""#,
             #"let s = "Hello‌World""#: #"let s = "HelloWorld""#,
             #"let s = "Hello﻿World""#: #"let s = "HelloWorld""#,

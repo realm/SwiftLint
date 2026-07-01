@@ -18,7 +18,7 @@ struct StrongIBOutletRule: Rule {
             wrapExample("@IBOutlet ↓unowned var label: UILabel!"),
             wrapExample("@IBOutlet ↓weak var textField: UITextField?"),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             wrapExample("@IBOutlet ↓weak var label: UILabel?"):
                 wrapExample("@IBOutlet var label: UILabel?"),
             wrapExample("@IBOutlet ↓unowned var label: UILabel!"):

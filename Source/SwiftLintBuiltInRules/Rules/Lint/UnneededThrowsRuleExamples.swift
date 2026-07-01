@@ -338,7 +338,7 @@ struct UnneededThrowsRuleExamples { // swiftlint:disable:this type_body_length
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "func foo() ↓throws {}": "func foo() {}",
         "init() ↓throws {}": "init() {}",
         """

@@ -49,7 +49,7 @@ struct LowerACLThanParentRule: Rule {
             "public extension Foo { struct Bar { struct Baz { ↓public func qux() {} }}}",
             "final class Foo { ↓public func bar() {} }",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "struct Foo { ↓public func bar() {} }":
                 "struct Foo { func bar() {} }",
             "enum Foo { ↓public func bar() {} }":

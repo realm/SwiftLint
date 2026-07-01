@@ -59,7 +59,7 @@ struct RedundantVoidReturnRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "func foo()↓ -> Void {}": "func foo() {}",
             "protocol Foo {\n func foo()↓ -> Void\n}": "protocol Foo {\n func foo()\n}",
             "func foo()↓ -> () {}": "func foo() {}",

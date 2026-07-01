@@ -92,7 +92,7 @@ struct UnusedImportRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         ↓import Dispatch
         struct A {

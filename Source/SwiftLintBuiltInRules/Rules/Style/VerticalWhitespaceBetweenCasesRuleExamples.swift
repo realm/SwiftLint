@@ -153,7 +153,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             """,
     ])
 
-    static let violatingToValidExamples: [Example: Example] = #examplesDictionary([
+    static let violatingToValidExamples: [Example: Example] = #corrections([
         """
             switch x {
             case 0..<5:

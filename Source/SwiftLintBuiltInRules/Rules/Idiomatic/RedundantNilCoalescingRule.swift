@@ -15,7 +15,7 @@ struct RedundantNilCoalescingRule: Rule {
         triggeringExamples: #examples([
             "var myVar: Int? = nil; myVar ↓?? nil"
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "var myVar: Int? = nil; let foo = myVar ↓?? nil":
                 "var myVar: Int? = nil; let foo = myVar",
             "let a = b ?? nil // swiftlint:disable:this redundant_nil_coalescing":

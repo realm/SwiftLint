@@ -50,7 +50,7 @@ struct UnusedControlFlowLabelRule: Rule {
             } while true
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓loop: while true { break }": "while true { break }",
             "↓loop: while true { break loop1 }": "while true { break loop1 }",
             "↓loop: while true { break outerLoop }": "while true { break outerLoop }",

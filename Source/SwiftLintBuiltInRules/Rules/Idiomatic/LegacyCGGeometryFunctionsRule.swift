@@ -54,7 +54,7 @@ struct LegacyCGGeometryFunctionsRule: Rule {
             "↓CGRectContainsPoint(rect, point)",
             "↓CGRectIntersectsRect(rect1, rect2)",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓CGRectGetWidth( rect  )": "rect.width",
             "↓CGRectGetHeight(rect )": "rect.height",
             "↓CGRectGetMinX( rect)": "rect.minX",

@@ -76,7 +76,7 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                   2)↓]
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
             let x = [
                key: value

@@ -30,7 +30,7 @@ struct ImplicitReturnRuleExamples {
             """,
         ])
 
-        static let corrections = #examplesDictionary([
+        static let corrections = #corrections([
             """
             foo.map { value in
                 // Important comment
@@ -121,7 +121,7 @@ struct ImplicitReturnRuleExamples {
             """,
         ])
 
-        static let corrections = #examplesDictionary([
+        static let corrections = #corrections([
             """
             func foo() -> Int {
                 return 0
@@ -201,7 +201,7 @@ struct ImplicitReturnRuleExamples {
             """,
         ])
 
-        static let corrections = #examplesDictionary([
+        static let corrections = #corrections([
             "var foo: Bool { return true }": "var foo: Bool { true }",
             """
             class Foo {
@@ -264,7 +264,7 @@ struct ImplicitReturnRuleExamples {
             """,
         ])
 
-        static let corrections = #examplesDictionary([
+        static let corrections = #corrections([
             """
             class C {
                 init() {
@@ -316,7 +316,7 @@ struct ImplicitReturnRuleExamples {
             """,
         ])
 
-        static let corrections = #examplesDictionary([
+        static let corrections = #corrections([
             """
             class C {
                 subscript(i: Int) -> Int {
@@ -334,7 +334,7 @@ struct ImplicitReturnRuleExamples {
     }
 
     struct MixedExamples {
-        static let corrections = #examplesDictionary([
+        static let corrections = #corrections([
             """
                 func foo() -> Int {
                     ↓return [1, 2].first(where: {

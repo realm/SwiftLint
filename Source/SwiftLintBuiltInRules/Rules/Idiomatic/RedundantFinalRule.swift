@@ -66,7 +66,7 @@ struct RedundantFinalRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "final actor MyActor {}":
                 "actor MyActor {}",
             "public final actor DataStore {}":

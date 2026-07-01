@@ -23,7 +23,7 @@ struct EmptyParametersRule: Rule {
             "func foo(completion: ↓(Void) throws -> Void)",
             "let foo: ↓(Void) -> () throws -> Void)",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let abc: ↓(Void) -> Void = {}": "let abc: () -> Void = {}",
             "func foo(completion: ↓(Void) -> Void)": "func foo(completion: () -> Void)",
             "func foo(completion: ↓(Void) throws -> Void)":

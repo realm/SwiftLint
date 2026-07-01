@@ -47,7 +47,7 @@ internal struct DuplicateImportsRuleExamples {
 
     // swiftlint:disable:next closure_body_length
     static let corrections: [Example: Example] = {
-        var corrections = #examplesDictionary([
+        var corrections = #corrections([
             """
             import Foundation
             import Dispatch

@@ -85,7 +85,7 @@ struct OptionalEnumCaseMatchingRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
             switch foo {
              case .bar↓?: break

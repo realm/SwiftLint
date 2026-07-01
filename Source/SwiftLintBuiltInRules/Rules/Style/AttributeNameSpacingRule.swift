@@ -55,7 +55,7 @@ struct AttributeNameSpacingRule: Rule {
             "nonisolated ↓(unsafe) var _value: X?",
             "@MyProperty ↓() class Foo {}",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "private↓ (set) var foo: Bool = false": "private(set) var foo: Bool = false",
             "fileprivate↓ (set) var foo: Bool = false": "fileprivate(set) var foo: Bool = false",
             "internal↓ (set) var foo: Bool = false": "internal(set) var foo: Bool = false",

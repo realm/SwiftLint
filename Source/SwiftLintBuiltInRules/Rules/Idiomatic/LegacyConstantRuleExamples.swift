@@ -25,7 +25,7 @@ internal struct LegacyConstantRuleExamples {
         "↓Float(M_PI)",
     ])
 
-    static let corrections: [Example: Example] = #examplesDictionary([
+    static let corrections: [Example: Example] = #corrections([
         "↓CGRectInfinite": "CGRect.infinite",
         "↓CGPointZero": "CGPoint.zero",
         "↓CGRectZero": "CGRect.zero",

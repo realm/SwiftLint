@@ -80,7 +80,7 @@ struct UntypedErrorInCatchRule: Rule {
             } ↓catch (let error) {}
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "do {\n    try foo() \n} ↓catch let error {}": "do {\n    try foo() \n} catch {}",
             "do {\n    try foo() \n} ↓catch(let error) {}": "do {\n    try foo() \n} catch {}",
             "do {\n    try foo() \n} ↓catch (let error) {}": "do {\n    try foo() \n} catch {}",

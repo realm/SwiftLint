@@ -26,16 +26,16 @@ enum Examples: ExpressionMacro {
     }
 }
 
-/// Expands `#examplesDictionary(["a": "b"])` into `[Example("a", …): Example("b", …)]`, capturing the file and
+/// Expands `#corrections(["a": "b"])` into `[Example("a", …): Example("b", …)]`, capturing the file and
 /// line of each key and value. Keys and values are usually string literals, but any `String`-typed expression
 /// works. Intended for a rule's `corrections` dictionary.
-enum ExamplesDictionary: ExpressionMacro {
+enum Corrections: ExpressionMacro {
     static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
         in context: some MacroExpansionContext
     ) -> ExprSyntax {
         guard let dictionary = node.arguments.first?.expression.as(DictionaryExprSyntax.self) else {
-            context.diagnose(SwiftLintCoreMacroError.examplesNotDictionaryLiteral.diagnose(at: node))
+            context.diagnose(SwiftLintCoreMacroError.correctionsNotDictionaryLiteral.diagnose(at: node))
             return "[:]"
         }
         guard case let .elements(elements) = dictionary.content else {

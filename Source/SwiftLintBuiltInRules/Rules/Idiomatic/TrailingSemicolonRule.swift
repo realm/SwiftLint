@@ -18,7 +18,7 @@ struct TrailingSemicolonRule: Rule {
             "let a = 0↓;\nlet b = 1",
             "let a = 0↓; // a comment\n",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let a = 0↓;\n": "let a = 0\n",
             "let a = 0↓;\nlet b = 1": "let a = 0\nlet b = 1",
             "let foo = 12↓;  // comment\n": "let foo = 12  // comment\n",

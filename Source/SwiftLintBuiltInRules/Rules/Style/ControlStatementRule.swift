@@ -47,7 +47,7 @@ struct ControlStatementRule: Rule {
             "do {} ↓catch(let error as NSError) {}",
             "↓if (max(a, b) < c) {}",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓if (condition) {}": "if condition {}",
             "↓if(condition) {}": "if condition {}",
             "↓if (condition == endIndex) {}": "if condition == endIndex {}",

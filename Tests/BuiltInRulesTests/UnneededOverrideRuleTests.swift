@@ -47,7 +47,7 @@ struct UnneededOverrideRuleTests {
             """,
         ])
 
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             """
             class Foo {
                 ↓override init(frame: CGRect) {

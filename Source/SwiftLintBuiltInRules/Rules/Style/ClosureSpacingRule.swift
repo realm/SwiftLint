@@ -33,7 +33,7 @@ struct ClosureSpacingRule: Rule {
             var tapped: (UITapGestureRecognizer) -> Void = ↓{ _ in /* no-op */  }
             """.excludeFromDocumentation(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "[].filter(↓{$0.contains(location) })":
                 "[].filter({ $0.contains(location) })",
             "[].map(↓{$0})":

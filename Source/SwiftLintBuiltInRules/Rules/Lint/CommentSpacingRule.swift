@@ -91,7 +91,7 @@ struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
             //:↓Swift Playground prose section
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "//↓Something": "// Something",
             "//↓- MARK: Mark comment": "// - MARK: Mark comment",
             """

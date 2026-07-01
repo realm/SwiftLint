@@ -198,7 +198,7 @@ struct RedundantObjcAttributeRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "↓@objc @IBInspectable private var foo: String? {}":
             "@IBInspectable private var foo: String? {}",
         "@IBInspectable ↓@objc private var foo: String? {}":

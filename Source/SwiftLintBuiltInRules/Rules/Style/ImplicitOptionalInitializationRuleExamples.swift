@@ -112,7 +112,7 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             """.configuration(["style": "always"]),
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         // never style
         """
             @Wrapper("name")

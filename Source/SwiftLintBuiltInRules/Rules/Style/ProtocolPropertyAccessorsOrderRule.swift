@@ -17,7 +17,7 @@ struct ProtocolPropertyAccessorsOrderRule: Rule {
         triggeringExamples: #examples([
             "protocol Foo {\n var bar: String { ↓set get }\n }"
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "protocol Foo {\n var bar: String { ↓set get }\n }":
                 "protocol Foo {\n var bar: String { get set }\n }",
         ])

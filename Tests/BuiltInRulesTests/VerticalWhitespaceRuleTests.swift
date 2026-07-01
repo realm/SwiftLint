@@ -26,7 +26,7 @@ struct VerticalWhitespaceRuleTests {
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [])
             .with(triggeringExamples: [])
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 "let b = 0\n\n↓\n↓\n↓\n\nclass AAA {}\n": "let b = 0\n\n\nclass AAA {}\n",
                 "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\n\nclass AAA {}\n",
                 "class BB {\n  \n  \n↓  \n  let b = 0\n}\n": "class BB {\n  \n  \n  let b = 0\n}\n",

@@ -65,7 +65,7 @@ internal enum SyntacticSugarRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "let x: Array<String>": "let x: [String]",
         "let x: Array< String >": "let x: [String]",
         "let x: Dictionary<Int, String>": "let x: [Int: String]",

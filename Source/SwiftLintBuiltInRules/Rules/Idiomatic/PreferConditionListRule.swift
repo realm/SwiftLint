@@ -52,7 +52,7 @@ struct PreferConditionListRule: Rule {
             "if (a ↓&& b) {}",
             "if (a ↓&& f {}) {}",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "if a && b {}":
                 "if a, b {}",
             """

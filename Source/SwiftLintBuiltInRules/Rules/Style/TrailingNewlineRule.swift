@@ -33,7 +33,7 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
             "let a = 0",
             "let a = 0\n\n",
         ]).skipWrappingInCommentTests().skipWrappingInStringTests(),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let a = 0": "let a = 0\n",
             "let b = 0\n\n": "let b = 0\n",
             "let c = 0\n\n\n\n": "let c = 0\n",

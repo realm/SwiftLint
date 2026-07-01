@@ -6,7 +6,7 @@ import Testing
 
 private let macros = [
     "examples": MacroSpec(type: Examples.self),
-    "examplesDictionary": MacroSpec(type: ExamplesDictionary.self),
+    "corrections": MacroSpec(type: Corrections.self),
 ]
 
 @Suite
@@ -94,7 +94,7 @@ struct ExamplesTests {
         // swiftlint:disable line_length
         assertMacroExpansion(
             """
-            #examplesDictionary([
+            #corrections([
                 "↓x": "y",
                 "↓a": "b",
             ])
@@ -115,7 +115,7 @@ struct ExamplesTests {
     func expandsEmptyDictionary() {
         assertMacroExpansion(
             """
-            #examplesDictionary([:])
+            #corrections([:])
             """,
             expandedSource: """
             [:]
@@ -129,14 +129,14 @@ struct ExamplesTests {
     func nonDictionaryLiteralArgument() {
         assertMacroExpansion(
             """
-            #examplesDictionary(someDictionary)
+            #corrections(someDictionary)
             """,
             expandedSource: """
             [:]
             """,
             diagnostics: [
                 DiagnosticSpec(
-                    message: SwiftLintCoreMacroError.examplesNotDictionaryLiteral.message,
+                    message: SwiftLintCoreMacroError.correctionsNotDictionaryLiteral.message,
                     line: 1,
                     column: 1
                 ),
@@ -173,7 +173,7 @@ struct ExamplesTests {
         // swiftlint:disable line_length
         assertMacroExpansion(
             """
-            #examplesDictionary([
+            #corrections([
                 trigger: corrected,
                 makeCode(for: rule): fixed + suffix,
             ])

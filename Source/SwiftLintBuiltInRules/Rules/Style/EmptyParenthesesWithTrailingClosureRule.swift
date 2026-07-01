@@ -31,7 +31,7 @@ struct EmptyParenthesesWithTrailingClosureRule: Rule {
             "[1, 2].map↓(  ) { number in\n number + 1 \n}",
             "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "[1, 2].map↓() { $0 + 1 }": "[1, 2].map { $0 + 1 }",
             "[1, 2].map↓( ) { $0 + 1 }": "[1, 2].map { $0 + 1 }",
             "[1, 2].map↓() { number in\n number + 1 \n}":

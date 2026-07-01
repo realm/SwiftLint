@@ -16,7 +16,7 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
             "\n//",
             " //",
         ]).skipMultiByteOffsetTests().skipDisableCommandTests(),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "\n //".skipMultiByteOffsetTest(): "//"
         ])
     )

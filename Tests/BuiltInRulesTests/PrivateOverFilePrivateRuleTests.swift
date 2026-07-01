@@ -13,7 +13,7 @@ struct PrivateOverFilePrivateRuleTests {
             "↓fileprivate \n extension String {}",
             "↓fileprivate extension \n String {}",
         ])
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "↓fileprivate extension String {}": "private extension String {}",
             "↓fileprivate \n extension String {}": "private \n extension String {}",
             "↓fileprivate extension \n String {}": "private extension \n String {}",

@@ -26,7 +26,7 @@ struct PreferZeroOverExplicitInitRule: Rule {
             "↓CGVector(dx: 0, dy: 0)",
             "↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓CGPoint(x: 0, y: 0)": "CGPoint.zero",
             "(↓CGPoint(x: 0, y: 0))": "(CGPoint.zero)",
             "↓CGRect(x: 0, y: 0, width: 0, height: 0)": "CGRect.zero",

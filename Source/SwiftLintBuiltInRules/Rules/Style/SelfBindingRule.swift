@@ -29,7 +29,7 @@ struct SelfBindingRule: Rule {
             "if let ↓self { return }".configuration(["bind_identifier": "this"]),
             "guard let ↓self else { return }".configuration(["bind_identifier": "this"]),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "if let ↓`self` = self { return }":
                 "if let self = self { return }",
             "guard let ↓`self` = self else { return }":

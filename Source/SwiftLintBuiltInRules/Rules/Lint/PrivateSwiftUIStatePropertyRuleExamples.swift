@@ -197,7 +197,7 @@ internal struct PrivateSwiftUIStatePropertyRuleExamples {
         """,
     ])
 
-    static let corrections: [Example: Example] = #examplesDictionary([
+    static let corrections: [Example: Example] = #corrections([
         """
         struct ContentView: View {
             @State ↓var isPlaying: Bool = false

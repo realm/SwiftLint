@@ -21,7 +21,7 @@ struct NumberSeparatorRuleTests {
             "let foo = ↓1.000_1",
             "let foo = ↓1_000.000_1",
         ])
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "let foo = ↓1_000": "let foo = 1000",
             "let foo = ↓1.000_1": "let foo = 1.0001",
             "let foo = ↓1_000.000_1": "let foo = 1000.0001",
@@ -48,7 +48,7 @@ struct NumberSeparatorRuleTests {
             "let foo = ↓1.000_1",
             "let foo = ↓1_000.000_1",
         ])
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "let foo = ↓1000": "let foo = 1_000",
             "let foo = ↓1.000_1": "let foo = 1.0001",
             "let foo = ↓1_000.000_1": "let foo = 1_000.0001",
@@ -82,7 +82,7 @@ struct NumberSeparatorRuleTests {
             "let foo = ↓1.920442",
             "let foo = ↓3.343434",
         ])
-        let corrections = #examplesDictionary([
+        let corrections = #corrections([
             "let foo = ↓1000": "let foo = 1_000",
             "let foo = ↓2100": "let foo = 2_100",
             "let foo = ↓1.920442": "let foo = 1.920_442",

@@ -124,7 +124,7 @@ struct RedundantTypeAnnotationRule: Rule {
             "var int↓: Int = 0".configuration(["consider_default_literal_types_redundant": true]),
             "var str↓: String = \"str\"".configuration(["consider_default_literal_types_redundant": true]),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "var url↓: URL = URL()": "var url = URL()",
             "let url↓: URL = URL()": "let url = URL()",
             "var one: Int = 1, two↓: Int = Int(5), three: Int":

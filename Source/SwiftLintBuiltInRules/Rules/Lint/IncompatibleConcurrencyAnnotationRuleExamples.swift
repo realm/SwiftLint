@@ -114,7 +114,7 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
         "@MyActor public ↓init()".configuration(["global_actors": ["MyActor"]]),
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         // Global actor on declarations
         """
             @MainActor

@@ -138,7 +138,7 @@ struct ExplicitSelfRuleExamples {
         """.skipWrappingInStringTest(),
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
         struct A {
             func f1() -> Int { 1 }

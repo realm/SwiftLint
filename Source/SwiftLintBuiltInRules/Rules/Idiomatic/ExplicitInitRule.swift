@@ -88,7 +88,7 @@ struct ExplicitInitRule: Rule {
                   .init(1.0)
             """.excludeFromDocumentation(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
             [1].flatMap{String↓.init($0)}
             """:

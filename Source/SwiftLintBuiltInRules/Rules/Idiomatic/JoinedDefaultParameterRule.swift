@@ -26,7 +26,7 @@ struct JoinedDefaultParameterRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let foo = bar.joined(↓separator: \"\")": "let foo = bar.joined()",
             "let foo = bar.filter(toto)\n.joined(↓separator: \"\")":
                 "let foo = bar.filter(toto)\n.joined()",

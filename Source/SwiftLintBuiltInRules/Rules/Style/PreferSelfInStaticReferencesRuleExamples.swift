@@ -370,7 +370,7 @@ enum PreferSelfInStaticReferencesRuleExamples {
             """.excludeFromDocumentation(),
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
             final class CheckCellView: NSTableCellView {
                 @IBOutlet var checkButton: NSButton!

@@ -61,7 +61,7 @@ struct PrivateOverFilePrivateRule: Rule {
                 ↓fileprivate var x = 0
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓fileprivate enum MyEnum {}":
                 "private enum MyEnum {}",
             "↓fileprivate enum MyEnum { fileprivate class A {} }":

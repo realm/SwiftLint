@@ -100,7 +100,7 @@ enum UnusedClosureParameterRuleExamples {
         """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "[1, 2].map { ↓number in return 3 }":
             "[1, 2].map { _ in return 3 }",
         "[1, 2].map { ↓number in return numberWithSuffix }":

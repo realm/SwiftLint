@@ -50,7 +50,7 @@ struct ShorthandOptionalBindingRule: Rule {
                 while ↓var i = i { i = nil }
                 """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
                 if ↓let i = i {}
                 """: """

@@ -119,7 +119,7 @@ struct UnusedParameterRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
             func f(a: Int) {}
             """: """

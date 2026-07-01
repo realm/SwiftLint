@@ -40,7 +40,7 @@ struct PreferTypeCheckingRule: Rule {
             "nil != bar ↓as? Foo",
             "nil != 2*x ↓as? X",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "bar ↓as? Foo != nil": "bar is Foo",
             "nil != bar ↓as? Foo": "bar is Foo",
             "2*x ↓as? X != nil": "2*x is X",

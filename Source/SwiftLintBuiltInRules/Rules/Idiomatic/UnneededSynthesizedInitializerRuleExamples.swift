@@ -397,7 +397,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
                 """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         """
                 struct Foo {
                     let bar: String

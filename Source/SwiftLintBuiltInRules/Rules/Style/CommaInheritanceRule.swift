@@ -38,7 +38,7 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "struct A: Codable↓ & Equatable {}": "struct A: Codable, Equatable {}",
             "struct A: Codable↓  & Equatable {}": "struct A: Codable, Equatable {}",
             "struct A: Codable↓&Equatable {}": "struct A: Codable, Equatable {}",

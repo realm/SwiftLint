@@ -12,7 +12,7 @@
 
 ### Enhancements
 
-* Add `#examples` and `#examplesDictionary` macros that expand lists and
+* Add `#examples` and `#corrections` macros that expand lists and
   dictionaries of code strings into `Example`s, reducing boilerplate when
   defining a rule's triggering/non-triggering examples and corrections. Adopt
   them across the built-in rules.  

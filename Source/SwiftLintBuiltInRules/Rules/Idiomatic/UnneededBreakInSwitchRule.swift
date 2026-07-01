@@ -49,7 +49,7 @@ struct UnneededBreakInSwitchRule: Rule {
             embedInSwitch("something()\n    ↓break", case: "default"),
             embedInSwitch("something()\n    ↓break", case: "case .foo, .foo2 where condition"),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             embedInSwitch("something()\n    ↓break")
                 : embedInSwitch("something()"),
             embedInSwitch("something()\n    ↓break // line comment")

@@ -22,7 +22,7 @@ struct RedundantSendableRule: Rule {
             "actor ↓A: Sendable {}",
             "@MyActor enum ↓E: Sendable { case a }".configuration(["global_actors": ["MyActor"]]),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "@MainActor struct S: Sendable {}":
                 "@MainActor struct S {}",
             "actor A: Sendable /* trailing comment */{}":

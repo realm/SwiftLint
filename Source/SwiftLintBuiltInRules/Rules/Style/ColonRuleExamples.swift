@@ -138,7 +138,7 @@ internal struct ColonRuleExamples {
         "private var action↓:(() -> Void)?",
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "let abc↓:Void": "let abc: Void",
         "let abc↓:  Void": "let abc: Void",
         "let abc↓ :Void": "let abc: Void",

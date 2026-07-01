@@ -48,7 +48,7 @@ struct NimbleOperatorRule: Rule {
             "↓expect(value).toNot(beNil())",
             "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓expect(seagull.squawk).toNot(equal(\"Hi\"))": "expect(seagull.squawk) != \"Hi\"",
             "↓expect(\"Hi!\").to(equal(\"Hi!\"))": "expect(\"Hi!\") == \"Hi!\"",
             "↓expect(12).toNot(equal(10))": "expect(12) != 10",

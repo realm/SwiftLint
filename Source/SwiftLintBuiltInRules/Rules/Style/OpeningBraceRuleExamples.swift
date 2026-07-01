@@ -219,7 +219,7 @@ struct OpeningBraceRuleExamples {
             """,
     ])
 
-    static let corrections = #examplesDictionary([
+    static let corrections = #corrections([
         "struct Rule{}": "struct Rule {}",
         "struct Rule\n{\n}": "struct Rule {\n}",
         "struct Rule\n\n\t{\n}": "struct Rule {\n}",

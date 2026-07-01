@@ -31,7 +31,7 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
         """.configuration(beforeTrivialLinesConfiguration).excludeFromDocumentation(),
     ])
 
-    static let violatingToValidExamples = #examplesDictionary([
+    static let violatingToValidExamples = #corrections([
         """
         do {
           print("x is 5")

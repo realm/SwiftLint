@@ -24,7 +24,7 @@ struct TrailingWhitespaceRule: Rule {
             "let codeWithSpace = 123↓    \n".configuration(["ignores_literals": true])
                 .skipWrappingInCommentTest(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "let name: String↓ \n": "let name: String\n",
             "/* */ let name: String↓ \n": "/* */ let name: String\n",
         ])

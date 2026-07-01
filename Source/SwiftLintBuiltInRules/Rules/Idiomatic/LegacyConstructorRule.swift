@@ -59,7 +59,7 @@ struct LegacyConstructorRule: Rule {
             "↓UIOffsetMake(0, 10)",
             "↓UIOffsetMake(horizontal, vertical)",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "↓CGPointMake(10,  10)": "CGPoint(x: 10,  y: 10)",
             "↓CGPointMake(xPos,  yPos)": "CGPoint(x: xPos,  y: yPos)",
             "↓CGSizeMake(10, 10)": "CGSize(width: 10, height: 10)",

@@ -74,7 +74,7 @@ struct NonOverridableClassDeclarationRule: Rule {
             }
             """,
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             """
             final class C {
                 class func f() {}

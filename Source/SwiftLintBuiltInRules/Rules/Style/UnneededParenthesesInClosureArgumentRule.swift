@@ -61,7 +61,7 @@ struct UnneededParenthesesInClosureArgumentRule: Rule {
             }
             """.excludeFromDocumentation(),
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "call(arg: { ↓(bar) in })": "call(arg: { bar in })",
             "call(arg: { ↓(bar, _) in })": "call(arg: { bar, _ in })",
             "call(arg: { ↓(bar, _)in })": "call(arg: { bar, _ in })",

@@ -26,7 +26,7 @@ struct PreferKeyPathRuleTests {
                 "f.map ↓{ a in a }",
                 "f.g { $0 }".configuration(Self.extendedMode),
             ]))
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 "f.map ↓{ $0 }":
                     "f.map(\\.self)",
                 "f.g { $0 }".configuration(Self.extendedMode):

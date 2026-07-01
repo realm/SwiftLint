@@ -34,7 +34,7 @@ struct NoSpaceInMethodCallRule: Rule {
             "object.foo↓     ()",
             "object.foo↓     (value: 1) { x in print(x) }",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "foo↓ ()": "foo()",
             "object.foo↓ ()": "object.foo()",
             "object.foo↓ (1)": "object.foo(1)",

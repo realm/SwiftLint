@@ -234,7 +234,7 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func correctionsAreAppliedCorrectly() { // swiftlint:disable:this function_body_length
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 """
                 class Foo {
                     private final override var bar: UIView?
@@ -301,7 +301,7 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func correctionsAreNotAppliedToIrrelevantModifier() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 """
                 class Foo {
                     weak class final var bar: UIView?
@@ -364,7 +364,7 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func typeMethodClassCorrection() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 """
                 private final class Foo {}
                 """:
@@ -448,7 +448,7 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                 }
                 """,
             ]))
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 """
                 @MainActor
                 class Foo {
@@ -498,7 +498,7 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                 }
                 """,
             ]))
-            .with(corrections: #examplesDictionary([
+            .with(corrections: #corrections([
                 """
                 @MainActor
                 class Foo {

@@ -41,7 +41,7 @@ struct ReturnArrowWhitespaceRule: Rule {
             "func abc()↓  ->\n  Int {}",
             "func abc()↓  ->\nInt {}",
         ]),
-        corrections: #examplesDictionary([
+        corrections: #corrections([
             "func abc()↓->Int {}": "func abc() -> Int {}",
             "func abc()↓-> Int {}": "func abc() -> Int {}",
             "func abc()↓ ->Int {}": "func abc() -> Int {}",

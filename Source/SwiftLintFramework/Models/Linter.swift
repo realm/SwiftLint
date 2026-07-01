@@ -102,23 +102,26 @@ private extension Rule {
               benchmark: Bool,
               storage: RuleStorage,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
-              compilerArguments: [String]) -> LintResult {
+              compilerArguments: [String],
+              globalIndentation: IndentationStyle?) -> LintResult {
         let ruleID = Self.identifier
 
         // Wrap entire lint process including shouldRun check in rule context
         return CurrentRule.$identifier.withValue(ruleID) {
-            guard shouldRun(onFile: file) else {
-                return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
-            }
+            CurrentRule.$indentation.withValue(globalIndentation) {
+                guard shouldRun(onFile: file) else {
+                    return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
+                }
 
-            return performLint(
-                file: file,
-                regions: regions,
-                benchmark: benchmark,
-                storage: storage,
-                superfluousDisableCommandRule: superfluousDisableCommandRule,
-                compilerArguments: compilerArguments
-            )
+                return performLint(
+                    file: file,
+                    regions: regions,
+                    benchmark: benchmark,
+                    storage: storage,
+                    superfluousDisableCommandRule: superfluousDisableCommandRule,
+                    compilerArguments: compilerArguments
+                )
+            }
         }
     }
 
@@ -286,7 +289,9 @@ public struct Linter {
             let rule = rules[idx]
             let ruleID = type(of: rule).identifier
             CurrentRule.$identifier.withValue(ruleID) {
-                rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+                CurrentRule.$indentation.withValue(configuration.indentation) {
+                    rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+                }
             }
         }
         return CollectedLinter(from: self)
@@ -350,7 +355,8 @@ public struct CollectedLinter {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    compilerArguments: compilerArguments)
+                    compilerArguments: compilerArguments,
+                    globalIndentation: configuration.indentation)
         }
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
@@ -423,10 +429,12 @@ public struct CollectedLinter {
         for rule in rules.compactMap({ $0 as? any CorrectableRule }) {
             // Set rule context before checking shouldRun to allow file property access
             let ruleCorrections = CurrentRule.$identifier.withValue(type(of: rule).identifier) { () -> Int? in
-                guard rule.shouldRun(onFile: file) else {
-                    return nil
+                CurrentRule.$indentation.withValue(configuration.indentation) {
+                    guard rule.shouldRun(onFile: file) else {
+                        return nil
+                    }
+                    return rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
                 }
-                return rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
             }
             if let corrected = ruleCorrections, corrected != 0 {
                 corrections[type(of: rule).description.identifier] = corrected

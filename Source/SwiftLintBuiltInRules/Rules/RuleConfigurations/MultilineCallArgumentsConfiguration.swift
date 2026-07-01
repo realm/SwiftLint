@@ -1,5 +1,8 @@
 import SwiftLintCore
 
+/// Configuration for the `multiline_call_arguments` rule.
+///
+/// This configuration controls how function calls with multiple arguments should be formatted.
 @AutoConfigParser
 struct MultilineCallArgumentsConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")

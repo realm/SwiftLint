@@ -8,4 +8,7 @@ public enum CurrentRule {
     /// Allows specific SourceKit requests to be made outside of rule execution context.
     /// This should only be used for essential operations like getting the Swift version.
     @TaskLocal public static var allowSourceKitRequestWithoutRule = false
+
+    /// The global indentation style from the top-level configuration.
+    @TaskLocal public static var indentation: IndentationStyle?
 }

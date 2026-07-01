@@ -8,7 +8,14 @@
 
 ### Experimental
 
-* None.
+* Add auto-correction and multi-violation support to the
+  `multiline_call_arguments` rule. Auto-correction reformats single-line
+  calls into multi-line form using the global `indentation` setting from
+  `.swiftlint.yml`. The per-rule `indentation` option has been removed in
+  favor of the global one. The rule detects all violations in a single
+  pass (previously required repeated `--fix`); safely handles nested
+  calls by suppressing overlapping inner corrections.  
+  [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Enhancements
 

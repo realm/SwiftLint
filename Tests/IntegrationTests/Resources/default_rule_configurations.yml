@@ -704,7 +704,7 @@ multiline_call_arguments:
   allows_single_line: true
   meta:
     opt-in: true
-    correctable: false
+    correctable: true
 multiline_function_chains:
   severity: warning
   meta:

@@ -15,27 +15,27 @@ struct PreferKeyPathRuleTests {
     @Test(.disabled(if: SwiftVersion.current < .six))
     func identityExpressionInSwift6() {
         let description = PreferKeyPathRule.description
-            .with(nonTriggeringExamples: [
-                Example("f.filter { a in b }"),
+            .with(nonTriggeringExamples: #examples([
+                "f.filter { a in b }",
                 "f.g { $1 }".configuration(Self.extendedMode),
                 "f { $0 }".configuration(Self.extendedModeAndIgnoreIdentity),
                 "f.map { $0 }".configuration(Self.ignoreIdentity),
-            ])
-            .with(triggeringExamples: [
-                Example("f.compactMap ↓{ $0 }"),
-                Example("f.map ↓{ a in a }"),
+            ]))
+            .with(triggeringExamples: #examples([
+                "f.compactMap ↓{ $0 }",
+                "f.map ↓{ a in a }",
                 "f.g { $0 }".configuration(Self.extendedMode),
-            ])
-            .with(corrections: [
-                Example("f.map ↓{ $0 }"):
-                    Example("f.map(\\.self)"),
+            ]))
+            .with(corrections: #examplesDictionary([
+                "f.map ↓{ $0 }":
+                    "f.map(\\.self)",
                 "f.g { $0 }".configuration(Self.extendedMode):
-                    Example("f.g(\\.self)"),
+                    "f.g(\\.self)",
                 "f { $0 }".configuration(Self.extendedModeAndIgnoreIdentity): // no change with option enabled
-                    Example("f { $0 }"),
+                    "f { $0 }",
                 "f.map { $0 }".configuration(Self.ignoreIdentity): // no change with option enabled
-                    Example("f.map { $0 }"),
-            ])
+                    "f.map { $0 }",
+            ]))
 
         verifyRule(description)
     }

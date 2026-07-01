@@ -14,15 +14,15 @@ struct DiscouragedDirectInitRuleTests {
 
     @Test
     func discouragedDirectInitWithNewIncludedTypes() {
-        let triggeringExamples = [
-            Example("let foo = ↓Foo()"),
-            Example("let bar = ↓Bar()"),
-        ]
+        let triggeringExamples = #examples([
+            "let foo = ↓Foo()",
+            "let bar = ↓Bar()",
+        ])
 
-        let nonTriggeringExamples = [
-            Example("let foo = Foo(arg: toto)"),
-            Example("let bar = Bar(arg: \"toto\")"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "let foo = Foo(arg: toto)",
+            "let bar = Bar(arg: \"toto\")",
+        ])
 
         let description = baseDescription
             .with(triggeringExamples: triggeringExamples)
@@ -33,13 +33,13 @@ struct DiscouragedDirectInitRuleTests {
 
     @Test
     func discouragedDirectInitWithReplacedTypes() {
-        let triggeringExamples = [
-            Example("let bundle = ↓Bundle()")
-        ]
+        let triggeringExamples = #examples([
+            "let bundle = ↓Bundle()"
+        ])
 
-        let nonTriggeringExamples = [
-            Example("let device = UIDevice()")
-        ]
+        let nonTriggeringExamples = #examples([
+            "let device = UIDevice()"
+        ])
 
         let description = baseDescription
             .with(triggeringExamples: triggeringExamples)

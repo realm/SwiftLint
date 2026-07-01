@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct OverrideInExtensionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(OverrideInExtensionRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct PatternMatchingKeywordsRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct RawValueForCamelCasedCodableEnumRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(RawValueForCamelCasedCodableEnumRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct ReduceBooleanRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(ReduceBooleanRule.description)
     }
 }

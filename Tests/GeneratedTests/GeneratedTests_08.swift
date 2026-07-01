@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct ReduceBooleanRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(ReduceBooleanRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct ReduceIntoRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct SortedImportsRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct StatementPositionRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(StatementPositionRule.description)
     }
 }

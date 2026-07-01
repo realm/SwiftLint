@@ -80,12 +80,12 @@ struct IndentationWidthRule: OptInRule {
                 }
                 """,
         ]),
-        triggeringExamples: [
-            Example("↓    firstLine", testMultiByteOffsets: false, testDisableCommand: false),
-            Example("firstLine\n        secondLine"),
-            Example("firstLine\n\tsecondLine\n\n↓\t\t\tfourthLine"),
-            Example("firstLine\n    secondLine\n        thirdLine\n↓ fourthLine"),
-        ].skipWrappingInCommentTests()
+        triggeringExamples: #examples([
+            "↓    firstLine".skipMultiByteOffsetTest().skipDisableCommandTest(),
+            "firstLine\n        secondLine",
+            "firstLine\n\tsecondLine\n\n↓\t\t\tfourthLine",
+            "firstLine\n    secondLine\n        thirdLine\n↓ fourthLine",
+        ]).skipWrappingInCommentTests()
     )
 
     // MARK: - Initializers

@@ -1,64 +1,64 @@
 internal struct NSObjectPreferIsEqualRuleExamples {
-    static let nonTriggeringExamples: [Example] = [
+    static let nonTriggeringExamples: [Example] = #examples([
         // NSObject subclass without ==
-        Example("""
+        """
         class AClass: NSObject {
         }
-        """),
+        """,
         // @objc class without ==
-        Example("""
+        """
         @objc class AClass: SomeNSObjectSubclass {
         }
-        """),
+        """,
         // Class with == which does not subclass NSObject
-        Example("""
+        """
         class AClass: Equatable {
             static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return true
             }
-        """),
+        """,
         // NSObject subclass implementing isEqual
-        Example("""
+        """
         class AClass: NSObject {
             override func isEqual(_ object: Any?) -> Bool {
                 return true
             }
         }
-        """),
+        """,
         // @objc class implementing isEqual
-        Example("""
+        """
         @objc class AClass: SomeNSObjectSubclass {
             override func isEqual(_ object: Any?) -> Bool {
                 return false
             }
         }
-        """),
+        """,
         // NSObject subclass implementing == with different signature
-        Example("""
+        """
         class AClass: NSObject {
             static func == (lhs: AClass, rhs: BClass) -> Bool {
                 return true
             }
         }
-        """),
+        """,
         // Equatable struct
-        Example("""
+        """
         struct AStruct: Equatable {
             static func == (lhs: AStruct, rhs: AStruct) -> Bool {
                 return false
             }
         }
-        """),
+        """,
         // Equatable enum
-        Example("""
+        """
         enum AnEnum: Equatable {
             static func == (lhs: AnEnum, rhs: AnEnum) -> Bool {
                 return true
             }
         }
-        """),
+        """,
         // Nested class is not itself inheriting from NSObject
-        Example("""
+        """
         class C: NSObject {
             class NestedClass {
                 static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
@@ -66,9 +66,9 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true),
+        """.excludeFromDocumentation(),
         // Enum inside nested class inheriting from NSObject
-        Example("""
+        """
         public final class A: NSObject {
             public enum B: Equatable {
                 case c
@@ -82,36 +82,36 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true),
-    ]
+        """.excludeFromDocumentation(),
+    ])
 
-    static let triggeringExamples: [Example] = [
+    static let triggeringExamples: [Example] = #examples([
         // NSObject subclass implementing ==
-        Example("""
+        """
         class AClass: NSObject {
             ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return false
             }
         }
-        """),
+        """,
         // @objc class implementing ==
-        Example("""
+        """
         @objc class AClass: SomeOtherNSObjectSubclass {
             ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return true
             }
         }
-        """),
+        """,
         // Equatable NSObject subclass implementing ==
-        Example("""
+        """
         class AClass: NSObject, Equatable {
             ↓static func == (lhs: AClass, rhs: AClass) -> Bool {
                 return false
             }
         }
-        """),
+        """,
         // NSObject subclass overriding isEqual and implementing ==
-        Example("""
+        """
         class AClass: NSObject {
             override func isEqual(_ object: Any?) -> Bool {
                 guard let other = object as? AClass else {
@@ -124,9 +124,9 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 return false
             }
         }
-        """),
+        """,
         // Nested @objc class implementing ==
-        Example("""
+        """
         class C {
             @objc class NestedClass {
                 ↓static func == (lhs: NestedClass, rhs: NestedClass) -> Bool {
@@ -157,6 +157,6 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true),
-    ]
+        """.excludeFromDocumentation(),
+    ])
 }

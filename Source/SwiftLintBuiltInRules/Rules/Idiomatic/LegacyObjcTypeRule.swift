@@ -37,20 +37,20 @@ struct LegacyObjcTypeRule: Rule {
         name: "Legacy Objective-C Reference Type",
         description: "Prefer Swift value types to bridged Objective-C reference types",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("var array = Array<Int>()"),
-            Example("var calendar: Calendar? = nil"),
-            Example("var formatter: NSDataDetector"),
-            Example("var className: String = NSStringFromClass(MyClass.self)"),
-            Example("_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData"),
-            Example(#"_ = Notification.Name("com.apple.Music.playerInfo")"#),
-            Example(#"""
+        nonTriggeringExamples: #examples([
+            "var array = Array<Int>()",
+            "var calendar: Calendar? = nil",
+            "var formatter: NSDataDetector",
+            "var className: String = NSStringFromClass(MyClass.self)",
+            "_ = URLRequest.CachePolicy.reloadIgnoringLocalCacheData",
+            #"_ = Notification.Name("com.apple.Music.playerInfo")"#,
+            """
             class SLURLRequest: NSURLRequest {
                 let data = NSData()
                 let number: NSNumber
             }
-            """#, configuration: ["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
-        ],
+            """.configuration(["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
+        ]),
         triggeringExamples: #examples([
             "var array = ↓NSArray()",
             "var calendar: ↓NSCalendar? = nil",

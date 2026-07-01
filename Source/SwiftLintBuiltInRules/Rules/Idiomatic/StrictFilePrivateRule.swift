@@ -9,34 +9,34 @@ struct StrictFilePrivateRule: Rule {
         name: "Strict Fileprivate",
         description: "`fileprivate` should be avoided",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("extension String {}"),
-            Example("private extension String {}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "extension String {}",
+            "private extension String {}",
+            """
             public
                 extension String {
                     var i: Int { 1 }
                 }
-            """),
-            Example("""
+            """,
+            """
                 private enum E {
                     func f() {}
                 }
-            """),
-            Example("""
+            """,
+            """
                 public struct S {
                     internal let i: Int
                 }
-            """),
-            Example("""
+            """,
+            """
                 open class C {
                     private func f() {}
                 }
-            """),
-            Example("""
+            """,
+            """
                 internal actor A {}
-            """),
-            Example("""
+            """,
+            """
                 struct S1: P {
                     fileprivate let i = 2, j = 1
                 }
@@ -47,17 +47,17 @@ struct StrictFilePrivateRule: Rule {
                     var j: Int { get }
                     var l: Int { get }
                 }
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
                 class C: P<Int> {
                     fileprivate func f() {}
                 }
                 protocol P<T> {
                     func f()
                 }
-            """, excludeFromDocumentation: true),
-        ] + ["actor", "class", "enum", "extension", "struct"].map { type in
-            Example("""
+            """.excludeFromDocumentation(),
+        ]) + ["actor", "class", "enum", "extension", "struct"].map { type in
+            """
                 \(type) T: P<Int> {
                     fileprivate func f() {}
                     fileprivate let i = 3
@@ -68,41 +68,41 @@ struct StrictFilePrivateRule: Rule {
                     var i: Int { get }
                     var l: Int { get set }
                 }
-            """, excludeFromDocumentation: true)
+            """.excludeFromDocumentation()
         },
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
                 ↓fileprivate class C {
                     ↓fileprivate func f() {}
                 }
-            """),
-            Example("""
+            """,
+            """
                 ↓fileprivate extension String {
                     ↓fileprivate var isSomething: Bool { self == "something" }
                 }
-            """),
-            Example("""
+            """,
+            """
                 ↓fileprivate actor A {
                     ↓fileprivate let i = 1
                 }
-            """),
-            Example("""
+            """,
+            """
                 ↓fileprivate struct C {
                     ↓fileprivate(set) var myInt = 4
                 }
-            """),
-            Example("""
+            """,
+            """
                 struct Outter {
                     struct Inter {
                         ↓fileprivate struct Inner {}
                     }
                 }
-            """),
-            Example("""
+            """,
+            """
                 ↓fileprivate func f() {}
-            """, excludeFromDocumentation: true),
-        ] + ["actor", "class", "enum", "extension", "struct"].map { type in
-            Example("""
+            """.excludeFromDocumentation(),
+        ]) + ["actor", "class", "enum", "extension", "struct"].map { type in
+            """
                 \(type) T: P<Int> {
                     fileprivate func f() {}
                     ↓fileprivate func g() {}
@@ -120,7 +120,7 @@ struct StrictFilePrivateRule: Rule {
                     func g()
                     var j: Int { get }
                 }
-            """, excludeFromDocumentation: true)
+            """.excludeFromDocumentation()
         }
     )
 }

@@ -1,36 +1,36 @@
 struct UnusedImportRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         import Dispatch // This is used
         dispatchMain()
-        """),
-        Example("""
+        """,
+        """
         @testable import Dispatch
         dispatchMain()
-        """),
-        Example("""
+        """,
+        """
         import Foundation
         @objc
         class A {}
-        """),
-        Example("""
+        """,
+        """
         import UnknownModule
         func foo(error: Swift.Error) {}
-        """),
-        Example("""
+        """,
+        """
         @_exported import UnknownModule
-        """),
-        Example("""
+        """,
+        """
         import Foundation
         let 👨‍👩‍👧‍👦 = #selector(NSArray.contains(_:))
         👨‍👩‍👧‍👦 == 👨‍👩‍👧‍👦
-        """),
-        Example("""
+        """,
+        """
         import Foundation
         enum E {
             static let min: CGFloat = 44
         }
-        """, configuration: [
+        """.configuration([
             "allowed_transitive_imports": [
                 [
                     "module": "Foundation",
@@ -38,21 +38,21 @@ struct UnusedImportRuleExamples {
                 ] as [String: any Sendable],
             ],
         ]),
-        Example("""
+        """
         import SwiftUI
 
         final class EditMode: ObservableObject {
             @Published var isEditing = false
         }
-        """, configuration: [
+        """.configuration([
             "allowed_transitive_imports": [
                 [
                     "module": "SwiftUI",
                     "allowed_transitive_imports": ["Foundation"],
                 ] as [String: any Sendable],
             ],
-        ], excludeFromDocumentation: true),
-    ]
+        ]).excludeFromDocumentation(),
+    ])
 
     static let triggeringExamples = #examples([
         """
@@ -92,21 +92,21 @@ struct UnusedImportRuleExamples {
         """,
     ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         ↓import Dispatch
         struct A {
           static func dispatchMain() {}
         }
         A.dispatchMain()
-        """):
-            Example("""
+        """:
+            """
             struct A {
               static func dispatchMain() {}
             }
             A.dispatchMain()
-            """),
-        Example("""
+            """,
+        """
         ↓import Foundation // This is unused
         struct A {
           static func dispatchMain() {}
@@ -114,70 +114,70 @@ struct UnusedImportRuleExamples {
         A.dispatchMain()
         ↓import Dispatch
 
-        """):
-            Example("""
+        """:
+            """
             struct A {
               static func dispatchMain() {}
             }
             A.dispatchMain()
 
-            """),
-        Example("""
+            """,
+        """
         ↓import Foundation
         dispatchMain()
-        """):
-            Example("""
+        """:
+            """
             dispatchMain()
-            """),
-        Example("""
+            """,
+        """
         ↓@testable import Foundation
         import Dispatch
         dispatchMain()
-        """):
-            Example("""
+        """:
+            """
             import Dispatch
             dispatchMain()
-            """),
-        Example("""
+            """,
+        """
         ↓@_implementationOnly import Foundation
         import Dispatch
         dispatchMain()
-        """):
-            Example("""
+        """:
+            """
             import Dispatch
             dispatchMain()
-            """),
-        Example("""
+            """,
+        """
         ↓import Foundation
         // @objc
         class A {}
-        """):
-            Example("""
+        """:
+            """
             // @objc
             class A {}
-            """),
-        Example("""
+            """,
+        """
         @testable import Foundation
         ↓import Dispatch
         @objc
         class A {}
-        """):
-            Example("""
+        """:
+            """
             @testable import Foundation
             @objc
             class A {}
-            """),
-        Example("""
+            """,
+        """
         @testable import Foundation
         ↓@testable import Dispatch
         @objc
         class A {}
-        """):
-            Example("""
+        """:
+            """
             @testable import Foundation
             @objc
             class A {}
-            """),
+            """,
         Example("""
         import Foundation
         typealias Foo = CFArray
@@ -191,11 +191,11 @@ struct UnusedImportRuleExamples {
                 ] as [String: any Sendable],
             ],
         ] as [String: any Sendable], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
-            Example("""
+            """
             import Foundation
             typealias Foo = CFArray
             dispatchMain()
-            """),
+            """,
         Example("""
         ↓↓↓import Foundation
         typealias Foo = CFData
@@ -203,18 +203,18 @@ struct UnusedImportRuleExamples {
         """, configuration: [
             "require_explicit_imports": true
         ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
-            Example("""
+            """
             import CoreFoundation
             import Dispatch
             typealias Foo = CFData
             dispatchMain()
-            """),
-        Example("""
+            """,
+        """
         import Foundation
         typealias Foo = CFData
         @objc
         class A {}
-        """, configuration: [
+        """.configuration([
             "require_explicit_imports": true,
             "allowed_transitive_imports": [
                 [
@@ -223,12 +223,12 @@ struct UnusedImportRuleExamples {
                 ] as [String: any Sendable],
             ],
         ] as [String: any Sendable]):
-            Example("""
+            """
             import Foundation
             typealias Foo = CFData
             @objc
             class A {}
-            """),
+            """,
         Example("""
         ↓import Foundation
         typealias Bar = CFData
@@ -237,30 +237,30 @@ struct UnusedImportRuleExamples {
         """, configuration: [
             "require_explicit_imports": true
         ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
-            Example("""
+            """
             import CoreFoundation
             import Foundation
             typealias Bar = CFData
             @objc
             class A {}
-            """),
-        Example("""
+            """,
+        """
         import Foundation
         func bar() {}
-        """, configuration: [
+        """.configuration([
             "always_keep_imports": ["Foundation"]
         ]):
-            Example("""
+            """
             import Foundation
             func bar() {}
-            """),
-        Example("""
+            """,
+        """
         ↓import Swift
         ↓import SwiftShims
         func foo(error: Swift.Error) {}
-        """):
-            Example("""
+        """:
+            """
             func foo(error: Swift.Error) {}
-            """),
-    ]
+            """,
+    ])
 }

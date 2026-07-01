@@ -9,33 +9,33 @@ struct ExplicitTypeInterfaceRule: Rule {
         name: "Explicit Type Interface",
         description: "Properties should have a type interface",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class Foo {
               var myVar: Int? = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               let myVar: Int? = 0, s: String = ""
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               static var myVar: Int? = 0
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
               class var myVar: Int? = 0
             }
-            """),
-            Example("""
+            """,
+            """
             func f() {
                 if case .failure(let error) = errorCompletion {}
             }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         triggeringExamples: #examples([
             """
             class Foo {

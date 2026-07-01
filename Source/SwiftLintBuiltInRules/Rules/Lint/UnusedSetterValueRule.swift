@@ -9,8 +9,8 @@ struct UnusedSetterValueRule: Rule {
         name: "Unused Setter Value",
         description: "Setter value is not used",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -19,8 +19,8 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = newValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var aValue: String {
                 set {
                     Persister.shared.aValue = newValue
@@ -29,8 +29,8 @@ struct UnusedSetterValueRule: Rule {
                     return Persister.shared.aValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var aValue: String {
                 get {
                     return Persister.shared.aValue
@@ -39,20 +39,20 @@ struct UnusedSetterValueRule: Rule {
                     Persister.shared.aValue = value
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             override var aValue: String {
              get {
                  return Persister.shared.aValue
              }
              set { }
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 var bar: Bool { get set }
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             override var accessibilityValue: String? {
                 get {
                     let index = Int(self.value)
@@ -61,8 +61,8 @@ struct UnusedSetterValueRule: Rule {
                 }
                 set {}
             }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         triggeringExamples: #examples([
             """
             var aValue: String {

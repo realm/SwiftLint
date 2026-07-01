@@ -10,24 +10,24 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
         name: "Comma Spacing",
         description: "There should be no space before and one after any comma",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("func abc(a: String, b: String) { }"),
-            Example("abc(a: \"string\", b: \"string\""),
-            Example("enum a { case a, b, c }"),
-            Example("func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}"),
-            Example("func abc(\n  a: String,\n  bcd: String\n) {\n}"),
-            Example("#imageLiteral(resourceName: \"foo,bar,baz\")"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "func abc(a: String, b: String) { }",
+            "abc(a: \"string\", b: \"string\"",
+            "enum a { case a, b, c }",
+            "func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}",
+            "func abc(\n  a: String,\n  bcd: String\n) {\n}",
+            "#imageLiteral(resourceName: \"foo,bar,baz\")",
+            """
                 kvcStringBuffer.advanced(by: rootKVCLength)
                   .storeBytes(of: 0x2E /* '.' */, as: CChar.self)
-                """),
-            Example("""
+                """,
+            """
                 public indirect enum ExpectationMessage {
                   /// appends after an existing message ("<expectation> (use beNil() to match nils)")
                   case appends(ExpectationMessage, /* Appended Message */ String)
                 }
-                """, excludeFromDocumentation: true),
-        ],
+                """.excludeFromDocumentation(),
+        ]),
         triggeringExamples: #examples([
             "func abc(a: String↓ ,b: String) { }",
             "func abc(a: String↓ ,b: String↓ ,c: String↓ ,d: String) { }",

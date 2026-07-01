@@ -10,27 +10,27 @@ struct RedundantSetAccessControlRule: Rule {
         description: "Property setter access level shouldn't be explicit if " +
                      "it's the same as the variable access level",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("private(set) public var foo: Int"),
-            Example("public let foo: Int"),
-            Example("public var foo: Int"),
-            Example("var foo: Int"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "private(set) public var foo: Int",
+            "public let foo: Int",
+            "public var foo: Int",
+            "var foo: Int",
+            """
             private final class A {
               private(set) var value: Int
             }
-            """),
-            Example("""
+            """,
+            """
             fileprivate class A {
               public fileprivate(set) var value: Int
             }
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             extension Color {
                 public internal(set) static var someColor = Color.anotherColor
             }
-            """),
-        ],
+            """,
+        ]),
         triggeringExamples: #examples([
             "↓private(set) private var foo: Int",
             "↓fileprivate(set) fileprivate var foo: Int",

@@ -43,37 +43,37 @@ internal struct InclusiveLanguageRuleExamples {
     // MARK: - Non-default config
 
     static let nonTriggeringExamplesWithConfig: [Example] = [
-        Example("""
+        """
         let blackList = [
             "foo", "bar"
         ]
-        """, configuration: [
+        """.configuration([
             "override_terms": ["abc123"]
         ]),
-        Example("""
+        """
         private func doThisThing() {}
-        """, configuration: [
+        """.configuration([
             "override_terms": ["abc123"],
             "additional_terms": ["xyz789"],
         ]),
     ]
 
     static let triggeringExamplesWithConfig: [Example] = [
-        Example("""
+        """
         enum Things {
             case foo, ↓fizzBuzz
         }
-        """, configuration: [
+        """.configuration([
             "additional_terms": ["fizzbuzz"]
         ]),
-        Example("""
+        """
         private func ↓thisIsASwiftyFunction() {}
-        """, configuration: [
+        """.configuration([
             "additional_terms": ["swift"]
         ]),
-        Example("""
+        """
         private var ↓fooBar = "abc"
-        """, configuration: [
+        """.configuration([
             "additional_terms": ["FoObAr"]
         ]),
     ]

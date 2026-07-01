@@ -10,185 +10,185 @@ struct RedundantTypeAnnotationRule: Rule {
         name: "Redundant Type Annotation",
         description: "Variables should not have redundant type annotation",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("var url = URL()"),
-            Example("var url: CustomStringConvertible = URL()"),
-            Example("var one: Int = 1, two: Int = 2, three: Int"),
-            Example("guard let url = URL() else { return }"),
-            Example("if let url = URL() { return }"),
-            Example("let alphanumerics = CharacterSet.alphanumerics"),
-            Example("var set: Set<Int> = Set([])"),
-            Example("var set: Set<Int> = Set.init([])"),
-            Example("var set = Set<Int>([])"),
-            Example("var set = Set<Int>.init([])"),
-            Example("guard var set: Set<Int> = Set([]) else { return }"),
-            Example("if var set: Set<Int> = Set.init([]) { return }"),
-            Example("guard var set = Set<Int>([]) else { return }"),
-            Example("if var set = Set<Int>.init([]) { return }"),
-            Example("var one: A<T> = B()"),
-            Example("var one: A = B<T>()"),
-            Example("var one: A<T> = B<T>()"),
-            Example("let a = A.b.c.d"),
-            Example("let a: B = A.b.c.d"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "var url = URL()",
+            "var url: CustomStringConvertible = URL()",
+            "var one: Int = 1, two: Int = 2, three: Int",
+            "guard let url = URL() else { return }",
+            "if let url = URL() { return }",
+            "let alphanumerics = CharacterSet.alphanumerics",
+            "var set: Set<Int> = Set([])",
+            "var set: Set<Int> = Set.init([])",
+            "var set = Set<Int>([])",
+            "var set = Set<Int>.init([])",
+            "guard var set: Set<Int> = Set([]) else { return }",
+            "if var set: Set<Int> = Set.init([]) { return }",
+            "guard var set = Set<Int>([]) else { return }",
+            "if var set = Set<Int>.init([]) { return }",
+            "var one: A<T> = B()",
+            "var one: A = B<T>()",
+            "var one: A<T> = B<T>()",
+            "let a = A.b.c.d",
+            "let a: B = A.b.c.d",
+            """
             enum Direction {
                 case up
                 case down
             }
 
             var direction: Direction = .up
-            """),
-            Example("""
+            """,
+            """
             enum Direction {
                 case up
                 case down
             }
 
             var direction = Direction.up
-            """),
-            Example("@IgnoreMe var a: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
-            Example("""
+            """,
+            "@IgnoreMe var a: Int = Int(5)".configuration(["ignore_attributes": ["IgnoreMe"]]),
+            """
             var a: Int {
                 @IgnoreMe let i: Int = Int(1)
                 return i
             }
-            """, configuration: ["ignore_attributes": ["IgnoreMe"]]),
-            Example("var bol: Bool = true"),
-            Example("var dbl: Double = 0.0"),
-            Example("var int: Int = 0"),
-            Example("var str: String = \"str\""),
-            Example("""
+            """.configuration(["ignore_attributes": ["IgnoreMe"]]),
+            "var bol: Bool = true",
+            "var dbl: Double = 0.0",
+            "var int: Int = 0",
+            "var str: String = \"str\"",
+            """
             struct Foo {
                 var url: URL = URL()
                 let myVar: Int? = 0, s: String = ""
             }
-            """, configuration: ["ignore_properties": true]),
-        ],
-        triggeringExamples: [
-            Example("var url↓:URL=URL()"),
-            Example("var url↓:URL = URL(string: \"\")"),
-            Example("var url↓: URL = URL()"),
-            Example("let url↓: URL = URL()"),
-            Example("lazy var url↓: URL = URL()"),
-            Example("let url↓: URL = URL()!"),
-            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"),
-            Example("guard let url↓: URL = URL() else { return }"),
-            Example("if let url↓: URL = URL() { return }"),
-            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"),
-            Example("var set↓: Set<Int> = Set<Int>([])"),
-            Example("var set↓: Set<Int> = Set<Int>.init([])"),
-            Example("var set↓: Set = Set<Int>([])"),
-            Example("var set↓: Set = Set<Int>.init([])"),
-            Example("guard var set↓: Set = Set<Int>([]) else { return }"),
-            Example("if var set↓: Set = Set<Int>.init([]) { return }"),
-            Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"),
-            Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"),
-            Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"),
-            Example("var num↓: Int = Int.random(0..<10)"),
-            Example("let a↓: A = A.b.c.d"),
-            Example("let a↓: A = A.f().b"),
-            Example("""
+            """.configuration(["ignore_properties": true]),
+        ]),
+        triggeringExamples: #examples([
+            "var url↓:URL=URL()",
+            "var url↓:URL = URL(string: \"\")",
+            "var url↓: URL = URL()",
+            "let url↓: URL = URL()",
+            "lazy var url↓: URL = URL()",
+            "let url↓: URL = URL()!",
+            "var one: Int = 1, two↓: Int = Int(5), three: Int",
+            "guard let url↓: URL = URL() else { return }",
+            "if let url↓: URL = URL() { return }",
+            "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics",
+            "var set↓: Set<Int> = Set<Int>([])",
+            "var set↓: Set<Int> = Set<Int>.init([])",
+            "var set↓: Set = Set<Int>([])",
+            "var set↓: Set = Set<Int>.init([])",
+            "guard var set↓: Set = Set<Int>([]) else { return }",
+            "if var set↓: Set = Set<Int>.init([]) { return }",
+            "guard var set↓: Set<Int> = Set<Int>([]) else { return }",
+            "if var set↓: Set<Int> = Set<Int>.init([]) { return }",
+            "var set↓: Set = Set<Int>([]), otherSet: Set<Int>",
+            "var num↓: Int = Int.random(0..<10)",
+            "let a↓: A = A.b.c.d",
+            "let a↓: A = A.f().b",
+            """
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar↓: Int = Int(5)
               }
             }
-            """),
-            Example("""
+            """,
+            """
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar↓: Int = Int(5)
               }
             }
-            """, configuration: ["ignore_properties": true]),
-            Example("let a↓: [Int] = [Int]()"),
-            Example("let a↓: A.B = A.B()"),
-            Example("""
+            """.configuration(["ignore_properties": true]),
+            "let a↓: [Int] = [Int]()",
+            "let a↓: A.B = A.B()",
+            """
             enum Direction {
                 case up
                 case down
             }
 
             var direction↓: Direction = Direction.up
-            """),
-            Example("@DontIgnoreMe var a↓: Int = Int(5)", configuration: ["ignore_attributes": ["IgnoreMe"]]),
-            Example("""
+            """,
+            "@DontIgnoreMe var a↓: Int = Int(5)".configuration(["ignore_attributes": ["IgnoreMe"]]),
+            """
             @IgnoreMe
             var a: Int {
                 let i↓: Int = Int(1)
                 return i
             }
-            """, configuration: ["ignore_attributes": ["IgnoreMe"]]),
-            Example("var bol↓: Bool = true", configuration: ["consider_default_literal_types_redundant": true]),
-            Example("var dbl↓: Double = 0.0", configuration: ["consider_default_literal_types_redundant": true]),
-            Example("var int↓: Int = 0", configuration: ["consider_default_literal_types_redundant": true]),
-            Example("var str↓: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true]),
-        ],
-        corrections: [
-            Example("var url↓: URL = URL()"): Example("var url = URL()"),
-            Example("let url↓: URL = URL()"): Example("let url = URL()"),
-            Example("var one: Int = 1, two↓: Int = Int(5), three: Int"):
-                Example("var one: Int = 1, two = Int(5), three: Int"),
-            Example("guard let url↓: URL = URL() else { return }"):
-                Example("guard let url = URL() else { return }"),
-            Example("if let url↓: URL = URL() { return }"):
-                Example("if let url = URL() { return }"),
-            Example("let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics"):
-                Example("let alphanumerics = CharacterSet.alphanumerics"),
-            Example("var set↓: Set<Int> = Set<Int>([])"):
-                Example("var set = Set<Int>([])"),
-            Example("var set↓: Set<Int> = Set<Int>.init([])"):
-                Example("var set = Set<Int>.init([])"),
-            Example("var set↓: Set = Set<Int>([])"):
-                Example("var set = Set<Int>([])"),
-            Example("var set↓: Set = Set<Int>.init([])"):
-                Example("var set = Set<Int>.init([])"),
-            Example("guard var set↓: Set<Int> = Set<Int>([]) else { return }"):
-                Example("guard var set = Set<Int>([]) else { return }"),
-            Example("if var set↓: Set<Int> = Set<Int>.init([]) { return }"):
-                Example("if var set = Set<Int>.init([]) { return }"),
-            Example("var set↓: Set = Set<Int>([]), otherSet: Set<Int>"):
-                Example("var set = Set<Int>([]), otherSet: Set<Int>"),
-            Example("let a↓: A = A.b.c.d"):
-                Example("let a = A.b.c.d"),
-            Example("""
+            """.configuration(["ignore_attributes": ["IgnoreMe"]]),
+            "var bol↓: Bool = true".configuration(["consider_default_literal_types_redundant": true]),
+            "var dbl↓: Double = 0.0".configuration(["consider_default_literal_types_redundant": true]),
+            "var int↓: Int = 0".configuration(["consider_default_literal_types_redundant": true]),
+            "var str↓: String = \"str\"".configuration(["consider_default_literal_types_redundant": true]),
+        ]),
+        corrections: #examplesDictionary([
+            "var url↓: URL = URL()": "var url = URL()",
+            "let url↓: URL = URL()": "let url = URL()",
+            "var one: Int = 1, two↓: Int = Int(5), three: Int":
+                "var one: Int = 1, two = Int(5), three: Int",
+            "guard let url↓: URL = URL() else { return }":
+                "guard let url = URL() else { return }",
+            "if let url↓: URL = URL() { return }":
+                "if let url = URL() { return }",
+            "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics":
+                "let alphanumerics = CharacterSet.alphanumerics",
+            "var set↓: Set<Int> = Set<Int>([])":
+                "var set = Set<Int>([])",
+            "var set↓: Set<Int> = Set<Int>.init([])":
+                "var set = Set<Int>.init([])",
+            "var set↓: Set = Set<Int>([])":
+                "var set = Set<Int>([])",
+            "var set↓: Set = Set<Int>.init([])":
+                "var set = Set<Int>.init([])",
+            "guard var set↓: Set<Int> = Set<Int>([]) else { return }":
+                "guard var set = Set<Int>([]) else { return }",
+            "if var set↓: Set<Int> = Set<Int>.init([]) { return }":
+                "if var set = Set<Int>.init([]) { return }",
+            "var set↓: Set = Set<Int>([]), otherSet: Set<Int>":
+                "var set = Set<Int>([]), otherSet: Set<Int>",
+            "let a↓: A = A.b.c.d":
+                "let a = A.b.c.d",
+            """
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar↓: Int = Int(5)
               }
             }
-            """):
-            Example("""
+            """:
+            """
             class ViewController: UIViewController {
               func someMethod() {
                 let myVar = Int(5)
               }
             }
-            """),
-            Example("var num: Int = Int.random(0..<10)"): Example("var num = Int.random(0..<10)"),
-            Example("""
+            """,
+            "var num: Int = Int.random(0..<10)": "var num = Int.random(0..<10)",
+            """
             @IgnoreMe
             var a: Int {
                 let i↓: Int = Int(1)
                 return i
             }
-            """, configuration: ["ignore_attributes": ["IgnoreMe"]]):
-            Example("""
+            """.configuration(["ignore_attributes": ["IgnoreMe"]]):
+            """
             @IgnoreMe
             var a: Int {
                 let i = Int(1)
                 return i
             }
-            """),
-            Example("var bol: Bool = true", configuration: ["consider_default_literal_types_redundant": true]):
-                Example("var bol = true"),
-            Example("var dbl: Double = 0.0", configuration: ["consider_default_literal_types_redundant": true]):
-                Example("var dbl = 0.0"),
-            Example("var int: Int = 0", configuration: ["consider_default_literal_types_redundant": true]):
-                Example("var int = 0"),
-            Example("var str: String = \"str\"", configuration: ["consider_default_literal_types_redundant": true]):
-                Example("var str = \"str\""),
-        ]
+            """,
+            "var bol: Bool = true".configuration(["consider_default_literal_types_redundant": true]):
+                "var bol = true",
+            "var dbl: Double = 0.0".configuration(["consider_default_literal_types_redundant": true]):
+                "var dbl = 0.0",
+            "var int: Int = 0".configuration(["consider_default_literal_types_redundant": true]):
+                "var int = 0",
+            "var str: String = \"str\"".configuration(["consider_default_literal_types_redundant": true]):
+                "var str = \"str\"",
+        ])
     )
 }
 

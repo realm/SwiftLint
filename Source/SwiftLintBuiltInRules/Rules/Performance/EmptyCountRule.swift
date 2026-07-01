@@ -12,67 +12,61 @@ struct EmptyCountRule: Rule {
         name: "Empty Count",
         description: "Prefer checking `isEmpty` over comparing `count` to zero",
         kind: .performance,
-        nonTriggeringExamples: [
-            Example("var count = 0"),
-            Example("[Int]().isEmpty"),
-            Example("[Int]().count > 1"),
-            Example("[Int]().count == 1"),
-            Example("[Int]().count == 0xff"),
-            Example("[Int]().count == 0b01"),
-            Example("[Int]().count == 0o07"),
-            Example("discount == 0"),
-            Example("order.discount == 0"),
-            Example("let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }"),
-            Example("#Rule(param1: \"param1\")", excludeFromDocumentation: true),
-            Example("func isEmpty(count: Int) -> Bool { count == 0 }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "var count = 0",
+            "[Int]().isEmpty",
+            "[Int]().count > 1",
+            "[Int]().count == 1",
+            "[Int]().count == 0xff",
+            "[Int]().count == 0b01",
+            "[Int]().count == 0o07",
+            "discount == 0",
+            "order.discount == 0",
+            "let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }",
+            "#Rule(param1: \"param1\")".excludeFromDocumentation(),
+            "func isEmpty(count: Int) -> Bool { count == 0 }",
+            """
                 var isEmpty: Bool {
                     let count = 0
                     return count == 0
                 }
-                """),
-            Example("{ count in count == 0 }()"),
-        ],
-        triggeringExamples: [
-            Example("[Int]().↓count == 0"),
-            Example("0 == [Int]().↓count"),
-            Example("[Int]().↓count==0"),
-            Example("[Int]().↓count > 0"),
-            Example("[Int]().↓count != 0"),
-            Example("[Int]().↓count == 0x0"),
-            Example("[Int]().↓count == 0x00_00"),
-            Example("[Int]().↓count == 0b00"),
-            Example("[Int]().↓count == 0o00"),
-            Example("↓count == 0"),
-            Example("#ExampleMacro { $0.list.↓count == 0 }"),
-            Example("#Rule { $0.donations.↓count == 0 }", excludeFromDocumentation: true),
-            Example(
-                "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }",
-                excludeFromDocumentation: true
-            ),
-            Example(
-                "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }",
-                excludeFromDocumentation: true
-            ),
-            Example("#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }", excludeFromDocumentation: true),
-            Example("""
+                """,
+            "{ count in count == 0 }()",
+        ]),
+        triggeringExamples: #examples([
+            "[Int]().↓count == 0",
+            "0 == [Int]().↓count",
+            "[Int]().↓count==0",
+            "[Int]().↓count > 0",
+            "[Int]().↓count != 0",
+            "[Int]().↓count == 0x0",
+            "[Int]().↓count == 0x00_00",
+            "[Int]().↓count == 0b00",
+            "[Int]().↓count == 0o00",
+            "↓count == 0",
+            "#ExampleMacro { $0.list.↓count == 0 }",
+            "#Rule { $0.donations.↓count == 0 }".excludeFromDocumentation(),
+            "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }".excludeFromDocumentation(),
+            "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }"
+                .excludeFromDocumentation(),
+            "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }".excludeFromDocumentation(),
+            """
                 #Rule(param1: "param1") {
                     doSomething()
                     return $0.donations.↓count == 0
                 }
-                """, excludeFromDocumentation: true),
-            Example("""
+                """.excludeFromDocumentation(),
+            """
                 extension E {
                     var isEmpty: Bool { ↓count == 0 }
                 }
-                """, excludeFromDocumentation: true),
-            Example(
-                """
+                """.excludeFromDocumentation(),
+            """
                 struct S {
                     var isEmpty: Bool { ↓count == 0 }
                 }
-                """, excludeFromDocumentation: true),
-        ],
+                """.excludeFromDocumentation(),
+        ]),
         corrections: #examplesDictionary([
             "[].↓count == 0":
                 "[].isEmpty",

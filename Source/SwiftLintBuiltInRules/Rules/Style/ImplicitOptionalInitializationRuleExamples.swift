@@ -1,228 +1,194 @@
 enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type_name
-    static let nonTriggeringExamples = [
-        Example(  // properties with body should be ignored
-            """
+    static let nonTriggeringExamples = #examples([
+        // properties with body should be ignored
+        """
             var foo: Int? {
               if bar != nil { }
               return 0
             }
-            """),
-        Example(  // properties with a closure call
-            """
+            """,
+        // properties with a closure call
+        """
             var foo: Int? = {
               if bar != nil { }
               return 0
             }()
-            """
-        ),
-        Example("lazy var test: Int? = nil"),  // lazy variables need to be initialized
-        Example("let myVar: String? = nil"),  // let variables need to be initialized
-        Example("var myVar: Int? { nil }"),  // computed properties should be ignored
-        Example("var x: Int? = 1"),  // initialized with a value
+            """,
+        "lazy var test: Int? = nil",
+        "let myVar: String? = nil",
+        "var myVar: Int? { nil }",
+        "var x: Int? = 1",
 
         // never style
-        Example("private var myVar: Int? = nil", configuration: ["style": "never"]),
-        Example("var myVar: Optional<Int> = nil", configuration: ["style": "never"]),
-        Example(
-            "var myVar: Int? { nil }, myOtherVar: Int? = nil", configuration: ["style": "never"]
-        ),
-        Example(
-            """
+        "private var myVar: Int? = nil".configuration(["style": "never"]),
+        "var myVar: Optional<Int> = nil".configuration(["style": "never"]),
+        "var myVar: Int? { nil }, myOtherVar: Int? = nil".configuration(["style": "never"]),
+        """
             var myVar: String? = nil {
               didSet { print("didSet") }
             }
-            """, configuration: ["style": "never"]),
-        Example(
-            """
+            """.configuration(["style": "never"]),
+        """
             func funcName() {
                 var myVar: String? = nil
             }
-            """, configuration: ["style": "never"]),
-        Example("var x: Int? = nil // comment", configuration: ["style": "never"]),  // with comment after
-        Example(
-            """
+            """.configuration(["style": "never"]),
+        "var x: Int? = nil // comment".configuration(["style": "never"]),  // with comment after
+        """
             @Wrapper("name")
             var flag: Bool?
-            """,
-            configuration: [
+            """.configuration([
                 "style": "never",
                 "ignore_attributes": ["Wrapper"],
-            ]
-        ),
+            ]),
 
         // always style
-        Example("public var myVar: Int?", configuration: ["style": "always"]),
-        Example("var myVar: Optional<Int>", configuration: ["style": "always"]),
-        Example(
-            """
+        "public var myVar: Int?".configuration(["style": "always"]),
+        "var myVar: Optional<Int>".configuration(["style": "always"]),
+        """
             @Wrapper("name")
             var flag: Bool? = nil
-            """,
-            configuration: [
+            """.configuration([
                 "style": "always",
                 "ignore_attributes": ["Wrapper"],
-            ]
-        ),
-        Example(
-            "var myVar: Int? { nil }, myOtherVar: Int?", configuration: ["style": "always"]),
-        Example(
-            """
+            ]),
+        "var myVar: Int? { nil }, myOtherVar: Int?".configuration(["style": "always"]),
+        """
             var myVar: String? {
               didSet { print("didSet") }
             }
-            """, configuration: ["style": "always"]),
-        Example(
-            """
+            """.configuration(["style": "always"]),
+        """
             func funcName() {
               var myVar: String?
             }
-            """, configuration: ["style": "always"]),
-        Example("var x: Int? // comment", configuration: ["style": "always"]),  // with comment after
-    ]
+            """.configuration(["style": "always"]),
+        "var x: Int? // comment".configuration(["style": "always"]),  // with comment after
+    ])
 
-    static let triggeringExamples = [
+    static let triggeringExamples = #examples([
         // never style
-        Example("var ↓myVar: Int? ", configuration: ["style": "never"]),
-        Example("var ↓myVar: Optional<Int> ", configuration: ["style": "never"]),
-        Example("var myVar: Int? = nil, ↓myOtherVar: Int? ", configuration: ["style": "never"]),
-        Example(
-            """
+        "var ↓myVar: Int? ".configuration(["style": "never"]),
+        "var ↓myVar: Optional<Int> ".configuration(["style": "never"]),
+        "var myVar: Int? = nil, ↓myOtherVar: Int? ".configuration(["style": "never"]),
+        """
             var ↓myVar: String? {
               didSet { print("didSet") }
             }
-            """, configuration: ["style": "never"]),
-        Example(
-            """
+            """.configuration(["style": "never"]),
+        """
             func funcName() {
               var ↓myVar: String?
             }
-            """, configuration: ["style": "never"]
-        ),
-        Example(
-            """
+            """.configuration(["style": "never"]),
+        """
             @Wrapper("name")
             var ↓flag: Bool?
-            """,
-            configuration: [
+            """.configuration([
                 "style": "never",
                 "ignore_attributes": ["State"],
-            ]
-        ),
+            ]),
 
         // always style
-        Example("var ↓myVar: Int? = nil", configuration: ["style": "always"]),
-        Example("var ↓myVar: Optional<Int> = nil", configuration: ["style": "always"]),
-        Example(
-            """
+        "var ↓myVar: Int? = nil".configuration(["style": "always"]),
+        "var ↓myVar: Optional<Int> = nil".configuration(["style": "always"]),
+        """
             @Wrapper("name")
             var ↓flag: Bool? = nil
-            """,
-            configuration: [
+            """.configuration([
                 "style": "always",
                 "ignore_attributes": ["State"],
-            ]
-        ),
-        Example("var myVar: Int?, ↓myOtherVar: Int? = nil", configuration: ["style": "always"]),
-        Example(
-            """
+            ]),
+        "var myVar: Int?, ↓myOtherVar: Int? = nil".configuration(["style": "always"]),
+        """
             var ↓myVar: String? = nil {
               didSet { print("didSet") }
             }
-            """, configuration: ["style": "always"]),
-        Example(
-            """
+            """.configuration(["style": "always"]),
+        """
             func funcName() {
                 var ↓myVar: String? = nil
             }
-            """, configuration: ["style": "always"]),
-    ]
+            """.configuration(["style": "always"]),
+    ])
 
-    static let corrections = [
+    static let corrections = #examplesDictionary([
         // never style
-        Example(
-            """
+        """
             @Wrapper("name")
             var flag: Bool?
-            """,
-            configuration: [
+            """.configuration([
                 "style": "never",
                 "ignore_attributes": ["Wrapper"],
             ]):
-            Example(
+
                 """
                 @Wrapper("name")
                 var flag: Bool?
-                """),
-        Example("var ↓myVar: Int? // comment", configuration: ["style": "never"]):
-            Example("var myVar: Int? = nil // comment"),
-        Example("var ↓myVar: Optional<Int> // comment", configuration: ["style": "never"]):
-            Example("var myVar: Optional<Int> = nil // comment"),
-        Example(
-            """
+                """,
+        "var ↓myVar: Int? // comment".configuration(["style": "never"]):
+            "var myVar: Int? = nil // comment",
+        "var ↓myVar: Optional<Int> // comment".configuration(["style": "never"]):
+            "var myVar: Optional<Int> = nil // comment",
+        """
             var ↓myVar: String? {
               didSet { print("didSet") }
             }
-            """, configuration: ["style": "never"]):
-            Example(
+            """.configuration(["style": "never"]):
+
                 """
                 var myVar: String? = nil {
                   didSet { print("didSet") }
                 }
-                """),
-        Example(
-            """
+                """,
+        """
             func funcName() {
               var ↓myVar: String?
             }
-            """, configuration: ["style": "never"]
-        ): Example(
+            """.configuration(["style": "never"]):
             """
             func funcName() {
               var myVar: String? = nil
             }
-            """),
+            """,
 
-        Example(
-            """
+        """
             @Wrapper("name")
             var flag: Bool? = nil
-            """,
-            configuration: [
+            """.configuration([
                 "style": "always",
                 "ignore_attributes": ["Wrapper"],
             ]):
-            Example(
+
                 """
                 @Wrapper("name")
                 var flag: Bool? = nil
-                """),
-        Example("var ↓myVar: Int? = nil // comment", configuration: ["style": "always"]):
-            Example("var myVar: Int? // comment"),
-        Example("var ↓myVar: Optional<Int> = nil // comment", configuration: ["style": "always"]):
-            Example("var myVar: Optional<Int> // comment"),
-        Example(
-            """
+                """,
+        "var ↓myVar: Int? = nil // comment".configuration(["style": "always"]):
+            "var myVar: Int? // comment",
+        "var ↓myVar: Optional<Int> = nil // comment".configuration(["style": "always"]):
+            "var myVar: Optional<Int> // comment",
+        """
             var ↓myVar: String? = nil {
               didSet { print("didSet") }
             }
-            """, configuration: ["style": "always"]):
-            Example(
+            """.configuration(["style": "always"]):
+
                 """
                 var myVar: String? {
                   didSet { print("didSet") }
                 }
-                """),
-        Example(
-            """
+                """,
+        """
             func funcName() {
                 var ↓myVar: String? = nil
             }
-            """, configuration: ["style": "always"]):
-            Example(
+            """.configuration(["style": "always"]):
+
                 """
                 func funcName() {
                     var myVar: String?
                 }
-                """),
-    ]
+                """,
+    ])
 }

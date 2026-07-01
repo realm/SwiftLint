@@ -11,8 +11,8 @@ struct SuperfluousElseRule: Rule {
         name: "Superfluous Else",
         description: "Else branches should be avoided when the previous if-block exits the current scope",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
                 if i > 0 {
                     // comment
                 } else if i < 12 {
@@ -20,8 +20,8 @@ struct SuperfluousElseRule: Rule {
                 } else {
                     return 3
                 }
-                """),
-            Example("""
+                """,
+            """
                 if i > 0 {
                     let a = 1
                     if a > 1 {
@@ -33,8 +33,8 @@ struct SuperfluousElseRule: Rule {
                 } else {
                     return 3
                 }
-                """),
-            Example("""
+                """,
+            """
                 if i > 0 {
                     if a > 1 {
                         return 1
@@ -42,8 +42,8 @@ struct SuperfluousElseRule: Rule {
                 } else {
                     return 3
                 }
-                """),
-            Example("""
+                """,
+            """
                 if i > 0 {
                     if a > 1 {
                         if a > 1 {
@@ -55,8 +55,8 @@ struct SuperfluousElseRule: Rule {
                 } else {
                     return 3
                 }
-                """, excludeFromDocumentation: true),
-            Example("""
+                """.excludeFromDocumentation(),
+            """
                 for i in list {
                     if i > 12 {
                         // Do nothing
@@ -69,15 +69,15 @@ struct SuperfluousElseRule: Rule {
                         break
                     }
                 }
-                """),
-            Example("""
+                """,
+            """
             if #available(iOS 13, *) {
                 return
             } else {
                 deprecatedFunction()
             }
-            """),
-        ],
+            """,
+        ]),
         triggeringExamples: #examples([
             """
                 if i > 0 {

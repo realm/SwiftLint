@@ -124,22 +124,22 @@ struct ContrastedOpeningBraceRuleExamples {
             """,
     ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
             func abc()↓{
             }
-            """),
-        Example("""
+            """,
+        """
             func abc() { }
-            """),
-        Example("""
+            """,
+        """
             func abc(a: A,
                      b: B) {}
-            """),
-        Example("""
+            """,
+        """
             [].map { $0 }
-            """),
-        Example("""
+            """,
+        """
             struct OldContentView: View ↓{
               @State private var showOptions = false
 
@@ -153,16 +153,16 @@ struct ContrastedOpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             class Rule
             {
               var a: String↓{
                 return ""
               }
             }
-            """),
-        Example("""
+            """,
+        """
             @MyProperty class Rule
             {
               var a: String
@@ -175,13 +175,13 @@ struct ContrastedOpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             precedencegroup Group ↓{
               assignment: true
             }
-            """),
-        Example("""
+            """,
+        """
             class TestFile
             {
                func problemFunction() ↓{
@@ -194,24 +194,24 @@ struct ContrastedOpeningBraceRuleExamples {
                    print("Brackets")
                }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             if
                 "test".isEmpty ↓{
                 // code here
             }
-            """),
-        Example("""
+            """,
+        """
             if c  ↓{}
             else /* comment */  ↓{}
-            """),
-        Example("""
+            """,
+        """
             if c
               ↓{
                 // code here
             }
-            """),
-        Example("""
+            """,
+        """
             if c1 ↓{
               return
             } else if c2↓{
@@ -220,22 +220,22 @@ struct ContrastedOpeningBraceRuleExamples {
              ↓{
               return
             }
-            """),
-        Example("""
+            """,
+        """
             func f()
             {
                 return a.map
                         ↓{ $0 }
             }
-            """),
-        Example("""
+            """,
+        """
             a ↓{
                 $0
             } b: ↓{
                 $1
             }
-            """),
-    ]
+            """,
+    ])
 
     static let corrections = #examplesDictionary([
         """

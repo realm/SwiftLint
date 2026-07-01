@@ -1,9 +1,9 @@
 internal struct TestCaseAccessibilityRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples = #examples([
         // Valid XCTestCase class
 
-        Example("let foo: String?"),
-        Example("""
+        "let foo: String?",
+        """
         let foo: String?
 
         class FooTests: XCTestCase {
@@ -40,15 +40,15 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             private someFunc(hasParam: Bool) {}
         }
-        """),
+        """,
 
-        Example("""
+        """
         class FooTests: XCTestCase {
             private struct MockSomething: Something {}
         }
-        """),
+        """,
 
-        Example("""
+        """
         class FooTests: XCTestCase {
             override init() {
                 super.init()
@@ -56,17 +56,17 @@ internal struct TestCaseAccessibilityRuleExamples {
                 var bar = 2
             }
         }
-        """),
+        """,
 
-        Example("""
+        """
         class FooTests: XCTestCase {
             func allowedPrefixTestFoo() {}
         }
-        """, configuration: ["allowed_prefixes": ["allowedPrefix"]]),
+        """.configuration(["allowed_prefixes": ["allowedPrefix"]]),
 
         // Not an XCTestCase class
 
-        Example("""
+        """
         class Foobar {
             func setUp() {}
 
@@ -74,8 +74,8 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             func testFoo() {}
         }
-        """),
-    ]
+        """,
+    ])
 
     static let triggeringExamples = #examples([
         """

@@ -11,20 +11,20 @@ struct FunctionBodyLengthRule: Rule {
         name: "Function Body Length",
         description: "Function bodies should not span too many lines",
         kind: .metrics,
-        nonTriggeringExamples: [
-            Example("func f() {}", configuration: Self.testConfig),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "func f() {}".configuration(Self.testConfig),
+            """
                 func f() {
                     let x = 0
                 }
-                """, configuration: Self.testConfig),
-            Example("""
+                """.configuration(Self.testConfig),
+            """
                 func f() {
                     let x = 0
                     let y = 1
                 }
-                """, configuration: Self.testConfig),
-            Example("""
+                """.configuration(Self.testConfig),
+            """
                 func f() {
                     let x = 0
                     // comments
@@ -32,26 +32,26 @@ struct FunctionBodyLengthRule: Rule {
                     // be
                     // ignored
                 }
-                """, configuration: Self.testConfig),
-            Example("""
+                """.configuration(Self.testConfig),
+            """
                 func f() {
                     let x = 0
                     // empty lines will be ignored
 
 
                 }
-            """, configuration: Self.testConfig),
-        ],
+            """.configuration(Self.testConfig),
+        ]),
 
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
                 ↓func f() {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """, configuration: Self.testConfig),
-            Example("""
+                """.configuration(Self.testConfig),
+            """
             class C {
                 ↓deinit {
                     let x = 0
@@ -59,8 +59,8 @@ struct FunctionBodyLengthRule: Rule {
                     let z = 2
                 }
             }
-            """, configuration: Self.testConfig),
-            Example("""
+            """.configuration(Self.testConfig),
+            """
             class C {
                 ↓init() {
                     let x = 0
@@ -68,8 +68,8 @@ struct FunctionBodyLengthRule: Rule {
                     let z = 2
                 }
             }
-            """, configuration: Self.testConfig),
-            Example("""
+            """.configuration(Self.testConfig),
+            """
             class C {
                 ↓subscript() -> Int {
                     let x = 0
@@ -77,8 +77,8 @@ struct FunctionBodyLengthRule: Rule {
                     return x + y
                 }
             }
-            """, configuration: Self.testConfig),
-            Example("""
+            """.configuration(Self.testConfig),
+            """
             struct S {
                 subscript() -> Int {
                     ↓get {
@@ -98,8 +98,8 @@ struct FunctionBodyLengthRule: Rule {
                     }
                 }
             }
-            """, configuration: Self.testConfig),
-        ]
+            """.configuration(Self.testConfig),
+        ])
     )
 }
 

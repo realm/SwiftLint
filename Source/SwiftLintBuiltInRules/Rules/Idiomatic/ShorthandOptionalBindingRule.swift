@@ -10,8 +10,8 @@ struct ShorthandOptionalBindingRule: Rule {
         description: "Use shorthand syntax for optional binding",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotSeven,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
                 if let i {}
                 if let i = a {}
                 guard let i = f() else {}
@@ -19,37 +19,37 @@ struct ShorthandOptionalBindingRule: Rule {
                 if let i = i as? Foo {}
                 guard let `self` = self else {}
                 while var i { i = nil }
-                """),
-            Example("""
+                """,
+            """
                 if let i,
                    var i = a,
                    j > 0 {}
-                """, excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("""
+                """.excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            """
                 if ↓let i = i {}
                 if ↓let self = self {}
                 if ↓var `self` = `self` {}
                 if i > 0, ↓let j = j {}
                 if ↓let i = i, ↓var j = j {}
-                """),
-            Example("""
+                """,
+            """
                 if ↓let i = i,
                    ↓var j = j,
                    j > 0 {}
-                """, excludeFromDocumentation: true),
-            Example("""
+                """.excludeFromDocumentation(),
+            """
                 guard ↓let i = i else {}
                 guard ↓let self = self else {}
                 guard ↓var `self` = `self` else {}
                 guard i > 0, ↓let j = j else {}
                 guard ↓let i = i, ↓var j = j else {}
-                """),
-            Example("""
+                """,
+            """
                 while ↓var i = i { i = nil }
-                """),
-        ],
+                """,
+        ]),
         corrections: #examplesDictionary([
             """
                 if ↓let i = i {}

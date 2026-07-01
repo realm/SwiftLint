@@ -1,22 +1,22 @@
 struct ExplicitSelfRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         struct A {
             func f1() {}
             func f2() {
                 self.f1()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct A {
             let p1: Int
             func f1() {
                 _ = self.p1
             }
         }
-        """),
-        Example("""
+        """,
+        """
         @propertyWrapper
         struct Wrapper<Value> {
             let wrappedValue: Value
@@ -34,8 +34,8 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """),
-        Example("""
+        """,
+        """
         class StringInterpolation {
             let foo = "foo"
 
@@ -43,8 +43,8 @@ struct ExplicitSelfRuleExamples {
                 return "StringInterpolation{foo: \\(self.foo)}"
             }
         }
-        """, testWrappingInString: false),
-        Example("""
+        """.skipWrappingInStringTest(),
+        """
         class StringInterpolationRawStringLiteral {
             let foo = "foo"
 
@@ -52,8 +52,8 @@ struct ExplicitSelfRuleExamples {
                 return #"StringInterpolation{foo: \\#(self.foo)}"#
             }
         }
-        """, testWrappingInString: false),
-        Example("""
+        """.skipWrappingInStringTest(),
+        """
         class LocalStringInterpolation {
             var bar: String
 
@@ -63,43 +63,43 @@ struct ExplicitSelfRuleExamples {
                 self.bar = "\\(a)\\(b)".uppercased()
             }
         }
-        """, testWrappingInString: false),
-        Example("""
+        """.skipWrappingInStringTest(),
+        """
         class StringConcatenation {
             var description: String {
                 let number = 1
                 return "\\(number)" + " count"
             }
         }
-        """, testWrappingInString: false),
-    ]
+        """.skipWrappingInStringTest(),
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         struct A {
             func f1() {}
             func f2() {
                 ↓f1()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct A {
             let p1: Int
             func f1() {
                 _ = ↓p1
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct A {
             func f1(a b: Int) {}
             func f2() {
                 ↓f1(a: 0)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         @propertyWrapper
         struct Wrapper<Value> {
             let wrappedValue: Value
@@ -117,8 +117,8 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """),
-        Example("""
+        """,
+        """
         class StringInterpolation {
             let foo = "foo"
 
@@ -126,8 +126,8 @@ struct ExplicitSelfRuleExamples {
                 return "StringInterpolation{foo: \\(↓foo)}"
             }
         }
-        """, testWrappingInString: false),
-        Example("""
+        """.skipWrappingInStringTest(),
+        """
         class StringInterpolationRawStringLiteral {
             let foo = "foo"
 
@@ -135,11 +135,11 @@ struct ExplicitSelfRuleExamples {
                 return #"StringInterpolation{foo: \\#(↓foo)}"#
             }
         }
-        """, testWrappingInString: false),
-    ]
+        """.skipWrappingInStringTest(),
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #examplesDictionary([
+        """
         struct A {
             func f1() -> Int { 1 }
             func f2() -> Int { 2 }
@@ -147,8 +147,8 @@ struct ExplicitSelfRuleExamples {
                 ↓f1() + ↓f2()
             }
         }
-        """):
-        Example("""
+        """:
+        """
         struct A {
             func f1() -> Int { 1 }
             func f2() -> Int { 2 }
@@ -156,40 +156,40 @@ struct ExplicitSelfRuleExamples {
                 self.f1() + self.f2()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct A {
             let p1: Int
             func f1() {
                 _ = ↓p1
             }
         }
-        """):
-        Example("""
+        """:
+        """
         struct A {
             let p1: Int
             func f1() {
                 _ = self.p1
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct A {
             func f1(a b: Int) {}
             func f2() {
                 ↓f1(a: 0)
             }
         }
-        """):
-        Example("""
+        """:
+        """
         struct A {
             func f1(a b: Int) {}
             func f2() {
                 self.f1(a: 0)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         @propertyWrapper
         struct Wrapper<Value> {
             let wrappedValue: Value
@@ -207,7 +207,7 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """): Example("""
+        """: """
         @propertyWrapper
         struct Wrapper<Value> {
             let wrappedValue: Value
@@ -225,8 +225,8 @@ struct ExplicitSelfRuleExamples {
         func f1() {
             A(p1: 10).$p1
         }
-        """),
-        Example("""
+        """,
+        """
         class StringInterpolation {
             let foo = "foo"
 
@@ -234,7 +234,7 @@ struct ExplicitSelfRuleExamples {
                 return "StringInterpolation{foo: \\(↓foo)}"
             }
         }
-        """, testWrappingInString: false): Example("""
+        """.skipWrappingInStringTest(): """
         class StringInterpolation {
             let foo = "foo"
 
@@ -242,8 +242,8 @@ struct ExplicitSelfRuleExamples {
                 return "StringInterpolation{foo: \\(self.foo)}"
             }
         }
-        """, testWrappingInString: false),
-        Example("""
+        """.skipWrappingInStringTest(),
+        """
         class StringInterpolationRawStringLiteral {
             let foo = "foo"
 
@@ -251,7 +251,7 @@ struct ExplicitSelfRuleExamples {
                 return #"StringInterpolation{foo: \\#(↓foo)}"#
             }
         }
-        """, testWrappingInString: false): Example("""
+        """.skipWrappingInStringTest(): """
         class StringInterpolationRawStringLiteral {
             let foo = "foo"
 
@@ -259,6 +259,6 @@ struct ExplicitSelfRuleExamples {
                 return #"StringInterpolation{foo: \\#(self.foo)}"#
             }
         }
-        """, testWrappingInString: false),
-    ]
+        """.skipWrappingInStringTest(),
+    ])
 }

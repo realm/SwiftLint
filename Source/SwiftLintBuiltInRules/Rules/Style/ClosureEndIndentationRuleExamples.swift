@@ -1,32 +1,32 @@
 internal struct ClosureEndIndentationRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         SignalProducer(values: [1, 2, 3])
            .startWithNext { number in
                print(number)
            }
-        """),
-        Example("[1, 2].map { $0 + 1 }\n"),
-        Example("""
+        """,
+        "[1, 2].map { $0 + 1 }\n",
+        """
         return match(pattern: pattern, with: [.comment]).flatMap { range in
            return Command(string: contents, range: range)
         }.flatMap { command in
            return command.expand()
         }
-        """),
-        Example("""
+        """,
+        """
         foo(foo: bar,
             options: baz) { _ in }
-        """),
-        Example("""
+        """,
+        """
         someReallyLongProperty.chainingWithAnotherProperty
            .foo { _ in }
-        """),
-        Example("""
+        """,
+        """
         foo(abc, 123)
         { _ in }
-        """),
-        Example("""
+        """,
+        """
         function(
             closure: { x in
                 print(x)
@@ -34,23 +34,23 @@ internal struct ClosureEndIndentationRuleExamples {
             anotherClosure: { y in
                 print(y)
             })
-        """),
-        Example("""
+        """,
+        """
         function(parameter: param,
                  closure: { x in
             print(x)
         })
-        """),
-        Example("""
+        """,
+        """
         function(parameter: param, closure: { x in
                 print(x)
             },
             anotherClosure: { y in
                 print(y)
             })
-        """),
-        Example("(-variable).foo()"),
-        Example("""
+        """,
+        "(-variable).foo()",
+        """
         let var1 = var2
             .prop?.method {
             }
@@ -60,14 +60,14 @@ internal struct ClosureEndIndentationRuleExamples {
             }
             .prop().method {
             }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         #Preview("foo",
                  traits: .landscapeLeft) {
             ZStack {}
         }
-        """),
-    ]
+        """,
+    ])
 
     static let triggeringExamples = #examples([
         """

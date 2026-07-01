@@ -16,32 +16,32 @@ struct UnusedParameterRule: Rule {
             or replaced/shadowed by a wildcard '_' to indicate that they are being deliberately disregarded.
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func f(a: Int) {
                 _ = a
             }
-            """),
-            Example("""
+            """,
+            """
             func f(case: Int) {
                 _ = `case`
             }
-            """),
-            Example("""
+            """,
+            """
             func f(a _: Int) {}
-            """),
-            Example("""
+            """,
+            """
             func f(_: Int) {}
-            """),
-            Example("""
+            """,
+            """
             func f(a: Int, b c: String) {
                 func g() {
                     _ = a
                     _ = c
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             func f(a: Int, c: Int) -> Int {
                 struct S {
                     let b = 1
@@ -49,25 +49,25 @@ struct UnusedParameterRule: Rule {
                 }
                 return a + c
             }
-            """),
-            Example("""
+            """,
+            """
             func f(a: Int?) {
                 if let a {}
             }
-            """),
-            Example("""
+            """,
+            """
             func f(a: Int) {
                 let a = a
                 return a
             }
-            """),
-            Example("""
+            """,
+            """
             func f(`operator`: Int) -> Int { `operator` }
-            """),
-            Example("""
+            """,
+            """
             func f(_a: Int) {}
-            """, configuration: allowUnderscorePrefixedNames),
-        ],
+            """.configuration(allowUnderscorePrefixedNames),
+        ]),
         triggeringExamples: #examples([
             """
             func f(↓a: Int) {}

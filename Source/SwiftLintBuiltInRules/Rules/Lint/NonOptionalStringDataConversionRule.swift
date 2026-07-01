@@ -12,25 +12,25 @@ struct NonOptionalStringDataConversionRule: Rule {
         name: "Non-optional String -> Data Conversion",
         description: "Prefer non-optional `Data(_:)` initializer when converting `String` to `Data`",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("Data(\"foo\".utf8)"),
-            Example("Data(string.utf8)"),
-            Example("\"foo\".data(using: .ascii)"),
-            Example("string.data(using: .unicode)"),
-            Example("Data(\"foo\".utf8)", configuration: variablesIncluded),
-            Example("Data(string.utf8)", configuration: variablesIncluded),
-            Example("\"foo\".data(using: .ascii)", configuration: variablesIncluded),
-            Example("string.data(using: .unicode)", configuration: variablesIncluded),
-        ],
-        triggeringExamples: [
-            Example("↓\"foo\".data(using: .utf8)"),
-            Example("↓\"foo\".data(using: .utf8)", configuration: variablesIncluded),
-            Example("↓string.data(using: .utf8)", configuration: variablesIncluded),
-            Example("↓property.data(using: .utf8)", configuration: variablesIncluded),
-            Example("↓obj.property.data(using: .utf8)", configuration: variablesIncluded),
-            Example("↓getString().data(using: .utf8)", configuration: variablesIncluded),
-            Example("↓getValue()?.data(using: .utf8)", configuration: variablesIncluded),
-        ]
+        nonTriggeringExamples: #examples([
+            "Data(\"foo\".utf8)",
+            "Data(string.utf8)",
+            "\"foo\".data(using: .ascii)",
+            "string.data(using: .unicode)",
+            "Data(\"foo\".utf8)".configuration(variablesIncluded),
+            "Data(string.utf8)".configuration(variablesIncluded),
+            "\"foo\".data(using: .ascii)".configuration(variablesIncluded),
+            "string.data(using: .unicode)".configuration(variablesIncluded),
+        ]),
+        triggeringExamples: #examples([
+            "↓\"foo\".data(using: .utf8)",
+            "↓\"foo\".data(using: .utf8)".configuration(variablesIncluded),
+            "↓string.data(using: .utf8)".configuration(variablesIncluded),
+            "↓property.data(using: .utf8)".configuration(variablesIncluded),
+            "↓obj.property.data(using: .utf8)".configuration(variablesIncluded),
+            "↓getString().data(using: .utf8)".configuration(variablesIncluded),
+            "↓getValue()?.data(using: .utf8)".configuration(variablesIncluded),
+        ])
     )
 }
 

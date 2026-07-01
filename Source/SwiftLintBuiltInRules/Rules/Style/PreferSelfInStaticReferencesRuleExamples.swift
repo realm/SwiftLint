@@ -2,13 +2,13 @@
 
 // swiftlint:disable:next type_body_length
 enum PreferSelfInStaticReferencesRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
             class C {
                 static let primes = [2, 3, 5, 7]
                 func isPrime(i: Int) -> Bool { Self.primes.contains(i) }
-            """),
-        Example("""
+            """,
+        """
             struct T {
                 static let i = 0
             }
@@ -19,14 +19,14 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 static let j = S.i + T.i
                 static let k = { T.j }()
             }
-            """),
-        Example("""
+            """,
+        """
             class `Self` {
                 static let i = 0
                 func f() -> Int { Self.i }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 static private(set) var i = 0, j = C.i
                 static let k = { C.i }()
@@ -34,8 +34,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 var n: Int = C.k { didSet { m += 1 } }
                 @GreaterThan(C.j) var m: Int
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             struct S {
                 struct T {
                     struct R {
@@ -48,8 +48,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 static let j = Self.T.R.i + Self.R.j
                 let h = Self.T.R.i + Self.R.j
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C {
                 static let s = 2
                 func f(i: Int = C.s) -> Int {
@@ -58,58 +58,58 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 func g() -> Any { C.self }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             struct Record<T> {
                 static func get() -> Record<T> { Record<T>() }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             @objc class C: NSObject {
                 @objc var s = ""
                 @objc func f() { _ = #keyPath(C.s) }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C<T> {
                 let i = 1
                 let c: C = C()
                 func f(c: C) -> KeyPath<C, Int> { \\Self.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             protocol P {}
             struct S: P {}
             extension P {
                 func f<A>() -> some P where A: P { S() }
                 func g<A: P>() -> some P { S() }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C<A> {
                 func f() where A: C {}
                 func g<B: C>() {}
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C1<T> {}
             class C2: C1<C2> {}
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
                 class C1<T> {}
                 class C2: C1<C2.C3> {
                     class C3 {}
                 }
-                """, excludeFromDocumentation: true),
-        Example("""
+                """.excludeFromDocumentation(),
+        """
             class C1<T> {}
             class C2: C1<C2.C3.C4> {
                 class C3 {
                     class C4 {}
                 }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class S1<T> {
                 class S2 {}
                 func f() {
@@ -117,20 +117,20 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     let s2 = S1<S1>()
                 }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             struct S1 {
                 struct S1 {}
                 var s = S1()
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             struct S1 {
                 var s = S1()
                 struct S1 {}
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class Foo {
                 static let i = 0
             }
@@ -138,8 +138,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Bar {
                 func f() -> Int { Foo.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class Outer {
                 class Inner {
                     static let i = 0
@@ -151,8 +151,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Inner {
                 func f() -> Int { Outer.Other.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             enum Outer {
                 static let i = 0
                 struct Inner {
@@ -162,8 +162,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Inner {
                 func f() -> Int { Outer.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class Outer {
                 class Inner<T> {
                     static let i = 0
@@ -173,27 +173,27 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f() { _ = Outer.Inner<Int>() }
                 func g() { _ = Outer.Inner<Int>.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             protocol A {}
             extension A {
                 func f(_ x: Any) -> Bool { x is any A }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             protocol A {}
             extension A {
                 func f(_ x: Any) -> Bool { x is A.Protocol }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             protocol A {}
             protocol B {}
             extension A {
                 func f(_ x: Any) -> Bool { x is any A & B }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class Outer {
                 class Inner {}
             }
@@ -201,32 +201,32 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Inner {
                 func f(_ x: Any) -> Bool { x is Outer.Inner & B }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class A {}
             extension A {
                 func f(_ x: Any) -> Bool { x is A }
                 func g(_ x: Any) -> A? { x as? A }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             protocol A {}
             extension A {
                 func f(_ x: Any) -> Bool { x is A.Type }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class T {
                 let child: T
                 init(input: Any) {
                     child = (input as! T).child
                 }
             }
-            """, excludeFromDocumentation: true),
-    ]
+            """.excludeFromDocumentation(),
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
             final class CheckCellView: NSTableCellView {
                 @IBOutlet var checkButton: NSButton!
 
@@ -236,8 +236,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
 
                 @objc func check(_ button: AnyObject?) {}
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 static let i = 1
                 var j: Int {
@@ -245,16 +245,16 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     return ii
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 func f() {
                     _ = [↓C]()
                     _ = [Int: ↓C]()
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 let j: Int
                 static let i = 1
@@ -264,8 +264,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func i() -> KeyPath<↓S, Int> { \\↓S.j }
                 func j(@Wrap(-↓S.i, ↓S.i) n: Int = ↓S.i) {}
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 struct T {
                     static let i = 3
@@ -275,15 +275,15 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 static let h = ↓S.T.i + ↓S.R.j
             }
-            """),
-        Example("""
+            """,
+        """
             enum E {
                 case A
                 static func f() -> ↓E { ↓E.A }
                 static func g() -> ↓E { ↓E.f() }
             }
-            """),
-        Example("""
+            """,
+        """
             extension E {
                 class C {
                     static var i = 2
@@ -298,8 +298,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                     }
                 }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C {
                 typealias A = C
                 let d: C? = nil
@@ -336,8 +336,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 func g(a: [↓S]) -> [↓S] { a }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C {
                 static let i = 0
             }
@@ -345,8 +345,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 func f() -> Int { ↓C.i }
                 var v: Int { ↓C.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class Outer {
                 class Inner {
                     static let i = 0
@@ -355,8 +355,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Inner {
                 func f() -> Int { ↓Outer.Inner.i }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             enum Outer {
                 enum Middle {
                     struct Inner {
@@ -367,8 +367,8 @@ enum PreferSelfInStaticReferencesRuleExamples {
             extension Outer.Middle.Inner {
                 func f() -> Int { ↓Outer.Middle.Inner.i }
             }
-            """, excludeFromDocumentation: true),
-    ]
+            """.excludeFromDocumentation(),
+    ])
 
     static let corrections = #examplesDictionary([
         """

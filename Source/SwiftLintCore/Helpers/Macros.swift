@@ -77,26 +77,26 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
     type: "SwiftSyntaxRule"
 )
 
-/// Macro that expands an array of code strings into an array of ``Example``s. Elements are usually
-/// string literals, but any `String`-typed expression works.
+/// Macro that expands an array into an array of ``Example``s. Elements are usually
+/// string literals, but any `String`-typed expression or other instance of ``Example`` will work.
 ///
 /// Use it for the common case where examples only carry code, e.g.
 /// `nonTriggeringExamples: #examples(["let x = 1", "let y = 2"])`. Examples that need a custom configuration or
 /// chained modifiers should keep using ``Example`` directly.
 @freestanding(expression)
-public macro examples(_ examples: [String]) -> [Example] = #externalMacro(
+public macro examples(_ examples: [Any]) -> [Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "Examples"
 )
 
-/// Macro that expands a dictionary of code strings into a dictionary of ``Example``s. Keys and values are usually
-/// string literals, but any `String`-typed expression works.
+/// Macro that expands a dictionary into a dictionary of ``Example``s. Keys and values are usually
+/// string literals, but any `String`-typed expression or other instance of ``Example`` will work.
 ///
 /// Use it for a rule's `corrections`, e.g.
 /// `corrections: #examplesDictionary(["↓x": "y"])`. Pairs that need a custom configuration should keep using
 /// ``Example`` directly.
 @freestanding(expression)
-public macro examplesDictionary(_ examples: [String: String]) -> [Example: Example] = #externalMacro(
+public macro examplesDictionary(_ examples: [AnyHashable: Any]) -> [Example: Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "ExamplesDictionary"
 )

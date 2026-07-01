@@ -10,18 +10,18 @@ struct FinalTestCaseRule: Rule {
         name: "Final Test Case",
         description: "Test cases should be final",
         kind: .performance,
-        nonTriggeringExamples: [
-            Example("final class Test: XCTestCase {}"),
-            Example("open class Test: XCTestCase {}"),
-            Example("public final class Test: QuickSpec {}"),
-            Example("class Test: MyTestCase {}"),
-            Example("struct Test: MyTestCase {}", configuration: ["test_parent_classes": "MyTestCase"]),
-        ],
-        triggeringExamples: [
-            Example("class ↓Test: XCTestCase {}"),
-            Example("public class ↓Test: QuickSpec {}"),
-            Example("class ↓Test: MyTestCase {}", configuration: ["test_parent_classes": "MyTestCase"]),
-        ],
+        nonTriggeringExamples: #examples([
+            "final class Test: XCTestCase {}",
+            "open class Test: XCTestCase {}",
+            "public final class Test: QuickSpec {}",
+            "class Test: MyTestCase {}",
+            "struct Test: MyTestCase {}".configuration(["test_parent_classes": "MyTestCase"]),
+        ]),
+        triggeringExamples: #examples([
+            "class ↓Test: XCTestCase {}",
+            "public class ↓Test: QuickSpec {}",
+            "class ↓Test: MyTestCase {}".configuration(["test_parent_classes": "MyTestCase"]),
+        ]),
         corrections: #examplesDictionary([
             "class ↓Test: XCTestCase {}":
                 "final class Test: XCTestCase {}",

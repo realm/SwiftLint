@@ -30,20 +30,14 @@ struct OptionalDataStringConversionRule: Rule {
             // Default behavior (include_implicit_init == false): implicit leading-dot init without type
             "let text = .init(decoding: data, as: UTF8.self)",
         ]),
-        triggeringExamples: [
-            Example("↓String(decoding: data, as: UTF8.self)"),
-            Example("↓String.init(decoding: data, as: UTF8.self)"),
-            Example("let text: String = ↓.init(decoding: data, as: UTF8.self)"),
+        triggeringExamples: #examples([
+            "↓String(decoding: data, as: UTF8.self)",
+            "↓String.init(decoding: data, as: UTF8.self)",
+            "let text: String = ↓.init(decoding: data, as: UTF8.self)",
             // With include_implicit_init enabled, implicit leading-dot init also triggers
-            Example(
-                "let text = ↓.init(decoding: data, as: UTF8.self)",
-                configuration: ["include_implicit_init": true]
-            ),
-            Example(
-                "f(↓.init(decoding: data, as: UTF8.self))",
-                configuration: ["include_implicit_init": true]
-            ),
-        ]
+            "let text = ↓.init(decoding: data, as: UTF8.self)".configuration(["include_implicit_init": true]),
+            "f(↓.init(decoding: data, as: UTF8.self))".configuration(["include_implicit_init": true]),
+        ])
     )
 }
 

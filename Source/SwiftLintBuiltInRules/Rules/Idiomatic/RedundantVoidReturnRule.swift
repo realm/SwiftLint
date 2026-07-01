@@ -9,31 +9,31 @@ struct RedundantVoidReturnRule: Rule {
         name: "Redundant Void Return",
         description: "Returning Void in a function declaration is redundant",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("func foo() {}"),
-            Example("func foo() -> Int {}"),
-            Example("func foo() -> Int -> Void {}"),
-            Example("func foo() -> VoidResponse"),
-            Example("let foo: (Int) -> Void"),
-            Example("func foo() -> Int -> () {}"),
-            Example("let foo: (Int) -> ()"),
-            Example("func foo() -> ()?"),
-            Example("func foo() -> ()!"),
-            Example("func foo() -> Void?"),
-            Example("func foo() -> Void!"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "func foo() {}",
+            "func foo() -> Int {}",
+            "func foo() -> Int -> Void {}",
+            "func foo() -> VoidResponse",
+            "let foo: (Int) -> Void",
+            "func foo() -> Int -> () {}",
+            "let foo: (Int) -> ()",
+            "func foo() -> ()?",
+            "func foo() -> ()!",
+            "func foo() -> Void?",
+            "func foo() -> Void!",
+            """
             struct A {
                 subscript(key: String) {
                     print(key)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             doSomething { arg -> Void in
                 print(arg)
             }
-            """, configuration: ["include_closures": false]),
-        ],
+            """.configuration(["include_closures": false]),
+        ]),
         triggeringExamples: #examples([
             "func foo()↓ -> Void {}",
             """

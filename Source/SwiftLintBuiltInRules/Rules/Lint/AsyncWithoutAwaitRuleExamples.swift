@@ -1,75 +1,75 @@
 internal struct AsyncWithoutAwaitRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         actor A {
             init() async {
                 foo()
             }
             func foo() {}
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             func test() async {
                 await test()
             }
         },
-        """),
-        Example("""
+        """,
+        """
         func test() {
             func test() async {
                 await test().value
             }
         },
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             await scheduler.task { foo { bar() } }
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             perform(await try foo().value)
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             perform(try await foo())
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             await perform()
             func baz() {
                 qux()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         let x: () async -> Void = {
             await test()
         }
-        """),
-        Example("""
+        """,
+        """
         let x: () async -> Void = {
             await { await test() }()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             await foo()
         }
         let x = { bar() }
-        """),
-        Example("""
+        """,
+        """
         let x: (() async -> Void)? = {
             await { await test() }()
         }
-        """),
-        Example("""
+        """,
+        """
         let x: () -> Void = { test() }
-        """),
-        Example("""
+        """,
+        """
         var test: Int {
             get async throws {
                 try await foo()
@@ -80,109 +80,109 @@ internal struct AsyncWithoutAwaitRuleExamples {
                 try bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         init() async {
             await foo()
         }
-        """),
-        Example("""
+        """,
+        """
         init() async {
             func test() async {
                 await foo()
             }
             await { await foo() }()
         }
-        """),
-        Example("""
+        """,
+        """
         subscript(row: Int) -> Double {
             get async {
                 await foo()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() async -> Int
         func bar() async -> Int
-        """),
-        Example("""
+        """,
+        """
         var foo: Int { get async }
         var bar: Int { get async }
-        """),
-        Example("""
+        """,
+        """
         init(foo: bar) async
         init(baz: qux) async
         let baz = { qux() }
-        """),
-        Example("""
+        """,
+        """
         typealias Foo = () async -> Void
         typealias Bar = () async -> Void
         let baz = { qux() }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             for await foo in bar {}
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             while let foo = await bar() {}
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             async let foo = bar()
             let baz = await foo
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             async let foo = bar()
             await foo
         }
-        """),
-        Example("""
+        """,
+        """
         func test() async {
             async let foo = bar()
         }
-        """),
-        Example("func foo(bar: () async -> Void) { { } }"),
-        Example("func foo(bar: () async -> Void = { await baz() }) { {} }"),
-        Example("func foo() -> (() async -> Void)? { {} }"),
-        Example("""
+        """,
+        "func foo(bar: () async -> Void) { { } }",
+        "func foo(bar: () async -> Void = { await baz() }) { {} }",
+        "func foo() -> (() async -> Void)? { {} }",
+        """
         func foo(
             bar: () async -> Void,
             baz: () -> Void = {}
         ) { { } }
-        """),
-        Example("func foo(bar: () async -> Void = {}) {}"),
-        Example("var foo: (() async -> Void)? = nil"),
-        Example("var foo: ((Int) async throws -> Int)? { f }"),
-        Example("let foo: ((Int) async throws -> Int)? = { await f($0) }"),
-        Example("let foo: () async throws -> ()"),
-        Example("""
+        """,
+        "func foo(bar: () async -> Void = {}) {}",
+        "var foo: (() async -> Void)? = nil",
+        "var foo: ((Int) async throws -> Int)? { f }",
+        "let foo: ((Int) async throws -> Int)? = { await f($0) }",
+        "let foo: () async throws -> ()",
+        """
         func f() async throws -> Int {
             try await g {
                 let b: Int
                 b = 2
             }
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         @concurrent
         func concurrentFunction() async {
             performWork()
         }
-        """),
-        Example("""
+        """,
+        """
         struct S: Sendable {
             @concurrent
             func alwaysSwitch() async {
                 // This is valid - @concurrent functions require async even without await
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct ConcurrentInitExample {
             @concurrent
             init() async {
@@ -190,21 +190,21 @@ internal struct AsyncWithoutAwaitRuleExamples {
             }
             func setup() {}
         }
-        """),
-        Example("""
+        """,
+        """
         struct ConcurrentClosureExample {
             let c: () async -> Int = { @concurrent in 1 }
         }
-        """),
-        Example("""
+        """,
+        """
         class Parent {
             func test() async { await foo() }
         }
         class Child: Parent {
             override func test() async { print("Child") }
         }
-        """),
-        Example("""
+        """,
+        """
         class Parent {
             var prop: Int {
                 get async { await fetchValue() }
@@ -215,16 +215,16 @@ internal struct AsyncWithoutAwaitRuleExamples {
                 get async { return 2 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Base {
             init() async { await setup() }
         }
         class Derived: Base {
             override init() async { print("Derived") }
         }
-        """),
-    ]
+        """,
+    ])
 
     static let triggeringExamples = #examples([
         """

@@ -74,26 +74,26 @@ struct NonOverridableClassDeclarationRule: Rule {
             }
             """,
         ]),
-        corrections: [
-            Example("""
+        corrections: #examplesDictionary([
+            """
             final class C {
                 class func f() {}
             }
-            """): Example("""
+            """: """
                 final class C {
                     final class func f() {}
                 }
-                """),
-            Example("""
+                """,
+            """
             final class C {
                 class var b: Bool { true }
             }
-            """, configuration: ["final_class_modifier": "static"]): Example("""
+            """.configuration(["final_class_modifier": "static"]): """
                 final class C {
                     static var b: Bool { true }
                 }
-                """),
-        ]
+                """,
+        ])
     )
 }
 

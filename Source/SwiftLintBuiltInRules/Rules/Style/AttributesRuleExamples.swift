@@ -1,70 +1,70 @@
 internal struct AttributesRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("@objc var x: String"),
-        Example("@objc private var x: String"),
-        Example("@nonobjc var x: String"),
-        Example("@IBOutlet private var label: UILabel"),
-        Example("@IBOutlet @objc private var label: UILabel"),
-        Example("@NSCopying var name: NSString"),
-        Example("@NSManaged var name: String?"),
-        Example("@IBInspectable var cornerRadius: CGFloat"),
-        Example("@available(iOS 9.0, *)\n let stackView: UIStackView"),
-        Example("@NSManaged func addSomeObject(book: SomeObject)"),
-        Example("@IBAction func buttonPressed(button: UIButton)"),
-        Example("@objc\n @IBAction func buttonPressed(button: UIButton)"),
-        Example("@available(iOS 9.0, *)\n func animate(view: UIStackView)"),
-        Example("@available(*, deprecated, message: \"A message\")\n func animate(view: UIStackView)"),
-        Example("@nonobjc\n final class X {}"),
-        Example("@available(iOS 9.0, *)\n class UIStackView {}"),
-        Example("@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate {}"),
-        Example("@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate {}"),
-        Example("@IBDesignable\n class MyCustomView: UIView {}"),
-        Example("@testable import SourceKittenFramework"),
-        Example("@objc(foo_x)\n var x: String"),
-        Example("@available(iOS 9.0, *)\n@objc(abc_stackView)\n let stackView: UIStackView"),
-        Example("@objc(abc_addSomeObject:)\n @NSManaged func addSomeObject(book: SomeObject)"),
-        Example("@objc(ABCThing)\n @available(iOS 9.0, *)\n class Thing {}"),
-        Example("class Foo: NSObject {\n override var description: String { return \"\" }\n}"),
-        Example("class Foo: NSObject {\n\n override func setUp() {}\n}"),
-        Example("@objc\nclass ⽺ {}"),
+    static let nonTriggeringExamples = #examples([
+        "@objc var x: String",
+        "@objc private var x: String",
+        "@nonobjc var x: String",
+        "@IBOutlet private var label: UILabel",
+        "@IBOutlet @objc private var label: UILabel",
+        "@NSCopying var name: NSString",
+        "@NSManaged var name: String?",
+        "@IBInspectable var cornerRadius: CGFloat",
+        "@available(iOS 9.0, *)\n let stackView: UIStackView",
+        "@NSManaged func addSomeObject(book: SomeObject)",
+        "@IBAction func buttonPressed(button: UIButton)",
+        "@objc\n @IBAction func buttonPressed(button: UIButton)",
+        "@available(iOS 9.0, *)\n func animate(view: UIStackView)",
+        "@available(*, deprecated, message: \"A message\")\n func animate(view: UIStackView)",
+        "@nonobjc\n final class X {}",
+        "@available(iOS 9.0, *)\n class UIStackView {}",
+        "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate {}",
+        "@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate {}",
+        "@IBDesignable\n class MyCustomView: UIView {}",
+        "@testable import SourceKittenFramework",
+        "@objc(foo_x)\n var x: String",
+        "@available(iOS 9.0, *)\n@objc(abc_stackView)\n let stackView: UIStackView",
+        "@objc(abc_addSomeObject:)\n @NSManaged func addSomeObject(book: SomeObject)",
+        "@objc(ABCThing)\n @available(iOS 9.0, *)\n class Thing {}",
+        "class Foo: NSObject {\n override var description: String { return \"\" }\n}",
+        "class Foo: NSObject {\n\n override func setUp() {}\n}",
+        "@objc\nclass ⽺ {}",
 
         // attribute with allowed empty new line above
-        Example("""
+        """
         extension Property {
 
             @available(*, unavailable, renamed: \"isOptional\")
             public var optional: Bool { fatalError() }
         }
-        """),
-        Example("@GKInspectable var maxSpeed: Float"),
-        Example("@discardableResult\n func a() -> Int"),
-        Example("@objc\n @discardableResult\n func a() -> Int"),
-        Example("func increase(f: @autoclosure () -> Int) -> Int"),
-        Example("func foo(completionHandler: @escaping () -> Void)"),
-        Example("private struct DefaultError: Error {}"),
-        Example("@testable import foo\n\nprivate let bar = 1"),
-        Example("""
+        """,
+        "@GKInspectable var maxSpeed: Float",
+        "@discardableResult\n func a() -> Int",
+        "@objc\n @discardableResult\n func a() -> Int",
+        "func increase(f: @autoclosure () -> Int) -> Int",
+        "func foo(completionHandler: @escaping () -> Void)",
+        "private struct DefaultError: Error {}",
+        "@testable import foo\n\nprivate let bar = 1",
+        """
         import XCTest
         @testable import DeleteMe
 
         @available (iOS 11.0, *)
         class DeleteMeTests: XCTestCase {
         }
-        """),
-        Example("""
+        """,
+        """
         @objc
         internal func foo(identifier: String, completion: @escaping (() -> Void)) {}
-        """),
-        Example("""
+        """,
+        """
         @objc
         internal func foo(identifier: String, completion: @autoclosure (() -> Bool)) {}
-        """),
-        Example("""
+        """,
+        """
         func printBoolOrTrue(_ expression: @autoclosure () throws -> Bool?) rethrows {
           try print(expression() ?? true)
         }
-        """),
-        Example("""
+        """,
+        """
         import Foundation
 
         class MyClass: NSObject {
@@ -73,20 +73,20 @@ internal struct AttributesRuleExamples {
           )
           static func foo(first: String) {}
         }
-        """),
-        Example("""
+        """,
+        """
         func refreshable(action: @escaping @Sendable () async -> Void) -> some View {
             modifier(RefreshableModifier(action: action))
         }
-        """),
-        Example("""
+        """,
+        """
         import AppKit
 
         @NSApplicationMain
         @MainActor
         final class AppDelegate: NSAppDelegate {}
-        """),
-        Example(#"""
+        """,
+        #"""
         @_spi(Private) import SomeFramework
 
         @_spi(Private)
@@ -95,42 +95,42 @@ internal struct AttributesRuleExamples {
             @Environment(\.colorScheme) var second: ColorScheme
             @Persisted(primaryKey: true) var id: Int
         }
-        """#, configuration: ["attributes_with_arguments_always_on_line_above": false], excludeFromDocumentation: true),
-    ]
+        """#.configuration(["attributes_with_arguments_always_on_line_above": false]).excludeFromDocumentation(),
+    ])
 
-    static let triggeringExamples = [
-        Example("@objc\n ↓var x: String"),
-        Example("@objc\n\n ↓var x: String"),
-        Example("@objc\n private ↓var x: String"),
-        Example("@nonobjc\n ↓var x: String"),
-        Example("@IBOutlet\n private ↓var label: UILabel"),
-        Example("@IBOutlet\n\n private ↓var label: UILabel"),
-        Example("@NSCopying\n ↓var name: NSString"),
-        Example("@NSManaged\n ↓var name: String?"),
-        Example("@IBInspectable\n ↓var cornerRadius: CGFloat"),
-        Example("@available(iOS 9.0, *) ↓let stackView: UIStackView"),
-        Example("@NSManaged\n ↓func addSomeObject(book: SomeObject)"),
-        Example("@IBAction\n ↓func buttonPressed(button: UIButton)"),
-        Example("@IBAction\n @objc\n ↓func buttonPressed(button: UIButton)"),
-        Example("@available(iOS 9.0, *) ↓func animate(view: UIStackView)"),
-        Example("@nonobjc final ↓class X {}"),
-        Example("@available(iOS 9.0, *) ↓class UIStackView {}"),
-        Example("@available(iOS 9.0, *)\n @objc ↓class UIStackView {}"),
-        Example("@available(iOS 9.0, *) @objc\n ↓class UIStackView {}"),
-        Example("@available(iOS 9.0, *)\n\n ↓class UIStackView {}"),
-        Example("@UIApplicationMain ↓class AppDelegate: NSObject, UIApplicationDelegate {}"),
-        Example("@IBDesignable ↓class MyCustomView: UIView {}"),
-        Example("@testable\n↓import SourceKittenFramework"),
-        Example("@testable\n\n\n↓import SourceKittenFramework"),
-        Example("@available(iOS 9.0, *) @objc(abc_stackView)\n ↓let stackView: UIStackView"),
-        Example("@objc(abc_addSomeObject:) @NSManaged\n ↓func addSomeObject(book: SomeObject)"),
-        Example("@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)"),
-        Example("@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing {}"),
-        Example("@GKInspectable\n ↓var maxSpeed: Float"),
-        Example("@discardableResult ↓func a() -> Int"),
-        Example("@objc\n @discardableResult ↓func a() -> Int"),
-        Example("@objc\n\n @discardableResult\n ↓func a() -> Int"),
-        Example(#"""
+    static let triggeringExamples = #examples([
+        "@objc\n ↓var x: String",
+        "@objc\n\n ↓var x: String",
+        "@objc\n private ↓var x: String",
+        "@nonobjc\n ↓var x: String",
+        "@IBOutlet\n private ↓var label: UILabel",
+        "@IBOutlet\n\n private ↓var label: UILabel",
+        "@NSCopying\n ↓var name: NSString",
+        "@NSManaged\n ↓var name: String?",
+        "@IBInspectable\n ↓var cornerRadius: CGFloat",
+        "@available(iOS 9.0, *) ↓let stackView: UIStackView",
+        "@NSManaged\n ↓func addSomeObject(book: SomeObject)",
+        "@IBAction\n ↓func buttonPressed(button: UIButton)",
+        "@IBAction\n @objc\n ↓func buttonPressed(button: UIButton)",
+        "@available(iOS 9.0, *) ↓func animate(view: UIStackView)",
+        "@nonobjc final ↓class X {}",
+        "@available(iOS 9.0, *) ↓class UIStackView {}",
+        "@available(iOS 9.0, *)\n @objc ↓class UIStackView {}",
+        "@available(iOS 9.0, *) @objc\n ↓class UIStackView {}",
+        "@available(iOS 9.0, *)\n\n ↓class UIStackView {}",
+        "@UIApplicationMain ↓class AppDelegate: NSObject, UIApplicationDelegate {}",
+        "@IBDesignable ↓class MyCustomView: UIView {}",
+        "@testable\n↓import SourceKittenFramework",
+        "@testable\n\n\n↓import SourceKittenFramework",
+        "@available(iOS 9.0, *) @objc(abc_stackView)\n ↓let stackView: UIStackView",
+        "@objc(abc_addSomeObject:) @NSManaged\n ↓func addSomeObject(book: SomeObject)",
+        "@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)",
+        "@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing {}",
+        "@GKInspectable\n ↓var maxSpeed: Float",
+        "@discardableResult ↓func a() -> Int",
+        "@objc\n @discardableResult ↓func a() -> Int",
+        "@objc\n\n @discardableResult\n ↓func a() -> Int",
+        #"""
         struct S: View {
             @Environment(\.colorScheme) ↓var first: ColorScheme
             @Persisted var id: Int
@@ -139,6 +139,6 @@ internal struct AttributesRuleExamples {
             )
             var entities: FetchedResults
         }
-        """#, excludeFromDocumentation: true),
-    ]
+        """#.excludeFromDocumentation(),
+    ])
 }

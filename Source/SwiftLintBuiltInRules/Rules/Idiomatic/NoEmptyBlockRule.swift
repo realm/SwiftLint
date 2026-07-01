@@ -10,8 +10,8 @@ struct NoEmptyBlockRule: Rule {
         name: "No Empty Block",
         description: "Code blocks should contain at least one statement or comment",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func f() {
                 /* do something */
             }
@@ -19,17 +19,17 @@ struct NoEmptyBlockRule: Rule {
             var flag = true {
                 willSet { /* do something */ }
             }
-            """),
+            """,
 
-            Example("""
+            """
             class Apple {
                 init() { /* do something */ }
 
                 deinit { /* do something */ }
             }
-            """),
+            """,
 
-            Example("""
+            """
             for _ in 0..<10 { /* do something */ }
 
             do {
@@ -54,25 +54,25 @@ struct NoEmptyBlockRule: Rule {
             repeat { /* do something */ } while (flag)
 
             while i < 10 { /* do something */ }
-            """),
+            """,
 
-            Example("""
+            """
             func f() {}
 
             var flag = true {
                 willSet {}
             }
-            """, configuration: ["disabled_block_types": ["function_bodies"]]),
+            """.configuration(["disabled_block_types": ["function_bodies"]]),
 
-            Example("""
+            """
             class Apple {
                 init() {}
 
                 deinit {}
             }
-            """, configuration: ["disabled_block_types": ["initializer_bodies"]]),
+            """.configuration(["disabled_block_types": ["initializer_bodies"]]),
 
-            Example("""
+            """
             for _ in 0..<10 {}
 
             do {
@@ -91,20 +91,20 @@ struct NoEmptyBlockRule: Rule {
             repeat {} while (flag)
 
             while i < 10 {}
-            """, configuration: ["disabled_block_types": ["statement_blocks"]]),
-            Example("""
+            """.configuration(["disabled_block_types": ["statement_blocks"]]),
+            """
             f { _ in /* comment */ }
             f { _ in // comment
             }
             f { _ in
                 // comment
             }
-            """),
-            Example("""
+            """,
+            """
             f {}
             {}()
-            """, configuration: ["disabled_block_types": ["closure_blocks"]]),
-        ],
+            """.configuration(["disabled_block_types": ["closure_blocks"]]),
+        ]),
         triggeringExamples: #examples([
             """
             func f() ↓{}

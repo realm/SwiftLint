@@ -10,14 +10,14 @@ struct FileLengthRule: Rule {
         name: "File Length",
         description: "Files should not span too many lines.",
         kind: .metrics,
-        nonTriggeringExamples: [
-            Example(repeatElement("print(\"swiftlint\")\n", count: 399).joined())
-        ],
-        triggeringExamples: [
-            Example(repeatElement("print(\"swiftlint\")\n", count: 401).joined()),
-            Example((repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()),
-            Example(repeatElement("print(\"swiftlint\")\n\n", count: 201).joined()),
-        ].skipWrappingInCommentTests()
+        nonTriggeringExamples: #examples([
+            repeatElement("print(\"swiftlint\")\n", count: 399).joined()
+        ]),
+        triggeringExamples: #examples([
+            repeatElement("print(\"swiftlint\")\n", count: 401).joined(),
+            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined(),
+            repeatElement("print(\"swiftlint\")\n\n", count: 201).joined(),
+        ]).skipWrappingInCommentTests()
     )
 }
 

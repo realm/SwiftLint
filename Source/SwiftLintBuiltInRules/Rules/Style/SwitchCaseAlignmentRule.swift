@@ -12,8 +12,8 @@ struct SwitchCaseAlignmentRule: Rule {
             otherwise.
             """,
         kind: .style,
-        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples + [
-            Example("""
+        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples + #examples([
+            """
             extension OSLogFloatFormatting {
               /// Returns a fprintf-compatible length modifier for a given argument type
               @_semantics("constant_evaluable")
@@ -34,8 +34,8 @@ struct SwitchCaseAlignmentRule: Rule {
                 }
               }
             }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 }
@@ -227,45 +227,37 @@ extension SwitchCaseAlignmentRule {
             ])
         }
 
-        private var validOneLiners: [Example] = [
-            Example(
-                "switch i { case .x: 1 default: 0 }",
-                configuration: ["ignore_one_liners": true]
-            ),
-            Example(
-                "let a = switch i { case .x: 1 default: 0 }",
-                configuration: ["ignore_one_liners": true]
-            ),
-        ]
+        private var validOneLiners: [Example] = #examples([
+            "switch i { case .x: 1 default: 0 }".configuration(["ignore_one_liners": true]),
+            "let a = switch i { case .x: 1 default: 0 }".configuration(["ignore_one_liners": true]),
+        ])
 
         private var invalidOneLiners: [Example] {
-            [
+            #examples([
                 // Default configuration should not ignore one liners
-                Example(
-                    "switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }"
-                ),
-                Example("""
+                "switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }",
+                """
                 switch i {
                 \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
-                """, configuration: ["ignore_one_liners": true]),
-                Example("""
+                """.configuration(["ignore_one_liners": true]),
+                """
                 switch i { \(violationMarker)case .x: 1 \(violationMarker)default: 0
                 }
-                """, configuration: ["ignore_one_liners": true]),
-                Example("""
+                """.configuration(["ignore_one_liners": true]),
+                """
                 switch i
                 { \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
-                """, configuration: ["ignore_one_liners": true]),
-                Example("""
+                """.configuration(["ignore_one_liners": true]),
+                """
                 let a = switch i {
                 case .x: 1 \(violationMarker)default: 0
                 }
-                """, configuration: ["ignore_one_liners": true]),
-                Example("""
+                """.configuration(["ignore_one_liners": true]),
+                """
                 let a = switch i {
                 \(violationMarker)case .x: 1 \(violationMarker)default: 0 }
-                """, configuration: ["ignore_one_liners": true]),
-            ]
+                """.configuration(["ignore_one_liners": true]),
+            ])
         }
     }
 }

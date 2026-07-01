@@ -29,14 +29,14 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
             **/
             """,
         ]),
-        triggeringExamples: [
-            Example("/* Only god knows why. ↓ This symbol does nothing. */", testWrappingInComment: false),
-            Example("// Only god knows why. ↓ This symbol does nothing.", testWrappingInComment: false),
-            Example("// Single. Double. ↓ End.", testWrappingInComment: false),
-            Example("// Single. Double. ↓ Triple. ↓  End.", testWrappingInComment: false),
-            Example("// Triple. ↓  Quad. ↓   End.", testWrappingInComment: false),
-            Example("///   - code: Identifier of the error. ↓ Integer.", testWrappingInComment: false),
-        ],
+        triggeringExamples: #examples([
+            "/* Only god knows why. ↓ This symbol does nothing. */".skipWrappingInCommentTest(),
+            "// Only god knows why. ↓ This symbol does nothing.".skipWrappingInCommentTest(),
+            "// Single. Double. ↓ End.".skipWrappingInCommentTest(),
+            "// Single. Double. ↓ Triple. ↓  End.".skipWrappingInCommentTest(),
+            "// Triple. ↓  Quad. ↓   End.".skipWrappingInCommentTest(),
+            "///   - code: Identifier of the error. ↓ Integer.".skipWrappingInCommentTest(),
+        ]),
         corrections: #examplesDictionary([
             "/* Why. ↓ Symbol does nothing. */": "/* Why. Symbol does nothing. */",
             "// Why. ↓ Symbol does nothing.": "// Why. Symbol does nothing.",

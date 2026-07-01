@@ -10,27 +10,27 @@ struct UnavailableConditionRule: Rule {
         description: "Use #unavailable/#available instead of #available/#unavailable with an empty body.",
         kind: .idiomatic,
         minSwiftVersion: .fiveDotSix,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             if #unavailable(iOS 13) {
               loadMainWindow()
             }
-            """),
-            Example("""
+            """,
+            """
             if #available(iOS 9.0, *) {
               doSomething()
             } else {
               legacyDoSomething()
             }
-            """),
-            Example("""
+            """,
+            """
             if #available(macOS 11.0, *) {
                // Do nothing
             } else if #available(macOS 10.15, *) {
                print("do some stuff")
             }
-            """),
-            Example("""
+            """,
+            """
             if #available(macOS 11.0, *) {
                // Do nothing
             } else if i > 7 {
@@ -38,8 +38,8 @@ struct UnavailableConditionRule: Rule {
             } else if i < 2, #available(macOS 11.0, *) {
               print("something else")
             }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         triggeringExamples: #examples([
             """
             if ↓#available(iOS 14.0) {

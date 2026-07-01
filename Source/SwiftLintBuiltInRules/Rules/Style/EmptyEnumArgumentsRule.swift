@@ -1,19 +1,17 @@
 import SwiftSyntax
 
-private func wrapInSwitch(
-    variable: String = "foo",
-    _ str: String,
-    file: StaticString = #filePath,
-    line: UInt = #line) -> Example {
+private func wrapInSwitch(variable: String = "foo", _ str: String) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example(
         """
         switch \(variable) {
         \(str): break
         }
-        """, file: file, line: line)
+        """)
 }
 
-private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+private func wrapInFunc(_ str: String) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example("""
     func example(foo: Foo) {
         switch foo {
@@ -21,7 +19,7 @@ private func wrapInFunc(_ str: String, file: StaticString = #filePath, line: UIn
             break
         }
     }
-    """, file: file, line: line)
+    """)
 }
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -33,7 +31,7 @@ struct EmptyEnumArgumentsRule: Rule {
         name: "Empty Enum Arguments",
         description: "Arguments can be omitted when matching enums with associated values if they are not used",
         kind: .style,
-        nonTriggeringExamples: [
+        nonTriggeringExamples: #examples([
             wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar(let x)"),
             wrapInSwitch("case let .bar(x)"),
@@ -44,25 +42,25 @@ struct EmptyEnumArgumentsRule: Rule {
             wrapInSwitch("case .bar(Baz())"),
             wrapInSwitch("case .bar(.init())"),
             wrapInSwitch("default"),
-            Example("if case .bar = foo {\n}"),
-            Example("guard case .bar = foo else {\n}"),
-            Example("if foo == .bar() {}"),
-            Example("guard foo == .bar() else { return }"),
-            Example("""
+            "if case .bar = foo {\n}",
+            "guard case .bar = foo else {\n}",
+            "if foo == .bar() {}",
+            "guard foo == .bar() else { return }",
+            """
             if case .appStore = self.appInstaller, !UIDevice.isSimulator() {
                 viewController.present(self, animated: false)
             } else {
                 UIApplication.shared.open(self.appInstaller.url)
             }
-            """),
-            Example("""
+            """,
+            """
             let updatedUserNotificationSettings = deepLink.filter { nav in
                 guard case .settings(.notifications(_, nil)) = nav else { return false }
                 return true
             }
-            """),
-        ],
-        triggeringExamples: [
+            """,
+        ]),
+        triggeringExamples: #examples([
             wrapInSwitch("case .bar↓(_)"),
             wrapInSwitch("case .bar↓()"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"),
@@ -70,25 +68,25 @@ struct EmptyEnumArgumentsRule: Rule {
             wrapInSwitch("case .bar(.baz↓())"),
             wrapInSwitch("case .bar(.baz↓(_))"),
             wrapInFunc("case .bar↓(_)"),
-            Example("if case .bar↓(_) = foo {\n}"),
-            Example("guard case .bar↓(_) = foo else {\n}"),
-            Example("if case .bar↓() = foo {\n}"),
-            Example("guard case .bar↓() = foo else {\n}"),
-            Example("""
+            "if case .bar↓(_) = foo {\n}",
+            "guard case .bar↓(_) = foo else {\n}",
+            "if case .bar↓() = foo {\n}",
+            "guard case .bar↓() = foo else {\n}",
+            """
             if case .appStore↓(_) = self.appInstaller, !UIDevice.isSimulator() {
                 viewController.present(self, animated: false)
             } else {
                 UIApplication.shared.open(self.appInstaller.url)
             }
-            """),
-            Example("""
+            """,
+            """
             let updatedUserNotificationSettings = deepLink.filter { nav in
                 guard case .settings(.notifications↓(_, _)) = nav else { return false }
                 return true
             }
-            """),
-        ],
-        corrections: [
+            """,
+        ]),
+        corrections: #examplesDictionary([
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓()"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"): wrapInSwitch("case .bar, .bar2"),
@@ -96,21 +94,21 @@ struct EmptyEnumArgumentsRule: Rule {
             wrapInSwitch("case .bar(.baz↓())"): wrapInSwitch("case .bar(.baz)"),
             wrapInSwitch("case .bar(.baz↓(_))"): wrapInSwitch("case .bar(.baz)"),
             wrapInFunc("case .bar↓(_)"): wrapInFunc("case .bar"),
-            Example("if case .bar↓(_) = foo {"): Example("if case .bar = foo {"),
-            Example("guard case .bar↓(_) = foo else {"): Example("guard case .bar = foo else {"),
-            Example("""
+            "if case .bar↓(_) = foo {": "if case .bar = foo {",
+            "guard case .bar↓(_) = foo else {": "guard case .bar = foo else {",
+            """
             let updatedUserNotificationSettings = deepLink.filter { nav in
                 guard case .settings(.notifications↓(_, _)) = nav else { return false }
                 return true
             }
-            """):
-                Example("""
+            """:
+                """
                 let updatedUserNotificationSettings = deepLink.filter { nav in
                     guard case .settings(.notifications) = nav else { return false }
                     return true
                 }
-                """),
-        ]
+                """,
+        ])
     )
 }
 

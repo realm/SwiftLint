@@ -9,76 +9,72 @@ struct ForceUnwrappingRule: Rule {
         name: "Force Unwrapping",
         description: "Force unwrapping should be avoided",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("if let url = NSURL(string: query)"),
-            Example("navigationController?.pushViewController(viewController, animated: true)"),
-            Example("let s as! Test"),
-            Example("try! canThrowErrors()"),
-            Example("let object: Any!"),
-            Example("@IBOutlet var constraints: [NSLayoutConstraint]!"),
-            Example("setEditing(!editing, animated: true)"),
-            Example("navigationController.setNavigationBarHidden(!navigationController." +
-                "navigationBarHidden, animated: true)"),
-            Example("if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
-                "self.searchBar?.text?.isEmpty == false) {}"),
-            Example("print(\"\\(xVar)!\")"),
-            Example("var test = (!bar)"),
-            Example("var a: [Int]!"),
-            Example("private var myProperty: (Void -> Void)!"),
-            Example("func foo(_ options: [AnyHashable: Any]!) {"),
-            Example("func foo() -> [Int]!"),
-            Example("func foo() -> [AnyHashable: Any]!"),
-            Example("func foo() -> [Int]! { return [] }"),
-            Example("return self"),
-            Example("let url = URL(string: \"https://www.example.com\")!"),
-            Example("let data = Data(hexString: \"AABBCCDD\")!"),
-            Example("let image = UIImage(named: \"icon\")!"),
-            Example("let url = NSURL(string: \"http://www.google.com\")!"),
-            Example("let url = URL.init(string: \"https://www.example.com\")!"),
-            Example(
-                "let result = someFunction(\"constant\")!",
-                configuration: ["ignored_literal_argument_functions": ["someFunction(_:)"]]
-            ),
-        ],
-        triggeringExamples: [
-            Example("let url = NSURL(string: query)↓!"),
-            Example("navigationController↓!.pushViewController(viewController, animated: true)"),
-            Example("let unwrapped = optional↓!"),
-            Example("return cell↓!"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "if let url = NSURL(string: query)",
+            "navigationController?.pushViewController(viewController, animated: true)",
+            "let s as! Test",
+            "try! canThrowErrors()",
+            "let object: Any!",
+            "@IBOutlet var constraints: [NSLayoutConstraint]!",
+            "setEditing(!editing, animated: true)",
+            "navigationController.setNavigationBarHidden(!navigationController." +
+                "navigationBarHidden, animated: true)",
+            "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
+                "self.searchBar?.text?.isEmpty == false) {}",
+            "print(\"\\(xVar)!\")",
+            "var test = (!bar)",
+            "var a: [Int]!",
+            "private var myProperty: (Void -> Void)!",
+            "func foo(_ options: [AnyHashable: Any]!) {",
+            "func foo() -> [Int]!",
+            "func foo() -> [AnyHashable: Any]!",
+            "func foo() -> [Int]! { return [] }",
+            "return self",
+            "let url = URL(string: \"https://www.example.com\")!",
+            "let data = Data(hexString: \"AABBCCDD\")!",
+            "let image = UIImage(named: \"icon\")!",
+            "let url = NSURL(string: \"http://www.google.com\")!",
+            "let url = URL.init(string: \"https://www.example.com\")!",
+            "let result = someFunction(\"constant\")!"
+                .configuration(["ignored_literal_argument_functions": ["someFunction(_:)"]]),
+        ]),
+        triggeringExamples: #examples([
+            "let url = NSURL(string: query)↓!",
+            "navigationController↓!.pushViewController(viewController, animated: true)",
+            "let unwrapped = optional↓!",
+            "return cell↓!",
+            """
             let dict = ["Boooo": "👻"]
             func bla() -> String {
                 return dict["Boooo"]↓!
             }
-            """),
-            Example("""
+            """,
+            """
             let dict = ["Boooo": "👻"]
             func bla() -> String {
                 return dict["Boooo"]↓!.contains("B")
             }
-            """),
-            Example("let a = dict[\"abc\"]↓!.contains(\"B\")"),
-            Example("dict[\"abc\"]↓!.bar(\"B\")"),
-            Example("if dict[\"a\"]↓!↓!↓!↓! {}"),
-            Example("var foo: [Bool]! = dict[\"abc\"]↓!"),
-            Example("realm.objects(SwiftUTF8Object.self).filter(\"%K == %@\", \"柱нǢкƱаم👍\", utf8TestString).first↓!"),
-            Example("""
+            """,
+            "let a = dict[\"abc\"]↓!.contains(\"B\")",
+            "dict[\"abc\"]↓!.bar(\"B\")",
+            "if dict[\"a\"]↓!↓!↓!↓! {}",
+            "var foo: [Bool]! = dict[\"abc\"]↓!",
+            "realm.objects(SwiftUTF8Object.self).filter(\"%K == %@\", \"柱нǢкƱаم👍\", utf8TestString).first↓!",
+            """
             context("abc") {
               var foo: [Bool]! = dict["abc"]↓!
             }
-            """),
-            Example("open var computed: String { return foo.bar↓! }"),
-            Example("return self↓!"),
-            Example("[1, 3, 5, 6].first { $0.isMultiple(of: 2) }↓!"),
-            Example("map[\"a\"]↓!↓!"),
-            Example("let url = URL(string: variable)↓!"),
-            Example("let url = URL(string: \"\\(dynamicValue)\")↓!"),
-            Example("let result = someFunction(\"constant\")↓!"),
-            Example(
-                "let url = URL(string: \"https://www.example.com\")↓!",
-                configuration: ["ignored_literal_argument_functions": [String]()]
-            ),
-        ]
+            """,
+            "open var computed: String { return foo.bar↓! }",
+            "return self↓!",
+            "[1, 3, 5, 6].first { $0.isMultiple(of: 2) }↓!",
+            "map[\"a\"]↓!↓!",
+            "let url = URL(string: variable)↓!",
+            "let url = URL(string: \"\\(dynamicValue)\")↓!",
+            "let result = someFunction(\"constant\")↓!",
+            "let url = URL(string: \"https://www.example.com\")↓!"
+                .configuration(["ignored_literal_argument_functions": [String]()]),
+        ])
     )
 }
 

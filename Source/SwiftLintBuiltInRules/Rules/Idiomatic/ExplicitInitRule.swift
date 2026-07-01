@@ -50,44 +50,44 @@ struct ExplicitInitRule: Rule {
             ).asMaybe()
             """,
         ]),
-        triggeringExamples: [
-            Example("""
+        triggeringExamples: #examples([
+            """
             [1].flatMap{String↓.init($0)}
-            """),
-            Example("""
+            """,
+            """
             [String.self].map { Type in Type↓.init(1) }
-            """),  // Starting with capital letter assumes a type
-            Example("""
+            """,  // Starting with capital letter assumes a type
+            """
             func foo() -> [String] {
                 return [1].flatMap { String↓.init($0) }
             }
-            """),
-            Example("_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()"),
-            Example("_ = Set<KsApi.Category>↓.init()"),
-            Example("""
+            """,
+            "_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()",
+            "_ = Set<KsApi.Category>↓.init()",
+            """
             Observable.zip(
               obs1,
               obs2,
               resultSelector: { MyType↓.init($0, $1) }
             ).asMaybe()
-            """),
-            Example("""
+            """,
+            """
             let int = In🤓t↓
             .init(1.0)
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             let int = Int↓
 
 
             .init(1.0)
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             let int = Int↓
 
 
                   .init(1.0)
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         corrections: #examplesDictionary([
             """
             [1].flatMap{String↓.init($0)}

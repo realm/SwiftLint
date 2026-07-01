@@ -1,35 +1,35 @@
 import SwiftLintCore
 
 struct UnneededEscapingRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         func outer(completion: @escaping () -> Void) { inner(completion: completion) }
-        """),
-        Example("""
+        """,
+        """
         func f(completion: @escaping [Int] -> Void) {
             g {
                 let result = [1].map { _ in 0 }
                 completion(result)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func outer(closure: @escaping @autoclosure () -> String) {
             inner(closure: closure())
         }
-        """),
-        Example("""
+        """,
+        """
         func outer(closure: @escaping () -> String) {
             inner(tuple: (closure, 42))
         }
-        """),
-        Example("""
+        """,
+        """
         func returning(_ work: @escaping () -> Void) -> () -> Void { return work }
-        """),
-        Example("""
+        """,
+        """
         func implicitlyReturning(g: @escaping () -> Void) -> () -> Void { g }
-        """),
-        Example("""
+        """,
+        """
         struct S {
             var closure: (() -> Void)?
             mutating func setClosure(_ newValue: @escaping () -> Void) {
@@ -39,50 +39,50 @@ struct UnneededEscapingRuleExamples {
                 self.closure = newValue
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func closure(completion: @escaping () -> Void) {
             DispatchQueue.main.async { completion() }
         }
-        """),
-        Example("""
+        """,
+        """
         func capture(completion: @escaping () -> Void) {
             let closure = { completion() }
             closure()
         }
-        """),
-        Example("""
+        """,
+        """
         func assignToLocal(completion: @escaping () -> Void) {
             let (local, _) = (completion, 17)
             self.local = local
         }
-        """),
-        Example("""
+        """,
+        """
         func assignToLocal(completion: @escaping () -> Void) {
             let local = (completion, 17)
             self.local = local
         }
-        """),
-        Example("""
+        """,
+        """
         func assignToLocal(completion: @escaping () -> Void) {
             let local = (completion, 17)
             let (c, n) = local
             self.c = c
         }
-        """),
-        Example("""
+        """,
+        """
         func reassignLocal(completion: @escaping () -> Void) -> () -> Void {
             var local = { print("initial") }
             local = completion
             return local
         }
-        """),
-        Example("""
+        """,
+        """
         func global(completion: @escaping () -> Void) {
             Global.completion = completion
         }
-        """),
-        Example("""
+        """,
+        """
         func chain(c: @escaping () -> Void) -> () -> Void {
             let c1 = c
             if condition {
@@ -92,49 +92,49 @@ struct UnneededEscapingRuleExamples {
             let c3 = c1
             return c3
         }
-        """),
-        Example("""
+        """,
+        """
         var arrayOfCompletions = [() -> Void]()
         func array(completion: @escaping () -> Void) {
             var completions = [() -> Void]()
             completions[0] = completion
             arrayOfCompletions = completions
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         var arrayOfCompletions = [() -> Void]()
         func array(completion: @escaping () -> Void) {
             arrayOfCompletions[0] = completion
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         var _testSuiteFailedCallback: (() -> Void)?
         public func _setTestSuiteFailedCallback(_ callback: @escaping () -> Void) {
             _testSuiteFailedCallback = callback
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         func f(c: @escaping () -> Void) {
             var cs = [() -> Void]()
             cs[0] = c
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         func f(c: @escaping () -> Void) {
             var cs = [c]
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         func f(c: @escaping () -> Void) {
             var cs = [1: c]
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         func f(c: @escaping () -> Void) {
             f(true ? c : { })
         }
-        """),
-    ]
+        """,
+    ])
 
     static let triggeringExamples = #examples([
         """

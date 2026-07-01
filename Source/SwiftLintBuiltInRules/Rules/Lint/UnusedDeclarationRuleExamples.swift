@@ -139,11 +139,11 @@ struct UnusedDeclarationRuleExamples {
         """,
     ]) + platformSpecificNonTriggeringExamples
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         let ↓kConstant = 0
-        """),
-        Example("""
+        """,
+        """
         struct Item {}
         struct ↓ResponseModel: Codable {
             let ↓items: [Item]
@@ -152,17 +152,17 @@ struct UnusedDeclarationRuleExamples {
                 case items = "ResponseItems"
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class ↓ResponseModel {
             func ↓foo() {
             }
         }
-        """),
-        Example("""
+        """,
+        """
         public func ↓foo() {}
-        """, configuration: ["include_public_and_open": true]),
-        Example("""
+        """.configuration(["include_public_and_open": true]),
+        """
         protocol Foo {
             func ↓bar1()
         }
@@ -174,14 +174,14 @@ struct UnusedDeclarationRuleExamples {
 
         struct MyStruct: Foo {}
         _ = MyStruct()
-        """),
-        Example("""
+        """,
+        """
         import XCTest
         class ↓MyTests: NSObject {
             func ↓testExample() {}
         }
-        """),
-        Example("""
+        """,
+        """
         enum Component {
           case string(StaticString)
           indirect case array([Component])
@@ -207,22 +207,22 @@ struct UnusedDeclarationRuleExamples {
         }
 
         _ = ComponentBuilder()
-        """),
-        Example("""
+        """,
+        """
         protocol ↓Foo {}
         extension Foo {}
-        """),
-        Example("""
+        """,
+        """
         class ↓C<T> {}
         extension C<Int> {}
-        """),
-    ] + ["actor", "enum", "class", "struct"].map {
-        Example("""
+        """,
+    ]) + ["actor", "enum", "class", "struct"].map {
+        """
         protocol Foo {}
         \($0) ↓FooImpl {}
         extension FooImpl {}
         extension FooImpl: Foo {}
-        """, excludeFromDocumentation: true)
+        """.excludeFromDocumentation()
     } + platformSpecificTriggeringExamples
 
 #if os(macOS)

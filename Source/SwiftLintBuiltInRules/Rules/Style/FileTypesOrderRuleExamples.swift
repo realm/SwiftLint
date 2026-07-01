@@ -111,16 +111,15 @@ internal struct FileTypesOrderRuleExamples {
         """,
     ]
 
-    static let nonTriggeringExamples = [
-        Example(Self.defaultOrderParts.joined(separator: "\n\n")),
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        Self.defaultOrderParts.joined(separator: "\n\n"),
+        """
         // Only extensions
         extension Foo {}
         extension Bar {
         }
-        """),
-        Example(
-            """
+        """,
+        """
             #if canImport(Darwin)
             typealias Helper = Int
             #endif
@@ -130,10 +129,8 @@ internal struct FileTypesOrderRuleExamples {
             }
 
             extension Main {}
-            """,
-            excludeFromDocumentation: true
-        ),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
         // Main Type
         struct ContentView: View {
             var body: some View {
@@ -152,19 +149,19 @@ internal struct FileTypesOrderRuleExamples {
                 LibraryItem(ContentView())
             }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         ↓class TestViewController: UIViewController {}
 
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
         }
-        """),
-        Example("""
+        """,
+        """
         // Extensions
         ↓extension TestViewController: UITableViewDataSource {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -173,8 +170,8 @@ internal struct FileTypesOrderRuleExamples {
         }
 
         class TestViewController: UIViewController {}
-        """),
-        Example("""
+        """,
+        """
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
@@ -186,8 +183,8 @@ internal struct FileTypesOrderRuleExamples {
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
         }
-        """),
-        Example("""
+        """,
+        """
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
@@ -208,8 +205,8 @@ internal struct FileTypesOrderRuleExamples {
                 return 1
             }
         }
-        """),
-        Example("""
+        """,
+        """
         // Preview Provider
         public ↓struct ContentView_Previews: PreviewProvider {
             static var previews: some View { ContentView() }
@@ -221,8 +218,8 @@ internal struct FileTypesOrderRuleExamples {
                 Text("Hello, World!")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         // Library Content Provider
         ↓struct ContentView_LibraryContent: LibraryContentProvider {
             var views: [LibraryItem] {
@@ -236,8 +233,8 @@ internal struct FileTypesOrderRuleExamples {
                 Text("Hello, World!")
             }
         }
-        """),
-        Example("""
+        """,
+        """
             ↓extension Main {}
 
             #if canImport(Darwin)
@@ -247,10 +244,8 @@ internal struct FileTypesOrderRuleExamples {
             struct Main {
                 let value: Int
             }
-            """,
-            excludeFromDocumentation: true
-        ),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             import Foundation
             ↓extension S {
                 struct C {
@@ -264,10 +259,8 @@ internal struct FileTypesOrderRuleExamples {
                 struct D {}
             }
             #Preview { S() }
-            """,
-            excludeFromDocumentation: true
-        ),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             import Foundation
             protocol P {}
             ↓extension P {}
@@ -276,8 +269,6 @@ internal struct FileTypesOrderRuleExamples {
             actor A {
                 // Empty.
             }
-            """,
-            excludeFromDocumentation: true
-        ),
-    ]
+            """.excludeFromDocumentation(),
+    ])
 }

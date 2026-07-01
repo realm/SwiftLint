@@ -10,15 +10,15 @@ struct SelfInPropertyInitializationRule: Rule {
         description: "`self` refers to the unapplied `NSObject.self()` method, which is likely not expected; " +
             "make the variable `lazy` to be able to refer to the current instance or use `ClassName.self`",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class View: UIView {
                 let button: UIButton = {
                     return UIButton()
                 }()
             }
-            """),
-            Example("""
+            """,
+            """
             class View: UIView {
                 lazy var button: UIButton = {
                     let button = UIButton()
@@ -26,8 +26,8 @@ struct SelfInPropertyInitializationRule: Rule {
                     return button
                 }()
             }
-            """),
-            Example("""
+            """,
+            """
             class View: UIView {
                 var button: UIButton = {
                     let button = UIButton()
@@ -35,8 +35,8 @@ struct SelfInPropertyInitializationRule: Rule {
                     return button
                 }()
             }
-            """),
-            Example("""
+            """,
+            """
             class View: UIView {
                 private let collectionView: UICollectionView = {
                     let layout = UICollectionViewFlowLayout()
@@ -46,8 +46,8 @@ struct SelfInPropertyInitializationRule: Rule {
                     return collectionView
                 }()
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var bar: Bool = false {
                     didSet {
@@ -67,14 +67,14 @@ struct SelfInPropertyInitializationRule: Rule {
                 func calculateA() -> String { "A" }
                 func calculateB() -> String { "B" }
             }
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             final class NotActuallyReferencingSelf {
                 let keyPath: Any = \\String.self
                 let someType: Any = String.self
             }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         triggeringExamples: #examples([
             """
             class View: UIView {

@@ -9,30 +9,30 @@ struct ClosureSpacingRule: Rule {
         name: "Closure Spacing",
         description: "Closure expressions should have a single space inside each brace",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("[].map ({ $0.description })"),
-            Example("[].filter { $0.contains(location) }"),
-            Example("extension UITableViewCell: ReusableView { }"),
-            Example("extension UITableViewCell: ReusableView {}"),
-            Example(#"let r = /\{\}/"#, excludeFromDocumentation: true),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "[].map ({ $0.description })",
+            "[].filter { $0.contains(location) }",
+            "extension UITableViewCell: ReusableView { }",
+            "extension UITableViewCell: ReusableView {}",
+            #"let r = /\{\}/"#.excludeFromDocumentation(),
+            """
             var tapped: (UITapGestureRecognizer) -> Void = { _ in /* no-op */ }
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             let test1 = func1(arg: { /* do nothing */ })
             let test2 = func1 { /* do nothing */ }
-            """, excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("[].filter↓{ $0.contains(location) }"),
-            Example("[].filter(↓{$0.contains(location)})"),
-            Example("[].map(↓{$0})"),
-            Example("(↓{each in return result.contains(where: ↓{e in return e}) }).count"),
-            Example("filter ↓{ sorted ↓{ $0 < $1}}"),
-            Example("""
+            """.excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "[].filter↓{ $0.contains(location) }",
+            "[].filter(↓{$0.contains(location)})",
+            "[].map(↓{$0})",
+            "(↓{each in return result.contains(where: ↓{e in return e}) }).count",
+            "filter ↓{ sorted ↓{ $0 < $1}}",
+            """
             var tapped: (UITapGestureRecognizer) -> Void = ↓{ _ in /* no-op */  }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         corrections: #examplesDictionary([
             "[].filter(↓{$0.contains(location) })":
                 "[].filter({ $0.contains(location) })",

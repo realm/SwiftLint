@@ -9,29 +9,29 @@ struct UnneededParenthesesInClosureArgumentRule: Rule {
         name: "Unneeded Parentheses in Closure Argument",
         description: "Parentheses are not needed when declaring closure arguments",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let foo = { (bar: Int) in }"),
-            Example("let foo = { bar, _  in }"),
-            Example("let foo = { bar in }"),
-            Example("let foo = { bar -> Bool in return true }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let foo = { (bar: Int) in }",
+            "let foo = { bar, _  in }",
+            "let foo = { bar in }",
+            "let foo = { bar -> Bool in return true }",
+            """
             DispatchQueue.main.async { () -> Void in
                 doSomething()
             }
-            """),
-            Example("""
+            """,
+            """
             registerFilter(name) { any, args throws -> Any? in
                 doSomething(any, args)
             }
-            """, excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("call(arg: { ↓(bar) in })"),
-            Example("call(arg: { ↓(bar, _) in })"),
-            Example("let foo = { ↓(bar) -> Bool in return true }"),
-            Example("foo.map { ($0, $0) }.forEach { ↓(x, y) in }"),
-            Example("foo.bar { [weak self] ↓(x, y) in }"),
-            Example("""
+            """.excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "call(arg: { ↓(bar) in })",
+            "call(arg: { ↓(bar, _) in })",
+            "let foo = { ↓(bar) -> Bool in return true }",
+            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }",
+            "foo.bar { [weak self] ↓(x, y) in }",
+            """
             [].first { ↓(temp) in
                 [].first { ↓(temp) in
                     [].first { ↓(temp) in
@@ -42,8 +42,8 @@ struct UnneededParenthesesInClosureArgumentRule: Rule {
                 }
                 return false
             }
-            """),
-            Example("""
+            """,
+            """
             [].first { temp in
                 [].first { ↓(temp) in
                     [].first { ↓(temp) in
@@ -54,13 +54,13 @@ struct UnneededParenthesesInClosureArgumentRule: Rule {
                 }
                 return false
             }
-            """),
-            Example("""
+            """,
+            """
             registerFilter(name) { ↓(any, args) throws -> Any? in
                 doSomething(any, args)
             }
-            """, excludeFromDocumentation: true),
-        ],
+            """.excludeFromDocumentation(),
+        ]),
         corrections: #examplesDictionary([
             "call(arg: { ↓(bar) in })": "call(arg: { bar in })",
             "call(arg: { ↓(bar, _) in })": "call(arg: { bar, _ in })",

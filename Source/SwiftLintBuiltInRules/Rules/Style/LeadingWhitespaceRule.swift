@@ -16,9 +16,9 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
             "\n//",
             " //",
         ]).skipMultiByteOffsetTests().skipDisableCommandTests(),
-        corrections: [
-            Example("\n //", testMultiByteOffsets: false): Example("//")
-        ]
+        corrections: #examplesDictionary([
+            "\n //".skipMultiByteOffsetTest(): "//"
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

@@ -1,35 +1,35 @@
 internal enum SyntacticSugarRuleExamples {
-    static let nonTriggering = [
-        Example("let x: [Int]"),
-        Example("let x: [Int: String]"),
-        Example("let x: Int?"),
-        Example("func x(a: [Int], b: Int) -> [Int: Any]"),
-        Example("let x: Int!"),
-        Example("""
+    static let nonTriggering = #examples([
+        "let x: [Int]",
+        "let x: [Int: String]",
+        "let x: Int?",
+        "func x(a: [Int], b: Int) -> [Int: Any]",
+        "let x: Int!",
+        """
         extension Array {
           func x() { }
         }
-        """),
-        Example("""
+        """,
+        """
         extension Dictionary {
           func x() { }
         }
-        """),
-        Example("let x: CustomArray<String>"),
-        Example("var currentIndex: Array<OnboardingPage>.Index?"),
-        Example("func x(a: [Int], b: Int) -> Array<Int>.Index"),
-        Example("unsafeBitCast(nonOptionalT, to: Optional<T>.self)"),
-        Example("unsafeBitCast(someType, to: Swift.Array<T>.self)"),
-        Example("IndexingIterator<Array<Dictionary<String, AnyObject>>>.self"),
-        Example("let y = Optional<String>.Type"),
+        """,
+        "let x: CustomArray<String>",
+        "var currentIndex: Array<OnboardingPage>.Index?",
+        "func x(a: [Int], b: Int) -> Array<Int>.Index",
+        "unsafeBitCast(nonOptionalT, to: Optional<T>.self)",
+        "unsafeBitCast(someType, to: Swift.Array<T>.self)",
+        "IndexingIterator<Array<Dictionary<String, AnyObject>>>.self",
+        "let y = Optional<String>.Type",
 
-        Example("type is Optional<String>.Type"),
-        Example("let x: Foo.Optional<String>"),
+        "type is Optional<String>.Type",
+        "let x: Foo.Optional<String>",
 
-        Example("let x = case Optional<Any>.none = obj"),
-        Example("let a = Swift.Optional<String?>.none"),
-        Example("func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }", excludeFromDocumentation: true),
-    ]
+        "let x = case Optional<Any>.none = obj",
+        "let a = Swift.Optional<String?>.none",
+        "func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }".excludeFromDocumentation(),
+    ])
 
     static let triggering = #examples([
         "let x: ↓Array<String>",

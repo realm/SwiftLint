@@ -1,27 +1,27 @@
 internal struct DiscouragedOptionalBooleanRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples = #examples([
         // Global variable
-        Example("var foo: Bool"),
-        Example("var foo: [String: Bool]"),
-        Example("var foo: [Bool]"),
-        Example("let foo: Bool = true"),
-        Example("let foo: Bool = false"),
-        Example("let foo: [String: Bool] = [:]"),
-        Example("let foo: [Bool] = []"),
+        "var foo: Bool",
+        "var foo: [String: Bool]",
+        "var foo: [Bool]",
+        "let foo: Bool = true",
+        "let foo: Bool = false",
+        "let foo: [String: Bool] = [:]",
+        "let foo: [Bool] = []",
 
         // Computed get variable
-        Example("var foo: Bool { return true }"),
-        Example("let foo: Bool { return false }()"),
+        "var foo: Bool { return true }",
+        "let foo: Bool { return false }()",
 
         // Free function return
-        Example("func foo() -> Bool {}"),
-        Example("func foo() -> [String: Bool] {}"),
-        Example("func foo() -> ([Bool]) -> String {}"),
+        "func foo() -> Bool {}",
+        "func foo() -> [String: Bool] {}",
+        "func foo() -> ([Bool]) -> String {}",
 
         // Free function parameter
-        Example("func foo(input: Bool = true) {}"),
-        Example("func foo(input: [String: Bool] = [:]) {}"),
-        Example("func foo(input: [Bool] = []) {}"),
+        "func foo(input: Bool = true) {}",
+        "func foo(input: [String: Bool] = [:]) {}",
+        "func foo(input: [Bool] = []) {}",
 
         // Method return
         wrapExample("class", "func foo() -> Bool {}"),
@@ -48,40 +48,40 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         wrapExample("enum", "func foo(input: Bool = true) {}"),
         wrapExample("enum", "func foo(input: [String: Bool] = [:]) {}"),
         wrapExample("enum", "func foo(input: [Bool] = []) {}"),
-    ]
+    ])
 
-    static let triggeringExamples = [
+    static let triggeringExamples = #examples([
         // Global variable
-        Example("var foo: ↓Bool?"),
-        Example("var foo: [String: ↓Bool?]"),
-        Example("var foo: [↓Bool?]"),
-        Example("let foo: ↓Bool? = nil"),
-        Example("let foo: [String: ↓Bool?] = [:]"),
-        Example("let foo: [↓Bool?] = []"),
-        Example("let foo = ↓Optional.some(false)"),
-        Example("let foo = ↓Optional.some(true)"),
+        "var foo: ↓Bool?",
+        "var foo: [String: ↓Bool?]",
+        "var foo: [↓Bool?]",
+        "let foo: ↓Bool? = nil",
+        "let foo: [String: ↓Bool?] = [:]",
+        "let foo: [↓Bool?] = []",
+        "let foo = ↓Optional.some(false)",
+        "let foo = ↓Optional.some(true)",
 
         // Computed Get Variable
-        Example("var foo: ↓Bool? { return nil }"),
-        Example("let foo: ↓Bool? { return nil }()"),
+        "var foo: ↓Bool? { return nil }",
+        "let foo: ↓Bool? { return nil }()",
 
         // Free function return
-        Example("func foo() -> ↓Bool? {}"),
-        Example("func foo() -> [String: ↓Bool?] {}"),
-        Example("func foo() -> [↓Bool?] {}"),
-        Example("static func foo() -> ↓Bool? {}"),
-        Example("static func foo() -> [String: ↓Bool?] {}"),
-        Example("static func foo() -> [↓Bool?] {}"),
-        Example("func foo() -> (↓Bool?) -> String {}"),
-        Example("func foo() -> ([Int]) -> ↓Bool? {}"),
+        "func foo() -> ↓Bool? {}",
+        "func foo() -> [String: ↓Bool?] {}",
+        "func foo() -> [↓Bool?] {}",
+        "static func foo() -> ↓Bool? {}",
+        "static func foo() -> [String: ↓Bool?] {}",
+        "static func foo() -> [↓Bool?] {}",
+        "func foo() -> (↓Bool?) -> String {}",
+        "func foo() -> ([Int]) -> ↓Bool? {}",
 
         // Free function parameter
-        Example("func foo(input: ↓Bool?) {}"),
-        Example("func foo(input: [String: ↓Bool?]) {}"),
-        Example("func foo(input: [↓Bool?]) {}"),
-        Example("static func foo(input: ↓Bool?) {}"),
-        Example("static func foo(input: [String: ↓Bool?]) {}"),
-        Example("static func foo(input: [↓Bool?]) {}"),
+        "func foo(input: ↓Bool?) {}",
+        "func foo(input: [String: ↓Bool?]) {}",
+        "func foo(input: [↓Bool?]) {}",
+        "static func foo(input: ↓Bool?) {}",
+        "static func foo(input: [String: ↓Bool?]) {}",
+        "static func foo(input: [↓Bool?]) {}",
 
         // Instance variable
         wrapExample("class", "var foo: ↓Bool?"),
@@ -157,15 +157,16 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         wrapExample("enum", "static func foo(input: [↓Bool?]) {}"),
 
         // Optional chaining
-        Example("_ = ↓Bool?.values()"),
-    ]
+        "_ = ↓Bool?.values()",
+    ])
 }
 
 // MARK: - Private
 
-private func wrapExample(_ type: String,
-                         _ test: String,
-                         file: StaticString = #filePath,
-                         line: UInt = #line) -> Example {
-    Example("\(type) Foo {\n\t\(test)\n}", file: file, line: line)
+private func wrapExample(
+    _ type: String,
+    _ test: String
+) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
+    Example("\(type) Foo {\n\t\(test)\n}")
 }

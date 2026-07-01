@@ -60,12 +60,12 @@ struct OpeningBraceRuleExamples {
         """,
     ])
 
-    static let triggeringExamples = [
-        Example("func abc()↓{\n}"),
-        Example("func abc()\n\t↓{ }"),
-        Example("func abc(a: A,\n\tb: B)\n↓{"),
-        Example("[].map()↓{ $0 }"),
-        Example("""
+    static let triggeringExamples = #examples([
+        "func abc()↓{\n}",
+        "func abc()\n\t↓{ }",
+        "func abc(a: A,\n\tb: B)\n↓{",
+        "[].map()↓{ $0 }",
+        """
             struct OldContentView: View {
               @State private var showOptions = false
 
@@ -77,8 +77,8 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             struct OldContentView: View {
               @State private var showOptions = false
 
@@ -91,8 +91,8 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             struct OldContentView: View {
               @State private var showOptions = false
 
@@ -104,34 +104,34 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("if let a = b↓{ }"),
-        Example("while a == b↓{ }"),
-        Example("guard let a = b else↓{ }"),
-        Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-        Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-        Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }"),
-        Example("struct Rule↓{}"),
-        Example("struct Rule\n↓{\n}"),
-        Example("struct Rule\n\n\t↓{\n}"),
-        Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"),
-        Example("switch a↓{}"),
-        Example("if\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }"),
-        Example("while\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }"),
-        Example("guard\n\tlet a = b,\n\tlet c = d,\n\ta == c else\n↓{ }"),
-        Example("class Rule↓{}\n"),
-        Example("actor Rule↓{}\n"),
-        Example("enum Rule↓{}\n"),
-        Example("protocol Rule↓{}\n"),
-        Example("extension Rule↓{}\n"),
-        Example("""
+            """,
+        "if let a = b↓{ }",
+        "while a == b↓{ }",
+        "guard let a = b else↓{ }",
+        "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
+        "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
+        "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }",
+        "struct Rule↓{}",
+        "struct Rule\n↓{\n}",
+        "struct Rule\n\n\t↓{\n}",
+        "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}",
+        "switch a↓{}",
+        "if\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }",
+        "while\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }",
+        "guard\n\tlet a = b,\n\tlet c = d,\n\ta == c else\n↓{ }",
+        "class Rule↓{}\n",
+        "actor Rule↓{}\n",
+        "enum Rule↓{}\n",
+        "protocol Rule↓{}\n",
+        "extension Rule↓{}\n",
+        """
             class Rule {
               var a: String↓{
                 return ""
               }
             }
-            """),
-        Example("""
+            """,
+        """
             class Rule {
               var a: String {
                 willSet↓{
@@ -142,21 +142,21 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             precedencegroup Group↓{
               assignment: true
             }
-            """),
-        Example("""
+            """,
+        """
             internal static func getPointer()
               -> UnsafeMutablePointer<_ThreadLocalStorage>
             ↓{
                 return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                     to: _ThreadLocalStorage.self)
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             func run_Array_method1x(_ N: Int) {
               let existentialArray = array!
               for _ in 0 ..< N * 100 {
@@ -171,8 +171,8 @@ struct OpeningBraceRuleExamples {
             func run_Array_method2x(_ N: Int) {
 
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class TestFile {
                func problemFunction() {
                    #if DEBUG
@@ -184,15 +184,15 @@ struct OpeningBraceRuleExamples {
                    print("Brackets")
                }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             if
                 "test".isEmpty
             ↓{
                 // code here
             }
-            """),
-        Example("""
+            """,
+        """
             func fooFun() {
                 let foo: String? = "foo"
                 let bar: String? = "bar"
@@ -204,20 +204,20 @@ struct OpeningBraceRuleExamples {
                     print(foo + bar)
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             if
                 let a = ["A", "B"].first,
                 let b = ["B"].first
             ↓{
                 print(a)
             }
-            """),
-        Example("""
+            """,
+        """
             if c  ↓{}
             else /* comment */  ↓{}
-            """),
-    ]
+            """,
+    ])
 
     static let corrections = #examplesDictionary([
         "struct Rule{}": "struct Rule {}",

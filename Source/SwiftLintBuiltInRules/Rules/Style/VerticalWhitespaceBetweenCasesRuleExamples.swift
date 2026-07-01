@@ -3,8 +3,8 @@
 internal struct VerticalWhitespaceBetweenCasesRuleExamples {
     private static let noSeparation = ["separation": "never"]
 
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
             switch x {
 
             case 0..<5:
@@ -19,8 +19,8 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             @unknown default:
                 print("x is out of this world")
             }
-            """),
-        Example("""
+            """,
+        """
             switch x {
             case 0..<5:
                 print("x is low")
@@ -31,17 +31,17 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             default:
                 print("x is invalid")
             }
-            """),
-        Example("""
+            """,
+        """
             switch x {
             case 0..<5: print("x is low")
             case 5..<10: print("x is high")
             default: print("x is invalid")
             @unknown default: print("x is out of this world")
             }
-            """),
+            """,
         // Testing handling of trailing spaces
-        Example("""
+        """
             switch x {    \("")
             case 1:    \("")
                 print("one")    \("")
@@ -49,9 +49,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             default:    \("")
                 print("not one")    \("")
             }    \("")
-            """),
+            """,
         // Test with compiler directives (#if/#endif)
-        Example("""
+        """
             switch x {
             case .a: print("a")
 
@@ -61,9 +61,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
 
             case .c: print("c")
             }
-            """),
+            """,
         // Test #if in the middle of cases
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -76,9 +76,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .c:
                 print("c")
             }
-            """),
+            """,
         // Comments between cases - empty line still required
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -87,8 +87,8 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .b:
                 print("b")
             }
-            """),
-        Example("""
+            """,
+        """
             switch x {
             case .a:
                 print("a")
@@ -97,9 +97,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .b:
                 print("b")
             }
-            """),
+            """,
         // Comment as part of case body (not a separator)
-        Example("""
+        """
             switch x {
             case .a:
                 // Comment inside case a
@@ -108,9 +108,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .b:
                 print("b")
             }
-            """),
+            """,
         // separation: never - no blank lines
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -119,9 +119,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .c:
                 print("c")
             }
-            """, configuration: noSeparation),
+            """.configuration(noSeparation),
         // separation: never - no blank lines with comments
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -129,9 +129,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .b:
                 print("b")
             }
-            """, configuration: noSeparation),
+            """.configuration(noSeparation),
         // separation: always (default) - one blank line with comments
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -140,8 +140,8 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .b:
                 print("b")
             }
-            """),
-        Example("""
+            """,
+        """
             switch x {
             case .gamma:
                 print("gamma")
@@ -150,11 +150,11 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .delta:
                 print("delta")
             }
-            """),
-    ]
+            """,
+    ])
 
-    static let violatingToValidExamples: [Example: Example] = [
-        Example("""
+    static let violatingToValidExamples: [Example: Example] = #examplesDictionary([
+        """
             switch x {
             case 0..<5:
                 return "x is valid"
@@ -163,7 +163,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓@unknown default:
                 print("x is out of this world")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case 0..<5:
                     return "x is valid"
@@ -174,15 +174,15 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 @unknown default:
                     print("x is out of this world")
                 }
-                """),
-        Example("""
+                """,
+        """
             switch x {
             case 0..<5:
                 print("x is valid")
             ↓default:
                 print("x is invalid")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case 0..<5:
                     print("x is valid")
@@ -190,15 +190,15 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 default:
                     print("x is invalid")
                 }
-                """),
-        Example("""
+                """,
+        """
             switch x {
             case .valid:
                 print("x is valid")
             ↓case .invalid:
                 print("x is invalid")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .valid:
                     print("x is valid")
@@ -206,8 +206,8 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .invalid:
                     print("x is invalid")
                 }
-                """),
-        Example("""
+                """,
+        """
             switch x {
             case .valid:
                 print("multiple ...")
@@ -216,7 +216,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 print("multiple ...")
                 print("... lines")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .valid:
                     print("multiple ...")
@@ -226,9 +226,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     print("multiple ...")
                     print("... lines")
                 }
-                """),
+                """,
         // Violations should still be caught outside of #if blocks
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -245,7 +245,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .e:
                 print("e")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .a:
                     print("a")
@@ -264,9 +264,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .e:
                     print("e")
                 }
-                """),
+                """,
         // Violation after #endif
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -278,7 +278,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .c:
                 print("c")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .a:
                     print("a")
@@ -291,9 +291,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .c:
                     print("c")
                 }
-                """),
+                """,
         // Block comment without blank line
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -301,7 +301,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .b:
                 print("b")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .a:
                     print("a")
@@ -310,9 +310,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .b:
                     print("b")
                 }
-                """),
+                """,
         // Doc comment without blank line
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -320,7 +320,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .b:
                 print("b")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .a:
                     print("a")
@@ -329,9 +329,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .b:
                     print("b")
                 }
-                """),
+                """,
         // Comment inside case body - blank line needed before next case
-        Example("""
+        """
             switch x {
             case .a:
                 // Comment inside
@@ -339,7 +339,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .b:
                 print("b")
             }
-            """): Example("""
+            """: """
                 switch x {
                 case .a:
                     // Comment inside
@@ -348,9 +348,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .b:
                     print("b")
                 }
-                """),
+                """,
         // Line comment without blank line (checking correct indentation)
-        Example("""
+        """
                 switch x {
                 case .a:
                     print("a")
@@ -358,7 +358,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 ↓case .b:
                     print("b")
                 }
-            """): Example("""
+            """: """
                     switch x {
                     case .a:
                         print("a")
@@ -367,9 +367,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     case .b:
                         print("b")
                     }
-                """),
+                """,
         // Multiple comments without blank line (checking correct indentation)
-        Example("""
+        """
                 switch x {
                 case .a:
                     print("a")
@@ -378,7 +378,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 ↓case .b:
                     print("b")
                 }
-            """): Example("""
+            """: """
                     switch x {
                     case .a:
                         print("a")
@@ -388,8 +388,8 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     case .b:
                         print("b")
                     }
-                """),
-        Example("""
+                """,
+        """
                 switch (i) {
                 case 1: 1
                 ↓#if canImport(FoundationNetworking)
@@ -401,7 +401,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                     3
                 #endif
                 }
-                """): Example("""
+                """: """
                     switch (i) {
                     case 1: 1
 
@@ -415,9 +415,9 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                         3
                     #endif
                     }
-                    """),
+                    """,
         // separation: never - remove blank lines
-        Example("""
+        """
             switch x {
             case .first:
                 print("first")
@@ -425,16 +425,16 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .second:
                 print("second")
             }
-            """, configuration: noSeparation): Example("""
+            """.configuration(noSeparation): """
                 switch x {
                 case .first:
                     print("first")
                 case .second:
                     print("second")
                 }
-                """, configuration: noSeparation),
+                """.configuration(noSeparation),
         // separation: never - two blank lines should be reduced to zero
-        Example("""
+        """
             switch x {
             case .a:
                 print("a")
@@ -456,7 +456,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓↓case .d:
                 print("d")
             }
-            """, configuration: noSeparation): Example("""
+            """.configuration(noSeparation): """
                 switch x {
                 case .a:
                     print("a")
@@ -472,6 +472,6 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .d:
                     print("d")
                 }
-                """, configuration: noSeparation),
-    ]
+                """.configuration(noSeparation),
+    ])
 }

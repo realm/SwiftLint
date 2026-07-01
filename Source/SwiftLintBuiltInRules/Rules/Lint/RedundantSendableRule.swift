@@ -17,29 +17,29 @@ struct RedundantSendableRule: Rule {
             "@MyActor enum E: Sendable { case a }",
             "@MainActor protocol P: Sendable {}",
         ]),
-        triggeringExamples: [
-            Example("@MainActor struct ↓S: Sendable {}"),
-            Example("actor ↓A: Sendable {}"),
-            Example("@MyActor enum ↓E: Sendable { case a }", configuration: ["global_actors": ["MyActor"]]),
-        ],
-        corrections: [
-            Example("@MainActor struct S: Sendable {}"):
-                Example("@MainActor struct S {}"),
-            Example("actor A: Sendable /* trailing comment */{}"):
-                Example("actor A /* trailing comment */{}"),
-            Example("@MyActor enum E: Sendable { case a }", configuration: ["global_actors": ["MyActor"]]):
-                Example("@MyActor enum E { case a }"),
-            Example("""
+        triggeringExamples: #examples([
+            "@MainActor struct ↓S: Sendable {}",
+            "actor ↓A: Sendable {}",
+            "@MyActor enum ↓E: Sendable { case a }".configuration(["global_actors": ["MyActor"]]),
+        ]),
+        corrections: #examplesDictionary([
+            "@MainActor struct S: Sendable {}":
+                "@MainActor struct S {}",
+            "actor A: Sendable /* trailing comment */{}":
+                "actor A /* trailing comment */{}",
+            "@MyActor enum E: Sendable { case a }".configuration(["global_actors": ["MyActor"]]):
+                "@MyActor enum E { case a }",
+            """
                 actor A: B, Sendable, C // comment
                 {}
-                """):
-                Example("""
+                """:
+                """
                     actor A: B, C // comment
                     {}
-                    """),
-            Example("@MainActor struct P: A, Sendable {}"):
-                Example("@MainActor struct P: A {}"),
-        ]
+                    """,
+            "@MainActor struct P: A, Sendable {}":
+                "@MainActor struct P: A {}",
+        ])
     )
 }
 

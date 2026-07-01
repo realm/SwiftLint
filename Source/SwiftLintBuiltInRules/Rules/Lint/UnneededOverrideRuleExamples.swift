@@ -1,101 +1,101 @@
 struct UnneededOverrideRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         class Foo {
             override func bar() {
                 super.bar()
                 print("hi")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             @available(*, unavailable)
             override func bar() {
                 super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             @objc override func bar() {
                 super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar() {
                 super.bar()
                 super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar() throws {
                 // Doing a different variation of 'try' changes behavior
                 try! super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar() throws {
                 // Doing a different variation of 'try' changes behavior
                 try? super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar() async throws {
                 // Doing a different variation of 'try' changes behavior
                 await try! super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(arg: Bool) {
                 // Flipping the argument changes behavior
                 super.bar(arg: !arg)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(_ arg: Int) {
                 // Changing the argument changes behavior
                 super.bar(arg + 1)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(arg: Int) {
                 // Changing the argument changes behavior
                 super.bar(arg: arg.var)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(_ arg: Int) {
                 // Not passing arguments because they have default values changes behavior
                 super.bar()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(arg: Int, _ arg3: Bool) {
                 // Calling a super function with different argument labels changes behavior
                 super.bar(arg2: arg, arg3: arg3)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(animated: Bool, completion: () -> Void) {
                 super.bar(animated: animated) {
@@ -103,8 +103,8 @@ struct UnneededOverrideRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Foo {
             override func bar(animated: Bool, completion: () -> Void) {
                 super.bar(animated: animated, completion: {
@@ -112,16 +112,16 @@ struct UnneededOverrideRuleExamples {
                 })
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class Baz: Foo {
             // A default argument might be a change
             override func bar(value: String = "Hello") {
                 super.bar(value: value)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class C {
             override func foo() {
                 super.foo {}
@@ -136,15 +136,15 @@ struct UnneededOverrideRuleExamples {
                 super.qux(c: {})
             }
         }
-        """),
-        Example("""
+        """,
+        """
         class FooTestCase: XCTestCase {
             override func setUp() {
                 super.setUp()
             }
         }
-        """, configuration: ["excluded_methods": ["setUp"]]),
-    ]
+        """.configuration(["excluded_methods": ["setUp"]]),
+    ])
 
     static let triggeringExamples = #examples([
         """

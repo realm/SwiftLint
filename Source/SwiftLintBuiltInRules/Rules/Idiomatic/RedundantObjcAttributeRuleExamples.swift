@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct RedundantObjcAttributeRuleExamples {
     static let nonTriggeringExamples = #examples([
         "@objc private var foo: String? {}",

@@ -1,4 +1,5 @@
 import SourceKittenFramework
+import SwiftLintCore
 
 struct CaptureVariableRule: AnalyzerRule, CollectingRule {
     struct Variable: Hashable {

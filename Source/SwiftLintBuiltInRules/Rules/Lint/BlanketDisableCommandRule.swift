@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
     var configuration = BlanketDisableCommandConfiguration()

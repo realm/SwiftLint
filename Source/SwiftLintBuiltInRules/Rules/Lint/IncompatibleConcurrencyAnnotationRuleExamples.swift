@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable:next type_name
 struct IncompatibleConcurrencyAnnotationRuleExamples {
     static let nonTriggeringExamples = #examples([

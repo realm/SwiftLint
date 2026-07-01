@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct UnusedDeclarationRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

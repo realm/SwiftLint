@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct PrivateSubjectRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         #"""

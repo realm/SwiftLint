@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 struct OverrideInExtensionRule: OptInRule, SwiftSyntaxRule {

@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct ColonRuleExamples {
     static let nonTriggeringExamples = #examples([
         "let abc: Void",

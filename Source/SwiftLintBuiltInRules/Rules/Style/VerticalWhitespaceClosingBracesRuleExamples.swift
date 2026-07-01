@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable:next type_name
 internal struct VerticalWhitespaceClosingBracesRuleExamples {
     private static let beforeTrivialLinesConfiguration = ["only_enforce_before_trivial_lines": true]

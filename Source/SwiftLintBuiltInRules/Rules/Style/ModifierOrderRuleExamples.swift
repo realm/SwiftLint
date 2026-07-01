@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct ModifierOrderRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

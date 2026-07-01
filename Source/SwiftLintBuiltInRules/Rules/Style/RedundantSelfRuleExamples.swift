@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct RedundantSelfRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct DuplicateImportsRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

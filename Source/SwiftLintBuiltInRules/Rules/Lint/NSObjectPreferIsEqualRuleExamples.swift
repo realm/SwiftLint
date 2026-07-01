@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct NSObjectPreferIsEqualRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         // NSObject subclass without ==

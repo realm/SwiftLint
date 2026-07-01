@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct MultilineArgumentsRuleExamples {
     static let nonTriggeringExamples = #examples([
         "foo()",

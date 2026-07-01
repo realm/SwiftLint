@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 // this rule exists due to a compiler bug: https://github.com/apple/swift/issues/51036

@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct NoFallthroughOnlyRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         """

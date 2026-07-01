@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type_name
     static let nonTriggeringExamples = #examples([
         // properties with body should be ignored

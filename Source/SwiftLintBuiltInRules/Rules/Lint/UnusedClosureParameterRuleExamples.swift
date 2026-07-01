@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 enum UnusedClosureParameterRuleExamples {
     static let nonTriggering = #examples([
         "[1, 2].map { $0 + 1 }",

@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal enum DeploymentTargetRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         "@available(iOS 12.0, *)\nclass A {}",

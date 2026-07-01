@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct EmptyXCTestMethodRuleExamples {
     static let nonTriggeringExamples = #examples([
         // Valid XCTestCase class

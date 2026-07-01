@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import TestHelpers
 import Testing
 

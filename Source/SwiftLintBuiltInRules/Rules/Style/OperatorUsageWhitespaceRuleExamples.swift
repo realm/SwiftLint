@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal enum OperatorUsageWhitespaceRuleExamples {
     static let nonTriggeringExamples = #examples([
         "let foo = 1 + 2",

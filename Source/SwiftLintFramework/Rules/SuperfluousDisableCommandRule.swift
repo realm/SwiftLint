@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 package struct SuperfluousDisableCommandRule: SourceKitFreeRule, Sendable {
     package var configuration = SeverityConfiguration<Self>(.warning)
 

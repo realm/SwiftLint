@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct AsyncWithoutAwaitRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

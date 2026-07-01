@@ -1,4 +1,5 @@
 import SwiftIDEUtils
+import SwiftLintCore
 import SwiftSyntax
 
 struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {

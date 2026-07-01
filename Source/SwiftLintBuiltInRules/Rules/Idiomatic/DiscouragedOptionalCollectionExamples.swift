@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct DiscouragedOptionalCollectionExamples {
     static let nonTriggeringExamples = #examples([
         // Global variable

@@ -102,23 +102,26 @@ private extension Rule {
               benchmark: Bool,
               storage: RuleStorage,
               superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+              globalConfiguration: GlobalConfiguration,
               compilerArguments: [String]) -> LintResult {
         let ruleID = Self.identifier
 
         // Wrap entire lint process including shouldRun check in rule context
         return CurrentRule.$identifier.withValue(ruleID) {
-            guard shouldRun(onFile: file) else {
-                return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
-            }
+            CurrentRule.$configuration.withValue(globalConfiguration) {
+                guard shouldRun(onFile: file) else {
+                    return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
+                }
 
-            return performLint(
-                file: file,
-                regions: regions,
-                benchmark: benchmark,
-                storage: storage,
-                superfluousDisableCommandRule: superfluousDisableCommandRule,
-                compilerArguments: compilerArguments
-            )
+                return performLint(
+                    file: file,
+                    regions: regions,
+                    benchmark: benchmark,
+                    storage: storage,
+                    superfluousDisableCommandRule: superfluousDisableCommandRule,
+                    compilerArguments: compilerArguments
+                )
+            }
         }
     }
 
@@ -350,6 +353,7 @@ public struct CollectedLinter {
             $0.lint(file: file, regions: regions, benchmark: benchmark,
                     storage: storage,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
+                    globalConfiguration: configuration.globalConfiguration,
                     compilerArguments: compilerArguments)
         }
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(

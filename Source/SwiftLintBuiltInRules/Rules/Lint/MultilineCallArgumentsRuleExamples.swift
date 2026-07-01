@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
 struct MultilineCallArgumentsRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([

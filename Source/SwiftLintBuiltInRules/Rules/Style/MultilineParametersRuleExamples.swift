@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct MultilineParametersRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         "func foo() { }",

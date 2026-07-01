@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct TypesafeArrayInitRule: AnalyzerRule {
     var configuration = SeverityConfiguration<Self>(.warning)

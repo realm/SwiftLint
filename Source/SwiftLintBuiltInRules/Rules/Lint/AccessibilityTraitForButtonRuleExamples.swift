@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct AccessibilityTraitForButtonRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

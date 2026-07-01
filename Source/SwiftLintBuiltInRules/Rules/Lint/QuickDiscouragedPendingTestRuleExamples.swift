@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct QuickDiscouragedPendingTestRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

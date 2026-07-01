@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct MissingDocsRuleExamples {
     static let nonTriggeringExamples = #examples([
         // locally-defined superclass member is documented, but subclass member is not

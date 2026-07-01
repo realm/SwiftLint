@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct DiscouragedOptionalBooleanRuleExamples {
     static let nonTriggeringExamples = #examples([
         // Global variable

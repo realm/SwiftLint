@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct SortedImportsRuleExamples {
     private static let groupByAttributesConfiguration = ["grouping": "attributes"]
 

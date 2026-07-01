@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct NotificationCenterDetachmentRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

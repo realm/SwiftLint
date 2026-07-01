@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct LegacyConstantRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         "CGRect.infinite",

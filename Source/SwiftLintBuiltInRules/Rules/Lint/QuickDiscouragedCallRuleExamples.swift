@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         """

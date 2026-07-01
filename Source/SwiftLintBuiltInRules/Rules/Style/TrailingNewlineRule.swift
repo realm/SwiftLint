@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 extension String {
     private func countOfTrailingCharacters(in characterSet: CharacterSet) -> Int {

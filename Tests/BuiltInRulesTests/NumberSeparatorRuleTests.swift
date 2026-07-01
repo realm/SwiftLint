@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftParser
 import SwiftSyntax
 import TestHelpers

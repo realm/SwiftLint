@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 import SwiftIDEUtils
+import SwiftLintCore
 
 struct CommentSpacingRule: SourceKitFreeRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)

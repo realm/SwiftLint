@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct MarkRuleExamples {
     static let nonTriggeringExamples = #examples([
         "// MARK: good",

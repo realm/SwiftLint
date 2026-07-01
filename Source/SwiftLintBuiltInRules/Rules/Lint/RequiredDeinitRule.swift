@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 /// Rule to require all classes to have a deinit method

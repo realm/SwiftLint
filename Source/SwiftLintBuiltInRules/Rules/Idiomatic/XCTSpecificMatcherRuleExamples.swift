@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct XCTSpecificMatcherRuleExamples {
     static let nonTriggeringExamples = #examples([
         // True/False

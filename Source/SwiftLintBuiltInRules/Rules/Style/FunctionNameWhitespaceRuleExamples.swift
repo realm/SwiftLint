@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct FunctionNameWhitespaceRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         "func abc(lhs: Int, rhs: Int) -> Int {}",

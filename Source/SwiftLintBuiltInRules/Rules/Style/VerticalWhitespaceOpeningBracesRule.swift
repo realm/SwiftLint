@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {

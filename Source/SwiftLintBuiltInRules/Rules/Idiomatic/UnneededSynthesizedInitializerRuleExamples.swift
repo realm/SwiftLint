@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
 // swiftlint:disable:next type_name type_body_length
 enum UnneededSynthesizedInitializerRuleExamples {

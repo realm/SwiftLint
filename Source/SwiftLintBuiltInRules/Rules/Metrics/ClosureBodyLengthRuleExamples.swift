@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct ClosureBodyLengthRuleExamples {
     static let nonTriggeringExamples = #examples([
         singleLineClosure(),

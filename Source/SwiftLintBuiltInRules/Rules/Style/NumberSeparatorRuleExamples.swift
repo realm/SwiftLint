@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct NumberSeparatorRuleExamples {
     static let nonTriggeringExamples: [Example] = {
         ["-", "+", ""].flatMap { (sign: String) -> [Example] in

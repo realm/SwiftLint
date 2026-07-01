@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct ComputedAccessorsOrderRuleExamples {
     static var nonTriggeringExamples: [Example] {
         #examples([

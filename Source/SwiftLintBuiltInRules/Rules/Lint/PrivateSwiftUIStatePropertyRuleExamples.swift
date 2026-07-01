@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct PrivateSwiftUIStatePropertyRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         """

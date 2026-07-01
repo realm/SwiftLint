@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct VerticalParameterAlignmentRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         """

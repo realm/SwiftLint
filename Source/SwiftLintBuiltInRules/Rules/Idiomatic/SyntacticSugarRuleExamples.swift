@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal enum SyntacticSugarRuleExamples {
     static let nonTriggering = #examples([
         "let x: [Int]",

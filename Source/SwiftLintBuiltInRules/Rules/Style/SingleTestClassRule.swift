@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 struct SingleTestClassRule: SourceKitFreeRule, OptInRule {

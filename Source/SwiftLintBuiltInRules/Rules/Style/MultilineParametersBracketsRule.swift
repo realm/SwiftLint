@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 @DisabledWithoutSourceKit
 struct MultilineParametersBracketsRule: OptInRule {

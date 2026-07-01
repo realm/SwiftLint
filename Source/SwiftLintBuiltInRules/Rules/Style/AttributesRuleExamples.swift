@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct AttributesRuleExamples {
     static let nonTriggeringExamples = #examples([
         "@objc var x: String",

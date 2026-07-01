@@ -1,8 +1,8 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
 @testable import SwiftLintBuiltInRules
-@testable import SwiftLintCore
 
 @Suite(.parserDiagnosticsEnabled(true), .rulesRegistered)
 struct ParserDiagnosticsTests {

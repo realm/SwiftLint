@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct IdentifierNameRuleExamples {
     static let nonTriggeringExamples = #examples([
         "let myLet = 0",

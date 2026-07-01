@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct ImplicitReturnRuleExamples {
     struct ClosureExamples {
         static let nonTriggeringExamples = #examples([

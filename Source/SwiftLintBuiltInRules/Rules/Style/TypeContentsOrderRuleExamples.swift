@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct TypeContentsOrderRuleExamples {
     static let defaultOrderParts = [
             """

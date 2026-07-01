@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct TypeNameRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         "class MyType {}",

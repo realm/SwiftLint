@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 private func wrapInSwitch(variable: String = "foo", _ str: String) -> Example {

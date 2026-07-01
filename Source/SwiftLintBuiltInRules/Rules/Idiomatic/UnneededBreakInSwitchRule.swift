@@ -1,4 +1,5 @@
 import SwiftBasicFormat
+import SwiftLintCore
 import SwiftSyntax
 
 private func embedInSwitch(

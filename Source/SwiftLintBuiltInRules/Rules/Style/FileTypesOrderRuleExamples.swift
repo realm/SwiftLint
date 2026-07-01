@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct FileTypesOrderRuleExamples {
     static let defaultOrderParts = [
         """

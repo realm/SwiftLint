@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)

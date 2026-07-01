@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 struct UnneededOverrideRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

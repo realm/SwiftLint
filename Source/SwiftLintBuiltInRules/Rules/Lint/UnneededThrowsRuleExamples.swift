@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
 
 struct UnneededThrowsRuleExamples { // swiftlint:disable:this type_body_length

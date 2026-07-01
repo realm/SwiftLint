@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 internal struct ReturnValueFromVoidFunctionRuleExamples {
     static let nonTriggeringExamples = #examples([
         """

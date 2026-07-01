@@ -9,7 +9,6 @@ public enum CurrentRule {
     /// This should only be used for essential operations like getting the Swift version.
     @TaskLocal public static var allowSourceKitRequestWithoutRule = false
 
-    /// The global indentation style from the top-level configuration, made available to rules
-    /// without modifying function signatures throughout the codebase.
+    /// The global indentation style from the top-level configuration.
     @TaskLocal public static var indentation: IndentationStyle?
 }

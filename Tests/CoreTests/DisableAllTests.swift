@@ -6,11 +6,11 @@ import Testing
 @Suite(.rulesRegistered)
 struct DisableAllTests {
     /// Example violations. Could be replaced with other single violations.
-    private static let violatingPhrases = [
-        Example("let r = 0"),  // Violates identifier_name
-        Example(#"let myString:String = """#),  // Violates colon_whitespace
-        Example("// TODO: Some todo"),  // Violates todo
-    ]
+    private static let violatingPhrases = #examples([
+        "let r = 0",  // Violates identifier_name
+        #"let myString:String = """#,  // Violates colon_whitespace
+        "// TODO: Some todo",  // Violates todo
+    ])
 
     // MARK: Violating Phrase
     /// Tests whether example violating phrases trigger when not applying disable rule

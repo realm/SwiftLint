@@ -11,22 +11,22 @@ package struct SuperfluousDisableCommandRule: SourceKitFreeRule, Sendable {
             in the disabled region. Use " - " if you wish to document a command.
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("let abc:Void // swiftlint:disable:this colon"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let abc:Void // swiftlint:disable:this colon",
+            """
                 // swiftlint:disable colon
                 let abc:Void
                 // swiftlint:enable colon
-                """),
-        ],
-        triggeringExamples: [
-            Example("let abc: Void // swiftlint:disable:this colon"),
-            Example("""
+                """,
+        ]),
+        triggeringExamples: #examples([
+            "let abc: Void // swiftlint:disable:this colon",
+            """
                 // swiftlint:disable colon
                 let abc: Void
                 // swiftlint:enable colon
-                """),
-        ]
+                """,
+        ])
     )
 
     package func validate(file _: SwiftLintFile) -> [StyleViolation] {

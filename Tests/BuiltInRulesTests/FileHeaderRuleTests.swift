@@ -23,17 +23,17 @@ struct FileHeaderRuleTests {
 
     @Test
     func fileHeaderWithRequiredString() {
-        let nonTriggeringExamples = [
-            Example("// **Header"),
-            Example("//\n// **Header"),
-        ]
-        let triggeringExamples = [
-            Example("↓// Copyright\n"),
-            Example("let foo = \"**Header\""),
-            Example("let foo = 2 // **Header"),
-            Example("let foo = 2\n// **Header"),
-            Example("let foo = 2 // **Header"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "// **Header",
+            "//\n// **Header",
+        ])
+        let triggeringExamples = #examples([
+            "↓// Copyright\n",
+            "let foo = \"**Header\"",
+            "let foo = 2 // **Header",
+            "let foo = 2\n// **Header",
+            "let foo = 2 // **Header",
+        ])
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
@@ -51,15 +51,15 @@ struct FileHeaderRuleTests {
 
     @Test
     func fileHeaderWithRequiredPattern() {
-        let nonTriggeringExamples = [
-            Example("// Copyright © 2016 Realm"),
-            Example("//\n// Copyright © 2016 Realm)"),
-        ]
-        let triggeringExamples = [
-            Example("↓// Copyright\n"),
-            Example("↓// Copyright © foo Realm"),
-            Example("↓// Copyright © 2016 MyCompany"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "// Copyright © 2016 Realm",
+            "//\n// Copyright © 2016 Realm)",
+        ])
+        let triggeringExamples = #examples([
+            "↓// Copyright\n",
+            "↓// Copyright © foo Realm",
+            "↓// Copyright © 2016 MyCompany",
+        ])
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
@@ -71,12 +71,12 @@ struct FileHeaderRuleTests {
 
     @Test
     func fileHeaderWithRequiredStringAndURLComment() {
-        let nonTriggeringExamples = [
-            Example("/* Check this url: https://github.com/realm/SwiftLint */")
-        ]
-        let triggeringExamples = [
-            Example("/* Check this url: https://github.com/apple/swift */")
-        ]
+        let nonTriggeringExamples = #examples([
+            "/* Check this url: https://github.com/realm/SwiftLint */"
+        ])
+        let triggeringExamples = #examples([
+            "/* Check this url: https://github.com/apple/swift */"
+        ])
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
@@ -89,17 +89,17 @@ struct FileHeaderRuleTests {
 
     @Test
     func fileHeaderWithForbiddenString() {
-        let nonTriggeringExamples = [
-            Example("// Copyright\n"),
-            Example("let foo = \"**All rights reserved.\""),
-            Example("let foo = 2 // **All rights reserved."),
-            Example("let foo = 2\n// **All rights reserved."),
-            Example("let foo = 2 // **All rights reserved."),
-        ]
-        let triggeringExamples = [
-            Example("// ↓**All rights reserved."),
-            Example("//\n// ↓**All rights reserved."),
-        ]
+        let nonTriggeringExamples = #examples([
+            "// Copyright\n",
+            "let foo = \"**All rights reserved.\"",
+            "let foo = 2 // **All rights reserved.",
+            "let foo = 2\n// **All rights reserved.",
+            "let foo = 2 // **All rights reserved.",
+        ])
+        let triggeringExamples = #examples([
+            "// ↓**All rights reserved.",
+            "//\n// ↓**All rights reserved.",
+        ])
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
@@ -110,17 +110,17 @@ struct FileHeaderRuleTests {
 
     @Test
     func fileHeaderWithForbiddenPattern() {
-        let nonTriggeringExamples = [
-            Example("// Copyright\n"),
-            Example("// FileHeaderRuleTests.m\n"),
-            Example("let foo = \"FileHeaderRuleTests.swift\""),
-            Example("let foo = 2 // FileHeaderRuleTests.swift."),
-            Example("let foo = 2\n // FileHeaderRuleTests.swift."),
-        ]
-        let triggeringExamples = [
-            Example("//↓ FileHeaderRuleTests.swift"),
-            Example("//\n//↓ FileHeaderRuleTests.swift"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "// Copyright\n",
+            "// FileHeaderRuleTests.m\n",
+            "let foo = \"FileHeaderRuleTests.swift\"",
+            "let foo = 2 // FileHeaderRuleTests.swift.",
+            "let foo = 2\n // FileHeaderRuleTests.swift.",
+        ])
+        let triggeringExamples = #examples([
+            "//↓ FileHeaderRuleTests.swift",
+            "//\n//↓ FileHeaderRuleTests.swift",
+        ])
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
@@ -131,14 +131,14 @@ struct FileHeaderRuleTests {
 
     @Test
     func fileHeaderWithForbiddenPatternAndDocComment() {
-        let nonTriggeringExamples = [
-            Example("/// This is great tool with tests.\nclass GreatTool {}"),
-            Example("class GreatTool {}"),
-        ]
-        let triggeringExamples = [
-            Example("// FileHeaderRule↓Tests.swift"),
-            Example("//\n// FileHeaderRule↓Tests.swift"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "/// This is great tool with tests.\nclass GreatTool {}",
+            "class GreatTool {}",
+        ])
+        let triggeringExamples = #examples([
+            "// FileHeaderRule↓Tests.swift",
+            "//\n// FileHeaderRule↓Tests.swift",
+        ])
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
@@ -226,20 +226,20 @@ struct FileHeaderRuleTests {
     @Test
     func simplePattern() {
         let description = FileHeaderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
+            .with(nonTriggeringExamples: #examples([
+                """
                     // Test
 
                     enum Test {}
-                    """),
-                Example("""
+                    """,
+                """
                     // Test
-                    """),
-                Example("""
+                    """,
+                """
                     // Test
 
-                    """),
-            ])
+                    """,
+            ]))
             .with(triggeringExamples: [])
 
         verifyRule(
@@ -258,8 +258,8 @@ struct FileHeaderRuleTests {
     @Test
     func pattern() {
         let description = FileHeaderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
+            .with(nonTriggeringExamples: #examples([
+                """
                     //
                     //  Test.swift
                     //  Dummy App
@@ -269,8 +269,8 @@ struct FileHeaderRuleTests {
                     //
 
                     enum Test {}
-                    """),
-            ])
+                    """,
+            ]))
             .with(triggeringExamples: [])
 
         verifyRule(

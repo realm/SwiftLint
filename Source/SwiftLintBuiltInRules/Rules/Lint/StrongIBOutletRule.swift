@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)
@@ -9,23 +10,23 @@ struct StrongIBOutletRule: Rule {
         name: "Strong IBOutlet",
         description: "@IBOutlets shouldn't be declared as weak",
         kind: .lint,
-        nonTriggeringExamples: [
+        nonTriggeringExamples: #examples([
             wrapExample("@IBOutlet var label: UILabel?"),
             wrapExample("weak var label: UILabel?"),
-        ],
-        triggeringExamples: [
+        ]),
+        triggeringExamples: #examples([
             wrapExample("@IBOutlet ↓weak var label: UILabel?"),
             wrapExample("@IBOutlet ↓unowned var label: UILabel!"),
             wrapExample("@IBOutlet ↓weak var textField: UITextField?"),
-        ],
-        corrections: [
+        ]),
+        corrections: #corrections([
             wrapExample("@IBOutlet ↓weak var label: UILabel?"):
                 wrapExample("@IBOutlet var label: UILabel?"),
             wrapExample("@IBOutlet ↓unowned var label: UILabel!"):
                 wrapExample("@IBOutlet var label: UILabel!"),
             wrapExample("@IBOutlet ↓weak var textField: UITextField?"):
                 wrapExample("@IBOutlet var textField: UITextField?"),
-        ]
+        ])
     )
 }
 
@@ -67,10 +68,11 @@ private extension VariableDeclSyntax {
     }
 }
 
-private func wrapExample(_ text: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+private func wrapExample(_ text: String) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example("""
     class ViewController: UIViewController {
         \(text)
     }
-    """, file: file, line: line)
+    """)
 }

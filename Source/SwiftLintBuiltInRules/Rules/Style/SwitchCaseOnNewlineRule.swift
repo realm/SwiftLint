@@ -1,11 +1,13 @@
+import SwiftLintCore
 import SwiftSyntax
 
-private func wrapInSwitch(_ str: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+private func wrapInSwitch(_ str: String) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example("""
     switch foo {
         \(str)
     }
-    """, file: file, line: line)
+    """)
 }
 
 @SwiftSyntaxRule(optIn: true)
@@ -17,17 +19,17 @@ struct SwitchCaseOnNewlineRule: Rule {
         name: "Cases on Newline",
         description: "Cases inside a switch should always be on a newline",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("/*case 1: */return true"),
-            Example("//case 1:\n return true"),
-            Example("let x = [caseKey: value]"),
-            Example("let x = [key: .default]"),
-            Example("if case let .someEnum(value) = aFunction([key: 2]) { }"),
-            Example("guard case let .someEnum(value) = aFunction([key: 2]) { }"),
-            Example("for case let .someEnum(value) = aFunction([key: 2]) { }"),
-            Example("enum Environment {\n case development\n}"),
-            Example("enum Environment {\n case development(url: URL)\n}"),
-            Example("enum Environment {\n case development(url: URL) // staging\n}"),
+        nonTriggeringExamples: #examples([
+            "/*case 1: */return true",
+            "//case 1:\n return true",
+            "let x = [caseKey: value]",
+            "let x = [key: .default]",
+            "if case let .someEnum(value) = aFunction([key: 2]) { }",
+            "guard case let .someEnum(value) = aFunction([key: 2]) { }",
+            "for case let .someEnum(value) = aFunction([key: 2]) { }",
+            "enum Environment {\n case development\n}",
+            "enum Environment {\n case development(url: URL)\n}",
+            "enum Environment {\n case development(url: URL) // staging\n}",
 
             wrapInSwitch("case 1:\n return true"),
             wrapInSwitch("default:\n return true"),
@@ -41,14 +43,14 @@ struct SwitchCaseOnNewlineRule: Rule {
             return false
             """),
             wrapInSwitch("case #selector(aFunction(_:)):\n return false"),
-            Example("""
+            """
             do {
               let loadedToken = try tokenManager.decodeToken(from: response)
               return loadedToken
             } catch { throw error }
-            """),
-        ],
-        triggeringExamples: [
+            """,
+        ]),
+        triggeringExamples: #examples([
             wrapInSwitch("↓case 1: return true"),
             wrapInSwitch("↓case let value: return true"),
             wrapInSwitch("↓default: return true"),
@@ -58,7 +60,7 @@ struct SwitchCaseOnNewlineRule: Rule {
             wrapInSwitch("↓case #selector(aFunction(_:)): return false"),
             wrapInSwitch("↓case let .myCase(value)\n where value > 10: return false"),
             wrapInSwitch("↓case .first,\n .second: return false"),
-        ]
+        ])
     )
 }
 

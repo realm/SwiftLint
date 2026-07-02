@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true)
@@ -9,33 +10,33 @@ struct ShorthandOperatorRule: Rule {
         name: "Shorthand Operator",
         description: "Prefer shorthand operators (+=, -=, *=, /=) over doing the operation and assigning",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("foo -= 1"),
-            Example("foo += variable"),
-            Example("foo *= bar.method()"),
-            Example("self.foo = foo / 1"),
-            Example("foo = self.foo + 1"),
-            Example("page = ceilf(currentOffset * pageWidth)"),
-            Example("foo = aMethod(foo / bar)"),
-            Example("foo = aMethod(bar + foo)"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "foo -= 1",
+            "foo += variable",
+            "foo *= bar.method()",
+            "self.foo = foo / 1",
+            "foo = self.foo + 1",
+            "page = ceilf(currentOffset * pageWidth)",
+            "foo = aMethod(foo / bar)",
+            "foo = aMethod(bar + foo)",
+            """
             public func -= (lhs: inout Foo, rhs: Int) {
                 lhs = lhs - rhs
             }
-            """),
-            Example("var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld"),
-            Example("angle = someCheck ? angle : -angle"),
-            Example("seconds = seconds * 60 + value"),
-        ],
-        triggeringExamples: [
-            Example("↓foo = foo * 1"),
-            Example("↓foo = foo / aVariable"),
-            Example("↓foo = foo - bar.method()"),
-            Example("↓foo.aProperty = foo.aProperty - 1"),
-            Example("↓self.aProperty = self.aProperty * 1"),
-            Example("↓n = n + i / outputLength"),
-            Example("↓n = n - i / outputLength"),
-        ]
+            """,
+            "var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld",
+            "angle = someCheck ? angle : -angle",
+            "seconds = seconds * 60 + value",
+        ]),
+        triggeringExamples: #examples([
+            "↓foo = foo * 1",
+            "↓foo = foo / aVariable",
+            "↓foo = foo - bar.method()",
+            "↓foo.aProperty = foo.aProperty - 1",
+            "↓self.aProperty = self.aProperty * 1",
+            "↓n = n + i / outputLength",
+            "↓n = n - i / outputLength",
+        ])
     )
 
     fileprivate static let allOperators = ["-", "/", "+", "*"]

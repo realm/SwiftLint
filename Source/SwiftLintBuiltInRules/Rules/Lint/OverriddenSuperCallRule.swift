@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,15 +10,15 @@ struct OverriddenSuperCallRule: Rule {
         name: "Overridden Method Calls Super",
         description: "Some overridden methods should always call super.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class VC: UIViewController {
                 override func viewWillAppear(_ animated: Bool) {
                     super.viewWillAppear(animated)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: UIViewController {
                 override func viewWillAppear(_ animated: Bool) {
                     self.method1()
@@ -25,20 +26,20 @@ struct OverriddenSuperCallRule: Rule {
                     self.method2()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: UIViewController {
                 override func loadView() {
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Some {
                 func viewWillAppear(_ animated: Bool) {
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: UIViewController {
                 override func viewDidLoad() {
                 defer {
@@ -46,18 +47,18 @@ struct OverriddenSuperCallRule: Rule {
                     }
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             class VC: UIViewController {
                 override func viewWillAppear(_ animated: Bool) {↓
                     //Not calling to super
                     self.method()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: UIViewController {
                 override func viewWillAppear(_ animated: Bool) {↓
                     super.viewWillAppear(animated)
@@ -65,14 +66,14 @@ struct OverriddenSuperCallRule: Rule {
                     super.viewWillAppear(animated)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class VC: UIViewController {
                 override func didReceiveMemoryWarning() {↓
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

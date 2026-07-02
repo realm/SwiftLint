@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -10,16 +11,16 @@ struct CyclomaticComplexityRule: Rule {
         name: "Cyclomatic Complexity",
         description: "Complexity of function bodies should be limited.",
         kind: .metrics,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func f1() {
                 if true {
                     for _ in 1..5 { }
                 }
                 if false { }
             }
-            """),
-            Example("""
+            """,
+            """
             func f(code: Int) -> Int {
                 switch code {
                 case 0: fallthrough
@@ -34,18 +35,18 @@ struct CyclomaticComplexityRule: Rule {
                 default: return 1
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             func f1() {
                 if true {}; if true {}; if true {}; if true {}; if true {}; if true {}
                 func f2() {
                     if true {}; if true {}; if true {}; if true {}; if true {}
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             ↓func f1() {
                 if true {
                     if true {
@@ -67,8 +68,8 @@ struct CyclomaticComplexityRule: Rule {
                     }
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

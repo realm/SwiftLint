@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -7,22 +8,22 @@ import Testing
 struct MultilineArgumentsRuleTests {
     @Test
     func multilineArgumentsWithWithNextLine() {
-        let nonTriggeringExamples = [
-            Example("foo()"),
-            Example("foo(0)"),
-            Example("foo(1, bar: baz) { }"),
-            Example("foo(2, bar: baz) {\n}"),
-            Example("foo(\n" +
+        let nonTriggeringExamples = #examples([
+            "foo()",
+            "foo(0)",
+            "foo(1, bar: baz) { }",
+            "foo(2, bar: baz) {\n}",
+            "foo(\n" +
             "    3,\n" +
-            "    bar: baz) { }"),
-            Example("foo(\n" +
-            "    4, bar: baz) { }"),
-        ]
+            "    bar: baz) { }",
+            "foo(\n" +
+            "    4, bar: baz) { }",
+        ])
 
-        let triggeringExamples = [
-            Example("foo(↓1,\n" +
-            "    bar: baz) { }"),
-        ]
+        let triggeringExamples = #examples([
+            "foo(↓1,\n" +
+            "    bar: baz) { }",
+        ])
 
         let description = MultilineArgumentsRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -33,24 +34,24 @@ struct MultilineArgumentsRuleTests {
 
     @Test
     func multilineArgumentsWithWithSameLine() {
-        let nonTriggeringExamples = [
-            Example("foo()"),
-            Example("foo(0)"),
-            Example("foo(1, bar: 1) { }"),
-            Example("foo(2, bar: 2) {\n" +
+        let nonTriggeringExamples = #examples([
+            "foo()",
+            "foo(0)",
+            "foo(1, bar: 1) { }",
+            "foo(2, bar: 2) {\n" +
             "    bar()\n" +
-            "}"),
-            Example("foo(3,\n" +
-            "    bar: 3) { }"),
-        ]
+            "}",
+            "foo(3,\n" +
+            "    bar: 3) { }",
+        ])
 
-        let triggeringExamples = [
-            Example("foo(\n" +
-            "    ↓1, ↓bar: baz) { }"),
-            Example("foo(\n" +
+        let triggeringExamples = #examples([
+            "foo(\n" +
+            "    ↓1, ↓bar: baz) { }",
+            "foo(\n" +
             "    ↓2,\n" +
-            "    bar: baz) { }"),
-        ]
+            "    bar: baz) { }",
+        ])
 
         let description = MultilineArgumentsRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -61,40 +62,40 @@ struct MultilineArgumentsRuleTests {
 
     @Test
     func multilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
-        let nonTriggeringExamples: [Example] = [
-            Example("foo()"),
-            Example("foo(0)"),
-            Example("foo(1, bar: 1) { }"),
-            Example("foo(\n" +
-            "    4, bar: baz) { }"),
-            Example("foo(a: a, b: {\n" +
+        let nonTriggeringExamples = #examples([
+            "foo()",
+            "foo(0)",
+            "foo(1, bar: 1) { }",
+            "foo(\n" +
+            "    4, bar: baz) { }",
+            "foo(a: a, b: {\n" +
             "}, c: {\n" +
-            "})"),
-            Example("foo(\n" +
+            "})",
+            "foo(\n" +
             "    a: a, b: {\n" +
             "    }, c: {\n" +
-            "})"),
-            Example("foo(a: a, b: b, c: {\n" +
+            "})",
+            "foo(a: a, b: b, c: {\n" +
             "}, d: {\n" +
-            "})"),
-            Example("foo(\n" +
+            "})",
+            "foo(\n" +
             "    a: a, b: b, c: {\n" +
             "    }, d: {\n" +
-            "})"),
-            Example("foo(a: a, b: { [weak self] in\n" +
+            "})",
+            "foo(a: a, b: { [weak self] in\n" +
             "}, c: { flag in\n" +
-            "})"),
-        ]
+            "})",
+        ])
 
-        let triggeringExamples = [
-            Example("foo(a: a,\n" +
+        let triggeringExamples = #examples([
+            "foo(a: a,\n" +
             "    b: b, c: {\n" +
-            "})"),
-            Example("foo(a: a, b: b,\n" +
+            "})",
+            "foo(a: a, b: b,\n" +
             "    c: c, d: {\n" +
             "    }, d: {\n" +
-            "})"),
-        ]
+            "})",
+        ])
 
         let description = MultilineArgumentsRule.description
             .with(triggeringExamples: triggeringExamples)

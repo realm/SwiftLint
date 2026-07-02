@@ -1,50 +1,52 @@
+import SwiftLintCore
+
 internal struct ReturnValueFromVoidFunctionRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         func foo() {
             return
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() {
             return /* a comment */
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> Int {
             return 1
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> Void {
             if condition {
                 return
             }
             bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() {
             return;
             bar()
         }
-        """),
-        Example("func test() {}"),
-        Example("""
+        """,
+        "func test() {}",
+        """
         init?() {
             guard condition else {
                 return nil
             }
         }
-        """),
-        Example("""
+        """,
+        """
         init?(arg: String?) {
             guard arg != nil else {
                 return nil
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func baz() {
             enum Foo {
                 case bar
@@ -54,26 +56,26 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                 }
             }
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         func test() {
             guard condition else {
                 return
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func test() -> Result<String, Error> {
             func other() {}
             func otherVoid() -> Void {}
         }
-        """),
-        Example("""
+        """,
+        """
         func test() -> Int? {
             return nil
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             if bar {
                 print("")
@@ -82,38 +84,38 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             let foo = [1, 2, 3].filter { return true }
             return
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             guard foo else {
                 bar()
                 return
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func spec() {
             var foo: Int {
                 return 0
             }
-        """),
-        Example("func f() -> () { g() }"),
-        Example("func f() { g() }"),
-        Example("func f() { { return g() }() }"),
-        Example("""
+        """,
+        "func f() -> () { g() }",
+        "func f() { g() }",
+        "func f() { { return g() }() }",
+        """
         func f() {
             func g() -> Int {
                 return 1
             }
         }
-        """),
-        Example("init?() { return nil }"),
-        Example("""
+        """,
+        "init?() { return nil }",
+        """
         func f() {
             var i: Int { return 1 }
         }
-        """),
-        Example(#"""
+        """,
+        #"""
         final class SearchMessagesDataSource: ValueCellDataSource {
           internal enum Section: Int {
             case emptyState
@@ -146,59 +148,59 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
           }
         }
-        """#, excludeFromDocumentation: true),
-    ]
+        """#.excludeFromDocumentation(),
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         func foo() {
             ↓return bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> () {
             ↓return self.bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> Void {
             ↓return bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() -> Void {
             ↓return /* comment */ bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() {
             ↓return
             self.bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func foo() {
             variable += 1
             ↓return
             variable += 1
         }
-        """),
-        Example("""
+        """,
+        """
         func initThing() {
             guard foo else {
                 ↓return print("")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         // Leading comment
         func test() {
             guard condition else {
                 ↓return assertionfailure("")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         func test() -> Result<String, Error> {
             func other() {
                 guard false else {
@@ -207,8 +209,8 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
             func otherVoid() -> Void {}
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             guard conditionIsTrue else {
                 sideEffects()
@@ -219,24 +221,24 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
             differentSideEffect()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             guard otherCondition else {
                 ↓return assertionfailure(""); // comment
             }
             differentSideEffect()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           if x {
             ↓return foo()
           }
           bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           switch x {
             case .a:
@@ -246,8 +248,8 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           baz()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           if check {
             if otherCheck {
@@ -256,28 +258,28 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
             ↓return foo()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           ↓return foo({
             return bar()
           })
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           guard x else {
             ↓return foo()
           }
           bar()
         }
-        """),
-        Example("""
+        """,
+        """
         func test() {
           let closure: () -> () = {
             return assert()
@@ -289,30 +291,30 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
           }
           ↓return foo()
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #corrections([
+        """
         func f() -> Void {
             ↓return g()
             // some comment
         }
-        """): Example("""
+        """: """
             func f() -> Void {
                 g()
                 return
                 // some comment
             }
-            """),
-        Example("""
+            """,
+        """
         func f(b: Bool) {
             if b {
                 // some comment
                 ↓return g()
             }
         }
-        """): Example("""
+        """: """
             func f(b: Bool) {
                 if b {
                     // some comment
@@ -320,6 +322,6 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                     return
                 }
             }
-            """),
-    ]
+            """,
+    ])
 }

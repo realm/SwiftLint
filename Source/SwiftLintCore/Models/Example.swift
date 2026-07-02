@@ -43,7 +43,7 @@ public struct Example: Sendable {
     /// why a rule is applied and where not. Complex examples with rarely used language constructs or
     /// pathological use cases which are indeed important to test but not helpful for understanding can be
     /// hidden from the documentation with this option.
-    package let excludeFromDocumentation: Bool
+    package var excludeFromDocumentation: Bool
 
     /// Specifies whether the test example should be the only example run during the current test case execution.
     package var isFocused: Bool
@@ -93,6 +93,22 @@ public extension Example {
         self.isFocused = false
     }
 
+    /// Convenience init so that arrays can mix string literals with concrete `Example`s,
+    /// and still get the right file and line information. Used by the `#examples` macro to
+    /// re-capture the file and line of each element at its call site.
+    init(
+        _ other: Example,
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        var new = other
+        new.fileID = fileID
+        new.file = file
+        new.line = line
+        self = new
+    }
+
     /// Returns the same example, but with the `code` that is passed in
     /// - Parameter code: the new code to use in the modified example
     func with(code: String) -> Example {
@@ -105,27 +121,45 @@ public extension Example {
     func removingViolationMarkers() -> Example {
         with(code: code.replacingOccurrences(of: "↓", with: ""))
     }
+
+    /// Returns the same example, optionally excluded from the rule documentation.
+    func excludeFromDocumentation(_ value: Bool = true) -> Self {
+        var copy = self
+        copy.excludeFromDocumentation = value
+        return copy
+    }
+
+    /// Returns the same example, but with the given rule configuration applied.
+    func configuration(_ value: [String: any Sendable]?) -> Self {
+        var copy = self
+        copy.configuration = value
+        return copy
+    }
 }
 
-extension Example {
+public extension Example {
+    /// Returns the same example, but configured to skip the test that wraps it in a comment.
     func skipWrappingInCommentTest() -> Self {
         var new = self
         new.testWrappingInComment = false
         return new
     }
 
+    /// Returns the same example, but configured to skip the test that wraps it in a string.
     func skipWrappingInStringTest() -> Self {
         var new = self
         new.testWrappingInString = false
         return new
     }
 
+    /// Returns the same example, but configured to skip the multi-byte offset test.
     func skipMultiByteOffsetTest() -> Self {
         var new = self
         new.testMultiByteOffsets = false
         return new
     }
 
+    /// Returns the same example, but configured to skip the disable-command test.
     func skipDisableCommandTest() -> Self {
         var new = self
         new.testDisableCommand = false
@@ -133,10 +167,74 @@ extension Example {
     }
 
     /// Makes the current example focused. This is for debugging purposes only.
-    public func focused() -> Example { // swiftlint:disable:this unused_declaration
+    func focused() -> Example { // swiftlint:disable:this unused_declaration
         var new = self
         new.isFocused = true
         return new
+    }
+}
+
+public extension String {
+    /// Wraps this code in an `Example`, optionally excluding it from the rule documentation.
+    func excludeFromDocumentation(
+        _ excludeFromDocumentation: Bool = true,
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        Example(self, fileID: fileID, file: file, line: line)
+            .excludeFromDocumentation(excludeFromDocumentation)
+    }
+
+    /// Wraps this code in an `Example` that applies the given rule configuration.
+    func configuration(
+        _ configuration: [String: any Sendable],
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        Example(self, fileID: fileID, file: file, line: line)
+            .configuration(configuration)
+    }
+
+    /// Wraps this code in an `Example` that skips the wrap-in-comment test.
+    func skipWrappingInCommentTest(
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        Example(self, fileID: fileID, file: file, line: line)
+            .skipWrappingInCommentTest()
+    }
+
+    /// Wraps this code in an `Example` that skips the wrap-in-string test.
+    func skipWrappingInStringTest(
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        Example(self, fileID: fileID, file: file, line: line)
+            .skipWrappingInStringTest()
+    }
+
+    /// Wraps this code in an `Example` that skips the multi-byte offset test.
+    func skipMultiByteOffsetTest(
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        Example(self, fileID: fileID, file: file, line: line)
+            .skipMultiByteOffsetTest()
+    }
+
+    /// Wraps this code in an `Example` that skips the disable-command test.
+    func skipDisableCommandTest(
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        Example(self, fileID: fileID, file: file, line: line)
+            .skipDisableCommandTest()
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 @DisabledWithoutSourceKit
 struct StatementPositionRule: CorrectableRule {
@@ -10,28 +11,28 @@ struct StatementPositionRule: CorrectableRule {
         name: "Statement Position",
         description: "Else and catch should be on the same line, one space after the previous declaration",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("} else if {"),
-            Example("} else {"),
-            Example("} catch {"),
-            Example("guard foo() else { return }"),
-            Example("\"}else{\""),
-            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
-        ],
-        triggeringExamples: [
-            Example("↓}else if {"),
-            Example("↓}  else {"),
-            Example("↓}\ncatch {"),
-            Example("↓}\n\t  catch {"),
-            Example("guard foo()↓else { return }"),
-        ],
-        corrections: [
-            Example("↓}\n else {"): Example("} else {"),
-            Example("↓}\n   else if {"): Example("} else if {"),
-            Example("↓}\n catch {"): Example("} catch {"),
-            Example("guard foo()↓else { return }"): Example("guard foo() else { return }"),
-        ]
+        nonTriggeringExamples: #examples([
+            "} else if {",
+            "} else {",
+            "} catch {",
+            "guard foo() else { return }",
+            "\"}else{\"",
+            "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
+            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)",
+        ]),
+        triggeringExamples: #examples([
+            "↓}else if {",
+            "↓}  else {",
+            "↓}\ncatch {",
+            "↓}\n\t  catch {",
+            "guard foo()↓else { return }",
+        ]),
+        corrections: #corrections([
+            "↓}\n else {": "} else {",
+            "↓}\n   else if {": "} else if {",
+            "↓}\n catch {": "} catch {",
+            "guard foo()↓else { return }": "guard foo() else { return }",
+        ])
     )
 
     static let uncuddledDescription = RuleDescription(
@@ -40,28 +41,28 @@ struct StatementPositionRule: CorrectableRule {
         description: "Else and catch should be on the next line, with equal indentation to the " +
                      "previous declaration",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("  }\n  else if {"),
-            Example("    }\n    else {"),
-            Example("  }\n  catch {"),
-            Example("  }\n\n  catch {"),
-            Example("\n\n  }\n  catch {"),
-            Example("\"}\nelse{\""),
-            Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
-            Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
-        ],
-        triggeringExamples: [
-            Example("↓  }else if {"),
-            Example("↓}\n  else {"),
-            Example("↓  }\ncatch {"),
-            Example("↓}\n\t  catch {"),
-        ],
-        corrections: [
-            Example("  }else if {"): Example("  }\n  else if {"),
-            Example("}\n  else {"): Example("}\nelse {"),
-            Example("  }\ncatch {"): Example("  }\n  catch {"),
-            Example("}\n\t  catch {"): Example("}\ncatch {"),
-        ]
+        nonTriggeringExamples: #examples([
+            "  }\n  else if {",
+            "    }\n    else {",
+            "  }\n  catch {",
+            "  }\n\n  catch {",
+            "\n\n  }\n  catch {",
+            "\"}\nelse{\"",
+            "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
+            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)",
+        ]),
+        triggeringExamples: #examples([
+            "↓  }else if {",
+            "↓}\n  else {",
+            "↓  }\ncatch {",
+            "↓}\n\t  catch {",
+        ]),
+        corrections: #corrections([
+            "  }else if {": "  }\n  else if {",
+            "}\n  else {": "}\nelse {",
+            "  }\ncatch {": "  }\n  catch {",
+            "}\n\t  catch {": "}\ncatch {",
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

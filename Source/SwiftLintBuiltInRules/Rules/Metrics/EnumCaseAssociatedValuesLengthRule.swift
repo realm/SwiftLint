@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,32 +10,32 @@ struct EnumCaseAssociatedValuesLengthRule: Rule {
         name: "Enum Case Associated Values Count",
         description: "The number of associated values in an enum case should be low.",
         kind: .metrics,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             enum Employee {
                 case fullTime(name: String, retirement: Date, designation: String, contactNumber: Int)
                 case partTime(name: String, age: Int, contractEndDate: Date)
             }
-            """),
-            Example("""
+            """,
+            """
             enum Barcode {
                 case upc(Int, Int, Int, Int)
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             enum Employee {
                 case ↓fullTime(name: String, retirement: Date, age: Int, designation: String, contactNumber: Int)
                 case ↓partTime(name: String, contractEndDate: Date, age: Int, designation: String, contactNumber: Int)
             }
-            """),
-            Example("""
+            """,
+            """
             enum Barcode {
                 case ↓upc(Int, Int, Int, Int, Int, Int)
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

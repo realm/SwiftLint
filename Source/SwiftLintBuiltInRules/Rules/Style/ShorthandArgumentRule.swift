@@ -14,28 +14,28 @@ struct ShorthandArgumentRule: Rule {
             more than one or complex ones with field accesses might increase the risk of obfuscation.
             """,
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
                 f { $0 }
-                """),
-            Example("""
+                """,
+            """
                 f {
                     $0
                   + $1
                   + $2
                 }
-                """),
-            Example("""
+                """,
+            """
                 f { $0.a + $0.b }
-                """),
-            Example("""
+                """,
+            """
                 f {
                     $0
                   +  g { $0 }
-                """, configuration: ["allow_until_line_after_opening_brace": 1]),
-        ],
-        triggeringExamples: [
-            Example("""
+                """.configuration(["allow_until_line_after_opening_brace": 1]),
+        ]),
+        triggeringExamples: #examples([
+            """
                 f {
                     $0
                   + $1
@@ -43,8 +43,8 @@ struct ShorthandArgumentRule: Rule {
 
                   + ↓$0
                 }
-                """),
-            Example("""
+                """,
+            """
                 f {
                     $0
                   + $1
@@ -53,19 +53,19 @@ struct ShorthandArgumentRule: Rule {
                   + $0
                   + ↓$1
                 }
-                """, configuration: ["allow_until_line_after_opening_brace": 5]),
-            Example("""
+                """.configuration(["allow_until_line_after_opening_brace": 5]),
+            """
                 f { ↓$0 + ↓$1 }
-                """, configuration: ["always_disallow_more_than_one": true]),
-            Example("""
+                """.configuration(["always_disallow_more_than_one": true]),
+            """
                 f {
                     ↓$0.a
                   + ↓$0.b
                   + $1
                   + ↓$2.c
                 }
-                """, configuration: ["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3]),
-        ]
+                """.configuration(["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3]),
+        ])
     )
 }
 

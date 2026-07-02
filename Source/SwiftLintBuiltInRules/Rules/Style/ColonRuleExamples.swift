@@ -1,72 +1,74 @@
+import SwiftLintCore
+
 internal struct ColonRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("let abc: Void"),
-        Example("let abc: [Void: Void]"),
-        Example("let abc: (Void, Void)"),
-        Example("let abc: ([Void], String, Int)"),
-        Example("let abc: [([Void], String, Int)]"),
-        Example("let abc: String=\"def\""),
-        Example("let abc: Int=0"),
-        Example("let abc: Enum=Enum.Value"),
-        Example("func abc(def: Void) {}"),
-        Example("func abc(def: Void, ghi: Void) {}"),
-        Example("let abc: String = \"abc:\""),
-        Example("let abc = [Void: Void]()"),
-        Example("let abc = [1: [3: 2], 3: 4]"),
-        Example("let abc = [\"string\": \"string\"]"),
-        Example("let abc = [\"string:string\": \"string\"]"),
-        Example("let abc: [String: Int]"),
-        Example("func foo(bar: [String: Int]) {}"),
-        Example("func foo() -> [String: Int] { return [:] }"),
-        Example("let abc: Any"),
-        Example("let abc: [Any: Int]"),
-        Example("let abc: [String: Any]"),
-        Example("class Foo: Bar {}"),
-        Example("class Foo<T>: Bar {}"),
-        Example("class Foo<T: Equatable>: Bar {}"),
-        Example("class Foo<T, U>: Bar {}"),
-        Example("class Foo<T: Equatable> {}"),
-        Example("object.method(x: /* comment */ 5)"),
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        "let abc: Void",
+        "let abc: [Void: Void]",
+        "let abc: (Void, Void)",
+        "let abc: ([Void], String, Int)",
+        "let abc: [([Void], String, Int)]",
+        "let abc: String=\"def\"",
+        "let abc: Int=0",
+        "let abc: Enum=Enum.Value",
+        "func abc(def: Void) {}",
+        "func abc(def: Void, ghi: Void) {}",
+        "let abc: String = \"abc:\"",
+        "let abc = [Void: Void]()",
+        "let abc = [1: [3: 2], 3: 4]",
+        "let abc = [\"string\": \"string\"]",
+        "let abc = [\"string:string\": \"string\"]",
+        "let abc: [String: Int]",
+        "func foo(bar: [String: Int]) {}",
+        "func foo() -> [String: Int] { return [:] }",
+        "let abc: Any",
+        "let abc: [Any: Int]",
+        "let abc: [String: Any]",
+        "class Foo: Bar {}",
+        "class Foo<T>: Bar {}",
+        "class Foo<T: Equatable>: Bar {}",
+        "class Foo<T, U>: Bar {}",
+        "class Foo<T: Equatable> {}",
+        "object.method(x: /* comment */ 5)",
+        """
         switch foo {
         case .bar:
             _ = something()
         }
-        """),
-        Example("object.method(x: 5, y: \"string\")"),
-        Example("""
+        """,
+        "object.method(x: 5, y: \"string\")",
+        """
         object.method(x: 5, y:
                       "string")
-        """),
-        Example("object.method(5, y: \"string\")"),
-        Example("func abc() { def(ghi: jkl) }"),
-        Example("func abc(def: Void) { ghi(jkl: mno) }"),
-        Example("class ABC { let def = ghi(jkl: mno) } }"),
-        Example("func foo() { let dict = [1: 1] }"),
-        Example("""
+        """,
+        "object.method(5, y: \"string\")",
+        "func abc() { def(ghi: jkl) }",
+        "func abc(def: Void) { ghi(jkl: mno) }",
+        "class ABC { let def = ghi(jkl: mno) } }",
+        "func foo() { let dict = [1: 1] }",
+        """
         let aaa = Self.bbb ? Self.ccc : Self.ddd else {
         return nil
         Example("}
-        """),
-        Example("range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []"),
-        Example("""
+        """,
+        "range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []",
+        """
         @objc(receiveReply:)
         public class func receiveReply(_ reply: bad_instruction_exception_reply_t) -> CInt { 0 }
-        """),
-        Example(#"""
+        """,
+        #"""
         switch str {
         case "adlm", "adlam":             return .adlam
         case "aghb", "caucasianalbanian": return .caucasianAlbanian
         default:                          return nil
         }
-        """#),
-        Example("""
+        """#,
+        """
         precedencegroup PipelinePrecedence {
           associativity: left
         }
         infix operator |> : PipelinePrecedence
-        """),
-        Example("""
+        """,
+        """
         switch scalar {
           case 0x000A...0x000D /* LF ... CR */: return true
           case 0x0085 /* NEXT LINE (NEL) */: return true
@@ -74,151 +76,151 @@ internal struct ColonRuleExamples {
           case 0x2029 /* PARAGRAPH SEPARATOR */: return true
           default: return false
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("let abc↓:Void"),
-        Example("let abc↓:  Void"),
-        Example("let abc↓ :Void"),
-        Example("let abc↓ : Void"),
-        Example("let abc↓ : [Void: Void]"),
-        Example("let abc↓ : (Void, String, Int)"),
-        Example("let abc↓ : ([Void], String, Int)"),
-        Example("let abc↓ : [([Void], String, Int)]"),
-        Example("let abc↓:  (Void, String, Int)"),
-        Example("let abc↓:  ([Void], String, Int)"),
-        Example("let abc↓:  [([Void], String, Int)]"),
-        Example("let abc↓ :String=\"def\""),
-        Example("let abc↓ :Int=0"),
-        Example("let abc↓ :Int = 0"),
-        Example("let abc↓:Int=0"),
-        Example("let abc↓:Int = 0"),
-        Example("let abc↓:Enum=Enum.Value"),
-        Example("func abc(def↓:Void) {}"),
-        Example("func abc(def↓:  Void) {}"),
-        Example("func abc(def↓ :Void) {}"),
-        Example("func abc(def↓ : Void) {}"),
-        Example("func abc(def: Void, ghi↓ :Void) {}"),
-        Example("let abc = [Void↓:Void]()"),
-        Example("let abc = [Void↓ : Void]()"),
-        Example("let abc = [Void↓:  Void]()"),
-        Example("let abc = [Void↓ :  Void]()"),
-        Example("let abc = [1: [3↓ : 2], 3: 4]"),
-        Example("let abc = [1: [3↓ : 2], 3↓:  4]"),
-        Example("let abc: [String↓ : Int]"),
-        Example("let abc: [String↓:Int]"),
-        Example("func foo(bar: [String↓ : Int]) {}"),
-        Example("func foo(bar: [String↓:Int]) {}"),
-        Example("func foo() -> [String↓ : Int] { return [:] }"),
-        Example("func foo() -> [String↓:Int] { return [:] }"),
-        Example("let abc↓ : Any"),
-        Example("let abc: [Any↓ : Int]"),
-        Example("let abc: [String↓ : Any]"),
-        Example("class Foo↓ : Bar {}"),
-        Example("class Foo↓:Bar {}"),
-        Example("class Foo<T>↓ : Bar {}"),
-        Example("class Foo<T>↓:Bar {}"),
-        Example("class Foo<T, U>↓:Bar {}"),
-        Example("class Foo<T: Equatable>↓:Bar {}"),
-        Example("class Foo<T↓:Equatable> {}"),
-        Example("class Foo<T↓ : Equatable> {}"),
-        Example("object.method(x: 5, y↓ : \"string\")"),
-        Example("object.method(x↓:5, y: \"string\")"),
-        Example("object.method(x↓:  5, y: \"string\")"),
-        Example("func abc() { def(ghi↓:jkl) }"),
-        Example("func abc(def: Void) { ghi(jkl↓:mno) }"),
-        Example("class ABC { let def = ghi(jkl↓:mno) } }"),
-        Example("func foo() { let dict = [1↓ : 1] }"),
-        Example("""
+    static let triggeringExamples = #examples([
+        "let abc↓:Void",
+        "let abc↓:  Void",
+        "let abc↓ :Void",
+        "let abc↓ : Void",
+        "let abc↓ : [Void: Void]",
+        "let abc↓ : (Void, String, Int)",
+        "let abc↓ : ([Void], String, Int)",
+        "let abc↓ : [([Void], String, Int)]",
+        "let abc↓:  (Void, String, Int)",
+        "let abc↓:  ([Void], String, Int)",
+        "let abc↓:  [([Void], String, Int)]",
+        "let abc↓ :String=\"def\"",
+        "let abc↓ :Int=0",
+        "let abc↓ :Int = 0",
+        "let abc↓:Int=0",
+        "let abc↓:Int = 0",
+        "let abc↓:Enum=Enum.Value",
+        "func abc(def↓:Void) {}",
+        "func abc(def↓:  Void) {}",
+        "func abc(def↓ :Void) {}",
+        "func abc(def↓ : Void) {}",
+        "func abc(def: Void, ghi↓ :Void) {}",
+        "let abc = [Void↓:Void]()",
+        "let abc = [Void↓ : Void]()",
+        "let abc = [Void↓:  Void]()",
+        "let abc = [Void↓ :  Void]()",
+        "let abc = [1: [3↓ : 2], 3: 4]",
+        "let abc = [1: [3↓ : 2], 3↓:  4]",
+        "let abc: [String↓ : Int]",
+        "let abc: [String↓:Int]",
+        "func foo(bar: [String↓ : Int]) {}",
+        "func foo(bar: [String↓:Int]) {}",
+        "func foo() -> [String↓ : Int] { return [:] }",
+        "func foo() -> [String↓:Int] { return [:] }",
+        "let abc↓ : Any",
+        "let abc: [Any↓ : Int]",
+        "let abc: [String↓ : Any]",
+        "class Foo↓ : Bar {}",
+        "class Foo↓:Bar {}",
+        "class Foo<T>↓ : Bar {}",
+        "class Foo<T>↓:Bar {}",
+        "class Foo<T, U>↓:Bar {}",
+        "class Foo<T: Equatable>↓:Bar {}",
+        "class Foo<T↓:Equatable> {}",
+        "class Foo<T↓ : Equatable> {}",
+        "object.method(x: 5, y↓ : \"string\")",
+        "object.method(x↓:5, y: \"string\")",
+        "object.method(x↓:  5, y: \"string\")",
+        "func abc() { def(ghi↓:jkl) }",
+        "func abc(def: Void) { ghi(jkl↓:mno) }",
+        "class ABC { let def = ghi(jkl↓:mno) } }",
+        "func foo() { let dict = [1↓ : 1] }",
+        """
         switch foo {
         case .bar↓ : return baz
         }
-        """),
-        Example("private var action↓:(() -> Void)?"),
-    ]
+        """,
+        "private var action↓:(() -> Void)?",
+    ])
 
-    static let corrections = [
-        Example("let abc↓:Void"): Example("let abc: Void"),
-        Example("let abc↓:  Void"): Example("let abc: Void"),
-        Example("let abc↓ :Void"): Example("let abc: Void"),
-        Example("let abc↓ : Void"): Example("let abc: Void"),
-        Example("let abc↓ : [Void: Void]"): Example("let abc: [Void: Void]"),
-        Example("let abc↓ : (Void, String, Int)"): Example("let abc: (Void, String, Int)"),
-        Example("let abc↓ : ([Void], String, Int)"): Example("let abc: ([Void], String, Int)"),
-        Example("let abc↓ : [([Void], String, Int)]"): Example("let abc: [([Void], String, Int)]"),
-        Example("let abc↓:  (Void, String, Int)"): Example("let abc: (Void, String, Int)"),
-        Example("let abc↓:  ([Void], String, Int)"): Example("let abc: ([Void], String, Int)"),
-        Example("let abc↓:  [([Void], String, Int)]"): Example("let abc: [([Void], String, Int)]"),
-        Example("let abc↓ :String=\"def\""): Example("let abc: String=\"def\""),
-        Example("let abc↓ :Int=0"): Example("let abc: Int=0"),
-        Example("let abc↓ :Int = 0"): Example("let abc: Int = 0"),
-        Example("let abc↓:Int=0"): Example("let abc: Int=0"),
-        Example("let abc↓:Int = 0"): Example("let abc: Int = 0"),
-        Example("let abc↓:Enum=Enum.Value"): Example("let abc: Enum=Enum.Value"),
-        Example("func abc(def↓:Void) {}"): Example("func abc(def: Void) {}"),
-        Example("func abc(def↓:  Void) {}"): Example("func abc(def: Void) {}"),
-        Example("func abc(def↓ :Void) {}"): Example("func abc(def: Void) {}"),
-        Example("func abc(def↓ : Void) {}"): Example("func abc(def: Void) {}"),
-        Example("func abc(def: Void, ghi↓ :Void) {}"): Example("func abc(def: Void, ghi: Void) {}"),
-        Example("let abc = [Void↓:Void]()"): Example("let abc = [Void: Void]()"),
-        Example("let abc = [Void↓ : Void]()"): Example("let abc = [Void: Void]()"),
-        Example("let abc = [Void↓:  Void]()"): Example("let abc = [Void: Void]()"),
-        Example("let abc = [Void↓ :  Void]()"): Example("let abc = [Void: Void]()"),
-        Example("let abc = [1: [3↓ : 2], 3: 4]"): Example("let abc = [1: [3: 2], 3: 4]"),
-        Example("let abc = [1: [3↓ : 2], 3↓:  4]"): Example("let abc = [1: [3: 2], 3: 4]"),
-        Example("let abc: [String↓ : Int]"): Example("let abc: [String: Int]"),
-        Example("let abc: [String↓:Int]"): Example("let abc: [String: Int]"),
-        Example("func foo(bar: [String↓ : Int]) {}"): Example("func foo(bar: [String: Int]) {}"),
-        Example("func foo(bar: [String↓:Int]) {}"): Example("func foo(bar: [String: Int]) {}"),
-        Example("func foo() -> [String↓ : Int] { return [:] }"):
-            Example("func foo() -> [String: Int] { return [:] }"),
-        Example("func foo() -> [String↓:Int] { return [:] }"):
-            Example("func foo() -> [String: Int] { return [:] }"),
-        Example("let abc↓ : Any"): Example("let abc: Any"),
-        Example("let abc: [Any↓ : Int]"): Example("let abc: [Any: Int]"),
-        Example("let abc: [String↓ : Any]"): Example("let abc: [String: Any]"),
-        Example("class Foo↓ : Bar {}"): Example("class Foo: Bar {}"),
-        Example("class Foo↓:Bar {}"): Example("class Foo: Bar {}"),
-        Example("class Foo<T>↓ : Bar {}"): Example("class Foo<T>: Bar {}"),
-        Example("class Foo<T>↓:Bar {}"): Example("class Foo<T>: Bar {}"),
-        Example("class Foo<T, U>↓:Bar {}"): Example("class Foo<T, U>: Bar {}"),
-        Example("class Foo<T: Equatable>↓:Bar {}"): Example("class Foo<T: Equatable>: Bar {}"),
-        Example("class Foo<T↓:Equatable> {}"): Example("class Foo<T: Equatable> {}"),
-        Example("class Foo<T↓ : Equatable> {}"): Example("class Foo<T: Equatable> {}"),
-        Example("object.method(x: 5, y↓ : \"string\")"): Example("object.method(x: 5, y: \"string\")"),
-        Example("object.method(x↓:5, y: \"string\")"): Example("object.method(x: 5, y: \"string\")"),
-        Example("object.method(x↓:  5, y: \"string\")"): Example("object.method(x: 5, y: \"string\")"),
-        Example("func abc() { def(ghi↓:jkl) }"): Example("func abc() { def(ghi: jkl) }"),
-        Example("func abc(def: Void) { ghi(jkl↓:mno) }"): Example("func abc(def: Void) { ghi(jkl: mno) }"),
-        Example("class ABC { let def = ghi(jkl↓:mno) } }"): Example("class ABC { let def = ghi(jkl: mno) } }"),
-        Example("func foo() { let dict = [1↓ : 1] }"): Example("func foo() { let dict = [1: 1] }"),
-        Example("""
+    static let corrections = #corrections([
+        "let abc↓:Void": "let abc: Void",
+        "let abc↓:  Void": "let abc: Void",
+        "let abc↓ :Void": "let abc: Void",
+        "let abc↓ : Void": "let abc: Void",
+        "let abc↓ : [Void: Void]": "let abc: [Void: Void]",
+        "let abc↓ : (Void, String, Int)": "let abc: (Void, String, Int)",
+        "let abc↓ : ([Void], String, Int)": "let abc: ([Void], String, Int)",
+        "let abc↓ : [([Void], String, Int)]": "let abc: [([Void], String, Int)]",
+        "let abc↓:  (Void, String, Int)": "let abc: (Void, String, Int)",
+        "let abc↓:  ([Void], String, Int)": "let abc: ([Void], String, Int)",
+        "let abc↓:  [([Void], String, Int)]": "let abc: [([Void], String, Int)]",
+        "let abc↓ :String=\"def\"": "let abc: String=\"def\"",
+        "let abc↓ :Int=0": "let abc: Int=0",
+        "let abc↓ :Int = 0": "let abc: Int = 0",
+        "let abc↓:Int=0": "let abc: Int=0",
+        "let abc↓:Int = 0": "let abc: Int = 0",
+        "let abc↓:Enum=Enum.Value": "let abc: Enum=Enum.Value",
+        "func abc(def↓:Void) {}": "func abc(def: Void) {}",
+        "func abc(def↓:  Void) {}": "func abc(def: Void) {}",
+        "func abc(def↓ :Void) {}": "func abc(def: Void) {}",
+        "func abc(def↓ : Void) {}": "func abc(def: Void) {}",
+        "func abc(def: Void, ghi↓ :Void) {}": "func abc(def: Void, ghi: Void) {}",
+        "let abc = [Void↓:Void]()": "let abc = [Void: Void]()",
+        "let abc = [Void↓ : Void]()": "let abc = [Void: Void]()",
+        "let abc = [Void↓:  Void]()": "let abc = [Void: Void]()",
+        "let abc = [Void↓ :  Void]()": "let abc = [Void: Void]()",
+        "let abc = [1: [3↓ : 2], 3: 4]": "let abc = [1: [3: 2], 3: 4]",
+        "let abc = [1: [3↓ : 2], 3↓:  4]": "let abc = [1: [3: 2], 3: 4]",
+        "let abc: [String↓ : Int]": "let abc: [String: Int]",
+        "let abc: [String↓:Int]": "let abc: [String: Int]",
+        "func foo(bar: [String↓ : Int]) {}": "func foo(bar: [String: Int]) {}",
+        "func foo(bar: [String↓:Int]) {}": "func foo(bar: [String: Int]) {}",
+        "func foo() -> [String↓ : Int] { return [:] }":
+            "func foo() -> [String: Int] { return [:] }",
+        "func foo() -> [String↓:Int] { return [:] }":
+            "func foo() -> [String: Int] { return [:] }",
+        "let abc↓ : Any": "let abc: Any",
+        "let abc: [Any↓ : Int]": "let abc: [Any: Int]",
+        "let abc: [String↓ : Any]": "let abc: [String: Any]",
+        "class Foo↓ : Bar {}": "class Foo: Bar {}",
+        "class Foo↓:Bar {}": "class Foo: Bar {}",
+        "class Foo<T>↓ : Bar {}": "class Foo<T>: Bar {}",
+        "class Foo<T>↓:Bar {}": "class Foo<T>: Bar {}",
+        "class Foo<T, U>↓:Bar {}": "class Foo<T, U>: Bar {}",
+        "class Foo<T: Equatable>↓:Bar {}": "class Foo<T: Equatable>: Bar {}",
+        "class Foo<T↓:Equatable> {}": "class Foo<T: Equatable> {}",
+        "class Foo<T↓ : Equatable> {}": "class Foo<T: Equatable> {}",
+        "object.method(x: 5, y↓ : \"string\")": "object.method(x: 5, y: \"string\")",
+        "object.method(x↓:5, y: \"string\")": "object.method(x: 5, y: \"string\")",
+        "object.method(x↓:  5, y: \"string\")": "object.method(x: 5, y: \"string\")",
+        "func abc() { def(ghi↓:jkl) }": "func abc() { def(ghi: jkl) }",
+        "func abc(def: Void) { ghi(jkl↓:mno) }": "func abc(def: Void) { ghi(jkl: mno) }",
+        "class ABC { let def = ghi(jkl↓:mno) } }": "class ABC { let def = ghi(jkl: mno) } }",
+        "func foo() { let dict = [1↓ : 1] }": "func foo() { let dict = [1: 1] }",
+        """
         class Foo {
             #if false
             #else
                 let bar = [\"key\"↓   : \"value\"]
             #endif
         }
-        """):
-            Example("""
+        """:
+            """
             class Foo {
                 #if false
                 #else
                     let bar = [\"key\": \"value\"]
                 #endif
             }
-            """),
-        Example("""
+            """,
+        """
         switch foo {
         case .bar↓ : return baz
         }
-        """):
-            Example("""
+        """:
+            """
             switch foo {
             case .bar: return baz
             }
-            """),
-        Example("private var action↓:(() -> Void)?"): Example("private var action: (() -> Void)?"),
-    ]
+            """,
+        "private var action↓:(() -> Void)?": "private var action: (() -> Void)?",
+    ])
 }

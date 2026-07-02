@@ -1,8 +1,8 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
 @testable import SwiftLintBuiltInRules
-@testable import SwiftLintCore
 
 @Suite(.parserDiagnosticsEnabled(true), .rulesRegistered)
 struct ParserDiagnosticsTests {
@@ -19,7 +19,7 @@ struct ParserDiagnosticsTests {
         #expect(SwiftLintFile(contents: contents).parserDiagnostics == ["unexpected code \')\' in source file"])
 
         let ruleDescription = LegacyConstantRule.description
-            .with(corrections: [Example(contents): Example(contents)])
+            .with(corrections: #corrections([contents: contents]))
 
         verifyCorrections(
             ruleDescription,
@@ -39,7 +39,7 @@ struct ParserDiagnosticsTests {
         #expect(SwiftLintFile(contents: original).parserDiagnostics.isEmpty)
 
         let ruleDescription = ReturnArrowWhitespaceRule.description
-            .with(corrections: [Example(original): Example(corrected)])
+            .with(corrections: #corrections([original: corrected]))
 
         verifyCorrections(
             ruleDescription,

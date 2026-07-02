@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,28 +10,28 @@ struct ConditionalReturnsOnNewlineRule: Rule {
         name: "Conditional Returns on Newline",
         description: "Conditional statements should always return on the next line",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("guard true else {\n return true\n}"),
-            Example("guard true,\n let x = true else {\n return true\n}"),
-            Example("if true else {\n return true\n}"),
-            Example("if true,\n let x = true else {\n return true\n}"),
-            Example("if textField.returnKeyType == .Next {"),
-            Example("if true { // return }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "guard true else {\n return true\n}",
+            "guard true,\n let x = true else {\n return true\n}",
+            "if true else {\n return true\n}",
+            "if true,\n let x = true else {\n return true\n}",
+            "if textField.returnKeyType == .Next {",
+            "if true { // return }",
+            """
             guard something
             else { return }
-            """),
-        ],
-        triggeringExamples: [
-            Example("↓guard true else { return }"),
-            Example("↓if true { return }"),
-            Example("↓if true { break } else { return }"),
-            Example("↓if true { break } else {       return }"),
-            Example("↓if true { return \"YES\" } else { return \"NO\" }"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "↓guard true else { return }",
+            "↓if true { return }",
+            "↓if true { break } else { return }",
+            "↓if true { break } else {       return }",
+            "↓if true { return \"YES\" } else { return \"NO\" }",
+            """
             ↓guard condition else { XCTFail(); return }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

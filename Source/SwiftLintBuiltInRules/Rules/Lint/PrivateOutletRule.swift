@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,41 +10,27 @@ struct PrivateOutletRule: Rule {
         name: "Private Outlets",
         description: "IBOutlets should be private to avoid leaking UIKit to higher layers",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("class Foo { @IBOutlet private var label: UILabel? }"),
-            Example("class Foo { @IBOutlet private var label: UILabel! }"),
-            Example("class Foo { var notAnOutlet: UILabel }"),
-            Example("class Foo { @IBOutlet weak private var label: UILabel? }"),
-            Example("class Foo { @IBOutlet private weak var label: UILabel? }"),
-            Example("class Foo { @IBOutlet fileprivate weak var label: UILabel? }"),
+        nonTriggeringExamples: #examples([
+            "class Foo { @IBOutlet private var label: UILabel? }",
+            "class Foo { @IBOutlet private var label: UILabel! }",
+            "class Foo { var notAnOutlet: UILabel }",
+            "class Foo { @IBOutlet weak private var label: UILabel? }",
+            "class Foo { @IBOutlet private weak var label: UILabel? }",
+            "class Foo { @IBOutlet fileprivate weak var label: UILabel? }",
             // allow_private_set
-            Example(
-                "class Foo { @IBOutlet private(set) var label: UILabel? }",
-                configuration: ["allow_private_set": true]
-            ),
-            Example(
-                "class Foo { @IBOutlet private(set) var label: UILabel! }",
-                configuration: ["allow_private_set": true]
-            ),
-            Example(
-                "class Foo { @IBOutlet weak private(set) var label: UILabel? }",
-                configuration: ["allow_private_set": true]
-            ),
-            Example(
-                "class Foo { @IBOutlet private(set) weak var label: UILabel? }",
-                configuration: ["allow_private_set": true]
-            ),
-            Example(
-                "class Foo { @IBOutlet fileprivate(set) weak var label: UILabel? }",
-                configuration: ["allow_private_set": true]
-            ),
-        ],
-        triggeringExamples: [
-            Example("class Foo { @IBOutlet ↓var label: UILabel? }"),
-            Example("class Foo { @IBOutlet ↓var label: UILabel! }"),
-            Example("class Foo { @IBOutlet private(set) ↓var label: UILabel? }"),
-            Example("class Foo { @IBOutlet fileprivate(set) ↓var label: UILabel? }"),
-            Example("""
+            "class Foo { @IBOutlet private(set) var label: UILabel? }".configuration(["allow_private_set": true]),
+            "class Foo { @IBOutlet private(set) var label: UILabel! }".configuration(["allow_private_set": true]),
+            "class Foo { @IBOutlet weak private(set) var label: UILabel? }".configuration(["allow_private_set": true]),
+            "class Foo { @IBOutlet private(set) weak var label: UILabel? }".configuration(["allow_private_set": true]),
+            "class Foo { @IBOutlet fileprivate(set) weak var label: UILabel? }"
+                .configuration(["allow_private_set": true]),
+        ]),
+        triggeringExamples: #examples([
+            "class Foo { @IBOutlet ↓var label: UILabel? }",
+            "class Foo { @IBOutlet ↓var label: UILabel! }",
+            "class Foo { @IBOutlet private(set) ↓var label: UILabel? }",
+            "class Foo { @IBOutlet fileprivate(set) ↓var label: UILabel? }",
+            """
             import Gridicons
 
             class BlogDetailsSectionHeaderView: UITableViewHeaderFooterView {
@@ -73,8 +60,8 @@ struct PrivateOutletRule: Rule {
                     ellipsisButtonDidTouch?(self)
                 }
             }
-            """, configuration: ["allow_private_set": false], excludeFromDocumentation: true),
-        ]
+            """.configuration(["allow_private_set": false]).excludeFromDocumentation(),
+        ])
     )
 }
 

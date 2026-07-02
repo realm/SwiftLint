@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -8,15 +9,15 @@ struct GenericTypeNameRuleTests {
     @Test
     func genericTypeNameWithExcluded() {
         let baseDescription = GenericTypeNameRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            Example("func foo<apple> {}"),
-            Example("func foo<some_apple> {}"),
-            Example("func foo<test123> {}"),
-        ]
-        let triggeringExamples = baseDescription.triggeringExamples + [
-            Example("func foo<ap_ple> {}"),
-            Example("func foo<appleJuice> {}"),
-        ]
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + #examples([
+            "func foo<apple> {}",
+            "func foo<some_apple> {}",
+            "func foo<test123> {}",
+        ])
+        let triggeringExamples = baseDescription.triggeringExamples + #examples([
+            "func foo<ap_ple> {}",
+            "func foo<appleJuice> {}",
+        ])
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples,
                                                triggeringExamples: triggeringExamples)
         verifyRule(description, ruleConfiguration: ["excluded": ["apple", "some.*", ".*st\\d+.*"]])
@@ -25,14 +26,14 @@ struct GenericTypeNameRuleTests {
     @Test
     func genericTypeNameWithAllowedSymbols() {
         let baseDescription = GenericTypeNameRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            Example("func foo<T$>() {}"),
-            Example("func foo<T$, U%>(param: U%) -> T$ {}"),
-            Example("typealias StringDictionary<T$> = Dictionary<String, T$>"),
-            Example("class Foo<T$%> {}"),
-            Example("struct Foo<T$%> {}"),
-            Example("enum Foo<T$%> {}"),
-        ]
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + #examples([
+            "func foo<T$>() {}",
+            "func foo<T$, U%>(param: U%) -> T$ {}",
+            "typealias StringDictionary<T$> = Dictionary<String, T$>",
+            "class Foo<T$%> {}",
+            "struct Foo<T$%> {}",
+            "enum Foo<T$%> {}",
+        ])
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
@@ -41,9 +42,9 @@ struct GenericTypeNameRuleTests {
     @Test
     func genericTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = GenericTypeNameRule.description
-        let triggeringExamples = [
-            Example("func foo<↓T_$>() {}")
-        ]
+        let triggeringExamples = #examples([
+            "func foo<↓T_$>() {}"
+        ])
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
@@ -52,12 +53,12 @@ struct GenericTypeNameRuleTests {
     @Test
     func genericTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = GenericTypeNameRule.description
-        let triggeringExamplesToRemove = [
-            Example("func foo<↓type>() {}"),
-            Example("class Foo<↓type> {}"),
-            Example("struct Foo<↓type> {}"),
-            Example("enum Foo<↓type> {}"),
-        ]
+        let triggeringExamplesToRemove = #examples([
+            "func foo<↓type>() {}",
+            "class Foo<↓type> {}",
+            "struct Foo<↓type> {}",
+            "enum Foo<↓type> {}",
+        ])
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.removingViolationMarkers()
         let triggeringExamples = baseDescription.triggeringExamples

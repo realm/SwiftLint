@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -9,79 +10,79 @@ struct UnusedControlFlowLabelRule: Rule {
         name: "Unused Control Flow Label",
         description: "Unused control flow label should be removed",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("loop: while true { break loop }"),
-            Example("loop: while true { continue loop }"),
-            Example("loop:\n    while true { break loop }"),
-            Example("while true { break }"),
-            Example("loop: for x in array { break loop }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "loop: while true { break loop }",
+            "loop: while true { continue loop }",
+            "loop:\n    while true { break loop }",
+            "while true { break }",
+            "loop: for x in array { break loop }",
+            """
             label: switch number {
             case 1: print("1")
             case 2: print("2")
             default: break label
             }
-            """),
-            Example("""
+            """,
+            """
             loop: repeat {
                 if x == 10 {
                     break loop
                 }
             } while true
-            """),
-        ],
-        triggeringExamples: [
-            Example("↓loop: while true { break }"),
-            Example("↓loop: while true { break loop1 }"),
-            Example("↓loop: while true { break outerLoop }"),
-            Example("↓loop: for x in array { break }"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "↓loop: while true { break }",
+            "↓loop: while true { break loop1 }",
+            "↓loop: while true { break outerLoop }",
+            "↓loop: for x in array { break }",
+            """
             ↓label: switch number {
             case 1: print("1")
             case 2: print("2")
             default: break
             }
-            """),
-            Example("""
+            """,
+            """
             ↓loop: repeat {
                 if x == 10 {
                     break
                 }
             } while true
-            """),
-        ],
-        corrections: [
-            Example("↓loop: while true { break }"): Example("while true { break }"),
-            Example("↓loop: while true { break loop1 }"): Example("while true { break loop1 }"),
-            Example("↓loop: while true { break outerLoop }"): Example("while true { break outerLoop }"),
-            Example("↓loop: for x in array { break }"): Example("for x in array { break }"),
-            Example("""
+            """,
+        ]),
+        corrections: #corrections([
+            "↓loop: while true { break }": "while true { break }",
+            "↓loop: while true { break loop1 }": "while true { break loop1 }",
+            "↓loop: while true { break outerLoop }": "while true { break outerLoop }",
+            "↓loop: for x in array { break }": "for x in array { break }",
+            """
             ↓label: switch number {
             case 1: print("1")
             case 2: print("2")
             default: break
             }
-            """): Example("""
+            """: """
                 switch number {
                 case 1: print("1")
                 case 2: print("2")
                 default: break
                 }
-                """),
-            Example("""
+                """,
+            """
             ↓loop: repeat {
                 if x == 10 {
                     break
                 }
             } while true
-            """): Example("""
+            """: """
                 repeat {
                     if x == 10 {
                         break
                     }
                 } while true
-                """),
-        ]
+                """,
+        ])
     )
 }
 

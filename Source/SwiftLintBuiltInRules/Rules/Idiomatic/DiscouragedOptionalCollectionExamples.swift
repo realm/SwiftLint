@@ -1,28 +1,30 @@
+import SwiftLintCore
+
 internal struct DiscouragedOptionalCollectionExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples = #examples([
         // Global variable
-        Example("var foo: [Int]"),
-        Example("var foo: [String: Int]"),
-        Example("var foo: Set<String>"),
-        Example("var foo: [String: [String: Int]]"),
-        Example("let foo: [Int] = []"),
-        Example("let foo: [String: Int] = [:]"),
-        Example("let foo: Set<String> = []"),
-        Example("let foo: [String: [String: Int]] = [:]"),
+        "var foo: [Int]",
+        "var foo: [String: Int]",
+        "var foo: Set<String>",
+        "var foo: [String: [String: Int]]",
+        "let foo: [Int] = []",
+        "let foo: [String: Int] = [:]",
+        "let foo: Set<String> = []",
+        "let foo: [String: [String: Int]] = [:]",
 
         // Computed get variable
-        Example("var foo: [Int] { return [] }"),
+        "var foo: [Int] { return [] }",
 
         // Free function return
-        Example("func foo() -> [Int] {}"),
-        Example("func foo() -> [String: String] {}"),
-        Example("func foo() -> Set<Int> {}"),
-        Example("func foo() -> ([Int]) -> String {}"),
+        "func foo() -> [Int] {}",
+        "func foo() -> [String: String] {}",
+        "func foo() -> Set<Int> {}",
+        "func foo() -> ([Int]) -> String {}",
 
         // Free function parameter
-        Example("func foo(input: [String] = []) {}"),
-        Example("func foo(input: [String: String] = [:]) {}"),
-        Example("func foo(input: Set<String> = []) {}"),
+        "func foo(input: [String] = []) {}",
+        "func foo(input: [String: String] = [:]) {}",
+        "func foo(input: Set<String> = []) {}",
 
         // Method return
         wrapExample("class", "func foo() -> [Int] {}"),
@@ -52,48 +54,48 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("enum", "func foo(input: [String] = []) {}"),
         wrapExample("enum", "func foo(input: [String: String] = [:]) {}"),
         wrapExample("enum", "func foo(input: Set<String> = []) {}"),
-    ]
+    ])
 
-    static let triggeringExamples = [
+    static let triggeringExamples = #examples([
         // Global variable
-        Example("var foo: ↓[Int]?"),
-        Example("var foo: ↓[String: Int]?"),
-        Example("var foo: ↓Set<String>?"),
-        Example("let foo: ↓[Int]? = nil"),
-        Example("let foo: ↓[String: Int]? = nil"),
-        Example("let foo: ↓Set<String>? = nil"),
+        "var foo: ↓[Int]?",
+        "var foo: ↓[String: Int]?",
+        "var foo: ↓Set<String>?",
+        "let foo: ↓[Int]? = nil",
+        "let foo: ↓[String: Int]? = nil",
+        "let foo: ↓Set<String>? = nil",
 
         // Computed Get Variable
-        Example("var foo: ↓[Int]? { return nil }"),
-        Example("let foo: ↓[Int]? { return nil }()"),
+        "var foo: ↓[Int]? { return nil }",
+        "let foo: ↓[Int]? { return nil }()",
 
         // Free function return
-        Example("func foo() -> ↓[T]? {}"),
-        Example("func foo() -> ↓[String: String]? {}"),
-        Example("func foo() -> ↓[String: [String: String]]? {}"),
-        Example("func foo() -> [String: ↓[String: String]?] {}"),
-        Example("func foo() -> ↓Set<Int>? {}"),
-        Example("static func foo() -> ↓[T]? {}"),
-        Example("static func foo() -> ↓[String: String]? {}"),
-        Example("static func foo() -> ↓[String: [String: String]]? {}"),
-        Example("static func foo() -> [String: ↓[String: String]?] {}"),
-        Example("static func foo() -> ↓Set<Int>? {}"),
-        Example("func foo() -> (↓[Int]?) -> String {}"),
-        Example("func foo() -> ([Int]) -> ↓[String]? {}"),
+        "func foo() -> ↓[T]? {}",
+        "func foo() -> ↓[String: String]? {}",
+        "func foo() -> ↓[String: [String: String]]? {}",
+        "func foo() -> [String: ↓[String: String]?] {}",
+        "func foo() -> ↓Set<Int>? {}",
+        "static func foo() -> ↓[T]? {}",
+        "static func foo() -> ↓[String: String]? {}",
+        "static func foo() -> ↓[String: [String: String]]? {}",
+        "static func foo() -> [String: ↓[String: String]?] {}",
+        "static func foo() -> ↓Set<Int>? {}",
+        "func foo() -> (↓[Int]?) -> String {}",
+        "func foo() -> ([Int]) -> ↓[String]? {}",
 
         // Free function parameter
-        Example("func foo(input: ↓[String: String]?) {}"),
-        Example("func foo(input: ↓[String: [String: String]]?) {}"),
-        Example("func foo(input: [String: ↓[String: String]?]) {}"),
-        Example("func foo(input: ↓[String: ↓[String: String]?]?) {}"),
-        Example("func foo<K, V>(_ dict1: [K: V], _ dict2: ↓[K: V]?) -> [K: V]"),
-        Example("func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]"),
-        Example("static func foo(input: ↓[String: String]?) {}"),
-        Example("static func foo(input: ↓[String: [String: String]]?) {}"),
-        Example("static func foo(input: [String: ↓[String: String]?]) {}"),
-        Example("static func foo(input: ↓[String: ↓[String: String]?]?) {}"),
-        Example("static func foo<K, V>(_ dict1: [K: V], _ dict2: ↓[K: V]?) -> [K: V]"),
-        Example("static func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]"),
+        "func foo(input: ↓[String: String]?) {}",
+        "func foo(input: ↓[String: [String: String]]?) {}",
+        "func foo(input: [String: ↓[String: String]?]) {}",
+        "func foo(input: ↓[String: ↓[String: String]?]?) {}",
+        "func foo<K, V>(_ dict1: [K: V], _ dict2: ↓[K: V]?) -> [K: V]",
+        "func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]",
+        "static func foo(input: ↓[String: String]?) {}",
+        "static func foo(input: ↓[String: [String: String]]?) {}",
+        "static func foo(input: [String: ↓[String: String]?]) {}",
+        "static func foo(input: ↓[String: ↓[String: String]?]?) {}",
+        "static func foo<K, V>(_ dict1: [K: V], _ dict2: ↓[K: V]?) -> [K: V]",
+        "static func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]",
 
         // Instance variable
         wrapExample("class", "var foo: ↓[Int]?"),
@@ -205,18 +207,19 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("enum", "static func foo(input: ↓[String: ↓[String: String]?]?) {}"),
         wrapExample("enum", "static func foo<K, V>(_ dict1: [K: V], _ dict2: ↓[K: V]?) -> [K: V]"),
         wrapExample("enum", "static func foo<K, V>(dict1: [K: V], dict2: ↓[K: V]?) -> [K: V]"),
-    ]
+    ])
 }
 
 // MARK: - Private
 
-private func wrapExample(_ type: String,
-                         _ test: String,
-                         file: StaticString = #filePath,
-                         line: UInt = #line) -> Example {
+private func wrapExample(
+    _ type: String,
+    _ test: String
+) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example("""
         \(type) Foo {
             \(test)
         }
-        """, file: file, line: line)
+        """)
 }

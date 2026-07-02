@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -7,8 +8,8 @@ import Testing
 struct ComputedAccessorsOrderRuleTests {
     @Test
     func setGetConfiguration() {
-        let nonTriggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            """
             class Foo {
                 var foo: Int {
                     set {
@@ -19,10 +20,10 @@ struct ComputedAccessorsOrderRuleTests {
                     }
                 }
             }
-            """),
-        ]
-        let triggeringExamples = [
-            Example("""
+            """,
+        ])
+        let triggeringExamples = #examples([
+            """
             class Foo {
                 var foo: Int {
                     ↓get {
@@ -33,8 +34,8 @@ struct ComputedAccessorsOrderRuleTests {
                     }
                 }
             }
-            """),
-        ]
+            """,
+        ])
 
         let description = ComputedAccessorsOrderRule.description
             .with(triggeringExamples: triggeringExamples)

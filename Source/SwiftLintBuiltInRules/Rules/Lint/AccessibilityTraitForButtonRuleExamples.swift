@@ -1,6 +1,8 @@
+import SwiftLintCore
+
 internal struct AccessibilityTraitForButtonRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         struct MyView: View {
             var body: some View {
                 Button {
@@ -10,15 +12,15 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Link("Open link", destination: myUrl)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -28,8 +30,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibility(addTraits: .isLink)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -39,8 +41,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -50,8 +52,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -61,8 +63,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibilityAddTraits([.isHeader, .isLink])
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -72,8 +74,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibility(addTraits: .isButton)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -83,8 +85,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibility(addTraits: .isButton)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -96,8 +98,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Label("Learn more", systemImage: "info.circle")
@@ -107,8 +109,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibility(addTraits: .isButton)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 HStack {
@@ -125,8 +127,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                 .accessibility(addTraits: .isButton)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -136,8 +138,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibilityAddTraits(.isButton)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -147,8 +149,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibilityAddTraits(.isLink)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -158,8 +160,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     .accessibility(addTraits: [.isButton])
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Text("Learn more")
@@ -168,11 +170,11 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -181,8 +183,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -192,8 +194,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -202,8 +204,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -212,8 +214,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Label("Learn more", systemImage: "info.circle")
@@ -222,8 +224,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓HStack {
@@ -235,8 +237,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -245,8 +247,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -255,8 +257,8 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Text("Learn more")
@@ -265,6 +267,6 @@ internal struct AccessibilityTraitForButtonRuleExamples {
                     })
             }
         }
-        """),
-    ]
+        """,
+    ])
 }

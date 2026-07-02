@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -14,29 +15,29 @@ struct UnhandledThrowingTaskRule: Rule {
             https://forums.swift.org/t/task-initializer-with-throwing-closure-swallows-error/56066
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             Task<Void, Never> {
               try await myThrowingFunction()
             }
-            """),
-            Example("""
+            """,
+            """
             Task {
               try? await myThrowingFunction()
             }
-            """),
-            Example("""
+            """,
+            """
             Task {
               try! await myThrowingFunction()
             }
-            """),
-            Example("""
+            """,
+            """
             Task<Void, String> {
               let text = try myThrowingFunction()
               return text
             }
-            """),
-            Example("""
+            """,
+            """
             Task {
               do {
                 try myThrowingFunction()
@@ -44,8 +45,8 @@ struct UnhandledThrowingTaskRule: Rule {
                 print(e)
               }
             }
-            """),
-            Example("""
+            """,
+            """
             func someFunction() throws {
               Task {
                 anotherFunction()
@@ -58,75 +59,75 @@ struct UnhandledThrowingTaskRule: Rule {
 
               try something()
             }
-            """),
-            Example("""
+            """,
+            """
             let task = Task {
               try await myThrowingFunction()
             }
-            """),
-            Example("""
+            """,
+            """
             var task = Task {
               try await myThrowingFunction()
             }
-            """),
-            Example("""
+            """,
+            """
             try await Task {
               try await myThrowingFunction()
             }.value
-            """),
-            Example("""
+            """,
+            """
             executor.task = Task {
               try await isolatedOpen(.init(executor.asUnownedSerialExecutor()))
             }
-            """),
-            Example("""
+            """,
+            """
             let result = await Task {
               throw CancellationError()
             }.result
-            """),
-            Example("""
+            """,
+            """
             func makeTask() -> Task<String, Error> {
               return Task {
                 try await someThrowingFunction()
               }
             }
-            """),
-            Example("""
+            """,
+            """
             func makeTask() -> Task<String, Error> {
               // Implicit return
               Task {
                 try await someThrowingFunction()
               }
             }
-            """),
-            Example("""
+            """,
+            """
             Task {
               return Result {
                   try someThrowingFunc()
               }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             ↓Task {
               try await myThrowingFunction()
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               let text = try myThrowingFunction()
               return text
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               do {
                 try myThrowingFunction()
               }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               do {
                 try myThrowingFunction()
@@ -134,30 +135,30 @@ struct UnhandledThrowingTaskRule: Rule {
                 print(e)
               }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               do {
                 throw FooError.bar
               }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               throw FooError.bar
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task<_, _> {
               throw FooError.bar
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task<Void,_> {
               throw FooError.bar
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               do {
                 try foo()
@@ -165,8 +166,8 @@ struct UnhandledThrowingTaskRule: Rule {
                 try bar()
               }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓Task {
               do {
                 try foo()
@@ -174,15 +175,15 @@ struct UnhandledThrowingTaskRule: Rule {
                 throw BarError()
               }
             }
-            """),
-            Example("""
+            """,
+            """
             func doTask() {
               ↓Task {
                 try await someThrowingFunction()
               }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

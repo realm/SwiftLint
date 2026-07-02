@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -9,54 +10,54 @@ struct OrphanedDocCommentRule: Rule {
         name: "Orphaned Doc Comment",
         description: "A doc comment should be attached to a declaration",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             /// My great property
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             //////////////////////////////////////
             //
             // Copyright header.
             //
             //////////////////////////////////////
-            """),
-            Example("""
+            """,
+            """
             /// Look here for more info: https://github.com.
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             /// Look here for more info:
             /// https://github.com.
             var myGreatProperty: String!
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             ↓/// My great property
             // Not a doc string
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             ↓/// Look here for more info: https://github.com.
 
 
             // Not a doc string
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             ↓/// Look here for more info: https://github.com.
             // Not a doc string
             ↓/// My great property
             // Not a doc string
             var myGreatProperty: String!
-            """),
-            Example("""
+            """,
+            """
             extension Nested {
                 ↓///
                 /// Look here for more info: https://github.com.
@@ -64,8 +65,8 @@ struct OrphanedDocCommentRule: Rule {
                 // Not a doc string
                 var myGreatProperty: String!
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

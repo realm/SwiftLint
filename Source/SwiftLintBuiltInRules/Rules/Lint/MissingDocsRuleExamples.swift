@@ -1,7 +1,9 @@
+import SwiftLintCore
+
 struct MissingDocsRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples = #examples([
         // locally-defined superclass member is documented, but subclass member is not
-        Example("""
+        """
         /// docs
         public class A {
         /// docs
@@ -9,16 +11,16 @@ struct MissingDocsRuleExamples {
         }
         // no docs
         public class B: A { override public func b() {} }
-        """),
+        """,
         // externally-defined superclass member is documented, but subclass member is not
-        Example("""
+        """
         import Foundation
         // no docs
         public class B: NSObject {
         // no docs
         override public var description: String { fatalError() } }
-        """),
-        Example("""
+        """,
+        """
         /// docs
         public class A {
             var j = 1
@@ -26,40 +28,40 @@ struct MissingDocsRuleExamples {
             func f() {}
             deinit {}
         }
-        """),
-        Example("""
+        """,
+        """
         public extension A {}
-        """),
-        Example("""
+        """,
+        """
         enum E {
             case A
         }
-        """),
-        Example("""
+        """,
+        """
         /// docs
         public class A {
             public init() {}
         }
-        """, configuration: ["excludes_trivial_init": true]),
-        Example("""
+        """.configuration(["excludes_trivial_init": true]),
+        """
         class C {
             public func f() {}
         }
-        """, configuration: ["evaluate_effective_access_control_level": true]),
-        Example("""
+        """.configuration(["evaluate_effective_access_control_level": true]),
+        """
         public struct S: ~Copyable, P {
             public init() {}
         }
-        """),
-        Example("""
+        """,
+        """
         /// my doc
         #if os(macOS)
         public func f() {}
         #else
         public func f() async {}
         #endif
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         /// my doc
         #if os(macOS)
             #if is(iOS)
@@ -68,18 +70,18 @@ struct MissingDocsRuleExamples {
         #else
         public func f() async {}
         #endif
-        """, excludeFromDocumentation: true),
-    ]
+        """.excludeFromDocumentation(),
+    ])
 
-    static let triggeringExamples = [
+    static let triggeringExamples = #examples([
         // public, undocumented
-        Example("public ↓func a() {}"),
+        "public ↓func a() {}",
         // public, undocumented
-        Example("// regular comment\npublic ↓func a() {}"),
+        "// regular comment\npublic ↓func a() {}",
         // public, undocumented
-        Example("/* regular comment */\npublic ↓func a() {}"),
+        "/* regular comment */\npublic ↓func a() {}",
         // protocol member and inherited member are both undocumented
-        Example("""
+        """
         /// docs
         public protocol A {
             // no docs
@@ -89,16 +91,16 @@ struct MissingDocsRuleExamples {
         public struct C: A {
             public let b: Int
         }
-        """),
+        """,
         // Violation marker is on `static` keyword.
-        Example("""
+        """
         /// a doc
         public class C {
             public static ↓let i = 1
         }
-        """),
+        """,
         // `excludes_extensions` only excludes the extension declaration itself; not its children.
-        Example("""
+        """
         public extension A {
             public ↓func f() {}
             static ↓var i: Int { 1 }
@@ -116,8 +118,8 @@ struct MissingDocsRuleExamples {
                 func f() {}
             }
         }
-        """),
-        Example("""
+        """,
+        """
         public extension A {
             ↓enum E {
                 enum Inner {
@@ -125,36 +127,36 @@ struct MissingDocsRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         extension E {
             public ↓struct S {
                 public static ↓let i = 1
             }
         }
-        """),
-        Example("""
+        """,
+        """
         extension E {
             public ↓func f() {}
         }
-        """),
-        Example("""
+        """,
+        """
         /// docs
         public class A {
             public ↓init(argument: String) {}
         }
-        """, configuration: ["excludes_trivial_init": true]),
-        Example("""
+        """.configuration(["excludes_trivial_init": true]),
+        """
         public ↓struct C: A {
             public ↓let b: Int
         }
-        """, configuration: ["excludes_inherited_types": false]),
-        Example("""
+        """.configuration(["excludes_inherited_types": false]),
+        """
         public ↓extension A {
             public ↓func f() {}
         }
-        """, configuration: ["excludes_extensions": false]),
-        Example("""
+        """.configuration(["excludes_extensions": false]),
+        """
         public extension E {
             ↓var i: Int {
                 let j = 1
@@ -162,20 +164,20 @@ struct MissingDocsRuleExamples {
                 return j
             }
         }
-        """),
-        Example("""
+        """,
+        """
         #if os(macOS)
         public ↓func f() {}
         #endif
-        """),
-        Example("""
+        """,
+        """
         public ↓enum E {
             ↓case A, B
             func f() {}
             init(_ i: Int) { self = .A }
         }
-        """),
-        Example("""
+        """,
+        """
         open ↓class C {
             public ↓enum E {
                 ↓case A
@@ -183,9 +185,9 @@ struct MissingDocsRuleExamples {
                 init(_ i: Int) { self = .A }
             }
         }
-        """, excludeFromDocumentation: true),
+        """.excludeFromDocumentation(),
         /// Nested types inherit the ACL from the declaring extension.
-        Example("""
+        """
         /// a doc
         public struct S {}
         public extension S {
@@ -193,31 +195,31 @@ struct MissingDocsRuleExamples {
                 ↓case A
             }
         }
-        """),
-        Example("""
+        """,
+        """
         public extension URL {
             fileprivate enum E {
                 static let source = ""
             }
             static ↓var a: Int { 1 }
         }
-        """, excludeFromDocumentation: true),
-        Example("""
+        """.excludeFromDocumentation(),
+        """
         class C {
             public ↓func f() {}
         }
-        """, configuration: ["evaluate_effective_access_control_level": false]),
-        Example("""
+        """.configuration(["evaluate_effective_access_control_level": false]),
+        """
         public ↓struct S: ~Copyable, ~Escapable {
             public ↓init() {}
         }
-        """),
-        Example("""
+        """,
+        """
         /// my doc
         #if os(macOS)
         public func f() {}
         public ↓func g() {}
         #endif
-        """, excludeFromDocumentation: true),
-    ]
+        """.excludeFromDocumentation(),
+    ])
 }

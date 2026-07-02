@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 import SwiftSyntax
 
 struct CommaRule: CorrectableRule, SourceKitFreeRule {
@@ -10,82 +11,82 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
         name: "Comma Spacing",
         description: "There should be no space before and one after any comma",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("func abc(a: String, b: String) { }"),
-            Example("abc(a: \"string\", b: \"string\""),
-            Example("enum a { case a, b, c }"),
-            Example("func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}"),
-            Example("func abc(\n  a: String,\n  bcd: String\n) {\n}"),
-            Example("#imageLiteral(resourceName: \"foo,bar,baz\")"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "func abc(a: String, b: String) { }",
+            "abc(a: \"string\", b: \"string\"",
+            "enum a { case a, b, c }",
+            "func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}",
+            "func abc(\n  a: String,\n  bcd: String\n) {\n}",
+            "#imageLiteral(resourceName: \"foo,bar,baz\")",
+            """
                 kvcStringBuffer.advanced(by: rootKVCLength)
                   .storeBytes(of: 0x2E /* '.' */, as: CChar.self)
-                """),
-            Example("""
+                """,
+            """
                 public indirect enum ExpectationMessage {
                   /// appends after an existing message ("<expectation> (use beNil() to match nils)")
                   case appends(ExpectationMessage, /* Appended Message */ String)
                 }
-                """, excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("func abc(a: String↓ ,b: String) { }"),
-            Example("func abc(a: String↓ ,b: String↓ ,c: String↓ ,d: String) { }"),
-            Example("abc(a: \"string\"↓,b: \"string\""),
-            Example("enum a { case a↓ ,b }"),
-            Example("let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)"),
-            Example("""
+                """.excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "func abc(a: String↓ ,b: String) { }",
+            "func abc(a: String↓ ,b: String↓ ,c: String↓ ,d: String) { }",
+            "abc(a: \"string\"↓,b: \"string\"",
+            "enum a { case a↓ ,b }",
+            "let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)",
+            """
             Foo(
               parameter: a.b.c,
               tag: a.d,
               value: a.identifier.flatMap { Int64($0) }↓ ,
               reason: Self.abcd()
             )
-            """),
-            Example("""
+            """,
+            """
             return Foo(bar: .baz, title: fuzz,
                       message: My.Custom.message↓ ,
                       another: parameter, doIt: true,
                       alignment: .center)
-            """),
-            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#),
-        ],
-        corrections: [
-            Example("func abc(a: String↓,b: String) {}"): Example("func abc(a: String, b: String) {}"),
-            Example("abc(a: \"string\"↓,b: \"string\""): Example("abc(a: \"string\", b: \"string\""),
-            Example("abc(a: \"string\"↓  ,  b: \"string\""): Example("abc(a: \"string\", b: \"string\""),
-            Example("enum a { case a↓  ,b }"): Example("enum a { case a, b }"),
-            Example("let a = [1↓,1]\nlet b = 1\nf(1, b)"): Example("let a = [1, 1]\nlet b = 1\nf(1, b)"),
-            Example("let a = [1↓,1↓,1↓,1]"): Example("let a = [1, 1, 1, 1]"),
-            Example("""
+            """,
+            #"Logger.logError("Hat is too large"↓,  info: [])"#,
+        ]),
+        corrections: #corrections([
+            "func abc(a: String↓,b: String) {}": "func abc(a: String, b: String) {}",
+            "abc(a: \"string\"↓,b: \"string\"": "abc(a: \"string\", b: \"string\"",
+            "abc(a: \"string\"↓  ,  b: \"string\"": "abc(a: \"string\", b: \"string\"",
+            "enum a { case a↓  ,b }": "enum a { case a, b }",
+            "let a = [1↓,1]\nlet b = 1\nf(1, b)": "let a = [1, 1]\nlet b = 1\nf(1, b)",
+            "let a = [1↓,1↓,1↓,1]": "let a = [1, 1, 1, 1]",
+            """
             Foo(
               parameter: a.b.c,
               tag: a.d,
               value: a.identifier.flatMap { Int64($0) }↓ ,
               reason: Self.abcd()
             )
-            """): Example("""
+            """: """
                 Foo(
                   parameter: a.b.c,
                   tag: a.d,
                   value: a.identifier.flatMap { Int64($0) },
                   reason: Self.abcd()
                 )
-                """),
-            Example("""
+                """,
+            """
             return Foo(bar: .baz, title: fuzz,
                       message: My.Custom.message↓ ,
                       another: parameter, doIt: true,
                       alignment: .center)
-            """): Example("""
+            """: """
                 return Foo(bar: .baz, title: fuzz,
                           message: My.Custom.message,
                           another: parameter, doIt: true,
                           alignment: .center)
-                """),
-            Example(#"Logger.logError("Hat is too large"↓,  info: [])"#):
-                Example(#"Logger.logError("Hat is too large", info: [])"#),
-        ]
+                """,
+            #"Logger.logError("Hat is too large"↓,  info: [])"#:
+                #"Logger.logError("Hat is too large", info: [])"#,
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

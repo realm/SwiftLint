@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,14 +10,14 @@ struct UnownedVariableCaptureRule: Rule {
         name: "Unowned Variable Capture",
         description: "Prefer capturing references as weak to avoid potential crashes",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("foo { [weak self] in _ }"),
-            Example("foo { [weak self] param in _ }"),
-            Example("foo { [weak bar] in _ }"),
-            Example("foo { [weak bar] param in _ }"),
-            Example("foo { bar in _ }"),
-            Example("foo { $0 }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "foo { [weak self] in _ }",
+            "foo { [weak self] param in _ }",
+            "foo { [weak bar] in _ }",
+            "foo { [weak bar] param in _ }",
+            "foo { bar in _ }",
+            "foo { $0 }",
+            """
             final class First {}
             final class Second {
                 unowned var value: First
@@ -24,13 +25,13 @@ struct UnownedVariableCaptureRule: Rule {
                     self.value = value
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("foo { [↓unowned self] in _ }"),
-            Example("foo { [↓unowned bar] in _ }"),
-            Example("foo { [bar, ↓unowned self] in _ }"),
-        ]
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "foo { [↓unowned self] in _ }",
+            "foo { [↓unowned bar] in _ }",
+            "foo { [bar, ↓unowned self] in _ }",
+        ])
     )
 }
 

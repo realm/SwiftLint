@@ -1,6 +1,8 @@
+import SwiftLintCore
+
 internal struct QuickDiscouragedCallRuleExamples {
-    static let nonTriggeringExamples: [Example] = [
-        Example("""
+    static let nonTriggeringExamples: [Example] = #examples([
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -14,8 +16,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests {
            override func spec() {
                describe("foo") {
@@ -23,8 +25,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -35,8 +37,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -59,8 +61,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -71,8 +73,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -83,8 +85,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -92,8 +94,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -104,8 +106,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                context("foo") {
@@ -113,8 +115,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                xcontext("foo") {
@@ -122,8 +124,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                xdescribe("foo") {
@@ -131,8 +133,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -143,8 +145,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                fcontext("foo") {
@@ -152,8 +154,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                fdescribe("foo") {
@@ -161,8 +163,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -172,25 +174,25 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                fitBehavesLike("foo")
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                xitBehavesLike("foo")
            }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples: [Example] = [
-        Example("""
+    static let triggeringExamples: [Example] = #examples([
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -198,8 +200,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override static func spec() {
                describe("foo") {
@@ -207,8 +209,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -216,8 +218,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -235,8 +237,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -256,8 +258,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                context("foo") {
@@ -265,8 +267,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                sharedExamples("foo") {
@@ -274,8 +276,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                describe("foo") {
@@ -285,8 +287,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                context("foo") {
@@ -294,8 +296,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                sharedExamples("foo") {
@@ -303,8 +305,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         #if os(macOS)
         class TotoTests: QuickSpec {
            override func spec() {
@@ -314,8 +316,8 @@ internal struct QuickDiscouragedCallRuleExamples {
            }
         }
         #endif
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                sharedExamples("foo") {
@@ -323,8 +325,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                xdescribe("foo") {
@@ -335,8 +337,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpec {
            override func spec() {
                xcontext("foo") {
@@ -347,8 +349,8 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-        Example("""
+        """,
+        """
         class TotoTests: QuickSpecSubclass {
            override func spec() {
                xcontext("foo") {
@@ -359,6 +361,6 @@ internal struct QuickDiscouragedCallRuleExamples {
                }
            }
         }
-        """),
-    ]
+        """,
+    ])
 }

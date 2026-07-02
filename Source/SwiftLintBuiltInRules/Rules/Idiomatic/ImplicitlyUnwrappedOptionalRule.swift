@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,37 +10,37 @@ struct ImplicitlyUnwrappedOptionalRule: Rule {
         name: "Implicitly Unwrapped Optional",
         description: "Implicitly unwrapped optionals should be avoided when possible",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("@IBOutlet private var label: UILabel!"),
-            Example("@IBOutlet var label: UILabel!"),
-            Example("@IBOutlet var label: [UILabel!]"),
-            Example("if !boolean {}"),
-            Example("let int: Int? = 42"),
-            Example("let int: Int? = nil"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "@IBOutlet private var label: UILabel!",
+            "@IBOutlet var label: UILabel!",
+            "@IBOutlet var label: [UILabel!]",
+            "if !boolean {}",
+            "let int: Int? = 42",
+            "let int: Int? = nil",
+            """
             class MyClass {
                 @IBOutlet
                 weak var bar: SomeObject!
             }
-            """, configuration: ["mode": "all_except_iboutlets"], excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("let label: ↓UILabel!"),
-            Example("let IBOutlet: ↓UILabel!"),
-            Example("let labels: [↓UILabel!]"),
-            Example("var ints: [↓Int!] = [42, nil, 42]"),
-            Example("let label: ↓IBOutlet!"),
-            Example("let int: ↓Int! = 42"),
-            Example("let int: ↓Int! = nil"),
-            Example("var int: ↓Int! = 42"),
-            Example("let collection: AnyCollection<↓Int!>"),
-            Example("func foo(int: ↓Int!) {}"),
-            Example("""
+            """.configuration(["mode": "all_except_iboutlets"]).excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "let label: ↓UILabel!",
+            "let IBOutlet: ↓UILabel!",
+            "let labels: [↓UILabel!]",
+            "var ints: [↓Int!] = [42, nil, 42]",
+            "let label: ↓IBOutlet!",
+            "let int: ↓Int! = 42",
+            "let int: ↓Int! = nil",
+            "var int: ↓Int! = 42",
+            "let collection: AnyCollection<↓Int!>",
+            "func foo(int: ↓Int!) {}",
+            """
             class MyClass {
                 weak var bar: ↓SomeObject!
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -10,12 +11,12 @@ struct MultilineLiteralBracketsRule: Rule {
         name: "Multiline Literal Brackets",
         description: "Multiline literals should have their surrounding brackets in a new line",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             let trio = ["harry", "ronald", "hermione"]
             let houseCup = ["gryffindor": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
-            """),
-            Example("""
+            """,
+            """
             let trio = [
                 "harry",
                 "ronald",
@@ -27,8 +28,8 @@ struct MultilineLiteralBracketsRule: Rule {
                 "ravenclaw": 410,
                 "slytherin": 450
             ]
-            """),
-            Example("""
+            """,
+            """
             let trio = [
                 "harry", "ronald", "hermione"
             ]
@@ -36,8 +37,8 @@ struct MultilineLiteralBracketsRule: Rule {
                 "gryffindor": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450
             ]
-            """),
-            Example("""
+            """,
+            """
                 _ = [
                     1,
                     2,
@@ -46,45 +47,45 @@ struct MultilineLiteralBracketsRule: Rule {
                     5, 6,
                     7, 8, 9
                 ]
-                """),
-        ],
-        triggeringExamples: [
-            Example("""
+                """,
+        ]),
+        triggeringExamples: #examples([
+            """
             let trio = [↓"harry",
                         "ronald",
                         "hermione"
             ]
-            """),
-            Example("""
+            """,
+            """
             let houseCup = [↓"gryffindor": 460, "hufflepuff": 370,
                             "ravenclaw": 410, "slytherin": 450
             ]
-            """),
-            Example("""
+            """,
+            """
             let houseCup = [↓"gryffindor": 460,
                             "hufflepuff": 370,
                             "ravenclaw": 410,
                             "slytherin": 450↓]
-            """),
-            Example("""
+            """,
+            """
             let trio = [
                 "harry",
                 "ronald",
                 "hermione"↓]
-            """),
-            Example("""
+            """,
+            """
             let houseCup = [
                 "gryffindor": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450↓]
-            """),
-            Example("""
+            """,
+            """
             class Hogwarts {
                 let houseCup = [
                     "gryffindor": 460, "hufflepuff": 370,
                     "ravenclaw": 410, "slytherin": 450↓]
             }
-            """),
-            Example("""
+            """,
+            """
                 _ = [
                     1,
                     2,
@@ -92,14 +93,14 @@ struct MultilineLiteralBracketsRule: Rule {
                     4,
                     5, 6,
                     7, 8, 9↓]
-                """),
-            Example("""
+                """,
+            """
                 _ = [↓1, 2, 3,
                      4, 5, 6,
                      7, 8, 9
                 ]
-                """),
-            Example("""
+                """,
+            """
             class Hogwarts {
                 let houseCup = [
                     "gryffindor": 460, "hufflepuff": 370,
@@ -107,8 +108,8 @@ struct MultilineLiteralBracketsRule: Rule {
                         $0.isValid
                     }.sum()↓]
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

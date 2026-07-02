@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
     var configuration = BlanketDisableCommandConfiguration()
@@ -34,36 +35,36 @@ struct BlanketDisableCommandRule: Rule, SourceKitFreeRule {
         ```
         """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             // swiftlint:disable unused_import
             // swiftlint:enable unused_import
-            """),
-            Example("""
+            """,
+            """
             // swiftlint:disable unused_import unused_declaration
             // swiftlint:enable unused_import
             // swiftlint:enable unused_declaration
-            """),
-            Example("// swiftlint:disable:this unused_import"),
-            Example("// swiftlint:disable:next unused_import"),
-            Example("// swiftlint:disable:previous unused_import"),
-        ],
-        triggeringExamples: [
-            Example("// swiftlint:disable ↓unused_import"),
-            Example("""
+            """,
+            "// swiftlint:disable:this unused_import",
+            "// swiftlint:disable:next unused_import",
+            "// swiftlint:disable:previous unused_import",
+        ]),
+        triggeringExamples: #examples([
+            "// swiftlint:disable ↓unused_import",
+            """
             // swiftlint:disable unused_import ↓unused_declaration
             // swiftlint:enable unused_import
-            """),
-            Example("""
+            """,
+            """
             // swiftlint:disable unused_import
             // swiftlint:disable ↓unused_import
             // swiftlint:enable unused_import
-            """),
-            Example("""
+            """,
+            """
             // swiftlint:enable ↓unused_import
-            """),
-            Example("// swiftlint:disable all"),
-        ].skipWrappingInCommentTests().skipDisableCommandTests()
+            """,
+            "// swiftlint:disable all",
+        ]).skipWrappingInCommentTests().skipDisableCommandTests()
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

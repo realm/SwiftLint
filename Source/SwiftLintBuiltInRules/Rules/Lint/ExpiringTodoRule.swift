@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -26,24 +27,24 @@ struct ExpiringTodoRule: Rule {
         name: "Expiring Todo",
         description: "TODOs and FIXMEs should be resolved prior to their expiry date.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("// notaTODO:"),
-            Example("// notaFIXME:"),
-            Example("// TODO: [12/31/9999]"),
-            Example("// TODO(note)"),
-            Example("// FIXME(note)"),
-            Example("/* FIXME: */"),
-            Example("/* TODO: */"),
-            Example("/** FIXME: */"),
-            Example("/** TODO: */"),
-        ],
-        triggeringExamples: [
-            Example("// TODO: [↓10/14/2019]"),
-            Example("// FIXME: [↓10/14/2019]"),
-            Example("// FIXME: [↓1/14/2019]"),
-            Example("// FIXME: [↓10/14/2019]"),
-            Example("// TODO: [↓9999/14/10]"),
-        ].skipWrappingInCommentTests()
+        nonTriggeringExamples: #examples([
+            "// notaTODO:",
+            "// notaFIXME:",
+            "// TODO: [12/31/9999]",
+            "// TODO(note)",
+            "// FIXME(note)",
+            "/* FIXME: */",
+            "/* TODO: */",
+            "/** FIXME: */",
+            "/** TODO: */",
+        ]),
+        triggeringExamples: #examples([
+            "// TODO: [↓10/14/2019]",
+            "// FIXME: [↓10/14/2019]",
+            "// FIXME: [↓1/14/2019]",
+            "// FIXME: [↓10/14/2019]",
+            "// TODO: [↓9999/14/10]",
+        ]).skipWrappingInCommentTests()
     )
 
     var configuration = ExpiringTodoConfiguration()

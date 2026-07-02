@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(foldExpressions: true, optIn: true)
@@ -9,16 +10,16 @@ struct ContainsOverRangeNilComparisonRule: Rule {
         name: "Contains over Range Comparison to Nil",
         description: "Prefer `contains` over `range(of:) != nil` and `range(of:) == nil`",
         kind: .performance,
-        nonTriggeringExamples: [
-            Example("let range = myString.range(of: \"Test\")"),
-            Example("myString.contains(\"Test\")"),
-            Example("!myString.contains(\"Test\")"),
-            Example("resourceString.range(of: rule.regex, options: .regularExpression) != nil"),
-        ],
+        nonTriggeringExamples: #examples([
+            "let range = myString.range(of: \"Test\")",
+            "myString.contains(\"Test\")",
+            "!myString.contains(\"Test\")",
+            "resourceString.range(of: rule.regex, options: .regularExpression) != nil",
+        ]),
         triggeringExamples: ["!=", "=="].flatMap { comparison in
-            [
-                Example("↓myString.range(of: \"Test\") \(comparison) nil")
-            ]
+            #examples([
+                "↓myString.range(of: \"Test\") \(comparison) nil"
+            ])
         }
     )
 }

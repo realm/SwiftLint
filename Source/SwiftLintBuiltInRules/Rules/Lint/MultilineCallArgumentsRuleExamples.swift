@@ -1,63 +1,52 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
-// swiftlint:disable type_body_length
 struct MultilineCallArgumentsRuleExamples {
-    static let nonTriggeringExamples: [Example] = [
+    static let nonTriggeringExamples: [Example] = #examples([
         // MARK: - Baseline: multi-line OK
-        Example("""
+        """
             foo(param1: 1,
                 param2: false,
                 param3: [])
-            """,
-                configuration: ["max_number_of_single_line_parameters": 1]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 1]),
+        """
             func foo(one: [Int], animated: Bool) {}
             add(one: [
                 1,
                 2,
                 3
             ], animated: true)
-            """),
-        Example("""
+            """,
+        """
             foo(
                 param1: 1,
                 param2: 2,
                 param3: 3
             )
-            """,
-                configuration: ["allows_single_line": false]
-               ),
+            """.configuration(["allows_single_line": false]),
 
         // MARK: - Baseline: single-line OK
-        Example(
-            "foo(param1: 1, param2: false)",
-            configuration: ["max_number_of_single_line_parameters": 2]
-        ),
-        Example(
-            "Enum.foo(param1: 1, param2: false)",
-            configuration: ["max_number_of_single_line_parameters": 2]
-        ),
+        "foo(param1: 1, param2: false)".configuration(["max_number_of_single_line_parameters": 2]),
+        "Enum.foo(param1: 1, param2: false)".configuration(["max_number_of_single_line_parameters": 2]),
 
         // allows_single_line=false does NOT affect 0/1-arg calls
-        Example("foo()", configuration: ["allows_single_line": false]),
-        Example("foo(param1: 1)", configuration: ["allows_single_line": false]),
-        Example("Enum.foo(param1: 1)", configuration: ["allows_single_line": false]),
+        "foo()".configuration(["allows_single_line": false]),
+        "foo(param1: 1)".configuration(["allows_single_line": false]),
+        "Enum.foo(param1: 1)".configuration(["allows_single_line": false]),
 
         // MARK: - Unlabeled / mixed arguments
-        Example("foo(1, 2)", configuration: ["max_number_of_single_line_parameters": 2]),
-        Example("foo(1, b: 2)", configuration: ["max_number_of_single_line_parameters": 2]),
-        Example("foo(1, b: 2, c: 3)", configuration: ["max_number_of_single_line_parameters": 3]),
+        "foo(1, 2)".configuration(["max_number_of_single_line_parameters": 2]),
+        "foo(1, b: 2)".configuration(["max_number_of_single_line_parameters": 2]),
+        "foo(1, b: 2, c: 3)".configuration(["max_number_of_single_line_parameters": 3]),
 
         // MARK: - Enum-case constructor calls are normal calls (stable by declaring the enum)
-        Example("""
+        """
             enum EnumCase {
                 case first(one: Int, two: Int, three: Int, four: Int)
             }
             EnumCase.first(one: 1, two: 2, three: 3, four: 4)
-            """,
-                configuration: ["allows_single_line": true]
-               ),
-        Example("""
+            """.configuration(["allows_single_line": true]),
+        """
             enum EnumCase {
                 case first(one: Int, two: Int, three: Int, four: Int)
             }
@@ -67,31 +56,25 @@ struct MultilineCallArgumentsRuleExamples {
                 three: 3,
                 four: 4
             )
-            """,
-                configuration: ["allows_single_line": false]
-               ),
+            """.configuration(["allows_single_line": false]),
 
         // MARK: - Trailing closures are ignored by this rule (args-only)
         // Single-line args still use max_number_of_single_line_parameters
-        Example("""
+        """
             foo(a: 1, b: 2) { value in
                 print(value)
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
         // Multi-line args remain valid regardless of closure placement
-        Example("""
+        """
             foo(
                 a: 1,
                 b: 2
             ) { value in
                 print(value)
             }
-            """,
-                configuration: ["allows_single_line": false]
-               ),
-        Example("""
+            """.configuration(["allows_single_line": false]),
+        """
             foo(
                 a: 1,
                 b: 2
@@ -99,68 +82,60 @@ struct MultilineCallArgumentsRuleExamples {
             { value in
                 print(value)
             }
-            """,
-                configuration: ["allows_single_line": false]
-               ),
+            """.configuration(["allows_single_line": false]),
         // No-parens form: no arguments list -> never violates
-        Example("""
+        """
             foo { value in
                 print(value)
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 1]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 1]),
         // Multiple trailing closures: still args-only
-        Example("""
+        """
             foo(a: 1, b: 2) { _ in
                 print("main")
             } trailing: { _ in
                 print("extra")
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             foo(with: { _ in
                 9_999
             }, and: { _ in
                 nil
             })
-            """),
+            """,
 
         // MARK: - Trivia / comments
-        Example("""
+        """
             foo(
                 a: 1,
                 // comment
                 b: 2,
                 c: 3
             )
-            """),
+            """,
         // Note: arguments start on the same line, so this is treated as a single-line-args call;
         // the comma-newline check applies only when argument start lines are already split.
-        Example("""
+        """
             foo(
                 a: (1, 2), b: 3
             )
-            """),
-        Example("""
+            """,
+        """
             foo(
                 a: (1, 2),
                 b: 3
             )
-            """,
-                configuration: ["allows_single_line": false]
-               ),
-        Example("""
+            """.configuration(["allows_single_line": false]),
+        """
             foo(
                 a: 1, // comment
                 b: 2,
                 c: 3
             )
-            """),
+            """,
 
-        Example("""
+        """
             enum EnumCase {
                 case caseOne(Int, Int, Int, Int)
             }
@@ -172,10 +147,8 @@ struct MultilineCallArgumentsRuleExamples {
             )
             if case let .caseOne(_, _, three, _) = enumCase {
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             enum EnumCase {
                 case caseOne(one: Int, two: Int, three: Int, four: Int)
             }
@@ -188,10 +161,8 @@ struct MultilineCallArgumentsRuleExamples {
             switch enumCase {
             case let .caseOne(one: _, two: _, three: three, four: _):
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             enum EnumCase { case caseOne(Int, Int, Int, Int) }
             let array: [EnumCase] = [
                 .caseOne(
@@ -203,10 +174,8 @@ struct MultilineCallArgumentsRuleExamples {
             ]
             for case let .caseOne(_, _, three, _) in array {
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             enum EnumCase {
                 case caseOne(Int, Int, Int, Int)
             }
@@ -217,10 +186,8 @@ struct MultilineCallArgumentsRuleExamples {
                 4
             )
             guard case let .caseOne(_, _, three, _) = enumCase else { return }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             enum EnumCase {
                 case caseOne(Int, Int, Int, Int)
             }
@@ -232,12 +199,10 @@ struct MultilineCallArgumentsRuleExamples {
             )
             while case let .caseOne(_, _, three, _) = enumCase {
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // MARK: - Pattern matching MUST be ignored: catch patterns
-        Example("""
+        """
             enum EnumCase: Error {
                 case caseOne(Int, Int, Int, Int)
             }
@@ -249,10 +214,8 @@ struct MultilineCallArgumentsRuleExamples {
                 try mayThrow()
             } catch let EnumCase.caseOne(_, _, three, _) {
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             enum EnumCase: Error {
                 case caseOne(one: Int, two: Int, three: Int, four: Int)
             }
@@ -264,12 +227,10 @@ struct MultilineCallArgumentsRuleExamples {
                 try mayThrow()
             } catch let EnumCase.caseOne(one: _, two: _, three: three, four: _) {
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // MARK: - Regular calls near patterns are still linted
-        Example("""
+        """
             func foo(a: Int, b: Int, c: Int) -> Int { a + b + c }
             enum EnumCase { case caseOne(Int, Int, Int, Int) }
 
@@ -285,11 +246,9 @@ struct MultilineCallArgumentsRuleExamples {
                     c: 3
                 )
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
         // MARK: - Pattern matching MUST be ignored: enum-case patterns with literal subpatterns
-        Example("""
+        """
             enum EnumCase {
                 case caseOne(Int, Int, Int, Int)
             }
@@ -306,11 +265,9 @@ struct MultilineCallArgumentsRuleExamples {
             if case .caseOne(1, 2, 3, 4) = enumCase {
                 // no-op
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
-        Example("""
+        """
             enum EnumCase {
                 case caseOne(one: Int, two: Int, three: Int, four: Int)
             }
@@ -328,11 +285,9 @@ struct MultilineCallArgumentsRuleExamples {
             default:
                 break
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
-        Example("""
+        """
             enum EnumCase: Error {
                 case caseOne(Int, Int, Int, Int)
             }
@@ -344,117 +299,97 @@ struct MultilineCallArgumentsRuleExamples {
             } catch EnumCase.caseOne(1, 2, 3, 4) {
                 // pattern — must be ignored
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-    ]
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+    ])
 
-    static let triggeringExamples: [Example] = [
+    static let triggeringExamples: [Example] = #examples([
         // MARK: - Single-line: too many args
-        Example(
-            "foo(param1: 1, param2: false, ↓param3: [])",
-            configuration: ["max_number_of_single_line_parameters": 2]
-        ),
-        Example(
-            "Enum.foo(param1: 1, param2: false, ↓param3: [])",
-            configuration: ["max_number_of_single_line_parameters": 2]
-        ),
-        Example("foo(1, 2, ↓3)", configuration: ["max_number_of_single_line_parameters": 2]),
-        Example("foo(1, b: 2, ↓3)", configuration: ["max_number_of_single_line_parameters": 2]),
+        "foo(param1: 1, param2: false, ↓param3: [])".configuration(["max_number_of_single_line_parameters": 2]),
+        "Enum.foo(param1: 1, param2: false, ↓param3: [])".configuration(["max_number_of_single_line_parameters": 2]),
+        "foo(1, 2, ↓3)".configuration(["max_number_of_single_line_parameters": 2]),
+        "foo(1, b: 2, ↓3)".configuration(["max_number_of_single_line_parameters": 2]),
 
         // allows_single_line=false: any 2+ single-line call violates at 2nd argument
-        Example("foo(param1: 1, ↓param2: false)", configuration: ["allows_single_line": false]),
-        Example("Enum.foo(param1: 1, ↓param2: false)", configuration: ["allows_single_line": false]),
+        "foo(param1: 1, ↓param2: false)".configuration(["allows_single_line": false]),
+        "Enum.foo(param1: 1, ↓param2: false)".configuration(["allows_single_line": false]),
 
         // MARK: - Multi-line: two args start on the same line
-        Example("""
+        """
             foo(
                 a: 1, ↓b: 2,
                 c: 3
             )
-            """),
-        Example("""
+            """,
+        """
             foo(
                 a: 1,
                 b: 2, ↓c: 3
             )
-            """),
-        Example("""
+            """,
+        """
             foo(
                 a: 1,
                 b: 2,
                 c: 3, ↓d: 4,
                 e: 5
             )
-            """),
-        Example("""
+            """,
+        """
             foo(
                 a: (
                     1,
                     2
                 ), ↓b: 3
             )
-            """,
-            configuration: ["max_number_of_single_line_parameters": 1]
-        ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 1]),
+        """
             foo(
                 a: 1, /* comment */ ↓b: 2,
                 c: 3
             )
-            """),
+            """,
 
         // MARK: - Enum-case constructor calls are linted like normal calls
-        Example("""
+        """
             enum EnumCase {
                 case first(one: Int, two: Int, three: Int, four: Int)
             }
             EnumCase.first(one: 1, ↓two: 2, three: 3, four: 4)
-            """,
-                configuration: ["allows_single_line": false]
-               ),
-        Example("""
+            """.configuration(["allows_single_line": false]),
+        """
             enum EnumCase {
                 case first(one: Int, two: Int, three: Int, four: Int)
             }
             let test = EnumCase.first(one: 1, two: 2, ↓three: 3, four: 4)
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // MARK: - Trailing closure: parentheses args still checked
-        Example("""
+        """
             foo(a: 1, ↓b: 2) { _ in
                 print("x")
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 1]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 1]),
 
         // MARK: - Targeted tests
 
         // Targeted: real `.caseOne(1,2,3,4)` call MUST be linted (not a pattern)
-        Example("""
+        """
             enum EnumCase { case caseOne(Int, Int, Int, Int) }
             let x: EnumCase = .caseOne(1, 2, ↓3, 4)
             _ = x
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // Targeted: labeled enum-case constructor call MUST be linted
-        Example("""
+        """
             enum EnumCase {
                 case caseOne(one: Int, two: Int, three: Int, four: Int)
             }
             let x: EnumCase = .caseOne(one: 1, two: 2, ↓three: 3, four: 4)
             _ = x
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // Targeted: pattern-part ignored, RHS call linted
-        Example("""
+        """
             func foo(a: Int, b: Int, c: Int) -> Int { a + b + c }
             enum EnumCase { case caseOne(Int, Int, Int, Int) }
             let enumCase: EnumCase = .caseOne(
@@ -466,12 +401,10 @@ struct MultilineCallArgumentsRuleExamples {
             if case let .caseOne(_, _, _, _) = enumCase {
                 _ = foo(a: 1, b: 2, ↓c: 3)
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // Targeted: switch-where RHS call linted, pattern ignored
-        Example("""
+        """
             func foo(a: Int, b: Int, c: Int) -> Bool { a + b == c }
             enum EnumCase { case caseOne(Int, Int, Int, Int) }
             let enumCase: EnumCase = .caseOne(
@@ -486,12 +419,10 @@ struct MultilineCallArgumentsRuleExamples {
             default:
                 break
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
+            """.configuration(["max_number_of_single_line_parameters": 2]),
 
         // Targeted: for-case pattern ignored, body call linted
-        Example("""
+        """
             func foo(a: Int, b: Int, c: Int) -> Int { a + b + c }
             enum EnumCase { case caseOne(Int, Int, Int, Int) }
             let array: [EnumCase] = [
@@ -505,10 +436,8 @@ struct MultilineCallArgumentsRuleExamples {
             for case let .caseOne(_, _, _, _) in array {
                 _ = foo(a: 1, b: 2, ↓c: 3)
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-        Example("""
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+        """
             func foo(a: Int, b: Int, c: Int) -> Int { a + b + c }
             enum EnumCase: Error { case caseOne(Int, Int, Int, Int) }
 
@@ -520,10 +449,7 @@ struct MultilineCallArgumentsRuleExamples {
             } catch let EnumCase.caseOne(_, _, _, _) {
                 _ = foo(a: 1, b: 2, ↓c: 3)
             }
-            """,
-                configuration: ["max_number_of_single_line_parameters": 2]
-               ),
-    ]
+            """.configuration(["max_number_of_single_line_parameters": 2]),
+    ])
 }
-// swiftlint:enable type_body_length
 // swiftlint:enable file_length

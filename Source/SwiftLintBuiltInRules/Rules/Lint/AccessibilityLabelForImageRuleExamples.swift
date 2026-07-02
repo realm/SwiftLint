@@ -1,55 +1,57 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
 internal struct AccessibilityLabelForImageRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
         struct MyView: View {
             var body: some View {
                 Image(decorative: "my-image")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image("my-image", label: Text("Alt text for my image"))
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image("my-image")
                     .accessibility(hidden: true)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image("my-image")
                     .accessibilityHidden(true)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image("my-image")
                     .accessibility(label: Text("Alt text for my image"))
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image("my-image")
                     .accessibilityLabel(Text("Alt text for my image"))
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image(uiImage: myUiImage)
@@ -58,23 +60,23 @@ internal struct AccessibilityLabelForImageRuleExamples {
                     .accessibilityHidden(true)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image(uiImage: myUiImage)
                     .accessibilityLabel(Text("Alt text for my image"))
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 SwiftUI.Image(uiImage: "my-image").resizable().accessibilityHidden(true)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -86,8 +88,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -99,8 +101,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }.accessibilityElement()
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -112,8 +114,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }.accessibilityHidden(true)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 HStack(spacing: 8) {
@@ -125,8 +127,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .padding(16)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 HStack(spacing: 8) {
@@ -139,8 +141,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel(Text("Label for my image and text"))
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Button(action: { doAction() }) {
@@ -151,11 +153,11 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel(Text("Label for my image"))
             }
         }
-        """),
+        """,
         // MARK: - SwiftSyntax Migration Regression Tests
         // These examples would have been false positives with the SourceKit implementation
         // but now correctly pass with the SwiftSyntax implementation
-        Example("""
+        """
         struct MyView: View {
             var body: some View {
                 NavigationLink("Go to Details") {
@@ -168,8 +170,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Button("Save Changes") {
@@ -179,8 +181,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Button(action: performAction) {
@@ -192,8 +194,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel("Add to Favorites")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -204,8 +206,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel("Connected to WiFi")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             let statusImage: UIImage
             var body: some View {
@@ -217,8 +219,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel("System is operational")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 NavigationLink(destination: SettingsView()) {
@@ -231,8 +233,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Button {
@@ -244,8 +246,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel(isEnabled ? "Hide content" : "Show content")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct CustomCard: View {
             var body: some View {
                 VStack {
@@ -257,10 +259,10 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .accessibilityLabel("Task completed successfully")
             }
         }
-        """),
+        """,
         // MARK: - Label icon closure exemptions
         // Images inside a Label's icon: closure are inherently labeled by the Label's text content.
-        Example("""
+        """
         struct MyView: View {
             var body: some View {
                 Label {
@@ -270,18 +272,18 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Label(content: { Text("Download") }, icon: { Image("custom-download-icon") })
             }
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         struct MyView: View {
             var body: some View {
                 ↓Image("my-image")
@@ -289,22 +291,22 @@ internal struct AccessibilityLabelForImageRuleExamples {
                     .frame(width: 48, height: 48)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Image(uiImage: myUiImage)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓SwiftUI.Image(uiImage: "my-image").resizable().accessibilityHidden(false)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image(uiImage: myUiImage)
@@ -314,8 +316,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 ↓Image("other image")
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Image(decorative: "image1")
@@ -324,8 +326,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                     .accessibility(label: Text("a pretty picture"))
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -336,8 +338,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -349,8 +351,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }.accessibilityElement(children: .contain)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 VStack {
@@ -362,8 +364,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }.accessibilityHidden(false)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 HStack(spacing: 8) {
@@ -375,8 +377,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 .padding(16)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 Button(action: { doAction() }) {
@@ -386,18 +388,18 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct MyView: View {
             var body: some View {
                 ↓Image(systemName: "circle.plus")
             }
         }
-        """),
+        """,
         // MARK: - SwiftSyntax Migration Detection Improvements
         // These violations would have been missed by the SourceKit implementation
         // but are now correctly detected by SwiftSyntax
-        Example("""
+        """
         struct StatusView: View {
             let statusIcon: UIImage
             var body: some View {
@@ -408,8 +410,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct PreferencesView: View {
             var body: some View {
                 VStack {
@@ -420,8 +422,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct FaviconView: View {
             let favicon: UIImage?
             var body: some View {
@@ -430,8 +432,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                     .frame(width: 16, height: 16)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct IconGrid: View {
             var body: some View {
                 HStack {
@@ -442,8 +444,8 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }.accessibilityElement(children: .combine)
             }
         }
-        """),
-        Example("""
+        """,
+        """
         struct CardView: View {
             var body: some View {
                 VStack {
@@ -454,6 +456,6 @@ internal struct AccessibilityLabelForImageRuleExamples {
                 }.accessibilityElement(children: .contain)
             }
         }
-        """),
-    ]
+        """,
+    ])
 }

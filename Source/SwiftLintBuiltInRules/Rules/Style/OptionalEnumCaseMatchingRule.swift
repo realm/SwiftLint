@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true, optIn: true)
@@ -10,23 +11,23 @@ struct OptionalEnumCaseMatchingRule: Rule {
         description: "Matching an enum case against an optional enum without '?' is supported on Swift 5.1 and above",
         kind: .style,
         minSwiftVersion: .fiveDotOne,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             switch foo {
              case .bar: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (.bar, .baz): break
              case (.bar, _): break
              case (_, .baz): break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch (x, y) {
             case (.c, _?):
                 break
@@ -35,9 +36,9 @@ struct OptionalEnumCaseMatchingRule: Rule {
             case (_, _):
                 break
             }
-            """),
+            """,
             // https://github.com/apple/swift/issues/61817
-            Example("""
+            """
             switch bool {
             case true?:
               break
@@ -46,127 +47,127 @@ struct OptionalEnumCaseMatchingRule: Rule {
             case .none:
               break
             }
-            """, excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("""
+            """.excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            """
             switch foo {
              case .bar↓?: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case Foo.bar↓?: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓?, .baz↓?: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (.bar↓?, .baz↓?): break
              case (.bar↓?, _): break
              case (_, .bar↓?): break
              default: break
             }
-            """),
-        ],
-        corrections: [
-            Example("""
+            """,
+        ]),
+        corrections: #corrections([
+            """
             switch foo {
              case .bar↓?: break
              case .baz: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case .bar: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case Foo.bar↓?: break
              case .baz: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case Foo.bar: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓?, .baz↓?: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case .bar, .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case .bar↓? where x > 1: break
              case .baz: break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case .bar where x > 1: break
              case .baz: break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (.bar↓?, .baz↓?): break
              case (.bar↓?, _): break
              case (_, .bar↓?): break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case (.bar, .baz): break
              case (.bar, _): break
              case (_, .bar): break
              default: break
             }
-            """),
-            Example("""
+            """,
+            """
             switch foo {
              case (true?, false?): break
              case (true?, _): break
              case (_, false?): break
              default: break
             }
-            """): Example("""
+            """: """
             switch foo {
              case (true?, false?): break
              case (true?, _): break
              case (_, false?): break
              default: break
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

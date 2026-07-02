@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -8,15 +9,15 @@ struct TypeContentsOrderRuleTests {
     @Test
     func typeContentsOrderReversedOrder() { // swiftlint:disable:this function_body_length
         // Test with reversed `order` entries
-        let nonTriggeringExamples = [
-            Example([
+        let nonTriggeringExamples = #examples([
+            [
                 "class TestViewController: UIViewController {",
                 TypeContentsOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"),
                 "}",
-            ].joined(separator: "\n")),
-        ]
-        let triggeringExamples = [
-            Example("""
+            ].joined(separator: "\n"),
+        ])
+        let triggeringExamples = #examples([
+            """
             class TestViewController: UIViewController {
                 // Type Aliases
                 ↓typealias CompletionHandler = ((TestEnum) -> Void)
@@ -26,8 +27,8 @@ struct TypeContentsOrderRuleTests {
                     // 10 lines
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // Subtypes
                 ↓class TestClass {
@@ -37,8 +38,8 @@ struct TypeContentsOrderRuleTests {
                 // Stored Type Properties
                 static let cellIdentifier: String = "AmazingCell"
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // Stored Type Properties
                 ↓static let cellIdentifier: String = "AmazingCell"
@@ -46,8 +47,8 @@ struct TypeContentsOrderRuleTests {
                 // Stored Instance Properties
                 var shouldLayoutView1: Bool!
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // Computed Instance Properties
                 private ↓var hasAnyLayoutedView: Bool {
@@ -57,8 +58,8 @@ struct TypeContentsOrderRuleTests {
                 // IBOutlets
                 @IBOutlet private var view1: UIView!
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // IBOutlets
                 @IBOutlet private ↓var view1: UIView!
@@ -73,8 +74,8 @@ struct TypeContentsOrderRuleTests {
                     log.debug("deinit")
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // Type Methods
                 ↓static func makeViewController() -> TestViewController {
@@ -90,8 +91,8 @@ struct TypeContentsOrderRuleTests {
                     hasLayoutedView1 = true
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // View Life-Cycle Methods
                 override ↓func viewDidLoad() {
@@ -108,8 +109,8 @@ struct TypeContentsOrderRuleTests {
                     delegate?.didPressTrackedButton()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // IBActions
                 @IBAction ↓func goNextButtonPressed() {
@@ -120,8 +121,8 @@ struct TypeContentsOrderRuleTests {
                 // Other Methods
                 func goToNextVc() { /* TODO */ }
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // MARK: Other Methods
                 ↓func goToNextVc() { /* TODO */ }
@@ -137,8 +138,8 @@ struct TypeContentsOrderRuleTests {
                     }
                 }
             }
-            """),
-        ]
+            """,
+        ])
 
         let reversedOrderDescription = TypeContentsOrderRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -170,8 +171,8 @@ struct TypeContentsOrderRuleTests {
     @Test
     func typeContentsOrderGroupedOrder() { // swiftlint:disable:this function_body_length
         // Test with grouped `order` entries
-        let nonTriggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            """
             class TestViewController: UIViewController {
                 // Type Alias
                 typealias CompletionHandler = ((TestClass) -> Void)
@@ -286,10 +287,10 @@ struct TypeContentsOrderRuleTests {
                     getRandomVc()
                 }
             }
-            """),
-        ]
-        let triggeringExamples = [
-            Example("""
+            """,
+        ])
+        let triggeringExamples = #examples([
+            """
             class TestViewController: UIViewController {
                 // Type Alias
                 typealias CompletionHandler = ((TestClass) -> Void)
@@ -307,8 +308,8 @@ struct TypeContentsOrderRuleTests {
                     // 10 lines
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // Instance Property
                 var shouldLayoutView1: Bool!
@@ -321,8 +322,8 @@ struct TypeContentsOrderRuleTests {
                 // Type Property
                 static let cellIdentifier: String = "AmazingCell"
             }
-            """),
-            Example("""
+            """,
+            """
             class TestViewController: UIViewController {
                 // Initializer
                 override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -337,8 +338,8 @@ struct TypeContentsOrderRuleTests {
                     // some code
                 }
             }
-            """),
-            Example("""
+            """,
+            """
                 class C {
                     func f() {}
 
@@ -348,8 +349,8 @@ struct TypeContentsOrderRuleTests {
 
                     @IBAction func bar() {}
                 }
-            """),
-        ]
+            """,
+        ])
 
         let groupedOrderDescription = TypeContentsOrderRule.description
             .with(triggeringExamples: triggeringExamples)

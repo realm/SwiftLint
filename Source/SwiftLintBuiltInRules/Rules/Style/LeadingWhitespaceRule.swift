@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
@@ -9,16 +10,16 @@ struct LeadingWhitespaceRule: CorrectableRule, SourceKitFreeRule {
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("//")
-        ],
-        triggeringExamples: [
-            Example("\n//"),
-            Example(" //"),
-        ].skipMultiByteOffsetTests().skipDisableCommandTests(),
-        corrections: [
-            Example("\n //", testMultiByteOffsets: false): Example("//")
-        ]
+        nonTriggeringExamples: #examples([
+            "//"
+        ]),
+        triggeringExamples: #examples([
+            "\n//",
+            " //",
+        ]).skipMultiByteOffsetTests().skipDisableCommandTests(),
+        corrections: #corrections([
+            "\n //".skipMultiByteOffsetTest(): "//"
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

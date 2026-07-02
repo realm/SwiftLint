@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -19,26 +20,26 @@ struct BalancedXCTestLifecycleRule: Rule {
         otherwise have any effects on subsequent tests, and to free up any instance variables.
         """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example(#"""
+        nonTriggeringExamples: #examples([
+            #"""
             final class FooTests: XCTestCase {
                 override func setUp() {}
                 override func tearDown() {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 override func setUpWithError() throws {}
                 override func tearDown() {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 override func setUp() {}
                 override func tearDownWithError() throws {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 override func setUpWithError() throws {}
                 override func tearDownWithError() throws {}
@@ -47,39 +48,39 @@ struct BalancedXCTestLifecycleRule: Rule {
                 override func setUpWithError() throws {}
                 override func tearDownWithError() throws {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             struct FooTests {
                 override func setUp() {}
             }
             class BarTests {
                 override func setUpWithError() throws {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 override func setUpAlLExamples() {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 class func setUp() {}
                 class func tearDown() {}
             }
-            """#),
-        ],
-        triggeringExamples: [
-            Example(#"""
+            """#,
+        ]),
+        triggeringExamples: #examples([
+            #"""
             final class ↓FooTests: XCTestCase {
                 override func setUp() {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class ↓FooTests: XCTestCase {
                 override func setUpWithError() throws {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 override func setUp() {}
                 override func tearDownWithError() throws {}
@@ -87,23 +88,23 @@ struct BalancedXCTestLifecycleRule: Rule {
             final class ↓BarTests: XCTestCase {
                 override func setUpWithError() throws {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class ↓FooTests: XCTestCase {
                 class func tearDown() {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class ↓FooTests: XCTestCase {
                 override func tearDown() {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class ↓FooTests: XCTestCase {
                 override func tearDownWithError() throws {}
             }
-            """#),
-            Example(#"""
+            """#,
+            #"""
             final class FooTests: XCTestCase {
                 override func setUp() {}
                 override func tearDownWithError() throws {}
@@ -111,8 +112,8 @@ struct BalancedXCTestLifecycleRule: Rule {
             final class ↓BarTests: XCTestCase {
                 override func tearDownWithError() throws {}
             }
-            """#),
-        ]
+            """#,
+        ])
     )
 }
 

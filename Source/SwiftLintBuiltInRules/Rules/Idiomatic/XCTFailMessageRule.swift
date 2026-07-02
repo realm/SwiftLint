@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -9,30 +10,30 @@ struct XCTFailMessageRule: Rule {
         name: "XCTFail Message",
         description: "An XCTFail call should include a description of the assertion",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func testFoo() {
               XCTFail("bar")
             }
-            """),
-            Example("""
+            """,
+            """
             func testFoo() {
               XCTFail(bar)
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             func testFoo() {
               ↓XCTFail()
             }
-            """),
-            Example("""
+            """,
+            """
             func testFoo() {
               ↓XCTFail("")
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -9,8 +10,8 @@ struct LegacyHashingRule: Rule {
         name: "Legacy Hashing",
         description: "Prefer using the `hash(into:)` function instead of overriding `hashValue`",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             struct Foo: Hashable {
               let bar: Int = 10
 
@@ -18,8 +19,8 @@ struct LegacyHashingRule: Rule {
                 hasher.combine(bar)
               }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo: Hashable {
               let bar: Int = 10
 
@@ -27,12 +28,12 @@ struct LegacyHashingRule: Rule {
                 hasher.combine(bar)
               }
             }
-            """),
-            Example("""
+            """,
+            """
             var hashValue: Int { return 1 }
             class Foo: Hashable { \n }
-            """),
-            Example("""
+            """,
+            """
             class Foo: Hashable {
               let bar: String = "Foo"
 
@@ -40,8 +41,8 @@ struct LegacyHashingRule: Rule {
                 return bar
               }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo: Hashable {
               let bar: String = "Foo"
 
@@ -50,10 +51,10 @@ struct LegacyHashingRule: Rule {
                 set { bar = newValue }
               }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             struct Foo: Hashable {
                 let bar: Int = 10
 
@@ -61,8 +62,8 @@ struct LegacyHashingRule: Rule {
                     return bar
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo: Hashable {
                 let bar: Int = 10
 
@@ -70,8 +71,8 @@ struct LegacyHashingRule: Rule {
                     return bar
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

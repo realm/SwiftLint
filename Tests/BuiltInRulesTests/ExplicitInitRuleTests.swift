@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -7,16 +8,16 @@ import Testing
 struct ExplicitInitRuleTests {
     @Test
     func includeBareInit() {
-        let nonTriggeringExamples = [
-            Example("let foo = Foo()"),
-            Example("let foo = init()"),
-        ] + ExplicitInitRule.description.nonTriggeringExamples
+        let nonTriggeringExamples = #examples([
+            "let foo = Foo()",
+            "let foo = init()",
+        ]) + ExplicitInitRule.description.nonTriggeringExamples
 
-        let triggeringExamples = [
-            Example("let foo: Foo = ↓.init()"),
-            Example("let foo: [Foo] = [↓.init(), ↓.init()]"),
-            Example("foo(↓.init())"),
-        ]
+        let triggeringExamples = #examples([
+            "let foo: Foo = ↓.init()",
+            "let foo: [Foo] = [↓.init(), ↓.init()]",
+            "foo(↓.init())",
+        ])
 
         let description = ExplicitInitRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)

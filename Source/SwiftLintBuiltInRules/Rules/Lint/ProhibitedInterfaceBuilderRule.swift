@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,14 +10,14 @@ struct ProhibitedInterfaceBuilderRule: Rule {
         name: "Prohibited Interface Builder",
         description: "Creating views using Interface Builder should be avoided",
         kind: .lint,
-        nonTriggeringExamples: [
+        nonTriggeringExamples: #examples([
             wrapExample("var label: UILabel!"),
             wrapExample("@objc func buttonTapped(_ sender: UIButton) {}"),
-        ],
-        triggeringExamples: [
+        ]),
+        triggeringExamples: #examples([
             wrapExample("@IBOutlet ↓var label: UILabel!"),
             wrapExample("@IBAction ↓func buttonTapped(_ sender: UIButton) {}"),
-        ]
+        ])
     )
 }
 
@@ -36,10 +37,11 @@ private extension ProhibitedInterfaceBuilderRule {
     }
 }
 
-private func wrapExample(_ text: String, file: StaticString = #filePath, line: UInt = #line) -> Example {
+private func wrapExample(_ text: String) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example("""
     class ViewController: UIViewController {
         \(text)
     }
-    """, file: file, line: line)
+    """)
 }

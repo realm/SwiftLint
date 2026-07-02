@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -11,15 +12,15 @@ struct BlanketDisableCommandRuleTests {
 
     @Test
     func alwaysBlanketDisable() {
-        let nonTriggeringExamples = [Example("// swiftlint:disable file_length\n// swiftlint:enable file_length")]
+        let nonTriggeringExamples = #examples(["// swiftlint:disable file_length\n// swiftlint:enable file_length"])
         verifyRule(Self.emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
 
-        let triggeringExamples = [
-            Example("// swiftlint:disable file_length\n// swiftlint:enable ↓file_length"),
-            Example("// swiftlint:disable:previous ↓file_length"),
-            Example("// swiftlint:disable:this ↓file_length"),
-            Example("// swiftlint:disable:next ↓file_length"),
-        ]
+        let triggeringExamples = #examples([
+            "// swiftlint:disable file_length\n// swiftlint:enable ↓file_length",
+            "// swiftlint:disable:previous ↓file_length",
+            "// swiftlint:disable:this ↓file_length",
+            "// swiftlint:disable:next ↓file_length",
+        ])
         verifyRule(
             Self.emptyDescription.with(triggeringExamples: triggeringExamples),
             ruleConfiguration: ["always_blanket_disable": ["file_length"]],
@@ -28,7 +29,7 @@ struct BlanketDisableCommandRuleTests {
 
     @Test
     func alwaysBlanketDisabledAreAllowed() {
-        let nonTriggeringExamples = [Example("// swiftlint:disable identifier_name\n")]
+        let nonTriggeringExamples = #examples(["// swiftlint:disable identifier_name\n"])
         verifyRule(
             Self.emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples),
             ruleConfiguration: ["always_blanket_disable": ["identifier_name"], "allowed_rules": []],
@@ -37,10 +38,10 @@ struct BlanketDisableCommandRuleTests {
 
     @Test
     func allowedRules() {
-        let nonTriggeringExamples = [
-            Example("// swiftlint:disable file_length"),
-            Example("// swiftlint:disable single_test_class"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "// swiftlint:disable file_length",
+            "// swiftlint:disable single_test_class",
+        ])
         verifyRule(Self.emptyDescription.with(nonTriggeringExamples: nonTriggeringExamples))
     }
 }

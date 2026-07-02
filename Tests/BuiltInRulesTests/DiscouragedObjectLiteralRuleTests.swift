@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -9,14 +10,14 @@ struct DiscouragedObjectLiteralRuleTests {
     func withImageLiteral() {
         let baseDescription = DiscouragedObjectLiteralRule.description
         let nonTriggeringExamples =
-            baseDescription.nonTriggeringExamples + [
-                Example("""
+            baseDescription.nonTriggeringExamples + #examples([
+                """
                     let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)
-                    """),
-            ]
-        let triggeringExamples = [
-            Example("let image = ↓#imageLiteral(resourceName: \"image.jpg\")")
-        ]
+                    """,
+            ])
+        let triggeringExamples = #examples([
+            "let image = ↓#imageLiteral(resourceName: \"image.jpg\")"
+        ])
 
         let description = baseDescription.with(
             nonTriggeringExamples: nonTriggeringExamples,
@@ -29,12 +30,12 @@ struct DiscouragedObjectLiteralRuleTests {
     func withColorLiteral() {
         let baseDescription = DiscouragedObjectLiteralRule.description
         let nonTriggeringExamples =
-            baseDescription.nonTriggeringExamples + [
-                Example("let image = #imageLiteral(resourceName: \"image.jpg\")")
-            ]
-        let triggeringExamples = [
-            Example("let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)")
-        ]
+            baseDescription.nonTriggeringExamples + #examples([
+                "let image = #imageLiteral(resourceName: \"image.jpg\")"
+            ])
+        let triggeringExamples = #examples([
+            "let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)"
+        ])
 
         let description = baseDescription.with(
             nonTriggeringExamples: nonTriggeringExamples,

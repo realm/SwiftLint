@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -27,33 +28,33 @@ struct ClassDelegateProtocolRule: Rule {
         ```
         """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("protocol FooDelegate: class {}"),
-            Example("protocol FooDelegate: class, BarDelegate {}"),
-            Example("protocol Foo {}"),
-            Example("class FooDelegate {}"),
-            Example("@objc protocol FooDelegate {}"),
-            Example("@objc(MyFooDelegate)\n protocol FooDelegate {}"),
-            Example("protocol FooDelegate: BarDelegate {}"),
-            Example("protocol FooDelegate: AnyObject {}"),
-            Example("protocol FooDelegate: AnyObject & Foo {}"),
-            Example("protocol FooDelegate: Foo, AnyObject & Foo {}"),
-            Example("protocol FooDelegate: Foo & AnyObject & Bar {}"),
-            Example("protocol FooDelegate: NSObjectProtocol {}"),
-            Example("protocol FooDelegate where Self: BarDelegate {}"),
-            Example("protocol FooDelegate where Self: BarDelegate & Bar {}"),
-            Example("protocol FooDelegate where Self: Foo & BarDelegate & Bar {}"),
-            Example("protocol FooDelegate where Self: AnyObject {}"),
-            Example("protocol FooDelegate where Self: NSObjectProtocol {}"),
-            Example("protocol FooDelegate: Actor {}"),
-        ],
-        triggeringExamples: [
-            Example("↓protocol FooDelegate {}"),
-            Example("↓protocol FooDelegate: Bar {}"),
-            Example("↓protocol FooDelegate: Foo & Bar {}"),
-            Example("↓protocol FooDelegate where Self: StringProtocol {}"),
-            Example("↓protocol FooDelegate where Self: A & B {}"),
-        ]
+        nonTriggeringExamples: #examples([
+            "protocol FooDelegate: class {}",
+            "protocol FooDelegate: class, BarDelegate {}",
+            "protocol Foo {}",
+            "class FooDelegate {}",
+            "@objc protocol FooDelegate {}",
+            "@objc(MyFooDelegate)\n protocol FooDelegate {}",
+            "protocol FooDelegate: BarDelegate {}",
+            "protocol FooDelegate: AnyObject {}",
+            "protocol FooDelegate: AnyObject & Foo {}",
+            "protocol FooDelegate: Foo, AnyObject & Foo {}",
+            "protocol FooDelegate: Foo & AnyObject & Bar {}",
+            "protocol FooDelegate: NSObjectProtocol {}",
+            "protocol FooDelegate where Self: BarDelegate {}",
+            "protocol FooDelegate where Self: BarDelegate & Bar {}",
+            "protocol FooDelegate where Self: Foo & BarDelegate & Bar {}",
+            "protocol FooDelegate where Self: AnyObject {}",
+            "protocol FooDelegate where Self: NSObjectProtocol {}",
+            "protocol FooDelegate: Actor {}",
+        ]),
+        triggeringExamples: #examples([
+            "↓protocol FooDelegate {}",
+            "↓protocol FooDelegate: Bar {}",
+            "↓protocol FooDelegate: Foo & Bar {}",
+            "↓protocol FooDelegate where Self: StringProtocol {}",
+            "↓protocol FooDelegate where Self: A & B {}",
+        ])
     )
 }
 

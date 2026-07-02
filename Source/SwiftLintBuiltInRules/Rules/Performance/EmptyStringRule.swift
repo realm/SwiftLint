@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,18 +10,18 @@ struct EmptyStringRule: Rule {
         name: "Empty String",
         description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal",
         kind: .performance,
-        nonTriggeringExamples: [
-            Example("myString.isEmpty"),
-            Example("!myString.isEmpty"),
-            Example("\"\"\"\nfoo==\n\"\"\""),
-        ],
-        triggeringExamples: [
-            Example(#"myString↓ == """#),
-            Example(#"myString↓ != """#),
-            Example(#"myString↓=="""#),
-            Example(##"myString↓ == #""#"##),
-            Example(###"myString↓ == ##""##"###),
-        ]
+        nonTriggeringExamples: #examples([
+            "myString.isEmpty",
+            "!myString.isEmpty",
+            "\"\"\"\nfoo==\n\"\"\"",
+        ]),
+        triggeringExamples: #examples([
+            #"myString↓ == """#,
+            #"myString↓ != """#,
+            #"myString↓=="""#,
+            ##"myString↓ == #""#"##,
+            ###"myString↓ == ##""##"###,
+        ])
     )
 }
 

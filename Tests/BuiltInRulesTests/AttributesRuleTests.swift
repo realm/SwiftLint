@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -8,27 +9,25 @@ struct AttributesRuleTests {
     @Test
     func attributesWithAlwaysOnSameLine() {
         // Test with custom `always_on_same_line`
-        let nonTriggeringExamples = [
-            Example("@objc var x: String"),
-            Example("@objc func foo()"),
-            Example("@nonobjc\n func foo()"),
-            Example(
-                """
-                class Foo {
-                    @objc private var object: RLMWeakObjectHandle?
-                    @objc private var property: RLMProperty?
-                }
-                """),
-            Example(
-                """
-                @objc(XYZFoo) class Foo: NSObject {}
-                """),
-        ]
-        let triggeringExamples = [
-            Example("@objc\n ↓var x: String"),
-            Example("@objc\n ↓func foo()"),
-            Example("@nonobjc ↓func foo()"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "@objc var x: String",
+            "@objc func foo()",
+            "@nonobjc\n func foo()",
+            """
+            class Foo {
+                @objc private var object: RLMWeakObjectHandle?
+                @objc private var property: RLMProperty?
+            }
+            """,
+            """
+            @objc(XYZFoo) class Foo: NSObject {}
+            """,
+        ])
+        let triggeringExamples = #examples([
+            "@objc\n ↓var x: String",
+            "@objc\n ↓func foo()",
+            "@nonobjc ↓func foo()",
+        ])
 
         let alwaysOnSameLineDescription = AttributesRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -42,16 +41,16 @@ struct AttributesRuleTests {
     @Test
     func attributesWithAlwaysOnLineAbove() {
         // Test with custom `always_on_line_above`
-        let nonTriggeringExamples = [
-            Example("@objc\n var x: String"),
-            Example("@objc\n func foo()"),
-            Example("@nonobjc\n func foo()"),
-        ]
-        let triggeringExamples = [
-            Example("@objc ↓var x: String"),
-            Example("@objc ↓func foo()"),
-            Example("@nonobjc ↓func foo()"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "@objc\n var x: String",
+            "@objc\n func foo()",
+            "@nonobjc\n func foo()",
+        ])
+        let triggeringExamples = #examples([
+            "@objc ↓var x: String",
+            "@objc ↓func foo()",
+            "@nonobjc ↓func foo()",
+        ])
 
         let alwaysOnNewLineDescription = AttributesRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -64,43 +63,39 @@ struct AttributesRuleTests {
 
     @Test
     func attributesWithAttributesOnLineAboveButOnOtherDeclaration() {
-        let nonTriggeringExamples = [
-            Example(
-                """
-                @IBDesignable open class TagListView: UIView {
-                    @IBInspectable open dynamic var textColor: UIColor = UIColor.white {
-                        didSet {}
-                    }
+        let nonTriggeringExamples = #examples([
+            """
+            @IBDesignable open class TagListView: UIView {
+                @IBInspectable open dynamic var textColor: UIColor = UIColor.white {
+                    didSet {}
                 }
-                """),
-            Example(
-                """
-                @objc public protocol TagListViewDelegate {
-                    @objc optional func tagDidSelect(_ title: String, sender: TagListView)
-                    @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
-                }
-                """),
-        ]
+            }
+            """,
+            """
+            @objc public protocol TagListViewDelegate {
+                @objc optional func tagDidSelect(_ title: String, sender: TagListView)
+                @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
+            }
+            """,
+        ])
 
-        let triggeringExamples = [
-            Example(
-                """
-                @IBDesignable open class TagListView: UIView {
-                    @IBInspectable
-                    open dynamic ↓var textColor: UIColor = UIColor.white {
-                        didSet {}
-                    }
+        let triggeringExamples = #examples([
+            """
+            @IBDesignable open class TagListView: UIView {
+                @IBInspectable
+                open dynamic ↓var textColor: UIColor = UIColor.white {
+                    didSet {}
                 }
-                """),
-            Example(
-                """
-                @objc public protocol TagListViewDelegate {
-                    @objc
-                    optional ↓func tagDidSelect(_ title: String, sender: TagListView)
-                    @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
-                }
-                """),
-        ]
+            }
+            """,
+            """
+            @objc public protocol TagListViewDelegate {
+                @objc
+                optional ↓func tagDidSelect(_ title: String, sender: TagListView)
+                @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
+            }
+            """,
+        ])
 
         let alwaysOnNewLineDescription = AttributesRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -118,15 +113,15 @@ struct AttributesRuleTests {
 
     @Test
     func attributesWithArgumentsAlwaysOnLineAboveFalse() {
-        let nonTriggeringExamples = [
-            Example("@Environment(\\.presentationMode) private var presentationMode")
-        ]
-        let triggeringExamples = [
-            Example("""
-                @Environment(\\.presentationMode)
-                private ↓var presentationMode
-                """),
-        ]
+        let nonTriggeringExamples = #examples([
+            "@Environment(\\.presentationMode) private var presentationMode"
+        ])
+        let triggeringExamples = #examples([
+            """
+            @Environment(\\.presentationMode)
+            private ↓var presentationMode
+            """,
+        ])
 
         let argumentsAlwaysOnLineDescription = AttributesRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -139,12 +134,12 @@ struct AttributesRuleTests {
 
     @Test
     func attributesWithArgumentsAlwaysOnLineAboveTrue() {
-        let nonTriggeringExamples = [
-            Example("@Environment(\\.presentationMode)\nprivate var presentationMode")
-        ]
-        let triggeringExamples = [
-            Example("@Environment(\\.presentationMode) private ↓var presentationMode")
-        ]
+        let nonTriggeringExamples = #examples([
+            "@Environment(\\.presentationMode)\nprivate var presentationMode"
+        ])
+        let triggeringExamples = #examples([
+            "@Environment(\\.presentationMode) private ↓var presentationMode"
+        ])
 
         let argumentsAlwaysOnLineDescription = AttributesRule.description
             .with(triggeringExamples: triggeringExamples)

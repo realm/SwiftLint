@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 @DisabledWithoutSourceKit
 struct MultilineParametersBracketsRule: OptInRule {
@@ -10,35 +11,35 @@ struct MultilineParametersBracketsRule: OptInRule {
         name: "Multiline Parameters Brackets",
         description: "Multiline parameters should have their surrounding brackets in a new line",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             func foo(param1: String, param2: String, param3: String)
-            """),
-            Example("""
+            """,
+            """
             func foo(
                 param1: String, param2: String, param3: String
             )
-            """),
-            Example("""
+            """,
+            """
             func foo(
                 param1: String,
                 param2: String,
                 param3: String
             )
-            """),
-            Example("""
+            """,
+            """
             class SomeType {
                 func foo(param1: String, param2: String, param3: String)
             }
-            """),
-            Example("""
+            """,
+            """
             class SomeType {
                 func foo(
                     param1: String, param2: String, param3: String
                 )
             }
-            """),
-            Example("""
+            """,
+            """
             class SomeType {
                 func foo(
                     param1: String,
@@ -46,49 +47,49 @@ struct MultilineParametersBracketsRule: OptInRule {
                     param3: String
                 )
             }
-            """),
-            Example("""
+            """,
+            """
             func foo<T>(param1: T, param2: String, param3: String) -> T { /* some code */ }
-            """),
-            Example("""
+            """,
+            """
                 func foo(a: [Int] = [
                     1
                 ])
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             func foo(↓param1: String, param2: String,
                      param3: String
             )
-            """),
-            Example("""
+            """,
+            """
             func foo(
                 param1: String,
                 param2: String,
                 param3: String↓)
-            """),
-            Example("""
+            """,
+            """
             class SomeType {
                 func foo(↓param1: String, param2: String,
                          param3: String
                 )
             }
-            """),
-            Example("""
+            """,
+            """
             class SomeType {
                 func foo(
                     param1: String,
                     param2: String,
                     param3: String↓)
             }
-            """),
-            Example("""
+            """,
+            """
             func foo<T>(↓param1: T, param2: String,
                      param3: String
             ) -> T
-            """),
-        ]
+            """,
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

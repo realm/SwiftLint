@@ -1,69 +1,71 @@
+import SwiftLintCore
+
 struct ComputedAccessorsOrderRuleExamples {
     static var nonTriggeringExamples: [Example] {
-        [
-            Example("""
+        #examples([
+            """
             class Foo {
                 var foo: Int {
                     get { return 3 }
                     set { _abc = newValue }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var foo: Int {
                     return 20
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 static var foo: Int {
                     return 20
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 static var foo: Int {
                     get { return 3 }
                     set { _abc = newValue }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var foo: Int
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var foo: Int {
                     return getValueFromDisk()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var foo: String {
                     return "get"
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 var foo: Int { get }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 var foo: Int { get set }
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 var foo: Int { set get }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var foo: Int {
                     struct Bar {
@@ -76,14 +78,14 @@ struct ComputedAccessorsOrderRuleExamples {
                     return Bar().bar
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var _objCTaggedPointerBits: UInt {
                 @inline(__always) get { return 0 }
                 set { print(newValue) }
             }
-            """),
-            Example("""
+            """,
+            """
             var next: Int? {
                 mutating get {
                     defer { self.count += 1 }
@@ -93,24 +95,24 @@ struct ComputedAccessorsOrderRuleExamples {
                     self.count = newValue
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 var bar: Bool {
                     get { _bar }
                     set { self._bar = newValue }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 var bar: Bool {
                     get { _bar }
                     set(newValue) { self._bar = newValue }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Reactive where Base: UITapGestureRecognizer {
                 var tapped: CocoaAction<Base>? {
                     get {
@@ -121,8 +123,8 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Test {
                 var foo: Bool {
                     get {
@@ -133,43 +135,43 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 subscript(i: Int) -> Int {
                     return 20
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 subscript(i: Int) -> Int {
                     get { return 3 }
                     set { _abc = newValue }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 subscript(i: Int) -> Int { get }
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 subscript(i: Int) -> Int { get set }
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Foo {
                 subscript(i: Int) -> Int { set get }
             }
-            """),
-        ]
+            """,
+        ])
     }
 
     static var triggeringExamples: [Example] {
-        [
-            Example("""
+        #examples([
+            """
             class Foo {
                 var foo: Int {
                     ↓set {
@@ -180,8 +182,8 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 static var foo: Int {
                     ↓set {
@@ -192,22 +194,22 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var foo: Int {
                 ↓set { print(newValue) }
                 get { return 20 }
             }
-            """),
-            Example("""
+            """,
+            """
             extension Foo {
                 var bar: Bool {
                     ↓set { print(bar) }
                     get { _bar }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 var foo: Int {
                     ↓set {
@@ -218,8 +220,8 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo {
                 subscript(i: Int) -> Int {
                     ↓set {
@@ -230,7 +232,7 @@ struct ComputedAccessorsOrderRuleExamples {
                     }
                 }
             }
-            """),
-        ]
+            """,
+        ])
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true, correctable: true)
@@ -10,41 +11,41 @@ struct VerticalWhitespaceRule: Rule {
         name: "Vertical Whitespace",
         description: VerticalWhitespaceConfiguration.defaultDescriptionReason,
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let abc = 0\n"),
-            Example("let abc = 0\n\n"),
-            Example("/* bcs \n\n\n\n*/"),
-            Example("// bca \n\n"),
-            Example("class CCCC {\n  \n}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let abc = 0\n",
+            "let abc = 0\n\n",
+            "/* bcs \n\n\n\n*/",
+            "// bca \n\n",
+            "class CCCC {\n  \n}",
+            """
             // comment
 
             import Foundation
-            """),
-            Example("""
+            """,
+            """
 
             // comment
 
             import Foundation
-            """),
-        ],
-        triggeringExamples: [
-            Example("let aaaa = 0\n\n\n"),
-            Example("struct AAAA {}\n\n\n\n"),
-            Example("class BBBB {}\n\n\n"),
-            Example("class CCCC {\n  \n  \n}"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "let aaaa = 0\n\n\n",
+            "struct AAAA {}\n\n\n\n",
+            "class BBBB {}\n\n\n",
+            "class CCCC {\n  \n  \n}",
+            """
 
 
             import Foundation
-            """),
-        ],
-        corrections: [
-            Example("let b = 0\n\n\nclass AAA {}\n"): Example("let b = 0\n\nclass AAA {}\n"),
-            Example("let c = 0\n\n\nlet num = 1\n"): Example("let c = 0\n\nlet num = 1\n"),
-            Example("// bca \n\n\n"): Example("// bca \n\n"),
-            Example("class CCCC {\n  \n  \n  \n}"): Example("class CCCC {\n  \n}"),
-        ] // End of line autocorrections are handled by Trailing Newline Rule.
+            """,
+        ]),
+        corrections: #corrections([
+            "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\nclass AAA {}\n",
+            "let c = 0\n\n\nlet num = 1\n": "let c = 0\n\nlet num = 1\n",
+            "// bca \n\n\n": "// bca \n\n",
+            "class CCCC {\n  \n  \n  \n}": "class CCCC {\n  \n}",
+        ]) // End of line autocorrections are handled by Trailing Newline Rule.
     )
 }
 

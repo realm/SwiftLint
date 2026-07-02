@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,73 +10,73 @@ struct ExplicitEnumRawValueRule: Rule {
         name: "Explicit Enum Raw Value",
         description: "Enums should be explicitly assigned their raw values",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             enum Numbers {
               case int(Int)
               case short(Int16)
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: Int {
               case one = 1
               case two = 2
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: Double {
               case one = 1.1
               case two = 2.2
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case one = "one"
               case two = "two"
             }
-            """),
-            Example("""
+            """,
+            """
             protocol Algebra {}
             enum Numbers: Algebra {
               case one
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             enum Numbers: Int {
               case one = 10, ↓two, three = 30
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: NSInteger {
               case ↓one
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
               case ↓one
               case ↓two
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: String {
                case ↓one, two = "two"
             }
-            """),
-            Example("""
+            """,
+            """
             enum Numbers: Decimal {
               case ↓one, ↓two
             }
-            """),
-            Example("""
+            """,
+            """
             enum Outer {
                 enum Numbers: Decimal {
                   case ↓one, ↓two
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

@@ -131,22 +131,22 @@ private extension SwiftLintDev.Rules.Template {
             "description: \"\"",
             "kind: .\(kind.rawValue)",
             """
-            nonTriggeringExamples: [
-                Example("\(noExamples ? "" : "let x = 1")"),
-            ]
+            nonTriggeringExamples: #examples([
+                "\(noExamples ? "" : "let x = 1")",
+            ])
             """,
             """
-            triggeringExamples: [
-                Example("\(noExamples ? "" : "var ↓foo = 1")"),
-            ]
+            triggeringExamples: #examples([
+                "\(noExamples ? "" : "var ↓foo = 1")",
+            ])
             """,
         ]
         if correctable || rewriter {
             ruleDescriptionArguments.append("""
-                corrections: [
-                    Example("\(noExamples ? "" : "let foo = 1")"):
-                        Example("\(noExamples ? "" : "let bar = 1")"),
-                ]
+                corrections: #corrections([
+                    "\(noExamples ? "" : "let foo = 1")":
+                        "\(noExamples ? "" : "let bar = 1")",
+                ])
                 """)
         }
         let configDecl = "var configuration = " + (

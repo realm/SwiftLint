@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,18 +10,18 @@ struct PreferNimbleRule: Rule {
         name: "Prefer Nimble",
         description: "Prefer Nimble matchers over XCTAssert functions",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("expect(foo) == 1"),
-            Example("expect(foo).to(equal(1))"),
-        ],
-        triggeringExamples: [
-            Example("↓XCTAssertTrue(foo)"),
-            Example("↓XCTAssertEqual(foo, 2)"),
-            Example("↓XCTAssertNotEqual(foo, 2)"),
-            Example("↓XCTAssertNil(foo)"),
-            Example("↓XCTAssert(foo)"),
-            Example("↓XCTAssertGreaterThan(foo, 10)"),
-        ]
+        nonTriggeringExamples: #examples([
+            "expect(foo) == 1",
+            "expect(foo).to(equal(1))",
+        ]),
+        triggeringExamples: #examples([
+            "↓XCTAssertTrue(foo)",
+            "↓XCTAssertEqual(foo, 2)",
+            "↓XCTAssertNotEqual(foo, 2)",
+            "↓XCTAssertNil(foo)",
+            "↓XCTAssert(foo)",
+            "↓XCTAssertGreaterThan(foo, 10)",
+        ])
     )
 }
 

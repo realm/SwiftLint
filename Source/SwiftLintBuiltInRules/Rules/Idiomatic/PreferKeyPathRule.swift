@@ -23,89 +23,86 @@ struct PreferKeyPathRule: Rule {
             """,
         kind: .idiomatic,
         minSwiftVersion: .fiveDotTwo,
-        nonTriggeringExamples: [
-            Example("f {}"),
-            Example("f { $0 }"),
-            Example("f { $0.a }"),
-            Example("let f = { $0.a }(b)"),
-            Example("f {}", configuration: extendedMode),
-            Example("f() { g() }", configuration: extendedMode),
-            Example("f { a.b.c }", configuration: extendedMode),
-            Example("f { a, b in a.b }", configuration: extendedMode),
-            Example("f { (a, b) in a.b }", configuration: extendedMode),
-            Example("f { $0.a } g: { $0.b }", configuration: extendedMode),
-            Example("[1, 2, 3].reduce(1) { $0 + $1 }", configuration: extendedMode),
-            Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity),
-            Example("f.map { $0 }", configuration: ignoreIdentity),
-            Example("f.map(1) { $0.a }"),
-            Example("f.filter({ $0.a }, x)"),
-            Example("#Predicate { $0.a }"),
-            Example("let transform: (Int) -> Int = nil ?? { $0.a }"),
-        ],
-        triggeringExamples: [
-            Example("f.map ↓{ $0.a }"),
-            Example("f.filter ↓{ $0.a }"),
-            Example("f.first ↓{ $0.a }"),
-            Example("f.contains ↓{ $0.a }"),
-            Example("f.contains(where: ↓{ $0.a })"),
-            Example("f(↓{ $0.a })", configuration: extendedMode),
-            Example("f(a: ↓{ $0.b })", configuration: extendedMode),
-            Example("f(a: ↓{ a in a.b }, x)", configuration: extendedMode),
-            Example("f.map ↓{ a in a.b.c }"),
-            Example("f.allSatisfy ↓{ (a: A) in a.b }"),
-            Example("f.first ↓{ (a b: A) in b.c }"),
-            Example("f.contains ↓{ $0.0.a }"),
-            Example("f.compactMap ↓{ $0.a.b.c.d }"),
-            Example("f.flatMap ↓{ $0.a.b }"),
-            Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: extendedMode),
-            Example("transform = ↓{ $0.a }"),
-        ],
-        corrections: [
-            Example("f.map { $0.a }"):
-                Example("f.map(\\.a)"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "f {}",
+            "f { $0 }",
+            "f { $0.a }",
+            "let f = { $0.a }(b)",
+            "f {}".configuration(extendedMode),
+            "f() { g() }".configuration(extendedMode),
+            "f { a.b.c }".configuration(extendedMode),
+            "f { a, b in a.b }".configuration(extendedMode),
+            "f { (a, b) in a.b }".configuration(extendedMode),
+            "f { $0.a } g: { $0.b }".configuration(extendedMode),
+            "[1, 2, 3].reduce(1) { $0 + $1 }".configuration(extendedMode),
+            "f { $0 }".configuration(extendedModeAndIgnoreIdentity),
+            "f.map { $0 }".configuration(ignoreIdentity),
+            "f.map(1) { $0.a }",
+            "f.filter({ $0.a }, x)",
+            "#Predicate { $0.a }",
+            "let transform: (Int) -> Int = nil ?? { $0.a }",
+        ]),
+        triggeringExamples: #examples([
+            "f.map ↓{ $0.a }",
+            "f.filter ↓{ $0.a }",
+            "f.first ↓{ $0.a }",
+            "f.contains ↓{ $0.a }",
+            "f.contains(where: ↓{ $0.a })",
+            "f(↓{ $0.a })".configuration(extendedMode),
+            "f(a: ↓{ $0.b })".configuration(extendedMode),
+            "f(a: ↓{ a in a.b }, x)".configuration(extendedMode),
+            "f.map ↓{ a in a.b.c }",
+            "f.allSatisfy ↓{ (a: A) in a.b }",
+            "f.first ↓{ (a b: A) in b.c }",
+            "f.contains ↓{ $0.0.a }",
+            "f.compactMap ↓{ $0.a.b.c.d }",
+            "f.flatMap ↓{ $0.a.b }",
+            "let f: (Int) -> Int = ↓{ $0.bigEndian }".configuration(extendedMode),
+            "transform = ↓{ $0.a }",
+        ]),
+        corrections: #corrections([
+            "f.map { $0.a }": "f.map(\\.a)",
+            """
+            // begin
+            f.map { $0.a } // end
+            """:
+                """
                 // begin
-                f.map { $0.a } // end
-                """):
-                Example("""
-                    // begin
-                    f.map(\\.a) // end
-                    """),
-            Example("f.map({ $0.a })"):
-                Example("f.map(\\.a)"),
-            Example("f(a: { $0.a })", configuration: extendedMode):
-                Example("f(a: \\.a)"),
-            Example("f({ $0.a })", configuration: extendedMode):
-                Example("f(\\.a)"),
-            Example("let f = /* begin */ { $0.a } // end", configuration: extendedMode):
-                Example("let f = /* begin */ \\.a // end"),
-            Example("let f = { $0.a }(b)"):
-                Example("let f = { $0.a }(b)"),
-            Example("let f: (Int) -> Int = ↓{ $0.bigEndian }", configuration: extendedMode):
-                Example("let f: (Int) -> Int = \\.bigEndian"),
-            Example("f.partition ↓{ $0.a.b }"):
-                Example("f.partition(by: \\.a.b)"),
-            Example("f.contains ↓{ $0.a.b }"):
-                Example("f.contains(where: \\.a.b)"),
-            Example("f.first ↓{ element in element.a }"):
-                Example("f.first(where: \\.a)"),
-            Example("f.drop ↓{ element in element.a }"):
-                Example("f.drop(while: \\.a)"),
-            Example("f.compactMap ↓{ $0.a.b.c.d }"):
-                Example("f.compactMap(\\.a.b.c.d)"),
-            Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity): // no change with option enabled
-                Example("f { $0 }", configuration: extendedModeAndIgnoreIdentity),
-            Example("f.map { $0 }", configuration: ignoreIdentity): // no change with option enabled
-                Example("f.map { $0 }", configuration: ignoreIdentity),
-            Example("""
+                f.map(\\.a) // end
+                """,
+            "f.map({ $0.a })": "f.map(\\.a)",
+            "f(a: { $0.a })".configuration(extendedMode): "f(a: \\.a)",
+            "f({ $0.a })".configuration(extendedMode): "f(\\.a)",
+
+            "let f = /* begin */ { $0.a } // end".configuration(extendedMode):
+                "let f = /* begin */ \\.a // end",
+
+            "let f = { $0.a }(b)": "let f = { $0.a }(b)",
+
+            "let f: (Int) -> Int = ↓{ $0.bigEndian }".configuration(extendedMode):
+                "let f: (Int) -> Int = \\.bigEndian",
+
+            "f.partition ↓{ $0.a.b }": "f.partition(by: \\.a.b)",
+            "f.contains ↓{ $0.a.b }": "f.contains(where: \\.a.b)",
+            "f.first ↓{ element in element.a }": "f.first(where: \\.a)",
+            "f.drop ↓{ element in element.a }": "f.drop(while: \\.a)",
+            "f.compactMap ↓{ $0.a.b.c.d }": "f.compactMap(\\.a.b.c.d)",
+
+            "f { $0 }".configuration(extendedModeAndIgnoreIdentity): // no change with option enabled
+            "f { $0 }".configuration(extendedModeAndIgnoreIdentity),
+
+            "f.map { $0 }".configuration(ignoreIdentity): // no change with option enabled
+            "f.map { $0 }".configuration(ignoreIdentity),
+
+            """
+            myList
+                .map { $0.a } // swiftlint:disable:this prefer_key_path
+            """:
+                """
                 myList
                     .map { $0.a } // swiftlint:disable:this prefer_key_path
-                """):
-                Example("""
-                myList
-                    .map { $0.a } // swiftlint:disable:this prefer_key_path
-                """),
-        ]
+                """,
+        ])
     )
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -10,7 +11,7 @@ struct TrailingCommaRuleTests {
     func trailingCommaRuleWithDefaultConfiguration() {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
-        [Example("class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}")]
+        #examples(["class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"])
         verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
 
         // Ensure the rule produces the correct reason string.
@@ -19,32 +20,32 @@ struct TrailingCommaRuleTests {
             trailingCommaViolations(failingCase).first?.reason == "Collection literals should not have trailing commas")
     }
 
-    private static let triggeringExamples = [
-        Example("let foo = [1, 2,\n 3↓]\n"),
-        Example("let foo = [1: 2,\n 2: 3↓]\n"),
-        Example("let foo = [1: 2,\n 2: 3↓   ]\n"),
-        Example("struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n"),
-        Example("let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"),
-        Example("let foo = [1, 2,\n 3↓  ]"),
-        Example("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n"),
-    ]
+    private static let triggeringExamples = #examples([
+        "let foo = [1, 2,\n 3↓]\n",
+        "let foo = [1: 2,\n 2: 3↓]\n",
+        "let foo = [1: 2,\n 2: 3↓   ]\n",
+        "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
+        "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n",
+        "let foo = [1, 2,\n 3↓  ]",
+        "let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n",
+    ])
 
-    private static let nonTriggeringExamples = [
-        Example("let foo = []\n"),
-        Example("let foo = [:]\n"),
-        Example("let foo = [1, 2, 3,]\n"),
-        Example("let foo = [1, 2, 3, ]\n"),
-        Example("let foo = [1, 2, 3   ,]\n"),
-        Example("let foo = [1: 2, 2: 3, ]\n"),
-        Example("struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n"),
-        Example("let foo = [Void]()\n"),
-        Example("let foo = [(Void, Void)]()\n"),
-        Example("let foo = [1, 2, 3]\n"),
-        Example("let foo = [1: 2, 2: 3]\n"),
-        Example("let foo = [1: 2, 2: 3   ]\n"),
-        Example("struct Bar {\n let foo = [1: 2, 2: 3]\n}\n"),
-        Example("let foo = [1, 2, 3] + [4, 5, 6]\n"),
-    ]
+    private static let nonTriggeringExamples = #examples([
+        "let foo = []\n",
+        "let foo = [:]\n",
+        "let foo = [1, 2, 3,]\n",
+        "let foo = [1, 2, 3, ]\n",
+        "let foo = [1, 2, 3   ,]\n",
+        "let foo = [1: 2, 2: 3, ]\n",
+        "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n",
+        "let foo = [Void]()\n",
+        "let foo = [(Void, Void)]()\n",
+        "let foo = [1, 2, 3]\n",
+        "let foo = [1: 2, 2: 3]\n",
+        "let foo = [1: 2, 2: 3   ]\n",
+        "struct Bar {\n let foo = [1: 2, 2: 3]\n}\n",
+        "let foo = [1, 2, 3] + [4, 5, 6]\n",
+    ])
 
     private static let corrections: [Example: Example] = {
         let fixed = triggeringExamples.map { $0.with(code: $0.code.replacingOccurrences(of: "↓", with: ",")) }

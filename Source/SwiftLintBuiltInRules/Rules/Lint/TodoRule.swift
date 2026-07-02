@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -11,20 +12,20 @@ struct TodoRule: Rule {
         name: "Todo",
         description: "TODOs and FIXMEs should be resolved.",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("// notaTODO:"),
-            Example("// notaFIXME:"),
-        ],
-        triggeringExamples: [
-            Example("// ↓TODO:"),
-            Example("// ↓FIXME:"),
-            Example("// ↓TODO(note)"),
-            Example("// ↓FIXME(note)"),
-            Example("/* ↓FIXME: */"),
-            Example("/* ↓TODO: */"),
-            Example("/** ↓FIXME: */"),
-            Example("/** ↓TODO: */"),
-        ].skipWrappingInCommentTests()
+        nonTriggeringExamples: #examples([
+            "// notaTODO:",
+            "// notaFIXME:",
+        ]),
+        triggeringExamples: #examples([
+            "// ↓TODO:",
+            "// ↓FIXME:",
+            "// ↓TODO(note)",
+            "// ↓FIXME(note)",
+            "/* ↓FIXME: */",
+            "/* ↓TODO: */",
+            "/** ↓FIXME: */",
+            "/** ↓TODO: */",
+        ]).skipWrappingInCommentTests()
     )
 }
 

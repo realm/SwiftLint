@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -9,64 +10,64 @@ struct RedundantVoidReturnRule: Rule {
         name: "Redundant Void Return",
         description: "Returning Void in a function declaration is redundant",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("func foo() {}"),
-            Example("func foo() -> Int {}"),
-            Example("func foo() -> Int -> Void {}"),
-            Example("func foo() -> VoidResponse"),
-            Example("let foo: (Int) -> Void"),
-            Example("func foo() -> Int -> () {}"),
-            Example("let foo: (Int) -> ()"),
-            Example("func foo() -> ()?"),
-            Example("func foo() -> ()!"),
-            Example("func foo() -> Void?"),
-            Example("func foo() -> Void!"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "func foo() {}",
+            "func foo() -> Int {}",
+            "func foo() -> Int -> Void {}",
+            "func foo() -> VoidResponse",
+            "let foo: (Int) -> Void",
+            "func foo() -> Int -> () {}",
+            "let foo: (Int) -> ()",
+            "func foo() -> ()?",
+            "func foo() -> ()!",
+            "func foo() -> Void?",
+            "func foo() -> Void!",
+            """
             struct A {
                 subscript(key: String) {
                     print(key)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             doSomething { arg -> Void in
                 print(arg)
             }
-            """, configuration: ["include_closures": false]),
-        ],
-        triggeringExamples: [
-            Example("func foo()↓ -> Void {}"),
-            Example("""
+            """.configuration(["include_closures": false]),
+        ]),
+        triggeringExamples: #examples([
+            "func foo()↓ -> Void {}",
+            """
             protocol Foo {
               func foo()↓ -> Void
             }
-            """),
-            Example("func foo()↓ -> () {}"),
-            Example("func foo()↓ -> ( ) {}"),
-            Example("""
+            """,
+            "func foo()↓ -> () {}",
+            "func foo()↓ -> ( ) {}",
+            """
             protocol Foo {
               func foo()↓ -> ()
             }
-            """),
-            Example("""
+            """,
+            """
             doSomething { arg↓ -> () in
                 print(arg)
             }
-            """),
-            Example("""
+            """,
+            """
             doSomething { arg↓ -> Void in
                 print(arg)
             }
-            """),
-        ],
-        corrections: [
-            Example("func foo()↓ -> Void {}"): Example("func foo() {}"),
-            Example("protocol Foo {\n func foo()↓ -> Void\n}"): Example("protocol Foo {\n func foo()\n}"),
-            Example("func foo()↓ -> () {}"): Example("func foo() {}"),
-            Example("protocol Foo {\n func foo()↓ -> ()\n}"): Example("protocol Foo {\n func foo()\n}"),
-            Example("protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}"):
-                Example("protocol Foo {\n    #if true\n    func foo()\n    #endif\n}"),
-        ]
+            """,
+        ]),
+        corrections: #corrections([
+            "func foo()↓ -> Void {}": "func foo() {}",
+            "protocol Foo {\n func foo()↓ -> Void\n}": "protocol Foo {\n func foo()\n}",
+            "func foo()↓ -> () {}": "func foo() {}",
+            "protocol Foo {\n func foo()↓ -> ()\n}": "protocol Foo {\n func foo()\n}",
+            "protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}":
+                "protocol Foo {\n    #if true\n    func foo()\n    #endif\n}",
+        ])
     )
 }
 

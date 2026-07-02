@@ -1,11 +1,13 @@
+import SwiftLintCore
+
 // swiftlint:disable:next type_name
 internal struct VerticalWhitespaceClosingBracesRuleExamples {
     private static let beforeTrivialLinesConfiguration = ["only_enforce_before_trivial_lines": true]
 
-    static let nonTriggeringExamples = [
-        Example("[1, 2].map { $0 }.filter { true }"),
-        Example("[1, 2].map { $0 }.filter { num in true }"),
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        "[1, 2].map { $0 }.filter { true }",
+        "[1, 2].map { $0 }.filter { num in true }",
+        """
         /*
             class X {
 
@@ -13,8 +15,8 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
 
             }
         */
-        """),
-        Example("""
+        """,
+        """
         if bool1 {
           // do something
           // do something
@@ -28,97 +30,97 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
           // do something
           // do something
         }
-        """, configuration: beforeTrivialLinesConfiguration, excludeFromDocumentation: true),
-    ]
+        """.configuration(beforeTrivialLinesConfiguration).excludeFromDocumentation(),
+    ])
 
-    static let violatingToValidExamples = [
-        Example("""
+    static let violatingToValidExamples = #corrections([
+        """
         do {
           print("x is 5")
         ↓
         }
-        """):
-            Example("""
+        """:
+            """
             do {
               print("x is 5")
             }
-            """),
-        Example("""
+            """,
+        """
         do {
           print("x is 5")
         ↓
 
         }
-        """):
-            Example("""
+        """:
+            """
             do {
               print("x is 5")
             }
-            """),
-        Example("""
+            """,
+        """
         do {
           print("x is 5")
         ↓\n  \n}
-        """):
-            Example("""
+        """:
+            """
             do {
               print("x is 5")
             }
-            """),
-        Example("""
+            """,
+        """
         [
         1,
         2,
         3
         ↓
         ]
-        """):
-            Example("""
+        """:
+            """
             [
             1,
             2,
             3
             ]
-            """),
-        Example("""
+            """,
+        """
         foo(
             x: 5,
             y:6
         ↓
         )
-        """):
-            Example("""
+        """:
+            """
             foo(
                 x: 5,
                 y:6
             )
-            """),
-        Example("""
+            """,
+        """
         func foo() {
           run(5) { x in
             print(x)
           }
         ↓
         }
-        """): Example("""
+        """: """
             func foo() {
               run(5) { x in
                 print(x)
               }
             }
-            """),
-        Example("""
+            """,
+        """
         print([
           1
         ↓
         ])
-        """, configuration: beforeTrivialLinesConfiguration):
-            Example("""
+        """.configuration(beforeTrivialLinesConfiguration):
+            """
                     print([
                       1
                     ])
-                    """, configuration: beforeTrivialLinesConfiguration),
-        Example("""
+                    """.configuration(beforeTrivialLinesConfiguration),
+        """
         print([foo {
           var sum = 0
           for i in 1...5 { sum += i }
@@ -130,8 +132,8 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
           return mul
         ↓
         }])
-        """, configuration: beforeTrivialLinesConfiguration):
-            Example("""
+        """.configuration(beforeTrivialLinesConfiguration):
+            """
             print([foo {
               var sum = 0
               for i in 1...5 { sum += i }
@@ -142,6 +144,6 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
               for i in 1...5 { mul *= i }
               return mul
             }])
-            """, configuration: beforeTrivialLinesConfiguration),
-    ]
+            """.configuration(beforeTrivialLinesConfiguration),
+    ])
 }

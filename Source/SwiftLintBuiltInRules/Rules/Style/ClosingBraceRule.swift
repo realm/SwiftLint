@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -9,17 +10,17 @@ struct ClosingBraceRule: Rule {
         name: "Closing Brace Spacing",
         description: "Closing brace with closing parenthesis should not have any whitespaces in the middle",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("[].map({ })"),
-            Example("[].map(\n  { }\n)"),
-        ],
-        triggeringExamples: [
-            Example("[].map({ ↓} )"),
-            Example("[].map({ ↓}\t)"),
-        ],
-        corrections: [
-            Example("[].map({ ↓} )"): Example("[].map({ })")
-        ]
+        nonTriggeringExamples: #examples([
+            "[].map({ })",
+            "[].map(\n  { }\n)",
+        ]),
+        triggeringExamples: #examples([
+            "[].map({ ↓} )",
+            "[].map({ ↓}\t)",
+        ]),
+        corrections: #corrections([
+            "[].map({ ↓} )": "[].map({ })"
+        ])
     )
 }
 

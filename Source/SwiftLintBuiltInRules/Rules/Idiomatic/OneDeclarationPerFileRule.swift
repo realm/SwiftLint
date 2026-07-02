@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,34 +10,34 @@ struct OneDeclarationPerFileRule: Rule {
         name: "One Declaration per File",
         description: "Only a single declaration is allowed in a file",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
                     actor Foo {}
-                    """),
-            Example("""
+                    """,
+            """
                     class Foo {}
                     extension Foo {}
-                    """),
-            Example("""
+                    """,
+            """
                     struct S {
                         struct N {}
                     }
-                    """),
-        ],
-        triggeringExamples: [
-            Example("""
+                    """,
+        ]),
+        triggeringExamples: #examples([
+            """
                     class Foo {}
                     ↓class Bar {}
-                    """),
-            Example("""
+                    """,
+            """
                     protocol Foo {}
                     ↓enum Bar {}
-                    """),
-            Example("""
+                    """,
+            """
                     struct Foo {}
                     ↓struct Bar {}
-                    """),
-        ]
+                    """,
+        ])
     )
 }
 

@@ -1,71 +1,73 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
 
 // swiftlint:disable:next type_body_length
 struct OpeningBraceRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("func abc() {\n}"),
-        Example("[].map() { $0 }"),
-        Example("[].map({ })"),
-        Example("if let a = b { }"),
-        Example("while a == b { }"),
-        Example("guard let a = b else { }"),
-        Example("struct Rule {}"),
-        Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        "func abc() {\n}",
+        "[].map() { $0 }",
+        "[].map({ })",
+        "if let a = b { }",
+        "while a == b { }",
+        "guard let a = b else { }",
+        "struct Rule {}",
+        "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}",
+        """
             func f(rect: CGRect) {
                 {
                     let centre = CGPoint(x: rect.midX, y: rect.midY)
                     print(centre)
                 }()
             }
-            """),
-        Example("""
+            """,
+        """
             func f(rect: CGRect) -> () -> Void {
                 {
                     let centre = CGPoint(x: rect.midX, y: rect.midY)
                     print(centre)
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             func f() -> () -> Void {
                 {}
             }
-            """),
-        Example("""
+            """,
+        """
             class Rule:
               NSObject {
               var a: String {
                 return ""
               }
             }
-            """),
-        Example("""
+            """,
+        """
             self.foo(
                 (
                     "String parameter",
                     { "Do something here" }
                 )
             )
-            """),
-        Example(##"let pattern = #/(\{(?<key>\w+)\})/#"##),
-        Example("""
+            """,
+        ##"let pattern = #/(\{(?<key>\w+)\})/#"##,
+        """
             if c {}
             else {}
-            """),
-        Example("""
+            """,
+        """
             if c /* comment */ {
                 return
             }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("func abc()↓{\n}"),
-        Example("func abc()\n\t↓{ }"),
-        Example("func abc(a: A,\n\tb: B)\n↓{"),
-        Example("[].map()↓{ $0 }"),
-        Example("""
+    static let triggeringExamples = #examples([
+        "func abc()↓{\n}",
+        "func abc()\n\t↓{ }",
+        "func abc(a: A,\n\tb: B)\n↓{",
+        "[].map()↓{ $0 }",
+        """
             struct OldContentView: View {
               @State private var showOptions = false
 
@@ -77,8 +79,8 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             struct OldContentView: View {
               @State private var showOptions = false
 
@@ -91,8 +93,8 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             struct OldContentView: View {
               @State private var showOptions = false
 
@@ -104,34 +106,34 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("if let a = b↓{ }"),
-        Example("while a == b↓{ }"),
-        Example("guard let a = b else↓{ }"),
-        Example("if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-        Example("while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }"),
-        Example("guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }"),
-        Example("struct Rule↓{}"),
-        Example("struct Rule\n↓{\n}"),
-        Example("struct Rule\n\n\t↓{\n}"),
-        Example("struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}"),
-        Example("switch a↓{}"),
-        Example("if\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }"),
-        Example("while\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }"),
-        Example("guard\n\tlet a = b,\n\tlet c = d,\n\ta == c else\n↓{ }"),
-        Example("class Rule↓{}\n"),
-        Example("actor Rule↓{}\n"),
-        Example("enum Rule↓{}\n"),
-        Example("protocol Rule↓{}\n"),
-        Example("extension Rule↓{}\n"),
-        Example("""
+            """,
+        "if let a = b↓{ }",
+        "while a == b↓{ }",
+        "guard let a = b else↓{ }",
+        "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
+        "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c↓{ }",
+        "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else↓{ }",
+        "struct Rule↓{}",
+        "struct Rule\n↓{\n}",
+        "struct Rule\n\n\t↓{\n}",
+        "struct Parent {\n\tstruct Child\n\t↓{\n\t\tlet foo: Int\n\t}\n}",
+        "switch a↓{}",
+        "if\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }",
+        "while\n\tlet a = b,\n\tlet c = d,\n\ta == c\n↓{ }",
+        "guard\n\tlet a = b,\n\tlet c = d,\n\ta == c else\n↓{ }",
+        "class Rule↓{}\n",
+        "actor Rule↓{}\n",
+        "enum Rule↓{}\n",
+        "protocol Rule↓{}\n",
+        "extension Rule↓{}\n",
+        """
             class Rule {
               var a: String↓{
                 return ""
               }
             }
-            """),
-        Example("""
+            """,
+        """
             class Rule {
               var a: String {
                 willSet↓{
@@ -142,21 +144,21 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """),
-        Example("""
+            """,
+        """
             precedencegroup Group↓{
               assignment: true
             }
-            """),
-        Example("""
+            """,
+        """
             internal static func getPointer()
               -> UnsafeMutablePointer<_ThreadLocalStorage>
             ↓{
                 return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                     to: _ThreadLocalStorage.self)
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             func run_Array_method1x(_ N: Int) {
               let existentialArray = array!
               for _ in 0 ..< N * 100 {
@@ -171,8 +173,8 @@ struct OpeningBraceRuleExamples {
             func run_Array_method2x(_ N: Int) {
 
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class TestFile {
                func problemFunction() {
                    #if DEBUG
@@ -184,15 +186,15 @@ struct OpeningBraceRuleExamples {
                    print("Brackets")
                }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             if
                 "test".isEmpty
             ↓{
                 // code here
             }
-            """),
-        Example("""
+            """,
+        """
             func fooFun() {
                 let foo: String? = "foo"
                 let bar: String? = "bar"
@@ -204,297 +206,297 @@ struct OpeningBraceRuleExamples {
                     print(foo + bar)
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             if
                 let a = ["A", "B"].first,
                 let b = ["B"].first
             ↓{
                 print(a)
             }
-            """),
-        Example("""
+            """,
+        """
             if c  ↓{}
             else /* comment */  ↓{}
-            """),
-    ]
+            """,
+    ])
 
-    static let corrections = [
-        Example("struct Rule{}"): Example("struct Rule {}"),
-        Example("struct Rule\n{\n}"): Example("struct Rule {\n}"),
-        Example("struct Rule\n\n\t{\n}"): Example("struct Rule {\n}"),
-        Example("struct Parent {\n\tstruct Child\n\t{\n\t\tlet foo: Int\n\t}\n}"):
-            Example("struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}"),
-        Example("[].map(){ $0 }"): Example("[].map() { $0 }"),
-        Example("if a == b{ }"): Example("if a == b { }"),
-        Example("if\n\tlet a = b,\n\tlet c = d{ }"): Example("if\n\tlet a = b,\n\tlet c = d { }"),
-        Example("""
+    static let corrections = #corrections([
+        "struct Rule{}": "struct Rule {}",
+        "struct Rule\n{\n}": "struct Rule {\n}",
+        "struct Rule\n\n\t{\n}": "struct Rule {\n}",
+        "struct Parent {\n\tstruct Child\n\t{\n\t\tlet foo: Int\n\t}\n}":
+            "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}",
+        "[].map(){ $0 }": "[].map() { $0 }",
+        "if a == b{ }": "if a == b { }",
+        "if\n\tlet a = b,\n\tlet c = d{ }": "if\n\tlet a = b,\n\tlet c = d { }",
+        """
             actor MyActor  {
 
             }
-            """): Example("""
+            """: """
                 actor MyActor {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             actor MyActor
             {
 
             }
-            """): Example("""
+            """: """
                 actor MyActor {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             actor MyActor<T>  {
 
             }
-            """): Example("""
+            """: """
                 actor MyActor<T> {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             actor MyActor<T> where T: U  {
 
             }
-            """): Example("""
+            """: """
                 actor MyActor<T> where T: U {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             class Rule  {
 
             }
-            """): Example("""
+            """: """
                 class Rule {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             class Rule
             {
 
             }
-            """): Example("""
+            """: """
                 class Rule {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             class Rule<T>  {
 
             }
-            """): Example("""
+            """: """
                 class Rule<T> {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             class Rule<T>: NSObject  {
 
             }
-            """): Example("""
+            """: """
                 class Rule<T>: NSObject {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             class Rule<T>: NSObject where T: U  {
 
             }
-            """): Example("""
+            """: """
                 class Rule<T>: NSObject where T: U {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             enum Rule
             {
 
             }
-            """): Example("""
+            """: """
                 enum Rule {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             enum Rule: E  {
 
             }
-            """): Example("""
+            """: """
                 enum Rule: E {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             extension Rule
             {
 
             }
-            """): Example("""
+            """: """
                 extension Rule {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             protocol Rule  {
 
             }
-            """): Example("""
+            """: """
                 protocol Rule {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             struct Rule
             {
 
             }
-            """): Example("""
+            """: """
                 struct Rule {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             struct Rule  : A
             {
 
             }
-            """): Example("""
+            """: """
                 struct Rule  : A {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             do {
 
             } catch
             {
 
             }
-            """): Example("""
+            """: """
                 do {
 
                 } catch {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             do {
 
             } catch MyError.unknown  {
 
             }
-            """): Example("""
+            """: """
                 do {
 
                 } catch MyError.unknown {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             do {
 
             } catch let error  {
 
             }
-            """): Example("""
+            """: """
                 do {
 
                 } catch let error {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             defer  {
 
             }
-            """): Example("""
+            """: """
                 defer {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             do  {
 
             }
-            """): Example("""
+            """: """
             do {
 
             }
-            """),
-        Example("""
+            """,
+        """
             for a in b
             {
 
             }
-            """): Example("""
+            """: """
             for a in b {
 
             }
-            """),
-        Example("""
+            """,
+        """
             for a in b where a == c  {
 
             }
-            """): Example("""
+            """: """
                 for a in b where a == c {
 
                 }
-                """),
-        Example("""
+                """,
+        """
             guard a == b else
             {
               return ""
             }
-            """): Example("""
+            """: """
                 guard a == b else {
                   return ""
                 }
-                """),
-        Example("if\n\tlet a = b,\n\tlet c = d{ }\n"): Example("if\n\tlet a = b,\n\tlet c = d { }\n"),
-        Example("""
+                """,
+        "if\n\tlet a = b,\n\tlet c = d{ }\n": "if\n\tlet a = b,\n\tlet c = d { }\n",
+        """
             if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
                 || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
                 || !node.type.is(SimpleTypeIdentifierSyntax.self)
             { // Complex or collection type
                 return .visitChildren
             }
-            """): Example("""
+            """: """
                 if varDecl.parent?.is(CodeBlockItemSyntax.self) == true // Local variable declaration
                     || varDecl.bindings.onlyElement?.accessor != nil    // Computed property
                     || !node.type.is(SimpleTypeIdentifierSyntax.self) { // Complex or collection type
                     return .visitChildren
                 }
-                """),
-        Example("""
+                """,
+        """
             repeat  {
 
             } while a
-            """): Example("""
+            """: """
                 repeat {
 
                 } while a
-                """),
-        Example("""
+                """,
+        """
             while a  {
 
             }
-            """): Example("""
+            """: """
                 while a {
 
                 }
-                """),
-        Example("class Rule{}"): Example("class Rule {}"),
-        Example("actor Rule{}"): Example("actor Rule {}"),
-        Example("enum Rule{}"): Example("enum Rule {}"),
-        Example("protocol Rule{}"): Example("protocol Rule {}"),
-        Example("extension Rule{}"): Example("extension Rule {}"),
-        Example("""
+                """,
+        "class Rule{}": "class Rule {}",
+        "actor Rule{}": "actor Rule {}",
+        "enum Rule{}": "enum Rule {}",
+        "protocol Rule{}": "protocol Rule {}",
+        "extension Rule{}": "extension Rule {}",
+        """
             class Rule {
               var a: String {
                 willSet{
@@ -502,7 +504,7 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """): Example("""
+            """: """
                 class Rule {
                   var a: String {
                     willSet {
@@ -510,8 +512,8 @@ struct OpeningBraceRuleExamples {
                     }
                   }
                 }
-                """),
-        Example("""
+                """,
+        """
             class Rule {
               var a: String {
                 didSet  {
@@ -519,7 +521,7 @@ struct OpeningBraceRuleExamples {
                 }
               }
             }
-            """): Example("""
+            """: """
                 class Rule {
                   var a: String {
                     didSet {
@@ -527,49 +529,49 @@ struct OpeningBraceRuleExamples {
                     }
                   }
                 }
-                """),
-        Example("""
+                """,
+        """
             precedencegroup Group{
               assignment: true
             }
-            """): Example("""
+            """: """
                 precedencegroup Group {
                   assignment: true
                 }
-                """),
-        Example("""
+                """,
+        """
             if c /* comment */    {
                 return
             }
-        """): Example("""
+        """: """
                 if c /* comment */ {
                     return
                 }
-            """),
+            """,
         // https://github.com/realm/SwiftLint/issues/5598
-        Example("""
+        """
             if c    // A comment
             {
                 return
             }
-        """): Example("""
+        """: """
                 if c { // A comment
                     return
                 }
-            """),
+            """,
         // https://github.com/realm/SwiftLint/issues/5751
-        Example("""
+        """
             if c    // A comment
             { // Another comment
                 return
             }
-        """): Example("""
+        """: """
                 if c { // A comment // Another comment
                     return
                 }
-            """),
+            """,
         // https://github.com/realm/SwiftLint/issues/5751
-        Example("""
+        """
             func foo() {
                 if q1, q2
                 {
@@ -579,7 +581,7 @@ struct OpeningBraceRuleExamples {
                     do2()
                 }
             }
-            """): Example("""
+            """: """
                 func foo() {
                     if q1, q2 {
                         do1()
@@ -587,21 +589,21 @@ struct OpeningBraceRuleExamples {
                         do2()
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
             if
                 "test".isEmpty
             // swiftlint:disable:next opening_brace
             {
                 // code here
             }
-            """): Example("""
+            """: """
                 if
                     "test".isEmpty
                 // swiftlint:disable:next opening_brace
                 {
                     // code here
                 }
-                """),
-    ]
+                """,
+    ])
 }

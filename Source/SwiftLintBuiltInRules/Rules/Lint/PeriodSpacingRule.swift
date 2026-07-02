@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 import SwiftIDEUtils
+import SwiftLintCore
 
 struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableRule {
     var configuration = SeverityConfiguration<Self>(.warning)
@@ -10,41 +11,41 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
         name: "Period Spacing",
         description: "Periods should not be followed by more than one space",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let pi = 3.2"),
-            Example("let pi = Double.pi"),
-            Example("let pi = Double. pi"),
-            Example("let pi = Double.  pi"),
-            Example("// A. Single."),
-            Example("///   - code: Identifier of the error. Integer."),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let pi = 3.2",
+            "let pi = Double.pi",
+            "let pi = Double. pi",
+            "let pi = Double.  pi",
+            "// A. Single.",
+            "///   - code: Identifier of the error. Integer.",
+            """
             // value: Multiline.
             //        Comment.
-            """),
-            Example("""
+            """,
+            """
             /**
             Sentence ended in period.
 
             - Sentence 2 new line characters after.
             **/
-            """),
-        ],
-        triggeringExamples: [
-            Example("/* Only god knows why. ↓ This symbol does nothing. */", testWrappingInComment: false),
-            Example("// Only god knows why. ↓ This symbol does nothing.", testWrappingInComment: false),
-            Example("// Single. Double. ↓ End.", testWrappingInComment: false),
-            Example("// Single. Double. ↓ Triple. ↓  End.", testWrappingInComment: false),
-            Example("// Triple. ↓  Quad. ↓   End.", testWrappingInComment: false),
-            Example("///   - code: Identifier of the error. ↓ Integer.", testWrappingInComment: false),
-        ],
-        corrections: [
-            Example("/* Why. ↓ Symbol does nothing. */"): Example("/* Why. Symbol does nothing. */"),
-            Example("// Why. ↓ Symbol does nothing."): Example("// Why. Symbol does nothing."),
-            Example("// Single. Double. ↓ End."): Example("// Single. Double. End."),
-            Example("// Single. Double. ↓ Triple. ↓  End."): Example("// Single. Double. Triple. End."),
-            Example("// Triple. ↓  Quad. ↓   End."): Example("// Triple. Quad. End."),
-            Example("///   - code: Identifier. ↓ Integer."): Example("///   - code: Identifier. Integer."),
-        ]
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "/* Only god knows why. ↓ This symbol does nothing. */".skipWrappingInCommentTest(),
+            "// Only god knows why. ↓ This symbol does nothing.".skipWrappingInCommentTest(),
+            "// Single. Double. ↓ End.".skipWrappingInCommentTest(),
+            "// Single. Double. ↓ Triple. ↓  End.".skipWrappingInCommentTest(),
+            "// Triple. ↓  Quad. ↓   End.".skipWrappingInCommentTest(),
+            "///   - code: Identifier of the error. ↓ Integer.".skipWrappingInCommentTest(),
+        ]),
+        corrections: #corrections([
+            "/* Why. ↓ Symbol does nothing. */": "/* Why. Symbol does nothing. */",
+            "// Why. ↓ Symbol does nothing.": "// Why. Symbol does nothing.",
+            "// Single. Double. ↓ End.": "// Single. Double. End.",
+            "// Single. Double. ↓ Triple. ↓  End.": "// Single. Double. Triple. End.",
+            "// Triple. ↓  Quad. ↓   End.": "// Triple. Quad. End.",
+            "///   - code: Identifier. ↓ Integer.": "///   - code: Identifier. Integer.",
+        ])
     )
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {

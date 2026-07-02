@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftParser
 import SwiftSyntax
 import TestHelpers
@@ -9,23 +10,23 @@ import Testing
 struct NumberSeparatorRuleTests {
     @Test
     func numberSeparatorWithMinimumLength() {
-        let nonTriggeringExamples = [
-            Example("let foo = 10_000"),
-            Example("let foo = 1000"),
-            Example("let foo = 1000.0001"),
-            Example("let foo = 10_000.0001"),
-            Example("let foo = 1000.00001"),
-        ]
-        let triggeringExamples = [
-            Example("let foo = ↓1_000"),
-            Example("let foo = ↓1.000_1"),
-            Example("let foo = ↓1_000.000_1"),
-        ]
-        let corrections = [
-            Example("let foo = ↓1_000"): Example("let foo = 1000"),
-            Example("let foo = ↓1.000_1"): Example("let foo = 1.0001"),
-            Example("let foo = ↓1_000.000_1"): Example("let foo = 1000.0001"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "let foo = 10_000",
+            "let foo = 1000",
+            "let foo = 1000.0001",
+            "let foo = 10_000.0001",
+            "let foo = 1000.00001",
+        ])
+        let triggeringExamples = #examples([
+            "let foo = ↓1_000",
+            "let foo = ↓1.000_1",
+            "let foo = ↓1_000.000_1",
+        ])
+        let corrections = #corrections([
+            "let foo = ↓1_000": "let foo = 1000",
+            "let foo = ↓1.000_1": "let foo = 1.0001",
+            "let foo = ↓1_000.000_1": "let foo = 1000.0001",
+        ])
 
         let description = NumberSeparatorRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -37,22 +38,22 @@ struct NumberSeparatorRuleTests {
 
     @Test
     func numberSeparatorWithMinimumFractionLength() {
-        let nonTriggeringExamples = [
-            Example("let foo = 1_000.000_000_1"),
-            Example("let foo = 1.000_001"),
-            Example("let foo = 100.0001"),
-            Example("let foo = 1_000.000_01"),
-        ]
-        let triggeringExamples = [
-            Example("let foo = ↓1000"),
-            Example("let foo = ↓1.000_1"),
-            Example("let foo = ↓1_000.000_1"),
-        ]
-        let corrections = [
-            Example("let foo = ↓1000"): Example("let foo = 1_000"),
-            Example("let foo = ↓1.000_1"): Example("let foo = 1.0001"),
-            Example("let foo = ↓1_000.000_1"): Example("let foo = 1_000.0001"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "let foo = 1_000.000_000_1",
+            "let foo = 1.000_001",
+            "let foo = 100.0001",
+            "let foo = 1_000.000_01",
+        ])
+        let triggeringExamples = #examples([
+            "let foo = ↓1000",
+            "let foo = ↓1.000_1",
+            "let foo = ↓1_000.000_1",
+        ])
+        let corrections = #corrections([
+            "let foo = ↓1000": "let foo = 1_000",
+            "let foo = ↓1.000_1": "let foo = 1.0001",
+            "let foo = ↓1_000.000_1": "let foo = 1_000.0001",
+        ])
 
         let description = NumberSeparatorRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -64,30 +65,30 @@ struct NumberSeparatorRuleTests {
 
     @Test
     func numberSeparatorWithExcludeRanges() {
-        let nonTriggeringExamples = [
-            Example("let foo = 1950"),
-            Example("let foo = 1_950"),
-            Example("let foo = 1985"),
-            Example("let foo = 1_985"),
-            Example("let foo = 2020"),
-            Example("let foo = 2_020"),
-            Example("let foo = 2.10042"),
-            Example("let foo = 2.100_42"),
-            Example("let foo = 2.833333"),
-            Example("let foo = 2.833_333"),
-        ]
-        let triggeringExamples = [
-            Example("let foo = ↓1000"),
-            Example("let foo = ↓2100"),
-            Example("let foo = ↓1.920442"),
-            Example("let foo = ↓3.343434"),
-        ]
-        let corrections = [
-            Example("let foo = ↓1000"): Example("let foo = 1_000"),
-            Example("let foo = ↓2100"): Example("let foo = 2_100"),
-            Example("let foo = ↓1.920442"): Example("let foo = 1.920_442"),
-            Example("let foo = ↓3.343434"): Example("let foo = 3.343_434"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "let foo = 1950",
+            "let foo = 1_950",
+            "let foo = 1985",
+            "let foo = 1_985",
+            "let foo = 2020",
+            "let foo = 2_020",
+            "let foo = 2.10042",
+            "let foo = 2.100_42",
+            "let foo = 2.833333",
+            "let foo = 2.833_333",
+        ])
+        let triggeringExamples = #examples([
+            "let foo = ↓1000",
+            "let foo = ↓2100",
+            "let foo = ↓1.920442",
+            "let foo = ↓3.343434",
+        ])
+        let corrections = #corrections([
+            "let foo = ↓1000": "let foo = 1_000",
+            "let foo = ↓2100": "let foo = 2_100",
+            "let foo = ↓1.920442": "let foo = 1.920_442",
+            "let foo = ↓3.343434": "let foo = 3.343_434",
+        ])
 
         let description = NumberSeparatorRule.description
             .with(triggeringExamples: triggeringExamples)

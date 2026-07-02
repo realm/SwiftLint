@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -10,22 +11,22 @@ struct ContainsOverFilterCountRule: Rule {
         description: "Prefer `contains` over comparing `filter(where:).count` to 0",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
-            [
-                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1"),
-                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1"),
-                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01"),
-            ]
-        } + [
-            Example("let result = myList.contains(where: { $0 % 2 == 0 })"),
-            Example("let result = !myList.contains(where: { $0 % 2 == 0 })"),
-            Example("let result = myList.contains(10)"),
-        ],
+            #examples([
+                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1",
+                "let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1",
+                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 01",
+            ])
+        } + #examples([
+            "let result = myList.contains(where: { $0 % 2 == 0 })",
+            "let result = !myList.contains(where: { $0 % 2 == 0 })",
+            "let result = myList.contains(10)",
+        ]),
         triggeringExamples: [">", "==", "!="].flatMap { operation in
-            [
-                Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0"),
-                Example("let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0"),
-                Example("let result = ↓myList.filter(where: someFunction).count \(operation) 0"),
-            ]
+            #examples([
+                "let result = ↓myList.filter(where: { $0 % 2 == 0 }).count \(operation) 0",
+                "let result = ↓myList.filter { $0 % 2 == 0 }.count \(operation) 0",
+                "let result = ↓myList.filter(where: someFunction).count \(operation) 0",
+            ])
         }
     )
 }

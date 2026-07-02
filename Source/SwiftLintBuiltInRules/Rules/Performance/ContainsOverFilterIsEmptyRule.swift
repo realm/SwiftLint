@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -10,21 +11,21 @@ struct ContainsOverFilterIsEmptyRule: Rule {
         description: "Prefer `contains` over using `filter(where:).isEmpty`",
         kind: .performance,
         nonTriggeringExamples: [">", "==", "!="].flatMap { operation in
-            [
-                Example("let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1"),
-                Example("let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1"),
-            ]
-        } + [
-            Example("let result = myList.contains(where: { $0 % 2 == 0 })"),
-            Example("let result = !myList.contains(where: { $0 % 2 == 0 })"),
-            Example("let result = myList.contains(10)"),
-        ],
-        triggeringExamples: [
-            Example("let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty"),
-            Example("let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty"),
-            Example("let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty"),
-            Example("let result = ↓myList.filter(where: someFunction).isEmpty"),
-        ]
+            #examples([
+                "let result = myList.filter(where: { $0 % 2 == 0 }).count \(operation) 1",
+                "let result = myList.filter { $0 % 2 == 0 }.count \(operation) 1",
+            ])
+        } + #examples([
+            "let result = myList.contains(where: { $0 % 2 == 0 })",
+            "let result = !myList.contains(where: { $0 % 2 == 0 })",
+            "let result = myList.contains(10)",
+        ]),
+        triggeringExamples: #examples([
+            "let result = ↓myList.filter(where: { $0 % 2 == 0 }).isEmpty",
+            "let result = !↓myList.filter(where: { $0 % 2 == 0 }).isEmpty",
+            "let result = ↓myList.filter { $0 % 2 == 0 }.isEmpty",
+            "let result = ↓myList.filter(where: someFunction).isEmpty",
+        ])
     )
 }
 

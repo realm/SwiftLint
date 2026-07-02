@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 // MARK: - SelfBindingRule
@@ -11,40 +12,40 @@ struct SelfBindingRule: Rule {
         name: "Self Binding",
         description: "Re-bind `self` to a consistent identifier name.",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("if let self = self { return }"),
-            Example("guard let self = self else { return }"),
-            Example("if let this = this { return }"),
-            Example("guard let this = this else { return }"),
-            Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"]),
-        ],
-        triggeringExamples: [
-            Example("if let ↓`self` = self { return }"),
-            Example("guard let ↓`self` = self else { return }"),
-            Example("if let ↓this = self { return }"),
-            Example("guard let ↓this = self else { return }"),
-            Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let ↓self = self else { return }", configuration: ["bind_identifier": "this"]),
-            Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"]),
-        ],
-        corrections: [
-            Example("if let ↓`self` = self { return }"):
-                Example("if let self = self { return }"),
-            Example("guard let ↓`self` = self else { return }"):
-                Example("guard let self = self else { return }"),
-            Example("if let ↓this = self { return }"):
-                Example("if let self = self { return }"),
-            Example("guard let ↓this = self else { return }"):
-                Example("guard let self = self else { return }"),
-            Example("if let ↓self = self { return }", configuration: ["bind_identifier": "this"]):
-                Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("if let ↓self { return }", configuration: ["bind_identifier": "this"]):
-                Example("if let this = self { return }", configuration: ["bind_identifier": "this"]),
-            Example("guard let ↓self else { return }", configuration: ["bind_identifier": "this"]):
-                Example("guard let this = self else { return }", configuration: ["bind_identifier": "this"]),
-        ]
+        nonTriggeringExamples: #examples([
+            "if let self = self { return }",
+            "guard let self = self else { return }",
+            "if let this = this { return }",
+            "guard let this = this else { return }",
+            "if let this = self { return }".configuration(["bind_identifier": "this"]),
+            "guard let this = self else { return }".configuration(["bind_identifier": "this"]),
+        ]),
+        triggeringExamples: #examples([
+            "if let ↓`self` = self { return }",
+            "guard let ↓`self` = self else { return }",
+            "if let ↓this = self { return }",
+            "guard let ↓this = self else { return }",
+            "if let ↓self = self { return }".configuration(["bind_identifier": "this"]),
+            "guard let ↓self = self else { return }".configuration(["bind_identifier": "this"]),
+            "if let ↓self { return }".configuration(["bind_identifier": "this"]),
+            "guard let ↓self else { return }".configuration(["bind_identifier": "this"]),
+        ]),
+        corrections: #corrections([
+            "if let ↓`self` = self { return }":
+                "if let self = self { return }",
+            "guard let ↓`self` = self else { return }":
+                "guard let self = self else { return }",
+            "if let ↓this = self { return }":
+                "if let self = self { return }",
+            "guard let ↓this = self else { return }":
+                "guard let self = self else { return }",
+            "if let ↓self = self { return }".configuration(["bind_identifier": "this"]):
+                "if let this = self { return }".configuration(["bind_identifier": "this"]),
+            "if let ↓self { return }".configuration(["bind_identifier": "this"]):
+                "if let this = self { return }".configuration(["bind_identifier": "this"]),
+            "guard let ↓self else { return }".configuration(["bind_identifier": "this"]):
+                "guard let this = self else { return }".configuration(["bind_identifier": "this"]),
+        ])
     )
 }
 

@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(correctable: true)
@@ -14,91 +15,75 @@ struct InvisibleCharacterRule: Rule {
             in string literals as they can cause hard-to-debug issues.
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example(#"let s = "HelloWorld""#),
-            Example(#"let s = "Hello World""#),
-            Example(#"let url = "https://example.com/api""#),
-            Example(##"let s = #"Hello World"#"##),
-            Example("""
+        nonTriggeringExamples: #examples([
+            #"let s = "HelloWorld""#,
+            #"let s = "Hello World""#,
+            #"let url = "https://example.com/api""#,
+            ##"let s = #"Hello World"#"##,
+            """
             let multiline = \"\"\"
             Hello
             World
             \"\"\"
-            """),
-            Example(#"let empty = """#),
-            Example(#"let tab = "Hello\tWorld""#),
-            Example(#"let newline = "Hello\nWorld""#),
-            Example(#"let unicode = "Hello 👋 World""#),
-        ],
-        triggeringExamples: [
-            Example(#"let s = "Hello↓​World" // U+200B zero-width space"#),
-            Example(#"let s = "Hello↓‌World" // U+200C zero-width non-joiner"#),
-            Example(#"let s = "Hello↓﻿World" // U+FEFF formatting character"#),
-            Example(#"let url = "https://example↓​.com" // U+200B in URL"#),
-            Example("""
+            """,
+            #"let empty = """#,
+            #"let tab = "Hello\tWorld""#,
+            #"let newline = "Hello\nWorld""#,
+            #"let unicode = "Hello 👋 World""#,
+        ]),
+        triggeringExamples: #examples([
+            #"let s = "Hello↓​World" // U+200B zero-width space"#,
+            #"let s = "Hello↓‌World" // U+200C zero-width non-joiner"#,
+            #"let s = "Hello↓﻿World" // U+FEFF formatting character"#,
+            #"let url = "https://example↓​.com" // U+200B in URL"#,
+            """
             // U+200B in multiline string
             let multiline = \"\"\"
             Hello↓​World
             \"\"\"
-            """),
-            Example(#"let s = "Test↓​String↓﻿Here" // Multiple invisible characters"#),
-            Example(#"let s = "Hel↓‌lo" + "World" // string concatenation with U+200C"#),
-            Example(#"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#),
-            Example("""
+            """,
+            #"let s = "Test↓​String↓﻿Here" // Multiple invisible characters"#,
+            #"let s = "Hel↓‌lo" + "World" // string concatenation with U+200C"#,
+            #"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#,
+            """
             let s = "Hello↓­World"
-            """,
-            configuration: [
+            """.configuration([
                 "additional_code_points": ["00AD"],
-            ]
-            ),
-            Example("""
+            ]),
+            """
             let s = "Hello↓‍World"
-            """,
-            configuration: [
+            """.configuration([
                 "additional_code_points": ["200D"],
-            ]
-            ),
-        ],
-        corrections: [
-            Example(#"let s = "Hello​World""#): Example(#"let s = "HelloWorld""#),
-            Example(#"let s = "Hello‌World""#): Example(#"let s = "HelloWorld""#),
-            Example(#"let s = "Hello﻿World""#): Example(#"let s = "HelloWorld""#),
-            Example(#"let url = "https://example​.com""#): Example(#"let url = "https://example.com""#),
-            Example("""
+            ]),
+        ]),
+        corrections: #corrections([
+            #"let s = "Hello​World""#: #"let s = "HelloWorld""#,
+            #"let s = "Hello‌World""#: #"let s = "HelloWorld""#,
+            #"let s = "Hello﻿World""#: #"let s = "HelloWorld""#,
+            #"let url = "https://example​.com""#: #"let url = "https://example.com""#,
+            """
             let multiline = \"\"\"
             Hello​World
             \"\"\"
-            """): Example("""
+            """: """
             let multiline = \"\"\"
             HelloWorld
             \"\"\"
-            """),
-            Example(#"let s = "Test​String﻿Here""#): Example(#"let s = "TestStringHere""#),
-            Example(#"let s = "Hel‌lo" + "World""#): Example(#"let s = "Hello" + "World""#),
-            Example(#"let s = "Hel‌lo \(name)""#): Example(#"let s = "Hello \(name)""#),
-            Example(
-                #"let s = "Hello­World""#,
-                configuration: [
+            """,
+            #"let s = "Test​String﻿Here""#: #"let s = "TestStringHere""#,
+            #"let s = "Hel‌lo" + "World""#: #"let s = "Hello" + "World""#,
+            #"let s = "Hel‌lo \(name)""#: #"let s = "Hello \(name)""#,
+            #"let s = "Hello­World""#.configuration([
                     "additional_code_points": ["00AD"],
-                ]
-            ): Example(
-                #"let s = "HelloWorld""#,
-                configuration: [
+            ]): #"let s = "HelloWorld""#.configuration([
                     "additional_code_points": ["00AD"],
-                ]
-            ),
-            Example(
-                #"let s = "Hello‍World""#,
-                configuration: [
+            ]),
+            #"let s = "Hello‍World""#.configuration([
                     "additional_code_points": ["200D"],
-                ]
-            ): Example(
-                #"let s = "HelloWorld""#,
-                configuration: [
+            ]): #"let s = "HelloWorld""#.configuration([
                     "additional_code_points": ["200D"],
-                ]
-            ),
-        ]
+            ]),
+        ])
     )
     // swiftlint:enable invisible_character
 }

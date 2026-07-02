@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 extension String {
     private func countOfTrailingCharacters(in characterSet: CharacterSet) -> Int {
@@ -26,18 +27,18 @@ struct TrailingNewlineRule: CorrectableRule, SourceKitFreeRule {
         name: "Trailing Newline",
         description: "Files should have a single trailing newline",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let a = 0\n")
-        ],
-        triggeringExamples: [
-            Example("let a = 0"),
-            Example("let a = 0\n\n"),
-        ].skipWrappingInCommentTests().skipWrappingInStringTests(),
-        corrections: [
-            Example("let a = 0"): Example("let a = 0\n"),
-            Example("let b = 0\n\n"): Example("let b = 0\n"),
-            Example("let c = 0\n\n\n\n"): Example("let c = 0\n"),
-        ]
+        nonTriggeringExamples: #examples([
+            "let a = 0\n"
+        ]),
+        triggeringExamples: #examples([
+            "let a = 0",
+            "let a = 0\n\n",
+        ]).skipWrappingInCommentTests().skipWrappingInStringTests(),
+        corrections: #corrections([
+            "let a = 0": "let a = 0\n",
+            "let b = 0\n\n": "let b = 0\n",
+            "let c = 0\n\n\n\n": "let c = 0\n",
+        ])
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

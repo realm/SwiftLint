@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,30 +10,30 @@ struct ExplicitTopLevelACLRule: Rule {
         name: "Explicit Top Level ACL",
         description: "Top-level declarations should specify Access Control Level keywords explicitly",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("internal enum A {}"),
-            Example("public final class B {}"),
-            Example("""
-                private struct S1 {
-                    struct S2 {}
-                }
-                """),
-            Example("internal enum A { enum B {} }"),
-            Example("internal final actor Foo {}"),
-            Example("internal typealias Foo = Bar"),
-            Example("internal func a() {}"),
-            Example("extension A: Equatable {}"),
-            Example("extension A {}"),
-            Example("f { func f() {} }", excludeFromDocumentation: true),
-            Example("do { func f() {} }", excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("↓enum A {}"),
-            Example("final ↓class B {}"),
-            Example("↓protocol P {}"),
-            Example("↓func a() {}"),
-            Example("internal let a = 0\n↓func b() {}"),
-        ]
+        nonTriggeringExamples: #examples([
+            "internal enum A {}",
+            "public final class B {}",
+            """
+            private struct S1 {
+                struct S2 {}
+            }
+            """,
+            "internal enum A { enum B {} }",
+            "internal final actor Foo {}",
+            "internal typealias Foo = Bar",
+            "internal func a() {}",
+            "extension A: Equatable {}",
+            "extension A {}",
+            "f { func f() {} }".excludeFromDocumentation(),
+            "do { func f() {} }".excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "↓enum A {}",
+            "final ↓class B {}",
+            "↓protocol P {}",
+            "↓func a() {}",
+            "internal let a = 0\n↓func b() {}",
+        ])
     )
 }
 

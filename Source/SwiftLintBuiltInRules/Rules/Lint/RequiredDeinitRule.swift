@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 /// Rule to require all classes to have a deinit method
@@ -15,38 +16,38 @@ struct RequiredDeinitRule: Rule {
         name: "Required Deinit",
         description: "Classes should have an explicit deinit method",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class Apple {
                 deinit { }
             }
-            """),
-            Example("enum Banana { }"),
-            Example("protocol Cherry { }"),
-            Example("struct Damson { }"),
-            Example("""
+            """,
+            "enum Banana { }",
+            "protocol Cherry { }",
+            "struct Damson { }",
+            """
             class Outer {
                 deinit { print("Deinit Outer") }
                 class Inner {
                     deinit { print("Deinit Inner") }
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("↓class Apple { }"),
-            Example("↓class Banana: NSObject, Equatable { }"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "↓class Apple { }",
+            "↓class Banana: NSObject, Equatable { }",
+            """
             ↓class Cherry {
                 // deinit { }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓class Damson {
                 func deinitialize() { }
             }
-            """),
-            Example("""
+            """,
+            """
             class Outer {
                 func hello() -> String { return "outer" }
                 deinit { }
@@ -54,8 +55,8 @@ struct RequiredDeinitRule: Rule {
                     func hello() -> String { return "inner" }
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓class Outer {
                 func hello() -> String { return "outer" }
                 class Inner {
@@ -63,8 +64,8 @@ struct RequiredDeinitRule: Rule {
                     deinit { }
                 }
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

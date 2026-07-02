@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 @DisabledWithoutSourceKit
 struct MultilineFunctionChainsRule: ASTRule, OptInRule {
@@ -10,41 +11,41 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
         name: "Multiline Function Chains",
         description: "Chained function calls should be either on the same line, or one per line",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let evenSquaresSum = [20, 17, 35, 4].filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let evenSquaresSum = [20, 17, 35, 4].filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)",
+            """
             let evenSquaresSum = [20, 17, 35, 4]
                 .filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)",
-            """),
-            Example("""
+            """,
+            """
             let chain = a
                 .b(1, 2, 3)
                 .c { blah in
                     print(blah)
                 }
                 .d()
-            """),
-            Example("""
+            """,
+            """
             let chain = a.b(1, 2, 3)
                 .c { blah in
                     print(blah)
                 }
                 .d()
-            """),
-            Example("""
+            """,
+            """
             let chain = a.b(1, 2, 3)
                 .c { blah in print(blah) }
                 .d()
-            """),
-            Example("""
+            """,
+            """
             let chain = a.b(1, 2, 3)
                 .c(.init(
                     a: 1,
                     b, 2,
                     c, 3))
                 .d()
-            """),
-            Example("""
+            """,
+            """
             self.viewModel.outputs.postContextualNotification
               .observeForUI()
               .observeValues {
@@ -56,41 +57,41 @@ struct MultilineFunctionChainsRule: ASTRule, OptInRule {
                  )
                 )
               }
-            """),
-            Example("let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))"),
-            Example("""
+            """,
+            "let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))",
+            """
             self.happeningNewsletterOn = self.updateCurrentUser
                 .map { $0.newsletters.happening }.skipNil().skipRepeats()
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             let evenSquaresSum = [20, 17, 35, 4]
                 .filter { $0 % 2 == 0 }↓.map { $0 * $0 }
                 .reduce(0, +)
-            """),
-            Example("""
+            """,
+            """
             let evenSquaresSum = a.b(1, 2, 3)
                 .c { blah in
                     print(blah)
                 }↓.d()
-            """),
-            Example("""
+            """,
+            """
             let evenSquaresSum = a.b(1, 2, 3)
                 .c(2, 3, 4)↓.d()
-            """),
-            Example("""
+            """,
+            """
             let evenSquaresSum = a.b(1, 2, 3)↓.c { blah in
                     print(blah)
                 }
                 .d()
-            """),
-            Example("""
+            """,
+            """
             a.b {
             //  ““
             }↓.e()
-            """),
-        ]
+            """,
+        ])
     )
 
     func validate(file: SwiftLintFile,

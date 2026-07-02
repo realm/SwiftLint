@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -13,15 +14,15 @@ struct FileHeaderRule: Rule {
             "The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the " +
             "required and forbidden patterns. It will be replaced by the real file name.",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("let foo = \"Copyright\""),
-            Example("let foo = 2 // Copyright"),
-            Example("let foo = 2\n // Copyright"),
-        ],
-        triggeringExamples: [
-            Example("// ↓Copyright"),
-            Example("//\n// ↓Copyright"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "let foo = \"Copyright\"",
+            "let foo = 2 // Copyright",
+            "let foo = 2\n // Copyright",
+        ]),
+        triggeringExamples: #examples([
+            "// ↓Copyright",
+            "//\n// ↓Copyright",
+            """
             //
             //  FileHeaderRule.swift
             //  SwiftLint
@@ -29,8 +30,8 @@ struct FileHeaderRule: Rule {
             //  Created by Marcelo Fabri on 27/11/16.
             //  ↓Copyright © 2016 Realm. All rights reserved.
             //
-            """),
-        ].skipWrappingInCommentTests()
+            """,
+        ]).skipWrappingInCommentTests()
     )
 }
 

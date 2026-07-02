@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -9,22 +10,22 @@ struct DuplicateEnumCasesRule: Rule {
         name: "Duplicate Enum Cases",
         description: "Enum shouldn't contain multiple cases with the same name",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             enum PictureImport {
                 case addImage(image: UIImage)
                 case addData(data: Data)
             }
-            """),
-            Example("""
+            """,
+            """
             enum A {
                 case add(image: UIImage)
             }
             enum B {
                 case add(image: UIImage)
             }
-            """),
-            Example("""
+            """,
+            """
             enum Tag: String {
             #if CONFIG_A
                 case value = "CONFIG_A"
@@ -34,8 +35,8 @@ struct DuplicateEnumCasesRule: Rule {
                 case value = "CONFIG_DEFAULT"
             #endif
             }
-            """),
-            Example("""
+            """,
+            """
             enum Target {
             #if os(iOS)
               case file
@@ -43,17 +44,17 @@ struct DuplicateEnumCasesRule: Rule {
               case file(URL)
             #endif
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             enum PictureImport {
                 case ↓add(image: UIImage)
                 case addURL(url: URL)
                 case ↓add(data: Data)
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

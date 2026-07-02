@@ -1,3 +1,5 @@
+import SwiftLintCore
+
 // swiftlint:disable file_length
 
 private let detectingTypes = ["actor", "class", "struct", "enum"]
@@ -105,21 +107,21 @@ internal struct NestingRuleExamples {
 
     private static let nonTriggeringProtocolExamples =
         detectingTypes.flatMap { type in
-            [
-                Example("""
+            #examples([
+                """
                     \(type) Example_0 {
                         protocol Example_1 {}
                     }
-                    """),
-                Example("""
+                    """,
+                """
                     var example: Int {
                         \(type) Example_0 {
                             protocol Example_1 {}
                         }
                         return 5
                     }
-                    """),
-                Example("""
+                    """,
+                """
                     var example: Int = 5 {
                         didSet {
                             \(type) Example_0 {
@@ -127,13 +129,13 @@ internal struct NestingRuleExamples {
                             }
                         }
                     }
-                    """),
-                Example("""
+                    """,
+                """
                     extension Example_0 {
                         protocol Example_1 {}
                     }
-                    """),
-            ]
+                    """,
+            ])
         }
 
     private static let nonTriggeringClosureAndStatementExamples =
@@ -231,8 +233,7 @@ internal struct NestingRuleExamples {
         }
 
     private static let nonTriggeringExamplesIgnoreCodingKeys: [Example] = [
-        Example(
-            """
+        """
             struct Outer {
                 struct Inner {
                     enum CodingKeys: String, CodingKey {
@@ -240,9 +241,7 @@ internal struct NestingRuleExamples {
                     }
                 }
             }
-            """,
-            configuration: ["ignore_coding_keys": true]
-        ),
+            """.configuration(["ignore_coding_keys": true]),
     ]
 }
 
@@ -425,15 +424,15 @@ extension NestingRuleExamples {
 
     private static let triggeringProtocolExamples =
         detectingTypes.flatMap { type in
-            [
-                Example("""
+            #examples([
+                """
                     \(type) Example_0 {
                         \(type) Example_1 {
                             ↓protocol Example_2 {}
                         }
                     }
-                    """),
-                Example("""
+                    """,
+                """
                     var example: Int {
                         \(type) Example_0 {
                             \(type) Example_1 {
@@ -442,8 +441,8 @@ extension NestingRuleExamples {
                         }
                         return 5
                     }
-                    """),
-                Example("""
+                    """,
+                """
                     var example: Int = 5 {
                         didSet {
                             \(type) Example_0 {
@@ -453,15 +452,15 @@ extension NestingRuleExamples {
                             }
                         }
                     }
-                    """),
-                Example("""
+                    """,
+                """
                     extension Example_0 {
                         \(type) Example_1 {
                             ↓protocol Example_2 {}
                         }
                     }
-                    """),
-            ]
+                    """,
+            ])
         }
 
     private static let triggeringMixedExamples =
@@ -518,8 +517,8 @@ extension NestingRuleExamples {
             ]
         }
 
-    private static let triggeringExamplesCodingKeys: [Example] = [
-        Example("""
+    private static let triggeringExamplesCodingKeys: [Example] = #examples([
+        """
                 struct Outer {
                     struct Inner {
                         ↓enum CodingKeys: String, CodingKey {
@@ -527,12 +526,11 @@ extension NestingRuleExamples {
                         }
                     }
                 }
-        """),
-    ]
+        """,
+    ])
 
     private static let triggeringExamplesIgnoreCodingKeys: [Example] = [
-        Example(
-            """
+        """
             struct Outer {
                 struct Inner {
                     ↓enum Example: String, CodingKey {
@@ -540,19 +538,14 @@ extension NestingRuleExamples {
                     }
                 }
             }
-            """,
-            configuration: ["ignore_coding_keys": true]
-        ),
-        Example(
-            """
+            """.configuration(["ignore_coding_keys": true]),
+        """
             struct Outer {
               enum CodingKeys: String, CodingKey {
                 case id
                 ↓struct S {}
               }
             }
-            """,
-            configuration: ["ignore_coding_keys": true]
-        ),
+            """.configuration(["ignore_coding_keys": true]),
     ]
 }

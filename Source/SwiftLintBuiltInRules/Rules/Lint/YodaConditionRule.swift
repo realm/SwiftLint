@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,31 +10,31 @@ struct YodaConditionRule: Rule {
         name: "Yoda Condition",
         description: "The constant literal should be placed on the right-hand side of the comparison operator",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("if foo == 42 {}"),
-            Example("if foo <= 42.42 {}"),
-            Example("guard foo >= 42 else { return }"),
-            Example("guard foo != \"str str\" else { return }"),
-            Example("while foo < 10 { }"),
-            Example("while foo > 1 { }"),
-            Example("while foo + 1 == 2 {}"),
-            Example("if optionalValue?.property ?? 0 == 2 {}"),
-            Example("if foo == nil {}"),
-            Example("if flags & 1 == 1 {}"),
-            Example("if true {}", excludeFromDocumentation: true),
-            Example("if true == false || b, 2 != 3 {}", excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("if ↓42 == foo {}"),
-            Example("if ↓42.42 >= foo {}"),
-            Example("guard ↓42 <= foo else { return }"),
-            Example("guard ↓\"str str\" != foo else { return }"),
-            Example("while ↓10 > foo { }"),
-            Example("while ↓1 < foo { }"),
-            Example("if ↓nil == foo {}"),
-            Example("while ↓1 > i + 5 {}"),
-            Example("if ↓200 <= i && i <= 299 || ↓600 <= i {}"),
-        ])
+        nonTriggeringExamples: #examples([
+            "if foo == 42 {}",
+            "if foo <= 42.42 {}",
+            "guard foo >= 42 else { return }",
+            "guard foo != \"str str\" else { return }",
+            "while foo < 10 { }",
+            "while foo > 1 { }",
+            "while foo + 1 == 2 {}",
+            "if optionalValue?.property ?? 0 == 2 {}",
+            "if foo == nil {}",
+            "if flags & 1 == 1 {}",
+            "if true {}".excludeFromDocumentation(),
+            "if true == false || b, 2 != 3 {}".excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "if ↓42 == foo {}",
+            "if ↓42.42 >= foo {}",
+            "guard ↓42 <= foo else { return }",
+            "guard ↓\"str str\" != foo else { return }",
+            "while ↓10 > foo { }",
+            "while ↓1 < foo { }",
+            "if ↓nil == foo {}",
+            "while ↓1 > i + 5 {}",
+            "if ↓200 <= i && i <= 299 || ↓600 <= i {}",
+        ]))
 }
 
 private extension YodaConditionRule {

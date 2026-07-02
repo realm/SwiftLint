@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 import SwiftSyntax
 
 struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
@@ -11,51 +12,51 @@ struct CommaInheritanceRule: OptInRule, SubstitutionCorrectableRule,
         name: "Comma Inheritance Rule",
         description: "Use commas to separate types in inheritance lists",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("struct A: Codable, Equatable {}"),
-            Example("enum B: Codable, Equatable {}"),
-            Example("class C: Codable, Equatable {}"),
-            Example("protocol D: Codable, Equatable {}"),
-            Example("typealias E = Equatable & Codable"),
-            Example("func foo<T: Equatable & Codable>(_ param: T) {}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "struct A: Codable, Equatable {}",
+            "enum B: Codable, Equatable {}",
+            "class C: Codable, Equatable {}",
+            "protocol D: Codable, Equatable {}",
+            "typealias E = Equatable & Codable",
+            "func foo<T: Equatable & Codable>(_ param: T) {}",
+            """
             protocol G {
                 associatedtype Model: Codable, Equatable
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("struct A: Codable↓ & Equatable {}"),
-            Example("struct A: Codable↓  & Equatable {}"),
-            Example("struct A: Codable↓&Equatable {}"),
-            Example("struct A: Codable↓& Equatable {}"),
-            Example("enum B: Codable↓ & Equatable {}"),
-            Example("class C: Codable↓ & Equatable {}"),
-            Example("protocol D: Codable↓ & Equatable {}"),
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "struct A: Codable↓ & Equatable {}",
+            "struct A: Codable↓  & Equatable {}",
+            "struct A: Codable↓&Equatable {}",
+            "struct A: Codable↓& Equatable {}",
+            "enum B: Codable↓ & Equatable {}",
+            "class C: Codable↓ & Equatable {}",
+            "protocol D: Codable↓ & Equatable {}",
+            """
             protocol G {
                 associatedtype Model: Codable↓ & Equatable
             }
-            """),
-        ],
-        corrections: [
-            Example("struct A: Codable↓ & Equatable {}"): Example("struct A: Codable, Equatable {}"),
-            Example("struct A: Codable↓  & Equatable {}"): Example("struct A: Codable, Equatable {}"),
-            Example("struct A: Codable↓&Equatable {}"): Example("struct A: Codable, Equatable {}"),
-            Example("struct A: Codable↓& Equatable {}"): Example("struct A: Codable, Equatable {}"),
-            Example("enum B: Codable↓ & Equatable {}"): Example("enum B: Codable, Equatable {}"),
-            Example("class C: Codable↓ & Equatable {}"): Example("class C: Codable, Equatable {}"),
-            Example("protocol D: Codable↓ & Equatable {}"): Example("protocol D: Codable, Equatable {}"),
-            Example("""
+            """,
+        ]),
+        corrections: #corrections([
+            "struct A: Codable↓ & Equatable {}": "struct A: Codable, Equatable {}",
+            "struct A: Codable↓  & Equatable {}": "struct A: Codable, Equatable {}",
+            "struct A: Codable↓&Equatable {}": "struct A: Codable, Equatable {}",
+            "struct A: Codable↓& Equatable {}": "struct A: Codable, Equatable {}",
+            "enum B: Codable↓ & Equatable {}": "enum B: Codable, Equatable {}",
+            "class C: Codable↓ & Equatable {}": "class C: Codable, Equatable {}",
+            "protocol D: Codable↓ & Equatable {}": "protocol D: Codable, Equatable {}",
+            """
             protocol G {
                 associatedtype Model: Codable↓ & Equatable
             }
-            """): Example("""
+            """: """
             protocol G {
                 associatedtype Model: Codable, Equatable
             }
-            """),
-        ]
+            """,
+        ])
     )
 
     // MARK: - Rule

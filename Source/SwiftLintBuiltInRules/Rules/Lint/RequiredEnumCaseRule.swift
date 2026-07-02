@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 /// Allows for Enums that conform to a protocol to require that a specific case be present.
@@ -80,56 +81,56 @@ struct RequiredEnumCaseRule: Rule {
         name: "Required Enum Case",
         description: "Enums conforming to a specified protocol must implement a specific case(s).",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error, notConnected
             }
-            """, configuration: exampleConfiguration),
-            Example("""
+            """.configuration(exampleConfiguration),
+            """
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error, notConnected(error: Error)
             }
-            """, configuration: exampleConfiguration),
-            Example("""
+            """.configuration(exampleConfiguration),
+            """
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
                 case notConnected
             }
-            """, configuration: exampleConfiguration),
-            Example("""
+            """.configuration(exampleConfiguration),
+            """
             enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
                 case notConnected(error: Error)
             }
-            """, configuration: exampleConfiguration),
-        ],
-        triggeringExamples: [
-            Example("""
+            """.configuration(exampleConfiguration),
+        ]),
+        triggeringExamples: #examples([
+            """
             ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error
             }
-            """, configuration: exampleConfiguration),
-            Example("""
+            """.configuration(exampleConfiguration),
+            """
             ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success, error
             }
-            """, configuration: exampleConfiguration),
-            Example("""
+            """.configuration(exampleConfiguration),
+            """
             ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
             }
-            """, configuration: exampleConfiguration),
-            Example("""
+            """.configuration(exampleConfiguration),
+            """
             ↓enum MyNetworkResponse: String, NetworkResponsable {
                 case success
                 case error
             }
-            """, configuration: exampleConfiguration),
-        ]
+            """.configuration(exampleConfiguration),
+        ])
     )
 }
 

@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
@@ -10,16 +11,16 @@ struct ExplicitInitRule: Rule {
         name: "Explicit Init",
         description: "Explicitly calling .init() should be avoided",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             import Foundation
             class C: NSObject {
                 override init() {
                     super.init()
                 }
             }
-            """), // super
-            Example("""
+            """, // super
+            """
             struct S {
                 let n: Int
             }
@@ -28,84 +29,84 @@ struct ExplicitInitRule: Rule {
                     self.init(n: 1)
                 }
             }
-            """), // self
-            Example("""
+            """, // self
+            """
             [1].flatMap(String.init)
-            """), // pass init as closure
-            Example("""
+            """, // pass init as closure
+            """
             [String.self].map { $0.init(1) }
-            """), // initialize from a metatype value
-            Example("""
+            """, // initialize from a metatype value
+            """
             [String.self].map { type in type.init(1) }
-            """), // initialize from a metatype value
-            Example("""
+            """, // initialize from a metatype value
+            """
             Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()
-            """),
-            Example("_ = GleanMetrics.Tabs.someType.init()"),
-            Example("""
+            """,
+            "_ = GleanMetrics.Tabs.someType.init()",
+            """
             Observable.zip(
               obs1,
               obs2,
               resultSelector: MyType.init
             ).asMaybe()
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             [1].flatMap{String↓.init($0)}
-            """),
-            Example("""
+            """,
+            """
             [String.self].map { Type in Type↓.init(1) }
-            """),  // Starting with capital letter assumes a type
-            Example("""
+            """,  // Starting with capital letter assumes a type
+            """
             func foo() -> [String] {
                 return [1].flatMap { String↓.init($0) }
             }
-            """),
-            Example("_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()"),
-            Example("_ = Set<KsApi.Category>↓.init()"),
-            Example("""
+            """,
+            "_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()",
+            "_ = Set<KsApi.Category>↓.init()",
+            """
             Observable.zip(
               obs1,
               obs2,
               resultSelector: { MyType↓.init($0, $1) }
             ).asMaybe()
-            """),
-            Example("""
+            """,
+            """
             let int = In🤓t↓
             .init(1.0)
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             let int = Int↓
 
 
             .init(1.0)
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             let int = Int↓
 
 
                   .init(1.0)
-            """, excludeFromDocumentation: true),
-        ],
-        corrections: [
-            Example("""
+            """.excludeFromDocumentation(),
+        ]),
+        corrections: #corrections([
+            """
             [1].flatMap{String↓.init($0)}
-            """):
-                Example("""
+            """:
+                """
                 [1].flatMap{String($0)}
-                """),
-            Example("""
+                """,
+            """
             func foo() -> [String] {
                 return [1].flatMap { String↓.init($0) }
             }
-            """):
-                Example("""
+            """:
+                """
                 func foo() -> [String] {
                     return [1].flatMap { String($0) }
                 }
-                """),
-            Example("""
+                """,
+            """
             class C {
             #if true
                 func f() {
@@ -113,8 +114,8 @@ struct ExplicitInitRule: Rule {
                 }
             #endif
             }
-            """):
-                Example("""
+            """:
+                """
                 class C {
                 #if true
                     func f() {
@@ -122,33 +123,33 @@ struct ExplicitInitRule: Rule {
                     }
                 #endif
                 }
-                """),
-            Example("""
+                """,
+            """
             let int = Int↓
             .init(1.0)
-            """):
-                Example("""
+            """:
+                """
                 let int = Int(1.0)
-                """),
-            Example("""
+                """,
+            """
             let int = Int↓
 
 
             .init(1.0)
-            """):
-                Example("""
+            """:
+                """
                 let int = Int(1.0)
-                """),
-            Example("""
+                """,
+            """
             let int = Int↓
 
 
                   .init(1.0)
-            """):
-                Example("""
+            """:
+                """
                 let int = Int(1.0)
-                """),
-            Example("""
+                """,
+            """
             let int = Int↓
 
 
@@ -156,30 +157,30 @@ struct ExplicitInitRule: Rule {
 
 
 
-            """):
-                Example("""
+            """:
+                """
                 let int = Int(1.0)
 
 
 
-                """),
-            Example("""
+                """,
+            """
             f { e in
                 // comment
                 A↓.init(e: e)
             }
-            """):
-                Example("""
+            """:
+                """
                 f { e in
                     // comment
                     A(e: e)
                 }
-                """),
-            Example("_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()"):
-                Example("_ = GleanMetrics.Tabs.GroupedTabExtra()"),
-            Example("_ = Set<KsApi.Category>↓.init()"):
-                Example("_ = Set<KsApi.Category>()"),
-        ]
+                """,
+            "_ = GleanMetrics.Tabs.GroupedTabExtra↓.init()":
+                "_ = GleanMetrics.Tabs.GroupedTabExtra()",
+            "_ = Set<KsApi.Category>↓.init()":
+                "_ = Set<KsApi.Category>()",
+        ])
     )
 }
 

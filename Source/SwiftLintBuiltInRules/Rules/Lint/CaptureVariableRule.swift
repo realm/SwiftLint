@@ -1,4 +1,5 @@
 import SourceKittenFramework
+import SwiftLintCore
 
 struct CaptureVariableRule: AnalyzerRule, CollectingRule {
     struct Variable: Hashable {
@@ -15,8 +16,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
         description: "Non-constant variables should not be listed in a closure's capture list" +
             " to avoid confusion about closures capturing variables at creation time",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class C {
                 let i: Int
                 init(_ i: Int) { self.i = i }
@@ -30,8 +31,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             }
 
             closure()
-            """),
-            Example("""
+            """,
+            """
             let iGlobal: Int = 0
 
             class C {
@@ -49,8 +50,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var j: Int!
             j = 0
 
@@ -61,8 +62,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             closure()
             j = 1
             closure()
-            """),
-            Example("""
+            """,
+            """
             lazy var j: Int = { 0 }()
 
             let closure: () -> Void = { [j] in
@@ -72,10 +73,10 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             closure()
             j = 1
             closure()
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             var j: Int = 0
 
             let closure: () -> Void = { [j] in
@@ -85,8 +86,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             closure()
             j = 1
             closure()
-            """),
-            Example("""
+            """,
+            """
             class C {
                 let i: Int
                 init(_ i: Int) { self.i = i }
@@ -100,8 +101,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             closure()
             c = C(1)
             closure()
-            """),
-            Example("""
+            """,
+            """
             var iGlobal: Int = 0
 
             class C {
@@ -114,8 +115,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class C {
                 static var iStatic: Int = 0
 
@@ -133,8 +134,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
             }
 
             C.callTest()
-            """),
-            Example("""
+            """,
+            """
             class C {
                 var iInstance: Int = 0
 
@@ -147,8 +148,8 @@ struct CaptureVariableRule: AnalyzerRule, CollectingRule {
                 func test(_ completionHandler: @escaping (Int) -> Void) {
                 }
             }
-            """),
-        ],
+            """,
+        ]),
         requiresFileOnDisk: true
     )
 

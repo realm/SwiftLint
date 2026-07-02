@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -14,38 +15,29 @@ struct DiscouragedDefaultParameterRule: Rule {
             unexpected (or changed) default values being used.
             """,
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("public func foo(bar: Int = 0) {}"),
-            Example("open func foo(bar: Int = 0) {}"),
-            Example("public extension Foo { func foo(bar: Int = 0) {} }"),
-            Example("extension E { public func foo(bar: Int = 0) {} }"),
-            Example("func outer() { func inner(bar: Int = 0) {} }"),
-            Example("func foo(bar: Int) {}"),
-            Example("private func foo(bar: Int = 0) {}"),
-            Example("fileprivate func foo(bar: Int = 0) {}"),
-            Example("public init(value: Int = 42) {}"),
-            Example(
-                "func foo(bar: Int = 0) {}",
-                configuration: ["disallowed_access_levels": ["private"]]
-            ),
-        ],
-        triggeringExamples: [
-            Example("func foo(bar: Int ↓= 0) {}"),
-            Example("internal func foo(bar: Int ↓= 0) {}"),
-            Example("package func foo(bar: Int ↓= 0) {}"),
-            Example("func foo(bar: Int ↓= 0, baz: String ↓= \"\") {}"),
-            Example("init(value: Int ↓= 42) {}"),
-            Example("class C { public func foo(bar: Int ↓= 0) {} }"),
-            Example("struct S { public init(value: Int ↓= 42) {} }"),
-            Example(
-                "private func foo(bar: Int ↓= 0) {}",
-                configuration: ["disallowed_access_levels": ["private"]]
-            ),
-            Example(
-                "fileprivate func foo(bar: Int ↓= 0) {}",
-                configuration: ["disallowed_access_levels": ["fileprivate"]]
-            ),
-        ]
+        nonTriggeringExamples: #examples([
+            "public func foo(bar: Int = 0) {}",
+            "open func foo(bar: Int = 0) {}",
+            "public extension Foo { func foo(bar: Int = 0) {} }",
+            "extension E { public func foo(bar: Int = 0) {} }",
+            "func outer() { func inner(bar: Int = 0) {} }",
+            "func foo(bar: Int) {}",
+            "private func foo(bar: Int = 0) {}",
+            "fileprivate func foo(bar: Int = 0) {}",
+            "public init(value: Int = 42) {}",
+            "func foo(bar: Int = 0) {}".configuration(["disallowed_access_levels": ["private"]]),
+        ]),
+        triggeringExamples: #examples([
+            "func foo(bar: Int ↓= 0) {}",
+            "internal func foo(bar: Int ↓= 0) {}",
+            "package func foo(bar: Int ↓= 0) {}",
+            "func foo(bar: Int ↓= 0, baz: String ↓= \"\") {}",
+            "init(value: Int ↓= 42) {}",
+            "class C { public func foo(bar: Int ↓= 0) {} }",
+            "struct S { public init(value: Int ↓= 42) {} }",
+            "private func foo(bar: Int ↓= 0) {}".configuration(["disallowed_access_levels": ["private"]]),
+            "fileprivate func foo(bar: Int ↓= 0) {}".configuration(["disallowed_access_levels": ["fileprivate"]]),
+        ])
     )
 }
 

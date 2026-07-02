@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -9,39 +10,39 @@ struct NoSpaceInMethodCallRule: Rule {
         name: "No Space in Method Call",
         description: "Don't add a space between the method name and the parentheses",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("foo()"),
-            Example("object.foo()"),
-            Example("object.foo(1)"),
-            Example("object.foo(value: 1)"),
-            Example("object.foo { print($0 }"),
-            Example("list.sorted { $0.0 < $1.0 }.map { $0.value }"),
-            Example("self.init(rgb: (Int) (colorInt))"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "foo()",
+            "object.foo()",
+            "object.foo(1)",
+            "object.foo(value: 1)",
+            "object.foo { print($0 }",
+            "list.sorted { $0.0 < $1.0 }.map { $0.value }",
+            "self.init(rgb: (Int) (colorInt))",
+            """
             Button {
                 print("Button tapped")
             } label: {
                 Text("Button")
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("foo↓ ()"),
-            Example("object.foo↓ ()"),
-            Example("object.foo↓ (1)"),
-            Example("object.foo↓ (value: 1)"),
-            Example("object.foo↓ () {}"),
-            Example("object.foo↓     ()"),
-            Example("object.foo↓     (value: 1) { x in print(x) }"),
-        ],
-        corrections: [
-            Example("foo↓ ()"): Example("foo()"),
-            Example("object.foo↓ ()"): Example("object.foo()"),
-            Example("object.foo↓ (1)"): Example("object.foo(1)"),
-            Example("object.foo↓ (value: 1)"): Example("object.foo(value: 1)"),
-            Example("object.foo↓ () {}"): Example("object.foo() {}"),
-            Example("object.foo↓     ()"): Example("object.foo()"),
-        ]
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "foo↓ ()",
+            "object.foo↓ ()",
+            "object.foo↓ (1)",
+            "object.foo↓ (value: 1)",
+            "object.foo↓ () {}",
+            "object.foo↓     ()",
+            "object.foo↓     (value: 1) { x in print(x) }",
+        ]),
+        corrections: #corrections([
+            "foo↓ ()": "foo()",
+            "object.foo↓ ()": "object.foo()",
+            "object.foo↓ (1)": "object.foo(1)",
+            "object.foo↓ (value: 1)": "object.foo(value: 1)",
+            "object.foo↓ () {}": "object.foo() {}",
+            "object.foo↓     ()": "object.foo()",
+        ])
     )
 }
 

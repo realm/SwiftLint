@@ -10,36 +10,36 @@ struct VariableShadowingRule: Rule {
         name: "Variable Shadowing",
         description: "Do not shadow variables declared in outer scopes",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             var a: String?
             func test(a: String?) {
                 print(a)
             }
-            """, configuration: ["ignore_parameters": true]),
-            Example("""
+            """.configuration(["ignore_parameters": true]),
+            """
             var a: String = "hello"
             if let b = a {
                 print(b)
             }
-            """),
-            Example("""
+            """,
+            """
             var a: String?
             func test() {
                 if let b = a {
                     print(b)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             for i in 1...10 {
                 print(i)
             }
             for i in 1...10 {
                 print(i)
             }
-            """),
-            Example("""
+            """,
+            """
             func test() {
                 var a: String = "hello"
                 func nested() {
@@ -47,40 +47,40 @@ struct VariableShadowingRule: Rule {
                     print(a, b)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             class Test {
                 var a: String?
                 func test(a: String?) {
                     print(a)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             let a: Int?
             if let a { print(a) }
-            """),
-            Example("""
+            """,
+            """
             let a: Int?
             guard let a else { return }
-            """),
-            Example("""
+            """,
+            """
             let a: Int?
             while let a { print(a) }
-            """),
-            Example("""
+            """,
+            """
             var a = 1
             if let a = a {
                 print(a)
             }
-            """),
-            Example("""
+            """,
+            """
             var a = 1
             if let a = self.a {
                 print(a)
             }
-            """),
-            Example("""
+            """,
+            """
             struct S {
                 static let c: Int? = nil
                 var a: Int?
@@ -90,30 +90,30 @@ struct VariableShadowingRule: Rule {
                     else { 0 }
                 }
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             var foo = 1
             do {
                 let ↓foo = 2
             }
-            """),
-            Example("""
+            """,
+            """
             var a = 1
             if let ↓a = Optional(2) {
                 let ↓a = 3
                 print(a)
             }
-            """),
-            Example("""
+            """,
+            """
             var i = 1
             for ↓i in 1...3 {
                 let ↓i = 2
                 print(i)
             }
-            """),
-            Example("""
+            """,
+            """
             var a = 1
             func test() {
                 do {
@@ -121,8 +121,8 @@ struct VariableShadowingRule: Rule {
                     print(a)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             func test() {
                 var a = 1
                 if var ↓a = Optional(2) {
@@ -130,8 +130,8 @@ struct VariableShadowingRule: Rule {
                     print(a)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             func test() {
                 var a = 1
                 for ↓a in 0..<1 {
@@ -139,8 +139,8 @@ struct VariableShadowingRule: Rule {
                     print(a)
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             func test() {
                 var a = 1
                 while true {
@@ -148,15 +148,15 @@ struct VariableShadowingRule: Rule {
                     break
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var a: String?
             func test(↓a: String?) {
                 let ↓a = ""
                 print(a)
             }
-            """, configuration: ["ignore_parameters": false]),
-            Example("""
+            """.configuration(["ignore_parameters": false]),
+            """
             struct S {
                 var a = 1
                 var b: Int {
@@ -164,16 +164,16 @@ struct VariableShadowingRule: Rule {
                     return a
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             var a: String?
             while let ↓a = Optional("hello") {}
-            """),
-            Example("""
+            """,
+            """
             var a = "outer"
             let (↓a, c) = ("first", "second")
-            """),
-        ]
+            """,
+        ])
     )
 }
 

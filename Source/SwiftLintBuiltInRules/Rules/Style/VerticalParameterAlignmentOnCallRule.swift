@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,51 +10,51 @@ struct VerticalParameterAlignmentOnCallRule: Rule {
         name: "Vertical Parameter Alignment on Call",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a method call",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             foo(param1: 1, param2: bar
                 param3: false, param4: true)
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: bar)
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: bar
                 param3: false,
                 param4: true)
-            """),
-            Example("""
+            """,
+            """
             foo(
                param1: 1
             ) { _ in }
-            """),
-            Example("""
+            """,
+            """
             UIView.animate(withDuration: 0.4, animations: {
                 blurredImageView.alpha = 1
             }, completion: { _ in
                 self.hideLoading()
             })
-            """),
-            Example("""
+            """,
+            """
             UIView.animate(withDuration: 0.4, animations: {
                 blurredImageView.alpha = 1
             },
             completion: { _ in
                 self.hideLoading()
             })
-            """),
-            Example("""
+            """,
+            """
             UIView.animate(withDuration: 0.4, animations: {
                 blurredImageView.alpha = 1
             } { _ in
                 self.hideLoading()
             }
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: { _ in },
                 param3: false, param4: true)
-            """),
-            Example("""
+            """,
+            """
             foo({ _ in
                    bar()
                },
@@ -61,18 +62,18 @@ struct VerticalParameterAlignmentOnCallRule: Rule {
                    baz()
                }
             )
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: [
                0,
                1
             ], param3: 0)
-            """),
-            Example("""
+            """,
+            """
             myFunc(foo: 0,
                    bar: baz == 0)
-            """),
-            Example("""
+            """,
+            """
             UIViewPropertyAnimator.runningPropertyAnimator(
                 withDuration: 2.0,
                 delay: 0.0,
@@ -82,45 +83,45 @@ struct VerticalParameterAlignmentOnCallRule: Rule {
             } completion: { _ in
                 // completion
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             foo(param1: 1, param2: bar,
                             ↓param3: false, param4: true)
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: bar,
              ↓param3: false, param4: true)
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: bar,
                    ↓param3: false,
                    ↓param4: true)
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1,
                    ↓param2: { _ in })
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1,
                 param2: { _ in
             }, param3: 2,
              ↓param4: 0)
-            """),
-            Example("""
+            """,
+            """
             foo(param1: 1, param2: { _ in },
                    ↓param3: false, param4: true)
-            """),
-            Example("""
+            """,
+            """
             myFunc(foo: 0,
                     ↓bar: baz == 0)
-            """),
-            Example("""
+            """,
+            """
             myFunc(foo: 0, bar:
                     baz == 0, ↓baz: true)
-            """),
-        ]
+            """,
+        ])
     )
 }
 

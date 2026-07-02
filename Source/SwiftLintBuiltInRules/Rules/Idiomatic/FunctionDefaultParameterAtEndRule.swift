@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,53 +10,51 @@ struct FunctionDefaultParameterAtEndRule: Rule {
         name: "Function Default Parameter at End",
         description: "Prefer to locate parameters with defaults toward the end of the parameter list",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("func foo(baz: String, bar: Int = 0) {}"),
-            Example("func foo(x: String, y: Int = 0, z: CGFloat = 0) {}"),
-            Example("func foo(bar: String, baz: Int = 0, z: () -> Void) {}"),
-            Example("func foo(bar: String, z: () -> Void, baz: Int = 0) {}"),
-            Example("func foo(bar: Int = 0) {}"),
-            Example("func foo() {}"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "func foo(baz: String, bar: Int = 0) {}",
+            "func foo(x: String, y: Int = 0, z: CGFloat = 0) {}",
+            "func foo(bar: String, baz: Int = 0, z: () -> Void) {}",
+            "func foo(bar: String, z: () -> Void, baz: Int = 0) {}",
+            "func foo(bar: Int = 0) {}",
+            "func foo() {}",
+            """
             class A: B {
               override func foo(bar: Int = 0, baz: String) {}
-            """),
-            Example("func foo(bar: Int = 0, completion: @escaping CompletionHandler) {}"),
-            Example("""
+            """,
+            "func foo(bar: Int = 0, completion: @escaping CompletionHandler) {}",
+            """
             func foo(a: Int, b: CGFloat = 0) {
               let block = { (error: Error?) in }
             }
-            """),
-            Example("""
+            """,
+            """
             func foo(a: String, b: String? = nil,
                      c: String? = nil, d: @escaping AlertActionHandler = { _ in }) {}
-            """),
-            Example("override init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
-            Example("""
+            """,
+            "override init?(for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}",
+            """
             func handleNotification(_ userInfo: NSDictionary,
                                     userInteraction: Bool = false,
                                     completionHandler: ((UIBackgroundFetchResult) -> Void)?) {}
-            """),
-            Example("""
+            """,
+            """
             func write(withoutNotifying tokens: [NotificationToken] =  {}, _ block: (() throws -> Int)) {}
-            """),
-            Example("""
+            """,
+            """
             func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
-            """, excludeFromDocumentation: true),
-            Example("func foo(bar: Int, baz: Int = 0, z: () -> Void) {}"),
-            Example("func foo(bar: Int, baz: Int = 0, z: () -> Void, x: Int = 0) {}"),
-            Example("func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}"),
-        ],
-        triggeringExamples: [
-            Example("func foo(↓bar: Int = 0, baz: String) {}"),
-            Example("private func foo(↓bar: Int = 0, baz: String) {}"),
-            Example("public init?(↓for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}"),
-            Example("func foo(bar: Int, ↓baz: Int = 0, z: () -> Void, x: Int) {}"),
-            Example(
-                "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}",
-                configuration: ["ignore_first_isolation_inheritance_parameter": false]
-            ),
-        ]
+            """.excludeFromDocumentation(),
+            "func foo(bar: Int, baz: Int = 0, z: () -> Void) {}",
+            "func foo(bar: Int, baz: Int = 0, z: () -> Void, x: Int = 0) {}",
+            "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}",
+        ]),
+        triggeringExamples: #examples([
+            "func foo(↓bar: Int = 0, baz: String) {}",
+            "private func foo(↓bar: Int = 0, baz: String) {}",
+            "public init?(↓for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}",
+            "func foo(bar: Int, ↓baz: Int = 0, z: () -> Void, x: Int) {}",
+            "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}"
+                .configuration(["ignore_first_isolation_inheritance_parameter": false]),
+        ])
     )
 }
 

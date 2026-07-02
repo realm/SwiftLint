@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -15,13 +16,13 @@ struct ImplicitlyUnwrappedOptionalRuleTests {
     @Test
     func implicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode() {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
-        let triggeringExamples = [
-            Example("@IBOutlet private var label: UILabel!"),
-            Example("@IBOutlet var label: UILabel!"),
-            Example("let int: Int!"),
-        ]
+        let triggeringExamples = #examples([
+            "@IBOutlet private var label: UILabel!",
+            "@IBOutlet var label: UILabel!",
+            "let int: Int!",
+        ])
 
-        let nonTriggeringExamples = [Example("if !boolean {}")]
+        let nonTriggeringExamples = #examples(["if !boolean {}"])
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
                                          .with(triggeringExamples: triggeringExamples)
 
@@ -32,19 +33,19 @@ struct ImplicitlyUnwrappedOptionalRuleTests {
     @Test
     func implicitlyUnwrappedOptionalRuleWarnsOnOutletsInWeakMode() {
         let baseDescription = ImplicitlyUnwrappedOptionalRule.description
-        let triggeringExamples = [
-            Example("private weak var label: ↓UILabel!"),
-            Example("weak var label: ↓UILabel!"),
-            Example("@objc weak var label: ↓UILabel!"),
-        ]
+        let triggeringExamples = #examples([
+            "private weak var label: ↓UILabel!",
+            "weak var label: ↓UILabel!",
+            "@objc weak var label: ↓UILabel!",
+        ])
 
-        let nonTriggeringExamples = [
-            Example("@IBOutlet private var label: UILabel!"),
-            Example("@IBOutlet var label: UILabel!"),
-            Example("@IBOutlet weak var label: UILabel!"),
-            Example("var label: UILabel!"),
-            Example("let int: Int!"),
-        ]
+        let nonTriggeringExamples = #examples([
+            "@IBOutlet private var label: UILabel!",
+            "@IBOutlet var label: UILabel!",
+            "@IBOutlet weak var label: UILabel!",
+            "var label: UILabel!",
+            "let int: Int!",
+        ])
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)

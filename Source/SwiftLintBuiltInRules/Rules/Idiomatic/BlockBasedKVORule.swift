@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -10,29 +11,29 @@ struct BlockBasedKVORule: Rule {
         name: "Block Based KVO",
         description: "Prefer the new block based KVO API with keypaths when using Swift 3.2 or later",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example(#"""
+        nonTriggeringExamples: #examples([
+            #"""
             let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
                print(change.newValue)
             }
-            """#),
-        ],
-        triggeringExamples: [
-            Example("""
+            """#,
+        ]),
+        triggeringExamples: #examples([
+            """
             class Foo: NSObject {
               override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                                           change: [NSKeyValueChangeKey : Any]?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """),
-            Example("""
+            """,
+            """
             class Foo: NSObject {
               override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
                                           change: Dictionary<NSKeyValueChangeKey, Any>?,
                                           context: UnsafeMutableRawPointer?) {}
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

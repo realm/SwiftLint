@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,18 +10,18 @@ struct NoExtensionAccessModifierRule: Rule {
         name: "No Extension Access Modifier",
         description: "Prefer not to use extension access modifiers",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("extension String {}"),
-            Example("\n\n extension String {}"),
-            Example("nonisolated extension String {}"),
-        ],
-        triggeringExamples: [
-            Example("↓private extension String {}"),
-            Example("↓public \n extension String {}"),
-            Example("↓open extension String {}"),
-            Example("↓internal extension String {}"),
-            Example("↓fileprivate extension String {}"),
-        ]
+        nonTriggeringExamples: #examples([
+            "extension String {}",
+            "\n\n extension String {}",
+            "nonisolated extension String {}",
+        ]),
+        triggeringExamples: #examples([
+            "↓private extension String {}",
+            "↓public \n extension String {}",
+            "↓open extension String {}",
+            "↓internal extension String {}",
+            "↓fileprivate extension String {}",
+        ])
     )
 }
 

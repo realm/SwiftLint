@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -20,38 +21,38 @@ struct OpeningBraceRuleTests {
 
     @Test
     func withIgnoreMultilineTypeHeadersTrue() {
-        let nonTriggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            """
                 extension A
                     where B: Equatable
                 {}
-                """),
-            Example("""
+                """,
+            """
                 struct S: Comparable,
                           Identifiable
                 {
                     init() {}
                 }
-                """),
-        ]
+                """,
+        ])
 
-        let triggeringExamples = [
-            Example("""
+        let triggeringExamples = #examples([
+            """
                 struct S
                 ↓{}
-                """),
-            Example("""
+                """,
+            """
                 extension A where B: Equatable
                 ↓{
 
                 }
-                """),
-            Example("""
+                """,
+            """
                 class C
                     // with comments
                 ↓{}
-                """),
-        ]
+                """,
+        ])
 
         let description = OpeningBraceRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -63,13 +64,13 @@ struct OpeningBraceRuleTests {
 
     @Test
     func withIgnoreMultilineStatementConditionsTrue() {
-        let nonTriggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            """
                 while
                     abc
                 {}
-                """),
-            Example("""
+                """,
+            """
                 if x {
 
                 } else if
@@ -78,39 +79,39 @@ struct OpeningBraceRuleTests {
                 {
 
                 }
-                """),
-            Example("""
+                """,
+            """
                 if
                     condition1,
                     let var1 = var1
                 {}
-                """),
-        ]
+                """,
+        ])
 
-        let triggeringExamples = [
-            Example("""
+        let triggeringExamples = #examples([
+            """
                 if x
                 ↓{}
-                """),
-            Example("""
+                """,
+            """
                 if x {
 
                 } else if y, z
                 ↓{}
-                """),
-            Example("""
+                """,
+            """
                 if x {
 
                 } else
                 ↓{}
-                """),
-            Example("""
+                """,
+            """
                 while abc
                     // comments
                 ↓{
                 }
-                """),
-        ]
+                """,
+        ])
 
         let description = OpeningBraceRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
@@ -122,28 +123,28 @@ struct OpeningBraceRuleTests {
 
     @Test
     func withIgnoreMultilineFunctionSignaturesTrue() { // swiftlint:disable:this function_body_length
-        let nonTriggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            """
                 func abc(
                 )
                 {}
-                """),
-            Example("""
+                """,
+            """
                 func abc(a: Int,
                          b: Int)
 
                 {
 
                 }
-                """),
-            Example("""
+                """,
+            """
                 struct S {
                     init(
                     )
                     {}
                 }
-                """),
-            Example("""
+                """,
+            """
                 class C {
                     init(a: Int,
                          b: Int)
@@ -152,28 +153,28 @@ struct OpeningBraceRuleTests {
 
                     }
                 }
-                """),
-        ]
+                """,
+        ])
 
-        let triggeringExamples = [
-            Example("""
+        let triggeringExamples = #examples([
+            """
                 func abc()
                 ↓{}
-                """),
-            Example("""
+                """,
+            """
                 func abc(a: Int,        b: Int)
 
                 ↓{
 
                 }
-                """),
-            Example("""
+                """,
+            """
                 struct S {
                     init()
                     ↓{}
                 }
-                """),
-            Example("""
+                """,
+            """
                 class C {
                     init(a: Int,       b: Int)
 
@@ -181,15 +182,15 @@ struct OpeningBraceRuleTests {
 
                     }
                 }
-                """),
-            Example("""
+                """,
+            """
                 class C {
                     init(a: Int)
                         // with comments
                     ↓{}
                 }
-                """),
-        ]
+                """,
+        ])
 
         let description = OpeningBraceRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)

@@ -12,128 +12,128 @@ struct TrailingClosureRule: Rule {
         name: "Trailing Closure",
         description: "Trailing closure syntax should be used whenever possible",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("foo.map { $0 + 1 }"),
-            Example("foo.bar()"),
-            Example("foo.reduce(0) { $0 + 1 }"),
-            Example("if let foo = bar.map({ $0 + 1 }) { }"),
-            Example("foo.something(param1: { $0 }, param2: { $0 + 1 })"),
-            Example("offsets.sorted { $0.offset < $1.offset }"),
-            Example("foo.something({ return 1 }())"),
-            Example("foo.something({ return $0 }(1))"),
-            Example("foo.something(0, { return 1 }())"),
-            Example("for x in list.filter({ $0.isValid }) {}"),
-            Example("if list.allSatisfy({ $0.isValid }) {}"),
-            Example("foo(param1: 1, param2: { _ in true }, param3: 0)"),
-            Example("foo(param1: 1, param2: { _ in true }) { $0 + 1 }"),
-            Example("foo(param1: { _ in false }, param2: { _ in true })"),
-            Example("foo(param1: { _ in false }, param2: { _ in true }, param3: { _ in false })"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "foo.map { $0 + 1 }",
+            "foo.bar()",
+            "foo.reduce(0) { $0 + 1 }",
+            "if let foo = bar.map({ $0 + 1 }) { }",
+            "foo.something(param1: { $0 }, param2: { $0 + 1 })",
+            "offsets.sorted { $0.offset < $1.offset }",
+            "foo.something({ return 1 }())",
+            "foo.something({ return $0 }(1))",
+            "foo.something(0, { return 1 }())",
+            "for x in list.filter({ $0.isValid }) {}",
+            "if list.allSatisfy({ $0.isValid }) {}",
+            "foo(param1: 1, param2: { _ in true }, param3: 0)",
+            "foo(param1: 1, param2: { _ in true }) { $0 + 1 }",
+            "foo(param1: { _ in false }, param2: { _ in true })",
+            "foo(param1: { _ in false }, param2: { _ in true }, param3: { _ in false })",
+            """
             if f({ true }), g({ true }) {
                 print("Hello")
             }
-            """),
-            Example("""
+            """,
+            """
             for i in h({ [1,2,3] }) {
                 print(i)
             }
-            """),
-            Example("foo.reduce(0, combine: { $0 + 1 })", configuration: onlySingleMutedConfig),
-            Example("offsets.sorted(by: { $0.offset < $1.offset })", configuration: onlySingleMutedConfig),
-            Example("foo.something(0, { $0 + 1 })", configuration: onlySingleMutedConfig),
-        ],
-        triggeringExamples: [
-            Example("foo.map(↓{ $0 + 1 })"),
-            Example("foo.reduce(0, combine: ↓{ $0 + 1 })"),
-            Example("offsets.sorted(by: ↓{ $0.offset < $1.offset })"),
-            Example("foo.something(0, ↓{ $0 + 1 })"),
-            Example("foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })"),
-            Example("""
+            """,
+            "foo.reduce(0, combine: { $0 + 1 })".configuration(onlySingleMutedConfig),
+            "offsets.sorted(by: { $0.offset < $1.offset })".configuration(onlySingleMutedConfig),
+            "foo.something(0, { $0 + 1 })".configuration(onlySingleMutedConfig),
+        ]),
+        triggeringExamples: #examples([
+            "foo.map(↓{ $0 + 1 })",
+            "foo.reduce(0, combine: ↓{ $0 + 1 })",
+            "offsets.sorted(by: ↓{ $0.offset < $1.offset })",
+            "foo.something(0, ↓{ $0 + 1 })",
+            "foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })",
+            """
             for n in list {
                 n.forEach(↓{ print($0) })
             }
-            """, excludeFromDocumentation: true),
-            Example("foo.map(↓{ $0 + 1 })", configuration: onlySingleMutedConfig),
-        ],
-        corrections: [
-            Example("foo.map(↓{ $0 + 1 })"):
-                Example("foo.map { $0 + 1 }"),
-            Example("foo.reduce(0, combine: ↓{ $0 + 1 })"):
-                Example("foo.reduce(0) { $0 + 1 }"),
-            Example("offsets.sorted(by: ↓{ $0.offset < $1.offset })"):
-                Example("offsets.sorted { $0.offset < $1.offset }"),
-            Example("foo.something(0, ↓{ $0 + 1 })"):
-                Example("foo.something(0) { $0 + 1 }"),
-            Example("foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })"):
-                Example("foo.something(param1: { _ in true }, param2: 0) { _ in false }"),
-            Example("f(a: ↓{ g(b: ↓{ 1 }) })"):
-                Example("f { g { 1 }}"),
-            Example("""
+            """.excludeFromDocumentation(),
+            "foo.map(↓{ $0 + 1 })".configuration(onlySingleMutedConfig),
+        ]),
+        corrections: #corrections([
+            "foo.map(↓{ $0 + 1 })":
+                "foo.map { $0 + 1 }",
+            "foo.reduce(0, combine: ↓{ $0 + 1 })":
+                "foo.reduce(0) { $0 + 1 }",
+            "offsets.sorted(by: ↓{ $0.offset < $1.offset })":
+                "offsets.sorted { $0.offset < $1.offset }",
+            "foo.something(0, ↓{ $0 + 1 })":
+                "foo.something(0) { $0 + 1 }",
+            "foo.something(param1: { _ in true }, param2: 0, param3: ↓{ _ in false })":
+                "foo.something(param1: { _ in true }, param2: 0) { _ in false }",
+            "f(a: ↓{ g(b: ↓{ 1 }) })":
+                "f { g { 1 }}",
+            """
                 for n in list {
                     n.forEach(↓{ print($0) })
                 }
-                """): Example("""
+                """: """
                     for n in list {
                         n.forEach { print($0) }
                     }
-                    """),
-            Example("""
+                    """,
+            """
                 f(a: 1,
                 b: 2,
                 c: { 3 })
-                """): Example("""
+                """: """
                     f(a: 1,
                     b: 2) { 3 }
-                    """),
-            Example("foo.map(↓{ $0 + 1 })", configuration: onlySingleMutedConfig):
-                Example("foo.map { $0 + 1 }", configuration: onlySingleMutedConfig),
-            Example("f(↓{ g(↓{ 1 }) })", configuration: onlySingleMutedConfig):
-                Example("f { g { 1 }}", configuration: onlySingleMutedConfig),
-            Example("""
+                    """,
+            "foo.map(↓{ $0 + 1 })".configuration(onlySingleMutedConfig):
+                "foo.map { $0 + 1 }".configuration(onlySingleMutedConfig),
+            "f(↓{ g(↓{ 1 }) })".configuration(onlySingleMutedConfig):
+                "f { g { 1 }}".configuration(onlySingleMutedConfig),
+            """
                 for n in list {
                     n.forEach(↓{ print($0) })
                 }
-                """, configuration: onlySingleMutedConfig): Example("""
+                """.configuration(onlySingleMutedConfig): """
                     for n in list {
                         n.forEach { print($0) }
                     }
-                    """),
-            Example("""
+                    """,
+            """
                 f(a: 1, // comment
                 b: 2, /* comment */ c: { 3 })
-                """): Example("""
+                """: """
                     f(a: 1, // comment
                     b: 2) /* comment */ { 3 }
-                    """),
-            Example("""
+                    """,
+            """
                 f(a: 2, c: /* comment */ { 3 } /* comment */)
-                """): Example("""
+                """: """
                     f(a: 2) /* comment */ { 3 } /* comment */
-                    """),
-            Example("""
+                    """,
+            """
                 f(a: 2, /* comment */ c /* comment */ : /* comment */ { 3 } /* comment */)
-                """): Example("""
+                """: """
                     f(a: 2) /* comment */ { 3 } /* comment */
-                    """),
-            Example("""
+                    """,
+            """
                 f(a: 2, /* comment1 */ c /* comment2 */ : /* comment3 */ { 3 } /* comment4 */)
-                """): Example("""
+                """: """
                     f(a: 2) /* comment1 */ /* comment2 */ /* comment3 */ { 3 } /* comment4 */
-                    """),
-            Example("""
+                    """,
+            """
                 let dataSource = RxTableViewSectionedReloadDataSource(
                     configureCell: { cell in // swiftlint:disable:this trailing_closure
                         return cell
                     }
                 )
-                """): Example("""
+                """: """
                 let dataSource = RxTableViewSectionedReloadDataSource(
                     configureCell: { cell in // swiftlint:disable:this trailing_closure
                         return cell
                     }
                 )
-                """),
-        ]
+                """,
+        ])
     )
 }
 

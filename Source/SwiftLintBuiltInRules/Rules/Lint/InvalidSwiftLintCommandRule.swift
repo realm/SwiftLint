@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftLintCore
 
 struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
@@ -9,34 +10,34 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
         name: "Invalid SwiftLint Command",
         description: "swiftlint command is invalid",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("// swiftlint:disable unused_import"),
-            Example("// swiftlint:enable unused_import"),
-            Example("// swiftlint:disable:next unused_import"),
-            Example("// swiftlint:disable:previous unused_import"),
-            Example("// swiftlint:disable:this unused_import"),
-            Example("//swiftlint:disable:this unused_import"),
-            Example("_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import", excludeFromDocumentation: true),
-            Example("_ = \"🤵🏼‍♀️ 🤵🏼‍♀️\" // swiftlint:disable:this unused_import", excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("// ↓swiftlint:"),
-            Example("// ↓swiftlint: "),
-            Example("// ↓swiftlint::"),
-            Example("// ↓swiftlint:: "),
-            Example("// ↓swiftlint:disable"),
-            Example("// ↓swiftlint:dissable unused_import"),
-            Example("// ↓swiftlint:enaaaable unused_import"),
-            Example("// ↓swiftlint:disable:nxt unused_import"),
-            Example("// ↓swiftlint:enable:prevus unused_import"),
-            Example("// ↓swiftlint:enable:ths unused_import"),
-            Example("// ↓swiftlint:enable"),
-            Example("// ↓swiftlint:enable:"),
-            Example("// ↓swiftlint:enable: "),
-            Example("// ↓swiftlint:disable: unused_import"),
-            Example("// s↓swiftlint:disable unused_import"),
-            Example("// 🤵🏼‍♀️swiftlint:disable unused_import", excludeFromDocumentation: true),
-        ].skipWrappingInCommentTests()
+        nonTriggeringExamples: #examples([
+            "// swiftlint:disable unused_import",
+            "// swiftlint:enable unused_import",
+            "// swiftlint:disable:next unused_import",
+            "// swiftlint:disable:previous unused_import",
+            "// swiftlint:disable:this unused_import",
+            "//swiftlint:disable:this unused_import",
+            "_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import".excludeFromDocumentation(),
+            "_ = \"🤵🏼‍♀️ 🤵🏼‍♀️\" // swiftlint:disable:this unused_import".excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "// ↓swiftlint:",
+            "// ↓swiftlint: ",
+            "// ↓swiftlint::",
+            "// ↓swiftlint:: ",
+            "// ↓swiftlint:disable",
+            "// ↓swiftlint:dissable unused_import",
+            "// ↓swiftlint:enaaaable unused_import",
+            "// ↓swiftlint:disable:nxt unused_import",
+            "// ↓swiftlint:enable:prevus unused_import",
+            "// ↓swiftlint:enable:ths unused_import",
+            "// ↓swiftlint:enable",
+            "// ↓swiftlint:enable:",
+            "// ↓swiftlint:enable: ",
+            "// ↓swiftlint:disable: unused_import",
+            "// s↓swiftlint:disable unused_import",
+            "// 🤵🏼‍♀️swiftlint:disable unused_import".excludeFromDocumentation(),
+        ]).skipWrappingInCommentTests()
     )
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {

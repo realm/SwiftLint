@@ -1,13 +1,15 @@
+import SwiftLintCore
+
 struct RedundantSelfRuleExamples {
-    static let nonTriggeringExamples = [
-        Example("""
+    static let nonTriggeringExamples = #examples([
+        """
             struct S {
                 var x = 0
                 init() { self.x = 1 }
                 func foo() { self.x = 1 }
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -19,8 +21,8 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -35,8 +37,8 @@ struct RedundantSelfRuleExamples {
                     f { [weak self] in if let self { x = 1 } }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 var x = 0, error = 0, exception = 0
                 var y: Int?, z: Int?, u: Int, v: Int?, w: Int?
@@ -65,8 +67,8 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             enum E {
                 case a(Int)
                 case b(Int, Int)
@@ -86,8 +88,8 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 var a = 0
                 init(_ a: Int) {
@@ -99,8 +101,8 @@ struct RedundantSelfRuleExamples {
                 }
                 func f(_: () -> Void) {}
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C {
                 var x = 0, y = 0
                 init(x: Int) {
@@ -108,16 +110,16 @@ struct RedundantSelfRuleExamples {
                     self.y = x + 1
                 }
             }
-            """, configuration: ["keep_in_initializers": true]),
-        Example("""
+            """.configuration(["keep_in_initializers": true]),
+        """
             extension String? {
                 func foo() -> String {
                     guard let self else { return "" }
                     return self.uppercased()
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 var x = 0, y = 0
                 init() {
@@ -126,18 +128,18 @@ struct RedundantSelfRuleExamples {
                     self.y = y
                 }
             }
-            """, configuration: ["only_in_closures": false]),
-    ]
+            """.configuration(["only_in_closures": false]),
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
             struct S {
                 var x = 0
                 init() { ↓self.x = 1 }
                 func foo() { ↓self.x = 1 }
             }
-            """, configuration: ["only_in_closures": false]),
-        Example("""
+            """.configuration(["only_in_closures": false]),
+        """
             struct S {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -148,8 +150,8 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 var x = 0
                 func g() {
@@ -159,8 +161,8 @@ struct RedundantSelfRuleExamples {
                     }()
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -172,8 +174,8 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -183,8 +185,8 @@ struct RedundantSelfRuleExamples {
                     f { [s = self] in s.x = 1 }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 var x = 0
                 var y: Int?, z: Int?, v: Int?, w: Int?
@@ -212,16 +214,16 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             struct S {
                 func f(_ work: @escaping () -> Void) { work() }
                 func g() {
                     f { let g = ↓self.g() }
                 }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             extension E {
                 static func f(_ work: @escaping () -> Void) { work() }
                 func g() { Self.f { self.g() } }
@@ -229,8 +231,8 @@ struct RedundantSelfRuleExamples {
                     func g() { E.f { ↓self.g() } }
                 }
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             class C {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -252,8 +254,8 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """),
-        Example("""
+            """,
+        """
             class C {
                 var x = 0
                 private lazy var c1: Int = {
@@ -269,16 +271,16 @@ struct RedundantSelfRuleExamples {
                     return 2
                 }()
             }
-            """, excludeFromDocumentation: true),
-        Example("""
+            """.excludeFromDocumentation(),
+        """
             extension String {
                 func foo() -> String { ↓self.uppercased() }
             }
-            """, configuration: ["only_in_closures": false]),
-    ]
+            """.configuration(["only_in_closures": false]),
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #corrections([
+        """
             struct S {
                 var x = 0
                 func f(_ work: @escaping () -> Void) { work() }
@@ -289,7 +291,7 @@ struct RedundantSelfRuleExamples {
                     }
                 }
             }
-            """): Example("""
+            """: """
                 struct S {
                     var x = 0
                     func f(_ work: @escaping () -> Void) { work() }
@@ -300,8 +302,8 @@ struct RedundantSelfRuleExamples {
                         }
                     }
                 }
-                """),
-        Example("""
+                """,
+        """
             struct S {
                 var x = 0, y = 0
                 init(x: Int) {
@@ -309,7 +311,7 @@ struct RedundantSelfRuleExamples {
                     ↓self.y = 1
                 }
             }
-            """, configuration: ["only_in_closures": false]): Example("""
+            """.configuration(["only_in_closures": false]): """
                 struct S {
                     var x = 0, y = 0
                     init(x: Int) {
@@ -317,6 +319,6 @@ struct RedundantSelfRuleExamples {
                         y = 1
                     }
                 }
-                """),
-    ]
+                """,
+    ])
 }

@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 import SwiftSyntaxBuilder
 
@@ -10,30 +11,30 @@ struct PreferZeroOverExplicitInitRule: Rule {
         name: "Prefer Zero Over Explicit Init",
         description: "Prefer `.zero` over explicit init with zero parameters (e.g. `CGPoint(x: 0, y: 0)`)",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("CGRect(x: 0, y: 0, width: 0, height: 1)"),
-            Example("CGPoint(x: 0, y: -1)"),
-            Example("CGSize(width: 2, height: 4)"),
-            Example("CGVector(dx: -5, dy: 0)"),
-            Example("UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)"),
-        ],
-        triggeringExamples: [
-            Example("↓CGPoint(x: 0, y: 0)"),
-            Example("↓CGPoint(x: 0.000000, y: 0)"),
-            Example("↓CGPoint(x: 0.000000, y: 0.000)"),
-            Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"),
-            Example("↓CGSize(width: 0, height: 0)"),
-            Example("↓CGVector(dx: 0, dy: 0)"),
-            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"),
-        ],
-        corrections: [
-            Example("↓CGPoint(x: 0, y: 0)"): Example("CGPoint.zero"),
-            Example("(↓CGPoint(x: 0, y: 0))"): Example("(CGPoint.zero)"),
-            Example("↓CGRect(x: 0, y: 0, width: 0, height: 0)"): Example("CGRect.zero"),
-            Example("↓CGSize(width: 0, height: 0.000)"): Example("CGSize.zero"),
-            Example("↓CGVector(dx: 0, dy: 0)"): Example("CGVector.zero"),
-            Example("↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)"): Example("UIEdgeInsets.zero"),
-        ]
+        nonTriggeringExamples: #examples([
+            "CGRect(x: 0, y: 0, width: 0, height: 1)",
+            "CGPoint(x: 0, y: -1)",
+            "CGSize(width: 2, height: 4)",
+            "CGVector(dx: -5, dy: 0)",
+            "UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 1)",
+        ]),
+        triggeringExamples: #examples([
+            "↓CGPoint(x: 0, y: 0)",
+            "↓CGPoint(x: 0.000000, y: 0)",
+            "↓CGPoint(x: 0.000000, y: 0.000)",
+            "↓CGRect(x: 0, y: 0, width: 0, height: 0)",
+            "↓CGSize(width: 0, height: 0)",
+            "↓CGVector(dx: 0, dy: 0)",
+            "↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)",
+        ]),
+        corrections: #corrections([
+            "↓CGPoint(x: 0, y: 0)": "CGPoint.zero",
+            "(↓CGPoint(x: 0, y: 0))": "(CGPoint.zero)",
+            "↓CGRect(x: 0, y: 0, width: 0, height: 0)": "CGRect.zero",
+            "↓CGSize(width: 0, height: 0.000)": "CGSize.zero",
+            "↓CGVector(dx: 0, dy: 0)": "CGVector.zero",
+            "↓UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)": "UIEdgeInsets.zero",
+        ])
     )
 }
 

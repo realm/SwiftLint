@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -8,19 +9,19 @@ struct FileTypesOrderRuleTests {
     @Test
     func fileTypesOrderReversedOrder() { // swiftlint:disable:this function_body_length
         // Test with reversed `order` entries
-        let nonTriggeringExamples = [
-            Example(FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"))
-        ]
-        let triggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n")
+        ])
+        let triggeringExamples = #examples([
+            """
             // Supporting Types
             ↓protocol TestViewControllerDelegate {
                 func didPressTrackedButton()
             }
 
             class TestViewController: UIViewController {}
-            """),
-            Example("""
+            """,
+            """
             ↓class TestViewController: UIViewController {}
 
             // Extensions
@@ -33,8 +34,8 @@ struct FileTypesOrderRuleTests {
                     return UITableViewCell()
                 }
             }
-            """),
-            Example("""
+            """,
+            """
             // Supporting Types
             ↓protocol TestViewControllerDelegate {
                 func didPressTrackedButton()
@@ -46,8 +47,8 @@ struct FileTypesOrderRuleTests {
             protocol TestViewControllerDelegate {
                 func didPressTrackedButton()
             }
-            """),
-            Example("""
+            """,
+            """
             ↓struct ContentView: View {
                var body: some View {
                    Text("Hello, World!")
@@ -57,8 +58,8 @@ struct FileTypesOrderRuleTests {
             struct ContentView_Previews: PreviewProvider {
                static var previews: some View { ContentView() }
             }
-            """),
-            Example("""
+            """,
+            """
             ↓struct ContentView: View {
                var body: some View {
                    Text("Hello, World!")
@@ -70,8 +71,8 @@ struct FileTypesOrderRuleTests {
                     LibraryItem(ContentView())
                 }
             }
-            """),
-        ]
+            """,
+        ])
 
         let reversedOrderDescription = FileTypesOrderRule.description
             .with(triggeringExamples: triggeringExamples)
@@ -88,8 +89,8 @@ struct FileTypesOrderRuleTests {
     @Test
     func fileTypesOrderGroupedOrder() {
         // Test with grouped `order` entries
-        let nonTriggeringExamples = [
-            Example("""
+        let nonTriggeringExamples = #examples([
+            """
             class TestViewController: UIViewController {}
 
             // Supporting Type
@@ -113,18 +114,18 @@ struct FileTypesOrderRuleTests {
             extension TestViewController: UITableViewDelegate {
                 func someMethod() {}
             }
-            """),
-        ]
-        let triggeringExamples = [
-            Example("""
+            """,
+        ])
+        let triggeringExamples = #examples([
+            """
             // Supporting Types
             ↓protocol TestViewControllerDelegate {
                 func didPressTrackedButton()
             }
 
             class TestViewController: UIViewController {}
-            """),
-            Example("""
+            """,
+            """
             // Extensions
             ↓extension TestViewController: UITableViewDataSource {
                 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -137,8 +138,8 @@ struct FileTypesOrderRuleTests {
             }
 
             class TestViewController: UIViewController {}
-            """),
-        ]
+            """,
+        ])
 
         let groupedOrderDescription = FileTypesOrderRule.description
             .with(triggeringExamples: triggeringExamples)

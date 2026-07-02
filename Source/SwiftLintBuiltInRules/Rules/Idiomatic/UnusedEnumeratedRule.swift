@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule
@@ -9,74 +10,74 @@ struct UnusedEnumeratedRule: Rule {
         name: "Unused Enumerated",
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example("for (idx, foo) in bar.enumerated() { }"),
-            Example("for (_, foo) in bar.enumerated().something() { }"),
-            Example("for (_, foo) in bar.something() { }"),
-            Example("for foo in bar.enumerated() { }"),
-            Example("for foo in bar { }"),
-            Example("for (idx, _) in bar.enumerated().something() { }"),
-            Example("for (idx, _) in bar.something() { }"),
-            Example("for idx in bar.indices { }"),
-            Example("for (section, (event, _)) in data.enumerated() {}"),
-            Example("list.enumerated().map { idx, elem in \"\\(idx): \\(elem)\" }"),
-            Example("list.enumerated().map { $0 + $1 }"),
-            Example("list.enumerated().something().map { _, elem in elem }"),
-            Example("list.enumerated().map { ($0.offset, $0.element) }"),
-            Example("list.enumerated().map { ($0.0, $0.1) }"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "for (idx, foo) in bar.enumerated() { }",
+            "for (_, foo) in bar.enumerated().something() { }",
+            "for (_, foo) in bar.something() { }",
+            "for foo in bar.enumerated() { }",
+            "for foo in bar { }",
+            "for (idx, _) in bar.enumerated().something() { }",
+            "for (idx, _) in bar.something() { }",
+            "for idx in bar.indices { }",
+            "for (section, (event, _)) in data.enumerated() {}",
+            "list.enumerated().map { idx, elem in \"\\(idx): \\(elem)\" }",
+            "list.enumerated().map { $0 + $1 }",
+            "list.enumerated().something().map { _, elem in elem }",
+            "list.enumerated().map { ($0.offset, $0.element) }",
+            "list.enumerated().map { ($0.0, $0.1) }",
+            """
             list.enumerated().first {
                 $0.element.0.isNumber &&
                 $0.element.1.isNumber &&
                 $0.element.0 != $0.element.1
             }?.offset
-            """),
-            Example("""
+            """,
+            """
             (list.enumerated().first {
                 $0.element.isNumber
             })?.offset
-            """),
-            Example("""
+            """,
+            """
             list.enumerated().max {
                 $0.element < $1.element
             }?.offset
-            """),
-            Example("""
+            """,
+            """
             list.enumerated().map {
                 $1.enumerated().forEach { print($0, $1) }
                 return $0
             }
-            """),
-            Example("""
+            """,
+            """
             list.enumerated().forEach {
                 f($0)
                 let (i, e) = $0
                 print(i)
             }
-            """, excludeFromDocumentation: true),
-        ],
-        triggeringExamples: [
-            Example("for (↓_, foo) in bar.enumerated() { }"),
-            Example("for (↓_, foo) in abc.bar.enumerated() { }"),
-            Example("for (↓_, foo) in abc.something().enumerated() { }"),
-            Example("for (idx, ↓_) in bar.enumerated() { }"),
-            Example("list.enumerated().map { idx, ↓_ in idx }"),
-            Example("list.enumerated().map { ↓_, elem in elem }"),
-            Example("list.↓enumerated().forEach { print($0) }"),
-            Example("list.↓enumerated().map { $1 }"),
-            Example("""
+            """.excludeFromDocumentation(),
+        ]),
+        triggeringExamples: #examples([
+            "for (↓_, foo) in bar.enumerated() { }",
+            "for (↓_, foo) in abc.bar.enumerated() { }",
+            "for (↓_, foo) in abc.something().enumerated() { }",
+            "for (idx, ↓_) in bar.enumerated() { }",
+            "list.enumerated().map { idx, ↓_ in idx }",
+            "list.enumerated().map { ↓_, elem in elem }",
+            "list.↓enumerated().forEach { print($0) }",
+            "list.↓enumerated().map { $1 }",
+            """
             list.enumerated().map {
                 $1.↓enumerated().forEach { print($1) }
                 return $0
             }
-            """),
-            Example("""
+            """,
+            """
             list.↓enumerated().map {
                 $1.enumerated().forEach { print($0, $1) }
                 return 1
             }
-            """),
-            Example("""
+            """,
+            """
             list.enumerated().map {
                 $1.enumerated().filter {
                     print($0, $1)
@@ -89,20 +90,20 @@ struct UnusedEnumeratedRule: Rule {
                 }
                 return $0
             }
-            """, excludeFromDocumentation: true)
+            """.excludeFromDocumentation()
             ,
-            Example("""
+            """
             list.↓enumerated().map {
                 $1.forEach { print($0) }
                 return $1
             }
-            """, excludeFromDocumentation: true),
-            Example("""
+            """.excludeFromDocumentation(),
+            """
             list.↓enumerated().forEach {
                 let (i, _) = $0
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

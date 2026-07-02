@@ -1,3 +1,4 @@
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -10,30 +11,30 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     @Test
     func attributeTypeMethod() {
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
+            .with(nonTriggeringExamples: #examples([
+                """
                 public class SomeClass {
                    class public func someFunc() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 public class SomeClass {
                    static public func someFunc() {}
                 }
-                """),
-            ])
-            .with(triggeringExamples: [
-                Example("""
+                """,
+            ]))
+            .with(triggeringExamples: #examples([
+                """
                 public class SomeClass {
                    public class func someFunc() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 public class SomeClass {
                    public static func someFunc() {}
                 }
-                """),
-            ])
+                """,
+            ]))
             .with(corrections: [:])
 
         verifyRule(descriptionOverride,
@@ -43,24 +44,24 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     @Test
     func rightOrderedModifierGroups() {
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example("public protocol Foo: class {}\n" +
-                "public weak internal(set) var bar: Foo? \n"),
-                Example("open final class Foo {" +
+            .with(nonTriggeringExamples: #examples([
+                "public protocol Foo: class {}\n" +
+                "public weak internal(set) var bar: Foo? \n",
+                "open final class Foo {" +
                 "  fileprivate static  func bar() {} \n" +
-                "  open class func barFoo() {} }"),
-                Example("public struct Foo {" +
-                "  private mutating func bar() {} }"),
-            ])
-            .with(triggeringExamples: [
-                Example("public protocol Foo: class {} \n" +
-                "public internal(set) weak var bar: Foo? \n"),
-                Example("final public class Foo {" +
+                "  open class func barFoo() {} }",
+                "public struct Foo {" +
+                "  private mutating func bar() {} }",
+            ]))
+            .with(triggeringExamples: #examples([
+                "public protocol Foo: class {} \n" +
+                "public internal(set) weak var bar: Foo? \n",
+                "final public class Foo {" +
                 "  static fileprivate func bar() {} \n" +
-                "  class open func barFoo() {} }"),
-                Example("public struct Foo {" +
-                "  mutating private func bar() {} }"),
-            ])
+                "  class open func barFoo() {} }",
+                "public struct Foo {" +
+                "  mutating private func bar() {} }",
+            ]))
             .with(corrections: [:])
 
         verifyRule(
@@ -82,8 +83,8 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     @Test
     func atPrefixedGroup() { // swiftlint:disable:this function_body_length
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example(#"""
+            .with(nonTriggeringExamples: #examples([
+                #"""
                 class Foo {
                     @objc
                     internal var bar: String {
@@ -96,39 +97,39 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                        return "bar"
                    }
                 }
-                """#),
-                Example("""
+                """#,
+                """
                 @objcMembers
                 public final class Bar {}
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     @IBOutlet internal weak var bar: UIView!
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     @IBAction internal func bar() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Bar: Foo {
                     @IBAction override internal func bar() {}
                 }
-                """),
-                Example(#"""
+                """,
+                #"""
                 public class Foo {
                    @NSCopying public final var foo:NSString = "s"
                 }
-                """#),
-                Example(#"""
+                """#,
+                #"""
                 public class Foo {
                    @NSCopying public final var foo: NSString
                 }
-                """#),
-            ])
-            .with(triggeringExamples: [
-                Example(#"""
+                """#,
+            ]))
+            .with(triggeringExamples: #examples([
+                #"""
                 class Foo {
                     @objc
                     internal var bar: String {
@@ -141,17 +142,17 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                        return "bar"
                    }
                 }
-                """#),
-                Example("""
+                """#,
+                """
                 @objcMembers
                 final public class Bar {}
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     @IBOutlet weak internal var bar: UIView!
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     @IBAction internal func bar() {}
                 }
@@ -159,18 +160,18 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                 class Bar: Foo {
                     @IBAction internal override func bar() {}
                 }
-                """),
-                Example(#"""
+                """,
+                #"""
                 public class Foo {
                     @NSCopying final public var foo:NSString = "s"
                 }
-                """#),
-                Example("""
+                """#,
+                """
                 public class Foo {
                     @NSManaged final public var foo: NSString
                 }
-                """),
-            ])
+                """,
+            ]))
             .with(corrections: [:])
 
         verifyRule(descriptionOverride,
@@ -180,50 +181,50 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     @Test
     func nonSpecifiedModifiersDontInterfere() {
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
+            .with(nonTriggeringExamples: #examples([
+                """
                 class Foo {
                     weak final override private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     final weak override private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     final override weak private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     final override private weak var bar: UIView?
                 }
-                """),
-            ])
-            .with(triggeringExamples: [
-                Example("""
+                """,
+            ]))
+            .with(triggeringExamples: #examples([
+                """
                 class Foo {
                     weak override final private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     override weak final private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     override final weak private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     override final private weak var bar: UIView?
                 }
-                """),
-            ])
+                """,
+            ]))
             .with(corrections: [:])
 
         verifyRule(descriptionOverride,
@@ -234,38 +235,38 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func correctionsAreAppliedCorrectly() { // swiftlint:disable:this function_body_length
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
-            .with(corrections: [
-                Example("""
+            .with(corrections: #corrections([
+                """
                 class Foo {
                     private final override var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     final override private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     private final var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     final private var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     class private final var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     final private class var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     @objc
                     private
@@ -274,8 +275,8 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                     override
                     var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     @objc
                     final
@@ -284,14 +285,14 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
                     class
                     var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 private final class Foo {}
-                """):
-                Example("""
+                """:
+                """
                 final private class Foo {}
-                """),
-            ])
+                """,
+            ]))
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
@@ -301,60 +302,60 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func correctionsAreNotAppliedToIrrelevantModifier() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
-            .with(corrections: [
-                Example("""
+            .with(corrections: #corrections([
+                """
                 class Foo {
                     weak class final var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     weak final class var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     static weak final var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     final static weak var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     class final weak var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     final class weak var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     @objc
                     private private(set) class final var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     @objc
                     final private private(set) class var bar: UIView?
                 }
-                """),
-                Example("""
+                """,
+                """
                 class Foo {
                     var bar: UIView?
                 }
-                """):
-                Example("""
+                """:
+                """
                 class Foo {
                     var bar: UIView?
                 }
-                """),
-            ])
+                """,
+            ]))
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl", "typeMethods"]])
@@ -364,20 +365,20 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func typeMethodClassCorrection() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: [], triggeringExamples: [])
-            .with(corrections: [
-                Example("""
+            .with(corrections: #corrections([
+                """
                 private final class Foo {}
-                """):
-                Example("""
+                """:
+                """
                 final private class Foo {}
-                """),
-                Example("""
+                """,
+                """
                 public protocol Foo: class {}\n
-                """):
-                Example("""
+                """:
+                """
                 public protocol Foo: class {}\n
-                """),
-            ])
+                """,
+            ]))
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "typeMethods", "acl"]])
@@ -402,78 +403,78 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     @Test
     func isolationModifierOrder() { // swiftlint:disable:this function_body_length
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
+            .with(nonTriggeringExamples: #examples([
+                """
                 @MainActor
                 class Foo {
                     nonisolated public func bar() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 actor MyActor: CustomStringConvertible {
                     nonisolated var description: String {
                         "MyActor instance"
                     }
                 }
-                """),
-                Example("""
+                """,
+                """
                 @MainActor
                 class Foo {
                     isolated public func bar() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 class RegularClass {
                     @MainActor public func bar() {}
                 }
-                """),
-            ])
-            .with(triggeringExamples: [
-                Example("""
+                """,
+            ]))
+            .with(triggeringExamples: #examples([
+                """
                 @MainActor
                 class Foo {
                     public nonisolated func bar() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 @MainActor
                 class RegularClass {
                     private nonisolated func heavyWork() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 @MainActor
                 class Foo {
                     public isolated func bar() {}
                 }
-                """),
-            ])
-            .with(corrections: [
-                Example("""
+                """,
+            ]))
+            .with(corrections: #corrections([
+                """
                 @MainActor
                 class Foo {
                     public nonisolated func bar() {}
                 }
-                """):
-                Example("""
+                """:
+                """
                 @MainActor
                 class Foo {
                     nonisolated public func bar() {}
                 }
-                """),
-                Example("""
+                """,
+                """
                 @MainActor
                 class Foo {
                     public isolated func bar() {}
                 }
-                """):
-                Example("""
+                """:
+                """
                 @MainActor
                 class Foo {
                     isolated public func bar() {}
                 }
-                """),
-            ])
+                """,
+            ]))
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "isolation", "acl", "final"]])
@@ -482,36 +483,36 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     @Test
     func isolationModifierCustomOrder() {
         let descriptionOverride = ModifierOrderRule.description
-            .with(nonTriggeringExamples: [
-                Example("""
+            .with(nonTriggeringExamples: #examples([
+                """
                 @MainActor
                 class Foo {
                     public nonisolated final func bar() {}
                 }
-                """),
-            ])
-            .with(triggeringExamples: [
-                Example("""
+                """,
+            ]))
+            .with(triggeringExamples: #examples([
+                """
                 @MainActor
                 class Foo {
                     nonisolated public func bar() {}
                 }
-                """),
-            ])
-            .with(corrections: [
-                Example("""
+                """,
+            ]))
+            .with(corrections: #corrections([
+                """
                 @MainActor
                 class Foo {
                     nonisolated public func bar() {}
                 }
-                """):
-                Example("""
+                """:
+                """
                 @MainActor
                 class Foo {
                     public nonisolated func bar() {}
                 }
-                """),
-            ])
+                """,
+            ]))
 
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "isolation", "final"]])

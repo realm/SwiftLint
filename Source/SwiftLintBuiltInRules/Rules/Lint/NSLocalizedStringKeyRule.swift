@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -10,26 +11,26 @@ struct NSLocalizedStringKeyRule: Rule {
         description: "Static strings should be used as key/comment" +
             " in NSLocalizedString in order for genstrings to work",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("NSLocalizedString(\"key\", comment: \"\")"),
-            Example("NSLocalizedString(\"key\" + \"2\", comment: \"\")"),
-            Example("NSLocalizedString(\"key\", comment: \"comment\")"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "NSLocalizedString(\"key\", comment: \"\")",
+            "NSLocalizedString(\"key\" + \"2\", comment: \"\")",
+            "NSLocalizedString(\"key\", comment: \"comment\")",
+            """
             NSLocalizedString("This is a multi-" +
                 "line string", comment: "")
-            """),
-            Example("""
+            """,
+            """
             let format = NSLocalizedString("%@, %@.", comment: "Accessibility label for a post in the post list." +
             " The parameters are the title, and date respectively." +
             " For example, \"Let it Go, 1 hour ago.\"")
-            """),
-        ],
-        triggeringExamples: [
-            Example("NSLocalizedString(↓method(), comment: \"\")"),
-            Example("NSLocalizedString(↓\"key_\\(param)\", comment: \"\")"),
-            Example("NSLocalizedString(\"key\", comment: ↓\"comment with \\(param)\")"),
-            Example("NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())"),
-        ]
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "NSLocalizedString(↓method(), comment: \"\")",
+            "NSLocalizedString(↓\"key_\\(param)\", comment: \"\")",
+            "NSLocalizedString(\"key\", comment: ↓\"comment with \\(param)\")",
+            "NSLocalizedString(↓\"key_\\(param)\", comment: ↓method())",
+        ])
     )
 }
 

@@ -1,9 +1,11 @@
+import SwiftLintCore
+
 internal struct TestCaseAccessibilityRuleExamples {
-    static let nonTriggeringExamples = [
+    static let nonTriggeringExamples = #examples([
         // Valid XCTestCase class
 
-        Example("let foo: String?"),
-        Example("""
+        "let foo: String?",
+        """
         let foo: String?
 
         class FooTests: XCTestCase {
@@ -40,15 +42,15 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             private someFunc(hasParam: Bool) {}
         }
-        """),
+        """,
 
-        Example("""
+        """
         class FooTests: XCTestCase {
             private struct MockSomething: Something {}
         }
-        """),
+        """,
 
-        Example("""
+        """
         class FooTests: XCTestCase {
             override init() {
                 super.init()
@@ -56,17 +58,17 @@ internal struct TestCaseAccessibilityRuleExamples {
                 var bar = 2
             }
         }
-        """),
+        """,
 
-        Example("""
+        """
         class FooTests: XCTestCase {
             func allowedPrefixTestFoo() {}
         }
-        """, configuration: ["allowed_prefixes": ["allowedPrefix"]]),
+        """.configuration(["allowed_prefixes": ["allowedPrefix"]]),
 
         // Not an XCTestCase class
 
-        Example("""
+        """
         class Foobar {
             func setUp() {}
 
@@ -74,11 +76,11 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             func testFoo() {}
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let triggeringExamples = [
-        Example("""
+    static let triggeringExamples = #examples([
+        """
         class FooTests: XCTestCase {
             ↓typealias Bar = Foo.Bar
 
@@ -105,11 +107,11 @@ internal struct TestCaseAccessibilityRuleExamples {
         final class BarTests: XCTestCase {
             ↓class Nested {}
         }
-        """),
-    ]
+        """,
+    ])
 
-    static let corrections = [
-        Example("""
+    static let corrections = #corrections([
+        """
         class TotoTests: XCTestCase {
             ↓var foo: Bar?
 
@@ -125,8 +127,8 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             ↓func helperFunction() {}
         }
-        """):
-        Example("""
+        """:
+        """
         class TotoTests: XCTestCase {
             private var foo: Bar?
 
@@ -142,6 +144,6 @@ internal struct TestCaseAccessibilityRuleExamples {
 
             private func helperFunction() {}
         }
-        """),
-    ]
+        """,
+    ])
 }

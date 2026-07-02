@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,19 +10,19 @@ struct DiscouragedAssertRule: Rule {
         name: "Discouraged Assert",
         description: "Prefer `assertionFailure()` and/or `preconditionFailure()` over `assert(false)`",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            Example(#"assert(true)"#),
-            Example(#"assert(true, "foobar")"#),
-            Example(#"assert(true, "foobar", file: "toto", line: 42)"#),
-            Example(#"assert(false || true)"#),
-            Example(#"XCTAssert(false)"#),
-        ],
-        triggeringExamples: [
-            Example(#"↓assert(false)"#),
-            Example(#"↓assert(false, "foobar")"#),
-            Example(#"↓assert(false, "foobar", file: "toto", line: 42)"#),
-            Example(#"↓assert(   false    , "foobar")"#),
-        ]
+        nonTriggeringExamples: #examples([
+            #"assert(true)"#,
+            #"assert(true, "foobar")"#,
+            #"assert(true, "foobar", file: "toto", line: 42)"#,
+            #"assert(false || true)"#,
+            #"XCTAssert(false)"#,
+        ]),
+        triggeringExamples: #examples([
+            #"↓assert(false)"#,
+            #"↓assert(false, "foobar")"#,
+            #"↓assert(false, "foobar", file: "toto", line: 42)"#,
+            #"↓assert(   false    , "foobar")"#,
+        ])
     )
 }
 

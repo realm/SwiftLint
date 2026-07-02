@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(explicitRewriter: true)
@@ -10,39 +11,39 @@ struct EmptyParenthesesWithTrailingClosureRule: Rule {
         description: "When using trailing closures, empty parentheses should be avoided " +
                      "after the method call",
         kind: .style,
-        nonTriggeringExamples: [
-            Example("[1, 2].map { $0 + 1 }"),
-            Example("[1, 2].map({ $0 + 1 })"),
-            Example("[1, 2].reduce(0) { $0 + $1 }"),
-            Example("[1, 2].map { number in\n number + 1 \n}"),
-            Example("let isEmpty = [1, 2].isEmpty()"),
-            Example("""
+        nonTriggeringExamples: #examples([
+            "[1, 2].map { $0 + 1 }",
+            "[1, 2].map({ $0 + 1 })",
+            "[1, 2].reduce(0) { $0 + $1 }",
+            "[1, 2].map { number in\n number + 1 \n}",
+            "let isEmpty = [1, 2].isEmpty()",
+            """
             UIView.animateWithDuration(0.3, animations: {
                self.disableInteractionRightView.alpha = 0
             }, completion: { _ in
                ()
             })
-            """),
-        ],
-        triggeringExamples: [
-            Example("[1, 2].map↓() { $0 + 1 }"),
-            Example("[1, 2].map↓( ) { $0 + 1 }"),
-            Example("[1, 2].map↓() { number in\n number + 1 \n}"),
-            Example("[1, 2].map↓(  ) { number in\n number + 1 \n}"),
-            Example("func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}"),
-        ],
-        corrections: [
-            Example("[1, 2].map↓() { $0 + 1 }"): Example("[1, 2].map { $0 + 1 }"),
-            Example("[1, 2].map↓( ) { $0 + 1 }"): Example("[1, 2].map { $0 + 1 }"),
-            Example("[1, 2].map↓() { number in\n number + 1 \n}"):
-                Example("[1, 2].map { number in\n number + 1 \n}"),
-            Example("[1, 2].map↓(  ) { number in\n number + 1 \n}"):
-                Example("[1, 2].map { number in\n number + 1 \n}"),
-            Example("func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}"):
-                Example("func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}"),
-            Example("class C {\n#if true\nfunc f() {\n[1, 2].map↓() { $0 + 1 }\n}\n#endif\n}"):
-                Example("class C {\n#if true\nfunc f() {\n[1, 2].map { $0 + 1 }\n}\n#endif\n}"),
-        ]
+            """,
+        ]),
+        triggeringExamples: #examples([
+            "[1, 2].map↓() { $0 + 1 }",
+            "[1, 2].map↓( ) { $0 + 1 }",
+            "[1, 2].map↓() { number in\n number + 1 \n}",
+            "[1, 2].map↓(  ) { number in\n number + 1 \n}",
+            "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}",
+        ]),
+        corrections: #corrections([
+            "[1, 2].map↓() { $0 + 1 }": "[1, 2].map { $0 + 1 }",
+            "[1, 2].map↓( ) { $0 + 1 }": "[1, 2].map { $0 + 1 }",
+            "[1, 2].map↓() { number in\n number + 1 \n}":
+                "[1, 2].map { number in\n number + 1 \n}",
+            "[1, 2].map↓(  ) { number in\n number + 1 \n}":
+                "[1, 2].map { number in\n number + 1 \n}",
+            "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}":
+                "func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}",
+            "class C {\n#if true\nfunc f() {\n[1, 2].map↓() { $0 + 1 }\n}\n#endif\n}":
+                "class C {\n#if true\nfunc f() {\n[1, 2].map { $0 + 1 }\n}\n#endif\n}",
+        ])
     )
 }
 

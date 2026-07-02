@@ -1,3 +1,4 @@
+import SwiftLintCore
 import SwiftSyntax
 
 @SwiftSyntaxRule(optIn: true)
@@ -9,20 +10,20 @@ struct IBInspectableInExtensionRule: Rule {
         name: "IBInspectable in Extension",
         description: "Extensions shouldn't add @IBInspectable properties",
         kind: .lint,
-        nonTriggeringExamples: [
-            Example("""
+        nonTriggeringExamples: #examples([
+            """
             class Foo {
               @IBInspectable private var x: Int
             }
-            """),
-        ],
-        triggeringExamples: [
-            Example("""
+            """,
+        ]),
+        triggeringExamples: #examples([
+            """
             extension Foo {
               ↓@IBInspectable private var x: Int
             }
-            """),
-        ]
+            """,
+        ])
     )
 }
 

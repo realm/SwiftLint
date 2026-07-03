@@ -16,7 +16,10 @@
 
 ### Bug Fixes
 
-* None.
+* Fix correction behavior of `closure_spacing` rule when a closure contains only trivia (e.g. comments).  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#6798](https://github.com/realm/SwiftLint/issues/6798)
+  [#6799](https://github.com/realm/SwiftLint/issues/6799)
 
 ## 0.65.0: Fresh Folded Fixtures
 

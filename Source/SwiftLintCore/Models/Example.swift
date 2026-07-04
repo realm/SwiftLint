@@ -121,20 +121,6 @@ public extension Example {
     func removingViolationMarkers() -> Example {
         with(code: code.replacingOccurrences(of: "↓", with: ""))
     }
-
-    /// Returns the same example, optionally excluded from the rule documentation.
-    func excludeFromDocumentation(_ value: Bool = true) -> Self {
-        var copy = self
-        copy.excludeFromDocumentation = value
-        return copy
-    }
-
-    /// Returns the same example, but with the given rule configuration applied.
-    func configuration(_ value: [String: any Sendable]?) -> Self {
-        var copy = self
-        copy.configuration = value
-        return copy
-    }
 }
 
 public extension Example {

@@ -4,7 +4,7 @@ import SwiftSyntaxMacros
 
 /// Expands `#examples(["a", "b"])` into `[Example("a", file:, line:), Example("b", file:, line:)]`, capturing
 /// the file and line of each element so test failures and documentation point at the right location. Elements are
-/// usually string literals, but any `String`-typed expression works.
+/// usually string literals, but any `String`-typed expression or an existing `Example` works.
 enum Examples: ExpressionMacro {
     static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -27,8 +27,8 @@ enum Examples: ExpressionMacro {
 }
 
 /// Expands `#corrections(["a": "b"])` into `[Example("a", …): Example("b", …)]`, capturing the file and
-/// line of each key and value. Keys and values are usually string literals, but any `String`-typed expression
-/// works. Intended for a rule's `corrections` dictionary.
+/// line of each key and value. Keys and values are usually string literals, but any `String`-typed expression or
+/// an existing `Example` works. Intended for a rule's `corrections` dictionary.
 enum Corrections: ExpressionMacro {
     static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -51,9 +51,9 @@ enum Corrections: ExpressionMacro {
 }
 
 /// Wraps a string expression in an `Example(…, file:, line:)` call, baking in the expression's own source
-/// location. (It is usually a string literal, but any `String`-typed expression works.) Its surrounding trivia is
-/// replaced with the trivia of `triviaSource` (the original node being substituted), so the result slots into the
-/// same position as the expression it replaces.
+/// location. (It is usually a string literal, but any `String`-typed expression or an existing `Example` works.)
+/// Its surrounding trivia is replaced with the trivia of `triviaSource` (the original node being substituted), so
+/// the result slots into the same position as the expression it replaces.
 private func makeExample(
     from expression: ExprSyntax,
     in context: some MacroExpansionContext,

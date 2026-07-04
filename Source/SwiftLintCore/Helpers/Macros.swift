@@ -84,19 +84,24 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
 /// `nonTriggeringExamples: #examples(["let x = 1", "let y = 2"])`. Examples that need a custom configuration or
 /// chained modifiers should keep using ``Example`` directly.
 @freestanding(expression)
-public macro examples(_ examples: [Any]) -> [Example] = #externalMacro(
+public macro examples(_ examples: [any ExampleConvertible]) -> [Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "Examples"
 )
 
 /// Macro that expands a dictionary into a dictionary of ``Example``s. Keys and values are usually
-/// string literals, but any `String`-typed expression or other instance of ``Example`` will work.
+/// string literals, but any `String`-typed expression or an ``Example`` instance will work.
+///
+/// The parameter's value type is `any ExampleConvertible` (so a wrong-typed value is a plain "does not conform"
+/// error), but its key type is `AnyHashable`: a `Dictionary` key must be `Hashable`, which an `any
+/// ExampleConvertible` existential is not. Keys are therefore checked only for `Hashable`, and a non-`String`,
+/// non-`Example` key surfaces as a macro-expansion error rather than a conformance error.
 ///
 /// Use it for a rule's `corrections`, e.g.
 /// `corrections: #corrections(["↓x": "y"])`. Pairs that need a custom configuration should keep using
 /// ``Example`` directly.
 @freestanding(expression)
-public macro corrections(_ examples: [AnyHashable: Any]) -> [Example: Example] = #externalMacro(
+public macro corrections(_ examples: [AnyHashable: any ExampleConvertible]) -> [Example: Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "Corrections"
 )

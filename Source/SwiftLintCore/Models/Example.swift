@@ -94,8 +94,8 @@ public extension Example {
     }
 
     /// Convenience init so that arrays can mix string literals with concrete `Example`s,
-    /// and still get the right file and line information. Used by the `#examples` macro to
-    /// re-capture the file and line of each element at its call site.
+    /// and still get the right file and line information. Used by the `#examples` and `#corrections`
+    /// macros to re-capture the file and line of each element at its call site.
     init(
         _ other: Example,
         fileID: String = #fileID,
@@ -228,6 +228,19 @@ extension Example: Comparable {
         lhs.code < rhs.code
     }
 }
+
+/// A type that may appear as an element of the `#examples` macro or as a key or value of the `#corrections` macro.
+/// Conformance is a compile-time marker: it lets the macros declare precise parameter types (`[any
+/// ExampleConvertible]` and `[AnyHashable: any ExampleConvertible]`) so passing an unsupported type produces a
+/// plain "does not conform" error instead of a confusing macro-expansion failure.
+///
+/// Only `String` and `Example` conform, because the macros expand each element into an `Example(_:)` call and
+/// those are the only types that initializer accepts.
+public protocol ExampleConvertible {}
+
+extension String: ExampleConvertible {}
+
+extension Example: ExampleConvertible {}
 
 public extension Array where Element == Example {
     /// Make these examples skip wrapping in comment tests.

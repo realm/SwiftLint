@@ -196,7 +196,7 @@ struct ContrastedOpeningBraceRuleExamples {
                    print("Brackets")
                }
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             if
                 "test".isEmpty ↓{

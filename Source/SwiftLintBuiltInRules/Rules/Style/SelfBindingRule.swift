@@ -17,18 +17,18 @@ struct SelfBindingRule: Rule {
             "guard let self = self else { return }",
             "if let this = this { return }",
             "guard let this = this else { return }",
-            "if let this = self { return }".configuration(["bind_identifier": "this"]),
-            "guard let this = self else { return }".configuration(["bind_identifier": "this"]),
+            "if let this = self { return }".asExample(configuration: ["bind_identifier": "this"]),
+            "guard let this = self else { return }".asExample(configuration: ["bind_identifier": "this"]),
         ]),
         triggeringExamples: #examples([
             "if let ↓`self` = self { return }",
             "guard let ↓`self` = self else { return }",
             "if let ↓this = self { return }",
             "guard let ↓this = self else { return }",
-            "if let ↓self = self { return }".configuration(["bind_identifier": "this"]),
-            "guard let ↓self = self else { return }".configuration(["bind_identifier": "this"]),
-            "if let ↓self { return }".configuration(["bind_identifier": "this"]),
-            "guard let ↓self else { return }".configuration(["bind_identifier": "this"]),
+            "if let ↓self = self { return }".asExample(configuration: ["bind_identifier": "this"]),
+            "guard let ↓self = self else { return }".asExample(configuration: ["bind_identifier": "this"]),
+            "if let ↓self { return }".asExample(configuration: ["bind_identifier": "this"]),
+            "guard let ↓self else { return }".asExample(configuration: ["bind_identifier": "this"]),
         ]),
         corrections: #corrections([
             "if let ↓`self` = self { return }":
@@ -39,12 +39,12 @@ struct SelfBindingRule: Rule {
                 "if let self = self { return }",
             "guard let ↓this = self else { return }":
                 "guard let self = self else { return }",
-            "if let ↓self = self { return }".configuration(["bind_identifier": "this"]):
-                "if let this = self { return }".configuration(["bind_identifier": "this"]),
-            "if let ↓self { return }".configuration(["bind_identifier": "this"]):
-                "if let this = self { return }".configuration(["bind_identifier": "this"]),
-            "guard let ↓self else { return }".configuration(["bind_identifier": "this"]):
-                "guard let this = self else { return }".configuration(["bind_identifier": "this"]),
+            "if let ↓self = self { return }".asExample(configuration: ["bind_identifier": "this"]):
+                "if let this = self { return }".asExample(configuration: ["bind_identifier": "this"]),
+            "if let ↓self { return }".asExample(configuration: ["bind_identifier": "this"]):
+                "if let this = self { return }".asExample(configuration: ["bind_identifier": "this"]),
+            "guard let ↓self else { return }".asExample(configuration: ["bind_identifier": "this"]):
+                "guard let this = self else { return }".asExample(configuration: ["bind_identifier": "this"]),
         ])
     )
 }

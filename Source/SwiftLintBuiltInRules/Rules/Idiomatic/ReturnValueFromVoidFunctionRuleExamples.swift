@@ -56,7 +56,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
                 }
             }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         func test() {
             guard condition else {
@@ -148,7 +148,7 @@ internal struct ReturnValueFromVoidFunctionRuleExamples {
             }
           }
         }
-        """#.excludeFromDocumentation(),
+        """#.asExample(excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples = #examples([

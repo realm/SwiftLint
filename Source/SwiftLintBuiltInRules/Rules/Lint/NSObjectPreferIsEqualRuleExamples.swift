@@ -68,7 +68,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         // Enum inside nested class inheriting from NSObject
         """
         public final class A: NSObject {
@@ -84,7 +84,7 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples: [Example] = #examples([
@@ -159,6 +159,6 @@ internal struct NSObjectPreferIsEqualRuleExamples {
                 }
             }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
     ])
 }

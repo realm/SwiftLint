@@ -55,7 +55,7 @@ struct SuperfluousElseRule: Rule {
                 } else {
                     return 3
                 }
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
             """
                 for i in list {
                     if i > 12 {

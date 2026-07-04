@@ -37,7 +37,7 @@ struct ForceUnwrappingRule: Rule {
             "let url = NSURL(string: \"http://www.google.com\")!",
             "let url = URL.init(string: \"https://www.example.com\")!",
             "let result = someFunction(\"constant\")!"
-                .configuration(["ignored_literal_argument_functions": ["someFunction(_:)"]]),
+                .asExample(configuration: ["ignored_literal_argument_functions": ["someFunction(_:)"]]),
         ]),
         triggeringExamples: #examples([
             "let url = NSURL(string: query)↓!",
@@ -74,7 +74,7 @@ struct ForceUnwrappingRule: Rule {
             "let url = URL(string: \"\\(dynamicValue)\")↓!",
             "let result = someFunction(\"constant\")↓!",
             "let url = URL(string: \"https://www.example.com\")↓!"
-                .configuration(["ignored_literal_argument_functions": [String]()]),
+                .asExample(configuration: ["ignored_literal_argument_functions": [String]()]),
         ])
     )
 }

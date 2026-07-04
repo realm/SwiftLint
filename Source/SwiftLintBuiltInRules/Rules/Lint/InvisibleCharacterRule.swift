@@ -47,12 +47,12 @@ struct InvisibleCharacterRule: Rule {
             #"let s = "Hel↓‌lo \(name)" // U+200C in interpolated string"#,
             """
             let s = "Hello↓­World"
-            """.configuration([
+            """.asExample(configuration: [
                 "additional_code_points": ["00AD"],
             ]),
             """
             let s = "Hello↓‍World"
-            """.configuration([
+            """.asExample(configuration: [
                 "additional_code_points": ["200D"],
             ]),
         ]),
@@ -73,14 +73,14 @@ struct InvisibleCharacterRule: Rule {
             #"let s = "Test​String﻿Here""#: #"let s = "TestStringHere""#,
             #"let s = "Hel‌lo" + "World""#: #"let s = "Hello" + "World""#,
             #"let s = "Hel‌lo \(name)""#: #"let s = "Hello \(name)""#,
-            #"let s = "Hello­World""#.configuration([
+            #"let s = "Hello­World""#.asExample(configuration: [
                     "additional_code_points": ["00AD"],
-            ]): #"let s = "HelloWorld""#.configuration([
+            ]): #"let s = "HelloWorld""#.asExample(configuration: [
                     "additional_code_points": ["00AD"],
             ]),
-            #"let s = "Hello‍World""#.configuration([
+            #"let s = "Hello‍World""#.asExample(configuration: [
                     "additional_code_points": ["200D"],
-            ]): #"let s = "HelloWorld""#.configuration([
+            ]): #"let s = "HelloWorld""#.asExample(configuration: [
                     "additional_code_points": ["200D"],
             ]),
         ])

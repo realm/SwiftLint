@@ -29,7 +29,7 @@ internal struct MarkRuleExamples {
 
           ///  //marketingOptIn
         struct T {}
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         issue1749Example,
     ])
 

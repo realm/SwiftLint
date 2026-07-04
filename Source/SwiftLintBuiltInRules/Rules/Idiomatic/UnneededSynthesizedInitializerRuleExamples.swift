@@ -236,7 +236,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
             }
             #endif
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         struct Foo {
             #if DEBUG
@@ -245,7 +245,7 @@ enum UnneededSynthesizedInitializerRuleExamples {
 
             init() {}
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         struct Foo {
             @available(*, unavailable)

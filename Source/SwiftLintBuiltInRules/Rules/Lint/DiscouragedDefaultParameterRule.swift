@@ -25,7 +25,7 @@ struct DiscouragedDefaultParameterRule: Rule {
             "private func foo(bar: Int = 0) {}",
             "fileprivate func foo(bar: Int = 0) {}",
             "public init(value: Int = 42) {}",
-            "func foo(bar: Int = 0) {}".configuration(["disallowed_access_levels": ["private"]]),
+            "func foo(bar: Int = 0) {}".asExample(configuration: ["disallowed_access_levels": ["private"]]),
         ]),
         triggeringExamples: #examples([
             "func foo(bar: Int ↓= 0) {}",
@@ -35,8 +35,9 @@ struct DiscouragedDefaultParameterRule: Rule {
             "init(value: Int ↓= 42) {}",
             "class C { public func foo(bar: Int ↓= 0) {} }",
             "struct S { public init(value: Int ↓= 42) {} }",
-            "private func foo(bar: Int ↓= 0) {}".configuration(["disallowed_access_levels": ["private"]]),
-            "fileprivate func foo(bar: Int ↓= 0) {}".configuration(["disallowed_access_levels": ["fileprivate"]]),
+            "private func foo(bar: Int ↓= 0) {}".asExample(configuration: ["disallowed_access_levels": ["private"]]),
+            "fileprivate func foo(bar: Int ↓= 0) {}"
+                .asExample(configuration: ["disallowed_access_levels": ["fileprivate"]]),
         ])
     )
 }

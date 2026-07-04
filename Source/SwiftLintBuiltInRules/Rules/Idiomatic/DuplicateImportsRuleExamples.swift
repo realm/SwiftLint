@@ -146,7 +146,7 @@ internal struct DuplicateImportsRuleExamples {
             ↓import A.B
             import A
 
-            """.excludeFromDocumentation(): """
+            """.asExample(excludeFromDocumentation: true): """
                 import A
 
                 """,
@@ -155,7 +155,7 @@ internal struct DuplicateImportsRuleExamples {
             ↓import A.B.C.D
             ↓import A.B.C.E
 
-            """.excludeFromDocumentation(): """
+            """.asExample(excludeFromDocumentation: true): """
                 import A.B.C
 
                 """,
@@ -164,7 +164,7 @@ internal struct DuplicateImportsRuleExamples {
             import A
             ↓import A.B
 
-            """.excludeFromDocumentation(): """
+            """.asExample(excludeFromDocumentation: true): """
                 import A
 
                 """,
@@ -173,7 +173,7 @@ internal struct DuplicateImportsRuleExamples {
             import A
             ↓import A.B.C
 
-            """.excludeFromDocumentation(): """
+            """.asExample(excludeFromDocumentation: true): """
                 import A
 
                 """,
@@ -182,14 +182,14 @@ internal struct DuplicateImportsRuleExamples {
             ↓import A.B.C
             ↓import A.B
 
-            """.excludeFromDocumentation(): """
+            """.asExample(excludeFromDocumentation: true): """
                 import A
 
                 """,
             """
             import CoreImage.CIFilterBuiltins
             import CoreImage.CIFilterBuiltins
-            """.excludeFromDocumentation(): """
+            """.asExample(excludeFromDocumentation: true): """
                 import CoreImage.CIFilterBuiltins
                 """,
         ])
@@ -213,7 +213,7 @@ internal struct DuplicateImportsRuleExamples {
                 import A
                 ↓import \(importKind) A.B.Foo
 
-                """.excludeFromDocumentation()
+                """.asExample(excludeFromDocumentation: true)
         }.forEach {
             corrections[$0] = Example(
                 """
@@ -227,7 +227,7 @@ internal struct DuplicateImportsRuleExamples {
                 import A.B
                 ↓import \(importKind) A.B.Foo
 
-                """.excludeFromDocumentation()
+                """.asExample(excludeFromDocumentation: true)
         }.forEach {
             corrections[$0] = Example(
                 """

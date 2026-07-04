@@ -55,8 +55,10 @@ internal struct XCTSpecificMatcherRuleExamples {
         "XCTAssertEqual(.toto(.zoo), foo?.bar)",
 
         // Configurations Disabled
-        "XCTAssertEqual(foo, true)".configuration(["matchers": ["one-argument-asserts"]]).excludeFromDocumentation(),
-        "XCTAssert(foo == bar)".configuration(["matchers": ["two-argument-asserts"]]).excludeFromDocumentation(),
+        "XCTAssertEqual(foo, true)"
+            .asExample(configuration: ["matchers": ["one-argument-asserts"]], excludeFromDocumentation: true),
+        "XCTAssert(foo == bar)"
+            .asExample(configuration: ["matchers": ["two-argument-asserts"]], excludeFromDocumentation: true),
 
         // Skip if one operand might be a type or a tuple
         "XCTAssert(foo.self == bar)",

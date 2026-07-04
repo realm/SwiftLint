@@ -47,7 +47,7 @@ struct OptionalEnumCaseMatchingRule: Rule {
             case .none:
               break
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             """

@@ -15,14 +15,14 @@ struct ClosureSpacingRule: Rule {
             "[].filter { $0.contains(location) }",
             "extension UITableViewCell: ReusableView { }",
             "extension UITableViewCell: ReusableView {}",
-            #"let r = /\{\}/"#.excludeFromDocumentation(),
+            #"let r = /\{\}/"#.asExample(excludeFromDocumentation: true),
             """
             var tapped: (UITapGestureRecognizer) -> Void = { _ in /* no-op */ }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             let test1 = func1(arg: { /* do nothing */ })
             let test2 = func1 { /* do nothing */ }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "[].filter↓{ $0.contains(location) }",
@@ -32,7 +32,7 @@ struct ClosureSpacingRule: Rule {
             "filter ↓{ sorted ↓{ $0 < $1}}",
             """
             var tapped: (UITapGestureRecognizer) -> Void = ↓{ _ in /* no-op */  }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         corrections: #corrections([
             "[].filter(↓{$0.contains(location) })":

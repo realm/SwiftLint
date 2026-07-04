@@ -35,7 +35,7 @@ struct ExplicitTypeInterfaceRule: Rule {
             func f() {
                 if case .failure(let error) = errorCompletion {}
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             """

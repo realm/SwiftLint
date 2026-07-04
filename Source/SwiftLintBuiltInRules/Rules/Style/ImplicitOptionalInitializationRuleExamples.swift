@@ -22,96 +22,96 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
         "var x: Int? = 1",
 
         // never style
-        "private var myVar: Int? = nil".configuration(["style": "never"]),
-        "var myVar: Optional<Int> = nil".configuration(["style": "never"]),
-        "var myVar: Int? { nil }, myOtherVar: Int? = nil".configuration(["style": "never"]),
+        "private var myVar: Int? = nil".asExample(configuration: ["style": "never"]),
+        "var myVar: Optional<Int> = nil".asExample(configuration: ["style": "never"]),
+        "var myVar: Int? { nil }, myOtherVar: Int? = nil".asExample(configuration: ["style": "never"]),
         """
             var myVar: String? = nil {
               didSet { print("didSet") }
             }
-            """.configuration(["style": "never"]),
+            """.asExample(configuration: ["style": "never"]),
         """
             func funcName() {
                 var myVar: String? = nil
             }
-            """.configuration(["style": "never"]),
-        "var x: Int? = nil // comment".configuration(["style": "never"]),  // with comment after
+            """.asExample(configuration: ["style": "never"]),
+        "var x: Int? = nil // comment".asExample(configuration: ["style": "never"]),  // with comment after
         """
             @Wrapper("name")
             var flag: Bool?
-            """.configuration([
+            """.asExample(configuration: [
                 "style": "never",
                 "ignore_attributes": ["Wrapper"],
             ]),
 
         // always style
-        "public var myVar: Int?".configuration(["style": "always"]),
-        "var myVar: Optional<Int>".configuration(["style": "always"]),
+        "public var myVar: Int?".asExample(configuration: ["style": "always"]),
+        "var myVar: Optional<Int>".asExample(configuration: ["style": "always"]),
         """
             @Wrapper("name")
             var flag: Bool? = nil
-            """.configuration([
+            """.asExample(configuration: [
                 "style": "always",
                 "ignore_attributes": ["Wrapper"],
             ]),
-        "var myVar: Int? { nil }, myOtherVar: Int?".configuration(["style": "always"]),
+        "var myVar: Int? { nil }, myOtherVar: Int?".asExample(configuration: ["style": "always"]),
         """
             var myVar: String? {
               didSet { print("didSet") }
             }
-            """.configuration(["style": "always"]),
+            """.asExample(configuration: ["style": "always"]),
         """
             func funcName() {
               var myVar: String?
             }
-            """.configuration(["style": "always"]),
-        "var x: Int? // comment".configuration(["style": "always"]),  // with comment after
+            """.asExample(configuration: ["style": "always"]),
+        "var x: Int? // comment".asExample(configuration: ["style": "always"]),  // with comment after
     ])
 
     static let triggeringExamples = #examples([
         // never style
-        "var ↓myVar: Int? ".configuration(["style": "never"]),
-        "var ↓myVar: Optional<Int> ".configuration(["style": "never"]),
-        "var myVar: Int? = nil, ↓myOtherVar: Int? ".configuration(["style": "never"]),
+        "var ↓myVar: Int? ".asExample(configuration: ["style": "never"]),
+        "var ↓myVar: Optional<Int> ".asExample(configuration: ["style": "never"]),
+        "var myVar: Int? = nil, ↓myOtherVar: Int? ".asExample(configuration: ["style": "never"]),
         """
             var ↓myVar: String? {
               didSet { print("didSet") }
             }
-            """.configuration(["style": "never"]),
+            """.asExample(configuration: ["style": "never"]),
         """
             func funcName() {
               var ↓myVar: String?
             }
-            """.configuration(["style": "never"]),
+            """.asExample(configuration: ["style": "never"]),
         """
             @Wrapper("name")
             var ↓flag: Bool?
-            """.configuration([
+            """.asExample(configuration: [
                 "style": "never",
                 "ignore_attributes": ["State"],
             ]),
 
         // always style
-        "var ↓myVar: Int? = nil".configuration(["style": "always"]),
-        "var ↓myVar: Optional<Int> = nil".configuration(["style": "always"]),
+        "var ↓myVar: Int? = nil".asExample(configuration: ["style": "always"]),
+        "var ↓myVar: Optional<Int> = nil".asExample(configuration: ["style": "always"]),
         """
             @Wrapper("name")
             var ↓flag: Bool? = nil
-            """.configuration([
+            """.asExample(configuration: [
                 "style": "always",
                 "ignore_attributes": ["State"],
             ]),
-        "var myVar: Int?, ↓myOtherVar: Int? = nil".configuration(["style": "always"]),
+        "var myVar: Int?, ↓myOtherVar: Int? = nil".asExample(configuration: ["style": "always"]),
         """
             var ↓myVar: String? = nil {
               didSet { print("didSet") }
             }
-            """.configuration(["style": "always"]),
+            """.asExample(configuration: ["style": "always"]),
         """
             func funcName() {
                 var ↓myVar: String? = nil
             }
-            """.configuration(["style": "always"]),
+            """.asExample(configuration: ["style": "always"]),
     ])
 
     static let corrections = #corrections([
@@ -119,7 +119,7 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
         """
             @Wrapper("name")
             var flag: Bool?
-            """.configuration([
+            """.asExample(configuration: [
                 "style": "never",
                 "ignore_attributes": ["Wrapper"],
             ]):
@@ -128,15 +128,15 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
                 @Wrapper("name")
                 var flag: Bool?
                 """,
-        "var ↓myVar: Int? // comment".configuration(["style": "never"]):
+        "var ↓myVar: Int? // comment".asExample(configuration: ["style": "never"]):
             "var myVar: Int? = nil // comment",
-        "var ↓myVar: Optional<Int> // comment".configuration(["style": "never"]):
+        "var ↓myVar: Optional<Int> // comment".asExample(configuration: ["style": "never"]):
             "var myVar: Optional<Int> = nil // comment",
         """
             var ↓myVar: String? {
               didSet { print("didSet") }
             }
-            """.configuration(["style": "never"]):
+            """.asExample(configuration: ["style": "never"]):
 
                 """
                 var myVar: String? = nil {
@@ -147,7 +147,7 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             func funcName() {
               var ↓myVar: String?
             }
-            """.configuration(["style": "never"]):
+            """.asExample(configuration: ["style": "never"]):
             """
             func funcName() {
               var myVar: String? = nil
@@ -157,7 +157,7 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
         """
             @Wrapper("name")
             var flag: Bool? = nil
-            """.configuration([
+            """.asExample(configuration: [
                 "style": "always",
                 "ignore_attributes": ["Wrapper"],
             ]):
@@ -166,15 +166,15 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
                 @Wrapper("name")
                 var flag: Bool? = nil
                 """,
-        "var ↓myVar: Int? = nil // comment".configuration(["style": "always"]):
+        "var ↓myVar: Int? = nil // comment".asExample(configuration: ["style": "always"]):
             "var myVar: Int? // comment",
-        "var ↓myVar: Optional<Int> = nil // comment".configuration(["style": "always"]):
+        "var ↓myVar: Optional<Int> = nil // comment".asExample(configuration: ["style": "always"]):
             "var myVar: Optional<Int> // comment",
         """
             var ↓myVar: String? = nil {
               didSet { print("didSet") }
             }
-            """.configuration(["style": "always"]):
+            """.asExample(configuration: ["style": "always"]):
 
                 """
                 var myVar: String? {
@@ -185,7 +185,7 @@ enum ImplicitOptionalInitializationRuleExamples { // swiftlint:disable:this type
             func funcName() {
                 var ↓myVar: String? = nil
             }
-            """.configuration(["style": "always"]):
+            """.asExample(configuration: ["style": "always"]):
 
                 """
                 func funcName() {

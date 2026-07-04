@@ -110,10 +110,11 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
         "public ↓func returnsClosureTuple() -> (@Sendable () -> Void, @MainActor () -> Void)",
 
         // Custom global actors with configuration
-        "@MyActor public ↓struct S {}".configuration(["global_actors": ["MyActor"]]),
-        "public ↓func globalActorClosure(_ block: @MyActor () -> Void)".configuration(["global_actors": ["MyActor"]]),
-        "@MyActor public ↓func customGlobalActor()".configuration(["global_actors": ["MyActor"]]),
-        "@MyActor public ↓init()".configuration(["global_actors": ["MyActor"]]),
+        "@MyActor public ↓struct S {}".asExample(configuration: ["global_actors": ["MyActor"]]),
+        "public ↓func globalActorClosure(_ block: @MyActor () -> Void)"
+            .asExample(configuration: ["global_actors": ["MyActor"]]),
+        "@MyActor public ↓func customGlobalActor()".asExample(configuration: ["global_actors": ["MyActor"]]),
+        "@MyActor public ↓init()".asExample(configuration: ["global_actors": ["MyActor"]]),
     ])
 
     static let corrections = #corrections([
@@ -254,13 +255,14 @@ struct IncompatibleConcurrencyAnnotationRuleExamples {
                 """,
 
         // Custom global actors with configuration
-        "@MyActor public struct S {}".configuration(["global_actors": ["MyActor"]]):
+        "@MyActor public struct S {}".asExample(configuration: ["global_actors": ["MyActor"]]):
             """
                 @preconcurrency
                 @MyActor public struct S {}
                 """,
 
-        "public func globalActorClosure(_ block: @MyActor () -> Void) {}".configuration(["global_actors": ["MyActor"]]):
+        "public func globalActorClosure(_ block: @MyActor () -> Void) {}"
+            .asExample(configuration: ["global_actors": ["MyActor"]]):
             """
                 @preconcurrency
                 public func globalActorClosure(_ block: @MyActor () -> Void) {}

@@ -17,12 +17,12 @@ struct TrailingWhitespaceRule: Rule {
             "let name: String //\n", "let name: String // \n",
             "let stringWithSpace = \"hello \"\n",
             "let multiline = \"\"\"\n    line with spaces    \n    \"\"\"   \n"
-                .configuration(["ignores_literals": true]),
+                .asExample(configuration: ["ignores_literals": true]),
         ]),
         triggeringExamples: #examples([
             "let name: String↓ \n", "/* */ let name: String↓ \n",
-            "let codeWithSpace = 123↓    \n".configuration(["ignores_literals": true])
-                .skipWrappingInCommentTest(),
+            "let codeWithSpace = 123↓    \n"
+                .asExample(configuration: ["ignores_literals": true], testWrappingInComment: false),
         ]),
         corrections: #corrections([
             "let name: String↓ \n": "let name: String\n",

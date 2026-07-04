@@ -30,7 +30,7 @@ internal enum SyntacticSugarRuleExamples {
 
         "let x = case Optional<Any>.none = obj",
         "let a = Swift.Optional<String?>.none",
-        "func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }".excludeFromDocumentation(),
+        "func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }".asExample(excludeFromDocumentation: true),
     ])
 
     static let triggering = #examples([

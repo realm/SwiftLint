@@ -31,12 +31,12 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
             """,
         ]),
         triggeringExamples: #examples([
-            "/* Only god knows why. ↓ This symbol does nothing. */".skipWrappingInCommentTest(),
-            "// Only god knows why. ↓ This symbol does nothing.".skipWrappingInCommentTest(),
-            "// Single. Double. ↓ End.".skipWrappingInCommentTest(),
-            "// Single. Double. ↓ Triple. ↓  End.".skipWrappingInCommentTest(),
-            "// Triple. ↓  Quad. ↓   End.".skipWrappingInCommentTest(),
-            "///   - code: Identifier of the error. ↓ Integer.".skipWrappingInCommentTest(),
+            "/* Only god knows why. ↓ This symbol does nothing. */".asExample(testWrappingInComment: false),
+            "// Only god knows why. ↓ This symbol does nothing.".asExample(testWrappingInComment: false),
+            "// Single. Double. ↓ End.".asExample(testWrappingInComment: false),
+            "// Single. Double. ↓ Triple. ↓  End.".asExample(testWrappingInComment: false),
+            "// Triple. ↓  Quad. ↓   End.".asExample(testWrappingInComment: false),
+            "///   - code: Identifier of the error. ↓ Integer.".asExample(testWrappingInComment: false),
         ]),
         corrections: #corrections([
             "/* Why. ↓ Symbol does nothing. */": "/* Why. Symbol does nothing. */",

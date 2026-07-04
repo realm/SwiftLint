@@ -109,7 +109,7 @@ struct LetVarWhitespaceRule: Rule {
                 }
 
                 func f() {}
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
             #"""
                 @Flag(name: "name", help: "help")
                 var fix = false
@@ -120,7 +120,7 @@ struct LetVarWhitespaceRule: Rule {
                 var format = false
                 @Flag(help: "help")
                 var useAlternativeExcluding = false
-                """#.excludeFromDocumentation(),
+                """#.asExample(excludeFromDocumentation: true),
         ]).map(Self.wrapIntoClass) + #examples([
             """
                 a = 2
@@ -203,7 +203,7 @@ struct LetVarWhitespaceRule: Rule {
                 func f() {}
                 ↓let a = 1
                 #endif
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
         ])
     )
 

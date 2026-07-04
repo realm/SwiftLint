@@ -163,7 +163,7 @@ struct UnusedDeclarationRuleExamples {
         """,
         """
         public func ↓foo() {}
-        """.configuration(["include_public_and_open": true]),
+        """.asExample(configuration: ["include_public_and_open": true]),
         """
         protocol Foo {
             func ↓bar1()
@@ -224,7 +224,7 @@ struct UnusedDeclarationRuleExamples {
         \($0) ↓FooImpl {}
         extension FooImpl {}
         extension FooImpl: Foo {}
-        """.excludeFromDocumentation()
+        """.asExample(excludeFromDocumentation: true)
     } + platformSpecificTriggeringExamples
 
 #if os(macOS)

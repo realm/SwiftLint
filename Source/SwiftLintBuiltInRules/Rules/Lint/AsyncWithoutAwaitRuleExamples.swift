@@ -169,7 +169,7 @@ internal struct AsyncWithoutAwaitRuleExamples {
                 b = 2
             }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         @concurrent
         func concurrentFunction() async {

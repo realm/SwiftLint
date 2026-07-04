@@ -4,7 +4,7 @@ internal struct IdentifierNameRuleExamples {
     static let nonTriggeringExamples = #examples([
         "let myLet = 0",
         "var myVar = 0",
-        "let `my 🤷‍♂️ id` = 0".configuration(["excluded": ["`.+`"]]),
+        "let `my 🤷‍♂️ id` = 0".asExample(configuration: ["excluded": ["`.+`"]]),
         "private let _myLet = 0",
         "private func _myFunc() {}",
         "fileprivate let _myLet = 0",
@@ -32,7 +32,7 @@ internal struct IdentifierNameRuleExamples {
                    static var Bar = 0
                 }
                 """,
-        "func √ (arg: Double) -> Double { arg }".configuration(["additional_operators": "√"]),
+        "func √ (arg: Double) -> Double { arg }".asExample(configuration: ["additional_operators": "√"]),
         "struct Foo<let count: Int> {}",
         "struct Foo<let maxSize: Int, Element> {}",
         "class Foo<let capacity: Int> {}",
@@ -52,9 +52,9 @@ internal struct IdentifierNameRuleExamples {
         "let ↓`my 🤷‍♂️ id` = 0",
         "private let ↓_i = 0",
         "func ↓IsOperator(name: String) -> Bool"
-            .configuration(["validates_start_with_lowercase": "warning"]).excludeFromDocumentation(),
+            .asExample(configuration: ["validates_start_with_lowercase": "warning"], excludeFromDocumentation: true),
         "enum Foo { case ↓MyEnum }"
-            .configuration(["validates_start_with_lowercase": "error"]).excludeFromDocumentation(),
+            .asExample(configuration: ["validates_start_with_lowercase": "error"], excludeFromDocumentation: true),
         "if let ↓_x {}",
         "guard var ↓x = x else {}",
         """

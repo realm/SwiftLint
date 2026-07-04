@@ -23,7 +23,7 @@ struct EmptyCountRule: Rule {
             "discount == 0",
             "order.discount == 0",
             "let rule = #Rule(Tips.Event(id: \"someTips\")) { $0.donations.count == 0 }",
-            "#Rule(param1: \"param1\")".excludeFromDocumentation(),
+            "#Rule(param1: \"param1\")".asExample(excludeFromDocumentation: true),
             "func isEmpty(count: Int) -> Bool { count == 0 }",
             """
                 var isEmpty: Bool {
@@ -45,27 +45,28 @@ struct EmptyCountRule: Rule {
             "[Int]().↓count == 0o00",
             "↓count == 0",
             "#ExampleMacro { $0.list.↓count == 0 }",
-            "#Rule { $0.donations.↓count == 0 }".excludeFromDocumentation(),
-            "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }".excludeFromDocumentation(),
+            "#Rule { $0.donations.↓count == 0 }".asExample(excludeFromDocumentation: true),
+            "#Rule(param1: \"param1\", param2: \"param2\") { $0.donations.↓count == 0 }"
+                .asExample(excludeFromDocumentation: true),
             "#Rule(param1: \"param1\") { $0.donations.↓count == 0 } closure2: { doSomething() }"
-                .excludeFromDocumentation(),
-            "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }".excludeFromDocumentation(),
+                .asExample(excludeFromDocumentation: true),
+            "#Rule(param1: \"param1\") { return $0.donations.↓count == 0 }".asExample(excludeFromDocumentation: true),
             """
                 #Rule(param1: "param1") {
                     doSomething()
                     return $0.donations.↓count == 0
                 }
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
             """
                 extension E {
                     var isEmpty: Bool { ↓count == 0 }
                 }
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
             """
                 struct S {
                     var isEmpty: Bool { ↓count == 0 }
                 }
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
         ]),
         corrections: #corrections([
             "[].↓count == 0":

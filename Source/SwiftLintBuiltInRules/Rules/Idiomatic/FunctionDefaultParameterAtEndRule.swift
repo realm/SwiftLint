@@ -42,7 +42,7 @@ struct FunctionDefaultParameterAtEndRule: Rule {
             """,
             """
             func expect<T>(file: String = #file, _ expression: @autoclosure () -> (() throws -> T)) -> Expectation<T> {}
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             "func foo(bar: Int, baz: Int = 0, z: () -> Void) {}",
             "func foo(bar: Int, baz: Int = 0, z: () -> Void, x: Int = 0) {}",
             "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}",
@@ -53,7 +53,7 @@ struct FunctionDefaultParameterAtEndRule: Rule {
             "public init?(↓for date: Date = Date(), coordinate: CLLocationCoordinate2D) {}",
             "func foo(bar: Int, ↓baz: Int = 0, z: () -> Void, x: Int) {}",
             "func foo(isolation: isolated (any Actor)? = #isolation, bar: String) {}"
-                .configuration(["ignore_first_isolation_inheritance_parameter": false]),
+                .asExample(configuration: ["ignore_first_isolation_inheritance_parameter": false]),
         ])
     )
 }

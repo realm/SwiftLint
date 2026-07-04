@@ -25,7 +25,7 @@ struct RedundantSetAccessControlRule: Rule {
             fileprivate class A {
               public fileprivate(set) var value: Int
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             extension Color {
                 public internal(set) static var someColor = Color.anotherColor

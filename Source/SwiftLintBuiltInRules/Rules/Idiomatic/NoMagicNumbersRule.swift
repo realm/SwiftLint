@@ -122,27 +122,27 @@ struct NoMagicNumbersRule: Rule {
             """,
             """
             let yourColor: UIColor = UIColor(hue: 0.9, saturation: 0.6, brightness: 0.333334, alpha: 1.0)
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             let systemColor = UIColor(displayP3Red: 0.3, green: 0.8, blue: 0.5, alpha: 0.75)
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             func createColor() -> UIColor {
                 return UIColor(white: 0.5, alpha: 0.8)
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             let memberColor = UIColor.init(red: 0.5, green: 0.3, blue: 0.9, alpha: 1.0)
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             func createMemberColor() -> UIColor {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
-            """.excludeFromDocumentation(),
-            "let a = b + 2".configuration(["allowed_numbers": [2]]).excludeFromDocumentation(),
-            "let a = b + 2".configuration(["allowed_numbers": [2.0]]).excludeFromDocumentation(),
-            "let a = b + 1".configuration(["allowed_numbers": [2.0]]).excludeFromDocumentation(),
-            "let a = b + 2.5".configuration(["allowed_numbers": [2.5]]).excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
+            "let a = b + 2".asExample(configuration: ["allowed_numbers": [2]], excludeFromDocumentation: true),
+            "let a = b + 2".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            "let a = b + 1".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            "let a = b + 2.5".asExample(configuration: ["allowed_numbers": [2.5]], excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "foo(↓321)",
@@ -183,7 +183,7 @@ struct NoMagicNumbersRule: Rule {
             f(↓4.0)
             #endif
             """,
-            "let a = b + ↓3".configuration(["allowed_numbers": [2.0]]).excludeFromDocumentation(),
+            "let a = b + ↓3".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
         ])
     )
 }

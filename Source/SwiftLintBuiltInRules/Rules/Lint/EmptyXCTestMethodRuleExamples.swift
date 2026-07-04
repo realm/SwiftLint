@@ -100,7 +100,7 @@ internal struct EmptyXCTestMethodRuleExamples {
         enum E {
             override func foo(a: Int) {}
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples = #examples([

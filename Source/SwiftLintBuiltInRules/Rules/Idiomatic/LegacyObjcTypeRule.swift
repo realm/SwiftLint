@@ -50,7 +50,7 @@ struct LegacyObjcTypeRule: Rule {
                 let data = NSData()
                 let number: NSNumber
             }
-            """.configuration(["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
+            """.asExample(configuration: ["allowed_types": ["NSData", "NSNumber", "NSURLRequest"]]),
         ]),
         triggeringExamples: #examples([
             "var array = ↓NSArray()",

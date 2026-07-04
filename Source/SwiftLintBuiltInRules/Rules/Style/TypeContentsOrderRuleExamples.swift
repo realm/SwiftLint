@@ -271,14 +271,14 @@ internal struct TypeContentsOrderRuleExamples {
             ↓associatedtype T
             typealias U = Int
         }
-        """.configuration(["order": [["type_alias"], ["associated_type"]]]).excludeFromDocumentation(),
+        """.asExample(configuration: ["order": [["type_alias"], ["associated_type"]]], excludeFromDocumentation: true),
         """
         enum E {
             @available(*, unavailable)
             ↓case a
             func f() {}
         }
-        """.configuration(["order": [["other_method"], ["case"]]]).excludeFromDocumentation(),
+        """.asExample(configuration: ["order": [["other_method"], ["case"]]], excludeFromDocumentation: true),
         """
         final class C {
             ↓var i = 1

@@ -82,7 +82,7 @@ struct IndentationWidthRule: OptInRule {
                 """,
         ]),
         triggeringExamples: #examples([
-            "↓    firstLine".skipMultiByteOffsetTest().skipDisableCommandTest(),
+            "↓    firstLine".asExample(testMultiByteOffsets: false, testDisableCommand: false),
             "firstLine\n        secondLine",
             "firstLine\n\tsecondLine\n\n↓\t\t\tfourthLine",
             "firstLine\n    secondLine\n        thirdLine\n↓ fourthLine",

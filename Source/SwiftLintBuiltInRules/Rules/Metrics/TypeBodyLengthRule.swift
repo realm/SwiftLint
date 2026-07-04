@@ -18,17 +18,17 @@ struct TypeBodyLengthRule: Rule {
         description: "Type bodies should not span too many lines",
         kind: .metrics,
         nonTriggeringExamples: #examples([
-            "actor A {}".configuration(testConfig),
-            "class C {}".configuration(testConfig),
-            "enum E {}".configuration(testConfig),
-            "extension E {}".configuration(testConfigWithAllTypes),
-            "protocol P {}".configuration(testConfigWithAllTypes),
-            "struct S {}".configuration(testConfig),
+            "actor A {}".asExample(configuration: testConfig),
+            "class C {}".asExample(configuration: testConfig),
+            "enum E {}".asExample(configuration: testConfig),
+            "extension E {}".asExample(configuration: testConfigWithAllTypes),
+            "protocol P {}".asExample(configuration: testConfigWithAllTypes),
+            "struct S {}".asExample(configuration: testConfig),
             """
                 actor A {
                     let x = 0
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
             """
                 class C {
                     let x = 0
@@ -37,7 +37,7 @@ struct TypeBodyLengthRule: Rule {
                     // be
                     // ignored
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
             """
                 enum E {
                     let x = 0
@@ -45,14 +45,14 @@ struct TypeBodyLengthRule: Rule {
 
 
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
             """
                 protocol P {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
         ]),
         triggeringExamples: #examples([
             """
@@ -61,42 +61,42 @@ struct TypeBodyLengthRule: Rule {
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
             """
                 ↓class C {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
             """
                 ↓enum E {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
             """
                 ↓extension E {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfigWithAllTypes),
+                """.asExample(configuration: testConfigWithAllTypes),
             """
                 ↓protocol P {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfigWithAllTypes),
+                """.asExample(configuration: testConfigWithAllTypes),
             """
                 ↓struct S {
                     let x = 0
                     let y = 1
                     let z = 2
                 }
-                """.configuration(testConfig),
+                """.asExample(configuration: testConfig),
         ])
     )
 }

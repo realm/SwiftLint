@@ -89,7 +89,7 @@ struct NonOverridableClassDeclarationRule: Rule {
             final class C {
                 class var b: Bool { true }
             }
-            """.configuration(["final_class_modifier": "static"]): """
+            """.asExample(configuration: ["final_class_modifier": "static"]): """
                 final class C {
                     static var b: Bool { true }
                 }

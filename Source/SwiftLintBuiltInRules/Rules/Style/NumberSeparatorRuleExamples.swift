@@ -21,10 +21,10 @@ internal struct NumberSeparatorRuleExamples {
                 "let foo = \(sign)6.2832e-6",
                 """
                 let color = #colorLiteral(red: 0.3543982506, green: 0.318749547, blue: 0.6367015243, alpha: 1)
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
                 """
                 let color = #colorLiteral(red: 0.354_398_250_6, green: 0.318_749_547, blue: 0.636_701_524_3, alpha: 1)
-                """.configuration(["minimum_fraction_length": 3]).excludeFromDocumentation(),
+                """.asExample(configuration: ["minimum_fraction_length": 3], excludeFromDocumentation: true),
             ])
         }
     }()
@@ -42,10 +42,10 @@ internal struct NumberSeparatorRuleExamples {
                 "let foo = \(sign)1000e2",
                 "let foo = \(sign)1000E2",
                 "let foo = \(sign)1__000",
-                "let foo = \(sign)1.0001".configuration(["minimum_fraction_length": 3]),
-                "let foo = \(sign)1_000_000.000000_1".configuration(["minimum_fraction_length": 3]),
+                "let foo = \(sign)1.0001".asExample(configuration: ["minimum_fraction_length": 3]),
+                "let foo = \(sign)1_000_000.000000_1".asExample(configuration: ["minimum_fraction_length": 3]),
                 "let foo = \(sign)1000000.000000_1",
-                "let foo = \(sign)6.2832e-6".configuration(["minimum_fraction_length": 3]),
+                "let foo = \(sign)6.2832e-6".asExample(configuration: ["minimum_fraction_length": 3]),
             ])
         }
     }
@@ -55,8 +55,9 @@ internal struct NumberSeparatorRuleExamples {
         return signsWithParenthesisAndViolation.flatMap { (sign: String) -> [Example] in
             #examples([
                 "let foo: Double = \(sign)100000)",
-                "let foo: Double = \(sign)10.000000_1)".configuration(["minimum_fraction_length": 3]),
-                "let foo: Double = \(sign)123456 / ↓447.214214)".configuration(["minimum_fraction_length": 3]),
+                "let foo: Double = \(sign)10.000000_1)".asExample(configuration: ["minimum_fraction_length": 3]),
+                "let foo: Double = \(sign)123456 / ↓447.214214)"
+                    .asExample(configuration: ["minimum_fraction_length": 3]),
             ])
         }
     }
@@ -70,13 +71,14 @@ internal struct NumberSeparatorRuleExamples {
             result[Example("let foo = \(violation)1000e2")] = Example("let foo = \(sign)1_000e2")
             result[Example("let foo = \(violation)1000E2")] = Example("let foo = \(sign)1_000E2")
             result[Example("let foo = \(violation)1__000")] = Example("let foo = \(sign)1_000")
-            result["let foo = \(violation)1.0001".configuration(["minimum_fraction_length": 3])] =
+            result["let foo = \(violation)1.0001".asExample(configuration: ["minimum_fraction_length": 3])] =
                 Example("let foo = \(sign)1.000_1")
-            result["let foo = \(violation)1_000_000.000000_1".configuration(["minimum_fraction_length": 3])] =
+            result["let foo = \(violation)1_000_000.000000_1"
+                .asExample(configuration: ["minimum_fraction_length": 3])] =
                 Example("let foo = \(sign)1_000_000.000_000_1")
-            result["let foo = \(violation)1000000.000000_1".configuration(["minimum_fraction_length": 3])] =
+            result["let foo = \(violation)1000000.000000_1".asExample(configuration: ["minimum_fraction_length": 3])] =
                 Example("let foo = \(sign)1_000_000.000_000_1")
-            result["let foo = \(sign)6.2832e-6".configuration(["minimum_fraction_length": 3])] =
+            result["let foo = \(sign)6.2832e-6".asExample(configuration: ["minimum_fraction_length": 3])] =
                 Example("let foo = \(sign)6.283_2e-6")
         }
 

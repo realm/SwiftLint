@@ -78,18 +78,18 @@ internal enum OperatorUsageWhitespaceRuleExamples {
                >>> effect({ log.debug("Done syncing. Work was done? \(workWasDone)") })
                >>> { workWasDone ? storage.doneUpdatingMetadataAfterUpload() : succeed() }    // A closure
                >>> effect({ log.debug("Done.") })
-        """#.excludeFromDocumentation(),
+        """#.asExample(excludeFromDocumentation: true),
         """
         func success(for item: Item) {
             item.successHandler??()
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         func getAllowedTimeRange(startTime: TimeOfDay) -> TimeOfDayRange {
             let endTime = startTime + 3.hours
             return startTime<--<endTime
         }
-        """.configuration(["allowed_no_space_operators": ["<--<"]]).excludeFromDocumentation(),
+        """.asExample(configuration: ["allowed_no_space_operators": ["<--<"]], excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples = #examples([

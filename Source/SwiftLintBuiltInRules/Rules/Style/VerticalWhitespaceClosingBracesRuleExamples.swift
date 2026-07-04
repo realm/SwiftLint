@@ -30,7 +30,7 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
           // do something
           // do something
         }
-        """.configuration(beforeTrivialLinesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: beforeTrivialLinesConfiguration, excludeFromDocumentation: true),
     ])
 
     static let violatingToValidExamples = #corrections([
@@ -114,12 +114,12 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
           1
         ↓
         ])
-        """.configuration(beforeTrivialLinesConfiguration):
+        """.asExample(configuration: beforeTrivialLinesConfiguration):
             """
                     print([
                       1
                     ])
-                    """.configuration(beforeTrivialLinesConfiguration),
+                    """.asExample(configuration: beforeTrivialLinesConfiguration),
         """
         print([foo {
           var sum = 0
@@ -132,7 +132,7 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
           return mul
         ↓
         }])
-        """.configuration(beforeTrivialLinesConfiguration):
+        """.asExample(configuration: beforeTrivialLinesConfiguration):
             """
             print([foo {
               var sum = 0
@@ -144,6 +144,6 @@ internal struct VerticalWhitespaceClosingBracesRuleExamples {
               for i in 1...5 { mul *= i }
               return mul
             }])
-            """.configuration(beforeTrivialLinesConfiguration),
+            """.asExample(configuration: beforeTrivialLinesConfiguration),
     ])
 }

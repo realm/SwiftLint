@@ -121,7 +121,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .c:
                 print("c")
             }
-            """.configuration(noSeparation),
+            """.asExample(configuration: noSeparation),
         // separation: never - no blank lines with comments
         """
             switch x {
@@ -131,7 +131,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             case .b:
                 print("b")
             }
-            """.configuration(noSeparation),
+            """.asExample(configuration: noSeparation),
         // separation: always (default) - one blank line with comments
         """
             switch x {
@@ -427,14 +427,14 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓case .second:
                 print("second")
             }
-            """.configuration(noSeparation): """
+            """.asExample(configuration: noSeparation): """
                 switch x {
                 case .first:
                     print("first")
                 case .second:
                     print("second")
                 }
-                """.configuration(noSeparation),
+                """.asExample(configuration: noSeparation),
         // separation: never - two blank lines should be reduced to zero
         """
             switch x {
@@ -458,7 +458,7 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
             ↓↓case .d:
                 print("d")
             }
-            """.configuration(noSeparation): """
+            """.asExample(configuration: noSeparation): """
                 switch x {
                 case .a:
                     print("a")
@@ -474,6 +474,6 @@ internal struct VerticalWhitespaceBetweenCasesRuleExamples {
                 case .d:
                     print("d")
                 }
-                """.configuration(noSeparation),
+                """.asExample(configuration: noSeparation),
     ])
 }

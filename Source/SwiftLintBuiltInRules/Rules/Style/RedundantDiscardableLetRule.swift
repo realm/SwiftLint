@@ -25,20 +25,20 @@ struct RedundantDiscardableLetRule: Rule {
                     }
                     return Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]),
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true]),
             """
                 @ViewBuilder
                 func bar() -> some View {
                     let _ = foo()
                     Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]),
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true]),
             """
                 #Preview {
                     let _ = foo()
                     Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]),
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true]),
             """
                 static var previews: some View {
                     let _ = foo()
@@ -49,7 +49,7 @@ struct RedundantDiscardableLetRule: Rule {
                     #endif
                     Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]),
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true]),
         ]),
         triggeringExamples: #examples([
             "↓let _ = foo()",
@@ -87,7 +87,7 @@ struct RedundantDiscardableLetRule: Rule {
                     ↓let _ = foo()
                     Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]).excludeFromDocumentation(),
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true], excludeFromDocumentation: true),
             """
                 var body: some NotView {
                     ↓let _ = foo()
@@ -96,7 +96,7 @@ struct RedundantDiscardableLetRule: Rule {
                     }
                     Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]).excludeFromDocumentation(),
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true], excludeFromDocumentation: true),
         ]),
         corrections: #corrections([
             "↓let _ = foo()": "_ = foo()",
@@ -138,7 +138,7 @@ struct RedundantDiscardableLetRule: Rule {
                     let _ = foo()
                     return Text("Hello, World!")
                 }
-                """.configuration(["ignore_swiftui_view_bodies": true]): """
+                """.asExample(configuration: ["ignore_swiftui_view_bodies": true]): """
                     var body: some View {
                         let _ = foo()
                         return Text("Hello, World!")

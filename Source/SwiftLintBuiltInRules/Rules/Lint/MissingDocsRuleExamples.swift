@@ -42,12 +42,12 @@ struct MissingDocsRuleExamples {
         public class A {
             public init() {}
         }
-        """.configuration(["excludes_trivial_init": true]),
+        """.asExample(configuration: ["excludes_trivial_init": true]),
         """
         class C {
             public func f() {}
         }
-        """.configuration(["evaluate_effective_access_control_level": true]),
+        """.asExample(configuration: ["evaluate_effective_access_control_level": true]),
         """
         public struct S: ~Copyable, P {
             public init() {}
@@ -60,7 +60,7 @@ struct MissingDocsRuleExamples {
         #else
         public func f() async {}
         #endif
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         /// my doc
         #if os(macOS)
@@ -70,7 +70,7 @@ struct MissingDocsRuleExamples {
         #else
         public func f() async {}
         #endif
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples = #examples([
@@ -145,17 +145,17 @@ struct MissingDocsRuleExamples {
         public class A {
             public ↓init(argument: String) {}
         }
-        """.configuration(["excludes_trivial_init": true]),
+        """.asExample(configuration: ["excludes_trivial_init": true]),
         """
         public ↓struct C: A {
             public ↓let b: Int
         }
-        """.configuration(["excludes_inherited_types": false]),
+        """.asExample(configuration: ["excludes_inherited_types": false]),
         """
         public ↓extension A {
             public ↓func f() {}
         }
-        """.configuration(["excludes_extensions": false]),
+        """.asExample(configuration: ["excludes_extensions": false]),
         """
         public extension E {
             ↓var i: Int {
@@ -185,7 +185,7 @@ struct MissingDocsRuleExamples {
                 init(_ i: Int) { self = .A }
             }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         /// Nested types inherit the ACL from the declaring extension.
         """
         /// a doc
@@ -203,12 +203,12 @@ struct MissingDocsRuleExamples {
             }
             static ↓var a: Int { 1 }
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         class C {
             public ↓func f() {}
         }
-        """.configuration(["evaluate_effective_access_control_level": false]),
+        """.asExample(configuration: ["evaluate_effective_access_control_level": false]),
         """
         public ↓struct S: ~Copyable, ~Escapable {
             public ↓init() {}
@@ -220,6 +220,6 @@ struct MissingDocsRuleExamples {
         public func f() {}
         public ↓func g() {}
         #endif
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
     ])
 }

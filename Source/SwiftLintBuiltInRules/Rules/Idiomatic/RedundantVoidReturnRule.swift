@@ -33,7 +33,7 @@ struct RedundantVoidReturnRule: Rule {
             doSomething { arg -> Void in
                 print(arg)
             }
-            """.configuration(["include_closures": false]),
+            """.asExample(configuration: ["include_closures": false]),
         ]),
         triggeringExamples: #examples([
             "func foo()↓ -> Void {}",

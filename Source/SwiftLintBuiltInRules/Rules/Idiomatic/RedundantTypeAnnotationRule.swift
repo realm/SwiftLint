@@ -46,13 +46,13 @@ struct RedundantTypeAnnotationRule: Rule {
 
             var direction = Direction.up
             """,
-            "@IgnoreMe var a: Int = Int(5)".configuration(["ignore_attributes": ["IgnoreMe"]]),
+            "@IgnoreMe var a: Int = Int(5)".asExample(configuration: ["ignore_attributes": ["IgnoreMe"]]),
             """
             var a: Int {
                 @IgnoreMe let i: Int = Int(1)
                 return i
             }
-            """.configuration(["ignore_attributes": ["IgnoreMe"]]),
+            """.asExample(configuration: ["ignore_attributes": ["IgnoreMe"]]),
             "var bol: Bool = true",
             "var dbl: Double = 0.0",
             "var int: Int = 0",
@@ -62,7 +62,7 @@ struct RedundantTypeAnnotationRule: Rule {
                 var url: URL = URL()
                 let myVar: Int? = 0, s: String = ""
             }
-            """.configuration(["ignore_properties": true]),
+            """.asExample(configuration: ["ignore_properties": true]),
         ]),
         triggeringExamples: #examples([
             "var url↓:URL=URL()",
@@ -100,7 +100,7 @@ struct RedundantTypeAnnotationRule: Rule {
                 let myVar↓: Int = Int(5)
               }
             }
-            """.configuration(["ignore_properties": true]),
+            """.asExample(configuration: ["ignore_properties": true]),
             "let a↓: [Int] = [Int]()",
             "let a↓: A.B = A.B()",
             """
@@ -111,18 +111,18 @@ struct RedundantTypeAnnotationRule: Rule {
 
             var direction↓: Direction = Direction.up
             """,
-            "@DontIgnoreMe var a↓: Int = Int(5)".configuration(["ignore_attributes": ["IgnoreMe"]]),
+            "@DontIgnoreMe var a↓: Int = Int(5)".asExample(configuration: ["ignore_attributes": ["IgnoreMe"]]),
             """
             @IgnoreMe
             var a: Int {
                 let i↓: Int = Int(1)
                 return i
             }
-            """.configuration(["ignore_attributes": ["IgnoreMe"]]),
-            "var bol↓: Bool = true".configuration(["consider_default_literal_types_redundant": true]),
-            "var dbl↓: Double = 0.0".configuration(["consider_default_literal_types_redundant": true]),
-            "var int↓: Int = 0".configuration(["consider_default_literal_types_redundant": true]),
-            "var str↓: String = \"str\"".configuration(["consider_default_literal_types_redundant": true]),
+            """.asExample(configuration: ["ignore_attributes": ["IgnoreMe"]]),
+            "var bol↓: Bool = true".asExample(configuration: ["consider_default_literal_types_redundant": true]),
+            "var dbl↓: Double = 0.0".asExample(configuration: ["consider_default_literal_types_redundant": true]),
+            "var int↓: Int = 0".asExample(configuration: ["consider_default_literal_types_redundant": true]),
+            "var str↓: String = \"str\"".asExample(configuration: ["consider_default_literal_types_redundant": true]),
         ]),
         corrections: #corrections([
             "var url↓: URL = URL()": "var url = URL()",
@@ -172,7 +172,7 @@ struct RedundantTypeAnnotationRule: Rule {
                 let i↓: Int = Int(1)
                 return i
             }
-            """.configuration(["ignore_attributes": ["IgnoreMe"]]):
+            """.asExample(configuration: ["ignore_attributes": ["IgnoreMe"]]):
             """
             @IgnoreMe
             var a: Int {
@@ -180,13 +180,13 @@ struct RedundantTypeAnnotationRule: Rule {
                 return i
             }
             """,
-            "var bol: Bool = true".configuration(["consider_default_literal_types_redundant": true]):
+            "var bol: Bool = true".asExample(configuration: ["consider_default_literal_types_redundant": true]):
                 "var bol = true",
-            "var dbl: Double = 0.0".configuration(["consider_default_literal_types_redundant": true]):
+            "var dbl: Double = 0.0".asExample(configuration: ["consider_default_literal_types_redundant": true]):
                 "var dbl = 0.0",
-            "var int: Int = 0".configuration(["consider_default_literal_types_redundant": true]):
+            "var int: Int = 0".asExample(configuration: ["consider_default_literal_types_redundant": true]):
                 "var int = 0",
-            "var str: String = \"str\"".configuration(["consider_default_literal_types_redundant": true]):
+            "var str: String = \"str\"".asExample(configuration: ["consider_default_literal_types_redundant": true]):
                 "var str = \"str\"",
         ])
     )

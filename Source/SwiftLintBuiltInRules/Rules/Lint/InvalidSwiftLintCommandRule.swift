@@ -17,8 +17,8 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             "// swiftlint:disable:previous unused_import",
             "// swiftlint:disable:this unused_import",
             "//swiftlint:disable:this unused_import",
-            "_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import".excludeFromDocumentation(),
-            "_ = \"🤵🏼‍♀️ 🤵🏼‍♀️\" // swiftlint:disable:this unused_import".excludeFromDocumentation(),
+            "_ = \"🤵🏼‍♀️\" // swiftlint:disable:this unused_import".asExample(excludeFromDocumentation: true),
+            "_ = \"🤵🏼‍♀️ 🤵🏼‍♀️\" // swiftlint:disable:this unused_import".asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "// ↓swiftlint:",
@@ -36,7 +36,7 @@ struct InvalidSwiftLintCommandRule: Rule, SourceKitFreeRule {
             "// ↓swiftlint:enable: ",
             "// ↓swiftlint:disable: unused_import",
             "// s↓swiftlint:disable unused_import",
-            "// 🤵🏼‍♀️swiftlint:disable unused_import".excludeFromDocumentation(),
+            "// 🤵🏼‍♀️swiftlint:disable unused_import".asExample(excludeFromDocumentation: true),
         ]).skipWrappingInCommentTests()
     )
 

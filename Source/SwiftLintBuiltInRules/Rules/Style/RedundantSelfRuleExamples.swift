@@ -101,7 +101,7 @@ struct RedundantSelfRuleExamples {
                 }
                 func f(_: () -> Void) {}
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             class C {
                 var x = 0, y = 0
@@ -110,7 +110,7 @@ struct RedundantSelfRuleExamples {
                     self.y = x + 1
                 }
             }
-            """.configuration(["keep_in_initializers": true]),
+            """.asExample(configuration: ["keep_in_initializers": true]),
         """
             extension String? {
                 func foo() -> String {
@@ -128,7 +128,7 @@ struct RedundantSelfRuleExamples {
                     self.y = y
                 }
             }
-            """.configuration(["only_in_closures": false]),
+            """.asExample(configuration: ["only_in_closures": false]),
     ])
 
     static let triggeringExamples = #examples([
@@ -138,7 +138,7 @@ struct RedundantSelfRuleExamples {
                 init() { ↓self.x = 1 }
                 func foo() { ↓self.x = 1 }
             }
-            """.configuration(["only_in_closures": false]),
+            """.asExample(configuration: ["only_in_closures": false]),
         """
             struct S {
                 var x = 0
@@ -222,7 +222,7 @@ struct RedundantSelfRuleExamples {
                     f { let g = ↓self.g() }
                 }
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             extension E {
                 static func f(_ work: @escaping () -> Void) { work() }
@@ -231,7 +231,7 @@ struct RedundantSelfRuleExamples {
                     func g() { E.f { ↓self.g() } }
                 }
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             class C {
                 var x = 0
@@ -271,12 +271,12 @@ struct RedundantSelfRuleExamples {
                     return 2
                 }()
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             extension String {
                 func foo() -> String { ↓self.uppercased() }
             }
-            """.configuration(["only_in_closures": false]),
+            """.asExample(configuration: ["only_in_closures": false]),
     ])
 
     static let corrections = #corrections([
@@ -311,7 +311,7 @@ struct RedundantSelfRuleExamples {
                     ↓self.y = 1
                 }
             }
-            """.configuration(["only_in_closures": false]): """
+            """.asExample(configuration: ["only_in_closures": false]): """
                 struct S {
                     var x = 0, y = 0
                     init(x: Int) {

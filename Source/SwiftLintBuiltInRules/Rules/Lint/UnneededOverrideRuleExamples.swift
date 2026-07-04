@@ -145,7 +145,7 @@ struct UnneededOverrideRuleExamples {
                 super.setUp()
             }
         }
-        """.configuration(["excluded_methods": ["setUp"]]),
+        """.asExample(configuration: ["excluded_methods": ["setUp"]]),
     ])
 
     static let triggeringExamples = #examples([

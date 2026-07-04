@@ -15,12 +15,12 @@ struct FinalTestCaseRule: Rule {
             "open class Test: XCTestCase {}",
             "public final class Test: QuickSpec {}",
             "class Test: MyTestCase {}",
-            "struct Test: MyTestCase {}".configuration(["test_parent_classes": "MyTestCase"]),
+            "struct Test: MyTestCase {}".asExample(configuration: ["test_parent_classes": "MyTestCase"]),
         ]),
         triggeringExamples: #examples([
             "class ↓Test: XCTestCase {}",
             "public class ↓Test: QuickSpec {}",
-            "class ↓Test: MyTestCase {}".configuration(["test_parent_classes": "MyTestCase"]),
+            "class ↓Test: MyTestCase {}".asExample(configuration: ["test_parent_classes": "MyTestCase"]),
         ]),
         corrections: #corrections([
             "class ↓Test: XCTestCase {}":

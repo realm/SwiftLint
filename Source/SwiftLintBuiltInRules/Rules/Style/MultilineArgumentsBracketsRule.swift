@@ -48,7 +48,7 @@ struct MultilineArgumentsBracketsRule: Rule {
             views.append(ViewModel(title: "MacBook", subtitle: "M1", action: { [weak self] in
                 print("action tapped")
             }))
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             public final class Logger {
                 public static let shared = Logger(outputs: [
@@ -154,7 +154,7 @@ struct MultilineArgumentsBracketsRule: Rule {
                 title: "MacBook", subtitle: "M1", action: { [weak self] in
                 print("action tapped")
             }↓))
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ])
     )
 }

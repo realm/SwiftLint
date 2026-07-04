@@ -83,7 +83,7 @@ struct ForWhereRule: Rule {
             for user in users {
               if user.id == 1 { return true }
             }
-            """.configuration(["allow_for_as_filter": true]),
+            """.asExample(configuration: ["allow_for_as_filter": true]),
             """
             for user in users {
               if user.id == 1 {
@@ -91,7 +91,7 @@ struct ForWhereRule: Rule {
                 return derivedValue != 0
               }
             }
-            """.configuration(["allow_for_as_filter": true]),
+            """.asExample(configuration: ["allow_for_as_filter": true]),
         ]),
         triggeringExamples: #examples([
             """
@@ -114,7 +114,7 @@ struct ForWhereRule: Rule {
                     subview.removeFromSuperview()
                 }
             }
-            """.configuration(["allow_for_as_filter": true]),
+            """.asExample(configuration: ["allow_for_as_filter": true]),
         ])
     )
 }

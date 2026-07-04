@@ -38,9 +38,9 @@ struct TrailingClosureRule: Rule {
                 print(i)
             }
             """,
-            "foo.reduce(0, combine: { $0 + 1 })".configuration(onlySingleMutedConfig),
-            "offsets.sorted(by: { $0.offset < $1.offset })".configuration(onlySingleMutedConfig),
-            "foo.something(0, { $0 + 1 })".configuration(onlySingleMutedConfig),
+            "foo.reduce(0, combine: { $0 + 1 })".asExample(configuration: onlySingleMutedConfig),
+            "offsets.sorted(by: { $0.offset < $1.offset })".asExample(configuration: onlySingleMutedConfig),
+            "foo.something(0, { $0 + 1 })".asExample(configuration: onlySingleMutedConfig),
         ]),
         triggeringExamples: #examples([
             "foo.map(↓{ $0 + 1 })",
@@ -52,8 +52,8 @@ struct TrailingClosureRule: Rule {
             for n in list {
                 n.forEach(↓{ print($0) })
             }
-            """.excludeFromDocumentation(),
-            "foo.map(↓{ $0 + 1 })".configuration(onlySingleMutedConfig),
+            """.asExample(excludeFromDocumentation: true),
+            "foo.map(↓{ $0 + 1 })".asExample(configuration: onlySingleMutedConfig),
         ]),
         corrections: #corrections([
             "foo.map(↓{ $0 + 1 })":
@@ -85,15 +85,15 @@ struct TrailingClosureRule: Rule {
                     f(a: 1,
                     b: 2) { 3 }
                     """,
-            "foo.map(↓{ $0 + 1 })".configuration(onlySingleMutedConfig):
-                "foo.map { $0 + 1 }".configuration(onlySingleMutedConfig),
-            "f(↓{ g(↓{ 1 }) })".configuration(onlySingleMutedConfig):
-                "f { g { 1 }}".configuration(onlySingleMutedConfig),
+            "foo.map(↓{ $0 + 1 })".asExample(configuration: onlySingleMutedConfig):
+                "foo.map { $0 + 1 }".asExample(configuration: onlySingleMutedConfig),
+            "f(↓{ g(↓{ 1 }) })".asExample(configuration: onlySingleMutedConfig):
+                "f { g { 1 }}".asExample(configuration: onlySingleMutedConfig),
             """
                 for n in list {
                     n.forEach(↓{ print($0) })
                 }
-                """.configuration(onlySingleMutedConfig): """
+                """.asExample(configuration: onlySingleMutedConfig): """
                     for n in list {
                         n.forEach { print($0) }
                     }

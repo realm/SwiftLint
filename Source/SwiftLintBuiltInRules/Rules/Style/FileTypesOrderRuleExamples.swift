@@ -131,7 +131,7 @@ internal struct FileTypesOrderRuleExamples {
             }
 
             extension Main {}
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
         // Main Type
         struct ContentView: View {
@@ -246,7 +246,7 @@ internal struct FileTypesOrderRuleExamples {
             struct Main {
                 let value: Int
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             import Foundation
             ↓extension S {
@@ -261,7 +261,7 @@ internal struct FileTypesOrderRuleExamples {
                 struct D {}
             }
             #Preview { S() }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             import Foundation
             protocol P {}
@@ -271,6 +271,6 @@ internal struct FileTypesOrderRuleExamples {
             actor A {
                 // Empty.
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
     ])
 }

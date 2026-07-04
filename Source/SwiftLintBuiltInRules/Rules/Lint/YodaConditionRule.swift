@@ -21,8 +21,8 @@ struct YodaConditionRule: Rule {
             "if optionalValue?.property ?? 0 == 2 {}",
             "if foo == nil {}",
             "if flags & 1 == 1 {}",
-            "if true {}".excludeFromDocumentation(),
-            "if true == false || b, 2 != 3 {}".excludeFromDocumentation(),
+            "if true {}".asExample(excludeFromDocumentation: true),
+            "if true == false || b, 2 != 3 {}".asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "if ↓42 == foo {}",

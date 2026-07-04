@@ -32,7 +32,7 @@ struct UnusedImportRuleExamples {
         enum E {
             static let min: CGFloat = 44
         }
-        """.configuration([
+        """.asExample(configuration: [
             "allowed_transitive_imports": [
                 [
                     "module": "Foundation",
@@ -46,14 +46,14 @@ struct UnusedImportRuleExamples {
         final class EditMode: ObservableObject {
             @Published var isEditing = false
         }
-        """.configuration([
+        """.asExample(configuration: [
             "allowed_transitive_imports": [
                 [
                     "module": "SwiftUI",
                     "allowed_transitive_imports": ["Foundation"],
                 ] as [String: any Sendable],
             ],
-        ]).excludeFromDocumentation(),
+        ], excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples = #examples([
@@ -216,7 +216,7 @@ struct UnusedImportRuleExamples {
         typealias Foo = CFData
         @objc
         class A {}
-        """.configuration([
+        """.asExample(configuration: [
             "require_explicit_imports": true,
             "allowed_transitive_imports": [
                 [
@@ -249,7 +249,7 @@ struct UnusedImportRuleExamples {
         """
         import Foundation
         func bar() {}
-        """.configuration([
+        """.asExample(configuration: [
             "always_keep_imports": ["Foundation"]
         ]):
             """

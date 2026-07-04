@@ -40,11 +40,11 @@ struct LargeTupleRule: Rule {
             "func getDictionaryAndInt() async -> (Dictionary<Int, String>, Int)?",
             "func getGenericTypeAndInt() async -> (Type<Int, String, Float>, Int)?",
             "func foo() -> Regex<(Substring, foo: Substring, bar: Substring)>.Match? { nil }"
-                .configuration(["ignore_regex": true]),
+                .asExample(configuration: ["ignore_regex": true]),
             "let regex: Regex<(Substring, Substring, Substring, Substring)>? = nil"
-                .configuration(["ignore_regex": true]),
+                .asExample(configuration: ["ignore_regex": true]),
             "var regex: Regex<(Substring, Substring, Substring, Substring)?>.Match? { nil }"
-                .configuration(["ignore_regex": true]),
+                .asExample(configuration: ["ignore_regex": true]),
         ]),
         triggeringExamples: #examples([
             "let foo: ↓(Int, Int, Int)",
@@ -65,7 +65,7 @@ struct LargeTupleRule: Rule {
             "func foo(bar: String) async -> ↓(Int, Int, Int)",
             "func foo(bar: String) async -> ↓(Int, Int, Int) {}",
             "func foo() async throws -> ↓(Int, Int, Int)",
-            "func foo() async throws -> ↓(Int, Int, Int) {}".configuration(["ignore_regex": false]),
+            "func foo() async throws -> ↓(Int, Int, Int) {}".asExample(configuration: ["ignore_regex": false]),
             "func foo() async throws -> ↓(Int, ↓(String, String, String), Int) {}",
             "func getDictionaryAndInt() async -> (Dictionary<Int, ↓(String, String, String)>, Int)?",
         ])

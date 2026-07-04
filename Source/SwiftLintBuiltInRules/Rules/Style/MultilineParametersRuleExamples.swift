@@ -172,22 +172,22 @@ internal struct MultilineParametersRuleExamples {
                 param3: @escaping ((Int) -> Void)? = { _ in }) { }
         }
         """,
-        "func foo() { }".configuration(["allows_single_line": false]),
-        "func foo(param1: Int) { }".configuration(["allows_single_line": false]),
+        "func foo() { }".asExample(configuration: ["allows_single_line": false]),
+        "func foo(param1: Int) { }".asExample(configuration: ["allows_single_line": false]),
         """
         protocol Foo {
             func foo(param1: Int,
                      param2: Bool,
                      param3: [String]) { }
         }
-        """.configuration(["allows_single_line": false]),
+        """.asExample(configuration: ["allows_single_line": false]),
         """
         protocol Foo {
             func foo(
                 param1: Int
             ) { }
         }
-        """.configuration(["allows_single_line": false]),
+        """.asExample(configuration: ["allows_single_line": false]),
         """
         protocol Foo {
             func foo(
@@ -196,22 +196,22 @@ internal struct MultilineParametersRuleExamples {
                 param3: [String]
             ) { }
         }
-        """.configuration(["allows_single_line": false]),
+        """.asExample(configuration: ["allows_single_line": false]),
         "func foo(param1: Int, param2: Bool, param3: [String]) { }"
-            .configuration(["max_number_of_single_line_parameters": 3]),
-        "func foo(param1: Int, param2: Bool) { }".configuration(["max_number_of_single_line_parameters": 2]),
+            .asExample(configuration: ["max_number_of_single_line_parameters": 3]),
+        "func foo(param1: Int, param2: Bool) { }".asExample(configuration: ["max_number_of_single_line_parameters": 2]),
         """
         func foo(param1: Int,
                  param2: Bool,
                  param3: [String]) { }
-        """.configuration(["max_number_of_single_line_parameters": 3]),
+        """.asExample(configuration: ["max_number_of_single_line_parameters": 3]),
         """
         func foo(
             param1: Int,
             param2: Bool,
             param3: [String]
         ) { }
-        """.configuration(["max_number_of_single_line_parameters": 2]),
+        """.asExample(configuration: ["max_number_of_single_line_parameters": 2]),
     ])
 
     static let triggeringExamples: [Example] = #examples([
@@ -347,16 +347,17 @@ internal struct MultilineParametersRuleExamples {
                 param3: @escaping ((Int) -> Void)? = { _ in }) { }
         }
         """,
-        "func ↓foo(param1: Int, param2: Bool) { }".configuration(["allows_single_line": false]),
-        "func ↓foo(param1: Int, param2: Bool, param3: [String]) { }".configuration(["allows_single_line": false]),
+        "func ↓foo(param1: Int, param2: Bool) { }".asExample(configuration: ["allows_single_line": false]),
         "func ↓foo(param1: Int, param2: Bool, param3: [String]) { }"
-            .configuration(["max_number_of_single_line_parameters": 2]),
+            .asExample(configuration: ["allows_single_line": false]),
+        "func ↓foo(param1: Int, param2: Bool, param3: [String]) { }"
+            .asExample(configuration: ["max_number_of_single_line_parameters": 2]),
         """
         func ↓foo(param1: Int,
                   param2: Bool, param3: [String]) { }
-       """.configuration(["max_number_of_single_line_parameters": 3]),
+       """.asExample(configuration: ["max_number_of_single_line_parameters": 3]),
         """
         func ↓foo(param1: Int, param2: Bool, param3: [String]) { }
-        """.configuration(["max_number_of_single_line_parameters": 2]),
+        """.asExample(configuration: ["max_number_of_single_line_parameters": 2]),
     ])
 }

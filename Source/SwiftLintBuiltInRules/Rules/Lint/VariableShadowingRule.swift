@@ -16,7 +16,7 @@ struct VariableShadowingRule: Rule {
             func test(a: String?) {
                 print(a)
             }
-            """.configuration(["ignore_parameters": true]),
+            """.asExample(configuration: ["ignore_parameters": true]),
             """
             var a: String = "hello"
             if let b = a {
@@ -155,7 +155,7 @@ struct VariableShadowingRule: Rule {
                 let ↓a = ""
                 print(a)
             }
-            """.configuration(["ignore_parameters": false]),
+            """.asExample(configuration: ["ignore_parameters": false]),
             """
             struct S {
                 var a = 1

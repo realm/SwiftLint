@@ -64,7 +64,7 @@ internal struct TestCaseAccessibilityRuleExamples {
         class FooTests: XCTestCase {
             func allowedPrefixTestFoo() {}
         }
-        """.configuration(["allowed_prefixes": ["allowedPrefix"]]),
+        """.asExample(configuration: ["allowed_prefixes": ["allowedPrefix"]]),
 
         // Not an XCTestCase class
 

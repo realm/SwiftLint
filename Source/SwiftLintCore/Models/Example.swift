@@ -175,66 +175,34 @@ public extension Example {
 }
 
 public extension String {
-    /// Wraps this code in an `Example`, optionally excluding it from the rule documentation.
-    func excludeFromDocumentation(
-        _ excludeFromDocumentation: Bool = true,
+    /// Wraps this code in an `Example`, applying the specified properties.
+    func asExample(
+        configuration: [String: any Sendable]? = nil,
+        excludeFromDocumentation: Bool = false,
+        testWrappingInComment: Bool = true,
+        testMultiByteOffsets: Bool = true,
+        testWrappingInString: Bool = true,
+        testDisableCommand: Bool = true,
+        testOnLinux: Bool = true,
+        testOnWindows: Bool = true,
         fileID: String = #fileID,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Example {
-        Example(self, fileID: fileID, file: file, line: line)
-            .excludeFromDocumentation(excludeFromDocumentation)
-    }
-
-    /// Wraps this code in an `Example` that applies the given rule configuration.
-    func configuration(
-        _ configuration: [String: any Sendable],
-        fileID: String = #fileID,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Example {
-        Example(self, fileID: fileID, file: file, line: line)
-            .configuration(configuration)
-    }
-
-    /// Wraps this code in an `Example` that skips the wrap-in-comment test.
-    func skipWrappingInCommentTest(
-        fileID: String = #fileID,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Example {
-        Example(self, fileID: fileID, file: file, line: line)
-            .skipWrappingInCommentTest()
-    }
-
-    /// Wraps this code in an `Example` that skips the wrap-in-string test.
-    func skipWrappingInStringTest(
-        fileID: String = #fileID,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Example {
-        Example(self, fileID: fileID, file: file, line: line)
-            .skipWrappingInStringTest()
-    }
-
-    /// Wraps this code in an `Example` that skips the multi-byte offset test.
-    func skipMultiByteOffsetTest(
-        fileID: String = #fileID,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Example {
-        Example(self, fileID: fileID, file: file, line: line)
-            .skipMultiByteOffsetTest()
-    }
-
-    /// Wraps this code in an `Example` that skips the disable-command test.
-    func skipDisableCommandTest(
-        fileID: String = #fileID,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Example {
-        Example(self, fileID: fileID, file: file, line: line)
-            .skipDisableCommandTest()
+        Example(
+            self,
+            configuration: configuration,
+            testMultiByteOffsets: testMultiByteOffsets,
+            testWrappingInComment: testWrappingInComment,
+            testWrappingInString: testWrappingInString,
+            testDisableCommand: testDisableCommand,
+            testOnLinux: testOnLinux,
+            testOnWindows: testOnWindows,
+            fileID: fileID,
+            file: file,
+            line: line,
+            excludeFromDocumentation: excludeFromDocumentation
+        )
     }
 }
 

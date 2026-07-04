@@ -32,7 +32,7 @@ struct ShorthandArgumentRule: Rule {
                 f {
                     $0
                   +  g { $0 }
-                """.configuration(["allow_until_line_after_opening_brace": 1]),
+                """.asExample(configuration: ["allow_until_line_after_opening_brace": 1]),
         ]),
         triggeringExamples: #examples([
             """
@@ -53,10 +53,10 @@ struct ShorthandArgumentRule: Rule {
                   + $0
                   + ↓$1
                 }
-                """.configuration(["allow_until_line_after_opening_brace": 5]),
+                """.asExample(configuration: ["allow_until_line_after_opening_brace": 5]),
             """
                 f { ↓$0 + ↓$1 }
-                """.configuration(["always_disallow_more_than_one": true]),
+                """.asExample(configuration: ["always_disallow_more_than_one": true]),
             """
                 f {
                     ↓$0.a
@@ -64,7 +64,13 @@ struct ShorthandArgumentRule: Rule {
                   + $1
                   + ↓$2.c
                 }
-                """.configuration(["always_disallow_member_access": true, "allow_until_line_after_opening_brace": 3]),
+                """
+                    .asExample(
+                        configuration: [
+                            "always_disallow_member_access": true,
+                            "allow_until_line_after_opening_brace": 3,
+                        ]
+                    ),
         ])
     )
 }

@@ -62,7 +62,7 @@ struct NoEmptyBlockRule: Rule {
             var flag = true {
                 willSet {}
             }
-            """.configuration(["disabled_block_types": ["function_bodies"]]),
+            """.asExample(configuration: ["disabled_block_types": ["function_bodies"]]),
 
             """
             class Apple {
@@ -70,7 +70,7 @@ struct NoEmptyBlockRule: Rule {
 
                 deinit {}
             }
-            """.configuration(["disabled_block_types": ["initializer_bodies"]]),
+            """.asExample(configuration: ["disabled_block_types": ["initializer_bodies"]]),
 
             """
             for _ in 0..<10 {}
@@ -91,7 +91,7 @@ struct NoEmptyBlockRule: Rule {
             repeat {} while (flag)
 
             while i < 10 {}
-            """.configuration(["disabled_block_types": ["statement_blocks"]]),
+            """.asExample(configuration: ["disabled_block_types": ["statement_blocks"]]),
             """
             f { _ in /* comment */ }
             f { _ in // comment
@@ -103,7 +103,7 @@ struct NoEmptyBlockRule: Rule {
             """
             f {}
             {}()
-            """.configuration(["disabled_block_types": ["closure_blocks"]]),
+            """.asExample(configuration: ["disabled_block_types": ["closure_blocks"]]),
         ]),
         triggeringExamples: #examples([
             """

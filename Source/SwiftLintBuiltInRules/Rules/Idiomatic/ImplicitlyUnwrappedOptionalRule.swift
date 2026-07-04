@@ -22,7 +22,7 @@ struct ImplicitlyUnwrappedOptionalRule: Rule {
                 @IBOutlet
                 weak var bar: SomeObject!
             }
-            """.configuration(["mode": "all_except_iboutlets"]).excludeFromDocumentation(),
+            """.asExample(configuration: ["mode": "all_except_iboutlets"], excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "let label: ↓UILabel!",

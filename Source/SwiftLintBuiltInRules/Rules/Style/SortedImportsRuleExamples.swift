@@ -53,7 +53,7 @@ internal struct SortedImportsRuleExamples {
 
         // some comment
         import FFF // a comment
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         // header
 
@@ -63,28 +63,28 @@ internal struct SortedImportsRuleExamples {
         // some comment
         import AAA // a comment
         import NNN
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         @testable import AAA
           @testable import BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         @testable import BBB
           import AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         @_exported import BBB
           @testable import AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         @_exported @testable import BBB
           import AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         @_exported @testable import BBB
           public import BBB
           import AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         public import FFF
         package import EEE
@@ -92,15 +92,15 @@ internal struct SortedImportsRuleExamples {
         fileprivate import CCC
         private import BBB
         import AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         @_exported @testable public import BBB
         @_exported @testable private import BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
         @_exported public import BBB
         @_exported @testable import BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ]).skipMultiByteOffsetTests()
 
     static let triggeringExamples = #examples([
@@ -140,27 +140,27 @@ internal struct SortedImportsRuleExamples {
         """
           @testable import BBB
         @testable import ↓AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
           import AAA
         @testable import ↓BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
           import BBB
         @testable import ↓AAA
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
           @testable import AAA
         @_exported import ↓BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
           import AAA
         @_exported @testable import ↓BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
           import AAA
           public import ↓BBB
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
         """
           import AAA
           private import ↓BBB
@@ -168,7 +168,7 @@ internal struct SortedImportsRuleExamples {
           internal import ↓DDD
           package import ↓EEE
           public import ↓FFF
-        """.configuration(groupByAttributesConfiguration).excludeFromDocumentation(),
+        """.asExample(configuration: groupByAttributesConfiguration, excludeFromDocumentation: true),
     ])
 
     static let corrections = #corrections([
@@ -177,7 +177,7 @@ internal struct SortedImportsRuleExamples {
         import ZZZ
         import BBB
         import CCC
-        """.skipMultiByteOffsetTest():
+        """.asExample(testMultiByteOffsets: false):
             """
             import AAA
             import BBB
@@ -187,7 +187,7 @@ internal struct SortedImportsRuleExamples {
         """
         import BBB // comment
         import AAA
-        """.skipMultiByteOffsetTest():
+        """.asExample(testMultiByteOffsets: false):
             """
               import AAA
               import BBB // comment
@@ -197,7 +197,7 @@ internal struct SortedImportsRuleExamples {
         // comment
         import CCC
         import AAA
-        """.skipMultiByteOffsetTest():
+        """.asExample(testMultiByteOffsets: false):
             """
             import AAA
             import BBB
@@ -207,7 +207,7 @@ internal struct SortedImportsRuleExamples {
         """
         @testable import CCC
         import  AAA
-        """.skipMultiByteOffsetTest():
+        """.asExample(testMultiByteOffsets: false):
             """
               import  AAA
               @testable import CCC
@@ -215,7 +215,7 @@ internal struct SortedImportsRuleExamples {
         """
         import CCC
         @testable import  AAA
-        """.skipMultiByteOffsetTest():
+        """.asExample(testMultiByteOffsets: false):
             """
               @testable import  AAA
               import CCC
@@ -232,7 +232,7 @@ internal struct SortedImportsRuleExamples {
         #endif
         import AAA
         import BBB
-        """.skipMultiByteOffsetTest():
+        """.asExample(testMultiByteOffsets: false):
             """
             import EEE.A
             import FFF.B
@@ -323,7 +323,7 @@ internal struct SortedImportsRuleExamples {
         """
           @testable import BBB
         @testable import AAA
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             @testable import AAA
               @testable import BBB
@@ -331,7 +331,7 @@ internal struct SortedImportsRuleExamples {
         """
           import AAA
         @testable import BBB
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             @testable import BBB
               import AAA
@@ -339,7 +339,7 @@ internal struct SortedImportsRuleExamples {
         """
           import BBB
         @testable import AAA
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             @testable import AAA
               import BBB
@@ -347,7 +347,7 @@ internal struct SortedImportsRuleExamples {
         """
           @testable import AAA
         @_exported import BBB
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             @_exported import BBB
               @testable import AAA
@@ -355,7 +355,7 @@ internal struct SortedImportsRuleExamples {
         """
           import AAA
         @_exported @testable import BBB
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             @_exported @testable import BBB
               import AAA
@@ -363,7 +363,7 @@ internal struct SortedImportsRuleExamples {
         """
           public import AAA
         @_exported @testable import BBB
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             @_exported @testable import BBB
               public import AAA
@@ -376,7 +376,7 @@ internal struct SortedImportsRuleExamples {
         package import EEE
         // A comment that needs to be shifted along with the import
         public import FFF
-        """.configuration(groupByAttributesConfiguration).skipMultiByteOffsetTest():
+        """.asExample(configuration: groupByAttributesConfiguration, testMultiByteOffsets: false):
             """
             // A comment that needs to be shifted along with the import
             public import FFF

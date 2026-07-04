@@ -62,7 +62,7 @@ internal struct ClosureEndIndentationRuleExamples {
             }
             .prop().method {
             }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         #Preview("foo",
                  traits: .landscapeLeft) {

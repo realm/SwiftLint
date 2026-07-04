@@ -66,7 +66,7 @@ struct UnusedParameterRule: Rule {
             """,
             """
             func f(_a: Int) {}
-            """.configuration(allowUnderscorePrefixedNames),
+            """.asExample(configuration: allowUnderscorePrefixedNames),
         ]),
         triggeringExamples: #examples([
             """

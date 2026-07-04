@@ -68,13 +68,13 @@ struct SelfInPropertyInitializationRule: Rule {
                 func calculateA() -> String { "A" }
                 func calculateB() -> String { "B" }
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             final class NotActuallyReferencingSelf {
                 let keyPath: Any = \\String.self
                 let someType: Any = String.self
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             """

@@ -157,7 +157,7 @@ struct OpeningBraceRuleExamples {
                 return _swift_stdlib_threadLocalStorageGet().assumingMemoryBound(
                     to: _ThreadLocalStorage.self)
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             func run_Array_method1x(_ N: Int) {
               let existentialArray = array!
@@ -173,7 +173,7 @@ struct OpeningBraceRuleExamples {
             func run_Array_method2x(_ N: Int) {
 
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             class TestFile {
                func problemFunction() {
@@ -186,7 +186,7 @@ struct OpeningBraceRuleExamples {
                    print("Brackets")
                }
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         """
             if
                 "test".isEmpty

@@ -49,12 +49,12 @@ internal struct InclusiveLanguageRuleExamples {
         let blackList = [
             "foo", "bar"
         ]
-        """.configuration([
+        """.asExample(configuration: [
             "override_terms": ["abc123"]
         ]),
         """
         private func doThisThing() {}
-        """.configuration([
+        """.asExample(configuration: [
             "override_terms": ["abc123"],
             "additional_terms": ["xyz789"],
         ]),
@@ -65,17 +65,17 @@ internal struct InclusiveLanguageRuleExamples {
         enum Things {
             case foo, ↓fizzBuzz
         }
-        """.configuration([
+        """.asExample(configuration: [
             "additional_terms": ["fizzbuzz"]
         ]),
         """
         private func ↓thisIsASwiftyFunction() {}
-        """.configuration([
+        """.asExample(configuration: [
             "additional_terms": ["swift"]
         ]),
         """
         private var ↓fooBar = "abc"
-        """.configuration([
+        """.asExample(configuration: [
             "additional_terms": ["FoObAr"]
         ]),
     ]

@@ -4,11 +4,11 @@ internal struct TypeNameRuleExamples {
     static let nonTriggeringExamples: [Example] = #examples([
         "class MyType {}",
         "private struct _MyType {}",
-        "private class `_` {}".configuration(["excluded": ["`_`"]]).excludeFromDocumentation(),
-        "struct `My Struct` {}".configuration(["excluded": ["`.+`"]]),
+        "private class `_` {}".asExample(configuration: ["excluded": ["`_`"]], excludeFromDocumentation: true),
+        "struct `My Struct` {}".asExample(configuration: ["excluded": ["`.+`"]]),
         "enum \(repeatElement("A", count: 40).joined()) {}",
-        "struct MyView_Previews: PreviewProvider".excludeFromDocumentation(),
-        "private class _MyView_Previews: PreviewProvider".excludeFromDocumentation(),
+        "struct MyView_Previews: PreviewProvider".asExample(excludeFromDocumentation: true),
+        "private class _MyView_Previews: PreviewProvider".asExample(excludeFromDocumentation: true),
         "typealias Foo = Void",
         "private typealias Foo = Void",
         """
@@ -22,7 +22,7 @@ internal struct TypeNameRuleExamples {
         }
         """,
         "enum MyType {\ncase value\n}",
-        "protocol P {}".configuration(["validate_protocols": false]),
+        "protocol P {}".asExample(configuration: ["validate_protocols": false]),
         """
         struct SomeStruct {
           enum `Type` {
@@ -37,12 +37,12 @@ internal struct TypeNameRuleExamples {
         "enum ↓_MyType {}",
         "class ↓`My Class` {}",
         "private struct ↓MyType_ {}",
-        "private class ↓`_` {}".excludeFromDocumentation(),
+        "private class ↓`_` {}".asExample(excludeFromDocumentation: true),
         "struct ↓My {}",
         "struct ↓\(repeatElement("A", count: 41).joined()) {}",
         "class ↓MyView_Previews",
         "private struct ↓_MyView_Previews",
-        "struct ↓MyView_Previews_Previews: PreviewProvider".excludeFromDocumentation(),
+        "struct ↓MyView_Previews_Previews: PreviewProvider".asExample(excludeFromDocumentation: true),
         "typealias ↓X = Void",
         "private typealias ↓Foo_Bar = Void",
         "private typealias ↓foo = Void",

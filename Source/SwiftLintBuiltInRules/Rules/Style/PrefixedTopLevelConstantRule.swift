@@ -15,7 +15,7 @@ struct PrefixedTopLevelConstantRule: Rule {
             "public let kFoo = false",
             "internal let kFoo = \"Foo\"",
             "let kFoo = true",
-            "let Foo = true".configuration(["only_private": true]),
+            "let Foo = true".asExample(configuration: ["only_private": true]),
             """
             struct Foo {
                 let bar = 20.0

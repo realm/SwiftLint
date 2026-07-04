@@ -241,7 +241,7 @@ internal struct NestingRuleExamples {
                     }
                 }
             }
-            """.configuration(["ignore_coding_keys": true]),
+            """.asExample(configuration: ["ignore_coding_keys": true]),
     ]
 }
 
@@ -538,7 +538,7 @@ extension NestingRuleExamples {
                     }
                 }
             }
-            """.configuration(["ignore_coding_keys": true]),
+            """.asExample(configuration: ["ignore_coding_keys": true]),
         """
             struct Outer {
               enum CodingKeys: String, CodingKey {
@@ -546,6 +546,6 @@ extension NestingRuleExamples {
                 ↓struct S {}
               }
             }
-            """.configuration(["ignore_coding_keys": true]),
+            """.asExample(configuration: ["ignore_coding_keys": true]),
     ]
 }

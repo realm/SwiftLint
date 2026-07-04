@@ -75,19 +75,19 @@ struct ExplicitInitRule: Rule {
             """
             let int = In🤓t↓
             .init(1.0)
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             let int = Int↓
 
 
             .init(1.0)
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             let int = Int↓
 
 
                   .init(1.0)
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         corrections: #corrections([
             """

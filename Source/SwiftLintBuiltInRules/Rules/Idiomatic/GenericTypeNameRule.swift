@@ -18,7 +18,7 @@ struct GenericTypeNameRule: Rule {
         nonTriggeringExamples: #examples([
             "func foo<T>() {}",
             "func foo<T>() -> T {}",
-            "func foo<`func`>() {}".configuration(["excluded": ["`.+`"]]),
+            "func foo<`func`>() {}".asExample(configuration: ["excluded": ["`.+`"]]),
             "func foo<T, U>(param: U) -> T {}",
             "func foo<T: Hashable, U: Rule>(param: U) -> T {}",
             "struct Foo<T> {}",

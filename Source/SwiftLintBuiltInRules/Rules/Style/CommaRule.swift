@@ -27,7 +27,7 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
                   /// appends after an existing message ("<expectation> (use beNil() to match nils)")
                   case appends(ExpectationMessage, /* Appended Message */ String)
                 }
-                """.excludeFromDocumentation(),
+                """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "func abc(a: String↓ ,b: String) { }",

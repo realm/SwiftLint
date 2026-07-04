@@ -21,14 +21,14 @@ struct RedundantSendableRule: Rule {
         triggeringExamples: #examples([
             "@MainActor struct ↓S: Sendable {}",
             "actor ↓A: Sendable {}",
-            "@MyActor enum ↓E: Sendable { case a }".configuration(["global_actors": ["MyActor"]]),
+            "@MyActor enum ↓E: Sendable { case a }".asExample(configuration: ["global_actors": ["MyActor"]]),
         ]),
         corrections: #corrections([
             "@MainActor struct S: Sendable {}":
                 "@MainActor struct S {}",
             "actor A: Sendable /* trailing comment */{}":
                 "actor A /* trailing comment */{}",
-            "@MyActor enum E: Sendable { case a }".configuration(["global_actors": ["MyActor"]]):
+            "@MyActor enum E: Sendable { case a }".asExample(configuration: ["global_actors": ["MyActor"]]):
                 "@MyActor enum E { case a }",
             """
                 actor A: B, Sendable, C // comment

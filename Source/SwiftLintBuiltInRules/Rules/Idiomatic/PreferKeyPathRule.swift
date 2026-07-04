@@ -28,15 +28,15 @@ struct PreferKeyPathRule: Rule {
             "f { $0 }",
             "f { $0.a }",
             "let f = { $0.a }(b)",
-            "f {}".configuration(extendedMode),
-            "f() { g() }".configuration(extendedMode),
-            "f { a.b.c }".configuration(extendedMode),
-            "f { a, b in a.b }".configuration(extendedMode),
-            "f { (a, b) in a.b }".configuration(extendedMode),
-            "f { $0.a } g: { $0.b }".configuration(extendedMode),
-            "[1, 2, 3].reduce(1) { $0 + $1 }".configuration(extendedMode),
-            "f { $0 }".configuration(extendedModeAndIgnoreIdentity),
-            "f.map { $0 }".configuration(ignoreIdentity),
+            "f {}".asExample(configuration: extendedMode),
+            "f() { g() }".asExample(configuration: extendedMode),
+            "f { a.b.c }".asExample(configuration: extendedMode),
+            "f { a, b in a.b }".asExample(configuration: extendedMode),
+            "f { (a, b) in a.b }".asExample(configuration: extendedMode),
+            "f { $0.a } g: { $0.b }".asExample(configuration: extendedMode),
+            "[1, 2, 3].reduce(1) { $0 + $1 }".asExample(configuration: extendedMode),
+            "f { $0 }".asExample(configuration: extendedModeAndIgnoreIdentity),
+            "f.map { $0 }".asExample(configuration: ignoreIdentity),
             "f.map(1) { $0.a }",
             "f.filter({ $0.a }, x)",
             "#Predicate { $0.a }",
@@ -48,16 +48,16 @@ struct PreferKeyPathRule: Rule {
             "f.first ↓{ $0.a }",
             "f.contains ↓{ $0.a }",
             "f.contains(where: ↓{ $0.a })",
-            "f(↓{ $0.a })".configuration(extendedMode),
-            "f(a: ↓{ $0.b })".configuration(extendedMode),
-            "f(a: ↓{ a in a.b }, x)".configuration(extendedMode),
+            "f(↓{ $0.a })".asExample(configuration: extendedMode),
+            "f(a: ↓{ $0.b })".asExample(configuration: extendedMode),
+            "f(a: ↓{ a in a.b }, x)".asExample(configuration: extendedMode),
             "f.map ↓{ a in a.b.c }",
             "f.allSatisfy ↓{ (a: A) in a.b }",
             "f.first ↓{ (a b: A) in b.c }",
             "f.contains ↓{ $0.0.a }",
             "f.compactMap ↓{ $0.a.b.c.d }",
             "f.flatMap ↓{ $0.a.b }",
-            "let f: (Int) -> Int = ↓{ $0.bigEndian }".configuration(extendedMode),
+            "let f: (Int) -> Int = ↓{ $0.bigEndian }".asExample(configuration: extendedMode),
             "transform = ↓{ $0.a }",
         ]),
         corrections: #corrections([
@@ -71,15 +71,15 @@ struct PreferKeyPathRule: Rule {
                 f.map(\\.a) // end
                 """,
             "f.map({ $0.a })": "f.map(\\.a)",
-            "f(a: { $0.a })".configuration(extendedMode): "f(a: \\.a)",
-            "f({ $0.a })".configuration(extendedMode): "f(\\.a)",
+            "f(a: { $0.a })".asExample(configuration: extendedMode): "f(a: \\.a)",
+            "f({ $0.a })".asExample(configuration: extendedMode): "f(\\.a)",
 
-            "let f = /* begin */ { $0.a } // end".configuration(extendedMode):
+            "let f = /* begin */ { $0.a } // end".asExample(configuration: extendedMode):
                 "let f = /* begin */ \\.a // end",
 
             "let f = { $0.a }(b)": "let f = { $0.a }(b)",
 
-            "let f: (Int) -> Int = ↓{ $0.bigEndian }".configuration(extendedMode):
+            "let f: (Int) -> Int = ↓{ $0.bigEndian }".asExample(configuration: extendedMode):
                 "let f: (Int) -> Int = \\.bigEndian",
 
             "f.partition ↓{ $0.a.b }": "f.partition(by: \\.a.b)",
@@ -88,11 +88,11 @@ struct PreferKeyPathRule: Rule {
             "f.drop ↓{ element in element.a }": "f.drop(while: \\.a)",
             "f.compactMap ↓{ $0.a.b.c.d }": "f.compactMap(\\.a.b.c.d)",
 
-            "f { $0 }".configuration(extendedModeAndIgnoreIdentity): // no change with option enabled
-            "f { $0 }".configuration(extendedModeAndIgnoreIdentity),
+            "f { $0 }".asExample(configuration: extendedModeAndIgnoreIdentity): // no change with option enabled
+            "f { $0 }".asExample(configuration: extendedModeAndIgnoreIdentity),
 
-            "f.map { $0 }".configuration(ignoreIdentity): // no change with option enabled
-            "f.map { $0 }".configuration(ignoreIdentity),
+            "f.map { $0 }".asExample(configuration: ignoreIdentity): // no change with option enabled
+            "f.map { $0 }".asExample(configuration: ignoreIdentity),
 
             """
             myList

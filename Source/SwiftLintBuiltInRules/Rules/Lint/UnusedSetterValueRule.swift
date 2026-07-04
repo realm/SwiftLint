@@ -52,7 +52,7 @@ struct UnusedSetterValueRule: Rule {
             """
             protocol Foo {
                 var bar: Bool { get set }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             override var accessibilityValue: String? {
                 get {
@@ -62,7 +62,7 @@ struct UnusedSetterValueRule: Rule {
                 }
                 set {}
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             """

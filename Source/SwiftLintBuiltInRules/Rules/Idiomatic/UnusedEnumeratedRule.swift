@@ -54,7 +54,7 @@ struct UnusedEnumeratedRule: Rule {
                 let (i, e) = $0
                 print(i)
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "for (↓_, foo) in bar.enumerated() { }",
@@ -90,14 +90,14 @@ struct UnusedEnumeratedRule: Rule {
                 }
                 return $0
             }
-            """.excludeFromDocumentation()
+            """.asExample(excludeFromDocumentation: true)
             ,
             """
             list.↓enumerated().map {
                 $1.forEach { print($0) }
                 return $1
             }
-            """.excludeFromDocumentation(),
+            """.asExample(excludeFromDocumentation: true),
             """
             list.↓enumerated().forEach {
                 let (i, _) = $0

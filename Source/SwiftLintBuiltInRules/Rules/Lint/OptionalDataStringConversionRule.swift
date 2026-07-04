@@ -36,8 +36,9 @@ struct OptionalDataStringConversionRule: Rule {
             "↓String.init(decoding: data, as: UTF8.self)",
             "let text: String = ↓.init(decoding: data, as: UTF8.self)",
             // With include_implicit_init enabled, implicit leading-dot init also triggers
-            "let text = ↓.init(decoding: data, as: UTF8.self)".configuration(["include_implicit_init": true]),
-            "f(↓.init(decoding: data, as: UTF8.self))".configuration(["include_implicit_init": true]),
+            "let text = ↓.init(decoding: data, as: UTF8.self)"
+                .asExample(configuration: ["include_implicit_init": true]),
+            "f(↓.init(decoding: data, as: UTF8.self))".asExample(configuration: ["include_implicit_init": true]),
         ])
     )
 }

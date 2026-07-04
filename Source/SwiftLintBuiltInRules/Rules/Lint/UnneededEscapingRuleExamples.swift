@@ -100,35 +100,35 @@ struct UnneededEscapingRuleExamples {
             completions[0] = completion
             arrayOfCompletions = completions
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         var arrayOfCompletions = [() -> Void]()
         func array(completion: @escaping () -> Void) {
             arrayOfCompletions[0] = completion
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         var _testSuiteFailedCallback: (() -> Void)?
         public func _setTestSuiteFailedCallback(_ callback: @escaping () -> Void) {
             _testSuiteFailedCallback = callback
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         func f(c: @escaping () -> Void) {
             var cs = [() -> Void]()
             cs[0] = c
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         func f(c: @escaping () -> Void) {
             var cs = [c]
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         func f(c: @escaping () -> Void) {
             var cs = [1: c]
         }
-        """.excludeFromDocumentation(),
+        """.asExample(excludeFromDocumentation: true),
         """
         func f(c: @escaping () -> Void) {
             f(true ? c : { })

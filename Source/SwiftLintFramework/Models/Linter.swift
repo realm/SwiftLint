@@ -108,12 +108,12 @@ private extension Rule {
 
         // Wrap entire lint process including shouldRun check in rule context
         return CurrentRule.$identifier.withValue(ruleID) {
-            CurrentRule.$configuration.withValue(globalConfiguration) {
-                guard shouldRun(onFile: file) else {
-                    return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
-                }
+            guard shouldRun(onFile: file) else {
+                return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
+            }
 
-                return performLint(
+            return CurrentRule.$configuration.withValue(globalConfiguration) {
+                performLint(
                     file: file,
                     regions: regions,
                     benchmark: benchmark,
@@ -424,13 +424,16 @@ public struct CollectedLinter {
         }
 
         var corrections = [String: Int]()
+        let globalConfiguration = configuration.globalConfiguration
         for rule in rules.compactMap({ $0 as? any CorrectableRule }) {
             // Set rule context before checking shouldRun to allow file property access
             let ruleCorrections = CurrentRule.$identifier.withValue(type(of: rule).identifier) { () -> Int? in
                 guard rule.shouldRun(onFile: file) else {
                     return nil
                 }
-                return rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
+                return CurrentRule.$configuration.withValue(globalConfiguration) {
+                    rule.correct(file: file, using: storage, compilerArguments: compilerArguments)
+                }
             }
             if let corrected = ruleCorrections, corrected != 0 {
                 corrections[type(of: rule).description.identifier] = corrected

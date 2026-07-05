@@ -5,7 +5,7 @@
 ### Breaking
 
 * `Configuration.IndentationStyle` moved to `SwiftLintCore.IndentationStyle`.
-  Rules can now read the global `indentation` setting via `CurrentRule.configuration`.
+  Rules can now read the global `indentation` setting via `CurrentRule.configuration`.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Experimental

@@ -1,4 +1,5 @@
 import ArgumentParser
+import Foundation
 import SwiftLintFramework
 
 extension SwiftLint {
@@ -25,7 +26,7 @@ extension SwiftLint {
         )
         var disableSourceKit = false
         @Argument(help: pathsArgumentDescription(for: .lint))
-        var paths = [String]()
+        var paths = [URL]()
 
         func run() async throws {
             Issue.printDeprecationWarnings = !silenceDeprecationWarnings
@@ -35,7 +36,7 @@ extension SwiftLint {
             }
 
             // Lint files in current working directory if no paths were specified.
-            let allPaths = paths.isNotEmpty ? paths : [""]
+            let allPaths = paths.isNotEmpty ? paths : [URL.cwd]
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
                 paths: allPaths,

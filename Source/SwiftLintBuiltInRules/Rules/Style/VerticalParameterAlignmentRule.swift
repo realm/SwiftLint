@@ -32,7 +32,7 @@ private extension VerticalParameterAlignmentRule {
             let paramLocations = params.compactMap { param -> (position: AbsolutePosition, line: Int, column: Int)? in
                 let position = param.positionAfterSkippingLeadingTrivia
                 let location = locationConverter.location(for: position)
-                return (position, location.line, location.column)
+                return (position, location.line, graphemeColumn(line: location.line, column: location.column))
             }
 
             guard let firstParamLoc = paramLocations.first else { return [] }
@@ -46,6 +46,16 @@ private extension VerticalParameterAlignmentRule {
             }
 
             return violations
+        }
+
+        /// Converts a UTF-8 byte column into a column counted in grapheme clusters, so that parameters preceded
+        /// by multi-byte characters (e.g. a non-ASCII function name) are compared by their visible alignment
+        /// rather than by their byte offset.
+        private func graphemeColumn(line: Int, column: Int) -> Int {
+            guard let graphemeClusters = String(locationConverter.sourceLines[line - 1].utf8.prefix(column - 1)) else {
+                return column
+            }
+            return graphemeClusters.count + 1
         }
     }
 }

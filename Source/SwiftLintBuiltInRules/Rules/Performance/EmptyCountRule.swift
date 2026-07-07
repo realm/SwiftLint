@@ -250,6 +250,6 @@ private extension InfixOperatorExprSyntax {
 private extension String {
     private static let operators: Set = ["==", "!=", ">", ">=", "<", "<="]
     var isComparison: Bool {
-        String.operators.contains(self)
+        Self.operators.contains(self)
     }
 }

@@ -142,7 +142,7 @@ extension SwiftLintFile {
         guard let stringData = string.data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
-        guard let path, let fileHandle = FileHandle(forWritingAtPath: path) else {
+        guard let path, let fileHandle = FileHandle(forWritingAtPath: path.filepath) else {
             queuedFatalError("can't write to path '\(String(describing: path))'")
         }
         _ = fileHandle.seekToEndOfFile()
@@ -166,7 +166,7 @@ extension SwiftLintFile {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
-            try stringData.write(to: URL(fileURLWithPath: path, isDirectory: false), options: .atomic)
+            try stringData.write(to: path, options: .atomic)
         } catch {
             queuedFatalError("can't write file to \(path)")
         }

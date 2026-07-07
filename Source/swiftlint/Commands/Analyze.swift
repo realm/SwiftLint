@@ -1,4 +1,5 @@
 import ArgumentParser
+import Foundation
 import SwiftLintFramework
 
 extension SwiftLint {
@@ -14,11 +15,11 @@ extension SwiftLint {
         @Option(help: "The path of a compilation database to use when running AnalyzerRules.")
         var compileCommands: String?
         @Argument(help: pathsArgumentDescription(for: .analyze))
-        var paths = [String]()
+        var paths = [URL]()
 
         func run() async throws {
             // Analyze files in current working directory if no paths were specified.
-            let allPaths = paths.isNotEmpty ? paths : [""]
+            let allPaths = paths.isNotEmpty ? paths : [URL.cwd]
             let options = LintOrAnalyzeOptions(
                 mode: .analyze,
                 paths: allPaths,

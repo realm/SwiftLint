@@ -1,207 +1,230 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class MissingDocsRuleTests: SwiftLintTestCase {
-    func testDescriptionEmpty() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct MissingDocsRuleTests {
+    @Test
+    func descriptionEmpty() {
         let configuration = MissingDocsConfiguration()
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                warning: [open, public]; excludes_extensions: true; \
+                excludes_inherited_types: true; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testDescriptionExcludesFalse() {
+    @Test
+    func descriptionExcludesFalse() {
         let configuration = MissingDocsConfiguration(excludesExtensions: false, excludesInheritedTypes: false)
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "warning: [open, public]; excludes_extensions: false; " +
-            "excludes_inherited_types: false; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                warning: [open, public]; excludes_extensions: false; \
+                excludes_inherited_types: false; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testDescriptionExcludesExtensionsFalseExcludesInheritedTypesTrue() {
+    @Test
+    func descriptionExcludesExtensionsFalseExcludesInheritedTypesTrue() {
         let configuration = MissingDocsConfiguration(excludesExtensions: false, excludesInheritedTypes: true)
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "warning: [open, public]; excludes_extensions: false; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                warning: [open, public]; excludes_extensions: false; \
+                excludes_inherited_types: true; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testDescriptionExcludesExtensionsTrueExcludesInheritedTypesFalse() {
+    @Test
+    func descriptionExcludesExtensionsTrueExcludesInheritedTypesFalse() {
         let configuration = MissingDocsConfiguration(
             excludesExtensions: true,
             excludesInheritedTypes: false,
             evaluateEffectiveAccessControlLevel: true
         )
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: false; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: true"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                warning: [open, public]; excludes_extensions: true; \
+                excludes_inherited_types: false; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: true
+                """
         )
     }
 
-    func testDescriptionSingleServety() {
+    @Test
+    func descriptionSingleServety() {
         let configuration = MissingDocsConfiguration(
             parameters: [RuleParameter<AccessControlLevel>(severity: .error, value: .open)])
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "error: [open]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                error: [open]; excludes_extensions: true; \
+                excludes_inherited_types: true; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testDescriptionMultipleSeverities() {
+    @Test
+    func descriptionMultipleSeverities() {
         let configuration = MissingDocsConfiguration(
             parameters: [
                 RuleParameter<AccessControlLevel>(severity: .error, value: .open),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
             ]
         )
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "error: [open]; warning: [public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                error: [open]; warning: [public]; excludes_extensions: true; \
+                excludes_inherited_types: true; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testDescriptionMultipleAcls() {
+    @Test
+    func descriptionMultipleAcls() {
         let configuration = MissingDocsConfiguration(
             parameters: [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
             ]
         )
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: false; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                warning: [open, public]; excludes_extensions: true; \
+                excludes_inherited_types: true; excludes_trivial_init: false; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testDescriptionExcludesTrivialInitTrue() {
+    @Test
+    func descriptionExcludesTrivialInitTrue() {
         let configuration = MissingDocsConfiguration(excludesTrivialInit: true)
-        XCTAssertEqual(
-            configuration.parameterDescription?.oneLiner(),
-            "warning: [open, public]; excludes_extensions: true; " +
-            "excludes_inherited_types: true; excludes_trivial_init: true; " +
-            "evaluate_effective_access_control_level: false"
+        #expect(
+            configuration.parameterDescription?.oneLiner() == """
+                warning: [open, public]; excludes_extensions: true; \
+                excludes_inherited_types: true; excludes_trivial_init: true; \
+                evaluate_effective_access_control_level: false
+                """
         )
     }
 
-    func testParsingSingleServety() {
+    @Test
+    func parsingSingleServety() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["warning": "open"])
-        XCTAssertEqual(
-            configuration.parameters,
-            [RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
+        #expect(
+            configuration.parameters == [RuleParameter<AccessControlLevel>(severity: .warning, value: .open)]
         )
     }
 
-    func testParsingMultipleSeverities() {
+    @Test
+    func parsingMultipleSeverities() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["warning": "public", "error": "open"])
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue } == [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .error, value: .open),
             ]
         )
     }
 
-    func testParsingMultipleAcls() {
+    @Test
+    func parsingMultipleAcls() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["warning": ["public", "open"]])
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue } == [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
             ]
         )
-        XCTAssertTrue(configuration.excludesExtensions)
-        XCTAssertTrue(configuration.excludesInheritedTypes)
+        #expect(configuration.excludesExtensions)
+        #expect(configuration.excludesInheritedTypes)
     }
 
-    func testInvalidServety() {
+    @Test
+    func invalidServety() {
         var configuration = MissingDocsConfiguration()
-        XCTAssertThrowsError(try configuration.apply(configuration: ["warning": ["public", "closed"]]))
+        #expect(throws: (any Error).self) {
+            try configuration.apply(configuration: ["warning": ["public", "closed"]])
+        }
     }
 
-    func testInvalidAcl() {
+    @Test
+    func invalidAcl() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["debug": ["public", "open"]])
-        XCTAssertTrue(configuration.excludesExtensions)
-        XCTAssertTrue(configuration.excludesInheritedTypes)
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [
+        #expect(configuration.excludesExtensions)
+        #expect(configuration.excludesInheritedTypes)
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue } == [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
             ]
         )
     }
 
-    func testInvalidDuplicateAcl() {
+    @Test
+    func invalidDuplicateAcl() {
         var configuration = MissingDocsConfiguration()
-        XCTAssertThrowsError(
+        #expect(throws: (any Error).self) {
             try configuration.apply(configuration: ["warning": ["public", "open"] as Any, "error": "public"])
-        )
+        }
     }
 
-    func testExcludesFalse() {
+    @Test
+    func excludesFalse() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": false, "excludes_inherited_types": false])
-        XCTAssertFalse(configuration.excludesExtensions)
-        XCTAssertFalse(configuration.excludesInheritedTypes)
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [
+        #expect(!configuration.excludesExtensions)
+        #expect(!configuration.excludesInheritedTypes)
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue } == [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
             ]
         )
     }
 
-    func testExcludesExtensionsFalseExcludesInheritedTypesTrue() {
+    @Test
+    func excludesExtensionsFalseExcludesInheritedTypesTrue() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": false, "excludes_inherited_types": true])
-        XCTAssertFalse(configuration.excludesExtensions)
-        XCTAssertTrue(configuration.excludesInheritedTypes)
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [
+        #expect(!configuration.excludesExtensions)
+        #expect(configuration.excludesInheritedTypes)
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue } == [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
             ]
         )
     }
 
-    func testExcludesExtensionsTrueExcludesInheritedTypesFalse() {
+    @Test
+    func excludesExtensionsTrueExcludesInheritedTypesFalse() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(configuration: ["excludes_extensions": true, "excludes_inherited_types": false])
-        XCTAssertTrue(configuration.excludesExtensions)
-        XCTAssertFalse(configuration.excludesInheritedTypes)
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [
+        #expect(configuration.excludesExtensions)
+        #expect(!configuration.excludesInheritedTypes)
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue } == [
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
                 RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
             ]
         )
     }
 
-    func testExcludesExtensionsTrueExcludesInheritedTypesFalseWithParameters() {
+    @Test
+    func excludesExtensionsTrueExcludesInheritedTypesFalseWithParameters() {
         var configuration = MissingDocsConfiguration()
         try? configuration.apply(
             configuration: [
@@ -211,11 +234,11 @@ final class MissingDocsRuleTests: SwiftLintTestCase {
             ] as [String: any Sendable]
         )
 
-        XCTAssertTrue(configuration.excludesExtensions)
-        XCTAssertFalse(configuration.excludesInheritedTypes)
-        XCTAssertEqual(
-            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
-            [RuleParameter<AccessControlLevel>(severity: .error, value: .public)]
+        #expect(configuration.excludesExtensions)
+        #expect(!configuration.excludesInheritedTypes)
+        #expect(
+            configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue }
+                == [RuleParameter<AccessControlLevel>(severity: .error, value: .public)]
         )
     }
 }

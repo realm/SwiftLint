@@ -34,7 +34,10 @@ internal extension Configuration.FileGraph {
             } else {
                 originalRemoteString = nil
                 filePath = .existing(
-                    path: string.bridge().absolutePathRepresentation(rootDirectory: rootDirectory)
+                    path: string.url(
+                        relativeTo: rootDirectory.url(directoryHint: .isDirectory),
+                        directoryHint: .notDirectory
+                    ).filepath
                 )
             }
             self.isInitialVertex = isInitialVertex
@@ -74,8 +77,8 @@ internal extension Configuration.FileGraph {
         private func read(at path: String) throws -> String {
             guard !path.isEmpty, FileManager.default.fileExists(atPath: path) else {
                 throw isInitialVertex
-                    ? Issue.initialFileNotFound(path: path)
-                    : Issue.fileNotFound(path: path)
+                    ? Issue.initialFileNotFound(path: path.url())
+                    : Issue.fileNotFound(path: path.url())
             }
 
             return try String(contentsOfFile: path, encoding: .utf8)

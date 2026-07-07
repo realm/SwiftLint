@@ -69,7 +69,7 @@ private extension SingleTestClassRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { .all }
 
         override func visitPost(_ node: ClassDeclSyntax) {
-            guard node.inheritanceClause.containsInheritedType(inheritedTypes: configuration.testParentClasses) else {
+            guard node.inheritanceClause.contains(inheritedTypes: configuration.testParentClasses) else {
                 return
             }
             violations.append(node.classKeyword.positionAfterSkippingLeadingTrivia)

@@ -13,18 +13,19 @@ env:
 
 jobs:
   spm_linux:
-    name: SPM, Linux, Swift 6.2
+    name: SPM, Linux, Swift 6.3
     runs-on: ubuntu-24.04
-    container: swift:6.2-noble
+    container: swift:6.3-noble
+    timeout-minutes: 10
     steps:
       - &checkout-step
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
       - name: Get Swift version
         id: swift_version
         run: echo "version=$(swift --version | grep '[5-9]\.[0-9]\+\(\.[0-9]\)\?' -o | head -1)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ubuntu-24.04-spm-${{ steps.swift_version.outputs.version }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
           restore-keys: ubuntu-24.04-spm-${{ steps.swift_version.outputs.version }}-
@@ -37,21 +38,20 @@ jobs:
   spm_macos:
     name: SPM, macOS ${{ matrix.macOS }}, Xcode ${{ matrix.xcode }}
     runs-on: macos-${{ matrix.macOS }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         include:
-          - macOS: '14'
-            xcode: '16.2'
           - macOS: '15'
             xcode: '16.4'
           - macOS: '26'
-            xcode: '26.4'
+            xcode: '26.5'
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app
     steps:
       - *checkout-step
-      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: macos-${{ matrix.macOS }}-xcode-spm-${{ matrix.xcode }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
           restore-keys: macos-${{ matrix.macOS }}-xcode-spm-${{ matrix.xcode }}-
@@ -62,9 +62,10 @@ jobs:
   spm_windows:
     name: SPM, Windows ${{ matrix.windows-display-name }}
     runs-on: windows-${{ matrix.windows-version }}
+    timeout-minutes: 30
     env:
-      SWIFT_VERSION: development
-      SWIFT_BUILD: DEVELOPMENT-SNAPSHOT-2026-03-16-a
+      SWIFT_VERSION: swift-6.3.2-release
+      SWIFT_BUILD: 6.3.2-RELEASE
     strategy:
       fail-fast: false
       matrix:
@@ -81,16 +82,15 @@ jobs:
           swift-version: ${{ env.SWIFT_VERSION }}
           swift-build: ${{ env.SWIFT_BUILD }}
           build_arch: ${{ matrix.arch }}
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-${{ hashFiles('Package.resolved', 'Package.swift') }}
           restore-keys: windows-${{ matrix.windows-version }}-spm-${{ env.SWIFT_VERSION }}-${{ env.SWIFT_BUILD }}-
           path: .build
-      - name: Build all targets
-        run: swift build --build-tests
-      - name: Run selected tests
-        run: swift test --skip IntegrationTests --skip FileSystemAccessTests --skip FrameworkTests --skip BuiltInRulesTests
-      # To be extended with test execution and linting ...
+      - name: Run tests
+        run: swift test --no-parallel
+      - name: Lint codebase
+        run: swift run swiftlint lint --strict

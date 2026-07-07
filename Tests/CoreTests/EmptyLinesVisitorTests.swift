@@ -1,56 +1,64 @@
 import SwiftSyntax
-import XCTest
+import Testing
 
 @testable import SwiftLintCore
 
-final class EmptyLinesVisitorTests: XCTestCase {
-    func testEmptyFile() {
-        XCTAssertEqual(emptyLines(in: ""), [])
+@Suite
+struct EmptyLinesVisitorTests {
+    @Test
+    func emptyFile() {
+        #expect(emptyLines(in: "").isEmpty)
     }
 
-    func testSingleLineOfCode() {
-        XCTAssertEqual(emptyLines(in: "let x = 1"), [])
+    @Test
+    func singleLineOfCode() {
+        #expect(emptyLines(in: "let x = 1").isEmpty)
     }
 
-    func testSingleEmptyLine() {
+    @Test
+    func singleEmptyLine() {
         let contents = """
             let x = 1
 
             let y = 2
             """
-        XCTAssertEqual(emptyLines(in: contents), [2])
+        #expect(emptyLines(in: contents) == [2])
     }
 
-    func testMultipleEmptyLines() {
+    @Test
+    func multipleEmptyLines() {
         let contents = """
             let x = 1
 
 
             let y = 2
             """
-        XCTAssertEqual(emptyLines(in: contents), [2, 3])
+        #expect(emptyLines(in: contents) == [2, 3])
     }
 
-    func testEmptyLinesWithWhitespace() {
+    @Test
+    func emptyLinesWithWhitespace() {
         let contents = """
             let x = 1
             \t
 
             let y = 2
             """
-        XCTAssertEqual(emptyLines(in: contents), [2, 3])
+        #expect(emptyLines(in: contents) == [2, 3])
     }
 
-    func testNoEmptyLines() {
+    @Test
+    func noEmptyLines() {
         let contents = """
             let x = 1
             let y = 2
             let z = 3
             """
-        XCTAssertEqual(emptyLines(in: contents), [])
+        #expect(emptyLines(in: contents).isEmpty)
     }
 
-    func testEmptyLinesWithComments() {
+    @Test
+    func emptyLinesWithComments() {
         let contents = """
             // Comment
 
@@ -58,10 +66,11 @@ final class EmptyLinesVisitorTests: XCTestCase {
 
             // Another comment
             """
-        XCTAssertEqual(emptyLines(in: contents), [2, 4])
+        #expect(emptyLines(in: contents) == [2, 4])
     }
 
-    func testEmptyLinesWithBlockComments() {
+    @Test
+    func emptyLinesWithBlockComments() {
         let contents = """
             /*
              * Block comment
@@ -69,28 +78,31 @@ final class EmptyLinesVisitorTests: XCTestCase {
 
             let x = 1
             """
-        XCTAssertEqual(emptyLines(in: contents), [4])
+        #expect(emptyLines(in: contents) == [4])
     }
 
-    func testTrailingEmptyLines() {
+    @Test
+    func trailingEmptyLines() {
         let contents = """
             let x = 1
 
 
             """
-        XCTAssertEqual(emptyLines(in: contents), [2, 3])
+        #expect(emptyLines(in: contents) == [2, 3])
     }
 
-    func testLeadingEmptyLines() {
+    @Test
+    func leadingEmptyLines() {
         let contents = """
 
 
             let x = 1
             """
-        XCTAssertEqual(emptyLines(in: contents), [1, 2])
+        #expect(emptyLines(in: contents) == [1, 2])
     }
 
-    func testComplexExample() {
+    @Test
+    func complexExample() {
         let contents = """
             // Header comment
 
@@ -120,10 +132,11 @@ final class EmptyLinesVisitorTests: XCTestCase {
             // Trailing comment
 
             """
-        XCTAssertEqual(emptyLines(in: contents), [2, 4, 6, 8, 11, 16, 18, 21, 23, 25, 27])
+        #expect(emptyLines(in: contents) == [2, 4, 6, 8, 11, 16, 18, 21, 23, 25, 27])
     }
 
-    func testMixedEmptyLinesAndContent() {
+    @Test
+    func mixedEmptyLinesAndContent() {
         let contents = """
             let a = 1
 
@@ -134,19 +147,21 @@ final class EmptyLinesVisitorTests: XCTestCase {
             let c = 3
 
             """
-        XCTAssertEqual(emptyLines(in: contents), [2, 4, 6, 8])
+        #expect(emptyLines(in: contents) == [2, 4, 6, 8])
     }
 
-    func testOnlyEmptyLines() {
+    @Test
+    func onlyEmptyLines() {
         let contents = """
 
 
 
             """
-        XCTAssertEqual(emptyLines(in: contents), [1, 2, 3])
+        #expect(emptyLines(in: contents) == [1, 2, 3])
     }
 
-    func testEmptyLinesInMultilineString() {
+    @Test
+    func emptyLinesInMultilineString() {
         let contents = """
             let str = \"\"\"
             Line 1
@@ -156,10 +171,11 @@ final class EmptyLinesVisitorTests: XCTestCase {
 
             let x = 1
             """
-        XCTAssertEqual(emptyLines(in: contents), [6])
+        #expect(emptyLines(in: contents) == [6])
     }
 
-    func testLineNumberAccuracy() {
+    @Test
+    func lineNumberAccuracy() {
         let contents = """
             let x = 1
 
@@ -172,17 +188,19 @@ final class EmptyLinesVisitorTests: XCTestCase {
 
             """
 
-        XCTAssertEqual(emptyLines(in: contents), [2, 4, 7, 9])
+        #expect(emptyLines(in: contents) == [2, 4, 7, 9])
     }
 
-    func testNoTrailingNewline() {
+    @Test
+    func noTrailingNewline() {
         let contents = "let x = 1"
-        XCTAssertEqual(emptyLines(in: contents), [])
+        #expect(emptyLines(in: contents).isEmpty)
     }
 
-    func testOnlyWhitespace() {
+    @Test
+    func onlyWhitespace() {
         let contents = "\t\n    \n  \t  "
-        XCTAssertEqual(emptyLines(in: contents), [1, 2, 3])
+        #expect(emptyLines(in: contents) == [1, 2, 3])
     }
 
     private func emptyLines(in contents: String) -> [Int] {

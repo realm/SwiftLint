@@ -27,7 +27,9 @@ open class LegacyFunctionVisitor<Configuration: RuleConfiguration>: ViolationsSy
 }
 
 /// Strategy to apply when rewriting a legacy function call.
-public enum LegacyFunctionRewriteStrategy: Sendable {
+public enum LegacyFunctionRewriteStrategy: Equatable, Sendable {
+    /// Don't rewrite the function call, just report it as a violation.
+    case noRewrite
     /// Replace with equality check between the two arguments.
     case equal
     /// Replace with property access with name ``name`` on the argument.
@@ -39,6 +41,7 @@ public enum LegacyFunctionRewriteStrategy: Sendable {
 
     fileprivate var expectedInitialArguments: Int {
         switch self {
+        case .noRewrite: -1
         case .equal: 2
         case .property: 1
         case .function(name: _, argumentLabels: let argumentLabels, reversed: _): argumentLabels.count + 1
@@ -84,7 +87,7 @@ open class LegacyFunctionRewriter<Configuration: RuleConfiguration>: ViolationsS
                 .map { $0.isEmpty ? "\($1)" : "\($0): \($1)" }
                 .joined(separator: ", ")
             expr = "\(arguments[0]).\(raw: functionName)(\(raw: params))"
-        case .none:
+        case .none, .noRewrite:
             return super.visit(node)
         }
 
@@ -97,11 +100,10 @@ open class LegacyFunctionRewriter<Configuration: RuleConfiguration>: ViolationsS
 private extension FunctionCallExprSyntax {
     func isLegacyFunctionExpression(legacyFunctions: [String: LegacyFunctionRewriteStrategy]) -> Bool {
         guard let calledExpression = calledExpression.as(DeclReferenceExprSyntax.self),
-              let rewriteStrategy = legacyFunctions[calledExpression.baseName.text],
-              arguments.count == rewriteStrategy.expectedInitialArguments else {
+              let rewriteStrategy = legacyFunctions[calledExpression.baseName.text] else {
             return false
         }
-        return true
+        return rewriteStrategy == .noRewrite || arguments.count == rewriteStrategy.expectedInitialArguments
     }
 }
 

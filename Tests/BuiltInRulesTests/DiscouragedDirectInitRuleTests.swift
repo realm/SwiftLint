@@ -1,14 +1,19 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct DiscouragedDirectInitRuleTests {
     private let baseDescription = DiscouragedDirectInitRule.description
 
-    func testDiscouragedDirectInitWithConfiguredSeverity() {
+    @Test
+    func discouragedDirectInitWithConfiguredSeverity() {
         verifyRule(baseDescription, ruleConfiguration: ["severity": "error"])
     }
 
-    func testDiscouragedDirectInitWithNewIncludedTypes() {
+    @Test
+    func discouragedDirectInitWithNewIncludedTypes() {
         let triggeringExamples = [
             Example("let foo = ↓Foo()"),
             Example("let bar = ↓Bar()"),
@@ -26,7 +31,8 @@ final class DiscouragedDirectInitRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["types": ["Foo", "Bar"]])
     }
 
-    func testDiscouragedDirectInitWithReplacedTypes() {
+    @Test
+    func discouragedDirectInitWithReplacedTypes() {
         let triggeringExamples = [
             Example("let bundle = ↓Bundle()")
         ]

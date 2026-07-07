@@ -10,19 +10,38 @@ permissions:
 
 jobs:
   bazel_linux:
-    name: Bazel, Linux, Swift 6.2 # pre-installed
+    name: Bazel ${{ matrix.bazel_version }}, Linux, Swift 6.3 # pre-installed
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - bazel_version: 7.6.1
+          - bazel_version: 8.7.0
+          - bazel_version: 9.1.1
     steps:
       - &checkout-step
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - uses: ./.github/actions/bazel-linux-build
+      - uses: ./.github/actions/bazel-linux
         name: Build SwiftLint with Bazel
         env:
+          USE_BAZEL_VERSION: ${{ matrix.bazel_version }}
           CI_BAZELRC_FILE_CONTENT: ${{ secrets.CI_BAZELRC_FILE_CONTENT }}
       - name: Verify SourceKit dynamic loading behavior
         run: bash tools/verify-sourcekit-loading.sh bazel-bin/swiftlint .
+
+  bazel_macos:
+    name: Bazel, macOS 14, Xcode 16.2 # default
+    runs-on: macos-14
+    steps:
+      - *checkout-step
+      - name: Build SwiftLint with Bazel
+        run: make --debug bazel_release
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_16.2.app
+
 
   plugins_linux:
     name: SPM plugins, Linux, Swift ${{ matrix.version }}
@@ -32,15 +51,17 @@ jobs:
       matrix:
         include:
           - image: swift:5.9-jammy
-            version: '5.9'
+            version: "5.9"
           - image: swift:5.10-noble
-            version: '5.10'
+            version: "5.10"
           - image: swift:6.0-noble
-            version: '6.0'
+            version: "6.0"
           - image: swift:6.1-noble
-            version: '6.1'
+            version: "6.1"
           - image: swift:6.2-noble
-            version: '6.2'
+            version: "6.2"
+          - image: swift:6.3-noble
+            version: "6.3"
     container: ${{ matrix.image }}
     steps:
       - *checkout-step

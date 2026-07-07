@@ -21,7 +21,7 @@ public struct RuleListDocumentation {
     public func write(to url: URL) throws {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         func write(_ text: String, toFile file: String) throws {
-            try text.write(to: url.appendingPathComponent(file), atomically: false, encoding: .utf8)
+            try text.write(to: url.appending(path: file), atomically: false, encoding: .utf8)
         }
         try write(indexContents, toFile: "Rule Directory.md")
         try write(swiftSyntaxDashboardContents, toFile: "Swift Syntax Dashboard.md")

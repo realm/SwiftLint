@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
-    func testWithIgnoresEmptyLinesEnabled() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TrailingWhitespaceRuleTests {
+    @Test
+    func withIgnoresEmptyLinesEnabled() {
         // Perform additional tests with the ignores_empty_lines setting enabled.
         // The set of non-triggering examples is extended by a whitespace-indented empty line
         let baseDescription = TrailingWhitespaceRule.description
@@ -13,7 +17,8 @@ final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
                    ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
     }
 
-    func testWithIgnoresCommentsDisabled() {
+    @Test
+    func withIgnoresCommentsDisabled() {
         // Perform additional tests with the ignores_comments settings disabled.
         let baseDescription = TrailingWhitespaceRule.description
         let triggeringComments = [
@@ -30,7 +35,8 @@ final class TrailingWhitespaceRuleTests: SwiftLintTestCase {
                    commentDoesntViolate: false)
     }
 
-    func testWithIgnoresLiteralsEnabled() {
+    @Test
+    func withIgnoresLiteralsEnabled() {
         // Perform additional tests with the ignores_literals setting enabled.
         // This setting only ignores trailing whitespace inside multiline string literals.
         let baseDescription = TrailingWhitespaceRule.description

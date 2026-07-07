@@ -3,156 +3,208 @@
 // swiftlint:disable:next blanket_disable_command superfluous_disable_command
 // swiftlint:disable single_test_class type_name
 
+import TestHelpers
+import Testing
+
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
-import TestHelpers
 
-final class AccessibilityLabelForImageRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct AccessibilityLabelForImageRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(AccessibilityLabelForImageRule.description)
     }
 }
 
-final class AccessibilityTraitForButtonRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct AccessibilityTraitForButtonRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(AccessibilityTraitForButtonRule.description)
     }
 }
 
-final class AnonymousArgumentInMultilineClosureRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct AnonymousArgumentInMultilineClosureRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(AnonymousArgumentInMultilineClosureRule.description)
     }
 }
 
-final class ArrayInitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ArrayInitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ArrayInitRule.description)
     }
 }
 
-final class AsyncWithoutAwaitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct AsyncWithoutAwaitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(AsyncWithoutAwaitRule.description)
     }
 }
 
-final class AttributeNameSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct AttributeNameSpacingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(AttributeNameSpacingRule.description)
     }
 }
 
-final class AttributesRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct AttributesRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(AttributesRule.description)
     }
 }
 
-final class BalancedXCTestLifecycleRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct BalancedXCTestLifecycleRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(BalancedXCTestLifecycleRule.description)
     }
 }
 
-final class BlanketDisableCommandRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct BlanketDisableCommandRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(BlanketDisableCommandRule.description)
     }
 }
 
-final class BlockBasedKVORuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct BlockBasedKVORuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(BlockBasedKVORule.description)
     }
 }
 
-final class CaptureVariableRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CaptureVariableRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CaptureVariableRule.description)
     }
 }
 
-final class ClassDelegateProtocolRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ClassDelegateProtocolRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ClassDelegateProtocolRule.description)
     }
 }
 
-final class ClosingBraceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ClosingBraceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ClosingBraceRule.description)
     }
 }
 
-final class ClosureBodyLengthRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ClosureBodyLengthRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ClosureBodyLengthRule.description)
     }
 }
 
-final class ClosureEndIndentationRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ClosureEndIndentationRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ClosureEndIndentationRule.description)
     }
 }
 
-final class ClosureParameterPositionRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ClosureParameterPositionRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ClosureParameterPositionRule.description)
     }
 }
 
-final class ClosureSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ClosureSpacingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ClosureSpacingRule.description)
     }
 }
 
-final class CollectionAlignmentRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CollectionAlignmentRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CollectionAlignmentRule.description)
     }
 }
 
-final class ColonRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ColonRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ColonRule.description)
     }
 }
 
-final class CommaInheritanceRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CommaInheritanceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CommaInheritanceRule.description)
     }
 }
 
-final class CommaRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CommaRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CommaRule.description)
     }
 }
 
-final class CommentSpacingRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CommentSpacingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CommentSpacingRule.description)
     }
 }
 
-final class CompilerProtocolInitRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct CompilerProtocolInitRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(CompilerProtocolInitRule.description)
     }
 }
 
-final class ComputedAccessorsOrderRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ComputedAccessorsOrderRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ComputedAccessorsOrderRule.description)
     }
 }
 
-final class ConditionalReturnsOnNewlineRuleGeneratedTests: SwiftLintTestCase {
-    func testWithDefaultConfiguration() {
+@Suite(.rulesRegistered)
+struct ConditionalReturnsOnNewlineRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
         verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 }

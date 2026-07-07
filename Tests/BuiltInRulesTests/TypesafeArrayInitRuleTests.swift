@@ -1,20 +1,16 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class TypesafeArrayInitRuleTests: SwiftLintTestCase {
-    func testViolationRuleIdentifier() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct TypesafeArrayInitRuleTests {
+    @Test
+    func violationRuleIdentifier() throws {
         let baseDescription = TypesafeArrayInitRule.description
-        guard let triggeringExample = baseDescription.triggeringExamples.first else {
-            XCTFail("No triggering examples found")
-            return
-        }
-        guard let config = makeConfig(nil, baseDescription.identifier) else {
-            XCTFail("Failed to create configuration")
-            return
-        }
+        let triggeringExample = try #require(baseDescription.triggeringExamples.first)
+        let config = try #require(makeConfig(nil, baseDescription.identifier))
         let violations = violations(triggeringExample, config: config, requiresFileOnDisk: true)
-        XCTAssertGreaterThanOrEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.ruleIdentifier, baseDescription.identifier)
+        #expect(violations.first?.ruleIdentifier == baseDescription.identifier)
     }
 }

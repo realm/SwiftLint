@@ -14,6 +14,7 @@ struct StatementPositionRule: CorrectableRule {
             Example("} else if {"),
             Example("} else {"),
             Example("} catch {"),
+            Example("guard foo() else { return }"),
             Example("\"}else{\""),
             Example("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
             Example("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"),
@@ -23,11 +24,13 @@ struct StatementPositionRule: CorrectableRule {
             Example("↓}  else {"),
             Example("↓}\ncatch {"),
             Example("↓}\n\t  catch {"),
+            Example("guard foo()↓else { return }"),
         ],
         corrections: [
             Example("↓}\n else {"): Example("} else {"),
             Example("↓}\n   else if {"): Example("} else if {"),
             Example("↓}\n catch {"): Example("} catch {"),
+            Example("guard foo()↓else { return }"): Example("guard foo() else { return }"),
         ]
     )
 
@@ -87,34 +90,75 @@ private extension StatementPositionRule {
     // followed by 'else' or 'catch' literals
     static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
+    // match a guard statement where `else` is glued to the condition without whitespace
+    static let defaultGuardPattern = "(\\bguard\\b[^\\n]*\\S)(else\\b)"
+
+    static let defaultGuardRegex = regex(defaultGuardPattern)
+
     func defaultValidate(file: SwiftLintFile) -> [StyleViolation] {
-        defaultViolationRanges(in: file, matching: Self.defaultPattern).compactMap { range in
+        defaultViolationRanges(in: file).compactMap { range in
             StyleViolation(ruleDescription: Self.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }
 
-    func defaultViolationRanges(in file: SwiftLintFile, matching pattern: String) -> [NSRange] {
-        file.match(pattern: pattern).filter { _, syntaxKinds in
+    func defaultViolationRanges(in file: SwiftLintFile) -> [NSRange] {
+        defaultBraceViolationRanges(in: file) + defaultGuardViolationRanges(in: file)
+    }
+
+    func defaultBraceViolationRanges(in file: SwiftLintFile) -> [NSRange] {
+        file.match(pattern: Self.defaultPattern).filter { _, syntaxKinds in
             syntaxKinds.starts(with: [.keyword])
         }.compactMap(\.0)
     }
 
+    func defaultGuardViolationRanges(in file: SwiftLintFile) -> [NSRange] {
+        defaultGuardMatches(in: file).map { $0.range(at: 2) }
+    }
+
+    func defaultGuardCorrectionRanges(in file: SwiftLintFile) -> [NSRange] {
+        defaultGuardMatches(in: file).map(\.range)
+    }
+
+    func defaultGuardMatches(in file: SwiftLintFile) -> [NSTextCheckingResult] {
+        let contents = file.stringView
+        let syntaxMap = file.syntaxMap
+
+        return Self.defaultGuardRegex.matches(in: file).filter { match in
+            guard let elseRange = contents.NSRangeToByteRange(
+                start: match.range(at: 2).location,
+                length: match.range(at: 2).length
+            ) else {
+                return false
+            }
+
+            return syntaxMap.kinds(inByteRange: elseRange) == [.keyword]
+        }
+    }
+
     func defaultCorrect(file: SwiftLintFile) -> Int {
-        let violations = defaultViolationRanges(in: file, matching: Self.defaultPattern)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-        if matches.isEmpty {
+        let braceViolations = defaultBraceViolationRanges(in: file)
+        let guardViolations = defaultGuardCorrectionRanges(in: file)
+        let enabledBraceViolations = file.ruleEnabled(violatingRanges: braceViolations, for: self)
+        let enabledGuardViolations = file.ruleEnabled(violatingRanges: guardViolations, for: self)
+        if enabledBraceViolations.isEmpty, enabledGuardViolations.isEmpty {
             return 0
         }
-        let regularExpression = regex(Self.defaultPattern)
+
         var contents = file.contents
-        for range in matches.reversed() {
-            contents = regularExpression.stringByReplacingMatches(in: contents, options: [], range: range,
-                                                                  withTemplate: "} $1")
+        let braceRegex = regex(Self.defaultPattern)
+        for range in enabledBraceViolations.reversed() {
+            contents = braceRegex.stringByReplacingMatches(in: contents, options: [], range: range,
+                                                           withTemplate: "} $1")
+        }
+
+        for range in enabledGuardViolations.reversed() {
+            contents = Self.defaultGuardRegex.stringByReplacingMatches(in: contents, options: [], range: range,
+                                                                       withTemplate: "$1 $2")
         }
         file.write(contents)
-        return matches.count
+        return enabledBraceViolations.count + enabledGuardViolations.count
     }
 }
 

@@ -74,6 +74,10 @@ struct ForceUnwrappingRule: Rule {
             Example("let url = URL(string: variable)↓!"),
             Example("let url = URL(string: \"\\(dynamicValue)\")↓!"),
             Example("let result = someFunction(\"constant\")↓!"),
+            Example(
+                "let url = URL(string: \"https://www.example.com\")↓!",
+                configuration: ["ignored_literal_argument_functions": [String]()]
+            ),
         ]
     )
 }

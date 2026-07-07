@@ -42,6 +42,20 @@ struct ClosureSpacingRule: Rule {
                 Example("filter { sorted { $0 < $1 } }"),
             Example("(↓{each in return result.contains(where: ↓{e in return 0})}).count"):
                 Example("({ each in return result.contains(where: { e in return 0 }) }).count"),
+            Example("var c = {}"):
+                Example("var c = {}"),
+            Example("var c = { }"):
+                Example("var c = { }"),
+            Example("var c = ↓{  }"):
+                Example("var c = { }"),
+            Example("var c = { /* comment */ }"):
+                Example("var c = { /* comment */ }"),
+            Example("var c = ↓{/* comment */}"):
+                Example("var c = { /* comment */ }"),
+            Example("var c = ↓{/* comment */ }"):
+                Example("var c = { /* comment */ }"),
+            Example("var c = ↓{ /* comment */}"):
+                Example("var c = { /* comment */ }"),
         ]
     )
 }
@@ -69,11 +83,26 @@ private extension ClosureSpacingRule {
             if violations.leftBraceLeftSpace {
                 node.leftBrace = node.leftBrace.with(\.leadingTrivia, .spaces(1))
             }
-            if violations.leftBraceRightSpace {
-                node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1))
-            }
-            if violations.rightBraceLeftSpace {
-                node.rightBrace = node.rightBrace.with(\.leadingTrivia, .spaces(1))
+            let wrapsOnlyTrivia = node.leftBrace.nextToken(viewMode: .sourceAccurate)?.id == node.rightBrace.id
+            if wrapsOnlyTrivia {
+                let trivia = node.leftBrace.trailingTrivia
+                if trivia.containsComments {
+                    if violations.leftBraceRightSpace {
+                        node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1) + trivia)
+                    }
+                    if violations.rightBraceLeftSpace {
+                        node.rightBrace = node.rightBrace.with(\.leadingTrivia, .spaces(1))
+                    }
+                } else {
+                    node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1))
+                }
+            } else {
+                if violations.leftBraceRightSpace {
+                    node.leftBrace = node.leftBrace.with(\.trailingTrivia, .spaces(1))
+                }
+                if violations.rightBraceLeftSpace {
+                    node.rightBrace = node.rightBrace.with(\.leadingTrivia, .spaces(1))
+                }
             }
             if violations.rightBraceRightSpace {
                 node.rightBrace = node.rightBrace.with(\.trailingTrivia, .spaces(1))

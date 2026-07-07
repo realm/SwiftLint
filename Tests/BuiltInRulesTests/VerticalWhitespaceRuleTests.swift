@@ -1,11 +1,14 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct VerticalWhitespaceRuleTests {
     private let ruleID = VerticalWhitespaceRule.identifier
 
-    func testAttributesWithMaxEmptyLines() {
+    @Test
+    func attributesWithMaxEmptyLines() {
         // Test with custom `max_empty_lines`
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [Example("let aaaa = 0\n\n\n")])
@@ -15,11 +18,11 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
             ])
             .with(corrections: [:])
 
-        verifyRule(maxEmptyLinesDescription,
-                   ruleConfiguration: ["max_empty_lines": 2])
+        verifyRule(maxEmptyLinesDescription, ruleConfiguration: ["max_empty_lines": 2])
     }
 
-    func testAutoCorrectionWithMaxEmptyLines() {
+    @Test
+    func autoCorrectionWithMaxEmptyLines() {
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [])
             .with(triggeringExamples: [])
@@ -29,32 +32,21 @@ final class VerticalWhitespaceRuleTests: SwiftLintTestCase {
                 Example("class BB {\n  \n  \n↓  \n  let b = 0\n}\n"): Example("class BB {\n  \n  \n  let b = 0\n}\n"),
             ])
 
-        verifyRule(maxEmptyLinesDescription,
-                   ruleConfiguration: ["max_empty_lines": 2])
+        verifyRule(maxEmptyLinesDescription, ruleConfiguration: ["max_empty_lines": 2])
     }
 
-    func testViolationMessageWithMaxEmptyLines() {
-        guard let config = makeConfig(["max_empty_lines": 2], ruleID) else {
-            XCTFail("Failed to create configuration")
-            return
-        }
+    @Test
+    func violationMessageWithMaxEmptyLines() throws {
+        let config = try #require(makeConfig(["max_empty_lines": 2], ruleID))
         let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
-
-        let verticalWhiteSpaceViolation = allViolations.first { $0.ruleIdentifier == ruleID }
-        if let violation = verticalWhiteSpaceViolation {
-            XCTAssertEqual(violation.reason, "Limit vertical whitespace to maximum 2 empty lines; currently 3")
-        } else {
-            XCTFail("A vertical whitespace violation should have been triggered!")
-        }
+        let violation = try #require(allViolations.first { $0.ruleIdentifier == ruleID })
+        #expect(violation.reason == "Limit vertical whitespace to maximum 2 empty lines; currently 3")
     }
 
-    func testViolationMessageWithDefaultConfiguration() {
+    @Test
+    func violationMessageWithDefaultConfiguration() throws {
         let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"))
-        let verticalWhiteSpaceViolation = allViolations.first(where: { $0.ruleIdentifier == ruleID })
-        if let violation = verticalWhiteSpaceViolation {
-            XCTAssertEqual(violation.reason, "Limit vertical whitespace to a single empty line; currently 3")
-        } else {
-            XCTFail("A vertical whitespace violation should have been triggered!")
-        }
+        let violation = try #require(allViolations.first { $0.ruleIdentifier == ruleID })
+        #expect(violation.reason == "Limit vertical whitespace to a single empty line; currently 3")
     }
 }

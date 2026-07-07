@@ -77,7 +77,7 @@ struct FileHeaderConfiguration: SeverityBasedRuleConfiguration {
                            escapeFileName: Bool) -> NSRegularExpression? {
         // Recompile the regex for this file...
         let replacedPattern = file.path.map { path in
-            let fileName = path.bridge().lastPathComponent
+            let fileName = path.lastPathComponent
 
             // Replace SWIFTLINT_CURRENT_FILENAME with the filename.
             let escapedName = escapeFileName ? NSRegularExpression.escapedPattern(for: fileName) : fileName

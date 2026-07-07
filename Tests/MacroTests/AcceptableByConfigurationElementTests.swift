@@ -1,7 +1,6 @@
 import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacrosGenericTestSupport
-import SwiftSyntaxMacrosTestSupport
-import XCTest
+import Testing
 
 @testable import SwiftLintCoreMacros
 
@@ -9,8 +8,10 @@ private let macros = [
     "AcceptableByConfigurationElement": MacroSpec(type: AcceptableByConfigurationElement.self)
 ]
 
-final class AcceptableByConfigurationElementTests: XCTestCase {
-    func testNoEnum() {
+@Suite
+struct AcceptableByConfigurationElementTests {
+    @Test
+    func noEnum() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -26,11 +27,12 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 DiagnosticSpec(message: SwiftLintCoreMacroError.notEnum.message, line: 1, column: 1)
             ],
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testNoStringRawType() {
+    @Test
+    func noStringRawType() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -46,11 +48,12 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 DiagnosticSpec(message: SwiftLintCoreMacroError.noStringRawType.message, line: 1, column: 1)
             ],
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testPrivateEnum() {
+    @Test
+    func privateEnum() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -66,7 +69,7 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 private func asOption() -> OptionType {
                     .symbol(rawValue)
                 }
-                private init(fromAny value: Any, context ruleID: String) throws(Issue) {
+                private init(fromAny value: Any, context ruleID: String) throws(SwiftLintCore.Issue) {
                     if let value = value as? String, let newSelf = Self(rawValue: value) {
                         self = newSelf
                     } else {
@@ -76,11 +79,12 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 
-    func testPublicEnum() {
+    @Test
+    func publicEnum() {
         assertMacroExpansion(
             """
             @AcceptableByConfigurationElement
@@ -96,7 +100,7 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
                 public func asOption() -> OptionType {
                     .symbol(rawValue)
                 }
-                public init(fromAny value: Any, context ruleID: String) throws(Issue) {
+                public init(fromAny value: Any, context ruleID: String) throws(SwiftLintCore.Issue) {
                     if let value = value as? String, let newSelf = Self(rawValue: value) {
                         self = newSelf
                     } else {
@@ -106,7 +110,7 @@ final class AcceptableByConfigurationElementTests: XCTestCase {
             }
             """,
             macroSpecs: macros,
-            failureHandler: failureHandler
+            failureHandler: FailureHandler.instance
         )
     }
 }

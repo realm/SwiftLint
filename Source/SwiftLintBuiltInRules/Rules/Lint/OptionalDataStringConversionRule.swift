@@ -27,21 +27,21 @@ struct OptionalDataStringConversionRule: Rule {
             Example("let n: Int = .init(0)"),
             Example("String(repeating: \"a\", count: 3)"),
             Example("String(format: \"%d\", 3)"),
-            // Default behavior (allow_implicit_init == false): implicit leading-dot init without type
+            // Default behavior (include_implicit_init == false): implicit leading-dot init without type
             Example("let text = .init(decoding: data, as: UTF8.self)"),
         ],
         triggeringExamples: [
             Example("↓String(decoding: data, as: UTF8.self)"),
             Example("↓String.init(decoding: data, as: UTF8.self)"),
             Example("let text: String = ↓.init(decoding: data, as: UTF8.self)"),
-            // With allow_implicit_init enabled, implicit leading-dot init also triggers
+            // With include_implicit_init enabled, implicit leading-dot init also triggers
             Example(
                 "let text = ↓.init(decoding: data, as: UTF8.self)",
-                configuration: ["allow_implicit_init": true]
+                configuration: ["include_implicit_init": true]
             ),
             Example(
                 "f(↓.init(decoding: data, as: UTF8.self))",
-                configuration: ["allow_implicit_init": true]
+                configuration: ["include_implicit_init": true]
             ),
         ]
     )
@@ -85,13 +85,13 @@ private extension OptionalDataStringConversionRule {
             }
 
             // Case 3: leading-dot `.init(...)`
-            // This is ambiguous in general. If configuration.allowImplicitInit is true,
+            // This is ambiguous in general. If configuration.includeImplicitInit is true,
             // we trigger everywhere. Otherwise, we only trigger if the call is used to
             // initialize a variable that has an explicit `String` type annotation:
             // let x: String = .init(...)
             guard member.base == nil else { return }
 
-            if configuration.allowImplicitInit {
+            if configuration.includeImplicitInit || configuration.allowImplicitInit {
                 violations.append(called.positionAfterSkippingLeadingTrivia)
                 return
             }

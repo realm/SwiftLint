@@ -1,34 +1,39 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
-    func testCyclomaticComplexityConfigurationInitializerSetsLevels() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct CyclomaticComplexityConfigurationTests {
+    @Test
+    func cyclomaticComplexityConfigurationInitializerSetsLevels() {
         let warning = 10
         let error = 30
         let level = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning, error: error)
         let configuration1 = CyclomaticComplexityConfiguration(length: level)
-        XCTAssertEqual(configuration1.length, level)
+        #expect(configuration1.length == level)
 
         let length2 = SeverityLevelsConfiguration<CyclomaticComplexityRule>(warning: warning, error: nil)
         let configuration2 = CyclomaticComplexityConfiguration(length: length2)
-        XCTAssertEqual(configuration2.length, length2)
+        #expect(configuration2.length == length2)
     }
 
-    func testCyclomaticComplexityConfigurationInitializerSetsIgnoresCaseStatements() {
+    @Test
+    func cyclomaticComplexityConfigurationInitializerSetsIgnoresCaseStatements() {
         let configuration1 = CyclomaticComplexityConfiguration(
             length: SeverityLevelsConfiguration(warning: 10, error: 30),
             ignoresCaseStatements: true
         )
-        XCTAssertTrue(configuration1.ignoresCaseStatements)
+        #expect(configuration1.ignoresCaseStatements)
 
         let configuration2 = CyclomaticComplexityConfiguration(
             length: SeverityLevelsConfiguration(warning: 10, error: 30)
         )
-        XCTAssertFalse(configuration2.ignoresCaseStatements)
+        #expect(!configuration2.ignoresCaseStatements)
     }
 
-    func testCyclomaticComplexityConfigurationApplyConfigurationWithDictionary() throws {
+    @Test
+    func cyclomaticComplexityConfigurationApplyConfigurationWithDictionary() throws {
         var configuration = CyclomaticComplexityConfiguration(
             length: SeverityLevelsConfiguration(warning: 0, error: 0)
         )
@@ -49,19 +54,20 @@ final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         let config3: [String: Bool] = ["ignores_case_statements": false]
 
         try configuration.apply(configuration: config1)
-        XCTAssertEqual(configuration.length, length1)
-        XCTAssertTrue(configuration.ignoresCaseStatements)
+        #expect(configuration.length == length1)
+        #expect(configuration.ignoresCaseStatements)
 
         try configuration.apply(configuration: config2)
-        XCTAssertEqual(configuration.length, length2)
-        XCTAssertTrue(configuration.ignoresCaseStatements)
+        #expect(configuration.length == length2)
+        #expect(configuration.ignoresCaseStatements)
 
         try configuration.apply(configuration: config3)
-        XCTAssertEqual(configuration.length, length2)
-        XCTAssertFalse(configuration.ignoresCaseStatements)
+        #expect(configuration.length == length2)
+        #expect(!configuration.ignoresCaseStatements)
     }
 
-    func testCyclomaticComplexityConfigurationThrowsOnBadConfigValues() {
+    @Test
+    func cyclomaticComplexityConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
             ["ignores_case_statements": 300],
@@ -77,7 +83,8 @@ final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         }
     }
 
-    func testCyclomaticComplexityConfigurationCompares() {
+    @Test
+    func cyclomaticComplexityConfigurationCompares() {
         let config1 = CyclomaticComplexityConfiguration(
             length: SeverityLevelsConfiguration(warning: 10, error: 30)
         )
@@ -95,9 +102,9 @@ final class CyclomaticComplexityConfigurationTests: SwiftLintTestCase {
         let config5 = CyclomaticComplexityConfiguration(
             length: SeverityLevelsConfiguration(warning: 20, error: 30)
         )
-        XCTAssertNotEqual(config1, config2)
-        XCTAssertEqual(config1, config3)
-        XCTAssertNotEqual(config1, config4)
-        XCTAssertNotEqual(config1, config5)
+        #expect(config1 != config2)
+        #expect(config1 == config3)
+        #expect(config1 != config4)
+        #expect(config1 != config5)
     }
 }

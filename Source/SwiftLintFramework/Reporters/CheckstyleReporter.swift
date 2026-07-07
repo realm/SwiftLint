@@ -1,3 +1,5 @@
+import Foundation
+
 /// Reports violations as XML conforming to the Checkstyle specification, as defined here:
 /// https://www.jetbrains.com/help/teamcity/xml-report-processing.html
 struct CheckstyleReporter: Reporter {
@@ -11,7 +13,7 @@ struct CheckstyleReporter: Reporter {
         [
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">",
             violations
-                .group(by: { ($0.location.file ?? "<nopath>").escapedForXML() })
+                .group(by: { ($0.location.file?.path ?? "<nopath>").escapedForXML() })
                 .sorted(by: { $0.key < $1.key })
                 .map(generateForViolationFile).joined(),
             "\n</checkstyle>",

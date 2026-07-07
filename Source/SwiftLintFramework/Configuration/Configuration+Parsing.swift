@@ -1,3 +1,5 @@
+import Foundation
+
 extension Configuration {
     // MARK: - Subtypes
     internal enum Key: String, CaseIterable {
@@ -34,6 +36,7 @@ extension Configuration {
     /// - parameter parentConfiguration:    The parent configuration, if any.
     /// - parameter dict:                   The untyped dictionary to serve as the input for this typed configuration.
     ///                                     Typically generated from a YAML-formatted file.
+    /// - parameter location:               The location of the configuration file.
     /// - parameter ruleList:               The list of rules to be available to this configuration.
     /// - parameter enableAllRules:         Whether all rules from `ruleList` should be enabled, regardless of the
     ///                                     settings in `dict`.
@@ -41,6 +44,7 @@ extension Configuration {
     public init(
         parentConfiguration: Configuration? = nil,
         dict: [String: Any],
+        location: URL = URL.cwd,
         ruleList: RuleList = RuleRegistry.shared.list,
         enableAllRules: Bool = false,
         onlyRule: [String] = [],
@@ -96,8 +100,8 @@ extension Configuration {
             rulesMode: rulesMode,
             allRulesWrapped: allRulesWrapped,
             ruleList: ruleList,
-            includedPaths: defaultStringArray(dict[Key.included.rawValue]),
-            excludedPaths: defaultStringArray(dict[Key.excluded.rawValue]),
+            includedPaths: defaultStringArray(dict[Key.included.rawValue]).map { $0.url(relativeTo: location) },
+            excludedPaths: defaultStringArray(dict[Key.excluded.rawValue]).map { $0.url(relativeTo: location) },
             indentation: Self.getIndentationLogIfInvalid(from: dict),
             warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
             reporter: dict[Key.reporter.rawValue] as? String ?? XcodeReporter.identifier,
@@ -106,8 +110,10 @@ extension Configuration {
             allowZeroLintableFiles: dict[Key.allowZeroLintableFiles.rawValue] as? Bool ?? false,
             strict: dict[Key.strict.rawValue] as? Bool ?? false,
             lenient: dict[Key.lenient.rawValue] as? Bool ?? false,
-            baseline: dict[Key.baseline.rawValue] as? String,
-            writeBaseline: dict[Key.writeBaseline.rawValue] as? String,
+            baseline: (dict[Key.baseline.rawValue] as? String)?
+                .url(relativeTo: location, directoryHint: .notDirectory),
+            writeBaseline: (dict[Key.writeBaseline.rawValue] as? String)?
+                .url(relativeTo: location, directoryHint: .notDirectory),
             checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false
         )
     }
@@ -119,7 +125,7 @@ extension Configuration {
 
     private static func getIndentationLogIfInvalid(from dict: [String: Any]) -> IndentationStyle {
         if let rawIndentation = dict[Key.indentation.rawValue] {
-            if let indentationStyle = Self.IndentationStyle(rawIndentation) {
+            if let indentationStyle = IndentationStyle(rawIndentation) {
                 return indentationStyle
             }
             Issue.invalidConfiguration(ruleID: Key.indentation.rawValue).print()
@@ -211,8 +217,8 @@ extension Configuration {
 
         if case .onlyConfiguration(let onlyRules) = parentConfiguration?.rulesMode {
             enabledInParentRules = onlyRules
-        } else if case .defaultConfiguration(
-            let parentDisabledRules, let parentOptInRules
+        } else if case let .defaultConfiguration(
+            parentDisabledRules, parentOptInRules
         ) = parentConfiguration?.rulesMode {
             enabledInParentRules = parentOptInRules
             disabledInParentRules = parentDisabledRules

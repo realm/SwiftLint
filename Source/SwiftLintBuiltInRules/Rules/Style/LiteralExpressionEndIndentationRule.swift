@@ -69,6 +69,12 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
                key: value
                ↓]
             """),
+            Example("""
+            let x = [
+               foo(
+                  1,
+                  2)↓]
+            """),
         ],
         corrections: [
             Example("""
@@ -117,6 +123,18 @@ struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
             ] + [
                3,
                4
+            ]
+            """),
+            Example("""
+            let x = [
+               foo(
+                  1,
+                  2)↓]
+            """): Example("""
+            let x = [
+               foo(
+                  1,
+                  2)
             ]
             """),
         ]
@@ -176,7 +194,11 @@ extension LiteralExpressionEndIndentationRule: CorrectableRule {
         }
 
         let correction = contents.substring(from: expected.location, length: expected.length)
-        contents = contents.replacingCharacters(in: actualIndices, with: correction)
+        if contents[actualIndices].allSatisfy(\.isWhitespace) {
+            contents = contents.replacingCharacters(in: actualIndices, with: correction)
+        } else {
+            contents.insert(contentsOf: "\n" + correction, at: actualIndices.upperBound)
+        }
 
         return true
     }

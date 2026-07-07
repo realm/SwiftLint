@@ -2,6 +2,8 @@ internal struct TypeNameRuleExamples {
     static let nonTriggeringExamples: [Example] = [
         Example("class MyType {}"),
         Example("private struct _MyType {}"),
+        Example("private class `_` {}", configuration: ["excluded": ["`_`"]], excludeFromDocumentation: true),
+        Example("struct `My Struct` {}", configuration: ["excluded": ["`.+`"]]),
         Example("enum \(repeatElement("A", count: 40).joined()) {}"),
         Example("struct MyView_Previews: PreviewProvider", excludeFromDocumentation: true),
         Example("private class _MyView_Previews: PreviewProvider", excludeFromDocumentation: true),
@@ -31,6 +33,7 @@ internal struct TypeNameRuleExamples {
     static let triggeringExamples: [Example] = [
         Example("class ↓myType {}"),
         Example("enum ↓_MyType {}"),
+        Example("class ↓`My Class` {}"),
         Example("private struct ↓MyType_ {}"),
         Example("private class ↓`_` {}", excludeFromDocumentation: true),
         Example("struct ↓My {}"),

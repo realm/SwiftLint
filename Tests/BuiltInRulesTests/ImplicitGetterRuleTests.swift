@@ -1,39 +1,43 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
-import XCTest
+import Testing
 
-final class ImplicitGetterRuleTests: SwiftLintTestCase {
-    func testPropertyReason() throws {
-        let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.identifier))
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct ImplicitGetterRuleTests {
+    @Test
+    func propertyReason() throws {
+        let config = try #require(makeConfig(nil, ImplicitGetterRule.identifier))
         let example = Example("""
-        class Foo {
-            var foo: Int {
-                ↓get {
-                    return 20
+            class Foo {
+                var foo: Int {
+                    ↓get {
+                        return 20
+                    }
                 }
             }
-        }
-        """)
+            """)
 
         let violations = violations(example, config: config)
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Computed read-only properties should avoid using the get keyword")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "Computed read-only properties should avoid using the get keyword")
     }
 
-    func testSubscriptReason() throws {
-        let config = try XCTUnwrap(makeConfig(nil, ImplicitGetterRule.identifier))
+    @Test
+    func subscriptReason() throws {
+        let config = try #require(makeConfig(nil, ImplicitGetterRule.identifier))
         let example = Example("""
-        class Foo {
-            subscript(i: Int) -> Int {
-                ↓get {
-                    return 20
+            class Foo {
+                subscript(i: Int) -> Int {
+                    ↓get {
+                        return 20
+                    }
                 }
             }
-        }
-        """)
+            """)
 
         let violations = violations(example, config: config)
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Computed read-only subscripts should avoid using the get keyword")
+        #expect(violations.count == 1)
+        #expect(violations.first?.reason == "Computed read-only subscripts should avoid using the get keyword")
     }
 }

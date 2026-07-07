@@ -14,16 +14,16 @@ extension SwiftLintDev.Rules {
         )
 
         private var rulesDirectory: URL {
-            URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-                .appendingPathComponent("Source", isDirectory: true)
-                .appendingPathComponent("SwiftLintBuiltInRules", isDirectory: true)
-                .appendingPathComponent("Rules", isDirectory: true)
+            URL(filePath: FileManager.default.currentDirectoryPath)
+                .appending(path: "Source", directoryHint: .isDirectory)
+                .appending(path: "SwiftLintBuiltInRules", directoryHint: .isDirectory)
+                .appending(path: "Rules", directoryHint: .isDirectory)
         }
 
         private var testsDirectory: URL {
-            URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-                .appendingPathComponent("Tests", isDirectory: true)
-                .appendingPathComponent("GeneratedTests", isDirectory: true)
+            URL(filePath: FileManager.default.currentDirectoryPath)
+                .appending(path: "Tests", directoryHint: .isDirectory)
+                .appending(path: "GeneratedTests", directoryHint: .isDirectory)
         }
 
         func run() throws {
@@ -134,9 +134,11 @@ private extension SwiftLintDev.Rules.Register {
         // swiftlint:disable:next blanket_disable_command superfluous_disable_command
         // swiftlint:disable single_test_class type_name
 
+        import TestHelpers
+        import Testing
+
         @testable import SwiftLintBuiltInRules
         @testable import SwiftLintCore
-        import TestHelpers
 
         \(testClassesString)
 
@@ -174,8 +176,8 @@ private extension SwiftLintDev.Rules.Register {
             .map { $0.replacingOccurrences(of: ".swift", with: ".self") }
             .joined(separator: ",\n")
         let builtInRulesFile = rulesDirectory.deletingLastPathComponent()
-            .appendingPathComponent("Models", isDirectory: true)
-            .appendingPathComponent("BuiltInRules.swift", isDirectory: false)
+            .appending(path: "Models", directoryHint: .isDirectory)
+            .appending(path: "BuiltInRules.swift", directoryHint: .notDirectory)
 
         let fileContent = generateBuiltInRulesFileContent(rulesImportList: rulesImportString)
         try fileContent.write(to: builtInRulesFile, atomically: true, encoding: .utf8)
@@ -199,8 +201,10 @@ private extension SwiftLintDev.Rules.Register {
             let shardRules = rulesContext.shardRules(forIndex: shardIndex)
 
             let testClasses = shardRules.map { testName in """
-                final class \(testName)GeneratedTests: SwiftLintTestCase {
-                    func testWithDefaultConfiguration() {
+                @Suite(.rulesRegistered)
+                struct \(testName)GeneratedTests {
+                    @Test
+                    func withDefaultConfiguration() {
                         verifyRule(\(testName).description)
                     }
                 }
@@ -208,9 +212,9 @@ private extension SwiftLintDev.Rules.Register {
             }.joined(separator: "\n\n")
 
             let shardNumber = rulesContext.shardNumbers[shardIndex]
-            let testFile = testsDirectory.appendingPathComponent(
-                "GeneratedTests_\(shardNumber).swift",
-                isDirectory: false
+            let testFile = testsDirectory.appending(
+                path: "GeneratedTests_\(shardNumber).swift",
+                directoryHint: .notDirectory
             )
 
             let fileContent = generateSwiftTestFileContent(forTestClasses: testClasses)
@@ -231,9 +235,9 @@ private extension SwiftLintDev.Rules.Register {
             #""//Tests:GeneratedTests_\#($0)""#
         }.joined(separator: ",\n    ")
 
-        let bzlFile = testsParentDirectory.appendingPathComponent(
-            "generated_tests.bzl",
-            isDirectory: false
+        let bzlFile = testsParentDirectory.appending(
+            path: "generated_tests.bzl",
+            directoryHint: .notDirectory
         )
 
         let fileContent = generateBzlFileContent(
@@ -268,9 +272,9 @@ private extension SwiftLintDev.Rules.Register {
             .appending("\n")
             .write(
                 to: testsParentDirectory
-                    .appendingPathComponent("IntegrationTests", isDirectory: true)
-                    .appendingPathComponent("Resources", isDirectory: true)
-                    .appendingPathComponent("default_rule_configurations.yml", isDirectory: false),
+                    .appending(path: "IntegrationTests", directoryHint: .isDirectory)
+                    .appending(path: "Resources", directoryHint: .isDirectory)
+                    .appending(path: "default_rule_configurations.yml", directoryHint: .notDirectory),
                 atomically: true,
                 encoding: .utf8
             )

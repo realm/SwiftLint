@@ -11,6 +11,10 @@ struct IdentifierNameConfiguration: RuleConfiguration {
                                                                    maxLengthError: 60,
                                                                    excluded: ["id"])
 
-    @ConfigurationElement(key: "additional_operators", postprocessor: { $0.formUnion(Self.defaultOperators) })
+    @ConfigurationElement(
+        key: "additional_operators",
+        documentPostprocessedValue: false,
+        postprocessor: { $0.formUnion(Self.defaultOperators) }
+    )
     private(set) var additionalOperators = Set<String>()
 }

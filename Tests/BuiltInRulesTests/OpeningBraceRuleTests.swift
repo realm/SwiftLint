@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class OpeningBraceRuleTests: SwiftLintTestCase {
-    func testDefaultNonTriggeringExamplesWithMultilineOptionsTrue() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct OpeningBraceRuleTests {
+    @Test
+    func defaultNonTriggeringExamplesWithMultilineOptionsTrue() {
         let description = OpeningBraceRule.description
             .with(triggeringExamples: [])
             .with(corrections: [:])
@@ -14,7 +18,8 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
         ])
     }
 
-    func testWithIgnoreMultilineTypeHeadersTrue() {
+    @Test
+    func withIgnoreMultilineTypeHeadersTrue() {
         let nonTriggeringExamples = [
             Example("""
                 extension A
@@ -56,7 +61,8 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["ignore_multiline_type_headers": true])
     }
 
-    func testWithIgnoreMultilineStatementConditionsTrue() {
+    @Test
+    func withIgnoreMultilineStatementConditionsTrue() {
         let nonTriggeringExamples = [
             Example("""
                 while
@@ -114,8 +120,8 @@ final class OpeningBraceRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["ignore_multiline_statement_conditions": true])
     }
 
-    // swiftlint:disable:next function_body_length
-    func testWithIgnoreMultilineFunctionSignaturesTrue() {
+    @Test
+    func withIgnoreMultilineFunctionSignaturesTrue() { // swiftlint:disable:this function_body_length
         let nonTriggeringExamples = [
             Example("""
                 func abc(

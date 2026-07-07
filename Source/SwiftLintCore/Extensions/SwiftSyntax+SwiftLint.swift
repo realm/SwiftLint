@@ -119,6 +119,10 @@ public extension DeclModifierListSyntax {
     func contains(keyword: Keyword) -> Bool {
         contains { $0.name.tokenKind == .keyword(keyword) }
     }
+
+    func modifier(with keyword: Keyword) -> DeclModifierSyntax? {
+        first { $0.name.tokenKind == .keyword(keyword) }
+    }
 }
 
 public extension DeclModifierSyntax {
@@ -266,7 +270,7 @@ public extension AccessorBlockSyntax {
 }
 
 public extension InheritanceClauseSyntax? {
-    func containsInheritedType(inheritedTypes: Set<String>) -> Bool {
+    func contains(inheritedTypes: Set<String>) -> Bool {
         self?.inheritedTypes.contains { elem in
             guard let simpleType = elem.type.as(IdentifierTypeSyntax.self) else {
                 return false

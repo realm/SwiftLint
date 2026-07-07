@@ -107,7 +107,7 @@ private extension TokenSyntax {
 
 private extension IfExprSyntax {
     var indentationDecidingParent: any SyntaxProtocol {
-        if keyPathInParent == \IfExprSyntax.elseBody, let parent = parent?.as(IfExprSyntax.self) {
+        if keyPathInParent == \Self.elseBody, let parent = parent?.as(IfExprSyntax.self) {
             return parent.indentationDecidingParent
         }
         return self

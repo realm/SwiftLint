@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
-    func testPrivateOverFilePrivateValidatingExtensions() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct PrivateOverFilePrivateRuleTests {
+    @Test
+    func privateOverFilePrivateValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [
             Example("↓fileprivate extension String {}"),
@@ -20,7 +24,8 @@ final class PrivateOverFilePrivateRuleTests: SwiftLintTestCase {
         verifyRule(description, ruleConfiguration: ["validate_extensions": true])
     }
 
-    func testPrivateOverFilePrivateNotValidatingExtensions() {
+    @Test
+    func privateOverFilePrivateNotValidatingExtensions() {
         let baseDescription = PrivateOverFilePrivateRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             Example("fileprivate extension String {}")

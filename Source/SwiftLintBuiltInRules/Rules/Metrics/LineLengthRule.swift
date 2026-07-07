@@ -35,7 +35,7 @@ private extension LineLengthRule {
         private var regexLiteralLines = Set<Int>()
 
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
-            // Populate functionDeclarationLines if ignores_function_declarations is true
+            // Populate declaration lines for functions and macros when ignoring function declarations
             if configuration.ignoresFunctionDeclarations {
                 let funcVisitor = FunctionLineVisitor(locationConverter: locationConverter)
                 functionDeclarationLines = funcVisitor.walk(tree: node, handler: \.lines)
@@ -147,7 +147,7 @@ private extension LineLengthRule {
 
 // MARK: - Helper Visitors for Pre-computation
 
-// Visitor to find lines spanned by function declaration signatures
+// Visitor to find lines spanned by function and macro declaration signatures
 private final class FunctionLineVisitor: SyntaxVisitor {
     let locationConverter: SourceLocationConverter
     var lines = Set<Int>()
@@ -178,6 +178,13 @@ private final class FunctionLineVisitor: SyntaxVisitor {
             from: node.positionAfterSkippingLeadingTrivia,
             to: node.genericWhereClause?.endPositionBeforeTrailingTrivia
                 ?? node.returnClause.endPositionBeforeTrailingTrivia
+        )
+    }
+
+    override func visitPost(_ node: MacroDeclSyntax) {
+        collectLines(
+            from: node.positionAfterSkippingLeadingTrivia,
+            to: node.endPositionBeforeTrailingTrivia
         )
     }
 

@@ -143,7 +143,7 @@ private extension RequiredEnumCaseRule {
             let enumCases = node.enumCasesNames
             let violations = configuration.protocols
                 .flatMap { type, requiredCases -> [ReasonedRuleViolation] in
-                    guard node.inheritanceClause.containsInheritedType(inheritedTypes: [type]) else {
+                    guard node.inheritanceClause.contains(inheritedTypes: [type]) else {
                         return []
                     }
 

@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class EmptyCountRuleTests: SwiftLintTestCase {
-    func testEmptyCountWithOnlyAfterDot() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct EmptyCountRuleTests {
+    @Test
+    func emptyCountWithOnlyAfterDot() {
         // Test with `only_after_dot` set to true
         let nonTriggeringExamples = [
             Example("var count = 0\n"),

@@ -1,8 +1,12 @@
-@testable import SwiftLintBuiltInRules
 import TestHelpers
+import Testing
 
-final class UnneededOverrideRuleTests: SwiftLintTestCase {
-    func testIncludeAffectInits() {
+@testable import SwiftLintBuiltInRules
+
+@Suite(.rulesRegistered)
+struct UnneededOverrideRuleTests {
+    @Test
+    func includeAffectInits() {
         let nonTriggeringExamples = [
             Example("""
             override init() {

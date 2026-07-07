@@ -1,47 +1,39 @@
+import Foundation
 import SourceKittenFramework
 import TestHelpers
-import XCTest
+import Testing
 
 @testable import SwiftLintBuiltInRules
 @testable import SwiftLintCore
 
-private var temporaryDirectoryPath: String {
-    let result = URL(
-        fileURLWithPath: NSTemporaryDirectory(),
-        isDirectory: true
-    ).filepath
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable contains_over_filter_is_empty
 
-#if os(macOS)
-    return "/private" + result
-#else
-    return result
-#endif
-}
-
-final class BaselineTests: XCTestCase {
+@Suite(.rulesRegistered)
+struct BaselineTests {
     private static let example = """
-                                 import Foundation
-                                 import SwiftLintFramework
+        import Foundation
+        import SwiftLintFramework
 
-                                 class Example: NSObject {
-                                     private var foo: Int
-                                     private var bar: String
+        class Example: NSObject {
+            private var foo: Int
+            private var bar: String
 
-                                     init(foo: Int, bar: String) {
-                                         self.foo = foo
-                                         self.bar = bar
-                                     } // init
-                                     func someFunction() -> Int {
-                                         foo * 10
-                                     } // someFunction
-                                     func someOtherFunction() -> String {
-                                         bar
-                                     } // someOtherFunction
-                                     func yetAnotherFunction() -> (Int, String) {
-                                         (foo, bar)
-                                     } // yetAnotherFunction
-                                 }
-                                 """
+            init(foo: Int, bar: String) {
+                self.foo = foo
+                self.bar = bar
+            } // init
+            func someFunction() -> Int {
+                foo * 10
+            } // someFunction
+            func someOtherFunction() -> String {
+                bar
+            } // someOtherFunction
+            func yetAnotherFunction() -> (Int, String) {
+                (foo, bar)
+            } // yetAnotherFunction
+        }
+        """
 
     private static let ruleDescriptions = [
         ArrayInitRule.description,
@@ -50,54 +42,45 @@ final class BaselineTests: XCTestCase {
         DirectReturnRule.description,
     ]
 
-    private static func violations(for filePath: String?) -> [StyleViolation] {
+    private static func violations(for filePath: URL?) -> [StyleViolation] {
         ruleDescriptions.violations(for: filePath)
     }
 
-    private static func baseline(for filePath: String) -> Baseline {
+    private static func baseline(for filePath: URL) -> Baseline {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
-    nonisolated(unsafe) private static var currentDirectoryPath: String?
-
-    override static func setUp() {
-        super.setUp()
-        currentDirectoryPath = FileManager.default.currentDirectoryPath
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(temporaryDirectoryPath))
-    }
-
-    override static func tearDown() {
-        XCTAssertTrue(FileManager.default.changeCurrentDirectoryPath(currentDirectoryPath!))
-        super.tearDown()
-    }
-
-    func testWritingAndReading() throws {
+    @Test(.temporaryDirectory)
+    func writingAndReading() throws {
         try withExampleFileCreated { sourceFilePath in
-            let baselinePath = temporaryDirectoryPath.stringByAppendingPathComponent(UUID().uuidString)
+            let baselinePath = URL.temporaryDirectory.appending(path: UUID().uuidString)
             try Baseline(violations: Self.violations(for: sourceFilePath)).write(toPath: baselinePath)
             defer {
-                try? FileManager.default.removeItem(atPath: baselinePath)
+                try? FileManager.default.removeItem(atPath: baselinePath.filepath)
             }
             let newBaseline = try Baseline(fromPath: baselinePath)
-            XCTAssertEqual(newBaseline, Self.baseline(for: sourceFilePath))
+            #expect(newBaseline == Self.baseline(for: sourceFilePath))
         }
     }
 
-    func testUnchangedViolations() throws {
+    @Test
+    func unchangedViolations() throws {
         try withExampleFileCreated { sourceFilePath in
-            XCTAssertEqual(Self.baseline(for: sourceFilePath).filter(Self.violations(for: sourceFilePath)), [])
+            #expect(Self.baseline(for: sourceFilePath).filter(Self.violations(for: sourceFilePath)).isEmpty)
         }
     }
 
-    func testShiftedViolations() throws {
+    @Test
+    func shiftedViolations() throws {
         try withExampleFileCreated { sourceFilePath in
             let baseline = Self.baseline(for: sourceFilePath)
             let violations = try Self.violations(for: sourceFilePath).lineShifted(by: 2, path: sourceFilePath)
-            XCTAssertEqual(baseline.filter(violations), [])
+            #expect(baseline.filter(violations).isEmpty)
         }
     }
 
-    func testNewViolation() throws {
+    @Test
+    func newViolation() throws {
         try testViolationDetection(
             violationRuleDescriptions: Self.ruleDescriptions,
             newViolationRuleDescription: EmptyCollectionLiteralRule.description,
@@ -105,7 +88,15 @@ final class BaselineTests: XCTestCase {
         )
     }
 
-    func testViolationDetection() throws {
+    @Test(
+        arguments: [
+            ArrayInitRule.description,
+            BlockBasedKVORule.description,
+            ClosingBraceRule.description,
+            DirectReturnRule.description,
+        ]
+    )
+    func violationDetection(_ ruleDescription: RuleDescription) throws {
         let violationRuleDescriptions = [
             ArrayInitRule.description,
             BlockBasedKVORule.description,
@@ -119,36 +110,30 @@ final class BaselineTests: XCTestCase {
             ClosingBraceRule.description,
         ]
 
-        let ruleDescriptions = [
-            ArrayInitRule.description,
-            BlockBasedKVORule.description,
-            ClosingBraceRule.description,
-            DirectReturnRule.description,
-        ]
-
-        for ruleDescription in ruleDescriptions {
-            for insertionIndex in 0..<violationRuleDescriptions.count {
-                try testViolationDetection(
-                    violationRuleDescriptions: violationRuleDescriptions,
-                    newViolationRuleDescription: ruleDescription,
-                    insertionIndex: insertionIndex
-                )
-            }
+        for insertionIndex in 0..<violationRuleDescriptions.count {
+            try testViolationDetection(
+                violationRuleDescriptions: violationRuleDescriptions,
+                newViolationRuleDescription: ruleDescription,
+                insertionIndex: insertionIndex
+            )
         }
     }
 
-    func testCompare() throws {
+    @Test
+    func compare() throws {
         try withExampleFileCreated { sourceFilePath in
             let ruleDescriptions = Self.ruleDescriptions + Self.ruleDescriptions
             let violations = ruleDescriptions.violations(for: sourceFilePath)
             let numberofViolationsToDrop = 3
-            let oldBaseline = Baseline(violations: Array(violations.dropFirst(numberofViolationsToDrop)).reversed())
+            let oldBaseline = Baseline(
+                violations: Array(violations.dropFirst(numberofViolationsToDrop)).reversed()
+            )
             let newViolations = Array(
                 try violations.lineShifted(by: 2, path: sourceFilePath).dropLast(numberofViolationsToDrop)
             )
             let newBaseline = Baseline(violations: newViolations.reversed())
-            XCTAssertEqual(oldBaseline.compare(newBaseline), Array(newViolations.prefix(numberofViolationsToDrop)))
-            XCTAssertEqual(newBaseline.compare(oldBaseline), Array(violations.suffix(numberofViolationsToDrop)))
+            #expect(oldBaseline.compare(newBaseline) == Array(newViolations.prefix(numberofViolationsToDrop)))
+            #expect(newBaseline.compare(oldBaseline) == Array(violations.suffix(numberofViolationsToDrop)))
         }
     }
 
@@ -172,34 +157,37 @@ final class BaselineTests: XCTestCase {
                 location: Location(file: sourceFilePath, line: line, character: 1)
             )
             newViolations.insert(violation, at: insertionIndex)
-            XCTAssertEqual(baseline.filter(newViolations), [violation])
+            #expect(baseline.filter(newViolations) == [violation])
         }
     }
 
-    private func withExampleFileCreated(_ block: (String) throws -> Void) throws {
-        let sourceFilePath = temporaryDirectoryPath.stringByAppendingPathComponent("\(UUID().uuidString).swift")
+    private func withExampleFileCreated(_ block: (URL) throws -> Void) throws {
+        let sourceFilePath = URL.temporaryDirectory.appending(
+            path: "\(UUID().uuidString).swift",
+            directoryHint: .notDirectory
+        )
         guard let data = Self.example.data(using: .utf8) else {
-            XCTFail("Could not convert example code to data using UTF-8 encoding")
+            Issue.record("Could not convert example code to data using UTF-8 encoding")
             return
         }
-        try data.write(to: URL(fileURLWithPath: sourceFilePath))
+        try data.write(to: sourceFilePath)
         defer {
-            try? FileManager.default.removeItem(atPath: sourceFilePath)
+            try? FileManager.default.removeItem(atPath: sourceFilePath.filepath)
         }
         try block(sourceFilePath)
     }
 }
 
 private extension [StyleViolation] {
-    func lineShifted(by shift: Int, path: String) throws -> [StyleViolation] {
+    func lineShifted(by shift: Int, path: URL) throws -> [StyleViolation] {
         guard shift > 0 else {
-            XCTFail("Shift must be positive")
+            Issue.record("Shift must be positive")
             return self
         }
         var lines = SwiftLintFile(path: path)?.lines.map(\.content) ?? []
         lines = [String](repeating: "", count: shift) + lines
         if let data = lines.joined(separator: "\n").data(using: .utf8) {
-            try data.write(to: URL(fileURLWithPath: path))
+            try data.write(to: path)
         }
         return map {
             let shiftedLocation = Location(
@@ -213,7 +201,7 @@ private extension [StyleViolation] {
 }
 
 private extension Sequence where Element == RuleDescription {
-    func violations(for filePath: String?) -> [StyleViolation] {
+    func violations(for filePath: URL?) -> [StyleViolation] {
         enumerated().map { index, ruleDescription in
             StyleViolation(
                 ruleDescription: ruleDescription,

@@ -104,10 +104,26 @@ private final class EscapeChecker: SyntaxVisitor {
 
     override func visitPost(_ node: VariableDeclSyntax) {
         for binding in node.bindings {
-            if let initializer = binding.initializer,
-               isTainted(initializer.value),
-               let pattern = binding.pattern.as(IdentifierPatternSyntax.self) {
+            guard let initializer = binding.initializer else {
+                continue
+            }
+            if let pattern = binding.pattern.as(IdentifierPatternSyntax.self), isTainted(initializer.value) {
                 taintedVariables.insert(pattern.identifier.text)
+            } else if let pattern = binding.pattern.as(TuplePatternSyntax.self) {
+                if let initTuple = initializer.value.as(TupleExprSyntax.self) {
+                    for (element, initExpr) in zip(pattern.elements, initTuple.elements) {
+                        if let pattern = element.pattern.as(IdentifierPatternSyntax.self),
+                           isTainted(initExpr.expression) {
+                            taintedVariables.insert(pattern.identifier.text)
+                        }
+                    }
+                } else if isTainted(initializer.value) {
+                    for element in pattern.elements {
+                        if let pattern = element.pattern.as(IdentifierPatternSyntax.self) {
+                            taintedVariables.insert(pattern.identifier.text)
+                        }
+                    }
+                }
             }
         }
     }
@@ -165,6 +181,9 @@ private final class EscapeChecker: SyntaxVisitor {
         }
         if let ternary = expr.as(TernaryExprSyntax.self) {
             return isTainted(ternary.thenExpression) || isTainted(ternary.elseExpression)
+        }
+        if let tuple = expr.as(TupleExprSyntax.self) {
+            return tuple.elements.contains { isTainted($0.expression) }
         }
         return false
     }

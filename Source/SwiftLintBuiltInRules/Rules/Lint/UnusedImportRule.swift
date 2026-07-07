@@ -171,7 +171,7 @@ private extension SwiftLintFile {
                 continue
             }
             let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
-                file: path!, offset: token.offset, arguments: compilerArguments
+                file: path!.filepath, offset: token.offset, arguments: compilerArguments
             )
             guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled()).map(SourceKittenDictionary.init) else {
                 Issue.missingCursorInfo(path: path, ruleID: UnusedImportRule.identifier).print()
@@ -200,14 +200,18 @@ private extension SwiftLintFile {
     func rangedAndSortedUnusedImports(of unusedImports: [String]) -> [(String, NSRange)] {
         unusedImports
             .compactMap { module in
-                match(pattern: "^(@(?!_exported)\\w+ +)?import +\(module)\\b.*?\n").first.map { (module, $0.0) }
+                match(
+                    pattern:
+                          "^((?:open|public|package|internal|fileprivate|private) +)?"
+                        + "(@(?!_exported)\\w+ +)?import +\(module)\\b.*?\n"
+                ).first.map { (module, $0.0) }
             }
             .sorted(by: { $0.1.location < $1.1.location })
     }
 
     // Operators are omitted in the editor.open request and thus have to be looked up by the indexsource request
     func operatorImports(arguments: [String], processedTokenOffsets: Set<ByteCount>) -> Set<String> {
-        guard let index = (try? Request.index(file: path!, arguments: arguments).sendIfNotDisabled())
+        guard let index = (try? Request.index(file: path!.filepath, arguments: arguments).sendIfNotDisabled())
                 .map(SourceKittenDictionary.init) else {
             Issue.indexingError(path: path, ruleID: UnusedImportRule.identifier).print()
             return []
@@ -227,7 +231,7 @@ private extension SwiftLintFile {
                 guard !processedTokenOffsets.contains(ByteCount(offset)) else { continue }
 
                 let cursorInfoRequest = Request.cursorInfoWithoutSymbolGraph(
-                    file: path!, offset: ByteCount(offset), arguments: arguments
+                    file: path!.filepath, offset: ByteCount(offset), arguments: arguments
                 )
                 guard let cursorInfo = (try? cursorInfoRequest.sendIfNotDisabled())
                         .map(SourceKittenDictionary.init) else {

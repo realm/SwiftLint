@@ -265,7 +265,7 @@ private extension ExprSyntax {
                     this = memberAccess.base
                 }
             }
-            return "\\.\(raw: elements.reversed().map(\.baseName.text).joined(separator: "."))" as ExprSyntax
+            return "\\.\(raw: elements.reversed().map(\.baseName.text).joined(separator: "."))" as Self
         }
 
         if !ignoreIdentityClosures, SwiftVersion.current >= .six, `is`(DeclReferenceExprSyntax.self) {

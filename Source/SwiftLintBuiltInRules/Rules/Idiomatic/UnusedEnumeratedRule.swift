@@ -25,6 +25,23 @@ struct UnusedEnumeratedRule: Rule {
             Example("list.enumerated().map { ($0.offset, $0.element) }"),
             Example("list.enumerated().map { ($0.0, $0.1) }"),
             Example("""
+            list.enumerated().first {
+                $0.element.0.isNumber &&
+                $0.element.1.isNumber &&
+                $0.element.0 != $0.element.1
+            }?.offset
+            """),
+            Example("""
+            (list.enumerated().first {
+                $0.element.isNumber
+            })?.offset
+            """),
+            Example("""
+            list.enumerated().max {
+                $0.element < $1.element
+            }?.offset
+            """),
+            Example("""
             list.enumerated().map {
                 $1.enumerated().forEach { print($0, $1) }
                 return $0
@@ -91,19 +108,21 @@ struct UnusedEnumeratedRule: Rule {
 
 private extension UnusedEnumeratedRule {
     private struct Closure {
-        let enumeratedPosition: AbsolutePosition?
+        let enumeratedPosition: AbsolutePosition
+        let usedEnumeratedResultMembers: (zero: Bool, one: Bool)
         var zeroPosition: AbsolutePosition?
         var onePosition: AbsolutePosition?
+    }
 
-        init(enumeratedPosition: AbsolutePosition? = nil) {
-            self.enumeratedPosition = enumeratedPosition
-        }
+    private struct PendingClosure {
+        let id: SyntaxIdentifier
+        let enumeratedPosition: AbsolutePosition
+        let usedEnumeratedResultMembers: (zero: Bool, one: Bool)
     }
 
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        private var nextClosureId: SyntaxIdentifier?
-        private var lastEnumeratedPosition: AbsolutePosition?
-        private var closures = Stack<Closure>()
+        private var pendingClosure: PendingClosure?
+        private var closures = Stack<Closure?>()
 
         override func visitPost(_ node: ForStmtSyntax) {
             guard let tuplePattern = node.pattern.as(TuplePatternSyntax.self),
@@ -132,7 +151,8 @@ private extension UnusedEnumeratedRule {
             guard node.isEnumerated,
                   let parent = node.parent,
                   parent.as(MemberAccessExprSyntax.self)?.declName.baseName.text != "filter",
-                  let trailingClosure = parent.parent?.as(FunctionCallExprSyntax.self)?.trailingClosure
+                  let parentCall = parent.parent?.as(FunctionCallExprSyntax.self),
+                  let trailingClosure = parentCall.trailingClosure
             else {
                 return .visitChildren
             }
@@ -156,57 +176,72 @@ private extension UnusedEnumeratedRule {
                     zeroPosition: firstTokenIsUnderscore ? firstElement.positionAfterSkippingLeadingTrivia : nil,
                     onePosition: firstTokenIsUnderscore ? nil : secondElement.positionAfterSkippingLeadingTrivia
                 )
-            } else {
-                nextClosureId = trailingClosure.id
-                lastEnumeratedPosition = node.enumeratedPosition
+            } else if let enumeratedPosition = node.enumeratedPosition {
+                pendingClosure = PendingClosure(
+                    id: trailingClosure.id,
+                    enumeratedPosition: enumeratedPosition,
+                    usedEnumeratedResultMembers: ExprSyntax(parentCall).usedEnumeratedResultMembers
+                )
             }
 
             return .visitChildren
         }
 
         override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
-            if let nextClosureId, nextClosureId == node.id, let lastEnumeratedPosition {
-                closures.push(Closure(enumeratedPosition: lastEnumeratedPosition))
-                self.nextClosureId = nil
-                self.lastEnumeratedPosition = nil
+            if let pendingClosure, pendingClosure.id == node.id {
+                closures.push(Closure(
+                    enumeratedPosition: pendingClosure.enumeratedPosition,
+                    usedEnumeratedResultMembers: pendingClosure.usedEnumeratedResultMembers
+                ))
+                self.pendingClosure = nil
             } else {
-                closures.push(Closure())
+                closures.push(nil)
             }
             return .visitChildren
         }
 
         override func visitPost(_: ClosureExprSyntax) {
-            if let closure = closures.pop(), (closure.zeroPosition != nil) != (closure.onePosition != nil) {
-                addViolation(
-                    zeroPosition: closure.onePosition,
-                    onePosition: closure.zeroPosition,
-                    enumeratedPosition: closure.enumeratedPosition
-                )
-            }
+            guard let closure = closures.pop().flatMap(\.self) else { return }
+
+            let zeroPosition = closure.zeroPosition
+                ?? (closure.usedEnumeratedResultMembers.zero ? closure.enumeratedPosition : nil)
+            let onePosition = closure.onePosition
+                ?? (closure.usedEnumeratedResultMembers.one ? closure.enumeratedPosition : nil)
+            guard (zeroPosition != nil) != (onePosition != nil) else { return }
+
+            addViolation(
+                zeroPosition: onePosition,
+                onePosition: zeroPosition,
+                enumeratedPosition: closure.enumeratedPosition
+            )
         }
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             guard
-                let closure = closures.peek(),
-                closure.enumeratedPosition != nil,
+                closures.peek().flatMap(\.self) != nil,
                 node.baseName.text == "$0" || node.baseName.text == "$1"
             else {
                 return
             }
-            closures.modifyLast {
+
+            closures.modifyLast { trackedClosure in
+                guard var closure = trackedClosure else { return }
+
                 if node.baseName.text == "$0" {
                     let member = node.parent?.as(MemberAccessExprSyntax.self)?.declName.baseName.text
                     if member == "element" || member == "1" {
-                        $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                        closure.onePosition = node.positionAfterSkippingLeadingTrivia
                     } else {
-                        $0.zeroPosition = node.positionAfterSkippingLeadingTrivia
+                        closure.zeroPosition = node.positionAfterSkippingLeadingTrivia
                         if node.isUnpacked {
-                            $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                            closure.onePosition = node.positionAfterSkippingLeadingTrivia
                         }
                     }
                 } else {
-                    $0.onePosition = node.positionAfterSkippingLeadingTrivia
+                    closure.onePosition = node.positionAfterSkippingLeadingTrivia
                 }
+
+                trackedClosure = closure
             }
         }
 
@@ -256,6 +291,41 @@ private extension FunctionCallExprSyntax {
            trailingClosure == nil
         && additionalTrailingClosures.isEmpty
         && arguments.isEmpty
+    }
+}
+
+private extension ExprSyntax {
+    var usedEnumeratedResultMembers: (zero: Bool, one: Bool) {
+        if let tupleElement = parent?.as(LabeledExprSyntax.self),
+           tupleElement.expression.id == id,
+           let tuple = tupleElement.parent?.parent?.as(TupleExprSyntax.self),
+           tuple.elements.onlyElement?.id == tupleElement.id {
+            return ExprSyntax(tuple).usedEnumeratedResultMembers
+        }
+
+        guard let parent = parent?.as(ExprSyntax.self) else {
+            return (false, false)
+        }
+
+        if let memberAccess = parent.as(MemberAccessExprSyntax.self),
+           memberAccess.base?.id == id {
+            switch memberAccess.declName.baseName.text {
+            case "offset", "0":
+                return (true, false)
+            case "element", "1":
+                return (false, true)
+            default:
+                return parent.usedEnumeratedResultMembers
+            }
+        }
+
+        if parent.as(OptionalChainingExprSyntax.self)?.expression.id == id
+           || parent.as(ForceUnwrapExprSyntax.self)?.expression.id == id
+           || parent.as(TupleExprSyntax.self)?.elements.onlyElement?.expression.id == id {
+            return parent.usedEnumeratedResultMembers
+        }
+
+        return (false, false)
     }
 }
 

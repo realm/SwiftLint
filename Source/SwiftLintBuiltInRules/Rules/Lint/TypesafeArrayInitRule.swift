@@ -76,7 +76,7 @@ struct TypesafeArrayInitRule: AnalyzerRule {
                     return false
                 }
                 let cursorInfo = Request.cursorInfoWithoutSymbolGraph(
-                    file: filePath, offset: offset, arguments: compilerArguments
+                    file: filePath.filepath, offset: offset, arguments: compilerArguments
                 )
                 guard let request = try? cursorInfo.sendIfNotDisabled() else {
                     return false

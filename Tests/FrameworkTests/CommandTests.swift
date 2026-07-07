@@ -1,10 +1,11 @@
 // swiftlint:disable file_length
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintBuiltInRules
-@testable import SwiftLintFramework
+import SwiftLintFramework
 import TestHelpers
-import XCTest
+import Testing
+
+@testable import SwiftLintBuiltInRules
 
 private extension Command {
     init?(string: String) {
@@ -15,477 +16,576 @@ private extension Command {
     }
 }
 
-// swiftlint:disable:next type_body_length
-final class CommandTests: SwiftLintTestCase {
+@Suite(.rulesRegistered)
+struct CommandTests { // swiftlint:disable:this type_body_length
+
     // MARK: Command Creation
 
-    func testNoCommandsInEmptyFile() {
+    @Test
+    func noCommandsInEmptyFile() {
         let file = SwiftLintFile(contents: "")
-        XCTAssertEqual(file.commands(), [])
+        #expect(file.commands().isEmpty)
     }
 
-    func testEmptyString() {
-        XCTAssertNil(Command(string: ""))
+    @Test
+    func emptyString() {
+        #expect(Command(string: "") == nil)
     }
 
-    func testDisable() {
+    @Test
+    func disable() {
         let input = "// swiftlint:disable rule_id\n"
         let file = SwiftLintFile(contents: input)
         let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<29)
-        XCTAssertEqual(file.commands(), [expected])
-        XCTAssertEqual(Command(string: input), expected)
+        #expect(file.commands() == [expected])
+        #expect(Command(string: input) == expected)
     }
 
-    func testDisablePrevious() {
+    @Test
+    func disablePrevious() {
         let input = "// swiftlint:disable:previous rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<38,
-                               modifier: .previous)
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<38,
+            modifier: .previous)
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testDisableThis() {
+    @Test
+    func disableThis() {
         let input = "// swiftlint:disable:this rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<34,
-                               modifier: .this)
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .disable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<34,
+            modifier: .this
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testDisableNext() {
+    @Test
+    func disableNext() {
         let input = "// swiftlint:disable:next rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<34,
-                               modifier: .next)
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .disable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<34,
+            modifier: .next
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testEnable() {
+    @Test
+    func enable() {
         let input = "// swiftlint:enable rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<28)
-        XCTAssertEqual(file.commands(), [expected])
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<28
+        )
+        #expect(file.commands() == [expected])
+        #expect(Command(string: input) == expected)
     }
 
-    func testEnablePrevious() {
+    @Test
+    func enablePrevious() {
         let input = "// swiftlint:enable:previous rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<37,
-                               modifier: .previous)
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<37,
+            modifier: .previous
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testEnableThis() {
+    @Test
+    func enableThis() {
         let input = "// swiftlint:enable:this rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<33, modifier: .this)
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<33,
+            modifier: .this
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testEnableNext() {
+    @Test
+    func enableNext() {
         let input = "// swiftlint:enable:next rule_id\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<33, modifier: .next)
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<33,
+            modifier: .next
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testTrailingComment() {
+    @Test
+    func trailingComment() {
         let input = "// swiftlint:enable:next rule_id - Comment\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<43,
-                               modifier: .next,
-                               trailingComment: "Comment")
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<43,
+            modifier: .next,
+            trailingComment: "Comment"
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testTrailingCommentWithUrl() {
-        let input = "// swiftlint:enable:next rule_id - Comment with URL https://github.com/realm/SwiftLint\n"
+    @Test
+    func trailingCommentWithUrl() {
+        let input =
+            "// swiftlint:enable:next rule_id - Comment with URL https://github.com/realm/SwiftLint\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<87,
-                               modifier: .next,
-                               trailingComment: "Comment with URL https://github.com/realm/SwiftLint")
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<87,
+            modifier: .next,
+            trailingComment: "Comment with URL https://github.com/realm/SwiftLint"
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
-    func testTrailingCommentUrlOnly() {
+    @Test
+    func trailingCommentUrlOnly() {
         let input = "// swiftlint:enable:next rule_id - https://github.com/realm/SwiftLint\n"
         let file = SwiftLintFile(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<70,
-                               modifier: .next,
-                               trailingComment: "https://github.com/realm/SwiftLint")
-        XCTAssertEqual(file.commands(), expected.expand())
-        XCTAssertEqual(Command(string: input), expected)
+        let expected = Command(
+            action: .enable,
+            ruleIdentifiers: ["rule_id"],
+            line: 1,
+            range: 4..<70,
+            modifier: .next,
+            trailingComment: "https://github.com/realm/SwiftLint"
+        )
+        #expect(file.commands() == expected.expand())
+        #expect(Command(string: input) == expected)
     }
 
     // MARK: Action
 
-    func testActionInverse() {
-        XCTAssertEqual(Command.Action.enable.inverse(), .disable)
-        XCTAssertEqual(Command.Action.disable.inverse(), .enable)
+    @Test
+    func actionInverse() {
+        #expect(Command.Action.enable.inverse() == .disable)
+        #expect(Command.Action.disable.inverse() == .enable)
     }
 
     // MARK: Command Expansion
 
     private let completeLine = 0..<Int.max
 
-    func testNoModifierCommandExpandsToItself() {
+    @Test
+    func noModifierCommandExpandsToItself() {
         do {
             let command = Command(action: .disable, ruleIdentifiers: ["rule_id"])
-            XCTAssertEqual(command.expand(), [command])
+            #expect(command.expand() == [command])
         }
         do {
             let command = Command(action: .enable, ruleIdentifiers: ["rule_id"])
-            XCTAssertEqual(command.expand(), [command])
+            #expect(command.expand() == [command])
         }
         do {
             let command = Command(action: .disable, ruleIdentifiers: ["1", "2"])
-            XCTAssertEqual(command.expand(), [command])
+            #expect(command.expand() == [command])
         }
     }
 
-    func testExpandPreviousCommand() {
+    @Test
+    func expandPreviousCommand() {
         do {
-            let command = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .previous)
+            let command = Command(
+                action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
+                modifier: .previous)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0),
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .previous)
+            let command = Command(
+                action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
+                modifier: .previous)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 0),
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 0, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1, range: 4..<48,
-                                  modifier: .previous)
+            let command = Command(
+                action: .enable, ruleIdentifiers: ["1", "2"], line: 1, range: 4..<48,
+                modifier: .previous)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 0),
                 Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 0, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
     }
 
-    func testExpandThisCommand() {
+    @Test
+    func expandThisCommand() {
         do {
-            let command = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .this)
+            let command = Command(
+                action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
+                modifier: .this)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1),
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .this)
+            let command = Command(
+                action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
+                modifier: .this)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1),
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1, range: 4..<48,
-                                  modifier: .this)
+            let command = Command(
+                action: .enable, ruleIdentifiers: ["1", "2"], line: 1, range: 4..<48,
+                modifier: .this)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1),
                 Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 1, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
     }
 
-    func testExpandNextCommand() {
+    @Test
+    func expandNextCommand() {
         do {
-            let command = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .next)
+            let command = Command(
+                action: .disable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
+                modifier: .next)
             let expanded = [
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2),
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
-                                  modifier: .next)
+            let command = Command(
+                action: .enable, ruleIdentifiers: ["rule_id"], line: 1, range: 4..<48,
+                modifier: .next)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2),
                 Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
         do {
-            let command = Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 1,
-                                  modifier: .next)
+            let command = Command(
+                action: .enable, ruleIdentifiers: ["1", "2"], line: 1,
+                modifier: .next)
             let expanded = [
                 Command(action: .enable, ruleIdentifiers: ["1", "2"], line: 2),
                 Command(action: .disable, ruleIdentifiers: ["1", "2"], line: 2, range: completeLine),
             ]
-            XCTAssertEqual(command.expand(), expanded)
+            #expect(command.expand() == expanded)
         }
     }
 
     // MARK: Superfluous Disable Command Detection
 
-    func testSuperfluousDisableCommands() {
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n")).map(\.ruleIdentifier),
-            ["blanket_disable_command", "superfluous_disable_command"]
+    @Test
+    func superfluousDisableCommands() {
+        #expect(
+            violations(Example("// swiftlint:disable nesting\nprint(123)\n")).map(\.ruleIdentifier)
+                == ["blanket_disable_command", "superfluous_disable_command"]
         )
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"))[0].ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
         )
-        XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting\n"))[0].ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(Example("print(123) // swiftlint:disable:this nesting\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
         )
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"))[0].ruleIdentifier,
-            "superfluous_disable_command"
-        )
-    }
-
-    func testDisableAllOverridesSuperfluousDisableCommand() {
-        XCTAssert(
-            violations(
-                Example("""
-                        // swiftlint:disable all
-                        // swiftlint:disable nesting
-                        print(123)
-                        // swiftlint:enable nesting
-                        // swiftlint:enable all
-                        """)
-            ).isEmpty
-        )
-        XCTAssert(
-            violations(
-                Example("""
-                        // swiftlint:disable all
-                        // swiftlint:disable:next nesting
-                        print(123)
-                        // swiftlint:enable all
-                        """)
-            ).isEmpty
-        )
-        XCTAssert(
-            violations(
-                Example("""
-                        // swiftlint:disable all
-                        // swiftlint:disable:this nesting
-                        print(123)
-                        // swiftlint:enable all
-                        """)
-            ).isEmpty
-        )
-        XCTAssert(
-            violations(
-                Example("// swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n")
-            ).isEmpty
+        #expect(
+            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
         )
     }
 
-    func testSuperfluousDisableCommandsIgnoreDelimiter() {
-        let longComment = "Comment with a large number of words that shouldn't register as superfluous"
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")).map(\.ruleIdentifier),
-            ["blanket_disable_command", "superfluous_disable_command"]
+    @Test
+    func disableAllOverridesSuperfluousDisableCommand() {
+        #expect(
+            violations(
+                Example(
+                    """
+                    // swiftlint:disable all
+                    // swiftlint:disable nesting
+                    print(123)
+                    // swiftlint:enable nesting
+                    // swiftlint:enable all
+                    """)
+            ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting - Comment\nprint(123)\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(
+                Example(
+                    """
+                    // swiftlint:disable all
+                    // swiftlint:disable:next nesting
+                    print(123)
+                    // swiftlint:enable all
+                    """)
+            ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting - Comment\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(
+                Example(
+                    """
+                    // swiftlint:disable all
+                    // swiftlint:disable:this nesting
+                    print(123)
+                    // swiftlint:enable all
+                    """)
+            ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting - Comment\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(Example("// swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n")).isEmpty
         )
     }
 
-    func testInvalidDisableCommands() {
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting_foo\n" +
-                               "print(123)\n" +
-                               "// swiftlint:enable nesting_foo\n"))[0].ruleIdentifier,
-            "superfluous_disable_command"
+    @Test
+    func superfluousDisableCommandsIgnoreDelimiter() {
+        let longComment =
+            "Comment with a large number of words that shouldn't register as superfluous"
+        #expect(
+            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")).map(\.ruleIdentifier)
+                == ["blanket_disable_command", "superfluous_disable_command"]
         )
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(Example("// swiftlint:disable:next nesting - Comment\nprint(123)\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
         )
-        XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting_foo\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(Example("print(123) // swiftlint:disable:this nesting - Comment\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
         )
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0]
-                .ruleIdentifier,
-            "superfluous_disable_command"
+        #expect(
+            violations(Example("print(123)\n// swiftlint:disable:previous nesting - Comment\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
+        )
+    }
+
+    @Test
+    func invalidDisableCommands() {
+        #expect(
+            violations(
+                Example(
+                    "// swiftlint:disable nesting_foo\n" + "print(123)\n"
+                        + "// swiftlint:enable nesting_foo\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
+        )
+        #expect(
+            violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
+        )
+        #expect(
+            violations(Example("print(123) // swiftlint:disable:this nesting_foo\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
+        )
+        #expect(
+            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n")).map(\.ruleIdentifier)
+                == ["superfluous_disable_command"]
         )
 
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo \n")).count,
-            1
-        )
+        #expect(violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo \n")).count == 1)
 
-        let example = Example("// swiftlint:disable nesting this is a comment\n// swiftlint:enable nesting\n")
+        let example = Example(
+            "// swiftlint:disable nesting this is a comment\n// swiftlint:enable nesting\n")
         let multipleViolations = violations(example)
-        XCTAssertEqual(multipleViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count, 9)
-        XCTAssertEqual(multipleViolations.filter({ $0.ruleIdentifier == "blanket_disable_command" }).count, 4)
+        #expect(multipleViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count == 9)
+        #expect(multipleViolations.filter({ $0.ruleIdentifier == "blanket_disable_command" }).count == 4)
 
-        let onlyNonExistentRulesViolations = violations(Example("// swiftlint:disable this is a comment\n"))
-        XCTAssertEqual(
-            onlyNonExistentRulesViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count, 4
+        let onlyNonExistentRulesViolations = violations(
+            Example("// swiftlint:disable this is a comment\n"))
+        #expect(
+            onlyNonExistentRulesViolations.filter({
+                $0.ruleIdentifier == "superfluous_disable_command"
+            }).count == 4
         )
-        XCTAssertEqual(onlyNonExistentRulesViolations.filter({
-            $0.ruleIdentifier == "blanket_disable_command"
-        }).count, 4)
+        #expect(
+            onlyNonExistentRulesViolations.filter({
+                $0.ruleIdentifier == "blanket_disable_command"
+            }).count == 4)
 
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n"))[0].reason,
-            "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
+        #expect(
+            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n")).first?.reason
+                == "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
         )
     }
 
-    func testSuperfluousDisableCommandsDisabled() {
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command nesting\n" +
-                               "print(123)\n" +
-                               "// swiftlint:enable superfluous_disable_command nesting\n")),
-            []
+    @Test
+    func superfluousDisableCommandsDisabled() {
+        #expect(
+            violations(
+                Example(
+                    "// swiftlint:disable superfluous_disable_command nesting\n" + "print(123)\n"
+                        + "// swiftlint:enable superfluous_disable_command nesting\n")
+                ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable superfluous_disable_command\n" +
-                               "// swiftlint:disable nesting\n" +
-                               "print(123)\n" +
-                               "// swiftlint:enable superfluous_disable_command nesting\n")),
-            []
+        #expect(
+            violations(
+                Example(
+                    "// swiftlint:disable superfluous_disable_command\n"
+                        + "// swiftlint:disable nesting\n" + "print(123)\n"
+                        + "// swiftlint:enable superfluous_disable_command nesting\n")
+            ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")),
-            []
+        #expect(
+            violations(
+                Example(
+                    "// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")
+                ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this superfluous_disable_command nesting\n")),
-            []
+        #expect(
+            violations(
+                Example(
+                    "print(123) // swiftlint:disable:this superfluous_disable_command nesting\n")
+                ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous superfluous_disable_command nesting\n")),
-            []
+        #expect(
+            violations(
+                Example(
+                    "print(123)\n// swiftlint:disable:previous superfluous_disable_command nesting\n"
+                )
+            ).isEmpty
         )
     }
 
-    func testSuperfluousDisableCommandsDisabledOnConfiguration() {
+    @Test
+    func superfluousDisableCommandsDisabledOnConfiguration() {
         let rulesMode = Configuration.RulesMode.defaultConfiguration(
             disabled: ["superfluous_disable_command"], optIn: []
         )
         let configuration = Configuration(rulesMode: rulesMode)
 
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable nesting\n" +
-                               "print(123)\n" +
-                               "// swiftlint:enable nesting\n"), config: configuration),
-            []
+        #expect(
+            violations(
+                Example(
+                    "// swiftlint:disable nesting\n" + "print(123)\n"
+                        + "// swiftlint:enable nesting\n"), config: configuration
+                ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration),
-            []
+        #expect(
+            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("print(123) // swiftlint:disable:this nesting\n"), config: configuration),
-            []
+        #expect(
+            violations(Example("print(123) // swiftlint:disable:this nesting\n"), config: configuration).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"), config: configuration),
-            []
+        #expect(
+            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"), config: configuration).isEmpty
         )
     }
 
-    func testSuperfluousDisableCommandsDisabledWhenAllRulesDisabled() {
-        XCTAssertEqual(
-            violations(Example("""
-                               // swiftlint:disable all
-                               // swiftlint:disable non_existent_rule_name
-                               // swiftlint:enable non_existent_rule_name
-                               // swiftlint:enable all
-                               """
-            )),
-            []
+    @Test
+    func superfluousDisableCommandsDisabledWhenAllRulesDisabled() {
+        #expect(
+            violations(
+                Example(
+                    """
+                    // swiftlint:disable all
+                    // swiftlint:disable non_existent_rule_name
+                    // swiftlint:enable non_existent_rule_name
+                    // swiftlint:enable all
+                    """
+                )
+            ).isEmpty
         )
-        XCTAssertEqual(
-            violations(Example("""
-                               // swiftlint:disable superfluous_disable_command
-                               // swiftlint:disable non_existent_rule_name
-                               // swiftlint:enable non_existent_rule_name
-                               // swiftlint:enable superfluous_disable_command
+        #expect(
+            violations(
+                Example(
+                    """
+                    // swiftlint:disable superfluous_disable_command
+                    // swiftlint:disable non_existent_rule_name
+                    // swiftlint:enable non_existent_rule_name
+                    // swiftlint:enable superfluous_disable_command
 
-                               """
-            )),
-            []
-        )
-    }
-
-    func testSuperfluousDisableCommandsInMultilineComments() {
-        XCTAssertEqual(
-            violations(Example("""
-                               /*
-                               // swiftlint:disable identifier_name
-                               let a = 0
-                               */
-
-                               """
-            )),
-            []
+                    """
+                )
+            ).isEmpty
         )
     }
 
-    func testSuperfluousDisableCommandsEnabledForAnalyzer() {
+    @Test
+    func superfluousDisableCommandsInMultilineComments() {
+        #expect(
+            violations(
+                Example(
+                    """
+                    /*
+                    // swiftlint:disable identifier_name
+                    let a = 0
+                    */
+
+                    """
+                )
+            ).isEmpty
+        )
+    }
+
+    @Test
+    func superfluousDisableCommandsEnabledForAnalyzer() {
         let configuration = Configuration(
             rulesMode: .defaultConfiguration(disabled: [], optIn: [UnusedDeclarationRule.identifier])
         )
         let violations = violations(
-            Example("""
-            public class Foo {
-                // swiftlint:disable:next unused_declaration
-                func foo() -> Int {
-                    1
+            Example(
+                """
+                public class Foo {
+                    // swiftlint:disable:next unused_declaration
+                    func foo() -> Int {
+                        1
+                    }
+                    // swiftlint:disable:next unused_declaration
+                    func bar() {
+                       foo()
+                    }
                 }
-                // swiftlint:disable:next unused_declaration
-                func bar() {
-                   foo()
-                }
-            }
-            """),
+                """),
             config: configuration,
             requiresFileOnDisk: true
         )
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.ruleIdentifier, "superfluous_disable_command")
-        XCTAssertEqual(violations.first?.location.line, 3)
+        #expect(violations.count == 1)
+        #expect(violations.first?.ruleIdentifier == "superfluous_disable_command")
+        #expect(violations.first?.location.line == 3)
     }
 }

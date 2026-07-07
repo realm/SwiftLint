@@ -262,7 +262,7 @@ private extension SwiftLintFile {
     func index(compilerArguments: [String]) -> SourceKittenDictionary? {
         guard
             let path,
-            let response = try? Request.index(file: path, arguments: compilerArguments).sendIfNotDisabled()
+            let response = try? Request.index(file: path.filepath, arguments: compilerArguments).sendIfNotDisabled()
         else {
             Issue.indexingError(path: path, ruleID: CaptureVariableRule.identifier).print()
             return nil

@@ -60,6 +60,13 @@ internal struct VerticalParameterAlignmentRuleExamples {
                  bar: String)
         }
         """),
+        Example("""
+        func résuméBuilder(_ name: String,
+                           title: String,
+                           summary: String) -> String {
+            return name
+        }
+        """),
     ]
 
     static let triggeringExamples: [Example] = [

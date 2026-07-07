@@ -104,13 +104,19 @@ extension RuleConfigurationDescription: Documentable {
         guard hasContent else {
             return ""
         }
+        let includesDocumentationColumn = options.contains(where: \.hasDocumentation)
+        let header = includesDocumentationColumn
+            ? "<tr><th>Key</th><th>Value</th><th>Description</th></tr>"
+            : "<tr><th>Key</th><th>Value</th></tr>"
         return """
             <table>
             <thead>
-            <tr><th>Key</th><th>Value</th></tr>
+            \(header)
             </thead>
             <tbody>
-            \(options.map { $0.markdown() }.joined(separator: "\n"))
+            \(options
+                .map { $0.markdown(includeDocumentationColumn: includesDocumentationColumn) }
+                .joined(separator: "\n"))
             </tbody>
             </table>
             """
@@ -124,10 +130,15 @@ extension RuleConfigurationDescription: Documentable {
 /// A single option of a ``RuleConfigurationDescription``.
 public struct RuleConfigurationOption: Equatable, Sendable {
     /// An option serving as a marker for an empty configuration description.
-    public static let noOptions = Self(key: "<nothing>", value: .empty)
+    public static let noOptions = Self(key: "<nothing>", value: .empty, documentation: nil)
 
     fileprivate let key: String
     fileprivate let value: OptionType
+    fileprivate let documentation: String?
+
+    fileprivate var hasDocumentation: Bool {
+        documentation?.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty == true
+    }
 }
 
 extension RuleConfigurationOption: Documentable {
@@ -136,16 +147,35 @@ extension RuleConfigurationOption: Documentable {
     }
 
     public func markdown() -> String {
-        """
-        <tr>
-        <td>
-        \(key)
-        </td>
-        <td>
-        \(value.markdown())
-        </td>
-        </tr>
-        """
+        markdown(includeDocumentationColumn: hasDocumentation)
+    }
+
+    fileprivate func markdown(includeDocumentationColumn: Bool) -> String {
+        if includeDocumentationColumn {
+            return """
+                <tr>
+                <td>
+                \(key)
+                </td>
+                <td>
+                \(value.markdown())
+                </td>
+                <td>
+                \(documentation ?? "-")
+                </td>
+                </tr>
+                """
+        }
+        return """
+            <tr>
+            <td>
+            \(key)
+            </td>
+            <td>
+            \(value.markdown())
+            </td>
+            </tr>
+            """
     }
 
     public func oneLiner() -> String {
@@ -289,7 +319,7 @@ public extension OptionType {
     ///
     /// - Returns: A configuration option built up by the given data.
     static func => (key: String, value: OptionType) -> RuleConfigurationOption {
-        RuleConfigurationOption(key: key, value: value)
+        RuleConfigurationOption(key: key, value: value, documentation: nil)
     }
 
     /// Create an option defined by nested configuration description.
@@ -330,7 +360,7 @@ public protocol AcceptableByConfigurationElement {
     ///   - key: Name of the option to be put into the description.
     ///
     /// - Returns: Configuration description of this object.
-    func asDescription(with key: String) -> RuleConfigurationDescription
+    func asDescription(with key: String, documentation: String?) -> RuleConfigurationDescription
 
     /// Update the object.
     ///
@@ -342,8 +372,24 @@ public protocol AcceptableByConfigurationElement {
 
 /// Default implementations which are shortcuts applicable for most of the types conforming to the protocol.
 public extension AcceptableByConfigurationElement {
-    func asDescription(with key: String) -> RuleConfigurationDescription {
-        RuleConfigurationDescription(options: [key => asOption()])
+    func asDescription(with key: String, documentation: String? = nil) -> RuleConfigurationDescription {
+        asDescriptionImpl(key: key, option: asOption(), documentation: documentation)
+    }
+
+    fileprivate func asDescriptionImpl(key: String,
+                                       option: OptionType? = nil,
+                                       documentation: String? = nil) -> RuleConfigurationDescription {
+        let option = option ?? asOption()
+        if let documentation, documentation.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty {
+            return RuleConfigurationDescription(options: [
+                RuleConfigurationOption(
+                    key: key,
+                    value: option,
+                    documentation: documentation
+                ),
+            ])
+        }
+        return RuleConfigurationDescription(options: [key => option])
     }
 
     mutating func apply(_ value: Any, ruleID: String) throws(Issue) {
@@ -429,10 +475,15 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
                 Issue.deprecatedConfigurationOption(ruleID: id, key: key, alternative: name).print()
             }
             if wrappedValue != oldValue {
+                rawWrappedValue = wrappedValue
                 postprocessor(&wrappedValue)
             }
         }
     }
+
+    /// The original value without postprocessing applied. It will be used for documentation to not mislead users with
+    /// values that are modified by the postprocessor for internal reasons.
+    private var rawWrappedValue: T
 
     /// The wrapper itself providing access to all its data. This field can only be accessed by the
     /// element's name prefixed with a `$`.
@@ -447,7 +498,11 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// Whether this configuration element will be inlined into its description.
     public let inline: Bool
 
+    /// Optional documentation describing this configuration entry in rendered docs.
+    public let documentation: String?
+
     private let deprecationNotice: DeprecationNotice?
+    private let documentPostprocessedValue: Bool
     private let postprocessor: @Sendable (inout T) -> Void
 
     /// Default constructor.
@@ -457,18 +512,28 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
     ///   - deprecationNotice: An optional deprecation notice in case an option is outdated and/or has been replaced by
     ///                        an alternative.
+    ///   - documentPostprocessedValue: Whether the value after postprocessing should be used for documentation. By
+    ///                                 default, the value after postprocessing is used, but in some cases, it may be
+    ///                                 desirable to document the original value without modifications applied by the
+    ///                                 postprocessor. In this case, set this parameter to `false`. Note that the
+    ///                                 postprocessor will still be applied to the wrapped value and the original value
+    ///                                 will only be used for documentation.
     ///   - postprocessor: Function to be applied to the wrapped value after parsing to validate and modify it.
     @preconcurrency
     public init(wrappedValue value: T,
                 key: String,
+                documentation: String? = nil,
                 deprecationNotice: DeprecationNotice? = nil,
+                documentPostprocessedValue: Bool = true,
                 postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         // swiftlint:disable:previous no_empty_block
         self.init(
             wrappedValue: value,
             key: key,
             inline: false,
+            documentation: documentation,
             deprecationNotice: deprecationNotice,
+            documentPostprocessedValue: documentPostprocessedValue,
             postprocessor: postprocessor
         )
 
@@ -482,8 +547,9 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///
     /// - Parameters:
     ///   - key: Optional name of the option. If not specified, it will be inferred from the attributed property.
-    public init<Wrapped>(key: String) where T == Wrapped? {
-        self.init(wrappedValue: nil, key: key, inline: false)
+    ///   - documentation: Optional documentation describing the option in rendered docs.
+    public init<Wrapped>(key: String, documentation: String? = nil) where T == Wrapped? {
+        self.init(wrappedValue: nil, key: key, inline: false, documentation: documentation)
     }
 
     /// Constructor for an ``InlinableOptionType`` without a key.
@@ -493,9 +559,10 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     ///   - inline: If `true`, the option will be handled as it would be part of its parent. All of its options
     ///             will be inlined. Otherwise, it will be treated as a normal nested configuration with its name
     ///             inferred from the name of the attributed property.
-    public init(wrappedValue value: T, inline: Bool) where T: InlinableOptionType {
+    ///   - documentation: Optional documentation describing the option in rendered docs.
+    public init(wrappedValue value: T, inline: Bool, documentation: String? = nil) where T: InlinableOptionType {
         assert(inline, "Only 'inline: true' is allowed at the moment.")
-        self.init(wrappedValue: value, key: "", inline: inline)
+        self.init(wrappedValue: value, key: "", inline: inline, documentation: documentation)
     }
 
     /// Constructor for an ``InlinableOptionType`` with a name. The configuration will explicitly not be inlined.
@@ -503,20 +570,26 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
     /// - Parameters:
     ///   - value: Value to be wrapped.
     ///   - key: Name of the option.
-    public init(wrappedValue value: T, key: String) where T: InlinableOptionType {
-        self.init(wrappedValue: value, key: key, inline: false)
+    ///   - documentation: Optional documentation describing the option in rendered docs.
+    public init(wrappedValue value: T, key: String, documentation: String? = nil) where T: InlinableOptionType {
+        self.init(wrappedValue: value, key: key, inline: false, documentation: documentation)
     }
 
     private init(wrappedValue: T,
                  key: String,
                  inline: Bool,
+                 documentation: String? = nil,
                  deprecationNotice: DeprecationNotice? = nil,
+                 documentPostprocessedValue: Bool = true,
                  postprocessor: @escaping @Sendable (inout T) -> Void = { _ in }) {
         // swiftlint:disable:previous no_empty_block
+        self.rawWrappedValue = wrappedValue
         self.wrappedValue = wrappedValue
         self.key = key
         self.inline = inline
+        self.documentation = documentation
         self.deprecationNotice = deprecationNotice
+        self.documentPostprocessedValue = documentPostprocessedValue
         self.postprocessor = postprocessor
     }
 
@@ -527,7 +600,10 @@ public struct ConfigurationElement<T: AcceptableByConfigurationElement & Equatab
 
 extension ConfigurationElement: AnyConfigurationElement {
     fileprivate var description: RuleConfigurationDescription {
-        wrappedValue.asDescription(with: key)
+        (documentPostprocessedValue ? wrappedValue : rawWrappedValue).asDescription(
+            with: key,
+            documentation: documentation
+        )
     }
 }
 
@@ -656,11 +732,11 @@ public extension AcceptableByConfigurationElement where Self: RuleConfiguration 
         .nested(.from(configuration: self))
     }
 
-    func asDescription(with key: String) -> RuleConfigurationDescription {
+    func asDescription(with key: String, documentation: String? = nil) -> RuleConfigurationDescription {
         if key.isEmpty {
             return .from(configuration: self)
         }
-        return RuleConfigurationDescription(options: [key => asOption()])
+        return asDescriptionImpl(key: key, documentation: documentation)
     }
 
     mutating func apply(_ value: Any, ruleID _: String) throws(Issue) {
@@ -675,7 +751,7 @@ public extension AcceptableByConfigurationElement where Self: RuleConfiguration 
 public extension SeverityConfiguration {
     /// Severity configurations are special in that they shall not be nested when an option name is provided.
     /// Instead, their only option value must be used together with the option name.
-    func asDescription(with key: String) -> RuleConfigurationDescription {
+    func asDescription(with key: String, documentation: String? = nil) -> RuleConfigurationDescription {
         let description = RuleConfigurationDescription.from(configuration: self)
         if key.isEmpty {
             return description
@@ -687,6 +763,6 @@ public extension SeverityConfiguration {
                 """
             )
         }
-        return RuleConfigurationDescription(options: [key => option])
+        return asDescriptionImpl(key: key, option: option, documentation: documentation)
     }
 }

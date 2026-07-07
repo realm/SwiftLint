@@ -13,7 +13,7 @@ struct FileNameNoSpaceRule: OptInRule, SourceKitFreeRule {
 
     func validate(file: SwiftLintFile) -> [StyleViolation] {
         guard let filePath = file.path,
-              case let fileName = filePath.bridge().lastPathComponent,
+              case let fileName = filePath.lastPathComponent,
               !configuration.excluded.contains(fileName),
               fileName.rangeOfCharacter(from: .whitespaces) != nil else {
             return []

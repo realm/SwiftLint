@@ -19,7 +19,7 @@ let targetedConcurrency = [SwiftSetting.enableExperimentalFeature("StrictConcurr
 let swiftLintPluginDependencies: [Target.Dependency]
 
 // Workaround for a download issue on Linux with Swift 5.10.
-#if compiler(>=6) || compiler(<5.10) || !os(Linux)
+#if !os(Windows) && (compiler(>=6) || compiler(<5.10) || !os(Linux))
 swiftLintPluginDependencies = [.target(name: "SwiftLintBinary")]
 #else
 swiftLintPluginDependencies = [.target(name: "swiftlint")]
@@ -36,7 +36,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.6.1")),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "604.0.0-prerelease-2026-03-31"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "605.0.0-prerelease-2026-06-26"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", .upToNextMajor(from: "0.37.2")),
         .package(url: "https://github.com/jpsim/Yams.git", .upToNextMajor(from: "6.0.2")),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", .upToNextMajor(from: "0.9.0")),
@@ -236,12 +236,12 @@ let package = Package(
 )
 
 // Workaround for a download issue on Linux with Swift 5.10.
-#if compiler(>=6) || compiler(<5.10) || !os(Linux)
+#if !os(Windows) && (compiler(>=6) || compiler(<5.10) || !os(Linux))
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.63.2/SwiftLintBinary.artifactbundle.zip",
-        checksum: "12befab676fc972ffde2ec295d016d53c3a85f64aabd9c7fee0032d681e307e9"
+        url: "https://github.com/realm/SwiftLint/releases/download/0.65.0/SwiftLintBinary.artifactbundle.zip",
+        checksum: "eb333bd76dfb5f46d21fdf3615fe39bb938956ca0b8e94c241c4b2db6e696b90"
     )
 )
 #endif

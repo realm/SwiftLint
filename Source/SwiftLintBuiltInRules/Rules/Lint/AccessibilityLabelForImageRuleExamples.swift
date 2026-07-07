@@ -258,6 +258,26 @@ internal struct AccessibilityLabelForImageRuleExamples {
             }
         }
         """),
+        // MARK: - Label icon closure exemptions
+        // Images inside a Label's icon: closure are inherently labeled by the Label's text content.
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                Label {
+                    Text("Connected")
+                } icon: {
+                    Image(systemName: "checkmark.circle.fill")
+                }
+            }
+        }
+        """),
+        Example("""
+        struct MyView: View {
+            var body: some View {
+                Label(content: { Text("Download") }, icon: { Image("custom-download-icon") })
+            }
+        }
+        """),
     ]
 
     static let triggeringExamples = [

@@ -1,0 +1,61 @@
+name: Auto-close Pull Requests
+
+on:
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  pull-requests: write
+
+env:
+  # Configure additional users with the AUTO_CLOSE_PR_AUTHORS repository variable.
+  # Supported format: user1,user2,user3
+  AUTO_CLOSE_PR_AUTHORS: ${{ vars.AUTO_CLOSE_PR_AUTHORS }}
+
+jobs:
+  close-configured-prs:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Close PRs from configured authors
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PULL_REQUEST_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const match = process.env.AUTO_CLOSE_PR_AUTHORS
+              .split(",")
+              .map(user => user.trim().toLowerCase())
+              .filter(Boolean)
+              .includes(process.env.PULL_REQUEST_AUTHOR.toLowerCase())
+
+            if (!match) {
+              core.info(`PR author ${process.env.PULL_REQUEST_AUTHOR} is not configured for auto-closing.`)
+              return
+            }
+
+            const commentBody = [
+              `Hi @${process.env.PULL_REQUEST_AUTHOR}, thanks for opening this PR.`,
+              "",
+              "I'm automatically closing it because there are earlier PRs from your account with open review discussions that haven't received a reply yet.",
+              "",
+              "There is nothing wrong with using AI tools to help — but open source thrives on collaboration and engagement. Please read and respond to reviewer feedback rather than opening new PRs without addressing earlier discussions.",
+              "",
+              "Once you've addressed the open threads in your previous PRs, feel free to reopen this one.",
+            ].join("\n")
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number(process.env.PULL_REQUEST_NUMBER),
+              body: commentBody,
+            })
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: Number(process.env.PULL_REQUEST_NUMBER),
+              state: "closed",
+            })

@@ -135,7 +135,7 @@ private extension SwiftDeclarationAttributeKind.ModifierGroup {
             self = .lazy
         case "dynamic":
             self = .dynamic
-        case "nonisolated":
+        case "isolated", "nonisolated":
             self = .isolation
         case "private", "fileprivate", "internal", "public", "open":
             self = .acl

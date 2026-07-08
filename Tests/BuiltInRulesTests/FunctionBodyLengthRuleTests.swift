@@ -7,7 +7,7 @@ import Testing
 struct FunctionBodyLengthRuleTests {
     @Test
     func warning() {
-        let example = Example(
+        let example = Example(code:
             """
             func f() {
                 let x = 0
@@ -33,7 +33,7 @@ struct FunctionBodyLengthRuleTests {
 
     @Test
     func error() {
-        let example = Example("""
+        let example = Example(code: """
             func f() {
                 let x = 0
                 let y = 1

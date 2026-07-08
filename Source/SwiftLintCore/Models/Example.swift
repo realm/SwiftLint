@@ -66,7 +66,7 @@ public extension Example {
     ///                           Defaults to the file where this initializer is called.
     ///   - line:                 The line in the file where the example is located.
     ///                           Defaults to the line where this initializer is called.
-    init(_ code: String,
+    init(code: String,
          configuration: [String: any Sendable]? = nil,
          testMultiByteOffsets: Bool = true,
          testWrappingInComment: Bool = true,
@@ -176,7 +176,7 @@ public extension String {
         line: UInt = #line
     ) -> Example {
         Example(
-            self,
+            code: self,
             configuration: configuration,
             testMultiByteOffsets: testMultiByteOffsets,
             testWrappingInComment: testWrappingInComment,
@@ -226,18 +226,29 @@ extension Example: Comparable {
     }
 }
 
-/// A type that may appear as an element of the `#examples` macro or as a key or value of the `#corrections` macro.
-/// Conformance is a compile-time marker: it lets the macros declare precise parameter types (`[any
-/// ExampleConvertible]` and `[AnyHashable: any ExampleConvertible]`) so passing an unsupported type produces a
-/// plain "does not conform" error instead of a confusing macro-expansion failure.
-///
-/// Only `String` and `Example` conform, because the macros expand each element into an `Example(_:)` call and
-/// those are the only types that initializer accepts.
-public protocol ExampleConvertible {}
+// This conformance exists only so the `#examples` and `#corrections` macros can declare their parameters as
+// `[Example]` and `[Example: Example]`. That lets an unsupported element (e.g. an `Int`) fail as a plain type
+// error on the literal the developer wrote, instead of as a confusing macro-expansion failure. The macros rewrite
+// every string literal into an `Example(code:file:line:)` call that carries a real source location, so these
+// initializers must never actually run: a bare, unlabeled `Example("…")` would reach one and trap. Write
+// `Example(code: "…")` instead. They can't be marked `@available(*, unavailable)` because that would stop them
+// from satisfying the protocol requirement and break the literal conversion the macros rely on.
+extension Example: ExpressibleByStringInterpolation {
+    // swiftlint:disable:next unavailable_function
+    public init(stringLiteral _: String) {
+        preconditionFailure(Self.literalInitializerMessage)
+    }
 
-extension String: ExampleConvertible {}
+    // swiftlint:disable:next unavailable_function
+    public init(stringInterpolation _: DefaultStringInterpolation) {
+        preconditionFailure(Self.literalInitializerMessage)
+    }
 
-extension Example: ExampleConvertible {}
+    private static let literalInitializerMessage = """
+        Example does not support string-literal initialization at runtime; the #examples and #corrections \
+        macros rewrite literals into Example(code:) calls. Use Example(code:) directly.
+        """
+}
 
 public extension Array where Element == Example {
     /// Make these examples skip wrapping in comment tests.

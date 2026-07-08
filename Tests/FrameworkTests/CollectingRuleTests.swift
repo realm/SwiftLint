@@ -26,7 +26,7 @@ struct CollectingRuleTests {
             }
         }
 
-        #expect(!violations(Example("_ = 0"), config: Spec.configuration!).isEmpty)
+        #expect(!violations(Example(code: "_ = 0"), config: Spec.configuration!).isEmpty)
     }
 
     @Test
@@ -80,7 +80,7 @@ struct CollectingRuleTests {
             }
         }
 
-        #expect(violations(Example("_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isNotEmpty)
+        #expect(violations(Example(code: "_ = 0"), config: Spec.configuration!, requiresFileOnDisk: true).isNotEmpty)
     }
 
     @Test

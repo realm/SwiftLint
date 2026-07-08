@@ -15,12 +15,12 @@ struct FileLengthRuleTests {
     @Test
     func fileLengthIgnoringLinesWithOnlyComments() {
         let triggeringExamples = #examples([
-            repeatElement("print(\"swiftlint\")\n", count: 401).joined()
+            repeatElement("print(\"swiftlint\")\n", count: 401).joined().asExample()
         ])
         let nonTriggeringExamples = #examples([
-            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined(),
-            repeatElement("print(\"swiftlint\")\n", count: 400).joined(),
-            repeatElement("print(\"swiftlint\")\n\n", count: 201).joined(),
+            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined().asExample(),
+            repeatElement("print(\"swiftlint\")\n", count: 400).joined().asExample(),
+            repeatElement("print(\"swiftlint\")\n\n", count: 201).joined().asExample(),
         ])
 
         let description = FileLengthRule.description

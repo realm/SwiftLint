@@ -195,13 +195,13 @@ internal struct DuplicateImportsRuleExamples {
         ])
 
         DuplicateImportsRule.importKinds.map { importKind in
-            Example("""
+            Example(code: """
                 import A
                 ↓import \(importKind) A.Foo
 
                 """)
         }.forEach {
-            corrections[$0] = Example(
+            corrections[$0] = Example(code:
                 """
                 import A
 
@@ -215,7 +215,7 @@ internal struct DuplicateImportsRuleExamples {
 
                 """.asExample(excludeFromDocumentation: true)
         }.forEach {
-            corrections[$0] = Example(
+            corrections[$0] = Example(code:
                 """
                 import A
 
@@ -229,7 +229,7 @@ internal struct DuplicateImportsRuleExamples {
 
                 """.asExample(excludeFromDocumentation: true)
         }.forEach {
-            corrections[$0] = Example(
+            corrections[$0] = Example(code:
                 """
                 import A.B
 

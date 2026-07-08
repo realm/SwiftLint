@@ -21,8 +21,8 @@ struct FunctionNameWhitespaceRuleTests {
         sourceLocation: SourceLocation = #_sourceLocation
     ) {
         let example = configuration == nil
-            ? Example(source)
-            : Example(source, configuration: configuration!)
+            ? Example(code: source)
+            : Example(code: source, configuration: configuration!)
 
         let violations = ruleViolations(example)
         #expect(

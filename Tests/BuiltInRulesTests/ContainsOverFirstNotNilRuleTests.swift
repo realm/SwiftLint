@@ -7,7 +7,7 @@ import Testing
 struct ContainsOverFirstNotNilRuleTests {
     @Test
     func firstReason() {
-        let example = Example("↓myList.first { $0 % 2 == 0 } != nil")
+        let example = Example(code: "↓myList.first { $0 % 2 == 0 } != nil")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -16,7 +16,7 @@ struct ContainsOverFirstNotNilRuleTests {
 
     @Test
     func firstIndexReason() {
-        let example = Example("↓myList.firstIndex { $0 % 2 == 0 } != nil")
+        let example = Example(code: "↓myList.firstIndex { $0 % 2 == 0 } != nil")
         let violations = violations(example)
 
         #expect(violations.count == 1)

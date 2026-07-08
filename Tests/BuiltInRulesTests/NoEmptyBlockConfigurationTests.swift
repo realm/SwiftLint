@@ -20,7 +20,7 @@ struct NoEmptyBlockConfigurationTests {
             configuration: [
                 "severity": "error",
                 "disabled_block_types": ["function_bodies"],
-            ] as [String: any Sendable]
+            ]
         )
         #expect(config.severityConfiguration.severity == .error)
         #expect(config.enabledBlockTypes == Set([.initializerBodies, .statementBlocks, .closureBlocks]))

@@ -7,7 +7,7 @@ import Testing
 struct XCTSpecificMatcherRuleTests {
     @Test
     func equalTrue() {
-        let example = Example("XCTAssertEqual(a, true)")
+        let example = Example(code: "XCTAssertEqual(a, true)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -16,7 +16,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalFalse() {
-        let example = Example("XCTAssertEqual(a, false)")
+        let example = Example(code: "XCTAssertEqual(a, false)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -25,7 +25,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalNil() {
-        let example = Example("XCTAssertEqual(a, nil)")
+        let example = Example(code: "XCTAssertEqual(a, nil)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -34,7 +34,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func notEqualTrue() {
-        let example = Example("XCTAssertNotEqual(a, true)")
+        let example = Example(code: "XCTAssertNotEqual(a, true)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -43,7 +43,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func notEqualFalse() {
-        let example = Example("XCTAssertNotEqual(a, false)")
+        let example = Example(code: "XCTAssertNotEqual(a, false)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -52,7 +52,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func notEqualNil() {
-        let example = Example("XCTAssertNotEqual(a, nil)")
+        let example = Example(code: "XCTAssertNotEqual(a, nil)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -63,7 +63,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalOptionalFalse() {
-        let example = Example("XCTAssertEqual(a?.b, false)")
+        let example = Example(code: "XCTAssertEqual(a?.b, false)")
         let violations = violations(example)
 
         #expect(violations.isEmpty)
@@ -71,7 +71,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalUnwrappedOptionalFalse() {
-        let example = Example("XCTAssertEqual(a!.b, false)")
+        let example = Example(code: "XCTAssertEqual(a!.b, false)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -80,7 +80,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalNilNil() {
-        let example = Example("XCTAssertEqual(nil, nil)")
+        let example = Example(code: "XCTAssertEqual(nil, nil)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -89,7 +89,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalTrueTrue() {
-        let example = Example("XCTAssertEqual(true, true)")
+        let example = Example(code: "XCTAssertEqual(true, true)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -98,7 +98,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func equalFalseFalse() {
-        let example = Example("XCTAssertEqual(false, false)")
+        let example = Example(code: "XCTAssertEqual(false, false)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -107,7 +107,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func notEqualNilNil() {
-        let example = Example("XCTAssertNotEqual(nil, nil)")
+        let example = Example(code: "XCTAssertNotEqual(nil, nil)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -116,7 +116,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func notEqualTrueTrue() {
-        let example = Example("XCTAssertNotEqual(true, true)")
+        let example = Example(code: "XCTAssertNotEqual(true, true)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -125,7 +125,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func notEqualFalseFalse() {
-        let example = Example("XCTAssertNotEqual(false, false)")
+        let example = Example(code: "XCTAssertNotEqual(false, false)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -134,7 +134,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertEqual() {
-        let example = Example("XCTAssert(foo == bar)")
+        let example = Example(code: "XCTAssert(foo == bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -143,7 +143,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertFalseNotEqual() {
-        let example = Example("XCTAssertFalse(bar != foo)")
+        let example = Example(code: "XCTAssertFalse(bar != foo)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -152,7 +152,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertTrueEqual() {
-        let example = Example("XCTAssertTrue(foo == 1)")
+        let example = Example(code: "XCTAssertTrue(foo == 1)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -161,7 +161,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertNotEqual() {
-        let example = Example("XCTAssert(foo != bar)")
+        let example = Example(code: "XCTAssert(foo != bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -170,7 +170,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertFalseEqual() {
-        let example = Example("XCTAssertFalse(bar == foo)")
+        let example = Example(code: "XCTAssertFalse(bar == foo)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -179,7 +179,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertTrueNotEqual() {
-        let example = Example("XCTAssertTrue(foo != 1)")
+        let example = Example(code: "XCTAssertTrue(foo != 1)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -188,7 +188,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func multipleComparisons() {
-        let example = Example("XCTAssert(foo == (bar == baz))")
+        let example = Example(code: "XCTAssert(foo == (bar == baz))")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -210,7 +210,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertIdentical() {
-        let example = Example("XCTAssert(foo === bar)")
+        let example = Example(code: "XCTAssert(foo === bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -219,7 +219,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertNotIdentical() {
-        let example = Example("XCTAssert(foo !== bar)")
+        let example = Example(code: "XCTAssert(foo !== bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -228,7 +228,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertTrueIdentical() {
-        let example = Example("XCTAssertTrue(foo === bar)")
+        let example = Example(code: "XCTAssertTrue(foo === bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -237,7 +237,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertTrueNotIdentical() {
-        let example = Example("XCTAssertTrue(foo !== bar)")
+        let example = Example(code: "XCTAssertTrue(foo !== bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -246,7 +246,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertFalseIdentical() {
-        let example = Example("XCTAssertFalse(foo === bar)")
+        let example = Example(code: "XCTAssertFalse(foo === bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -255,7 +255,7 @@ struct XCTSpecificMatcherRuleTests {
 
     @Test
     func assertFalseNotIdentical() {
-        let example = Example("XCTAssertFalse(foo !== bar)")
+        let example = Example(code: "XCTAssertFalse(foo !== bar)")
         let violations = violations(example)
 
         #expect(violations.count == 1)
@@ -268,6 +268,6 @@ struct XCTSpecificMatcherRuleTests {
     }
 
     private func noViolation(in example: String) -> Bool {
-        violations(Example(example)).isEmpty
+        violations(Example(code: example)).isEmpty
     }
 }

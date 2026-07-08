@@ -39,14 +39,14 @@ struct VerticalWhitespaceRuleTests {
     @Test
     func violationMessageWithMaxEmptyLines() throws {
         let config = try #require(makeConfig(["max_empty_lines": 2], ruleID))
-        let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
+        let allViolations = violations(Example(code: "let aaaa = 0\n\n\n\nlet bbb = 2\n"), config: config)
         let violation = try #require(allViolations.first { $0.ruleIdentifier == ruleID })
         #expect(violation.reason == "Limit vertical whitespace to maximum 2 empty lines; currently 3")
     }
 
     @Test
     func violationMessageWithDefaultConfiguration() throws {
-        let allViolations = violations(Example("let aaaa = 0\n\n\n\nlet bbb = 2\n"))
+        let allViolations = violations(Example(code: "let aaaa = 0\n\n\n\nlet bbb = 2\n"))
         let violation = try #require(allViolations.first { $0.ruleIdentifier == ruleID })
         #expect(violation.reason == "Limit vertical whitespace to a single empty line; currently 3")
     }

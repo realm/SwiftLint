@@ -7,7 +7,7 @@ import Testing
 struct TypeBodyLengthRuleTests {
     @Test
     func warning() {
-        let example = Example("""
+        let example = Example(code: """
             actor A {
                 let x = 0
                 let y = 1
@@ -32,7 +32,7 @@ struct TypeBodyLengthRuleTests {
 
     @Test
     func error() {
-        let example = Example("""
+        let example = Example(code: """
             class C {
                 let x = 0
                 let y = 1

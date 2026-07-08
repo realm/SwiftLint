@@ -5,55 +5,55 @@ import Testing
 struct ExampleTests {
     @Test
     func equatableDoesNotLookAtFile() {
-        let first = Example("foo", file: "a", line: 1)
-        let second = Example("foo", file: "b", line: 1)
+        let first = Example(code: "foo", file: "a", line: 1)
+        let second = Example(code: "foo", file: "b", line: 1)
         #expect(first == second)
     }
 
     @Test
     func equatableDoesNotLookAtLine() {
-        let first = Example("foo", file: "a", line: 1)
-        let second = Example("foo", file: "a", line: 2)
+        let first = Example(code: "foo", file: "a", line: 1)
+        let second = Example(code: "foo", file: "a", line: 2)
         #expect(first == second)
     }
 
     @Test
     func equatableLooksAtCode() {
-        let first = Example("a", file: "a", line: 1)
-        let second = Example("a", file: "x", line: 2)
-        let third = Example("c", file: "y", line: 2)
+        let first = Example(code: "a", file: "a", line: 1)
+        let second = Example(code: "a", file: "x", line: 2)
+        let third = Example(code: "c", file: "y", line: 2)
         #expect(first == second)
         #expect(first != third)
     }
 
     @Test
     func multiByteOffsets() {
-        #expect(Example("").testMultiByteOffsets)
-        #expect(Example("", testMultiByteOffsets: true).testMultiByteOffsets)
-        #expect(!Example("", testMultiByteOffsets: false).testMultiByteOffsets)
+        #expect(Example(code: "").testMultiByteOffsets)
+        #expect(Example(code: "", testMultiByteOffsets: true).testMultiByteOffsets)
+        #expect(!Example(code: "", testMultiByteOffsets: false).testMultiByteOffsets)
     }
 
     @Test
     func onLinux() {
-        #expect(Example("").testOnLinux)
-        #expect(Example("", testOnLinux: true).testOnLinux)
-        #expect(!Example("", testOnLinux: false).testOnLinux)
+        #expect(Example(code: "").testOnLinux)
+        #expect(Example(code: "", testOnLinux: true).testOnLinux)
+        #expect(!Example(code: "", testOnLinux: false).testOnLinux)
     }
 
     @Test
     func removingViolationMarkers() {
-        let example = Example("↓T↓E↓S↓T")
-        #expect(example.removingViolationMarkers() == Example("TEST"))
+        let example = Example(code: "↓T↓E↓S↓T")
+        #expect(example.removingViolationMarkers() == Example(code: "TEST"))
     }
 
     @Test
     func comparable() {
-        #expect(Example("a") < Example("b"))
+        #expect(Example(code: "a") < Example(code: "b"))
     }
 
     @Test
     func withCode() {
-        let original = Example("original code")
+        let original = Example(code: "original code")
         #expect(original.code == "original code")
 
         let new = original.with(code: "new code")

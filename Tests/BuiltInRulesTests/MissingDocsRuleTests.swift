@@ -231,7 +231,7 @@ struct MissingDocsRuleTests {
                 "excludes_extensions": true,
                 "excludes_inherited_types": false,
                 "error": ["public"],
-            ] as [String: any Sendable]
+            ]
         )
 
         #expect(configuration.excludesExtensions)

@@ -13,14 +13,14 @@ struct LineLengthRule: Rule {
         description: "Lines should not span too many characters.",
         kind: .metrics,
         nonTriggeringExamples: #examples([
-            String(repeating: "/", count: 120),
-            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120),
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120),
+            String(repeating: "/", count: 120).asExample(),
+            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120).asExample(),
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120).asExample(),
         ]),
         triggeringExamples: #examples([
-            String(repeating: "/", count: 121),
-            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121),
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121),
+            String(repeating: "/", count: 121).asExample(),
+            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121).asExample(),
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121).asExample(),
         ]).skipWrappingInCommentTests().skipWrappingInStringTests()
     )
 }

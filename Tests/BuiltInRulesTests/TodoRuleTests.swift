@@ -12,7 +12,7 @@ struct TodoRuleTests {
 
     @Test
     func todoMessage() {
-        let example = Example("fatalError() // TODO: Implement")
+        let example = Example(code: "fatalError() // TODO: Implement")
         let violations = violations(example)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "TODOs should be resolved (Implement)")
@@ -20,7 +20,7 @@ struct TodoRuleTests {
 
     @Test
     func fixMeMessage() {
-        let example = Example("fatalError() // FIXME: Implement")
+        let example = Example(code: "fatalError() // FIXME: Implement")
         let violations = violations(example)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "FIXMEs should be resolved (Implement)")
@@ -28,7 +28,7 @@ struct TodoRuleTests {
 
     @Test
     func onlyFixMe() {
-        let example = Example("""
+        let example = Example(code: """
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
             """)
@@ -39,7 +39,7 @@ struct TodoRuleTests {
 
     @Test
     func onlyTodo() {
-        let example = Example("""
+        let example = Example(code: """
             fatalError() // TODO: Implement todo
             fatalError() // FIXME: Implement fixme
             """)

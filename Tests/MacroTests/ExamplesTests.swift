@@ -24,8 +24,8 @@ struct ExamplesTests {
             """#,
             expandedSource: #"""
             [
-                Example("let x = 1", fileID: "TestModule/test.swift", file: "test.swift", line: 2),
-                Example("""
+                Example(code: "let x = 1", fileID: "TestModule/test.swift", file: "test.swift", line: 2),
+                Example(code: """
                 func f() {}
                 """, fileID: "TestModule/test.swift", file: "test.swift", line: 3),
             ]
@@ -48,9 +48,9 @@ struct ExamplesTests {
             """,
             expandedSource: """
             [
-                Example("a", fileID: "TestModule/test.swift", file: "test.swift", line: 2),
-                Example("b", fileID: "TestModule/test.swift", file: "test.swift", line: 3),
-                Example("c", fileID: "TestModule/test.swift", file: "test.swift", line: 4),
+                Example(code: "a", fileID: "TestModule/test.swift", file: "test.swift", line: 2),
+                Example(code: "b", fileID: "TestModule/test.swift", file: "test.swift", line: 3),
+                Example(code: "c", fileID: "TestModule/test.swift", file: "test.swift", line: 4),
             ]
             """,
             macroSpecs: macros,
@@ -101,8 +101,8 @@ struct ExamplesTests {
             """,
             expandedSource: """
             [
-                Example("↓x", fileID: "TestModule/test.swift", file: "test.swift", line: 2): Example("y", fileID: "TestModule/test.swift", file: "test.swift", line: 2),
-                Example("↓a", fileID: "TestModule/test.swift", file: "test.swift", line: 3): Example("b", fileID: "TestModule/test.swift", file: "test.swift", line: 3),
+                Example(code: "↓x", fileID: "TestModule/test.swift", file: "test.swift", line: 2): Example(code: "y", fileID: "TestModule/test.swift", file: "test.swift", line: 2),
+                Example(code: "↓a", fileID: "TestModule/test.swift", file: "test.swift", line: 3): Example(code: "b", fileID: "TestModule/test.swift", file: "test.swift", line: 3),
             ]
             """,
             macroSpecs: macros,
@@ -148,7 +148,8 @@ struct ExamplesTests {
 
     @Test
     func expandsNonLiteralExamples() {
-        // Elements need not be string literals; any `String`-typed expression is wrapped as-is.
+        // Elements need not be string literals; a non-literal expression (expected to be `Example`-typed at a
+        // real call site, e.g. `"code".asExample(...)`) is passed through the `Example(_:)` initializer as-is.
         assertMacroExpansion(
             """
             #examples([
@@ -169,7 +170,8 @@ struct ExamplesTests {
 
     @Test
     func expandsNonLiteralDictionary() {
-        // Keys and values need not be string literals; any `String`-typed expression is wrapped as-is.
+        // Keys and values need not be string literals; a non-literal expression (expected to be `Example`-typed
+        // at a real call site) is passed through the `Example(_:)` initializer as-is.
         // swiftlint:disable line_length
         assertMacroExpansion(
             """

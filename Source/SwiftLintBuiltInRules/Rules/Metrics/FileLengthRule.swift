@@ -12,12 +12,12 @@ struct FileLengthRule: Rule {
         description: "Files should not span too many lines.",
         kind: .metrics,
         nonTriggeringExamples: #examples([
-            repeatElement("print(\"swiftlint\")\n", count: 399).joined()
+            repeatElement("print(\"swiftlint\")\n", count: 399).joined().asExample()
         ]),
         triggeringExamples: #examples([
-            repeatElement("print(\"swiftlint\")\n", count: 401).joined(),
-            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined(),
-            repeatElement("print(\"swiftlint\")\n\n", count: 201).joined(),
+            repeatElement("print(\"swiftlint\")\n", count: 401).joined().asExample(),
+            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined().asExample(),
+            repeatElement("print(\"swiftlint\")\n\n", count: 201).joined().asExample(),
         ]).skipWrappingInCommentTests()
     )
 }

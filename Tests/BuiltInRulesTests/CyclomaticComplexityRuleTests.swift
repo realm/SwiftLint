@@ -13,7 +13,7 @@ struct CyclomaticComplexityRuleTests {
         }
         example += "    }\n"
         example += "}\n"
-        return Example(example)
+        return Example(code: example)
     }()
 
     private static let complexSwitchInitExample: Example = {
@@ -24,7 +24,7 @@ struct CyclomaticComplexityRuleTests {
         }
         example += "    }\n"
         example += "}\n"
-        return Example(example)
+        return Example(code: example)
     }()
 
     private static let complexIfExample: Example = {
@@ -41,7 +41,7 @@ struct CyclomaticComplexityRuleTests {
             example += indent + "}\n"
         }
         example += "}\n"
-        return Example(example)
+        return Example(code: example)
     }()
 
     @Test

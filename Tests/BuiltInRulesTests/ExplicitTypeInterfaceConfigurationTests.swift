@@ -21,7 +21,7 @@ struct ExplicitTypeInterfaceConfigurationTests {
                 "severity": "error",
                 "excluded": ["local"],
                 "allow_redundancy": true,
-            ] as [String: any Sendable]
+            ]
         )
         #expect(config.severityConfiguration.severity == .error)
         #expect(config.allowedKinds == Set([.instance, .class, .static]))

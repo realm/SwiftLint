@@ -325,19 +325,19 @@ struct CommandTests { // swiftlint:disable:this type_body_length
     @Test
     func superfluousDisableCommands() {
         #expect(
-            violations(Example("// swiftlint:disable nesting\nprint(123)\n")).map(\.ruleIdentifier)
+            violations(Example(code: "// swiftlint:disable nesting\nprint(123)\n")).map(\.ruleIdentifier)
                 == ["blanket_disable_command", "superfluous_disable_command"]
         )
         #expect(
-            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n")).map(\.ruleIdentifier)
+            violations(Example(code: "// swiftlint:disable:next nesting\nprint(123)\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("print(123) // swiftlint:disable:this nesting\n")).map(\.ruleIdentifier)
+            violations(Example(code: "print(123) // swiftlint:disable:this nesting\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n")).map(\.ruleIdentifier)
+            violations(Example(code: "print(123)\n// swiftlint:disable:previous nesting\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
     }
@@ -346,7 +346,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
     func disableAllOverridesSuperfluousDisableCommand() {
         #expect(
             violations(
-                Example(
+                Example(code:
                     """
                     // swiftlint:disable all
                     // swiftlint:disable nesting
@@ -358,7 +358,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
         )
         #expect(
             violations(
-                Example(
+                Example(code:
                     """
                     // swiftlint:disable all
                     // swiftlint:disable:next nesting
@@ -369,7 +369,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
         )
         #expect(
             violations(
-                Example(
+                Example(code:
                     """
                     // swiftlint:disable all
                     // swiftlint:disable:this nesting
@@ -378,9 +378,8 @@ struct CommandTests { // swiftlint:disable:this type_body_length
                     """)
             ).isEmpty
         )
-        #expect(
-            violations(Example("// swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n")).isEmpty
-        )
+        let example = Example(code: "// swiftlint:disable all\n// swiftlint:disable:previous nesting\nprint(123)\n")
+        #expect(violations(example).isEmpty)
     }
 
     @Test
@@ -388,19 +387,21 @@ struct CommandTests { // swiftlint:disable:this type_body_length
         let longComment =
             "Comment with a large number of words that shouldn't register as superfluous"
         #expect(
-            violations(Example("// swiftlint:disable nesting - \(longComment)\nprint(123)\n")).map(\.ruleIdentifier)
+            violations(Example(code: "// swiftlint:disable nesting - \(longComment)\nprint(123)\n"))
+                .map(\.ruleIdentifier)
                 == ["blanket_disable_command", "superfluous_disable_command"]
         )
         #expect(
-            violations(Example("// swiftlint:disable:next nesting - Comment\nprint(123)\n")).map(\.ruleIdentifier)
+            violations(Example(code: "// swiftlint:disable:next nesting - Comment\nprint(123)\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("print(123) // swiftlint:disable:this nesting - Comment\n")).map(\.ruleIdentifier)
+            violations(Example(code: "print(123) // swiftlint:disable:this nesting - Comment\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting - Comment\n")).map(\.ruleIdentifier)
+            violations(Example(code: "print(123)\n// swiftlint:disable:previous nesting - Comment\n"))
+                .map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
     }
@@ -409,34 +410,38 @@ struct CommandTests { // swiftlint:disable:this type_body_length
     func invalidDisableCommands() {
         #expect(
             violations(
-                Example(
-                    "// swiftlint:disable nesting_foo\n" + "print(123)\n"
-                        + "// swiftlint:enable nesting_foo\n")).map(\.ruleIdentifier)
+                Example(code:
+                    """
+                    // swiftlint:disable nesting_foo
+                    print(123)
+                    // swiftlint:enable nesting_foo
+
+                    """)).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("// swiftlint:disable:next nesting_foo\nprint(123)\n")).map(\.ruleIdentifier)
+            violations(Example(code: "// swiftlint:disable:next nesting_foo\nprint(123)\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("print(123) // swiftlint:disable:this nesting_foo\n")).map(\.ruleIdentifier)
+            violations(Example(code: "print(123) // swiftlint:disable:this nesting_foo\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
         #expect(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n")).map(\.ruleIdentifier)
+            violations(Example(code: "print(123)\n// swiftlint:disable:previous nesting_foo\n")).map(\.ruleIdentifier)
                 == ["superfluous_disable_command"]
         )
 
-        #expect(violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo \n")).count == 1)
+        #expect(violations(Example(code: "print(123)\n// swiftlint:disable:previous nesting_foo \n")).count == 1)
 
-        let example = Example(
+        let example = Example(code:
             "// swiftlint:disable nesting this is a comment\n// swiftlint:enable nesting\n")
         let multipleViolations = violations(example)
         #expect(multipleViolations.filter({ $0.ruleIdentifier == "superfluous_disable_command" }).count == 9)
         #expect(multipleViolations.filter({ $0.ruleIdentifier == "blanket_disable_command" }).count == 4)
 
         let onlyNonExistentRulesViolations = violations(
-            Example("// swiftlint:disable this is a comment\n"))
+            Example(code: "// swiftlint:disable this is a comment\n"))
         #expect(
             onlyNonExistentRulesViolations.filter({
                 $0.ruleIdentifier == "superfluous_disable_command"
@@ -448,7 +453,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
             }).count == 4)
 
         #expect(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting_foo\n")).first?.reason
+            violations(Example(code: "print(123)\n// swiftlint:disable:previous nesting_foo\n")).first?.reason
                 == "'nesting_foo' is not a valid SwiftLint rule; remove it from the disable command"
         )
     }
@@ -457,34 +462,42 @@ struct CommandTests { // swiftlint:disable:this type_body_length
     func superfluousDisableCommandsDisabled() {
         #expect(
             violations(
-                Example(
-                    "// swiftlint:disable superfluous_disable_command nesting\n" + "print(123)\n"
-                        + "// swiftlint:enable superfluous_disable_command nesting\n")
+                Example(code:
+                    """
+                    // swiftlint:disable superfluous_disable_command nesting
+                    print(123)
+                    // swiftlint:enable superfluous_disable_command nesting
+
+                    """)
                 ).isEmpty
         )
         #expect(
             violations(
-                Example(
-                    "// swiftlint:disable superfluous_disable_command\n"
-                        + "// swiftlint:disable nesting\n" + "print(123)\n"
-                        + "// swiftlint:enable superfluous_disable_command nesting\n")
+                Example(code:
+                    """
+                    // swiftlint:disable superfluous_disable_command
+                    // swiftlint:disable nesting
+                    print(123)
+                    // swiftlint:enable superfluous_disable_command nesting
+
+                    """)
             ).isEmpty
         )
         #expect(
             violations(
-                Example(
+                Example(code:
                     "// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n")
                 ).isEmpty
         )
         #expect(
             violations(
-                Example(
+                Example(code:
                     "print(123) // swiftlint:disable:this superfluous_disable_command nesting\n")
                 ).isEmpty
         )
         #expect(
             violations(
-                Example(
+                Example(code:
                     "print(123)\n// swiftlint:disable:previous superfluous_disable_command nesting\n"
                 )
             ).isEmpty
@@ -500,19 +513,24 @@ struct CommandTests { // swiftlint:disable:this type_body_length
 
         #expect(
             violations(
-                Example(
-                    "// swiftlint:disable nesting\n" + "print(123)\n"
-                        + "// swiftlint:enable nesting\n"), config: configuration
+                Example(code:
+                    """
+                    // swiftlint:disable nesting
+                    print(123)
+                    // swiftlint:enable nesting
+
+                    """), config: configuration
                 ).isEmpty
         )
         #expect(
-            violations(Example("// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration).isEmpty
+            violations(Example(code: "// swiftlint:disable:next nesting\nprint(123)\n"), config: configuration).isEmpty
         )
         #expect(
-            violations(Example("print(123) // swiftlint:disable:this nesting\n"), config: configuration).isEmpty
+            violations(Example(code: "print(123) // swiftlint:disable:this nesting\n"), config: configuration).isEmpty
         )
         #expect(
-            violations(Example("print(123)\n// swiftlint:disable:previous nesting\n"), config: configuration).isEmpty
+            violations(Example(code: "print(123)\n// swiftlint:disable:previous nesting\n"), config: configuration)
+                .isEmpty
         )
     }
 
@@ -520,7 +538,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
     func superfluousDisableCommandsDisabledWhenAllRulesDisabled() {
         #expect(
             violations(
-                Example(
+                Example(code:
                     """
                     // swiftlint:disable all
                     // swiftlint:disable non_existent_rule_name
@@ -532,7 +550,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
         )
         #expect(
             violations(
-                Example(
+                Example(code:
                     """
                     // swiftlint:disable superfluous_disable_command
                     // swiftlint:disable non_existent_rule_name
@@ -549,7 +567,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
     func superfluousDisableCommandsInMultilineComments() {
         #expect(
             violations(
-                Example(
+                Example(code:
                     """
                     /*
                     // swiftlint:disable identifier_name
@@ -568,7 +586,7 @@ struct CommandTests { // swiftlint:disable:this type_body_length
             rulesMode: .defaultConfiguration(disabled: [], optIn: [UnusedDeclarationRule.identifier])
         )
         let violations = violations(
-            Example(
+            Example(code:
                 """
                 public class Foo {
                     // swiftlint:disable:next unused_declaration

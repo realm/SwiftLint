@@ -9,7 +9,7 @@ private func funcWithParameters(_ parameters: String,
                                 line: UInt = #line) -> Example {
     let marker = violates ? "↓" : ""
 
-    return Example("func \(marker)abc(\(parameters)) {}\n", file: file, line: line)
+    return Example(code: "func \(marker)abc(\(parameters)) {}\n", file: file, line: line)
 }
 
 @Suite(.rulesRegistered)

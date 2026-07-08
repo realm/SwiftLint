@@ -46,7 +46,7 @@ struct ComputedAccessorsOrderRuleTests {
 
     @Test
     func getSetPropertyReason() {
-        let example = Example("""
+        let example = Example(code: """
         class Foo {
             var foo: Int {
                 set {
@@ -67,7 +67,7 @@ struct ComputedAccessorsOrderRuleTests {
 
     @Test
     func getSetSubscriptReason() {
-        let example = Example("""
+        let example = Example(code: """
         class Foo {
             subscript(i: Int) -> Int {
                 set {
@@ -88,7 +88,7 @@ struct ComputedAccessorsOrderRuleTests {
 
     @Test
     func setGetPropertyReason() {
-        let example = Example("""
+        let example = Example(code: """
         class Foo {
             var foo: Int {
                 get {
@@ -109,7 +109,7 @@ struct ComputedAccessorsOrderRuleTests {
 
     @Test
     func setGetSubscriptReason() {
-        let example = Example("""
+        let example = Example(code: """
         class Foo {
             subscript(i: Int) -> Int {
                 get {

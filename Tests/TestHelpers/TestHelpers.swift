@@ -543,14 +543,14 @@ func verifyLint(_ ruleDescription: RuleDescription,
     let ruleType = RuleRegistry.shared.rule(forID: ruleDescription.identifier)
     if ruleType?.init().configuration is (any SeverityBasedRuleConfiguration),
         let example = triggers.first(where: { $0.configuration == nil }) {
-        let withWarning = Example(example.code, configuration: ["severity": "warning"])
+        let withWarning = Example(code: example.code, configuration: ["severity": "warning"])
         #expect(
             violations(withWarning, config: config).allSatisfy { $0.severity == .warning },
             "Violation severity cannot be changed to warning",
             sourceLocation: example.sourceLocation
         )
 
-        let withError = Example(example.code, configuration: ["severity": "error"])
+        let withError = Example(code: example.code, configuration: ["severity": "error"])
         #expect(
             violations(withError, config: config).allSatisfy { $0.severity == .error },
             "Violation severity cannot be changed to error",

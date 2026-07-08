@@ -2,9 +2,9 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-/// Expands `#examples(["a", "b"])` into `[Example("a", file:, line:), Example("b", file:, line:)]`, capturing
-/// the file and line of each element so test failures and documentation point at the right location. Elements are
-/// usually string literals, but any `String`-typed expression or an existing `Example` works.
+/// Expands `#examples(["a", "b"])` into `[Example(code: "a", file:, line:), Example(code: "b", file:, line:)]`,
+/// capturing the file and line of each element so test failures and documentation point at the right location.
+/// Elements are usually string literals, but an existing `Example` expression works too.
 enum Examples: ExpressionMacro {
     static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -26,9 +26,9 @@ enum Examples: ExpressionMacro {
     }
 }
 
-/// Expands `#corrections(["a": "b"])` into `[Example("a", …): Example("b", …)]`, capturing the file and
-/// line of each key and value. Keys and values are usually string literals, but any `String`-typed expression or
-/// an existing `Example` works. Intended for a rule's `corrections` dictionary.
+/// Expands `#corrections(["a": "b"])` into `[Example(code: "a", …): Example(code: "b", …)]`, capturing the file
+/// and line of each key and value. Keys and values are usually string literals, but an existing `Example`
+/// expression works too. Intended for a rule's `corrections` dictionary.
 enum Corrections: ExpressionMacro {
     static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -50,9 +50,15 @@ enum Corrections: ExpressionMacro {
     }
 }
 
-/// Wraps a string expression in an `Example(…, file:, line:)` call, baking in the expression's own source
-/// location. (It is usually a string literal, but any `String`-typed expression or an existing `Example` works.)
-/// Its surrounding trivia is replaced with the trivia of `triviaSource` (the original node being substituted), so
+/// Wraps an expression in an `Example(…, file:, line:)` call, baking in the expression's own source location.
+///
+/// A string literal becomes `Example(code: "…", …)`; any other expression is assumed to already be an `Example`
+/// (e.g. `"code".asExample(configuration:)`) and is passed through the `Example(_:file:line:)` initializer to
+/// re-capture its location. The `Example` type is `ExpressibleByStringInterpolation` only so the macro can be
+/// typed `[Example]`; that conversion traps at runtime, so a literal must go through the labelled `code:`
+/// initializer.
+///
+/// The surrounding trivia is replaced with the trivia of `triviaSource` (the original node being substituted), so
 /// the result slots into the same position as the expression it replaces.
 private func makeExample(
     from expression: ExprSyntax,
@@ -62,15 +68,15 @@ private func makeExample(
     let code = expression.trimmed
     let fileID = context.location(of: expression, at: .afterLeadingTrivia, filePathMode: .fileID)
     let filePath = context.location(of: expression, at: .afterLeadingTrivia, filePathMode: .filePath)
-    guard let fileID else {
-        preconditionFailure("No fileID for \(context)")
-    }
-    guard let filePath else {
-        preconditionFailure("No filePath for \(context)")
+    guard let fileID, let filePath else {
+        context.diagnose(SwiftLintCoreMacroError.missingSourceLocation.diagnose(at: expression))
+        return expression
     }
 
-    let example: ExprSyntax =
-        "Example(\(code), fileID: \(fileID.file), file: \(filePath.file), line: \(filePath.line))"
+    let isStringLiteral = expression.is(StringLiteralExprSyntax.self)
+    let example: ExprSyntax = isStringLiteral
+        ? "Example(code: \(code), fileID: \(fileID.file), file: \(filePath.file), line: \(filePath.line))"
+        : "Example(\(code), fileID: \(fileID.file), file: \(filePath.file), line: \(filePath.line))"
     guard let triviaSource else {
         return example
     }

@@ -39,7 +39,7 @@ private extension ProhibitedInterfaceBuilderRule {
 
 private func wrapExample(_ text: String) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
     class ViewController: UIViewController {
         \(text)
     }

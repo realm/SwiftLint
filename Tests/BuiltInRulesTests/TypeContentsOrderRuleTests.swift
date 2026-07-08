@@ -14,7 +14,7 @@ struct TypeContentsOrderRuleTests {
                 "class TestViewController: UIViewController {",
                 TypeContentsOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n"),
                 "}",
-            ].joined(separator: "\n"),
+            ].joined(separator: "\n").asExample(),
         ])
         let triggeringExamples = #examples([
             """

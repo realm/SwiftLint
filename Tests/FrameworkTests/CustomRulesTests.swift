@@ -149,7 +149,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "match_kinds": "comment",
             ],
         ]
-        let example = Example("//swiftlint:disable custom \n// file with a pattern")
+        let example = Example(code: "//swiftlint:disable custom \n// file with a pattern")
         let violations = try violations(forExample: example, customRules: customRules)
         #expect(violations.isEmpty)
     }
@@ -236,7 +236,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "FORBIDDEN",
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next custom_rules
                               let ALLOWED = 2
                               """)
@@ -255,7 +255,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next \(customRuleIdentifier)
                               let ALLOWED = 2
                               """)
@@ -274,7 +274,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next custom_rules \(customRuleIdentifier)
                               let ALLOWED = 2
                               """)
@@ -295,7 +295,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
                               let FORBIDDEN = 1
                               // swiftlint:disable:next \(customRuleIdentifier)
                               let ALLOWED = 2
@@ -316,7 +316,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next custom_rules
                               let FORBIDDEN = 1
                               """)
@@ -334,7 +334,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "FORBIDDEN2",
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next forbidden forbidden2
                               let ALLOWED = 2
                               """)
@@ -355,7 +355,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "FORBIDDEN2",
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next forbidden forbidden2
                               let FORBIDDEN = 1
                               """)
@@ -375,7 +375,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "FORBIDDEN2",
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable:next forbidden forbidden2 custom_rules
                               let FORBIDDEN = 1
                               """)
@@ -402,7 +402,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example(
+        let example = Example(code:
             """
              // swiftlint:disable custom1 custom3
              return 10
@@ -424,7 +424,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "print\\("
             ],
         ]
-        let example = Example(
+        let example = Example(code:
             """
             // swiftlint:disable:next dont_print
             print("Hello, world")
@@ -439,7 +439,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "print\\("
             ],
         ]
-        let example = Example(
+        let example = Example(code:
             """
             // swiftlint:disable:next all
             print("Hello, world")
@@ -454,7 +454,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "print\\("
             ],
         ]
-        let example = Example(
+        let example = Example(code:
             """
             // swiftlint:disable:next all dont_print
             print("Hello, world")
@@ -472,7 +472,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "pattern2"
             ],
         ]
-        let example = Example(
+        let example = Example(code:
             """
             // swiftlint:disable rule1
             // swiftlint:disable rule2
@@ -497,7 +497,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "pattern3"
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable rule1
                               // swiftlint:disable rule2
                               // swiftlint:disable rule3
@@ -526,7 +526,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "pattern3"
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               // swiftlint:disable rule1
                               // swiftlint:disable rule2 rule3
                               // swiftlint:enable rule3 rule2
@@ -693,7 +693,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let foo = 42")
+        let example = Example(code: "let foo = 42")
         let violations = try violations(forExample: example, customRules: customRules)
 
         #expect(violations.count == 1)
@@ -714,7 +714,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let bar = 42  // bar is not allowed")
+        let example = Example(code: "let bar = 42  // bar is not allowed")
         let violations = try violations(forExample: example, customRules: customRules)
 
         // Should find both occurrences of 'bar' since no match_kinds filtering
@@ -735,7 +735,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let foo = 42")
+        let example = Example(code: "let foo = 42")
         let violations = try violations(forExample: example, customRules: customRules)
 
         // Should work correctly with implicit swiftsyntax mode
@@ -771,7 +771,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
             let foo = 42  // This foo should match
             let bar = 42  // This should not match
             """)
@@ -794,7 +794,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let foo = 42")
+        let example = Example(code: "let foo = 42")
         let violations = try violations(forExample: example, customRules: customRules)
 
         // Should match 'foo' and '42' but not 'let' (keyword)
@@ -830,7 +830,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
             let foo = 42  // This foo in comment should not match
             let foobar = 42
             """)
@@ -866,7 +866,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
             // TODO: Fix this later
             func doSomething() {
                 // Another TODO item
@@ -901,7 +901,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let value = 42_suffix + 100_suffix")
+        let example = Example(code: "let value = 42_suffix + 100_suffix")
         let violations = try violations(forExample: example, customRules: customRules)
 
         #expect(violations.count == 2)
@@ -1023,7 +1023,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
             let value = 42
             func test() {
                 return value
@@ -1059,7 +1059,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
             let value: Int = 42
             """)
         let violations = try violations(forExample: example, customRules: customRules)
@@ -1080,7 +1080,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("""
+        let example = Example(code: """
             let name = "Alice"  // User name
             let age = 25
             """)
@@ -1104,7 +1104,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example(#"let greeting = "Hello, World!""#)
+        let example = Example(code: #"let greeting = "Hello, World!""#)
         let violations = try violations(forExample: example, customRules: customRules)
 
         #expect(violations.count == 1)
@@ -1124,7 +1124,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let foo = 42")
+        let example = Example(code: "let foo = 42")
         let violations = try violations(forExample: example, customRules: customRules)
 
         // Should still work correctly with explicit sourcekit mode
@@ -1144,7 +1144,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
             ],
         ]
 
-        let example = Example("let value = 42")
+        let example = Example(code: "let value = 42")
         let violations = try violations(forExample: example, customRules: customRules)
 
         // Should produce no violations since there are no built-in attributes
@@ -1160,7 +1160,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
                 "regex": "bbb"
             ],
         ]
-        let example = Example("""
+        let example = Example(code: """
                               let a = "aaa"
                               let b = "bbb"
                               """)

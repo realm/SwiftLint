@@ -18,10 +18,10 @@ struct ForceUnwrappingRule: Rule {
             "let object: Any!",
             "@IBOutlet var constraints: [NSLayoutConstraint]!",
             "setEditing(!editing, animated: true)",
-            "navigationController.setNavigationBarHidden(!navigationController." +
-                "navigationBarHidden, animated: true)",
-            "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
-                "self.searchBar?.text?.isEmpty == false) {}",
+            ("navigationController.setNavigationBarHidden(!navigationController." +
+                "navigationBarHidden, animated: true)").asExample(),
+            ("if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
+                "self.searchBar?.text?.isEmpty == false) {}").asExample(),
             "print(\"\\(xVar)!\")",
             "var test = (!bar)",
             "var a: [Int]!",

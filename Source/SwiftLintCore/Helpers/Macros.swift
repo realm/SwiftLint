@@ -77,31 +77,33 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
     type: "SwiftSyntaxRule"
 )
 
-/// Macro that expands an array into an array of ``Example``s. Elements are usually
-/// string literals, but any `String`-typed expression or other instance of ``Example`` will work.
+/// Macro that expands an array into an array of ``Example``s. Elements are usually string literals, but an
+/// existing ``Example`` expression (e.g. `"code".asExample(configuration:)`) works too.
+///
+/// The parameter is typed `[Example]` (``Example`` is `ExpressibleByStringInterpolation`), so an unsupported element
+/// such as an `Int` fails as a plain type error on the literal you wrote rather than as a macro-expansion failure.
 ///
 /// Use it for the common case where examples only carry code, e.g.
 /// `nonTriggeringExamples: #examples(["let x = 1", "let y = 2"])`. Examples that need a custom configuration or
 /// chained modifiers should keep using ``Example`` directly.
 @freestanding(expression)
-public macro examples(_ examples: [any ExampleConvertible]) -> [Example] = #externalMacro(
+public macro examples(_ examples: [Example]) -> [Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "Examples"
 )
 
-/// Macro that expands a dictionary into a dictionary of ``Example``s. Keys and values are usually
-/// string literals, but any `String`-typed expression or an ``Example`` instance will work.
+/// Macro that expands a dictionary into a dictionary of ``Example``s. Keys and values are usually string literals,
+/// but an existing ``Example`` expression works too.
 ///
-/// The parameter's value type is `any ExampleConvertible` (so a wrong-typed value is a plain "does not conform"
-/// error), but its key type is `AnyHashable`: a `Dictionary` key must be `Hashable`, which an `any
-/// ExampleConvertible` existential is not. Keys are therefore checked only for `Hashable`, and a non-`String`,
-/// non-`Example` key surfaces as a macro-expansion error rather than a conformance error.
+/// Both key and value are typed ``Example`` (which is `ExpressibleByStringInterpolation` and `Hashable`), so an
+/// unsupported key or value fails as a plain type error on the literal you wrote rather than as a macro-expansion
+/// failure.
 ///
 /// Use it for a rule's `corrections`, e.g.
 /// `corrections: #corrections(["↓x": "y"])`. Pairs that need a custom configuration should keep using
 /// ``Example`` directly.
 @freestanding(expression)
-public macro corrections(_ examples: [AnyHashable: any ExampleConvertible]) -> [Example: Example] = #externalMacro(
+public macro corrections(_ examples: [Example: Example]) -> [Example: Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
     type: "Corrections"
 )

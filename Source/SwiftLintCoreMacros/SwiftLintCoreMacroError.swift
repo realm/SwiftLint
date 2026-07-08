@@ -14,6 +14,7 @@ enum SwiftLintCoreMacroError: String, DiagnosticMessage {
     case missingPathArgument = "Missing required 'path' argument"
     case examplesNotArrayLiteral = "Macro argument must be an array literal"
     case correctionsNotDictionaryLiteral = "Macro argument must be a dictionary literal"
+    case missingSourceLocation = "Macro could not determine the source location of an example"
 
     var message: String {
         rawValue

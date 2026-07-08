@@ -7,7 +7,7 @@ import Testing
 struct DeploymentTargetRuleTests {
     @Test
     func macOSAttributeReason() {
-        let example = Example("@available(macOS 10.11, *)\nclass A {}")
+        let example = Example(code: "@available(macOS 10.11, *)\nclass A {}")
         let violations = violations(example, config: ["macOS_deployment_target": "10.14.0"])
 
         let expectedMessage = """
@@ -20,7 +20,7 @@ struct DeploymentTargetRuleTests {
 
     @Test
     func watchOSConditionReason() {
-        let example = Example("if #available(watchOS 4, *) {}")
+        let example = Example(code: "if #available(watchOS 4, *) {}")
         let violations = violations(example, config: ["watchOS_deployment_target": "5.0.1"])
 
         let expectedMessage = """
@@ -33,7 +33,7 @@ struct DeploymentTargetRuleTests {
 
     @Test(.enabled(if: SwiftVersion.current >= .fiveDotSix))
     func iOSNegativeAttributeReason() {
-        let example = Example("if #unavailable(iOS 14) { legacyImplementation() }")
+        let example = Example(code: "if #unavailable(iOS 14) { legacyImplementation() }")
         let violations = violations(example, config: ["iOS_deployment_target": "15.0"])
 
         let expectedMessage = """

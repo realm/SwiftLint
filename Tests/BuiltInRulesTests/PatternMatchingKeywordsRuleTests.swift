@@ -9,7 +9,7 @@ struct PatternMatchingKeywordsRuleTests {
     @Test
     func violationReasonForTuples() throws {
         let config = try #require(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
-        let example = Example("switch foo { case (let x, let y): break }")
+        let example = Example(code: "switch foo { case (let x, let y): break }")
         let violations = violations(example, config: config)
 
         #expect(violations.count == 2)
@@ -19,7 +19,7 @@ struct PatternMatchingKeywordsRuleTests {
     @Test
     func violationReasonForEnumAssociatedValues() throws {
         let config = try #require(makeConfig(nil, PatternMatchingKeywordsRule.identifier))
-        let example = Example("switch foo { case .bar(let x, let y): break }")
+        let example = Example(code: "switch foo { case .bar(let x, let y): break }")
         let violations = violations(example, config: config)
 
         #expect(violations.count == 2)

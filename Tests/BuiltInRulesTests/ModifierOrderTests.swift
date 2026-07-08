@@ -45,22 +45,22 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
     func rightOrderedModifierGroups() {
         let descriptionOverride = ModifierOrderRule.description
             .with(nonTriggeringExamples: #examples([
-                "public protocol Foo: class {}\n" +
-                "public weak internal(set) var bar: Foo? \n",
-                "open final class Foo {" +
+                ("public protocol Foo: class {}\n" +
+                "public weak internal(set) var bar: Foo? \n").asExample(),
+                ("open final class Foo {" +
                 "  fileprivate static  func bar() {} \n" +
-                "  open class func barFoo() {} }",
-                "public struct Foo {" +
-                "  private mutating func bar() {} }",
+                "  open class func barFoo() {} }").asExample(),
+                ("public struct Foo {" +
+                "  private mutating func bar() {} }").asExample(),
             ]))
             .with(triggeringExamples: #examples([
-                "public protocol Foo: class {} \n" +
-                "public internal(set) weak var bar: Foo? \n",
-                "final public class Foo {" +
+                ("public protocol Foo: class {} \n" +
+                "public internal(set) weak var bar: Foo? \n").asExample(),
+                ("final public class Foo {" +
                 "  static fileprivate func bar() {} \n" +
-                "  class open func barFoo() {} }",
-                "public struct Foo {" +
-                "  mutating private func bar() {} }",
+                "  class open func barFoo() {} }").asExample(),
+                ("public struct Foo {" +
+                "  mutating private func bar() {} }").asExample(),
             ]))
             .with(corrections: [:])
 
@@ -391,7 +391,7 @@ struct ModifierOrderTests { // swiftlint:disable:this type_body_length
             Testing.Issue.record("Failed to create configuration")
             return
         }
-        let allViolations = violations(Example("final public var foo: String"), config: config)
+        let allViolations = violations(Example(code: "final public var foo: String"), config: config)
         let modifierOrderRuleViolation = allViolations.first { $0.ruleIdentifier == ruleID }
         if let violation = modifierOrderRuleViolation {
             #expect(violation.reason == "public modifier should come before final")

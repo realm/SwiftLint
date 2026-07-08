@@ -10,7 +10,7 @@ struct ObjectLiteralRuleTests {
     private let imageLiteralTriggeringExamples = ["", ".init"].flatMap { (method: String) -> [Example] in
         ["UI", "NS"].flatMap { (prefix: String) -> [Example] in
             [
-                Example("let image = ↓\(prefix)Image\(method)(named: \"foo\")")
+                Example(code: "let image = ↓\(prefix)Image\(method)(named: \"foo\")")
             ]
         }
     }

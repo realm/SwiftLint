@@ -8,7 +8,7 @@ struct ImplicitGetterRuleTests {
     @Test
     func propertyReason() throws {
         let config = try #require(makeConfig(nil, ImplicitGetterRule.identifier))
-        let example = Example("""
+        let example = Example(code: """
             class Foo {
                 var foo: Int {
                     ↓get {
@@ -26,7 +26,7 @@ struct ImplicitGetterRuleTests {
     @Test
     func subscriptReason() throws {
         let config = try #require(makeConfig(nil, ImplicitGetterRule.identifier))
-        let example = Example("""
+        let example = Example(code: """
             class Foo {
                 subscript(i: Int) -> Int {
                     ↓get {

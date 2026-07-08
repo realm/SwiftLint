@@ -361,7 +361,7 @@ struct IndentationWidthRuleTests {
     ) {
         #expect(
             countViolations(
-                in: Example(string, file: (file), line: line),
+                in: Example(code: string, file: (file), line: line),
                 indentationWidth: indentationWidth,
                 includeComments: includeComments,
                 includeCompilerDirectives: includeCompilerDirectives,

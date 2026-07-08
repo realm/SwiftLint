@@ -114,7 +114,7 @@ internal struct FileTypesOrderRuleExamples {
     ]
 
     static let nonTriggeringExamples = #examples([
-        Self.defaultOrderParts.joined(separator: "\n\n"),
+        Self.defaultOrderParts.joined(separator: "\n\n").asExample(),
         """
         // Only extensions
         extension Foo {}

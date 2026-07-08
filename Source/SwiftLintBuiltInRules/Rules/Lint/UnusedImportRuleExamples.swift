@@ -180,11 +180,11 @@ struct UnusedImportRuleExamples {
             @objc
             class A {}
             """,
-        Example("""
+        """
         import Foundation
         typealias Foo = CFArray
         dispatchMain()
-        """, configuration: [
+        """.asExample(configuration: [
             "require_explicit_imports": true,
             "allowed_transitive_imports": [
                 [
@@ -192,17 +192,17 @@ struct UnusedImportRuleExamples {
                     "allowed_transitive_imports": ["CoreFoundation", "Dispatch"],
                 ] as [String: any Sendable],
             ],
-        ] as [String: any Sendable], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
+        ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
             """
             import Foundation
             typealias Foo = CFArray
             dispatchMain()
             """,
-        Example("""
+        """
         ↓↓↓import Foundation
         typealias Foo = CFData
         dispatchMain()
-        """, configuration: [
+        """.asExample(configuration: [
             "require_explicit_imports": true
         ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
             """
@@ -224,19 +224,19 @@ struct UnusedImportRuleExamples {
                     "allowed_transitive_imports": ["CoreFoundation"],
                 ] as [String: any Sendable],
             ],
-        ] as [String: any Sendable]):
+        ]):
             """
             import Foundation
             typealias Foo = CFData
             @objc
             class A {}
             """,
-        Example("""
+        """
         ↓import Foundation
         typealias Bar = CFData
         @objc
         class A {}
-        """, configuration: [
+        """.asExample(configuration: [
             "require_explicit_imports": true
         ], testMultiByteOffsets: false, testOnLinux: false, testOnWindows: false):
             """

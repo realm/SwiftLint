@@ -10,7 +10,7 @@ struct CompilerProtocolInitRuleTests {
     @Test
     func violationMessageForExpressibleByIntegerLiteral() throws {
         let config = try #require(makeConfig(nil, ruleID))
-        let allViolations = violations(Example("let a = NSNumber(integerLiteral: 1)"), config: config)
+        let allViolations = violations(Example(code: "let a = NSNumber(integerLiteral: 1)"), config: config)
         let violation = try #require(allViolations.first { $0.ruleIdentifier == ruleID })
         #expect(
             violation.reason

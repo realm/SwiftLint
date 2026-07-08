@@ -7,7 +7,7 @@ private func embedInSwitch(
     case: String = "case .bar"
 ) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         switch foo {
         \(`case`):
             \(text)

@@ -33,7 +33,7 @@ internal struct ClosureBodyLengthRuleExamples {
 
 private func singleLineClosure() -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("foo.bar { $0 }")
+    Example(code: "foo.bar { $0 }")
 }
 
 private func trailingClosure(_ violationSymbol: String = "",
@@ -41,7 +41,7 @@ private func trailingClosure(_ violationSymbol: String = "",
                              commentLinesCount: Int,
                              emptyLinesCount: Int) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         foo.bar \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         \(repeatElement("\t// toto\n", count: commentLinesCount).joined())\
@@ -53,7 +53,7 @@ private func trailingClosure(_ violationSymbol: String = "",
 private func argumentClosure(_ violationSymbol: String = "",
                              codeLinesCount: Int) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         foo.bar(\(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
@@ -63,7 +63,7 @@ private func argumentClosure(_ violationSymbol: String = "",
 private func labeledArgumentClosure(_ violationSymbol: String = "",
                                     codeLinesCount: Int) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         foo.bar(label: \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         })
@@ -73,7 +73,7 @@ private func labeledArgumentClosure(_ violationSymbol: String = "",
 private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
                                           codeLinesCount: Int) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         foo.bar(label: \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         }, anotherLabel: \(violationSymbol){ toto in
@@ -85,7 +85,7 @@ private func multiLabeledArgumentClosures(_ violationSymbol: String = "",
 private func labeledAndTrailingClosures(_ violationSymbol: String = "",
                                         codeLinesCount: Int) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         foo.bar(label: \(violationSymbol){ toto in
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\
         }) \(violationSymbol){ toto in
@@ -97,7 +97,7 @@ private func labeledAndTrailingClosures(_ violationSymbol: String = "",
 private func lazyInitialization(_ violationSymbol: String = "",
                                 codeLinesCount: Int) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
         let foo: Bar = \(violationSymbol){ toto in
         \tlet bar = Bar()
         \((0..<codeLinesCount).map { "\tlet a\($0) = 0\n" }.joined())\

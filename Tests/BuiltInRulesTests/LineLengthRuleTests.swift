@@ -72,47 +72,48 @@ struct LineLengthRuleTests {
         """,
     ])
 
-    private let longComment = Example(String(repeating: "/", count: 121) + "\n")
-    private let longBlockComment = Example("/*" + String(repeating: " ", count: 121) + "*/\n")
-    private let longRealBlockComment = Example("""
+    private let longComment = Example(code: String(repeating: "/", count: 121) + "\n")
+    private let longBlockComment = Example(code: "/*" + String(repeating: " ", count: 121) + "*/\n")
+    private let longRealBlockComment = Example(code: """
         /*
         \(Self.longString)
         */
 
         """)
-    private let declarationWithTrailingLongComment = Example("let foo = 1 " + String(repeating: "/", count: 121) + "\n")
-    private let interpolatedString = Example("print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
-    private let plainString = Example("print(\"" + Self.longString + ")\"\n")
+    private let declarationWithTrailingLongComment =
+        Example(code: "let foo = 1 " + String(repeating: "/", count: 121) + "\n")
+    private let interpolatedString = Example(code: "print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n")
+    private let plainString = Example(code: "print(\"" + Self.longString + ")\"\n")
 
-    private let multilineString = Example("""
+    private let multilineString = Example(code: """
         let multilineString = \"\"\"
         \(Self.longString)
         \"\"\"
 
         """)
-    private let tripleStringSingleLine = Example(
+    private let tripleStringSingleLine = Example(code:
         "let tripleString = \"\"\"\(Self.longString)\"\"\"\n"
     )
-    private let poundStringSingleLine = Example("let poundString = #\"\(Self.longString)\"#\n")
-    private let multilineStringWithExpression = Example("""
+    private let poundStringSingleLine = Example(code: "let poundString = #\"\(Self.longString)\"#\n")
+    private let multilineStringWithExpression = Example(code: """
         let multilineString = \"\"\"
         \(Self.longString)
 
         \"\"\"; let a = 1
         """)
-    private let multilineStringWithNewlineExpression = Example("""
+    private let multilineStringWithNewlineExpression = Example(code: """
         let multilineString = \"\"\"
         \(Self.longString)
 
         \"\"\"
         ; let a = 1
         """)
-    private let multilineStringFail = Example("""
+    private let multilineStringFail = Example(code: """
         let multilineString = "A" +
         "\(Self.longString)"
 
         """)
-    private let multilineStringWithFunction = Example("""
+    private let multilineStringWithFunction = Example(code: """
         let multilineString = \"\"\"
         \(Self.longString)
         \"\"\".functionCall()
@@ -120,20 +121,20 @@ struct LineLengthRuleTests {
 
     // Regex literal examples
     // swiftlint:disable line_length
-    private let regexLiteral = Example("""
+    private let regexLiteral = Example(code: """
         let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^\(Self.longString)$/
 
         """)
-    private let regexLiteralWithCapture = Example("""
+    private let regexLiteralWithCapture = Example(code: """
         let urlRegex = /^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})(\\/\(Self.longString))?$/
 
         """)
-    private let regexLiteralMultiline = Example("""
+    private let regexLiteralMultiline = Example(code: """
         let complexRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$|^very\\.long\\.regex\\.pattern\\.here\\.with\\.many\\.dots\\.and\\.extra\\.text$/
 
         """)
     // swiftlint:enable line_length
-    private let regexLiteralFail = Example("""
+    private let regexLiteralFail = Example(code: """
         let longRegexString = "\(Self.longString)"
 
         """)
@@ -183,10 +184,10 @@ struct LineLengthRuleTests {
     @Test
     func lineLengthWithIgnoreURLsEnabled() {
         let url = "https://github.com/realm/SwiftLint"
-        let triggeringLines = #examples([String(repeating: "/", count: 121) + "\(url)\n"])
+        let triggeringLines = #examples([(String(repeating: "/", count: 121) + "\(url)\n").asExample()])
         let nonTriggeringLines = #examples([
-            "\(url) " + String(repeating: "/", count: 118) + " \(url)\n",
-            "\(url)/" + String(repeating: "a", count: 120),
+            ("\(url) " + String(repeating: "/", count: 118) + " \(url)\n").asExample(),
+            ("\(url)/" + String(repeating: "a", count: 120)).asExample(),
         ])
 
         let baseDescription = LineLengthRule.description

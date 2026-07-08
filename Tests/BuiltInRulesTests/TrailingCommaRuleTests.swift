@@ -15,7 +15,7 @@ struct TrailingCommaRuleTests {
         verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
 
         // Ensure the rule produces the correct reason string.
-        let failingCase = Example("let array = [\n\t1,\n\t2,\n]\n")
+        let failingCase = Example(code: "let array = [\n\t1,\n\t2,\n]\n")
         #expect(
             trailingCommaViolations(failingCase).first?.reason == "Collection literals should not have trailing commas")
     }
@@ -70,7 +70,7 @@ struct TrailingCommaRuleTests {
         verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
 
         // Ensure the rule produces the correct reason string.
-        let failingCase = Example("let array = [\n\t1,\n\t2\n]\n")
+        let failingCase = Example(code: "let array = [\n\t1,\n\t2\n]\n")
         #expect(
             trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration).first?.reason
                 == "Multi-line collection literals should have trailing commas")

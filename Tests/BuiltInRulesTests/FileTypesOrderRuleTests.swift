@@ -10,7 +10,7 @@ struct FileTypesOrderRuleTests {
     func fileTypesOrderReversedOrder() { // swiftlint:disable:this function_body_length
         // Test with reversed `order` entries
         let nonTriggeringExamples = #examples([
-            FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n")
+            FileTypesOrderRuleExamples.defaultOrderParts.reversed().joined(separator: "\n\n").asExample()
         ])
         let triggeringExamples = #examples([
             """
@@ -155,7 +155,7 @@ struct FileTypesOrderRuleTests {
 
     @Test
     func conditionalCompilationKeepsSupportingTypeViolationReason() {
-        let example = Example("""
+        let example = Example(code: """
         extension Main {}
 
         #if canImport(Darwin)

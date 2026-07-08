@@ -94,7 +94,7 @@ internal struct MarkRuleExamples {
 // This example should not trigger changes
 private let issue1749Correction = issue1749Example
 
-private let issue1029Example = Example("""
+private let issue1029Example = Example(code: """
     ↓//MARK:- Top-Level bad mark
     ↓//MARK:- Another bad mark
     struct MarkTest {}
@@ -102,7 +102,7 @@ private let issue1029Example = Example("""
     extension MarkTest {}
     """)
 
-private let issue1029Correction = Example("""
+private let issue1029Correction = Example(code: """
     // MARK: - Top-Level bad mark
     // MARK: - Another bad mark
     struct MarkTest {}
@@ -112,7 +112,7 @@ private let issue1029Correction = Example("""
 
 // https://github.com/realm/SwiftLint/issues/1749
 // https://github.com/realm/SwiftLint/issues/3841
-private let issue1749Example = Example(
+private let issue1749Example = Example(code:
     """
     /*
     func test1() {

@@ -19,7 +19,7 @@ struct TrailingClosureConfigurationTests {
             configuration: [
                 "severity": "error",
                 "only_single_muted_parameter": true,
-            ] as [String: any Sendable]
+            ]
         )
         #expect(config.severityConfiguration.severity == .error)
         #expect(config.onlySingleMutedParameter)

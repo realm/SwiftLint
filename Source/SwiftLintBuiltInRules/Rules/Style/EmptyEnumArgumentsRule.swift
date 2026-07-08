@@ -3,7 +3,7 @@ import SwiftSyntax
 
 private func wrapInSwitch(variable: String = "foo", _ str: String) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example(
+    Example(code:
         """
         switch \(variable) {
         \(str): break
@@ -13,7 +13,7 @@ private func wrapInSwitch(variable: String = "foo", _ str: String) -> Example {
 
 private func wrapInFunc(_ str: String) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("""
+    Example(code: """
     func example(foo: Foo) {
         switch foo {
         \(str):

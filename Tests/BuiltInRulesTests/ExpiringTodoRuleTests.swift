@@ -13,7 +13,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func expiredTodo() {
-        let example = Example("fatalError() // TODO: [\(dateString(for: .expired))] Implement")
+        let example = Example(code: "fatalError() // TODO: [\(dateString(for: .expired))] Implement")
         let violations = violations(example)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "TODO/FIXME has expired and must be resolved")
@@ -21,7 +21,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func expiredFixMe() {
-        let example = Example("fatalError() // FIXME: [\(dateString(for: .expired))] Implement")
+        let example = Example(code: "fatalError() // FIXME: [\(dateString(for: .expired))] Implement")
         let violations = violations(example)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "TODO/FIXME has expired and must be resolved")
@@ -29,7 +29,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func approachingExpiryTodo() {
-        let example = Example("fatalError() // TODO: [\(dateString(for: .approachingExpiry))] Implement")
+        let example = Example(code: "fatalError() // TODO: [\(dateString(for: .approachingExpiry))] Implement")
         let violations = violations(example)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "TODO/FIXME is approaching its expiry and should be resolved soon")
@@ -37,7 +37,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func nonExpiredTodo() {
-        let example = Example("fatalError() // TODO: [\(dateString(for: .badFormatting))] Implement")
+        let example = Example(code: "fatalError() // TODO: [\(dateString(for: .badFormatting))] Implement")
         #expect(violations(example).isEmpty)
     }
 
@@ -46,7 +46,7 @@ struct ExpiringTodoRuleTests {
         let ruleConfig = ExpiringTodoConfiguration(
             dateDelimiters: .init(opening: "<", closing: ">")
         )
-        let example = Example("fatalError() // TODO: <\(dateString(for: .expired))> Implement")
+        let example = Example(code: "fatalError() // TODO: <\(dateString(for: .expired))> Implement")
         let violations = violations(example, ruleConfig)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "TODO/FIXME has expired and must be resolved")
@@ -58,7 +58,7 @@ struct ExpiringTodoRuleTests {
             dateFormat: "MM-dd-yyyy",
             dateSeparator: "-"
         )
-        let example = Example(
+        let example = Example(code:
             "fatalError() // TODO: [\(dateString(for: .expired, format: ruleConfig.dateFormat))] Implement"
         )
         let violations = violations(example, ruleConfig)
@@ -69,7 +69,7 @@ struct ExpiringTodoRuleTests {
     @Test
     func expiredCustomFormat() {
         let ruleConfig = ExpiringTodoConfiguration(dateFormat: "yyyy/MM/dd")
-        let example = Example(
+        let example = Example(code:
             "fatalError() // TODO: [\(dateString(for: .expired, format: ruleConfig.dateFormat))] Implement"
         )
         let violations = violations(example, ruleConfig)
@@ -79,7 +79,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func multipleExpiredTodos() throws {
-        let example = Example(
+        let example = Example(code:
             """
             fatalError() // TODO: [\(dateString(for: .expired))] Implement one
             fatalError() // TODO: Implement two by [\(dateString(for: .expired))]
@@ -95,7 +95,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func todoAndExpiredTodo() {
-        let example = Example(
+        let example = Example(code:
             """
             // TODO: Implement one - without deadline
             fatalError()
@@ -110,7 +110,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func multilineExpiredTodo() {
-        let example = Example(
+        let example = Example(code:
             """
             // TODO: Multi-line task
             //       for: @MATODOLU
@@ -126,7 +126,7 @@ struct ExpiringTodoRuleTests {
 
     @Test
     func todoFunctionAndExpiredTodo() {
-        let example = Example(
+        let example = Example(code:
             """
             TODO()
             // TODO: Implement two by [\(dateString(for: .expired))]
@@ -143,7 +143,7 @@ struct ExpiringTodoRuleTests {
         let ruleConfig = ExpiringTodoConfiguration(
             dateFormat: "dd/yyyy/MM"
         )
-        let example = Example("fatalError() // TODO: [31/01/2020] Implement")
+        let example = Example(code: "fatalError() // TODO: [31/01/2020] Implement")
         let violations = violations(example, ruleConfig)
         #expect(violations.count == 1)
         #expect(violations.first?.reason == "Expiring TODO/FIXME is incorrectly formatted")

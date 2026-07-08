@@ -14,8 +14,8 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
     func nestingWithAlwaysAllowOneTypeInFunctions() { // swiftlint:disable:this function_body_length
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     \(type) Example_0 {
                         \(type) Example_1 {
                             func f_0() {
@@ -23,9 +23,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                             }
                         }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     \(type) Example_0 {
                         \(type) Example_1 {
                             func f_0() {
@@ -37,20 +37,20 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                             }
                         }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     func f_0() {
                         \(type) Example_0 {
                             \(type) Example_1 {}
                         }
                     }
-                """),
-            ]
+                """,
+            ])
         })
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     exampleFunc(closure: {
                         \(type) Example_0 {
                             \(type) Example_1 {
@@ -71,9 +71,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     })
-                """),
+                """,
 
-                .init("""
+                """
                     switch example {
                     case .exampleCase:
                        \(type) Example_0 {
@@ -96,13 +96,13 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
-            ]
+                """,
+            ])
         })
 
         var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     \(type) Example_0 {
                        \(type) Example_1 {
                            func f_0() {
@@ -112,9 +112,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     \(type) Example_0 {
                        \(type) Example_1 {
                            func f_0() {
@@ -128,9 +128,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     func f_0() {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -138,14 +138,14 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
-            ]
+                """,
+            ])
         }
 
         // swiftlint:disable:next closure_body_length
         triggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     exampleFunc(closure: {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -170,9 +170,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     })
-                """),
+                """,
 
-                .init("""
+                """
                     switch example {
                     case .exampleCase:
                        \(type) Example_0 {
@@ -199,8 +199,8 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
-            ]
+                """,
+            ])
         })
 
         let description = RuleDescription(
@@ -220,8 +220,8 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         // swiftlint:disable:next closure_body_length
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     exampleFunc(closure: {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -236,9 +236,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     })
-                """),
+                """,
 
-                .init("""
+                """
                     switch example {
                     case .exampleCase:
                        \(type) Example_0 {
@@ -255,9 +255,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     for i in indicies {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -272,9 +272,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     while true {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -289,9 +289,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     repeat {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -306,9 +306,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     } while true
-                """),
+                """,
 
-                .init("""
+                """
                     if flag {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -323,9 +323,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     guard flag else {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -341,9 +341,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                        }
                        return
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     defer {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -358,9 +358,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     do {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -388,22 +388,22 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
-            ]
+                """,
+            ])
         })
 
         // swiftlint:disable:next closure_body_length
         var triggeringExamples = detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     \(type) Example_0 {
                         \(type) Example_1 {
                             ↓\(type) Example_2 {}
                         }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     var example: Int {
                        \(type) Example_0 {
                            \(type) Example_1 {
@@ -412,9 +412,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                        }
                        return 5
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     var example: Int = 5 {
                        didSet {
                            \(type) Example_0 {
@@ -424,17 +424,17 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     extension Example_0 {
                        \(type) Example_1 {
                            ↓\(type) Example_2 {}
                        }
                     }
-                """),
+                """,
 
-                .init("""
+                """
                     \(type) Example_0 {
                        func f_0() {
                            \(type) Example_1 {
@@ -447,12 +447,12 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                            }
                        }
                     }
-                """),
-            ]
+                """,
+            ])
         }
 
-        triggeringExamples.append(contentsOf: [
-            .init("""
+        triggeringExamples.append(contentsOf: #examples([
+            """
                 func f_0() {
                    func f_1() {
                        func f_2() {
@@ -460,9 +460,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                        }
                    }
                 }
-            """),
+            """,
 
-            .init("""
+            """
                 var example: Int {
                    func f_0() {
                        func f_1() {
@@ -473,9 +473,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                    }
                    return 5
                 }
-            """),
+            """,
 
-            .init("""
+            """
                 var example: Int = 5 {
                    didSet {
                        func f_0() {
@@ -487,9 +487,9 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                        }
                    }
                 }
-            """),
+            """,
 
-            .init("""
+            """
                 extension Example_0 {
                    func f_0() {
                        func f_1() {
@@ -499,8 +499,8 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                        }
                    }
                 }
-            """),
-        ])
+            """,
+        ]))
 
         let description = RuleDescription(
             identifier: NestingRule.identifier,
@@ -518,16 +518,16 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
     func nestingWithoutTypealiasAndAssociatedtype() {
         var nonTriggeringExamples = NestingRule.description.nonTriggeringExamples
         nonTriggeringExamples.append(contentsOf: detectingTypes.flatMap { type -> [Example] in
-            [
-                .init("""
+            #examples([
+                """
                     \(type) Example_0 {
                         \(type) Example_1 {
                             typealias Example_2_Type = Example_2.Type
                         }
                         \(type) Example_2 {}
                     }
-                """),
-                .init("""
+                """,
+                """
                     protocol Example_Protcol {
                         associatedtype AssociatedType
                     }
@@ -537,8 +537,8 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                             typealias AssociatedType = Int
                         }
                     }
-                """),
-                .init("""
+                """,
+                """
                     protocol Example_Protcol {
                         associatedtype AssociatedType
                     }
@@ -551,8 +551,8 @@ struct NestingRuleTests { // swiftlint:disable:this type_body_length
                             typealias AssociatedType = Int
                         }
                     }
-                """),
-            ]
+                """,
+            ])
         })
 
         let description = NestingRule.description.with(nonTriggeringExamples: nonTriggeringExamples)

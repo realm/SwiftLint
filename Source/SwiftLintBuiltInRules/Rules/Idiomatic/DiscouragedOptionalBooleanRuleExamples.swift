@@ -170,5 +170,5 @@ private func wrapExample(
     _ test: String
 ) -> Example {
     // No need to capture file and line here, because they are overwritten by the #examples macro.
-    Example("\(type) Foo {\n\t\(test)\n}")
+    Example(code: "\(type) Foo {\n\t\(test)\n}")
 }

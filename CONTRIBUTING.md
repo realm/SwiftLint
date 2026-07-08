@@ -94,14 +94,14 @@ For debugging purposes, examples can be marked as `focused`. If there are any fo
 will be run when executing all tests for that rule.
 
 ```swift
-nonTriggeringExamples: [
-    Example("let x: [Int]"),
-    Example("let x: [Int: String]").focused()   // Only this one will be run in tests.
-],
-triggeringExamples: [
-    Example("let x: ↓Array<String>"),
-    Example("let x: ↓Dictionary<Int, String>")
-]
+nonTriggeringExamples: #examples([
+    "let x: [Int]",
+    "let x: [Int: String]".focused(),   // Only this one will be run in tests.
+]),
+triggeringExamples: #examples([
+    "let x: ↓Array<String>",
+    "let x: ↓Dictionary<Int, String>",
+])
 ```
 
 ### Configuration

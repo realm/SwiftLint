@@ -153,7 +153,7 @@ public extension Example {
     }
 
     /// Makes the current example focused. This is for debugging purposes only.
-    func focused() -> Example { // swiftlint:disable:this unused_declaration
+    func focused() -> Example {
         var new = self
         new.isFocused = true
         return new
@@ -189,6 +189,17 @@ public extension String {
             line: line,
             excludeFromDocumentation: excludeFromDocumentation
         )
+    }
+
+    /// Makes the current example focused. This is for debugging purposes only.
+    func focused(
+        fileID: String = #fileID,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Example {
+        var new = asExample(fileID: fileID, file: file, line: line)
+        new.isFocused = true
+        return new
     }
 }
 

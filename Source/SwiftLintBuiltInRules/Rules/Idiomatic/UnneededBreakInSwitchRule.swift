@@ -4,15 +4,15 @@ import SwiftSyntax
 
 private func embedInSwitch(
     _ text: String,
-    case: String = "case .bar",
-    file: StaticString = #filePath,
-    line: UInt = #line) -> Example {
+    case: String = "case .bar"
+) -> Example {
+    // No need to capture file and line here, because they are overwritten by the #examples macro.
     Example("""
         switch foo {
         \(`case`):
             \(text)
         }
-        """, file: file, line: line)
+        """)
 }
 
 @SwiftSyntaxRule(explicitRewriter: true)

@@ -53,24 +53,48 @@ struct BaselineTests {
     @Test(.temporaryDirectory)
     func writingAndReading() throws {
         try withExampleFileCreated { sourceFilePath in
-            let baselinePath = URL.temporaryDirectory.appending(path: UUID().uuidString)
+            let baselinePath = URL.cwd.appending(path: UUID().uuidString)
             try Baseline(violations: Self.violations(for: sourceFilePath)).write(toPath: baselinePath)
-            defer {
-                try? FileManager.default.removeItem(atPath: baselinePath.filepath)
-            }
             let newBaseline = try Baseline(fromPath: baselinePath)
             #expect(newBaseline == Self.baseline(for: sourceFilePath))
         }
     }
 
-    @Test
+    @Test(.temporaryDirectory)
+    func writingUsesRelativeFilePaths() throws {
+        try withExampleFileCreated { sourceFilePath in
+            try FileManager.default.createDirectory(
+                at: URL.cwd.appending(path: "folder", directoryHint: .isDirectory),
+                withIntermediateDirectories: true
+            )
+            let otherSourceFilePath = URL.cwd
+                .appending(path: "folder", directoryHint: .isDirectory)
+                .appending(path: "\(UUID().uuidString).swift", directoryHint: .notDirectory)
+            try Self.example.write(to: otherSourceFilePath, atomically: true, encoding: .utf8)
+
+            let baselinePath = URL.cwd.appending(path: UUID().uuidString)
+            let violations = Self.violations(for: sourceFilePath) + Self.violations(for: otherSourceFilePath)
+            try Baseline(violations: violations).write(toPath: baselinePath)
+
+            let json = try String(contentsOf: baselinePath, encoding: .utf8)
+            #expect(!json.contains(sourceFilePath.path))
+            #expect(!json.contains(otherSourceFilePath.path))
+            #expect(!json.contains("file://"))
+            #expect(!json.contains("/var/"))
+
+            #expect(json.contains("\"\(sourceFilePath.lastPathComponent)\""))
+            #expect(json.contains("\"folder\\/\(otherSourceFilePath.lastPathComponent)\""))
+        }
+    }
+
+    @Test(.temporaryDirectory)
     func unchangedViolations() throws {
         try withExampleFileCreated { sourceFilePath in
             #expect(Self.baseline(for: sourceFilePath).filter(Self.violations(for: sourceFilePath)).isEmpty)
         }
     }
 
-    @Test
+    @Test(.temporaryDirectory)
     func shiftedViolations() throws {
         try withExampleFileCreated { sourceFilePath in
             let baseline = Self.baseline(for: sourceFilePath)
@@ -79,7 +103,7 @@ struct BaselineTests {
         }
     }
 
-    @Test
+    @Test(.temporaryDirectory)
     func newViolation() throws {
         try testViolationDetection(
             violationRuleDescriptions: Self.ruleDescriptions,
@@ -89,6 +113,7 @@ struct BaselineTests {
     }
 
     @Test(
+        .temporaryDirectory,
         arguments: [
             ArrayInitRule.description,
             BlockBasedKVORule.description,
@@ -119,21 +144,21 @@ struct BaselineTests {
         }
     }
 
-    @Test
+    @Test(.temporaryDirectory)
     func compare() throws {
         try withExampleFileCreated { sourceFilePath in
             let ruleDescriptions = Self.ruleDescriptions + Self.ruleDescriptions
             let violations = ruleDescriptions.violations(for: sourceFilePath)
-            let numberofViolationsToDrop = 3
+            let numberOfViolationsToDrop = 3
             let oldBaseline = Baseline(
-                violations: Array(violations.dropFirst(numberofViolationsToDrop)).reversed()
+                violations: Array(violations.dropFirst(numberOfViolationsToDrop)).reversed()
             )
             let newViolations = Array(
-                try violations.lineShifted(by: 2, path: sourceFilePath).dropLast(numberofViolationsToDrop)
+                try violations.lineShifted(by: 2, path: sourceFilePath).dropLast(numberOfViolationsToDrop)
             )
             let newBaseline = Baseline(violations: newViolations.reversed())
-            #expect(oldBaseline.compare(newBaseline) == Array(newViolations.prefix(numberofViolationsToDrop)))
-            #expect(newBaseline.compare(oldBaseline) == Array(violations.suffix(numberofViolationsToDrop)))
+            #expect(oldBaseline.compare(newBaseline) == Array(newViolations.prefix(numberOfViolationsToDrop)))
+            #expect(newBaseline.compare(oldBaseline) == Array(violations.suffix(numberOfViolationsToDrop)))
         }
     }
 
@@ -162,18 +187,11 @@ struct BaselineTests {
     }
 
     private func withExampleFileCreated(_ block: (URL) throws -> Void) throws {
-        let sourceFilePath = URL.temporaryDirectory.appending(
+        let sourceFilePath = URL.cwd.appending(
             path: "\(UUID().uuidString).swift",
             directoryHint: .notDirectory
         )
-        guard let data = Self.example.data(using: .utf8) else {
-            Issue.record("Could not convert example code to data using UTF-8 encoding")
-            return
-        }
-        try data.write(to: sourceFilePath)
-        defer {
-            try? FileManager.default.removeItem(atPath: sourceFilePath.filepath)
-        }
+        try Self.example.write(to: sourceFilePath, atomically: true, encoding: .utf8)
         try block(sourceFilePath)
     }
 }

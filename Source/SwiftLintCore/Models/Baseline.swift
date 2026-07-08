@@ -10,9 +10,77 @@ private struct BaselineViolation: Codable, Hashable, Comparable {
     let text: String
     var key: String { text + violation.reason }
 
+    private enum CodingKeys: String, CodingKey {
+        case violation
+        case text
+    }
+
+    private struct CodableViolation: Codable {
+        let ruleIdentifier: String
+        let ruleDescription: String
+        let ruleName: String
+        let severity: ViolationSeverity
+        let location: CodableLocation
+        let reason: String
+
+        init(_ violation: StyleViolation) {
+            ruleIdentifier = violation.ruleIdentifier
+            ruleDescription = violation.ruleDescription
+            ruleName = violation.ruleName
+            severity = violation.severity
+            location = CodableLocation(violation.location)
+            reason = violation.reason
+        }
+
+        var violation: StyleViolation {
+            let location = location.location
+            let description = RuleDescription(
+                identifier: ruleIdentifier,
+                name: ruleName,
+                description: ruleDescription,
+                kind: .style
+            )
+            return StyleViolation(
+                ruleDescription: description,
+                severity: severity,
+                location: location,
+                reason: reason
+            )
+        }
+    }
+
+    private struct CodableLocation: Codable {
+        let file: String?
+        let line: Int?
+        let character: Int?
+
+        init(_ location: Location) {
+            file = location.file.map(\.relativeDisplayPath)
+            line = location.line
+            character = location.character
+        }
+
+        var location: Location {
+            Location(file: file?.url(), line: line, character: character)
+        }
+    }
+
     init(violation: StyleViolation, text: String) {
         self.violation = violation
         self.text = text
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let violation = try container.decode(CodableViolation.self, forKey: .violation)
+        text = try container.decode(String.self, forKey: .text)
+        self.violation = violation.violation
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(CodableViolation(violation), forKey: .violation)
+        try container.encode(text, forKey: .text)
     }
 
     static func == (lhs: Self, rhs: Self) -> Bool {

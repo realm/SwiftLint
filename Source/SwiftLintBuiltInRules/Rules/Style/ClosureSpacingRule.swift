@@ -43,20 +43,13 @@ struct ClosureSpacingRule: Rule {
                 "filter { sorted { $0 < $1 } }",
             "(↓{each in return result.contains(where: ↓{e in return 0})}).count":
                 "({ each in return result.contains(where: { e in return 0 }) }).count",
-            Example("var c = {}"):
-                Example("var c = {}"),
-            Example("var c = { }"):
-                Example("var c = { }"),
-            Example("var c = ↓{  }"):
-                Example("var c = { }"),
-            Example("var c = { /* comment */ }"):
-                Example("var c = { /* comment */ }"),
-            Example("var c = ↓{/* comment */}"):
-                Example("var c = { /* comment */ }"),
-            Example("var c = ↓{/* comment */ }"):
-                Example("var c = { /* comment */ }"),
-            Example("var c = ↓{ /* comment */}"):
-                Example("var c = { /* comment */ }"),
+            "var c = {}": "var c = {}",
+            "var c = { }": "var c = { }",
+            "var c = ↓{  }": "var c = { }",
+            "var c = { /* comment */ }": "var c = { /* comment */ }",
+            "var c = ↓{/* comment */}": "var c = { /* comment */ }",
+            "var c = ↓{/* comment */ }": "var c = { /* comment */ }",
+            "var c = ↓{ /* comment */}": "var c = { /* comment */ }",
         ])
     )
 }

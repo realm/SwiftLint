@@ -146,6 +146,14 @@ struct IncompatibleConcurrencyAnnotationRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct InconsistentDefaultArgumentInFileRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(InconsistentDefaultArgumentInFileRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct IndentationWidthRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct LastWhereRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct LeadingWhitespaceRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(LeadingWhitespaceRule.description)
     }
 }

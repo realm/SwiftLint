@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct WeakDelegateRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(WeakDelegateRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct XCTFailMessageRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {

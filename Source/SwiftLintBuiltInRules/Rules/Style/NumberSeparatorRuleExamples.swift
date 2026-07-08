@@ -66,20 +66,25 @@ internal struct NumberSeparatorRuleExamples {
         var result = [Example: Example]()
 
         for (violation, sign) in signs {
-            result[Example("let foo = \(violation)10_0")] = Example("let foo = \(sign)100")
-            result[Example("let foo = \(violation)1000")] = Example("let foo = \(sign)1_000")
-            result[Example("let foo = \(violation)1000e2")] = Example("let foo = \(sign)1_000e2")
-            result[Example("let foo = \(violation)1000E2")] = Example("let foo = \(sign)1_000E2")
-            result[Example("let foo = \(violation)1__000")] = Example("let foo = \(sign)1_000")
-            result["let foo = \(violation)1.0001".asExample(configuration: ["minimum_fraction_length": 3])] =
-                Example("let foo = \(sign)1.000_1")
-            result["let foo = \(violation)1_000_000.000000_1"
-                .asExample(configuration: ["minimum_fraction_length": 3])] =
-                Example("let foo = \(sign)1_000_000.000_000_1")
-            result["let foo = \(violation)1000000.000000_1".asExample(configuration: ["minimum_fraction_length": 3])] =
-                Example("let foo = \(sign)1_000_000.000_000_1")
-            result["let foo = \(sign)6.2832e-6".asExample(configuration: ["minimum_fraction_length": 3])] =
-                Example("let foo = \(sign)6.283_2e-6")
+            let newExamples = #corrections([
+                "let foo = \(violation)10_0": "let foo = \(sign)100",
+                "let foo = \(violation)1000": "let foo = \(sign)1_000",
+                "let foo = \(violation)1000e2": "let foo = \(sign)1_000e2",
+                "let foo = \(violation)1000E2": "let foo = \(sign)1_000E2",
+                "let foo = \(violation)1__000": "let foo = \(sign)1_000",
+                "let foo = \(violation)1.0001".asExample(configuration: ["minimum_fraction_length": 3]):
+                    "let foo = \(sign)1.000_1",
+                "let foo = \(violation)1_000_000.000000_1"
+                    .asExample(configuration: ["minimum_fraction_length": 3]):
+                    "let foo = \(sign)1_000_000.000_000_1",
+                "let foo = \(violation)1000000.000000_1".asExample(configuration: ["minimum_fraction_length": 3]):
+                    "let foo = \(sign)1_000_000.000_000_1",
+                "let foo = \(sign)6.2832e-6".asExample(configuration: ["minimum_fraction_length": 3]):
+                    "let foo = \(sign)6.283_2e-6",
+            ])
+            result.merge(newExamples) {
+                queuedFatalError("All keys should be unique, but found duplicate keys for \($0) and \($1)")
+            }
         }
 
         return result

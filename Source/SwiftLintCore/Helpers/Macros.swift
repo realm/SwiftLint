@@ -82,10 +82,6 @@ public macro SwiftSyntaxRule(foldExpressions: Bool = false,
 ///
 /// The parameter is typed `[Example]` (``Example`` is `ExpressibleByStringInterpolation`), so an unsupported element
 /// such as an `Int` fails as a plain type error on the literal you wrote rather than as a macro-expansion failure.
-///
-/// Use it for the common case where examples only carry code, e.g.
-/// `nonTriggeringExamples: #examples(["let x = 1", "let y = 2"])`. Examples that need a custom configuration or
-/// chained modifiers should keep using ``Example`` directly.
 @freestanding(expression)
 public macro examples(_ examples: [Example]) -> [Example] = #externalMacro(
     module: "SwiftLintCoreMacros",
@@ -98,10 +94,6 @@ public macro examples(_ examples: [Example]) -> [Example] = #externalMacro(
 /// Both key and value are typed ``Example`` (which is `ExpressibleByStringInterpolation` and `Hashable`), so an
 /// unsupported key or value fails as a plain type error on the literal you wrote rather than as a macro-expansion
 /// failure.
-///
-/// Use it for a rule's `corrections`, e.g.
-/// `corrections: #corrections(["↓x": "y"])`. Pairs that need a custom configuration should keep using
-/// ``Example`` directly.
 @freestanding(expression)
 public macro corrections(_ examples: [Example: Example]) -> [Example: Example] = #externalMacro(
     module: "SwiftLintCoreMacros",

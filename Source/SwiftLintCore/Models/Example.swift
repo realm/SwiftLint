@@ -152,7 +152,7 @@ public extension Example {
         return new
     }
 
-    /// Makes the current example focused. This is for debugging purposes only.
+    /// Makes this example focused, so that only this and other focused tests run. For debugging purposes only.
     func focused() -> Example {
         var new = self
         new.isFocused = true
@@ -191,15 +191,13 @@ public extension String {
         )
     }
 
-    /// Makes the current example focused. This is for debugging purposes only.
+    /// Makes this example focused, so that only this and other focused tests run. For debugging purposes only.
     func focused(
         fileID: String = #fileID,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Example {
-        var new = asExample(fileID: fileID, file: file, line: line)
-        new.isFocused = true
-        return new
+        asExample(fileID: fileID, file: file, line: line).focused()
     }
 }
 

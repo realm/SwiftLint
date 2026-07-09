@@ -245,8 +245,10 @@ extension Example: ExpressibleByStringInterpolation {
     }
 
     private static let literalInitializerMessage = """
-        Example does not support string-literal initialization at runtime; the #examples and #corrections \
-        macros rewrite literals into Example(code:) calls. Use Example(code:) directly.
+        'Example' type does not support string-literal initialization at runtime. Alternatives:
+          1. Use "foo".asExample().
+          2. Use Example(code: "foo").
+          3. Use the #examples or #corrections macros.
         """
 }
 

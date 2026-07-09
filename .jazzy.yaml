@@ -8,6 +8,83 @@ swift_build_tool: spm
 theme: fullwidth
 clean: true
 copyright: '© 2023 [JP Simard](https://jpsim.com) under MIT.'
+head: |
+  <style>
+  @media (prefers-color-scheme: dark) {
+    /* Colors below are from the Tailwind CSS default palette:
+       https://tailwindcss.com/docs/colors#default-color-palette-reference */
+    :root { color-scheme: dark; }
+    body { background: #000; color: #e2e8f0; } /* black / slate-200 */
+    a { color: #8ec5ff; } /* blue-300 */
+    a:hover, a:focus { color: #bedbff; } /* blue-200 */
+    h6, blockquote { color: #cad5e2; } /* slate-300 */
+    blockquote { border-left-color: #314158; } /* slate-700 */
+    /* header/footer/breadcrumbs/navigation/section all share the page's
+       black background, so hairline borders keep them visually separated. */
+    .header { background: #000; color: #cad5e2; border-bottom: 1px solid #314158; } /* black / slate-300 / slate-700 */
+    .footer { background: #000; color: #cad5e2; border-top: 1px solid #314158; } /* black / slate-300 / slate-700 */
+    .header-link, .footer a { color: #e2e8f0; } /* slate-200 */
+    .breadcrumbs { background: #000; border-bottom-color: #314158; } /* black / slate-700 */
+    .navigation { background: #000; border-right-color: #314158; } /* black / slate-700 */
+    .nav-group-name { border-bottom-color: #1d293d; } /* slate-800 */
+    .nav-group-name-link { color: #e2e8f0; } /* slate-200 */
+    .nav-group-task-link { color: #cad5e2; } /* slate-300 */
+    .section, .height-container .section { background: #000; border-color: #314158; } /* black / slate-700 */
+    .task-group-section, .pointer-container { border-color: #1d293d; } /* slate-800 */
+    .section-name, .declaration-note, .aside .aside-title { color: #cad5e2; } /* slate-300 */
+    .language { border-left-color: #314158; } /* slate-700 */
+    .language .aside-title { color: #8ec5ff; } /* blue-300 */
+    .aside-warning, .aside-deprecated, .aside-unavailable { border-left-color: #fb2c36; } /* red-500 */
+    .aside-warning .aside-title, .aside-deprecated .aside-title,
+    .aside-unavailable .aside-title { color: #ffa2a2; } /* red-300 */
+    .pointer { border-left-color: #314158; border-top-color: #314158; background: #0f172b; } /* slate-700 / slate-900 */
+    /* pre/code now share the page's black background (matching the
+       background of Xcode's own editor), so a hairline border keeps code
+       blocks legible as distinct boxes. */
+    pre, .item-container p code, .item-container li code,
+    .top-matter p code, .top-matter li code { background: #000; border: 1px solid #1d293d; } /* black / slate-800 */
+    table, .graybox { background: #000; } /* black */
+    th, td { border-color: #1d293d; } /* slate-800 */
+    th { background: #0f172b; color: #fff; border-color: #314158; } /* slate-900 / white / slate-700 */
+    /* Darker than the header (slate-900) so the header stays visually
+       distinct instead of blending into every other body row. */
+    tr:nth-child(2n) { background-color: #020617; } /* slate-950 */
+    /* Nested tables (e.g. a rule's per-key severity sub-table) get their own
+       border so they read as a distinct embedded component rather than
+       blending into the outer table's cell. */
+    table table { border: 1px solid #314158; } /* slate-700 */
+    hr { background-color: #314158; } /* slate-700 */
+    form[role=search] input { background: #0f172b; color: #fff; } /* slate-900 / white */
+    .loading form[role=search] input { background-color: #0f172b; } /* slate-900 */
+    form[role=search] input::placeholder { color: #cad5e2; } /* slate-300; base theme leaves this
+      unstyled, so the browser default (mid-gray, tuned for light backgrounds)
+      is nearly illegible here. */
+    form[role=search] .tt-menu { background: #0f172b; color: #f1f5f9; border-color: #314158; } /* slate-900 / slate-100 / slate-700 */
+    /* Syntax highlight colors below are inspired by Xcode's built-in
+       "Midnight" color theme, each mapped to its nearest Tailwind token. */
+    /* Safety net: matches the specificity of the base theme's per-token
+       rules (.highlight .foo), so it overrides every token color/background
+       by source order alone, even ones not called out individually below. */
+    .highlight [class] { color: #fff; background-color: transparent; } /* white */
+    .highlight .c, .highlight .cm, .highlight .c1, .highlight .cs,
+    .highlight .cp { color: #00d492; } /* emerald-400, comments */
+    .highlight .k, .highlight .o, .highlight .kc, .highlight .kd,
+    .highlight .kp, .highlight .kr, .highlight .ow { color: #fda5d5; } /* pink-300, keywords */
+    .highlight .kt, .highlight .nc { color: #00bcff; } /* sky-400, types */
+    .highlight .m, .highlight .mf, .highlight .mh, .highlight .mi,
+    .highlight .mo, .highlight .il, .highlight .mb { color: #a3b3ff; } /* indigo-300, numbers */
+    .highlight .s, .highlight .sb, .highlight .sc, .highlight .sd,
+    .highlight .s2, .highlight .se, .highlight .sh, .highlight .si,
+    .highlight .sx, .highlight .sr, .highlight .s1, .highlight .ss { color: #ffa2a2; } /* red-300, strings */
+    .highlight .na, .highlight .nb, .highlight .no, .highlight .nv,
+    .highlight .vc, .highlight .vg, .highlight .vi { color: #05df72; } /* green-400, attributes/variables */
+    .highlight .ne, .highlight .nf { color: #5ee9b5; } /* emerald-300, functions */
+    .highlight .nn, .highlight .bp, .highlight .go, .highlight .w { color: #cad5e2; } /* slate-300, muted */
+    /* The "↓" violation marker (class .err) gets its own callout treatment,
+       echoing the light theme's highlighted-error-box styling. */
+    .highlight .err { color: #ffa2a2; background-color: #460809; } /* red-300 on red-950 */
+  }
+  </style>
 
 documentation: rule_docs/*.md
 hide_unlisted_documentation: true

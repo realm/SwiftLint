@@ -20,6 +20,10 @@
   them across the built-in rules.  
   [ZevEisenberg](https://github.com/ZevEisenberg)
 
+* (Re)add `@`-prefixed response file support to `lint` and `analyze` commands.
+  [dflems](https://github.com/dflems)
+  [#issue_number](https://github.com/realm/SwiftLint/pull/6815)
+
 ### Bug Fixes
 
 * Fix baseline writing to store file locations as paths relative to the current working directory,

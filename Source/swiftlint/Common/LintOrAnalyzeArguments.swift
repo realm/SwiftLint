@@ -77,6 +77,13 @@ func quietOptionDescription(for mode: LintOrAnalyzeMode) -> ArgumentHelp {
     "Don't print status logs like '\(mode.verb.capitalized) <file>' & 'Done \(mode.verb)'."
 }
 
+func resolvedPaths(from paths: [String]) -> [URL] {
+    // Lint/analyze files in current working directory if no paths were specified.
+    paths.isNotEmpty
+        ? paths.expandingResponseFiles.map { URL(filePath: $0) }
+        : [URL.cwd]
+}
+
 extension URL: @retroactive ExpressibleByArgument {
     public init?(argument: String) {
         self.init(filePath: argument)

@@ -57,21 +57,6 @@ private func partiallyFilter(arguments args: [String]) -> ([String], Bool) {
 }
 
 extension Array where Element == String {
-    /// Return the full list of compiler arguments, replacing any response files with their contents.
-    fileprivate var expandingResponseFiles: [String] {
-        flatMap { arg -> [String] in
-            guard arg.starts(with: "@") else {
-                return [arg]
-            }
-            let responseFile = String(arg.dropFirst())
-            return (try? String(contentsOf: URL(filePath: responseFile, directoryHint: .notDirectory))).flatMap {
-                $0.trimmingCharacters(in: .newlines)
-                    .components(separatedBy: "\n")
-                    .expandingResponseFiles
-            } ?? [arg]
-        }
-    }
-
     /// Returns filtered compiler arguments from `xcodebuild` to something that SourceKit/Clang will accept.
     var filteringCompilerArguments: [String] {
         var args = self

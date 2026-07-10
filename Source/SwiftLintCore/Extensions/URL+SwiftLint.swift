@@ -91,6 +91,25 @@ public extension URL {
     }
 }
 
+public extension [String] {
+    /// Replace any `@`-prefixed response file arguments with the newline-delimited
+    /// contents of the referenced file. Expansion is recursive. If a response file
+    /// cannot be read, the original argument is preserved.
+    var expandingResponseFiles: [String] {
+        flatMap { arg -> [String] in
+            guard arg.hasPrefix("@") else {
+                return [arg]
+            }
+            let responseFile = String(arg.dropFirst())
+            return (try? String(contentsOf: URL(filePath: responseFile, directoryHint: .notDirectory))).flatMap {
+                $0.trimmingCharacters(in: .newlines)
+                    .components(separatedBy: "\n")
+                    .expandingResponseFiles
+            } ?? [arg]
+        }
+    }
+}
+
 public extension String {
     func url(relativeTo base: URL? = nil, directoryHint: URL.DirectoryHint = .inferFromPath) -> URL {
         var resolvedBase = base ?? URL.cwd

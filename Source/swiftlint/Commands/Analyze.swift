@@ -15,14 +15,12 @@ extension SwiftLint {
         @Option(help: "The path of a compilation database to use when running AnalyzerRules.")
         var compileCommands: String?
         @Argument(help: pathsArgumentDescription(for: .analyze))
-        var paths = [URL]()
+        var paths = [String]()
 
         func run() async throws {
-            // Analyze files in current working directory if no paths were specified.
-            let allPaths = paths.isNotEmpty ? paths : [URL.cwd]
             let options = LintOrAnalyzeOptions(
                 mode: .analyze,
-                paths: allPaths,
+                paths: resolvedPaths(from: paths),
                 useSTDIN: false,
                 configurationFiles: common.config,
                 strict: common.leniency == .strict,

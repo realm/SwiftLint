@@ -26,7 +26,7 @@ extension SwiftLint {
         )
         var disableSourceKit = false
         @Argument(help: pathsArgumentDescription(for: .lint))
-        var paths = [URL]()
+        var paths = [String]()
 
         func run() async throws {
             Issue.printDeprecationWarnings = !silenceDeprecationWarnings
@@ -35,11 +35,9 @@ extension SwiftLint {
                 Issue.genericWarning("The option --\(leniency) has no effect together with --fix.").print()
             }
 
-            // Lint files in current working directory if no paths were specified.
-            let allPaths = paths.isNotEmpty ? paths : [URL.cwd]
             let options = LintOrAnalyzeOptions(
                 mode: .lint,
-                paths: allPaths,
+                paths: resolvedPaths(from: paths),
                 useSTDIN: useSTDIN,
                 configurationFiles: common.config,
                 strict: common.leniency == .strict,

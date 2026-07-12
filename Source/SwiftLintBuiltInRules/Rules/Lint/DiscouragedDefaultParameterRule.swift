@@ -10,7 +10,7 @@ struct DiscouragedDefaultParameterRule: Rule {
         name: "Discouraged Default Parameter",
         description: "Default parameter values should not be used in functions with certain access levels.",
         rationale: """
-            By discouraging default parameter values in functions, that are exposed to other source files in the module
+            By discouraging default parameter values in functions that are exposed to other source files in the module
             or package and their consumers, we can promote call sites and reduce the likelihood of bugs caused by
             unexpected (or changed) default values being used.
             """,

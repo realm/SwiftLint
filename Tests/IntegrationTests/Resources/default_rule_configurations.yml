@@ -1335,6 +1335,7 @@ unneeded_throws_rethrows:
     correctable: true
 unowned_variable_capture:
   severity: warning
+  include_unsafe: false
   meta:
     opt-in: true
     correctable: false

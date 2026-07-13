@@ -22,6 +22,12 @@
 
 ### Bug Fixes
 
+* Make `unowned_variable_capture` ignore `unowned(unsafe)` captures by
+  default and add an `include_unsafe` option for projects that still want them
+  reported.  
+  [Yurii Bakurov](https://github.com/Yurii201811)
+  [#6817](https://github.com/realm/SwiftLint/issues/6817)
+
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  
   [SimplyDanny](https://github.com/SimplyDanny)

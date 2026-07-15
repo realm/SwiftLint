@@ -16,6 +16,23 @@ public enum IndentationStyle: Hashable, Sendable {
         }
     }
 
+    /// The indentation string for the given number of levels.
+    public func indentation(for levels: Int) -> String {
+        String(repeating: indentationString, count: max(levels, 0))
+    }
+
+    /// Counts the indentation level represented by a raw whitespace string.
+    public func levelCount(in rawIndent: String) -> Int {
+        let tabs = rawIndent.filter { $0 == "\t" }.count
+        let spaces = rawIndent.filter { $0 == " " }.count
+        let spacesPerLevel: Int
+        switch self {
+        case .tabs: spacesPerLevel = 4
+        case .spaces(let count): spacesPerLevel = count
+        }
+        return tabs + spaces / spacesPerLevel
+    }
+
     /// Creates an indentation style based on an untyped configuration value.
     ///
     /// - parameter object: The configuration value.

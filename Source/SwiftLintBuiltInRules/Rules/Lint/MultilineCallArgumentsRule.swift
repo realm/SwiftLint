@@ -256,6 +256,15 @@ private extension MultilineCallArgumentsRule {
                 .replacingOccurrences(of: "\r", with: "\n")
         }
 
+        private func reindentedText(argument: LabeledExprSyntax) -> String {
+            let indentUnit = oneLevel
+            return normalizedText(argument: argument)
+                .split(separator: "\n", omittingEmptySubsequences: false)
+                .enumerated()
+                .map { $0.offset == 0 ? String($0.element) : indentUnit + $0.element }
+                .joined(separator: "\n")
+        }
+
         private func correctCloseParen(
             comma: TokenSyntax,
             lastArgument: LabeledExprSyntax,
@@ -275,13 +284,8 @@ private extension MultilineCallArgumentsRule {
             rightParen: TokenSyntax,
             baseIndent: String
         ) -> ReasonedRuleViolation.ViolationCorrection {
-            let indentUnit = oneLevel
-            let indent = baseIndent + indentUnit
-            let reindented = normalizedText(argument: firstArgument)
-                .split(separator: "\n", omittingEmptySubsequences: false)
-                .enumerated()
-                .map { $0.offset == 0 ? String($0.element) : indentUnit + $0.element }
-                .joined(separator: "\n")
+            let indent = baseIndent + oneLevel
+            let reindented = reindentedText(argument: firstArgument)
 
             return ReasonedRuleViolation.ViolationCorrection(
                 start: firstArgument.position,
@@ -306,11 +310,7 @@ private extension MultilineCallArgumentsRule {
             let indent = baseIndent + oneLevel
 
             let argLines = arguments.enumerated().map { index, arg -> String in
-                let argText = normalizedText(argument: arg)
-                    .split(separator: "\n", omittingEmptySubsequences: false)
-                    .enumerated()
-                    .map { $0.offset == 0 ? String($0.element) : oneLevel + $0.element }
-                    .joined(separator: "\n")
+                let argText = reindentedText(argument: arg)
                 let needsComma = index < arguments.count - 1 && arg.trailingComma?.presence == .missing
                 return indent + argText + (needsComma ? "," : "")
             }

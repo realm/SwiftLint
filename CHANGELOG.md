@@ -25,6 +25,7 @@
   blocks with any whitespace or newlines between the braces.  
   [arimu1](https://github.com/arimu1)
   [#6839](https://github.com/realm/SwiftLint/issues/6839)
+
 * Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
   and multi-line calls to one-argument-per-line, including nested calls whose closing
   `)` would otherwise be stranded with the last argument

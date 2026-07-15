@@ -118,11 +118,9 @@ extension Configuration {
 
         return files.parallelFilterGroup { file in
             let fileConfiguration = configuration(for: file)
-            let fileConfigurationRootPath = fileConfiguration.rootDirectory
 
             // Files whose configuration specifies they should be excluded will be skipped
-            let shouldSkip = fileConfiguration.excludedPaths.contains { excludedRelativePath in
-                let excludedPath = fileConfigurationRootPath.appending(path: excludedRelativePath.relativePath)
+            let shouldSkip = fileConfiguration.excludedPaths.contains { excludedPath in
                 let filePathComponents = file.path?.pathComponents ?? []
                 let excludedPathComponents = excludedPath.pathComponents
                 return filePathComponents.starts(with: excludedPathComponents)

@@ -1,10 +1,10 @@
 import Foundation
 import SourceKittenFramework
-import SwiftLintFramework
 import TestHelpers
 import Testing
 
 @testable import SwiftLintCore
+@testable import SwiftLintFramework
 
 @Suite(.rulesRegistered)
 struct ConfigPathResolutionTests {
@@ -26,9 +26,32 @@ struct ConfigPathResolutionTests {
                 excludeByPrefix: false
             )
 
-            // swiftlint:disable:next force_try
-            return files.map { $0.path!.path.replacing(try! Regex(".+/\(scenario)/"), with: "") }.sorted()
+            return relativePaths(of: files, in: scenario)
         }
+    }
+
+    /// Returns the paths of the files that are actually linted when the given paths are passed as command line
+    /// arguments, relative to the fixture directory.
+    private func visitedLintableFilePaths(in scenario: String, paths: [String]) async throws -> [String] {
+        let scenarioPath = fixturePath(scenario)
+        return try await CurrentWorkingDirectory.$url.withValue(scenarioPath) {
+            let config = Configuration(configurationFiles: [])
+            let files = try await config.visitLintableFiles(
+                // Lint files in the current working directory if no paths were specified, just like the command does.
+                options: .lint(paths: paths.isEmpty ? [URL.cwd] : paths.map { $0.url() }),
+                storage: RuleStorage(),
+                visitorBlock: { _ in
+                    // Only the set of visited files matters, not the violations found in them.
+                }
+            )
+
+            return relativePaths(of: files, in: scenario)
+        }
+    }
+
+    private func relativePaths(of files: [SwiftLintFile], in scenario: String) -> [String] {
+        // swiftlint:disable:next force_try
+        files.map { $0.path!.path.replacing(try! Regex(".+/\(scenario)/"), with: "") }.sorted()
     }
 
     @Test
@@ -76,6 +99,23 @@ struct ConfigPathResolutionTests {
     }
 
     @Test
+    func nestedConfigurationBasicWithCommandLine() async throws {
+        // `swiftlint --quiet --no-cache ModuleA/File.swift ModuleA/Generated/File.swift ModuleB/File.swift`
+        #expect(
+            try await visitedLintableFilePaths(
+                in: "_4_nested_basic",
+                paths: ["ModuleA/File.swift", "ModuleA/Generated/File.swift", "ModuleB/File.swift"]
+            ) == ["ModuleA/File.swift", "ModuleB/File.swift"]
+        )
+
+        // `swiftlint --quiet --no-cache`
+        #expect(
+            try await visitedLintableFilePaths(in: "_4_nested_basic", paths: [])
+                == ["ModuleA/File.swift", "ModuleB/File.swift"]
+        )
+    }
+
+    @Test
     func wildcardPatternCount() {
         #expect(
             lintableFilePaths(
@@ -84,6 +124,28 @@ struct ConfigPathResolutionTests {
                 inPath: "project"
             ) == ["project/Sources/Models/User.swift"]
         )
+    }
+
+    @Test
+    func wildCardPatternCountWithCommandLine() async throws {
+        // `swiftlint --quiet --no-cache Sources/Models/User.swift Sources/Models/User.generated.swift`
+        let visitedWithPaths = try await visitedLintableFilePaths(
+            in: "_5_wildcard_patterns",
+            paths: ["project/Sources/Models/User.swift", "project/Sources/Models/User.generated.swift"]
+        )
+        withKnownIssue("Wildcard patterns do not work as expected.") {
+            #expect(
+                visitedWithPaths == ["project/Sources/Models/User.swift"]
+            )
+        }
+
+        // `swiftlint --quiet --no-cache`
+        let visitedWithoutPaths = try await visitedLintableFilePaths(in: "_5_wildcard_patterns", paths: [])
+        withKnownIssue("Wildcard patterns do not work as expected.") {
+            #expect(
+                visitedWithoutPaths == ["project/Sources/Models/User.swift"]
+            )
+        }
     }
 
     @Test
@@ -228,4 +290,42 @@ struct ConfigPathResolutionTests {
         )
     }
     #endif
+}
+
+private extension LintOrAnalyzeOptions {
+    /// Options equivalent to running `swiftlint lint --quiet --no-cache <paths>`.
+    static func lint(paths: [URL]) -> Self {
+        Self(
+            mode: .lint,
+            paths: paths,
+            useSTDIN: false,
+            configurationFiles: [],
+            strict: false,
+            lenient: false,
+            forceExclude: false,
+            useExcludingByPrefix: false,
+            useScriptInputFiles: false,
+            useScriptInputFileLists: false,
+            benchmark: false,
+            reporter: nil,
+            baseline: nil,
+            writeBaseline: nil,
+            workingDirectory: nil,
+            // Avoid verbose stderr.
+            quiet: true,
+            output: nil,
+            progress: false,
+            cachePath: nil,
+            // `visitedLintableFilePaths` does not pass `LinterCache`.
+            ignoreCache: true,
+            enableAllRules: false,
+            onlyRule: [],
+            autocorrect: false,
+            format: false,
+            disableSourceKit: false,
+            compilerLogPath: nil,
+            compileCommands: nil,
+            checkForUpdates: false
+        )
+    }
 }

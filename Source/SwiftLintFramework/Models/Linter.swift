@@ -86,13 +86,19 @@ private extension Rule {
     }
 
     func shouldRun(onFile file: SwiftLintFile) -> Bool {
+        shouldRun(onFile: file, fileIsEmpty: file.isEmpty)
+    }
+
+    // Callers iterating all rules over one file can pass a precomputed value while standalone
+    // checks remain lazy when a rule can be rejected without reading the file.
+    func shouldRun(onFile file: SwiftLintFile, fileIsEmpty: @autoclosure () -> Bool) -> Bool {
         // We shouldn't lint if the current Swift version is not supported by the rule
         guard isSupportedByCurrentSwiftVersion(Self.self) else {
             return false
         }
 
         // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
-        if file.isEmpty, !shouldLintEmptyFiles {
+        if !shouldLintEmptyFiles, fileIsEmpty() {
             return false
         }
 
@@ -116,6 +122,7 @@ private extension Rule {
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
     func lint(file: SwiftLintFile,
+              fileIsEmpty: Bool,
               regions: [Region],
               benchmark: Bool,
               storage: RuleStorage,
@@ -126,7 +133,7 @@ private extension Rule {
 
         // Wrap entire lint process including shouldRun check in rule context
         return CurrentRule.$identifier.withValue(ruleID) {
-            guard shouldRun(onFile: file) else {
+            guard shouldRun(onFile: file, fileIsEmpty: fileIsEmpty) else {
                 return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
             }
 
@@ -369,11 +376,12 @@ public struct CollectedLinter {
         }
 
         let regions = file.regions()
+        let fileIsEmpty = file.isEmpty
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
         let validationResults: [LintResult] = rules.parallelMap {
-            $0.lint(file: file, regions: regions, benchmark: benchmark,
+            $0.lint(file: file, fileIsEmpty: fileIsEmpty, regions: regions, benchmark: benchmark,
                     storage: storage,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     globalConfiguration: configuration.globalConfiguration,

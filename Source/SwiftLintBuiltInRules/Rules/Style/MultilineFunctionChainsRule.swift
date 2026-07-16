@@ -158,6 +158,9 @@ private extension MultilineFunctionChainsRule {
     /// chain, its name range.
     final class ChainVisitor: SyntaxVisitor {
         private(set) var callRangeGroups = [[ByteRange]]()
+        // `visitPost` fires for every call in a chain and each computation shares its suffix with
+        // the enclosing call's, so memoize the recursive tail to keep long chains linear.
+        private var subcallRangesCache = [SyntaxIdentifier: [ByteRange]]()
 
         override func visit(_ node: IfConfigClauseSyntax) -> SyntaxVisitorContinueKind {
             // SourceKit reports the structure of the first clause of a postfix `#if` expression only.
@@ -202,7 +205,16 @@ private extension MultilineFunctionChainsRule {
             }
 
             let link = byteRange(from: subcallBodyEnd, to: callee.endPositionBeforeTrailingTrivia)
-            return [link] + callRanges(of: subcall, isSubcall: true)
+            return [link] + cachedSubcallRanges(of: subcall)
+        }
+
+        private func cachedSubcallRanges(of node: ExprSyntax) -> [ByteRange] {
+            if let cached = subcallRangesCache[node.id] {
+                return cached
+            }
+            let ranges = callRanges(of: node, isSubcall: true)
+            subcallRangesCache[node.id] = ranges
+            return ranges
         }
 
         private func byteRange(from start: AbsolutePosition, to end: AbsolutePosition) -> ByteRange {

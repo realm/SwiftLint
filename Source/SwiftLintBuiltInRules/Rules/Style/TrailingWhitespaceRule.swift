@@ -43,17 +43,7 @@ private extension TrailingWhitespaceRule {
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
             // Cheap line scan first: most files have no trailing whitespace at all, and the
             // comment/literal information is only needed to filter actual candidates.
-            var candidateLines = [(line: Line, info: TrailingWhitespaceInfo)]()
-            for lineContents in file.lines {
-                guard let trailingWhitespaceInfo = lineContents.content.trailingWhitespaceInfo() else {
-                    continue // No trailing whitespace
-                }
-                if configuration.ignoresEmptyLines,
-                   lineContents.content.trimmingCharacters(in: .whitespaces).isEmpty {
-                    continue
-                }
-                candidateLines.append((lineContents, trailingWhitespaceInfo))
-            }
+            let candidateLines = collectCandidateLines()
             if candidateLines.isEmpty {
                 return .skipChildren
             }
@@ -106,6 +96,19 @@ private extension TrailingWhitespaceRule {
                 ))
             }
             return .skipChildren
+        }
+
+        private func collectCandidateLines() -> [(line: Line, info: TrailingWhitespaceInfo)] {
+            file.lines.compactMap { lineContents in
+                guard let trailingWhitespaceInfo = lineContents.content.trailingWhitespaceInfo() else {
+                    return nil // No trailing whitespace
+                }
+                if configuration.ignoresEmptyLines,
+                   lineContents.content.trimmingCharacters(in: .whitespaces).isEmpty {
+                    return nil
+                }
+                return (lineContents, trailingWhitespaceInfo)
+            }
         }
 
         /// Pre-computes all comment information in a single pass for better performance

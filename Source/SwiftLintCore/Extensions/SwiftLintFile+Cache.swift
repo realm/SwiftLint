@@ -54,6 +54,7 @@ final class FileCache: @unchecked Sendable {
     fileprivate var foldedSyntaxTree = Cached<SourceFileSyntax?>.notComputed
     fileprivate var syntaxMap = Cached<SwiftLintSyntaxMap?>.notComputed
     fileprivate var swiftSyntaxTokens = Cached<[SwiftLintSyntaxToken]?>.notComputed
+    fileprivate var commentByteRangesSlot = Cached<[ByteRange]>.notComputed
     fileprivate var assertHandlerSlot = Cached<AssertHandler?>.notComputed
 
     /// Returns the cached value for a slot, computing it via `factory` on a cache miss.
@@ -193,6 +194,25 @@ extension SwiftLintFile {
         return value
     }
 
+    /// The byte ranges of all comment trivia pieces (line, doc-line, block, and doc-block) in the
+    /// file, in source order. Computed once per file and cached; multiple rules share the result.
+    ///
+    /// Comments are read directly off token trivia rather than via `syntaxClassifications`, which
+    /// would additionally run SwiftSyntax's general-purpose classifier over every non-comment token
+    /// in the file. Byte positions are tracked incrementally during a single visitor pass because
+    /// `SyntaxProtocol.position` and token-sequence iteration climb the tree per call, which
+    /// degrades sharply on deeply nested expression trees.
+    public func commentByteRanges() -> [ByteRange] {
+        fileCache.getOrCompute
+            { [file = self] in
+                let visitor = CommentByteRangesVisitor(viewMode: .sourceAccurate)
+                visitor.walk(file.syntaxTree)
+                return visitor.ranges
+            }
+            get: { fileCache.commentByteRangesSlot }
+            set: { fileCache.commentByteRangesSlot = $0 }
+    }
+
     public var syntaxClassifications: SyntaxClassifications {
         fileCache.getOrCompute
             { syntaxTree.classifications }
@@ -301,5 +321,27 @@ extension SwiftLintFile {
             }
             get: { fileCache.commands }
             set: { fileCache.commands = $0 }
+    }
+}
+
+private final class CommentByteRangesVisitor: SyntaxVisitor {
+    private(set) var ranges = [ByteRange]()
+    private var position = 0
+
+    override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
+        appendCommentRanges(in: token.leadingTrivia)
+        position += token.trimmedLength.utf8Length
+        appendCommentRanges(in: token.trailingTrivia)
+        return .skipChildren
+    }
+
+    private func appendCommentRanges(in trivia: Trivia) {
+        for piece in trivia {
+            let length = piece.sourceLength.utf8Length
+            if piece.isComment {
+                ranges.append(ByteRange(location: ByteCount(position), length: ByteCount(length)))
+            }
+            position += length
+        }
     }
 }

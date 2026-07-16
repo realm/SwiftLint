@@ -45,7 +45,12 @@ private struct ViolationResult {
 private extension TokenSyntax {
     private enum Mark {
         static func lint(in text: String) -> [() -> String] {
-            regex(badPattern).matches(in: text, options: [], range: text.fullNSRange).compactMap { match in
+            // Every match of `badPattern` contains "MARK", "Mark" or "mark", so a comment without
+            // "ARK"/"ark" cannot violate. This cheap check avoids running the regex on most comments.
+            guard text.contains("ark") || text.contains("ARK") else {
+                return []
+            }
+            return regex(badPattern).matches(in: text, options: [], range: text.fullNSRange).compactMap { match in
                 isIgnoredCases(text, range: match.range) ? nil : {
                     var corrected = replace(text, range: match.range(at: 2), to: "- ")
                     corrected = replace(corrected, range: match.range(at: 1), to: "// MARK: ")
@@ -112,8 +117,10 @@ private extension TokenSyntax {
         var utf8Offset = 0
         var results: [ViolationResult] = []
 
-        for index in leadingTrivia.pieces.indices {
-            let piece = leadingTrivia.pieces[index]
+        // Materialize the leading trivia only once; every access to `leadingTrivia` re-parses
+        // and re-allocates all trivia pieces of the token.
+        let triviaPieces = leadingTrivia.pieces
+        for (index, piece) in triviaPieces.enumerated() {
             defer { utf8Offset += piece.sourceLength.utf8Length }
 
             switch piece {

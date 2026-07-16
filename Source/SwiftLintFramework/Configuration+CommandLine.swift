@@ -230,9 +230,14 @@ extension Configuration {
             }
             return linter.file
         }
-        return await visitor.parallel ?
-            linters.concurrentMap(visit) :
-            linters.asyncMap(visit)
+        // With at least as many files as cores, file-level parallelism saturates the machine and
+        // concurrent rules only contend on each file's shared syntax tree.
+        let parallelizeRules = !visitor.parallel || linters.count < ProcessInfo.processInfo.activeProcessorCount
+        return await RuleExecutionMode.$parallel.withValue(parallelizeRules) {
+            await visitor.parallel ?
+                linters.concurrentMap(visit) :
+                linters.asyncMap(visit)
+        }
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) throws(SwiftLintError) -> [SwiftLintFile] {

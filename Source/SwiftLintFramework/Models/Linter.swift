@@ -18,6 +18,17 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
+/// How rules are executed over a single file.
+enum RuleExecutionMode {
+    /// Whether the rules linting one file run concurrently with each other.
+    ///
+    /// Concurrent rule execution only pays off when few files keep the cores busy: every rule walks
+    /// the same file's syntax tree, and concurrent walks contend on the shared syntax arena's
+    /// reference counts, which slows all of them down. When many files are linted in parallel
+    /// anyway, executing rules serially within each file is faster.
+    @TaskLocal static var parallel = true
+}
+
 private let swiftVersionSupportCacheLock = NSLock()
 nonisolated(unsafe) private var swiftVersionSupportCache = [ObjectIdentifier: Bool](minimumCapacity: 512)
 
@@ -380,13 +391,15 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults: [LintResult] = rules.parallelMap {
-            $0.lint(file: file, fileIsEmpty: fileIsEmpty, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    globalConfiguration: configuration.globalConfiguration,
-                    compilerArguments: compilerArguments)
+        let lintRule: @Sendable (any Rule) -> LintResult = { rule in
+            rule.lint(file: file, fileIsEmpty: fileIsEmpty, regions: regions, benchmark: benchmark,
+                      storage: storage,
+                      superfluousDisableCommandRule: superfluousDisableCommandRule,
+                      globalConfiguration: configuration.globalConfiguration,
+                      compilerArguments: compilerArguments)
         }
+        let validationResults = RuleExecutionMode.parallel ? rules.parallelMap(transform: lintRule)
+                                                           : rules.map(lintRule)
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)

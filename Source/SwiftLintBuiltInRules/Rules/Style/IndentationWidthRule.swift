@@ -3,8 +3,7 @@ import SourceKittenFramework
 import SwiftLintCore
 import SwiftSyntax
 
-@DisabledWithoutSourceKit
-struct IndentationWidthRule: OptInRule {
+struct IndentationWidthRule: OptInRule, SourceKitFreeRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs(Int)
@@ -96,11 +95,18 @@ struct IndentationWidthRule: OptInRule {
         var previousLineIndentations: [Indentation] = []
 
         let conditionContinuationInfo = multilineConditionInfo(in: file)
+        let commentSpans = file.commentByteRanges()
+        let stringSpans = multilineStringSpans(in: file)
 
         for line in file.lines {
             // Skip whitespace-only lines, comments, compiler directives, multiline strings
             let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
-            if shouldSkipLine(line: line, indentationCharacterCount: indentationCharacterCount, in: file) { continue }
+            if shouldSkipLine(
+                line: line,
+                indentationCharacterCount: indentationCharacterCount,
+                commentSpans: commentSpans,
+                multilineStringSpans: stringSpans
+            ) { continue }
 
             let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
 
@@ -144,11 +150,16 @@ struct IndentationWidthRule: OptInRule {
         return violations
     }
 
-    private func shouldSkipLine(line: Line, indentationCharacterCount: Int, in file: SwiftLintFile) -> Bool {
+    private func shouldSkipLine(
+        line: Line,
+        indentationCharacterCount: Int,
+        commentSpans: [ByteRange],
+        multilineStringSpans: [MultilineStringSpan]
+    ) -> Bool {
         line.content.count == indentationCharacterCount ||
-            ignoreCompilerDirective(line: line, in: file) ||
-            ignoreComment(line: line, in: file) ||
-            ignoreMultilineStrings(line: line, in: file)
+            ignoreCompilerDirective(line: line, indentationCharacterCount: indentationCharacterCount) ||
+            ignoreComment(line: line, commentSpans: commentSpans) ||
+            ignoreMultilineStrings(line: line, multilineStringSpans: multilineStringSpans)
     }
 
     private func checkIndentationChange(
@@ -219,46 +230,106 @@ struct IndentationWidthRule: OptInRule {
         return visitor.walk(tree: file.syntaxTree, handler: \.continuationLines)
     }
 
-    private func ignoreCompilerDirective(line: Line, in file: SwiftLintFile) -> Bool {
+    /// Returns the byte spans of all multiline string literals in the file, in source order.
+    private func multilineStringSpans(in file: SwiftLintFile) -> [MultilineStringSpan] {
+        let visitor = MultilineStringSpanVisitor(viewMode: .sourceAccurate)
+        // `visitPost` yields nested literals before the literal containing them, so sort by location
+        // and keep only outermost spans to uphold the binary search's sortedness invariant. Lines of
+        // a nested literal are within the outer literal's span, which decides for the whole region.
+        var spans = [MultilineStringSpan]()
+        for span in visitor.walk(tree: file.syntaxTree, handler: \.spans).sorted(by: { $0.range.location < $1.range.location }) {
+            if let last = spans.last, span.range.upperBound <= last.range.upperBound {
+                continue
+            }
+            spans.append(span)
+        }
+        return spans
+    }
+
+    private static let compilerDirectiveKeywords = ["#if", "#elseif", "#else", "#endif"]
+
+    private func ignoreCompilerDirective(line: Line, indentationCharacterCount: Int) -> Bool {
         if configuration.includeCompilerDirectives {
             return false
         }
-        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds.first == .buildconfigKeyword {
-            return true
+        // A build configuration directive line starts with one of the `#if` family keywords after its
+        // indentation. Directive-looking content inside a multiline string is also skipped by the
+        // multiline string check, so treating it as a directive here doesn't change the outcome.
+        let content = line.content.dropFirst(indentationCharacterCount)
+        return Self.compilerDirectiveKeywords.contains { keyword in
+            guard content.hasPrefix(keyword) else {
+                return false
+            }
+            let next = content.dropFirst(keyword.count).first
+            return next.map { !$0.isLetter && !$0.isNumber && $0 != "_" } ?? true
         }
-        return false
     }
 
-    private func ignoreComment(line: Line, in file: SwiftLintFile) -> Bool {
+    private func ignoreComment(line: Line, commentSpans: [ByteRange]) -> Bool {
         if configuration.includeComments {
             return false
         }
-        let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
-        if syntaxKindsInLine.isNotEmpty, SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) {
-            return true
+        // The line is skipped when its non-whitespace content consists solely of comments, matching
+        // the previous "every syntax token in the line is a comment kind" check. Comment extents come
+        // from syntax tree trivia; bytes between or around them on the line must all be whitespace.
+        let lineStart = line.byteRange.location.value
+        var spanIndex = commentSpans.firstIndexAssumingSorted { $0.upperBound.value > lineStart } ?? commentSpans.count
+        var sawComment = false
+        var byteOffset = 0
+        for byte in line.content.utf8 {
+            defer { byteOffset += 1 }
+            let position = lineStart + byteOffset
+            while spanIndex < commentSpans.count, commentSpans[spanIndex].upperBound.value <= position {
+                spanIndex += 1
+            }
+            if spanIndex < commentSpans.count,
+               commentSpans[spanIndex].location.value <= position {
+                sawComment = true
+                continue
+            }
+            if byte != 0x20, byte != 0x09, byte != 0x0D {
+                return false
+            }
         }
-        return false
+        return sawComment
     }
 
-    private func ignoreMultilineStrings(line: Line, in file: SwiftLintFile) -> Bool {
+    private func ignoreMultilineStrings(line: Line, multilineStringSpans: [MultilineStringSpan]) -> Bool {
         if configuration.includeMultilineStrings {
             return false
         }
 
-        // A multiline string content line is characterized by beginning with a token of kind string whose range's lower
-        // bound is smaller than that of the line itself.
-        let tokensInLine = file.syntaxMap.tokens(inByteRange: line.byteRange)
+        // A multiline string content line is characterized by starting strictly inside a string literal, just as it
+        // began with a string token whose range's lower bound was smaller than that of the line itself in SourceKit's
+        // syntax map.
+        let lineRange = line.byteRange
         guard
-            let firstToken = tokensInLine.first,
-            firstToken.kind == .string,
-            firstToken.range.lowerBound < line.byteRange.lowerBound else {
+            let spanIndex = multilineStringSpans.firstIndexAssumingSorted(
+                where: { $0.range.upperBound > lineRange.lowerBound }
+            ),
+            multilineStringSpans[spanIndex].range.lowerBound < lineRange.lowerBound else {
             return false
+        }
+        let span = multilineStringSpans[spanIndex]
+
+        // SourceKit split a literal's string token at interpolations: the token ended right before each `\(` and the
+        // next one started right after the matching parenthesis. Mirror those boundaries for identical line decisions.
+        if let interpolationStart = span.interpolationStarts.first(where: { $0 >= lineRange.lowerBound }) {
+            if interpolationStart == lineRange.lowerBound {
+                // The line starts at an interpolation's backslash, so its first token isn't a string token.
+                return false
+            }
+            if interpolationStart < lineRange.upperBound {
+                // An interpolation starts on this line, so the line contains more than one token.
+                return true
+            }
+            // The string token beginning this line ends right before the next interpolation on a later line.
+            return lineRange.upperBound < interpolationStart
         }
 
         // Closing delimiters of a multiline string should follow the defined indentation. The Swift compiler requires
-        // those delimiters to be on their own line so we need to consider the number of tokens as well as the upper
-        // bounds.
-        return tokensInLine.count > 1 || line.byteRange.upperBound < firstToken.range.upperBound
+        // those delimiters to be on their own line so the line is only skipped if the literal continues past it.
+        return lineRange.upperBound < span.range.upperBound
     }
 
     /// Validates whether the indentation of a specific line is valid based on the indentation of the previous line.
@@ -315,5 +386,32 @@ private final class MultilineConditionLineVisitor: SyntaxVisitor {
         for lineIndex in (keywordLine + 1)...conditionsEndLine {
             continuationLines[lineIndex] = expectedColumn
         }
+    }
+}
+
+/// The extent of a multiline string literal, matching the extent of the literal's string token in SourceKit's syntax
+/// map: it covers everything from the first opening delimiter to the end of the closing delimiter.
+private struct MultilineStringSpan {
+    let range: ByteRange
+    /// The byte offsets of the backslashes introducing the literal's interpolation segments.
+    let interpolationStarts: [ByteCount]
+}
+
+private final class MultilineStringSpanVisitor: SyntaxVisitor {
+    /// The spans of all multiline string literals in the file, in source order.
+    private(set) var spans = [MultilineStringSpan]()
+
+    override func visitPost(_ node: StringLiteralExprSyntax) {
+        guard node.openingQuote.tokenKind == .multilineStringQuote else { return }
+        let start = node.positionAfterSkippingLeadingTrivia.utf8Offset
+        let end = node.endPositionBeforeTrailingTrivia.utf8Offset
+        let interpolationStarts = node.segments.compactMap { segment -> ByteCount? in
+            guard case let .expressionSegment(expressionSegment) = segment else { return nil }
+            return ByteCount(expressionSegment.backslash.positionAfterSkippingLeadingTrivia.utf8Offset)
+        }
+        spans.append(MultilineStringSpan(
+            range: ByteRange(location: ByteCount(start), length: ByteCount(end - start)),
+            interpolationStarts: interpolationStarts
+        ))
     }
 }

@@ -1,9 +1,9 @@
-import Foundation
 import SourceKittenFramework
 import SwiftLintCore
+import SwiftSyntax
 
-@DisabledWithoutSourceKit
-struct MultilineParametersBracketsRule: OptInRule {
+@SwiftSyntaxRule(optIn: true)
+struct MultilineParametersBracketsRule: Rule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -91,97 +91,100 @@ struct MultilineParametersBracketsRule: OptInRule {
             """,
         ])
     )
+}
 
-    func validate(file: SwiftLintFile) -> [StyleViolation] {
-        violations(in: file.structureDictionary, file: file)
-    }
+private extension MultilineParametersBracketsRule {
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        override func visitPost(_ node: FunctionDeclSyntax) {
+            validate(
+                nameStart: node.name.positionAfterSkippingLeadingTrivia,
+                parameterClause: node.signature.parameterClause
+            )
+        }
 
-    private func violations(in substructure: SourceKittenDictionary, file: SwiftLintFile) -> [StyleViolation] {
-        var violations = [StyleViolation]()
+        override func visitPost(_ node: InitializerDeclSyntax) {
+            validate(
+                nameStart: node.initKeyword.positionAfterSkippingLeadingTrivia,
+                parameterClause: node.signature.parameterClause
+            )
+        }
 
-        // find violations at current level
-        if let kind = substructure.declarationKind,
-           SwiftDeclarationKind.functionKinds.contains(kind) {
+        override func visitPost(_ node: SubscriptDeclSyntax) {
+            validate(
+                nameStart: node.subscriptKeyword.positionAfterSkippingLeadingTrivia,
+                parameterClause: node.parameterClause
+            )
+        }
+
+        private func validate(nameStart: AbsolutePosition, parameterClause: FunctionParameterClauseSyntax) {
+            let parameters = parameterClause.parameters
             guard
-                let nameOffset = substructure.nameOffset,
-                let nameLength = substructure.nameLength,
-                case let nameByteRange = ByteRange(location: nameOffset, length: nameLength),
-                let functionName = file.stringView.substringWithByteRange(nameByteRange)
+                parameters.isNotEmpty,
+                let declaration = text(
+                    from: nameStart,
+                    to: parameterClause.rightParen.endPositionBeforeTrailingTrivia
+                )
             else {
-                return []
+                return
             }
 
-            let parameters = substructure.substructure.filter { $0.declarationKind == .varParameter }
-            let parameterBodies = parameters.compactMap { $0.content(in: file) }
-            let parametersNewlineCount = parameterBodies.map { body in
-                body.countOccurrences(of: "\n")
+            // Ranges spanning each parameter from the first token after its attributes to the end of its
+            // type, ellipsis or default value, excluding any trailing comma.
+            let parameterRanges = parameters.map { parameter in
+                (start: startPosition(of: parameter), end: endPosition(of: parameter))
+            }
+
+            let parametersNewlineCount = parameterRanges.compactMap { range in
+                text(from: range.start, to: range.end)?.countOccurrences(of: "\n")
             }.reduce(0, +)
-            let declarationNewlineCount = functionName.countOccurrences(of: "\n")
+            let declarationNewlineCount = declaration.countOccurrences(of: "\n")
             let isMultiline = declarationNewlineCount > parametersNewlineCount
 
-            if isMultiline, parameters.isNotEmpty {
-                if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
-                    violations.append(openingBracketViolation)
-                }
+            guard isMultiline else {
+                return
+            }
 
-                if let closingBracketViolation = closingBracketViolation(parameters: parameters, file: file) {
-                    violations.append(closingBracketViolation)
-                }
+            let openingBracketEnd = parameterClause.leftParen.endPositionBeforeTrailingTrivia
+            if let firstParameterRange = parameterRanges.first,
+               containsOnlySpacesOrTabs(from: openingBracketEnd, to: firstParameterRange.start) {
+                violations.append(openingBracketEnd)
+            }
+
+            let closingBracketStart = parameterClause.rightParen.positionAfterSkippingLeadingTrivia
+            if let lastParameterRange = parameterRanges.last,
+               containsOnlySpacesOrTabs(from: lastParameterRange.end, to: closingBracketStart) {
+                violations.append(closingBracketStart)
             }
         }
 
-        // find violations at deeper levels
-        for substructure in substructure.substructure {
-            violations += self.violations(in: substructure, file: file)
+        private func startPosition(of parameter: FunctionParameterSyntax) -> AbsolutePosition {
+            parameter.modifiers.first?.positionAfterSkippingLeadingTrivia
+                ?? parameter.firstName.positionAfterSkippingLeadingTrivia
         }
 
-        return violations
-    }
-
-    private func openingBracketViolation(parameters: [SourceKittenDictionary],
-                                         file: SwiftLintFile) -> StyleViolation? {
-        guard
-            let firstParamByteRange = parameters.first?.byteRange,
-            let firstParamRange = file.stringView.byteRangeToNSRange(firstParamByteRange)
-        else {
-            return nil
+        private func endPosition(of parameter: FunctionParameterSyntax) -> AbsolutePosition {
+            if let defaultValue = parameter.defaultValue {
+                return defaultValue.endPositionBeforeTrailingTrivia
+            }
+            if let ellipsis = parameter.ellipsis {
+                return ellipsis.endPositionBeforeTrailingTrivia
+            }
+            return parameter.type.endPositionBeforeTrailingTrivia
         }
 
-        let prefix = file.stringView.nsString.substring(to: firstParamRange.lowerBound)
-        let invalidRegex = regex("\\([ \\t]*\\z")
-
-        guard let invalidMatch = invalidRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange) else {
-            return nil
+        private func containsOnlySpacesOrTabs(from start: AbsolutePosition, to end: AbsolutePosition) -> Bool {
+            guard let gap = text(from: start, to: end) else {
+                return false
+            }
+            return gap.allSatisfy { $0 == " " || $0 == "\t" }
         }
 
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, characterOffset: invalidMatch.range.location + 1)
-        )
-    }
-
-    private func closingBracketViolation(parameters: [SourceKittenDictionary],
-                                         file: SwiftLintFile) -> StyleViolation? {
-        guard
-            let lastParamByteRange = parameters.last?.byteRange,
-            let lastParamRange = file.stringView.byteRangeToNSRange(lastParamByteRange)
-        else {
-            return nil
+        private func text(from start: AbsolutePosition, to end: AbsolutePosition) -> String? {
+            let byteRange = ByteRange(
+                location: ByteCount(start),
+                length: ByteCount(end.utf8Offset - start.utf8Offset)
+            )
+            return file.stringView.substringWithByteRange(byteRange)
         }
-
-        let suffix = file.stringView.nsString.substring(from: lastParamRange.upperBound)
-        let invalidRegex = regex("\\A[ \\t]*\\)")
-
-        guard let invalidMatch = invalidRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange) else {
-            return nil
-        }
-
-        let characterOffset = lastParamRange.upperBound + invalidMatch.range.upperBound - 1
-        return StyleViolation(
-            ruleDescription: Self.description,
-            severity: configuration.severity,
-            location: Location(file: file, characterOffset: characterOffset)
-        )
     }
 }

@@ -4,12 +4,13 @@ import SwiftLintCore
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern,
+              excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
+              usingSyntaxMap: sourceKitFreeSyntaxMap)
     }
 }
 
-@DisabledWithoutSourceKit
-struct VerticalWhitespaceOpeningBracesRule: Rule {
+struct VerticalWhitespaceOpeningBracesRule: SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     private static let nonTriggeringExamples = #examples([

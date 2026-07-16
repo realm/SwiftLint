@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-@DisabledWithoutSourceKit
-struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
+struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule, SourceKitFreeRule {
     var configuration = VerticalWhitespaceClosingBracesConfiguration()
 
     static let description = RuleDescription(
@@ -61,6 +60,8 @@ struct VerticalWhitespaceClosingBracesRule: CorrectableRule, OptInRule {
 
 private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
-        match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+        match(pattern: pattern,
+              excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
+              usingSyntaxMap: sourceKitFreeSyntaxMap)
     }
 }

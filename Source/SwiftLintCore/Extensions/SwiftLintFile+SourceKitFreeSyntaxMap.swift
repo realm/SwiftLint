@@ -14,12 +14,22 @@ public extension SwiftLintFile {
         let contents = stringView
         let tokens = bridgedTokens.map { token -> SyntaxToken in
             guard let kind = token.kind, SyntaxKind.commentKinds.contains(kind),
-                  contents.substringWithByteRange(ByteRange(location: token.offset, length: 2)) == "//",
-                  contents.substringWithByteRange(ByteRange(location: token.range.upperBound, length: 1)) == "\n"
+                  contents.substringWithByteRange(ByteRange(location: token.offset, length: 2)) == "//"
             else {
                 return token.value
             }
-            return SyntaxToken(type: token.value.type, offset: token.offset, length: token.length + 1)
+            let lineEnding = contents.substringWithByteRange(ByteRange(location: token.range.upperBound, length: 2))
+            let newlineLength: ByteCount = switch lineEnding {
+            case let ending? where ending.hasPrefix("\r\n"): 2
+            case let ending? where ending.hasPrefix("\n") || ending.hasPrefix("\r"): 1
+            case nil where contents.substringWithByteRange(
+                ByteRange(location: token.range.upperBound, length: 1)) == "\n": 1
+            default: 0
+            }
+            if newlineLength == 0 {
+                return token.value
+            }
+            return SyntaxToken(type: token.value.type, offset: token.offset, length: token.length + newlineLength)
         }
         return SwiftLintSyntaxMap(value: SyntaxMap(tokens: tokens))
     }

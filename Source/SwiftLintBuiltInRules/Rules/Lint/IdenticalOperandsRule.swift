@@ -80,7 +80,7 @@ private extension IdenticalOperandsRule {
                 return
             }
 
-            if node.leftOperand.normalizedDescription == node.rightOperand.normalizedDescription {
+            if node.leftOperand.isStructurallyIdentical(to: node.rightOperand) {
                 violations.append(node.leftOperand.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -88,7 +88,18 @@ private extension IdenticalOperandsRule {
 }
 
 private extension ExprSyntax {
-    var normalizedDescription: String {
-        debugDescription(includeTrivia: false)
+    func isStructurallyIdentical(to other: ExprSyntax) -> Bool {
+        var lhsTokens = tokens(viewMode: .sourceAccurate).makeIterator()
+        var rhsTokens = other.tokens(viewMode: .sourceAccurate).makeIterator()
+        while true {
+            switch (lhsTokens.next(), rhsTokens.next()) {
+            case (nil, nil):
+                return true
+            case let (lhsToken?, rhsToken?) where lhsToken.tokenKind == rhsToken.tokenKind:
+                continue
+            default:
+                return false
+            }
+        }
     }
 }

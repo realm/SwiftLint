@@ -4,13 +4,19 @@ import SourceKittenFramework
 public extension Request {
     nonisolated(unsafe) static var disableSourceKitOverride = false
 
+    // The environment cannot change during the process lifetime, so read it only once. Repeated
+    // `ProcessInfo.environment` accesses rebridge the entire environment, which is hot when this
+    // is checked once per rule and file.
+    private static let disableSourceKitFromEnvironment =
+        ProcessInfo.processInfo.environment["SWIFTLINT_DISABLE_SOURCEKIT"] != nil
+
     static var disableSourceKit: Bool {
         #if SWIFTLINT_DISABLE_SOURCEKIT
         // Compile-time
         true
         #else
         // Runtime
-        ProcessInfo.processInfo.environment["SWIFTLINT_DISABLE_SOURCEKIT"] != nil || disableSourceKitOverride
+        disableSourceKitFromEnvironment || disableSourceKitOverride
         #endif
     }
 

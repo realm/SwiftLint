@@ -18,6 +18,24 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
+private let swiftVersionSupportCacheLock = NSLock()
+nonisolated(unsafe) private var swiftVersionSupportCache = [ObjectIdentifier: Bool](minimumCapacity: 512)
+
+/// Whether a rule's `minSwiftVersion` is satisfied by the current Swift version. Both sides are
+/// constant for the process lifetime, but the comparison re-parses version strings and copying
+/// `description` retains all of its fields, which is hot when evaluated per rule and file.
+private func isSupportedByCurrentSwiftVersion(_ ruleType: (some Rule).Type) -> Bool {
+    let key = ObjectIdentifier(ruleType)
+    swiftVersionSupportCacheLock.lock()
+    defer { swiftVersionSupportCacheLock.unlock() }
+    if let cached = swiftVersionSupportCache[key] {
+        return cached
+    }
+    let supported = SwiftVersion.current >= ruleType.description.minSwiftVersion
+    swiftVersionSupportCache[key] = supported
+    return supported
+}
+
 private extension Rule {
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
@@ -69,7 +87,7 @@ private extension Rule {
 
     func shouldRun(onFile file: SwiftLintFile) -> Bool {
         // We shouldn't lint if the current Swift version is not supported by the rule
-        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
+        guard isSupportedByCurrentSwiftVersion(Self.self) else {
             return false
         }
 
@@ -285,11 +303,16 @@ public struct Linter {
     ///
     /// - returns: A linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
-        DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
-            let rule = rules[idx]
-            let ruleID = type(of: rule).identifier
-            CurrentRule.$identifier.withValue(ruleID) {
-                rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+        // Only `CollectingRule`s do any work in their collection step. Skip the dispatch and the
+        // per-rule bookkeeping entirely in the common case where none are enabled.
+        let collectingRules = isCollecting ? rules.filter { $0 is any AnyCollectingRule } : []
+        if collectingRules.isNotEmpty {
+            DispatchQueue.concurrentPerform(iterations: collectingRules.count) { idx in
+                let rule = collectingRules[idx]
+                let ruleID = type(of: rule).identifier
+                CurrentRule.$identifier.withValue(ruleID) {
+                    rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+                }
             }
         }
         return CollectedLinter(from: self)

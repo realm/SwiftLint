@@ -181,6 +181,75 @@ private extension Rule {
             ruleTime = nil
         }
 
+        if regions.isEmpty {
+            // Without regions, no violation can be disabled, no disable command can be superfluous
+            // and no deprecated alias can be in use. This is the common case, and the general path
+            // below computes the same result with Set and Array machinery that is hot when it runs
+            // per rule and file.
+            let enabledViolations: [StyleViolation]
+            if violations.isNotEmpty, file.contents.hasPrefix("#!") {
+                // If a violation happens on the same line as a shebang, ignore it.
+                enabledViolations = violations.filter { $0.location.line != 1 }
+            } else {
+                enabledViolations = violations
+            }
+            return LintResult(violations: enabledViolations,
+                              ruleTime: ruleTime,
+                              deprecatedToValidIDPairs: [])
+        }
+
+        // The rule identifiers only serve to restrict the regions inspected by the superfluous
+        // disable command check. Skip building them when that check inspects the unrestricted
+        // regions or returns early because the rule is disabled.
+        let regionsForSuperfluousDisableCheck: [Region]
+        if regions.count > 1, superfluousDisableCommandRule != nil {
+            let customRulesIDs: [String] = {
+                guard let customRules = self as? CustomRules else {
+                    return []
+                }
+                return customRules.customRuleIdentifiers
+            }()
+            let ruleIDs = Self.description.allIdentifiers +
+                customRulesIDs +
+                (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
+                [RuleIdentifier.all.stringRepresentation]
+            let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
+            regionsForSuperfluousDisableCheck = file.regions(restrictingRuleIdentifiers: ruleIdentifiers)
+        } else {
+            regionsForSuperfluousDisableCheck = regions
+        }
+
+        let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
+            regions: regionsForSuperfluousDisableCheck,
+            superfluousDisableCommandRule: superfluousDisableCommandRule,
+            allViolations: violations
+        )
+
+        if violations.isEmpty {
+            // With no violations to partition by region, only the superfluous disable command
+            // check can contribute results.
+            return LintResult(violations: superfluousDisableCommandViolations,
+                              ruleTime: ruleTime,
+                              deprecatedToValidIDPairs: [])
+        }
+
+        let (enabledViolations, deprecatedToValidIDPairs) = partitionViolations(
+            violations, byRegionsOf: file, regions: regions
+        )
+
+        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
+                          ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+
+    // Partitions violations into those enabled and those disabled by the file's regions, dropping
+    // enabled violations on a shebang line and pairing each deprecated rule identifier used to
+    // disable a violation with its valid identifier.
+    private func partitionViolations(
+        _ violations: [StyleViolation],
+        byRegionsOf file: SwiftLintFile,
+        regions: [Region]
+    ) -> (enabled: [StyleViolation], deprecatedToValidIDPairs: [(String, String)]) {
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { violation, region in
@@ -189,24 +258,6 @@ private extension Rule {
             }
             return true
         }
-
-        let customRulesIDs: [String] = {
-            guard let customRules = self as? CustomRules else {
-                return []
-            }
-            return customRules.customRuleIdentifiers
-        }()
-        let ruleIDs = Self.description.allIdentifiers +
-            customRulesIDs +
-            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
-            [RuleIdentifier.all.stringRepresentation]
-        let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
-
-        let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
-            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
-            superfluousDisableCommandRule: superfluousDisableCommandRule,
-            allViolations: violations
-        )
 
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
@@ -217,14 +268,12 @@ private extension Rule {
         } else {
             enabledViolations = enabledViolationsAndRegions.map(\.0)
         }
+        let ruleID = Self.identifier
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
             return identifiers.map { ($0, ruleID) }
         }
-
-        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
-                          ruleTime: ruleTime,
-                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+        return (enabledViolations, deprecatedToValidIDPairs)
     }
 }
 

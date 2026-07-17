@@ -32,6 +32,20 @@ open class BodyLengthVisitor<LevelConfig: SeverityLevelsBasedRuleConfiguration>:
         let leftBraceLine = locationConverter.location(for: leftBracePosition).line
         let rightBracePosition = rightBrace.positionAfterSkippingLeadingTrivia
         let rightBraceLine = locationConverter.location(for: rightBracePosition).line
+        let severityConfiguration = configuration.severityConfiguration
+        let threshold = min(
+            severityConfiguration.warning,
+            severityConfiguration.error ?? severityConfiguration.warning
+        )
+        // The effective line count can never exceed the physical brace-to-brace span (computed
+        // exactly as `bodyLineCountIgnoringCommentsAndWhitespace` does before subtracting
+        // comment/whitespace lines), so bodies within the threshold skip the line analysis
+        // entirely.
+        let startLine = min(leftBraceLine + 1, rightBraceLine - 1)
+        let endLine = max(rightBraceLine - 1, leftBraceLine + 1)
+        if 1 + endLine - startLine <= threshold {
+            return
+        }
         let lineCount = file.bodyLineCountIgnoringCommentsAndWhitespace(leftBraceLine: leftBraceLine,
                                                                         rightBraceLine: rightBraceLine)
         let severity: ViolationSeverity, upperBound: Int

@@ -21,17 +21,53 @@ struct IndentationWidthRule: OptInRule, SourceKitFreeRule {
     private struct IndentationPrefix {
         let tabCount: Int
         let spaceCount: Int
+        /// The number of leading space/tab characters. The count is the same measured in
+        /// `Character`s, UTF-16 code units, or UTF-8 bytes since the run is all ASCII.
+        let characterCount: Int
+        /// Whether the line consists solely of its leading whitespace.
+        let isWhitespaceOnlyLine: Bool
 
-        var combinedCount: Int { tabCount + spaceCount }
-
-        init(line: Line, length: Int) {
+        init(line: Line) {
             var tabs = 0
             var spaces = 0
-            for char in line.content.prefix(length) {
-                if char == "\t" { tabs += 1 } else if char == " " { spaces += 1 }
+            var firstNonWhitespaceByte: UInt8?
+            for byte in line.content.utf8 {
+                if byte == 0x20 {
+                    spaces += 1
+                } else if byte == 0x09 {
+                    tabs += 1
+                } else {
+                    firstNonWhitespaceByte = byte
+                    break
+                }
             }
-            self.tabCount = tabs
-            self.spaceCount = spaces
+            self.characterCount = tabs + spaces
+            guard let firstNonWhitespaceByte else {
+                // The line consists solely of spaces and tabs.
+                self.tabCount = tabs
+                self.spaceCount = spaces
+                self.isWhitespaceOnlyLine = true
+                return
+            }
+            if firstNonWhitespaceByte < 0x80 {
+                // An ASCII character follows the leading whitespace, so it starts a new `Character`:
+                // each space/tab in the run is its own `Character` and the line has further content.
+                self.tabCount = tabs
+                self.spaceCount = spaces
+                self.isWhitespaceOnlyLine = false
+                return
+            }
+            // A non-ASCII scalar follows the leading whitespace. It may combine with the last
+            // space/tab into a single `Character` (e.g. a combining mark), so fall back to
+            // grapheme-based counting to match `String.count` and `prefix` semantics exactly.
+            var graphemeTabs = 0
+            var graphemeSpaces = 0
+            for char in line.content.prefix(tabs + spaces) {
+                if char == "\t" { graphemeTabs += 1 } else if char == " " { graphemeSpaces += 1 }
+            }
+            self.tabCount = graphemeTabs
+            self.spaceCount = graphemeSpaces
+            self.isWhitespaceOnlyLine = line.content.count == tabs + spaces
         }
 
         func spacesEquivalent(indentationWidth: Int) -> Int {
@@ -94,21 +130,21 @@ struct IndentationWidthRule: OptInRule, SourceKitFreeRule {
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 
-        let conditionContinuationInfo = multilineConditionInfo(in: file)
+        let visitor = IndentationWidthRuleVisitor(locationConverter: file.locationConverter)
+        visitor.walk(file.syntaxTree)
+        let conditionContinuationInfo = visitor.continuationLines
         let commentSpans = file.commentByteRanges()
-        let stringSpans = multilineStringSpans(in: file)
+        let stringSpans = multilineStringSpans(from: visitor.spans)
 
         for line in file.lines {
             // Skip whitespace-only lines, comments, compiler directives, multiline strings
-            let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
+            let prefix = IndentationPrefix(line: line)
             if shouldSkipLine(
                 line: line,
-                indentationCharacterCount: indentationCharacterCount,
+                prefix: prefix,
                 commentSpans: commentSpans,
                 multilineStringSpans: stringSpans
             ) { continue }
-
-            let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
 
             if let expectedColumn = conditionContinuationInfo[line.index] {
                 if let violation = checkMultilineConditionAlignment(
@@ -152,12 +188,12 @@ struct IndentationWidthRule: OptInRule, SourceKitFreeRule {
 
     private func shouldSkipLine(
         line: Line,
-        indentationCharacterCount: Int,
+        prefix: IndentationPrefix,
         commentSpans: [ByteRange],
         multilineStringSpans: [MultilineStringSpan]
     ) -> Bool {
-        line.content.count == indentationCharacterCount ||
-            ignoreCompilerDirective(line: line, indentationCharacterCount: indentationCharacterCount) ||
+        prefix.isWhitespaceOnlyLine ||
+            ignoreCompilerDirective(line: line, indentationCharacterCount: prefix.characterCount) ||
             ignoreComment(line: line, commentSpans: commentSpans) ||
             ignoreMultilineStrings(line: line, multilineStringSpans: multilineStringSpans)
     }
@@ -222,22 +258,13 @@ struct IndentationWidthRule: OptInRule, SourceKitFreeRule {
         )
     }
 
-    /// Returns a mapping from line index to expected indentation column for continuation lines
-    /// of multi-line conditions. When `include_multiline_conditions` is false, these lines are
-    /// skipped entirely (expected column is still stored so the line is recognized as a continuation).
-    private func multilineConditionInfo(in file: SwiftLintFile) -> [Int: Int] {
-        let visitor = MultilineConditionLineVisitor(locationConverter: file.locationConverter)
-        return visitor.walk(tree: file.syntaxTree, handler: \.continuationLines)
-    }
-
     /// Returns the byte spans of all multiline string literals in the file, in source order.
-    private func multilineStringSpans(in file: SwiftLintFile) -> [MultilineStringSpan] {
-        let visitor = MultilineStringSpanVisitor(viewMode: .sourceAccurate)
+    private func multilineStringSpans(from collectedSpans: [MultilineStringSpan]) -> [MultilineStringSpan] {
         // `visitPost` yields nested literals before the literal containing them, so sort by location
         // and keep only outermost spans to uphold the binary search's sortedness invariant. Lines of
         // a nested literal are within the outer literal's span, which decides for the whole region.
         var spans = [MultilineStringSpan]()
-        let sortedSpans = visitor.walk(tree: file.syntaxTree, handler: \.spans)
+        let sortedSpans = collectedSpans
             .sorted { (lhs: MultilineStringSpan, rhs: MultilineStringSpan) in lhs.range.location < rhs.range.location }
         for span in sortedSpans {
             if let last = spans.last, span.range.upperBound <= last.range.upperBound {

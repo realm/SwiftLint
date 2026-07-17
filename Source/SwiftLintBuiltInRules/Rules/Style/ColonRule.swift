@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+@_spi(RawSyntax)
 import SwiftSyntax
 
 struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
@@ -32,56 +33,91 @@ struct ColonRule: SubstitutionCorrectableRule, SourceKitFreeRule {
         let positionsToSkip = visitor.positionsToSkip
         let dictionaryPositions = visitor.dictionaryPositions
         let caseStatementPositions = visitor.caseStatementPositions
+        let applyToDictionaries = configuration.applyToDictionaries
+        let flexibleRightSpacingConfigured = configuration.flexibleRightSpacing
+        let stringView = file.stringView
 
-        return syntaxTree
-            .windowsOfThreeTokens()
-            .compactMap { previous, current, next -> ByteRange? in
-                if current.tokenKind != .colon ||
-                    !configuration.applyToDictionaries && dictionaryPositions.contains(current.position) ||
-                    positionsToSkip.contains(current.position) {
-                    return nil
-                }
+        // Single pass over all windows of three consecutive tokens where the middle token is a
+        // colon. Checking `rawTokenKind` avoids materializing a `TokenKind` (and its text) for
+        // every token in the file.
+        var violations = [NSRange]()
+        var previousToken: TokenSyntax?
+        var currentToken: TokenSyntax?
+        for next in syntaxTree.tokens(viewMode: .sourceAccurate) {
+            defer {
+                previousToken = currentToken
+                currentToken = next
+            }
+            guard let current = currentToken, current.rawTokenKind == .colon,
+                  let previous = previousToken else {
+                continue
+            }
+            let position = current.position
+            if !applyToDictionaries && dictionaryPositions.contains(position) ||
+                positionsToSkip.contains(position) {
+                continue
+            }
 
-                // [:]
-                if previous.tokenKind == .leftSquare,
-                   next.tokenKind == .rightSquare,
-                   previous.trailingTrivia.isEmpty,
-                   current.leadingTrivia.isEmpty,
-                   current.trailingTrivia.isEmpty,
-                   next.leadingTrivia.isEmpty {
-                    return nil
-                }
+            let byteRange = Self.violationByteRange(
+                previous: previous,
+                current: current,
+                next: next,
+                flexibleRightSpacingConfigured: flexibleRightSpacingConfigured,
+                caseStatementPositions: caseStatementPositions
+            )
+            if let byteRange, let range = stringView.byteRangeToNSRange(byteRange) {
+                violations.append(range)
+            }
+        }
+        return violations
+    }
 
-                if previous.trailingTrivia.isNotEmpty, !previous.trailingTrivia.containsBlockComments() {
-                    let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
-                    let end = ByteCount(current.endPosition)
-                    return ByteRange(location: start, length: end - start)
-                }
-                if current.trailingTrivia != [.spaces(1)], !next.leadingTrivia.containsNewlines() {
-                    if case .spaces(1) = current.trailingTrivia.first {
-                        return nil
-                    }
+    /// The byte range of the spacing violation around the colon token `current`, if any.
+    private static func violationByteRange(previous: TokenSyntax,
+                                           current: TokenSyntax,
+                                           next: TokenSyntax,
+                                           flexibleRightSpacingConfigured: Bool,
+                                           caseStatementPositions: [AbsolutePosition]) -> ByteRange? {
+        let previousTrailingTrivia = previous.trailingTrivia
+        let currentTrailingTrivia = current.trailingTrivia
 
-                    let flexibleRightSpacing = configuration.flexibleRightSpacing ||
-                        caseStatementPositions.contains(current.position)
-                    if flexibleRightSpacing, current.trailingTrivia.isNotEmpty {
-                        return nil
-                    }
+        // [:]
+        if previous.rawTokenKind == .leftSquare,
+           next.rawTokenKind == .rightSquare,
+           previousTrailingTrivia.isEmpty,
+           current.leadingTrivia.isEmpty,
+           currentTrailingTrivia.isEmpty,
+           next.leadingTrivia.isEmpty {
+            return nil
+        }
 
-                    let length: ByteCount
-                    if case let .spaces(spaces) = current.trailingTrivia.first {
-                        length = ByteCount(spaces + 1)
-                    } else {
-                        length = 1
-                    }
-
-                    return ByteRange(location: ByteCount(current.position), length: length)
-                }
+        if previousTrailingTrivia.isNotEmpty, !previousTrailingTrivia.containsBlockComments() {
+            let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
+            let end = ByteCount(current.endPosition)
+            return ByteRange(location: start, length: end - start)
+        }
+        if currentTrailingTrivia != [.spaces(1)], !next.leadingTrivia.containsNewlines() {
+            if case .spaces(1) = currentTrailingTrivia.first {
                 return nil
             }
-            .compactMap { byteRange in
-                file.stringView.byteRangeToNSRange(byteRange)
+
+            let position = current.position
+            let flexibleRightSpacing = flexibleRightSpacingConfigured ||
+                caseStatementPositions.contains(position)
+            if flexibleRightSpacing, currentTrailingTrivia.isNotEmpty {
+                return nil
             }
+
+            let length: ByteCount
+            if case let .spaces(spaces) = currentTrailingTrivia.first {
+                length = ByteCount(spaces + 1)
+            } else {
+                length = 1
+            }
+
+            return ByteRange(location: ByteCount(position), length: length)
+        }
+        return nil
     }
 
     func substitution(for violationRange: NSRange, in _: SwiftLintFile) -> (NSRange, String)? {
@@ -101,7 +137,7 @@ private final class ColonRuleVisitor: SyntaxVisitor {
     override func visitPost(_ node: DeclNameArgumentsSyntax) {
         positionsToSkip.append(
             contentsOf: node.tokens(viewMode: .sourceAccurate)
-                .filter { $0.tokenKind == .colon }
+                .filter { $0.rawTokenKind == .colon }
                 .map(\.position)
         )
     }

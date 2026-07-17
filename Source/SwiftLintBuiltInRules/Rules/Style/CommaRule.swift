@@ -1,6 +1,7 @@
 import Foundation
 import SourceKittenFramework
 import SwiftLintCore
+@_spi(RawSyntax)
 import SwiftSyntax
 
 struct CommaRule: CorrectableRule, SourceKitFreeRule {
@@ -100,25 +101,34 @@ struct CommaRule: CorrectableRule, SourceKitFreeRule {
     private func violationRanges(in file: SwiftLintFile) -> [(ByteRange, shouldAddSpace: Bool)] {
         let syntaxTree = file.syntaxTree
 
-        return syntaxTree
-            .windowsOfThreeTokens()
-            .compactMap { previous, current, next -> (ByteRange, shouldAddSpace: Bool)? in
-                if current.tokenKind != .comma {
-                    return nil
-                }
-                if !previous.trailingTrivia.isEmpty, !previous.trailingTrivia.containsBlockComments() {
-                    let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
-                    let end = ByteCount(current.endPosition)
-                    let nextIsNewline = next.leadingTrivia.containsNewlines()
-                    return (ByteRange(location: start, length: end - start), shouldAddSpace: !nextIsNewline)
-                }
-                if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
-                    let start = ByteCount(current.position)
-                    let end = ByteCount(next.positionAfterSkippingLeadingTrivia)
-                    return (ByteRange(location: start, length: end - start), shouldAddSpace: true)
-                }
-                return nil
+        // Single pass over all windows of three consecutive tokens where the middle token is a
+        // comma. Checking `rawTokenKind` avoids materializing a `TokenKind` (and its text) for
+        // every token in the file.
+        var violations = [(ByteRange, shouldAddSpace: Bool)]()
+        var previousToken: TokenSyntax?
+        var currentToken: TokenSyntax?
+        for next in syntaxTree.tokens(viewMode: .sourceAccurate) {
+            defer {
+                previousToken = currentToken
+                currentToken = next
             }
+            guard let current = currentToken, current.rawTokenKind == .comma,
+                  let previous = previousToken else {
+                continue
+            }
+            let previousTrailingTrivia = previous.trailingTrivia
+            if previousTrailingTrivia.isNotEmpty, !previousTrailingTrivia.containsBlockComments() {
+                let start = ByteCount(previous.endPositionBeforeTrailingTrivia)
+                let end = ByteCount(current.endPosition)
+                let nextIsNewline = next.leadingTrivia.containsNewlines()
+                violations.append((ByteRange(location: start, length: end - start), shouldAddSpace: !nextIsNewline))
+            } else if !current.trailingTrivia.starts(with: [.spaces(1)]), !next.leadingTrivia.containsNewlines() {
+                let start = ByteCount(current.position)
+                let end = ByteCount(next.positionAfterSkippingLeadingTrivia)
+                violations.append((ByteRange(location: start, length: end - start), shouldAddSpace: true))
+            }
+        }
+        return violations
     }
 
     func correct(file: SwiftLintFile) -> Int {

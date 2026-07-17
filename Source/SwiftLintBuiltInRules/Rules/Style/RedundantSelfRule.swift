@@ -110,6 +110,9 @@ private extension RedundantSelfRule {
         }
 
         override func visitPost(_ node: MemberAccessExprSyntax) {
+            guard node.isBaseSelf else {
+                return
+            }
             if configuration.keepInInitializers, initializerScopes.peek() == true {
                 return
             }
@@ -119,11 +122,11 @@ private extension RedundantSelfRule {
             if configuration.onlyInClosures, closureExprScopes.isEmpty {
                 return
             }
-            if typeDeclarations.peek() == .extension, node.isBaseSelf, hasSeenDeclaration(for: "self") {
+            if typeDeclarations.peek() == .extension, hasSeenDeclaration(for: "self") {
                 return
             }
             let declName = node.declName.baseName.text
-            if !hasSeenDeclaration(for: declName), node.isBaseSelf, declName != "init" {
+            if declName != "init", !hasSeenDeclaration(for: declName) {
                 violations.append(
                     at: node.positionAfterSkippingLeadingTrivia,
                     correction: .init(

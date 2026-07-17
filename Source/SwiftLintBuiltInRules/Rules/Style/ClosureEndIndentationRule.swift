@@ -1,4 +1,3 @@
-import SourceKittenFramework
 import SwiftLintCore
 import SwiftSyntax
 
@@ -196,7 +195,8 @@ private extension ClosureEndIndentationRule {
         /// Calculates the column of the first non-whitespace character on a given line.
         private func getFirstNonWhitespaceColumn(onLine lineNumber: Int) -> Int {
             // Use the lines seen by `locationConverter`, which produced `lineNumber`.
-            // `file.lines` counts CRLF line endings differently, corrupting files.
+            // `file.lines` counts CRLF line endings differently, corrupting files, and
+            // materializing SourceKitten's `StringView` is significantly more expensive.
             let sourceLines = locationConverter.sourceLines
             guard lineNumber > 0, lineNumber <= sourceLines.count else {
                 return 1 // Should not happen

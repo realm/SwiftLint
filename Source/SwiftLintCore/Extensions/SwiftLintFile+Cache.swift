@@ -25,13 +25,6 @@ private enum Cached<T> {
     case computed(T)
 }
 
-private enum CacheLookup<T> {
-    case hit(T)
-    case miss
-    case wait(DispatchGroup)
-    case compute(DispatchGroup)
-}
-
 /// Per-file cache storing all derived artifacts. One instance lives on each `SwiftLintFile`.
 ///
 /// **Locking strategy**: a concurrent `DispatchQueue` guards all slots.
@@ -40,7 +33,7 @@ private enum CacheLookup<T> {
 /// other cached properties without risk of deadlock. Cold slots are marked as computing
 /// under a barrier so concurrent first readers wait for the same result.
 final class FileCache: @unchecked Sendable {
-    fileprivate let queue = DispatchQueue(label: "io.realm.swiftlint.fileCache", attributes: .concurrent)
+    fileprivate let lock = NSLock()
 
     fileprivate var syntaxTree = Cached<SourceFileSyntax>.notComputed
     fileprivate var locationConverter = Cached<SourceLocationConverter>.notComputed
@@ -64,66 +57,38 @@ final class FileCache: @unchecked Sendable {
     /// TODO: [06/05/2028] We can convert the explicit getters and setters to a keypath-based subscript once the Swift
     /// compiler bug https://github.com/swiftlang/swift/issues/69386 is resolved.
     fileprivate func getOrCompute<T>(factory: () -> T, get: () -> Cached<T>, set: (Cached<T>) -> Void) -> T {
-        // swiftlint:disable:previous cyclomatic_complexity
-
-        let initialState = queue.sync { () -> CacheLookup<T> in
-            switch get() {
-            case .computed(let value):
-                return .hit(value)
-            case .computing(let group):
-                return .wait(group)
-            case .notComputed:
-                return .miss
-            }
-        }
-
-        switch initialState {
-        case .hit(let value):
+        lock.lock()
+        switch get() {
+        case .computed(let value):
+            lock.unlock()
             return value
-        case .wait(let group):
+        case .computing(let group):
+            lock.unlock()
             group.wait()
             return getOrCompute(factory: factory, get: get, set: set)
-        case .miss, .compute:
-            break
-        }
-
-        let lookup = queue.sync(flags: .barrier) { () -> CacheLookup<T> in
-            switch get() {
-            case .computed(let value):
-                return .hit(value)
-            case .computing(let group):
-                return .wait(group)
-            case .notComputed:
-                let group = DispatchGroup()
-                group.enter()
-                set(.computing(group))
-                return .compute(group)
-            }
-        }
-
-        switch lookup {
-        case .hit(let value):
-            return value
-        case .wait(let group):
-            group.wait()
-            return getOrCompute(factory: factory, get: get, set: set)
-        case .compute(let group):
+        case .notComputed:
+            let group = DispatchGroup()
+            group.enter()
+            set(.computing(group))
+            lock.unlock()
+            // The factory runs outside the lock, so it may safely access other cached properties.
             let value = factory()
-            queue.sync(flags: .barrier) {
-                defer { group.leave() }
-                if case .computing(let currentGroup) = get(), currentGroup === group {
-                    set(.computed(value))
-                }
+            lock.lock()
+            // The slot may have been invalidated while computing; only publish the result if this
+            // computation is still the current one. On a concurrent first access the winner's
+            // result is kept; the loser's is discarded.
+            if case .computing(let currentGroup) = get(), currentGroup === group {
+                set(.computed(value))
             }
+            lock.unlock()
+            group.leave()
             return value
-        case .miss:
-            queuedFatalError("Impossible state: missed then compute")
         }
     }
 
     /// Resets all slots to `.notComputed`, forcing recomputation on next access.
     fileprivate func invalidateAll() {
-        queue.sync(flags: .barrier) {
+        lock.withLock {
             syntaxTree = .notComputed
             locationConverter = .notComputed
             commands = .notComputed
@@ -136,6 +101,7 @@ final class FileCache: @unchecked Sendable {
             foldedSyntaxTree = .notComputed
             syntaxMap = .notComputed
             swiftSyntaxTokens = .notComputed
+            commentByteRangesSlot = .notComputed
             assertHandlerSlot = .notComputed
         }
     }
@@ -145,7 +111,7 @@ extension SwiftLintFile {
     public var sourcekitdFailed: Bool {
         get { cachedResponse == nil }
         set {
-            fileCache.queue.sync(flags: .barrier) {
+            fileCache.lock.withLock {
                 fileCache.response = newValue ? .computed(nil) : .notComputed
             }
         }
@@ -159,7 +125,7 @@ extension SwiftLintFile {
                 set: { fileCache.assertHandlerSlot = $0 }
         }
         set {
-            fileCache.queue.sync(flags: .barrier) { fileCache.assertHandlerSlot = .computed(newValue) }
+            fileCache.lock.withLock { fileCache.assertHandlerSlot = .computed(newValue) }
         }
     }
 

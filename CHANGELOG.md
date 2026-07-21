@@ -259,7 +259,7 @@
   [Dimitri Dupuis-Latour](https://github.com/DimDL)
   [#6268](https://github.com/realm/SwiftLint/issues/6268)
   
-* Add `prefer_scaled_to_fit` opt-in rule to prefer `scaledToFit()` and
+* Add `legacy_swiftui_aspect_ratio` rule to prefer `scaledToFit()` and
   `scaledToFill()` over `aspectRatio(contentMode:)` with a constant
   content mode.  
   [DemiDevv](https://github.com/DemiDevv)

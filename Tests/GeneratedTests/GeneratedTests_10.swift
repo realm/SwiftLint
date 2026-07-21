@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct UnneededEscapingRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(UnneededEscapingRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct UnneededOverrideRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct VoidReturnRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct WeakDelegateRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(WeakDelegateRule.description)
     }
 }

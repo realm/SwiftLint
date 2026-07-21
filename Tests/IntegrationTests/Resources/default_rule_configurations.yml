@@ -629,6 +629,11 @@ legacy_random:
   meta:
     opt-in: false
     correctable: false
+legacy_swiftui_aspect_ratio:
+  severity: warning
+  meta:
+    opt-in: false
+    correctable: true
 legacy_uigraphics_function:
   severity: warning
   meta:
@@ -911,11 +916,6 @@ prefer_key_path:
     opt-in: true
     correctable: true
 prefer_nimble:
-  severity: warning
-  meta:
-    opt-in: true
-    correctable: false
-prefer_scaled_to_fit:
   severity: warning
   meta:
     opt-in: true

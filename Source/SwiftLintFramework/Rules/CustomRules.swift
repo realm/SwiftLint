@@ -77,11 +77,18 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
 
     package var configuration = CustomRulesConfiguration()
 
+    /// The mode a custom rule runs in when neither it nor the configuration names one.
+    ///
+    /// SwiftSyntax, as this rule's description and `ExecutionMode.default` both already state:
+    /// resolving kinds through SourceKit parses every file a second time, on top of the tree
+    /// SwiftLint has already built.
+    static let executionModeWhenUnspecified = RegexConfiguration<Self>.ExecutionMode.swiftsyntax
+
     /// Returns true if all configured custom rules use SwiftSyntax mode, making this rule effectively SourceKit-free.
     package var isEffectivelySourceKitFree: Bool {
         configuration.customRuleConfigurations.allSatisfy { config in
             let effectiveMode = config.executionMode == .default
-                ? (configuration.defaultExecutionMode ?? .sourcekit)
+                ? (configuration.defaultExecutionMode ?? Self.executionModeWhenUnspecified)
                 : config.executionMode
             return effectiveMode == .swiftsyntax
         }
@@ -112,7 +119,7 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
             cachedSourceKitFreeSyntaxMap = syntaxMap
             return syntaxMap
         }
-        let defaultExecutionMode = configuration.defaultExecutionMode ?? .sourcekit
+        let defaultExecutionMode = configuration.defaultExecutionMode ?? Self.executionModeWhenUnspecified
 
         return configurations.flatMap { configuration -> [StyleViolation] in
             let start = Date()

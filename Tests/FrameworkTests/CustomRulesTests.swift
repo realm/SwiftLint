@@ -726,7 +726,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func customRuleDefaultsToSourceKitWhenNoModeSpecified() throws {
+    func customRuleDefaultsToSwiftSyntaxWhenNoModeSpecified() throws {
         // When NO execution mode is specified (neither default nor per-rule), it should default to swiftsyntax
         let customRules: [String: Any] = [
             "no_foo": [
@@ -755,8 +755,8 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
         }
 
         #expect(
-            !customRule.isEffectivelySourceKitFree,
-            "Rule depends on SourceKit")
+            customRule.isEffectivelySourceKitFree,
+            "Rule without an explicit mode should not depend on SourceKit")
     }
 
     @Test
@@ -784,7 +784,7 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func customRuleWithKindFilteringDefaultsToSourceKit() throws {
+    func customRuleWithKindFilteringDefaultsToSwiftSyntax() throws {
         // When using kind filtering without specifying mode, it should default to sourcekit
         let customRules: [String: Any] = [
             "no_keywords": [
@@ -814,8 +814,8 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
         }
 
         #expect(
-            !customRule.isEffectivelySourceKitFree,
-            "Rule with kind filtering should default to sourcekit mode")
+            customRule.isEffectivelySourceKitFree,
+            "Rule with kind filtering should default to swiftsyntax mode")
     }
 
     @Test

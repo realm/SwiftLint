@@ -1,15 +1,14 @@
 import SourceKittenFramework
 
-public extension SwiftLintFile {
-    /// A syntax map equivalent to the sourcekitd-backed `syntaxMap`, built from the SwiftSyntax-derived
-    /// bridge tokens so that rules using it don't require SourceKit.
+extension SwiftLintFile {
+    /// Builds the syntax map returned by the cached `sourceKitFreeSyntaxMap()`.
     ///
     /// To preserve exact parity with SourceKit's token extents, line comment tokens (`//`-style,
     /// including doc line comments) are extended over their terminating newline: sourcekitd includes
     /// that newline in the comment token's range, while SwiftSyntax classifies it as separate trivia.
     /// Block comments end at `*/` in both. Rules that exclude matches intersecting comment kinds rely
     /// on these exact extents.
-    func sourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
+    func computeSourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
         let bridgedTokens = swiftSyntaxDerivedSourceKittenTokens ?? []
         let contents = stringView
         let tokens = bridgedTokens.map { token -> SyntaxToken in

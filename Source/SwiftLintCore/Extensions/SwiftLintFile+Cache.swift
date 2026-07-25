@@ -47,6 +47,7 @@ final class FileCache: @unchecked Sendable {
     fileprivate var foldedSyntaxTree = Cached<SourceFileSyntax?>.notComputed
     fileprivate var syntaxMap = Cached<SwiftLintSyntaxMap?>.notComputed
     fileprivate var swiftSyntaxTokens = Cached<[SwiftLintSyntaxToken]?>.notComputed
+    fileprivate var sourceKitFreeSyntaxMapSlot = Cached<SwiftLintSyntaxMap>.notComputed
     fileprivate var commentByteRangesSlot = Cached<[ByteRange]>.notComputed
     fileprivate var assertHandlerSlot = Cached<AssertHandler?>.notComputed
 
@@ -101,6 +102,7 @@ final class FileCache: @unchecked Sendable {
             foldedSyntaxTree = .notComputed
             syntaxMap = .notComputed
             swiftSyntaxTokens = .notComputed
+            sourceKitFreeSyntaxMapSlot = .notComputed
             commentByteRangesSlot = .notComputed
             assertHandlerSlot = .notComputed
         }
@@ -235,6 +237,19 @@ extension SwiftLintFile {
             { SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: self) }
             get: { fileCache.swiftSyntaxTokens }
             set: { fileCache.swiftSyntaxTokens = $0 }
+    }
+
+    /// A syntax map equivalent to the sourcekitd-backed `syntaxMap`, built from the SwiftSyntax-derived
+    /// bridge tokens so that rules using it don't require SourceKit.
+    ///
+    /// Cached because it is a pure function of the file that several rules ask for independently —
+    /// `statement_position` alone builds it four times — and each call otherwise re-derives the whole
+    /// token array and syntax map.
+    public func sourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
+        fileCache.getOrCompute
+            { computeSourceKitFreeSyntaxMap() }
+            get: { fileCache.sourceKitFreeSyntaxMapSlot }
+            set: { fileCache.sourceKitFreeSyntaxMapSlot = $0 }
     }
 
     public var commentLines: Set<Int> {

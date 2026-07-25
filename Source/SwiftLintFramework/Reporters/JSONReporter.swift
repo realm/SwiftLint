@@ -9,24 +9,55 @@ struct JSONReporter: Reporter {
     static let isRealtime = false
     static let description = "Reports violations as a JSON array."
 
+    /// Below this many violations a run is short enough that splitting it costs more than it saves.
+    private static let minimumViolationsPerChunk = 2000
+
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        // Encoded rather than serialized through `JSONSerialization`, which bridges a dictionary per
-        // violation to `NSDictionary` and re-sorts its keys each time. That work is single-threaded
-        // and dominated the tail of a run over a large code base. It is given the same formatting
-        // options, including `.sortedKeys`: `JSONEncoder` does not otherwise emit keys in the order
-        // they are declared, so the option is what keeps the report's key order stable.
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-        guard let data = try? encoder.encode(violations.map(Violation.init)),
-              let report = String(bytes: data, encoding: .utf8) else {
-            return "[]"
+        // Rendering the report is the one part of a run that does not parallelize, and over a large
+        // code base it is the whole of the single-threaded tail. The array is a concatenation of
+        // independent objects, so it is split into chunks that encode concurrently and are then
+        // joined, leaving escaping and formatting to `JSONEncoder`.
+        let chunkCount = min(
+            ProcessInfo.processInfo.activeProcessorCount,
+            max(1, violations.count / minimumViolationsPerChunk)
+        )
+        guard chunkCount > 1 else {
+            return encode(violations) ?? "[]"
         }
-        return report
+        let chunkSize = (violations.count + chunkCount - 1) / chunkCount
+        let chunks = stride(from: 0, to: violations.count, by: chunkSize).map { start in
+            Array(violations[start..<min(start + chunkSize, violations.count)])
+        }
+        let fragments = chunks.parallelMap { chunk in encode(chunk).map(Self.elements) ?? "" }
+        return "[\n" + fragments.joined(separator: ",\n") + "\n]"
+    }
+
+    // MARK: - Private
+
+    private static func encode(_ violations: [StyleViolation]) -> String? {
+        let encoder = JSONEncoder()
+        // The options `JSONSerialization` was given. `.sortedKeys` is not redundant despite the
+        // coding keys being declared in the order it sorts them into: without it `JSONEncoder`
+        // emits keys in an unrelated order.
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        guard let data = try? encoder.encode(violations.map(Violation.init)) else {
+            return nil
+        }
+        return String(bytes: data, encoding: .utf8)
+    }
+
+    /// A rendered array's elements, without the brackets and newlines that wrap them, so that
+    /// separately encoded chunks can be joined back into one array.
+    private static func elements(of report: String) -> String {
+        guard report.hasPrefix("[\n"), report.hasSuffix("\n]") else {
+            return report
+        }
+        return String(report.dropFirst(2).dropLast(2))
     }
 }
 
 /// A violation in the shape the report exposes.
-private struct Violation: Encodable {
+private struct Violation: Encodable, Sendable {
     let character: Int?
     let file: String?
     let line: Int?

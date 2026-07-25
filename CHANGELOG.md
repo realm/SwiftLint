@@ -20,6 +20,12 @@
   them across the built-in rules.  
   [ZevEisenberg](https://github.com/ZevEisenberg)
 
+* Add `allow_compact_empty_blocks` option to the `no_empty_block` rule to
+  allow empty blocks written compactly as `{}` while still flagging empty
+  blocks with any whitespace or newlines between the braces.  
+  [arimu1](https://github.com/arimu1)
+  [#6839](https://github.com/realm/SwiftLint/issues/6839)
+
 ### Bug Fixes
 
 * Fix baseline writing to store file locations as paths relative to the current working directory,

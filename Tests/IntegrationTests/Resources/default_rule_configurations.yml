@@ -751,6 +751,7 @@ nimble_operator:
 no_empty_block:
   severity: warning
   disabled_block_types: []
+  allow_compact_empty_blocks: false
   meta:
     opt-in: true
     correctable: false

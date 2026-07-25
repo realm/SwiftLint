@@ -11,6 +11,7 @@ struct NoEmptyBlockConfigurationTests {
         let config = NoEmptyBlockConfiguration()
         #expect(config.severityConfiguration.severity == .warning)
         #expect(config.enabledBlockTypes == NoEmptyBlockConfiguration.CodeBlockType.all)
+        #expect(!config.allowCompactEmptyBlocks)
     }
 
     @Test
@@ -20,10 +21,12 @@ struct NoEmptyBlockConfigurationTests {
             configuration: [
                 "severity": "error",
                 "disabled_block_types": ["function_bodies"],
+                "allow_compact_empty_blocks": true,
             ]
         )
         #expect(config.severityConfiguration.severity == .error)
         #expect(config.enabledBlockTypes == Set([.initializerBodies, .statementBlocks, .closureBlocks]))
+        #expect(config.allowCompactEmptyBlocks)
     }
 
     @Test
@@ -59,7 +62,8 @@ struct NoEmptyBlockConfigurationTests {
         try config.apply(configuration: ["disabled_block_types": ["initializer_bodies", "statement_blocks"]])
         #expect(
             RuleConfigurationDescription.from(configuration: config).oneLiner()
-                == "severity: warning; disabled_block_types: [initializer_bodies, statement_blocks]"
+                == "severity: warning; disabled_block_types: [initializer_bodies, statement_blocks]; "
+                + "allow_compact_empty_blocks: false"
         )
     }
 }

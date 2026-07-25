@@ -14,6 +14,10 @@
 
 ### Enhancements
 
+* Speed up the `collection_alignment` rule, which read the whole file's
+  source lines once per element of a dictionary literal.  
+  [Brett-Best](https://github.com/Brett-Best)
+
 * Add `#examples` and `#corrections` macros that expand lists and
   dictionaries of code strings into `Example`s, reducing boilerplate when
   defining a rule's triggering/non-triggering examples and corrections. Adopt

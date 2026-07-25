@@ -17,6 +17,11 @@ struct CollectionAlignmentRule: Rule {
 
 private extension CollectionAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        // Computed once per file: `SourceLocationConverter.sourceLines` materializes every line of the
+        // file as a new `[String]` on each access, and the dictionary path below reads it once per
+        // element, which is quadratic in files holding large dictionary literals.
+        private lazy var sourceLines = locationConverter.sourceLines
+
         override func visitPost(_ node: ArrayExprSyntax) {
             let locations = node.elements.map { element in
                 locationConverter.location(for: element.positionAfterSkippingLeadingTrivia)
@@ -32,7 +37,7 @@ private extension CollectionAlignmentRule {
 
                 let graphemeColumn: Int
                 let graphemeClusters = String(
-                    locationConverter.sourceLines[location.line - 1].utf8.prefix(location.column - 1)
+                    sourceLines[location.line - 1].utf8.prefix(location.column - 1)
                 )
                 if let graphemeClusters {
                     graphemeColumn = graphemeClusters.count + 1

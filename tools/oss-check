@@ -484,6 +484,10 @@ $working_dir = 'osscheck'
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
   Repo.new('Brave', 'brave/brave-core', false, 'included: ios/brave-ios'),
+  # Purpose-built to stress the linter rather than to be an app: few very large files
+  # alongside many small ones, which is the shape rules scaling with file size react to.
+  # Its own config is kept because the custom rules and the exclusions are load-bearing.
+  Repo.new('Brigade', 'Brett-Best/Brigade', true),
   Repo.new('DuckDuckGo', 'duckduckgo/apple-browsers'),
   Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),

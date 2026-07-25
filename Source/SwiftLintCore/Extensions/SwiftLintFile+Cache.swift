@@ -48,7 +48,7 @@ final class FileCache: @unchecked Sendable {
     fileprivate var syntaxMap = Cached<SwiftLintSyntaxMap?>.notComputed
     fileprivate var swiftSyntaxTokens = Cached<[SwiftLintSyntaxToken]?>.notComputed
     fileprivate var sourceKitFreeSyntaxMapSlot = Cached<SwiftLintSyntaxMap>.notComputed
-    fileprivate var commentByteRangesSlot = Cached<[ByteRange]>.notComputed
+    fileprivate var commentByteRangesSlot = Cached<CommentRanges>.notComputed
     fileprivate var assertHandlerSlot = Cached<AssertHandler?>.notComputed
 
     /// Returns the cached value for a slot, computing it via `factory` on a cache miss.
@@ -171,11 +171,21 @@ extension SwiftLintFile {
     /// `SyntaxProtocol.position` and token-sequence iteration climb the tree per call, which
     /// degrades sharply on deeply nested expression trees.
     public func commentByteRanges() -> [ByteRange] {
+        commentRanges().all
+    }
+
+    /// The source ranges of the file's doc comments (`///` and `/** */`), in source order. Shares
+    /// the single trivia pass behind `commentByteRanges()`.
+    public func docCommentRanges() -> [Range<AbsolutePosition>] {
+        commentRanges().doc
+    }
+
+    private func commentRanges() -> CommentRanges {
         fileCache.getOrCompute
             { [file = self] in
                 let visitor = CommentByteRangesVisitor(viewMode: .sourceAccurate)
                 visitor.walk(file.syntaxTree)
-                return visitor.ranges
+                return visitor.commentRanges
             }
             get: { fileCache.commentByteRangesSlot }
             set: { fileCache.commentByteRangesSlot = $0 }
@@ -305,14 +315,40 @@ extension SwiftLintFile {
     }
 }
 
+/// The comment ranges of one file, collected in a single pass.
+struct CommentRanges {
+    /// Every comment trivia piece, in source order.
+    let all: [ByteRange]
+    /// Only the doc comments (`///` and `/** */`), in source order, with directly adjacent ranges
+    /// of the same kind coalesced. Expressed as source positions, which is what their consumer
+    /// compares against syntax node ranges.
+    let doc: [Range<AbsolutePosition>]
+}
+
 private final class CommentByteRangesVisitor: SyntaxVisitor {
-    private(set) var ranges = [ByteRange]()
+    private enum DocCommentKind {
+        case line, block
+    }
+
+    private var ranges = [ByteRange]()
+    private var docRanges = [Range<AbsolutePosition>]()
     private var position = 0
+    private var lastDocKind: DocCommentKind?
+    private var lastDocEnd = -1
+
+    var commentRanges: CommentRanges {
+        CommentRanges(all: ranges, doc: docRanges)
+    }
 
     override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
-        appendCommentRanges(in: token.leadingTrivia)
+        // Materializing trivia re-lexes it, so only do so for tokens that actually have some.
+        if token.leadingTriviaLength.utf8Length > 0 {
+            appendCommentRanges(in: token.leadingTrivia)
+        }
         position += token.trimmedLength.utf8Length
-        appendCommentRanges(in: token.trailingTrivia)
+        if token.trailingTriviaLength.utf8Length > 0 {
+            appendCommentRanges(in: token.trailingTrivia)
+        }
         return .skipChildren
     }
 
@@ -321,8 +357,26 @@ private final class CommentByteRangesVisitor: SyntaxVisitor {
             let length = piece.sourceLength.utf8Length
             if piece.isComment {
                 ranges.append(ByteRange(location: ByteCount(position), length: ByteCount(length)))
+                switch piece {
+                case .docLineComment: appendDocRange(kind: .line, length: length)
+                case .docBlockComment: appendDocRange(kind: .block, length: length)
+                default: break
+                }
             }
             position += length
         }
+    }
+
+    private func appendDocRange(kind: DocCommentKind, length: Int) {
+        // `syntaxClassifications`, which the doc comment consumer used to read these ranges from,
+        // coalesces directly adjacent ranges of the same kind, as `/** a *//** b */` produces.
+        let end = AbsolutePosition(utf8Offset: position + length)
+        if kind == lastDocKind, position == lastDocEnd, docRanges.isNotEmpty {
+            docRanges[docRanges.count - 1] = docRanges[docRanges.count - 1].lowerBound..<end
+        } else {
+            docRanges.append(AbsolutePosition(utf8Offset: position)..<end)
+        }
+        lastDocKind = kind
+        lastDocEnd = position + length
     }
 }

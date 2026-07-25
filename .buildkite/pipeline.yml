@@ -1,12 +1,14 @@
-# Check out with a blobless partial clone: all commits and trees are fetched up front, while
-# file contents are downloaded on demand. This repository carries ~965 MB of history, nearly
-# all of it historical blobs that no job reads, and every job checks out independently.
+# Checkout tuning cannot live here: `BUILDKITE_GIT_*` are protected variables, and setting them
+# in pipeline `env` is ignored with a warning. They have to be set in the agent configuration.
 #
-# Full history is deliberately preserved rather than using a `--depth` shallow clone, which
-# would break `tools/oss-check` (`git merge-base origin/main`, then `git worktree add --detach`
-# on that merge base) and Danger's PR diff.
-env:
-  BUILDKITE_GIT_CLONE_FLAGS: "-v --filter=blob:none"
+# Worth doing there: `git-clone-flags: -v --filter=blob:none`. This repository carries ~965 MB of
+# history that is almost entirely historical blobs no job reads, and each of the jobs below checks
+# out independently; a blobless clone measured 5s/15 MB against 104s/965 MB for a full one, and
+# still holds only 16 MB after oss-check's merge-base, diff and worktree operations.
+#
+# It must stay a blob filter rather than a `--depth` shallow clone: `tools/oss-check` needs real
+# history for `git merge-base origin/main` and `git worktree add --detach` on that merge base, as
+# does Danger's PR diff.
 
 steps:
   - label: "Bazel"

@@ -26,56 +26,54 @@ private extension CollectionAlignmentRule {
             let locations = node.elements.map { element in
                 locationConverter.location(for: element.positionAfterSkippingLeadingTrivia)
             }
-            violations.append(contentsOf: validate(keyLocations: locations))
+            violations.append(contentsOf: validate(keyLocations: locations, inGraphemeColumns: false))
         }
 
         override func visitPost(_ node: DictionaryElementListSyntax) {
             let locations = node.map { element in
                 let position = configuration.alignColons ? element.colon.positionAfterSkippingLeadingTrivia :
                     element.key.positionAfterSkippingLeadingTrivia
-                let location = locationConverter.location(for: position)
-
-                let graphemeColumn: Int
-                let graphemeClusters = String(
-                    sourceLines[location.line - 1].utf8.prefix(location.column - 1)
-                )
-                if let graphemeClusters {
-                    graphemeColumn = graphemeClusters.count + 1
-                } else {
-                    graphemeColumn = location.column
-                }
-
-                return SourceLocation(
-                    line: location.line,
-                    column: graphemeColumn,
-                    offset: location.offset,
-                    file: location.file
-                )
+                return locationConverter.location(for: position)
             }
-            violations.append(contentsOf: validate(keyLocations: locations))
+            violations.append(contentsOf: validate(keyLocations: locations, inGraphemeColumns: true))
         }
 
-        private func validate(keyLocations: [SourceLocation]) -> [AbsolutePosition] {
+        private func validate(keyLocations: [SourceLocation],
+                              inGraphemeColumns: Bool) -> [AbsolutePosition] {
             guard keyLocations.count >= 2 else {
                 return []
             }
 
-            let firstKeyLocation = keyLocations[0]
-            let remainingKeyLocations = keyLocations[1...]
-
-            return zip(remainingKeyLocations.indices, remainingKeyLocations)
-                .compactMap { index, location -> AbsolutePosition? in
-                    let previousLocation = keyLocations[index - 1]
-                    let previousLine = previousLocation.line
-                    let locationLine = location.line
-                    let firstKeyColumn = firstKeyLocation.column
-                    let locationColumn = location.column
-                    guard previousLine < locationLine, firstKeyColumn != locationColumn else {
-                        return nil
-                    }
-
-                    return locationConverter.position(ofLine: locationLine, column: locationColumn)
+            // Only the first key and keys starting a new line are ever compared, so resolving
+            // grapheme columns on demand keeps single-line literals from reading the source lines
+            // at all.
+            var firstKeyColumn: Int?
+            var positions = [AbsolutePosition]()
+            for index in keyLocations.indices.dropFirst() {
+                let location = keyLocations[index]
+                guard keyLocations[index - 1].line < location.line else {
+                    continue
                 }
+                let firstColumn = firstKeyColumn
+                    ?? column(of: keyLocations[0], inGraphemeColumns: inGraphemeColumns)
+                firstKeyColumn = firstColumn
+                let locationColumn = column(of: location, inGraphemeColumns: inGraphemeColumns)
+                guard firstColumn != locationColumn else {
+                    continue
+                }
+                positions.append(locationConverter.position(ofLine: location.line, column: locationColumn))
+            }
+            return positions
+        }
+
+        private func column(of location: SourceLocation, inGraphemeColumns: Bool) -> Int {
+            guard inGraphemeColumns,
+                  let graphemeClusters = String(
+                      sourceLines[location.line - 1].utf8.prefix(location.column - 1)
+                  ) else {
+                return location.column
+            }
+            return graphemeClusters.count + 1
         }
     }
 }

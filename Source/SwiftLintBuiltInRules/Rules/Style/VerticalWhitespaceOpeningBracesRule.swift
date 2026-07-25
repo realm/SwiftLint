@@ -6,7 +6,7 @@ private extension SwiftLintFile {
     func violatingRanges(for pattern: String) -> [NSRange] {
         match(pattern: pattern,
               excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-              usingSyntaxMap: sourceKitFreeSyntaxMap)
+              usingSyntaxMap: commentAndStringSyntaxMap)
     }
 }
 

@@ -48,6 +48,7 @@ final class FileCache: @unchecked Sendable {
     fileprivate var syntaxMap = Cached<SwiftLintSyntaxMap?>.notComputed
     fileprivate var swiftSyntaxTokens = Cached<[SwiftLintSyntaxToken]?>.notComputed
     fileprivate var sourceKitFreeSyntaxMapSlot = Cached<SwiftLintSyntaxMap>.notComputed
+    fileprivate var commentAndStringSyntaxMapSlot = Cached<SwiftLintSyntaxMap>.notComputed
     fileprivate var commentByteRangesSlot = Cached<CommentRanges>.notComputed
     fileprivate var assertHandlerSlot = Cached<AssertHandler?>.notComputed
 
@@ -103,6 +104,7 @@ final class FileCache: @unchecked Sendable {
             syntaxMap = .notComputed
             swiftSyntaxTokens = .notComputed
             sourceKitFreeSyntaxMapSlot = .notComputed
+            commentAndStringSyntaxMapSlot = .notComputed
             commentByteRangesSlot = .notComputed
             assertHandlerSlot = .notComputed
         }
@@ -255,6 +257,16 @@ extension SwiftLintFile {
     /// Cached because it is a pure function of the file that several rules ask for independently —
     /// `statement_position` alone builds it four times — and each call otherwise re-derives the whole
     /// token array and syntax map.
+    /// A syntax map holding only the file's comment and string tokens, for rules that filter
+    /// matches on `SyntaxKind.commentAndStringKinds` alone. Omitting the other kinds cannot change
+    /// such a filter's result, and avoids running SwiftSyntax's general-purpose classifier.
+    public func commentAndStringSyntaxMap() -> SwiftLintSyntaxMap {
+        fileCache.getOrCompute
+            { computeCommentAndStringSyntaxMap() }
+            get: { fileCache.commentAndStringSyntaxMapSlot }
+            set: { fileCache.commentAndStringSyntaxMapSlot = $0 }
+    }
+
     public func sourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
         fileCache.getOrCompute
             { computeSourceKitFreeSyntaxMap() }

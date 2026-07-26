@@ -217,7 +217,7 @@ extension SwiftLintFile {
 
     public var syntaxTree: SourceFileSyntax {
         fileCache.getOrCompute
-            { Parser.parse(source: contents) }
+            { Self.parsedSyntaxTree(of: contents) }
             get: { fileCache.syntaxTree }
             set: { fileCache.syntaxTree = $0 }
     }

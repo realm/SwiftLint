@@ -18,6 +18,9 @@ struct NoEmptyBlockConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "disabled_block_types")
     private(set) var disabledBlockTypes: [CodeBlockType] = []
 
+    @ConfigurationElement(key: "allow_compact_empty_blocks")
+    private(set) var allowCompactEmptyBlocks = false
+
     var enabledBlockTypes: Set<CodeBlockType> {
         CodeBlockType.all.subtracting(disabledBlockTypes)
     }

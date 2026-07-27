@@ -104,6 +104,13 @@ struct NoEmptyBlockRule: Rule {
             f {}
             {}()
             """.asExample(configuration: ["disabled_block_types": ["closure_blocks"]]),
+            """
+            func f() {}
+
+            var flag = true {
+                willSet {}
+            }
+            """.asExample(configuration: ["allow_compact_empty_blocks": true]),
         ]),
         triggeringExamples: #examples([
             """
@@ -148,6 +155,14 @@ struct NoEmptyBlockRule: Rule {
             """
             Button ↓{} label: ↓{}
             """,
+            """
+            func f() ↓{ }
+
+            var flag = true {
+                willSet ↓{
+                }
+            }
+            """.asExample(configuration: ["allow_compact_empty_blocks": true]),
         ])
     )
 }
@@ -171,6 +186,11 @@ private extension NoEmptyBlockRule {
             guard node.statements.isEmpty,
                   !node.leftBrace.trailingTrivia.containsComments,
                   !node.rightBrace.leadingTrivia.containsComments else {
+                return
+            }
+            if configuration.allowCompactEmptyBlocks,
+               node.leftBrace.trailingTrivia.isEmpty,
+               node.rightBrace.leadingTrivia.isEmpty {
                 return
             }
             violations.append(node.leftBrace.positionAfterSkippingLeadingTrivia)

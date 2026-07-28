@@ -210,6 +210,23 @@ struct NoMagicNumbersRule: Rule {
             "let a = b + 2".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
             "let a = b + 1".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
             "let a = b + 2.5".asExample(configuration: ["allowed_numbers": [2.5]], excludeFromDocumentation: true),
+            "static let defaultInterval: Duration = .seconds(5)",
+            "static let dwell = Duration.milliseconds(500)",
+            """
+            static let dwell: Duration = .milliseconds(500)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            func f(timeout: Duration = .seconds(30)) {}
+            """.asExample(excludeFromDocumentation: true),
+            "let angle: Angle = .degrees(90)",
+            "let negativeAngle: Angle = .degrees(-90)",
+            "let parenthesizedInterval: Duration = .seconds((5))",
+            """
+            let angle = Angle.radians(1.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            static let notFound: HTTPStatus = .code(404)
+            """.asExample(configuration: ["definitional_types": ["HTTPStatus"]], excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             "foo(↓321)",
@@ -267,6 +284,32 @@ struct NoMagicNumbersRule: Rule {
             let namespacedColor = DesignSystem.Color(red: ↓0.5, green: ↓0.42, blue: ↓0.7)
             """.asExample(excludeFromDocumentation: true),
             "let a = b + ↓3".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
+            "try await clock.sleep(for: .seconds(↓30))",
+            "let timeout: Int = .factorial(↓20)",
+            """
+            let bytes: Data = .randomBytes(↓64)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let a: Int = .init(↓3)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let f: CGFloat = .init(↓1.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let color: Color = .rgb(↓12, ↓34, ↓56)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let total: Duration = .seconds(↓5) + .seconds(↓10)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let d: Duration = .seconds(↓5 * ↓2)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let config = Config(duration: .seconds(↓30))
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let duration: Duration = .seconds(↓30)
+            """.asExample(configuration: ["definitional_types": ["HTTPStatus"]], excludeFromDocumentation: true),
         ])
     )
 }
@@ -344,6 +387,14 @@ private extension NoMagicNumbersRule {
                 return
             }
             if node.isPartOfColorInitializer() {
+                return
+            }
+            // `let x: Duration = .seconds(5)` is the strongly-typed spelling of the already-exempt
+            // `let x: Int = 5`, so exempt it too. The declared type must be configured as
+            // definitional, which keeps arbitrary factories like `let x: Int = .factorial(↓20)`
+            // flagged, and requiring the call to *be* the initializer value keeps use sites like
+            // `clock.sleep(for: .seconds(↓30))` flagged.
+            if node.isSoleArgumentOfDefinitionalFactory(configuration.definitionalTypes) {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -458,6 +509,59 @@ private extension ExprSyntaxProtocol {
         return false
     }
 
+    /// Whether this literal is the sole argument of a factory call producing a value of a type
+    /// configured as definitional, where that call is the entire initializer value of a declaration
+    /// as in `let interval: Duration = .seconds(5)`.
+    ///
+    /// The type is read from the syntax — either the base of a member access (`Duration.seconds(5)`)
+    /// or the declaration's explicit type annotation — so a type alias or an inferred type is not
+    /// recognised. That is deliberate: the rule has no type information to resolve them with.
+    func isSoleArgumentOfDefinitionalFactory(_ definitionalTypes: Set<String>) -> Bool {
+        guard let argument = enclosingSoleLiteralArgument(),
+              let arguments = argument.parent?.as(LabeledExprListSyntax.self), arguments.count == 1,
+              let call = arguments.parent?.as(FunctionCallExprSyntax.self),
+              call.trailingClosure == nil, call.additionalTrailingClosures.isEmpty,
+              let callee = call.calledExpression.as(MemberAccessExprSyntax.self),
+              // `.init(3)` is just another spelling of the flagged `Int(3)`, not a named unit.
+              callee.declName.baseName.tokenKind != .keyword(.`init`),
+              let initializer = call.parent?.as(InitializerClauseSyntax.self) else {
+            return false
+        }
+        if let base = callee.base?.as(DeclReferenceExprSyntax.self) {
+            return definitionalTypes.contains(base.baseName.text)
+        }
+        guard callee.base == nil, let declaredType = initializer.declaredTypeName else {
+            return false
+        }
+        return definitionalTypes.contains(declaredType)
+    }
+
+    /// Finds the argument containing this literal if it is the argument's entire value, allowing only a unary sign
+    /// and parentheses around it.
+    private func enclosingSoleLiteralArgument() -> LabeledExprSyntax? {
+        var node = Syntax(self)
+        while let parent = node.parent {
+            if let prefix = parent.as(PrefixOperatorExprSyntax.self) {
+                guard ["+", "-"].contains(prefix.operator.text) else {
+                    return nil
+                }
+                node = parent
+                continue
+            }
+            guard let argument = parent.as(LabeledExprSyntax.self),
+                  let container = argument.parent?.parent else {
+                return nil
+            }
+            if argument.label == nil,
+               let tuple = container.as(TupleExprSyntax.self), tuple.elements.count == 1 {
+                node = Syntax(tuple)
+                continue
+            }
+            return argument
+        }
+        return nil
+    }
+
     func isPartOfColorInitializer() -> Bool {
         guard let param = enclosingCallArgument(),
               let label = param.label?.text,
@@ -533,6 +637,22 @@ private extension FunctionCallExprSyntax {
         return arguments.count == 1
             && trailingClosure == nil
             && ["CGFloat", "Double", "Float", "Int", "UInt8"].contains(typeName)
+    }
+}
+
+private extension InitializerClauseSyntax {
+    /// The type name written on the declaration this initializer clause belongs to, if there is one.
+    ///
+    /// Generic arguments are dropped so that `Measurement<UnitDuration>` matches a configured
+    /// `Measurement`.
+    var declaredTypeName: String? {
+        let type = parent?.as(PatternBindingSyntax.self)?.typeAnnotation?.type
+            ?? parent?.as(FunctionParameterSyntax.self)?.type
+            ?? parent?.as(EnumCaseParameterSyntax.self)?.type
+        guard let type else {
+            return nil
+        }
+        return type.as(IdentifierTypeSyntax.self)?.name.text ?? type.trimmedDescription
     }
 }
 

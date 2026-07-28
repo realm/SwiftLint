@@ -779,6 +779,7 @@ no_magic_numbers:
   severity: warning
   test_parent_classes: ["QuickSpec", "XCTestCase"]
   allowed_numbers: [0.0, 1.0, 100.0]
+  definitional_types: ["Angle", "Duration"]
   meta:
     opt-in: true
     correctable: false

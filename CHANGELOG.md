@@ -54,6 +54,14 @@
   with CRLF line endings when running `swiftlint --fix`.  
   [sjh9714](https://github.com/sjh9714)
   [#6598](https://github.com/realm/SwiftLint/issues/6598)
+* Don't flag a numeric literal in the `no_magic_numbers` rule when it is the sole argument of a
+  factory call that forms the whole initializer of a named constant whose declared type is listed
+  in the new `definitional_types` option, defaulting to `Duration` and `Angle`. This treats
+  `static let interval: Duration = .seconds(5)` as definitional just like
+  `static let intervalSeconds: Int = 5` already was, while arbitrary factories such as
+  `let x: Int = .factorial(20)` and inline use sites such as `clock.sleep(for: .seconds(30))`
+  keep triggering.  
+  [lechuckcaptain](https://github.com/lechuckcaptain)
 
 ## 0.65.0: Fresh Folded Fixtures
 

@@ -38,6 +38,11 @@
   [#6798](https://github.com/realm/SwiftLint/issues/6798)
   [#6799](https://github.com/realm/SwiftLint/issues/6799)
 
+* Fix `closure_end_indentation` moving closing braces to column 1 in files
+  with CRLF line endings when running `swiftlint --fix`.  
+  [sjh9714](https://github.com/sjh9714)
+  [#6598](https://github.com/realm/SwiftLint/issues/6598)
+
 ## 0.65.0: Fresh Folded Fixtures
 
 ### Breaking

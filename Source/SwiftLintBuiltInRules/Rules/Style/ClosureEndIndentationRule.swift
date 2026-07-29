@@ -195,10 +195,13 @@ private extension ClosureEndIndentationRule {
 
         /// Calculates the column of the first non-whitespace character on a given line.
         private func getFirstNonWhitespaceColumn(onLine lineNumber: Int) -> Int {
-            guard lineNumber > 0, lineNumber <= file.lines.count else {
+            // Use the lines seen by `locationConverter`, which produced `lineNumber`.
+            // `file.lines` counts CRLF line endings differently, corrupting files.
+            let sourceLines = locationConverter.sourceLines
+            guard lineNumber > 0, lineNumber <= sourceLines.count else {
                 return 1 // Should not happen
             }
-            let lineContent = file.lines[lineNumber - 1].content
+            let lineContent = sourceLines[lineNumber - 1]
 
             if let firstCharIndex = lineContent.firstIndex(where: { !$0.isWhitespace }) {
                 return lineContent.distance(from: lineContent.startIndex, to: firstCharIndex) + 1

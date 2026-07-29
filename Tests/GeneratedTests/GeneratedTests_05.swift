@@ -74,6 +74,14 @@ struct LegacyRandomRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct LegacySwiftUIAspectRatioRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(LegacySwiftUIAspectRatioRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct LegacyUIGraphicsFunctionRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct MultilineParametersRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(MultilineParametersRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct MultipleClosuresWithTrailingClosureRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
     }
 }

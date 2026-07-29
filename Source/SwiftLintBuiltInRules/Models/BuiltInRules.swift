@@ -110,6 +110,7 @@ public let builtInRules: [any Rule.Type] = [
     LegacyNSGeometryFunctionsRule.self,
     LegacyObjcTypeRule.self,
     LegacyRandomRule.self,
+    LegacySwiftUIAspectRatioRule.self,
     LegacyUIGraphicsFunctionRule.self,
     LetVarWhitespaceRule.self,
     LineLengthRule.self,

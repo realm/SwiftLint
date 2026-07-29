@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct MultipleClosuresWithTrailingClosureRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct NSLocalizedStringKeyRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct OverriddenSuperCallRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(OverriddenSuperCallRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct OverrideInExtensionRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(OverrideInExtensionRule.description)
     }
 }

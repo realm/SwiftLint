@@ -11,7 +11,7 @@ tasks:
     bazel: ${{ bazel }}
     environment:
       CC: "clang"
-      SWIFT_VERSION: "6.3.2"
+      SWIFT_VERSION: "6.3.3"
       SWIFT_HOME: "$HOME/swift-$SWIFT_VERSION"
       PATH: "$PATH:$SWIFT_HOME/usr/bin"
     shell_commands:
@@ -30,3 +30,5 @@ tasks:
       - '@swiftlint//:swiftlint'
     build_flags:
       - "--repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1"
+      - "--macos_minimum_os=14.8"
+      - "--host_macos_minimum_os=14.8"

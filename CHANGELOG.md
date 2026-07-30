@@ -22,9 +22,8 @@
 
 ### Bug Fixes
 
-* Make `unowned_variable_capture` ignore `unowned(unsafe)` captures by
-  default and add an `include_unsafe` option for projects that still want them
-  reported.  
+* Add an opt-in `allow_explicit_unsafe_unowned` option to let the
+  `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)
   [#6817](https://github.com/realm/SwiftLint/issues/6817)
 

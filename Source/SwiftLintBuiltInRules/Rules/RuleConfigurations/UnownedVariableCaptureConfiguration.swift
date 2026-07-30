@@ -4,6 +4,6 @@ import SwiftLintCore
 struct UnownedVariableCaptureConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "severity")
     private(set) var severityConfiguration = SeverityConfiguration<Parent>(.warning)
-    @ConfigurationElement(key: "include_unsafe")
-    private(set) var includeUnsafe = false
+    @ConfigurationElement(key: "allow_explicit_unsafe_unowned")
+    private(set) var allowExplicitUnsafeUnowned = false
 }

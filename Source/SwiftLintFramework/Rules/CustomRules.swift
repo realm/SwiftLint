@@ -20,6 +20,16 @@ package struct CustomRulesConfiguration: RuleConfiguration, CacheDescriptionProv
     var customRuleConfigurations = [RegexConfiguration<Parent>]()
     var defaultExecutionMode: RegexConfiguration<Parent>.ExecutionMode?
 
+    /// The mode a custom rule effectively runs with, resolving `.default` against
+    /// `default_execution_mode` and falling back to SourceKit mode.
+    package func effectiveExecutionMode(
+        for configuration: RegexConfiguration<Parent>
+    ) -> RegexConfiguration<Parent>.ExecutionMode {
+        configuration.executionMode == .default
+            ? (defaultExecutionMode ?? .sourcekit)
+            : configuration.executionMode
+    }
+
     package mutating func apply(configuration: Any) throws(Issue) {
         guard let configurationDict = configuration as? [String: Any] else {
             throw .invalidConfiguration(ruleID: Parent.identifier)
@@ -80,10 +90,7 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
     /// Returns true if all configured custom rules use SwiftSyntax mode, making this rule effectively SourceKit-free.
     package var isEffectivelySourceKitFree: Bool {
         configuration.customRuleConfigurations.allSatisfy { config in
-            let effectiveMode = config.executionMode == .default
-                ? (configuration.defaultExecutionMode ?? .sourcekit)
-                : config.executionMode
-            return effectiveMode == .swiftsyntax
+            configuration.effectiveExecutionMode(for: config) == .swiftsyntax
         }
     }
 
@@ -109,7 +116,15 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
             let excludingKinds = configuration.excludedMatchKinds
-            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup).map({
+            // Rules in SwiftSyntax mode must not consult SourceKit: they are reported as
+            // SourceKit-free, so they also run when SourceKit is disabled or unavailable.
+            let matches = if self.configuration.effectiveExecutionMode(for: configuration) == .swiftsyntax {
+                file.matchWithSwiftSyntaxKinds(
+                    pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup)
+            } else {
+                file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup)
+            }
+            return matches.map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),

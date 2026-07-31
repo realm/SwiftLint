@@ -28,6 +28,14 @@
 
 ### Bug Fixes
 
+* Make custom rules in SwiftSyntax execution mode actually run without SourceKit. Previously
+  `execution_mode: swiftsyntax` only marked `custom_rules` as SourceKit-free: matching still
+  queried SourceKit for syntax kinds, so linting with SourceKit disabled (for example with the
+  fully static Linux binary or `--disable-sourcekit`) crashed instead of reporting violations.
+  Syntax kinds are now derived from SwiftSyntax classifications in this mode.  
+  [bprinsta](https://github.com/bprinsta)
+  [#6129](https://github.com/realm/SwiftLint/issues/6129)
+
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  
   [SimplyDanny](https://github.com/SimplyDanny)

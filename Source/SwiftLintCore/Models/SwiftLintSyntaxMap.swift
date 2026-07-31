@@ -12,6 +12,14 @@ public struct SwiftLintSyntaxMap {
         self.tokens = value.tokens.map(SwiftLintSyntaxToken.init)
     }
 
+    /// Creates a `SwiftLintSyntaxMap` from tokens already in SwiftLint's representation, such as
+    /// tokens derived from SwiftSyntax classifications. Tokens must be sorted by position.
+    ///
+    /// - parameter tokens: The syntax tokens for this syntax map.
+    package init(tokens: [SwiftLintSyntaxToken]) {
+        self.tokens = tokens
+    }
+
     /// Returns array of syntax tokens intersecting with byte range.
     ///
     /// - parameter byteRange: Byte-based NSRange.

@@ -100,13 +100,19 @@ extension SwiftLintFile {
     }
 
     public func match(pattern: String, range: NSRange? = nil, captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
+        match(pattern: pattern, syntaxMap: syntaxMap, range: range, captureGroup: captureGroup)
+    }
+
+    private func match(pattern: String,
+                       syntaxMap: SwiftLintSyntaxMap,
+                       range: NSRange? = nil,
+                       captureGroup: Int = 0) -> [(NSRange, [SyntaxKind])] {
         let contents = stringView
         let range = range ?? contents.range
-        let syntax = syntaxMap
         return regex(pattern).matches(in: contents, options: [], range: range).compactMap { match in
             let matchByteRange = contents.NSRangeToByteRange(
                 start: match.range.location, length: match.range.length)
-            return matchByteRange.map { (match.range(at: captureGroup), syntax.tokens(inByteRange: $0).kinds) }
+            return matchByteRange.map { (match.range(at: captureGroup), syntaxMap.tokens(inByteRange: $0).kinds) }
         }
     }
 
@@ -126,6 +132,26 @@ extension SwiftLintFile {
                       range: NSRange? = nil,
                       captureGroup: Int = 0) -> [NSRange] {
         match(pattern: pattern, range: range, captureGroup: captureGroup)
+            .filter { syntaxKinds.isDisjoint(with: $0.1) }
+            .map(\.0)
+    }
+
+    /// Like `match(pattern:excludingSyntaxKinds:range:captureGroup:)`, but derives syntax kinds
+    /// from SwiftSyntax classifications instead of SourceKit, so it can be used when SourceKit
+    /// is disabled or unavailable.
+    ///
+    /// - parameter pattern: regex pattern to be matched inside file.
+    /// - parameter excludingSyntaxKinds: syntax kinds the matches to be filtered
+    /// when inside them.
+    ///
+    /// - returns: An array of [NSRange] objects consisting of regex matches inside
+    /// file contents.
+    package func matchWithSwiftSyntaxKinds(pattern: String,
+                                           excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
+                                           range: NSRange? = nil,
+                                           captureGroup: Int = 0) -> [NSRange] {
+        let syntaxMap = SwiftLintSyntaxMap(tokens: swiftSyntaxDerivedSourceKittenTokens ?? [])
+        return match(pattern: pattern, syntaxMap: syntaxMap, range: range, captureGroup: captureGroup)
             .filter { syntaxKinds.isDisjoint(with: $0.1) }
             .map(\.0)
     }

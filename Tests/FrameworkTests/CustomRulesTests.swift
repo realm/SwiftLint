@@ -704,6 +704,55 @@ struct CustomRulesTests {  // swiftlint:disable:this type_body_length
     }
 
     @Test
+    func swiftSyntaxModeRunsWithSourceKitDisabled() throws {
+        // SwiftSyntax-mode rules are reported as SourceKit-free, so they must also run — without
+        // consulting SourceKit — when SourceKit access is prohibited, as in the prebuilt fully
+        // static Linux binary or under `--disable-sourcekit`.
+        Request.disableSourceKitOverride = true
+        defer { Request.disableSourceKitOverride = false }
+
+        let customRules: [String: Any] = [
+            "no_foo": [
+                "regex": "\\bfoo\\b",
+                "execution_mode": "swiftsyntax",
+                "message": "Don't use foo",
+            ],
+        ]
+
+        let example = Example(code: "let foo = 42")
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        #expect(violations.count == 1)
+        #expect(violations[0].ruleIdentifier == "no_foo")
+        #expect(violations[0].location.character == 5)
+    }
+
+    @Test
+    func swiftSyntaxModeFiltersMatchKindsWithSourceKitDisabled() throws {
+        Request.disableSourceKitOverride = true
+        defer { Request.disableSourceKitOverride = false }
+
+        let customRules: [String: Any] = [
+            "comment_foo": [
+                "regex": "foo",
+                "execution_mode": "swiftsyntax",
+                "match_kinds": "comment",
+                "message": "No foo in comments",
+            ],
+        ]
+
+        let example = Example(code: """
+            let foo = 42  // This foo should match
+            let bar = 42  // This should not match
+            """)
+        let violations = try violations(forExample: example, customRules: customRules)
+
+        #expect(violations.count == 1)
+        #expect(violations[0].location.line == 1)
+        #expect(violations[0].location.character == 23)
+    }
+
+    @Test
     func customRuleWithoutMatchKindsUsesSwiftSyntaxByDefault() throws {
         // When default_execution_mode is swiftsyntax, rules without match_kinds should use it
         let customRules: [String: Any] = [

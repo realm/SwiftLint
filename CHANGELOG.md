@@ -28,6 +28,11 @@
 
 ### Bug Fixes
 
+* Fall back to the default configuration when an automatically discovered nested
+  configuration cannot be parsed, instead of aborting the lint run.  
+  [Raisul Chowdhury](https://github.com/raisulchowdhury)  
+  [#6052](https://github.com/realm/SwiftLint/issues/6052)
+
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)

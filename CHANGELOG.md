@@ -28,6 +28,11 @@
 
 ### Bug Fixes
 
+* Report `prefer_self_in_static_references` violations in return types of static
+  functions in extensions whose value type is declared in the same file.  
+  [aryansk](https://github.com/aryansk)
+  [#6828](https://github.com/realm/SwiftLint/issues/6828)
+
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)

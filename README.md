@@ -1041,6 +1041,11 @@ A simple example including just two configuration files looks like this:
 
 `swiftlint --config .swiftlint.yml --config .swiftlint_child.yml`
 
+To disable rules for one invocation without changing a configuration file, use
+`--disable-rule`. The option can be repeated:
+
+`swiftlint lint --disable-rule todo --disable-rule line_length`
+
 ### Nested Configurations
 
 In addition to a main configuration (the `.swiftlint.yml` file in the root

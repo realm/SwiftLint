@@ -62,6 +62,12 @@ struct LintOrAnalyzeArguments: ParsableArguments {
                 """
     )
     var onlyRule: [String] = []
+    @Option(
+        name: .customLong("disable-rule"),
+        parsing: .singleValue,
+        help: "Disable the specified rule for this invocation. Can be specified repeatedly."
+    )
+    var disabledRule: [String] = []
 }
 
 // MARK: - Common Argument Help

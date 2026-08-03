@@ -64,6 +64,7 @@ private extension LintOrAnalyzeOptions {
                   ignoreCache: false,
                   enableAllRules: false,
                   onlyRule: [],
+                  disabledRule: [],
                   autocorrect: false,
                   format: false,
                   disableSourceKit: false,

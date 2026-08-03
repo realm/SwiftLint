@@ -283,6 +283,13 @@ public struct Configuration {
     }
 
     // MARK: - Methods: Internal
+    internal mutating func disableRules(_ ruleIdentifiers: [String]) {
+        let disabledRulesConfiguration = Self(
+            rulesMode: .defaultConfiguration(disabled: Set(ruleIdentifiers), optIn: [])
+        )
+        rulesWrapper = rulesWrapper.merged(with: disabledRulesConfiguration.rulesWrapper)
+    }
+
     mutating func makeIncludedAndExcludedPaths(relativeTo newBasePath: URL) {
         includedPaths = includedPaths.map { $0.relative(to: newBasePath) }
         excludedPaths = excludedPaths.map { $0.relative(to: newBasePath) }

@@ -52,6 +52,7 @@ package struct LintOrAnalyzeOptions {
     let ignoreCache: Bool
     let enableAllRules: Bool
     let onlyRule: [String]
+    let disabledRule: [String]
     let autocorrect: Bool
     let format: Bool
     let disableSourceKit: Bool
@@ -81,6 +82,7 @@ package struct LintOrAnalyzeOptions {
                  ignoreCache: Bool,
                  enableAllRules: Bool,
                  onlyRule: [String],
+                 disabledRule: [String],
                  autocorrect: Bool,
                  format: Bool,
                  disableSourceKit: Bool,
@@ -109,6 +111,7 @@ package struct LintOrAnalyzeOptions {
         self.ignoreCache = ignoreCache
         self.enableAllRules = enableAllRules
         self.onlyRule = onlyRule
+        self.disabledRule = disabledRule
         self.autocorrect = autocorrect
         self.format = format
         self.disableSourceKit = disableSourceKit

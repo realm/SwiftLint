@@ -101,6 +101,25 @@ struct ConfigurationTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
+    func commandLineDisabledRules() {
+        Configuration.resetCache()
+
+        let allRulesConfiguration = Configuration(
+            options: .init(enableAllRules: true, disabledRule: ["todo"])
+        )
+        #expect(!allRulesConfiguration.enabledRuleIdentifiers.contains("todo"))
+        #expect(
+            allRulesConfiguration.rules.count == RuleRegistry.shared.list.list.count - 1
+        )
+
+        Configuration.resetCache()
+        let onlyRulesConfiguration = Configuration(
+            options: .init(onlyRule: ["line_length", "todo"], disabledRule: ["todo"])
+        )
+        #expect(onlyRulesConfiguration.enabledRuleIdentifiers == ["line_length"])
+    }
+
+    @Test
     func onlyRules() throws {
         let only = ["nesting", "todo"]
 
@@ -677,5 +696,45 @@ private extension Sequence where Element == String {
 private extension Configuration {
     var enabledRuleIdentifiers: [String] {
         rules.map { type(of: $0).identifier }.sorted()
+    }
+}
+
+private extension LintOrAnalyzeOptions {
+    init(
+        enableAllRules: Bool = false,
+        onlyRule: [String] = [],
+        disabledRule: [String] = []
+    ) {
+        self.init(
+            mode: .lint,
+            paths: [],
+            useSTDIN: false,
+            configurationFiles: [],
+            strict: false,
+            lenient: false,
+            forceExclude: false,
+            useExcludingByPrefix: false,
+            useScriptInputFiles: false,
+            useScriptInputFileLists: false,
+            benchmark: false,
+            reporter: nil,
+            baseline: nil,
+            writeBaseline: nil,
+            workingDirectory: nil,
+            quiet: true,
+            output: nil,
+            progress: false,
+            cachePath: nil,
+            ignoreCache: true,
+            enableAllRules: enableAllRules,
+            onlyRule: onlyRule,
+            disabledRule: disabledRule,
+            autocorrect: false,
+            format: false,
+            disableSourceKit: false,
+            compilerLogPath: nil,
+            compileCommands: nil,
+            checkForUpdates: false
+        )
     }
 }

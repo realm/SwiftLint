@@ -14,6 +14,10 @@
 
 ### Enhancements
 
+* Add a repeatable `--disable-rule` command-line option for disabling rules for a single invocation.
+  [aryansk](https://github.com/aryansk)
+  [#6831](https://github.com/realm/SwiftLint/issues/6831)
+
 * Add `#examples` and `#corrections` macros that expand lists and
   dictionaries of code strings into `Example`s, reducing boilerplate when
   defining a rule's triggering/non-triggering examples and corrections. Adopt

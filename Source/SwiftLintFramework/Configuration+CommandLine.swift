@@ -293,6 +293,12 @@ extension Configuration {
             onlyRule: options.onlyRule,
             cachePath: options.cachePath
         )
+
+        guard options.disabledRule.isNotEmpty else {
+            return
+        }
+
+        disableRules(options.disabledRule)
     }
 }
 

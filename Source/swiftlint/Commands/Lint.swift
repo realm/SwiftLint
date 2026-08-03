@@ -60,6 +60,7 @@ extension SwiftLint {
                 ignoreCache: noCache,
                 enableAllRules: enableAllRules,
                 onlyRule: common.onlyRule,
+                disabledRule: common.disabledRule,
                 autocorrect: common.fix,
                 format: common.format,
                 disableSourceKit: disableSourceKit,

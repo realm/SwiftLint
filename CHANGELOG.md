@@ -37,6 +37,10 @@
 
 ### Bug Fixes
 
+* Fix `missing_docs` false positives for implicit actor requirements.  
+  [ZHUOLIN0928](https://github.com/ZHUOLIN0928)
+  [#5422](https://github.com/realm/SwiftLint/issues/5422)
+
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)

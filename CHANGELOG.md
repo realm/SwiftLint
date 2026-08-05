@@ -41,6 +41,13 @@
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)
   [#6817](https://github.com/realm/SwiftLint/issues/6817)
+* Fix `no_magic_numbers` reporting color-component arguments of SwiftUI `Color`
+  and AppKit `NSColor` initializers, which are now exempt as `UIColor` already
+  was, including the color-space-prefixed components of `NSColor` as in
+  `NSColor(srgbRed:green:blue:alpha:)`. The exemption further covers computed
+  component values as in
+  `Color(red: 0x19 / 255, green: 0x7A / 255, blue: 0x3C / 255)`.  
+  [lechuckcaptain](https://github.com/lechuckcaptain)
 
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  
@@ -56,6 +63,14 @@
   with CRLF line endings when running `swiftlint --fix`.  
   [sjh9714](https://github.com/sjh9714)
   [#6598](https://github.com/realm/SwiftLint/issues/6598)
+* Don't flag a numeric literal in the `no_magic_numbers` rule when it is the sole argument of a
+  factory call that forms the whole initializer of a named constant whose declared type is listed
+  in the new `definitional_types` option, defaulting to `Duration` and `Angle`. This treats
+  `static let interval: Duration = .seconds(5)` as definitional just like
+  `static let intervalSeconds: Int = 5` already was, while arbitrary factories such as
+  `let x: Int = .factorial(20)` and inline use sites such as `clock.sleep(for: .seconds(30))`
+  keep triggering.  
+  [lechuckcaptain](https://github.com/lechuckcaptain)
 
 ## 0.65.0: Fresh Folded Fixtures
 

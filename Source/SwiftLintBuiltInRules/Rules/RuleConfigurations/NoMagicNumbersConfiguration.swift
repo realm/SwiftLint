@@ -12,4 +12,6 @@ struct NoMagicNumbersConfiguration: SeverityBasedRuleConfiguration {
         postprocessor: { $0.formUnion([0, 1, 100]) }
     )
     private(set) var allowedNumbers = Set<Double>()
+    @ConfigurationElement(key: "definitional_types")
+    private(set) var definitionalTypes: Set<String> = ["Duration", "Angle"]
 }

@@ -18,6 +18,11 @@
   source lines once per element of a dictionary literal.  
   [Brett-Best](https://github.com/Brett-Best)
 
+* Compare the two operands of a comparison by walking their token streams in
+  the `identical_operands` rule instead of rendering both operands to strings,
+  so differing operands stop at the first mismatching token.  
+  [Brett-Best](https://github.com/Brett-Best)
+
 * Add `#examples` and `#corrections` macros that expand lists and
   dictionaries of code strings into `Example`s, reducing boilerplate when
   defining a rule's triggering/non-triggering examples and corrections. Adopt

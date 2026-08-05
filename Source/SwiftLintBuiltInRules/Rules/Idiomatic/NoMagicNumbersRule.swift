@@ -4,6 +4,25 @@ import Foundation
 import SwiftLintCore
 import SwiftSyntax
 
+private let colorTypeNames: Set<String> = [
+    "UIColor", "UIKit.UIColor",
+    "NSColor", "AppKit.NSColor",
+    "Color", "SwiftUI.Color",
+]
+
+/// Argument labels of the color components of a `UIColor`, `NSColor` or SwiftUI `Color` initializer. A numeric
+/// literal passed for one of them is a color value rather than a magic number.
+///
+/// AppKit encodes the color space in the label of the first component, hence variants like `srgbRed`.
+private let colorComponentLabels: Set<String> = [
+    "white", "calibratedWhite", "deviceWhite", "genericGamma22White",
+    "red", "calibratedRed", "deviceRed", "srgbRed", "displayP3Red",
+    "green", "blue", "alpha", "opacity",
+    "hue", "calibratedHue", "deviceHue", "saturation", "brightness",
+    "deviceCyan", "magenta", "yellow", "black",
+    "cgColor", "ciColor", "resource", "patternImage",
+]
+
 @SwiftSyntaxRule(foldExpressions: true, optIn: true)
 struct NoMagicNumbersRule: Rule {
     var configuration = NoMagicNumbersConfiguration()
@@ -139,6 +158,54 @@ struct NoMagicNumbersRule: Rule {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
             """.asExample(excludeFromDocumentation: true),
+            """
+            let swiftUIColor = Color(red: 0.1, green: 0.42, blue: 0.7)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let opaqueColor = Color(.sRGB, red: 0.1, green: 0.42, blue: 0.7, opacity: 0.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let appKitColor = NSColor(red: 0.1, green: 0.42, blue: 0.7, alpha: 0.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let computedColor = Color(red: 0x19 / 255, green: 0x7A / 255, blue: 0x3C / 255)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let computedUIColor = UIColor(red: 0x19 / 255, green: 0x7A / 255, blue: 0x3C / 255, alpha: 1)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let convertedColor = Color(red: Double(0x19) / 255, green: (0x7A - 0x19) / 255, blue: 0)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let shiftedColor = Color(hue: 0.9, saturation: 0.6, brightness: -0.3 + 1, opacity: 1)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let calibratedColor = NSColor(calibratedRed: 0.1, green: 0.42, blue: 0.7, alpha: 1)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let sRGBColor = NSColor(srgbRed: 0x19 / 255, green: 0x7A / 255, blue: 0x3C / 255, alpha: 1)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let gammaColor = NSColor(genericGamma22White: 0.5, alpha: 0.8)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let cmykColor = NSColor(deviceCyan: 0.1, magenta: 0.2, yellow: 0.3, black: 0.4, alpha: 1)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let spacedColor = NSColor(colorSpace: .sRGB, hue: 0.9, saturation: 0.6, brightness: 0.3, alpha: 1)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let memberAppKitColor = NSColor.init(deviceRed: 0.5, green: 0.3, blue: 0.9, alpha: 1.0)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let qualifiedSwiftUIColor = SwiftUI.Color(red: 0.1, green: 0.42, blue: 0.7)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let qualifiedAppKitColor = AppKit.NSColor(srgbRed: 0.1, green: 0.42, blue: 0.7, alpha: 0.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let qualifiedUIKitColor = UIKit.UIColor.init(red: 0.1, green: 0.42, blue: 0.7, alpha: 0.5)
+            """.asExample(excludeFromDocumentation: true),
             "let a = b + 2".asExample(configuration: ["allowed_numbers": [2]], excludeFromDocumentation: true),
             "let a = b + 2".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
             "let a = b + 1".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
@@ -183,6 +250,22 @@ struct NoMagicNumbersRule: Rule {
             f(↓4.0)
             #endif
             """,
+            "let paint = Paint(red: ↓0.5, green: ↓0.42, blue: ↓0.7)".asExample(excludeFromDocumentation: true),
+            """
+            let scaled = UIColor(white: 0.5, alpha: 1).cgColor.alpha * ↓2.5
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let faded = Color(red: 0.1, green: 0.42, blue: 0.7).opacity(↓0.42)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let clamped = Color(red: max(↓0.5, ↓0.2), green: 0, blue: 0)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let customColor = UIColor(rgb: ↓0x33373A, alpha: 0.16)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let namespacedColor = DesignSystem.Color(red: ↓0.5, green: ↓0.42, blue: ↓0.7)
+            """.asExample(excludeFromDocumentation: true),
             "let a = b + ↓3".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
         ])
     )
@@ -260,7 +343,7 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
-            if node.isPartOfUIColorInitializer() {
+            if node.isPartOfColorInitializer() {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -328,6 +411,17 @@ private extension Syntax {
         }
         return nil
     }
+
+    /// Whether this node is an arithmetic operation a numeric literal may be an operand of.
+    var isArithmeticOperation: Bool {
+        if let operation = `as`(InfixOperatorExprSyntax.self) {
+            guard let operatorSymbol = operation.operator.as(BinaryOperatorExprSyntax.self)?.operator.text else {
+                return false
+            }
+            return ["+", "-", "*", "/", "%"].contains(operatorSymbol)
+        }
+        return `is`(PrefixOperatorExprSyntax.self)
+    }
 }
 
 private extension ExprSyntaxProtocol {
@@ -364,34 +458,81 @@ private extension ExprSyntaxProtocol {
         return false
     }
 
-    func isPartOfUIColorInitializer() -> Bool {
-        guard let param = parent?.as(LabeledExprSyntax.self),
-              let label = param.label?.text else {
+    func isPartOfColorInitializer() -> Bool {
+        guard let param = enclosingCallArgument(),
+              let label = param.label?.text,
+              let arguments = param.parent?.as(LabeledExprListSyntax.self) else {
             return false
         }
-        let uiColorInitializerLabels = [
-            "white", "alpha", "red", "displayP3Red", "green", "blue", "hue",
-            "saturation", "brightness", "cgColor", "ciColor", "resource", "patternImage",
-        ]
-        if uiColorInitializerLabels.contains(label),
-           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(FunctionCallExprSyntax.self) {
-            if let calledExpr = call.calledExpression.as(DeclReferenceExprSyntax.self),
-               calledExpr.baseName.text == "UIColor" {
-                return true
-            }
-            if let memberAccess = call.calledExpression.as(MemberAccessExprSyntax.self),
-               let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
-               baseExpr.baseName.text == "UIColor",
-               memberAccess.declName.baseName.text == "init" {
-                return true
-            }
+        if colorComponentLabels.contains(label),
+           let call = arguments.parent?.as(FunctionCallExprSyntax.self),
+           call.isColorInitializer {
+            return true
         }
         if ["red", "green", "blue", "alpha"].contains(label),
-           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(MacroExpansionExprSyntax.self),
+           let call = arguments.parent?.as(MacroExpansionExprSyntax.self),
            call.macroName.text == "colorLiteral" {
             return true
         }
         return false
+    }
+
+    /// Searches for the argument of a function call or a macro expansion this expression is part of.
+    ///
+    /// The expression is not necessarily the argument itself. It may be nested in an arithmetic operation, in
+    /// parentheses or in a numeric conversion as in `Color(red: 0x19 / 255, green: 0, blue: 0)`. Every other kind
+    /// of parent ends the search so that an exemption granted for an argument cannot leak out of it.
+    private func enclosingCallArgument() -> LabeledExprSyntax? {
+        var node = Syntax(self)
+        while let parent = node.parent {
+            guard let argument = parent.as(LabeledExprSyntax.self) else {
+                guard parent.isArithmeticOperation else {
+                    return nil
+                }
+                node = parent
+                continue
+            }
+            guard let container = argument.parent?.parent else {
+                return nil
+            }
+            if let call = container.as(FunctionCallExprSyntax.self) {
+                // Look through conversions like `CGFloat(0x19)`, but stop at any other call.
+                guard argument.label == nil, call.isNumericConversion else {
+                    return argument
+                }
+                node = Syntax(call)
+            } else if container.is(MacroExpansionExprSyntax.self) {
+                return argument
+            } else if argument.label == nil,
+                      let tuple = container.as(TupleExprSyntax.self), tuple.elements.count == 1 {
+                // A single-element unlabeled tuple is just a parenthesized expression.
+                node = Syntax(tuple)
+            } else {
+                return nil
+            }
+        }
+        return nil
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    /// Whether this is a direct or module-qualified color initializer call.
+    var isColorInitializer: Bool {
+        var callee = calledExpression.trimmedDescription
+        if callee.hasSuffix(".init") {
+            callee = String(callee.dropLast(5))
+        }
+        return colorTypeNames.contains(callee)
+    }
+
+    /// Whether this call is a conversion of a single value into another numeric type as in `CGFloat(0x19)`.
+    var isNumericConversion: Bool {
+        guard let typeName = calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.text else {
+            return false
+        }
+        return arguments.count == 1
+            && trailingClosure == nil
+            && ["CGFloat", "Double", "Float", "Int", "UInt8"].contains(typeName)
     }
 }
 

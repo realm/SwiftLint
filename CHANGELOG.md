@@ -41,6 +41,13 @@
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)
   [#6817](https://github.com/realm/SwiftLint/issues/6817)
+* Fix `no_magic_numbers` reporting color-component arguments of SwiftUI `Color`
+  and AppKit `NSColor` initializers, which are now exempt as `UIColor` already
+  was, including the color-space-prefixed components of `NSColor` as in
+  `NSColor(srgbRed:green:blue:alpha:)`. The exemption further covers computed
+  component values as in
+  `Color(red: 0x19 / 255, green: 0x7A / 255, blue: 0x3C / 255)`.  
+  [lechuckcaptain](https://github.com/lechuckcaptain)
 
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  

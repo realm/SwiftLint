@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct OverriddenSuperCallRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(OverriddenSuperCallRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct OverrideInExtensionRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct QuickDiscouragedPendingTestRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(QuickDiscouragedPendingTestRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct RawValueForCamelCasedCodableEnumRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(RawValueForCamelCasedCodableEnumRule.description)
     }
 }

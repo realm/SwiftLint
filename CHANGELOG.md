@@ -42,6 +42,11 @@
   [Yurii Bakurov](https://github.com/Yurii201811)
   [#6817](https://github.com/realm/SwiftLint/issues/6817)
 
+* Fix `line_length` with `ignores_urls` enabled incorrectly ignoring property
+  accesses whose member names are valid top-level domains.  
+  [Arthur Liu](https://github.com/thliu21)
+  [#6811](https://github.com/realm/SwiftLint/issues/6811)
+
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  
   [SimplyDanny](https://github.com/SimplyDanny)

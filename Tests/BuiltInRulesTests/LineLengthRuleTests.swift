@@ -184,9 +184,16 @@ struct LineLengthRuleTests {
     @Test
     func lineLengthWithIgnoreURLsEnabled() {
         let url = "https://github.com/realm/SwiftLint"
-        let triggeringLines = #examples([(String(repeating: "/", count: 121) + "\(url)\n").asExample()])
+        let triggeringLines = #examples([
+            (String(repeating: "/", count: 121) + "\(url)\n").asExample(),
+            ("let value = " + String(repeating: "a", count: 99) + " + post.id\n").asExample(),
+            ("let value = " + String(repeating: "a", count: 97) + " + user.name\n").asExample(),
+            ("let value = " + String(repeating: "a", count: 96) + " + offer.info\n").asExample(),
+        ])
         let nonTriggeringLines = #examples([
             ("\(url) " + String(repeating: "/", count: 118) + " \(url)\n").asExample(),
+            ("www.example.com " + String(repeating: "/", count: 118) + " www.example.com\n").asExample(),
+            ("example.com/path " + String(repeating: "/", count: 118) + " example.com/path\n").asExample(),
             ("\(url)/" + String(repeating: "a", count: 120)).asExample(),
         ])
 

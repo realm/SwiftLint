@@ -252,7 +252,22 @@ private extension String {
             guard let urlDetector = try? NSDataDetector(types: types) else {
                 return self
             }
-            return urlDetector.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
+            var result = self
+            for match in urlDetector.matches(in: self, options: [], range: range).reversed() {
+                guard let matchedRange = Range(match.range, in: self),
+                      String(self[matchedRange]).hasExplicitURLSyntax,
+                      let replacementRange = Range(match.range, in: result) else {
+                    continue
+                }
+                result.removeSubrange(replacementRange)
+            }
+            return result
         #endif
+    }
+
+    private var hasExplicitURLSyntax: Bool {
+        let pattern =
+            "(?i)^(?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)"
+        return regex(pattern).firstMatch(in: self, range: fullNSRange) != nil
     }
 }

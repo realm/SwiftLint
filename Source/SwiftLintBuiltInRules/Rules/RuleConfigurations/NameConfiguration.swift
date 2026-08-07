@@ -6,6 +6,8 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     typealias SeverityLevels = SeverityLevelsConfiguration<Parent>
     typealias StartWithLowercaseConfiguration = ChildOptionSeverityConfiguration<Parent>
 
+    private(set) var allowedSymbolsAndAlphanumerics = CharacterSet.alphanumerics
+
     @ConfigurationElement(key: "min_length")
     private(set) var minLength = SeverityLevels(warning: 0, error: 0)
     @ConfigurationElement(key: "max_length")
@@ -13,7 +15,14 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     @ConfigurationElement(key: "excluded")
     private(set) var excludedRegularExpressions = Set<RegularExpression>()
     @ConfigurationElement(key: "allowed_symbols")
-    private(set) var allowedSymbols = Set<String>()
+    private(set) var allowedSymbols = Set<String>() {
+        didSet {
+            if allowedSymbols != oldValue {
+                allowedSymbolsAndAlphanumerics = CharacterSet(charactersIn: allowedSymbols.joined())
+                allowedSymbolsAndAlphanumerics.formUnion(.alphanumerics)
+            }
+        }
+    }
     @ConfigurationElement(key: "unallowed_symbols_severity")
     private(set) var unallowedSymbolsSeverity = Severity.error
     @ConfigurationElement(key: "validates_start_with_lowercase")
@@ -25,10 +34,6 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
 
     var maxLengthThreshold: Int {
         min(maxLength.warning, maxLength.error ?? maxLength.warning)
-    }
-
-    var allowedSymbolsAndAlphanumerics: CharacterSet {
-        CharacterSet(charactersIn: allowedSymbols.joined()).union(.alphanumerics)
     }
 
     init(minLengthWarning: Int,

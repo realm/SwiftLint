@@ -17,8 +17,10 @@ struct NameConfiguration<Parent: Rule>: RuleConfiguration, InlinableOptionType {
     @ConfigurationElement(key: "allowed_symbols")
     private(set) var allowedSymbols = Set<String>() {
         didSet {
-            allowedSymbolsAndAlphanumerics = CharacterSet(charactersIn: allowedSymbols.joined())
-            allowedSymbolsAndAlphanumerics.formUnion(.alphanumerics)
+            if allowedSymbols != oldValue {
+                allowedSymbolsAndAlphanumerics = CharacterSet(charactersIn: allowedSymbols.joined())
+                allowedSymbolsAndAlphanumerics.formUnion(.alphanumerics)
+            }
         }
     }
     @ConfigurationElement(key: "unallowed_symbols_severity")

@@ -1,0 +1,35 @@
+import SourceKittenFramework
+
+extension SwiftLintFile {
+    /// Builds the syntax map returned by the cached `sourceKitFreeSyntaxMap()`.
+    ///
+    /// To preserve exact parity with SourceKit's token extents, line comment tokens (`//`-style,
+    /// including doc line comments) are extended over their terminating newline: sourcekitd includes
+    /// that newline in the comment token's range, while SwiftSyntax classifies it as separate trivia.
+    /// Block comments end at `*/` in both. Rules that exclude matches intersecting comment kinds rely
+    /// on these exact extents.
+    func computeSourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
+        let bridgedTokens = swiftSyntaxDerivedSourceKittenTokens ?? []
+        let contents = stringView
+        let tokens = bridgedTokens.map { token -> SyntaxToken in
+            guard let kind = token.kind, SyntaxKind.commentKinds.contains(kind),
+                  contents.substringWithByteRange(ByteRange(location: token.offset, length: 2)) == "//"
+            else {
+                return token.value
+            }
+            let lineEnding = contents.substringWithByteRange(ByteRange(location: token.range.upperBound, length: 2))
+            let newlineLength: ByteCount = switch lineEnding {
+            case let ending? where ending.hasPrefix("\r\n"): 2
+            case let ending? where ending.hasPrefix("\n") || ending.hasPrefix("\r"): 1
+            case nil where contents.substringWithByteRange(
+                ByteRange(location: token.range.upperBound, length: 1)) == "\n": 1
+            default: 0
+            }
+            if newlineLength == 0 {
+                return token.value
+            }
+            return SyntaxToken(type: token.value.type, offset: token.offset, length: token.length + newlineLength)
+        }
+        return SwiftLintSyntaxMap(value: SyntaxMap(tokens: tokens))
+    }
+}

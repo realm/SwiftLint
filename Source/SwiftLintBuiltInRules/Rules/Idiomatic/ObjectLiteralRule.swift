@@ -35,21 +35,39 @@ struct ObjectLiteralRule: Rule {
 
 private extension ObjectLiteralRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        // Only `X(...)` and `X.init(...)` can match, so the identifier naming `X` is all that has
+        // to be looked at to rule a call out. Every other call skips `trimmedDescription`, which
+        // rebuilds the called expression's subtree just to render it as a string.
+        private static let imageClasses: Set<String> = ["UIImage", "NSImage"]
+        private static let colorClasses: Set<String> = ["UIColor", "NSColor"]
+        private static let imageInits = inits(forClasses: imageClasses)
+        private static let colorInits = inits(forClasses: colorClasses)
+
         override func visitPost(_ node: FunctionCallExprSyntax) {
-            guard configuration.colorLiteral || configuration.imageLiteral else {
+            let checkImage = configuration.imageLiteral
+            let checkColor = configuration.colorLiteral
+            guard checkImage || checkColor else {
+                return
+            }
+            guard let baseName = node.calledExpression.baseIdentifier else {
+                return
+            }
+            let couldBeImage = checkImage && Self.imageClasses.contains(baseName)
+            let couldBeColor = checkColor && Self.colorClasses.contains(baseName)
+            guard couldBeImage || couldBeColor else {
                 return
             }
 
             let name = node.calledExpression.trimmedDescription
-            if configuration.imageLiteral, isImageNamedInit(node: node, name: name) {
+            if couldBeImage, isImageNamedInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
-            } else if configuration.colorLiteral, isColorInit(node: node, name: name) {
+            } else if couldBeColor, isColorInit(node: node, name: name) {
                 violations.append(node.positionAfterSkippingLeadingTrivia)
             }
         }
 
         private func isImageNamedInit(node: FunctionCallExprSyntax, name: String) -> Bool {
-            guard inits(forClasses: ["UIImage", "NSImage"]).contains(name),
+            guard Self.imageInits.contains(name),
                   node.arguments.compactMap(\.label?.text) == ["named"],
                   let argument = node.arguments.first?.expression.as(StringLiteralExprSyntax.self),
                   argument.isConstantString else {
@@ -60,7 +78,7 @@ private extension ObjectLiteralRule {
         }
 
         private func isColorInit(node: FunctionCallExprSyntax, name: String) -> Bool {
-            guard inits(forClasses: ["UIColor", "NSColor"]).contains(name),
+            guard Self.colorInits.contains(name),
                   case let argumentsNames = node.arguments.compactMap(\.label?.text),
                   argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"] else {
                 return false
@@ -69,13 +87,13 @@ private extension ObjectLiteralRule {
             return node.arguments.allSatisfy(\.expression.canBeExpressedAsColorLiteralParams)
         }
 
-        private func inits(forClasses names: [String]) -> [String] {
-            names.flatMap { name in
+        private static func inits(forClasses names: Set<String>) -> Set<String> {
+            Set(names.flatMap { name in
                 [
                     name,
                     name + ".init",
                 ]
-            }
+            })
         }
     }
 }
@@ -87,6 +105,21 @@ private extension StringLiteralExprSyntax {
 }
 
 private extension ExprSyntax {
+    /// The identifier naming the callee for the `X` and `X.init` forms, or `nil` for any other
+    /// expression. Deliberately matches more than the rule accepts — `X.other` and `X . init`
+    /// resolve to `X` here and are rejected later by the exact name comparison — so that using it
+    /// to skip work cannot hide a violation.
+    var baseIdentifier: String? {
+        if let declReference = `as`(DeclReferenceExprSyntax.self) {
+            return declReference.baseName.text
+        }
+        if let memberAccess = `as`(MemberAccessExprSyntax.self),
+           let base = memberAccess.base?.as(DeclReferenceExprSyntax.self) {
+            return base.baseName.text
+        }
+        return nil
+    }
+
     var canBeExpressedAsColorLiteralParams: Bool {
         if `is`(FloatLiteralExprSyntax.self) ||
             `is`(IntegerLiteralExprSyntax.self) ||

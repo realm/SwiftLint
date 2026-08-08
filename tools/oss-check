@@ -70,6 +70,15 @@ class Repo
     "https://github.com/#{github_location}"
   end
 
+  # The subtree this repository is linted through, for repositories restricted with `included:`,
+  # or nil to check out everything. Only that subtree has to reach the working copy, which for
+  # Brave is 6% of the tree and for Swift 9%. Derived from the config rather than stored
+  # separately so the two cannot drift apart and silently drop files from the comparison.
+  def sparse_path
+    match = @config&.strip&.match(/\Aincluded:\s*(\S+)\z/)
+    match && match[1]
+  end
+
   def to_s
     @name
   end
@@ -178,30 +187,69 @@ def make_directory_structure
   end
 end
 
+# Cloning is network-bound, so the repositories are fetched concurrently. Bounded to keep a
+# handful of multi-hundred-megabyte clones from saturating the network and the disk.
+CLONE_CONCURRENCY = 6
+
 def setup_repos
-  @repos.each do |repo|
-    dir = "#{$working_dir}/#{repo.name}"
-    puts "Cloning #{repo}"
-    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
-    swiftlint_config = "#{dir}/.swiftlint.yml"
-    if !repo.keep_config
-      FileUtils.rm_rf(swiftlint_config)
-    end
-    if repo.config
-      File.open(swiftlint_config, 'a') do |file|
-        file.puts(repo.config)
+  pending = Queue.new
+  @repos.each { |repo| pending << repo }
+  failures = Queue.new
+
+  Array.new([CLONE_CONCURRENCY, @repos.count].min) do
+    Thread.new do
+      loop do
+        begin
+          repo = pending.pop(true)
+        rescue ThreadError
+          break
+        end
+        begin
+          clone_repo(repo)
+        rescue StandardError => e
+          failures << e.message
+        end
       end
     end
-    if @only_rules_changed && @rules_changed
-      File.open(swiftlint_config, 'a') do |file|
-        file.puts('only_rules:')
-        file.puts(@rules_changed.map { |rule| "  - #{rule}" })
-      end
-    end
-    Dir.chdir(dir) do
-      repo.commit_hash = `git rev-parse HEAD`.strip
+  end.each(&:join)
+
+  fail(failures.pop) unless failures.empty?
+end
+
+def clone_repo(repo)
+  dir = "#{$working_dir}/#{repo.name}"
+  puts "Cloning #{repo}"
+  # Only the tip commit is ever checked out, so history and tags are not needed. Where linting is
+  # restricted to a subtree, skip fetching file contents up front and materialize just that
+  # subtree instead of the whole checkout.
+  flags = ['--depth 1', '--no-tags']
+  sparse_path = repo.sparse_path
+  flags += ['--filter=blob:none', '--sparse'] if sparse_path
+  unless perform("git clone #{repo.git_url} #{flags.join(' ')} #{dir} 2> /dev/null")
+    raise "failed to clone #{repo}"
+  end
+  if sparse_path && !perform("git -C #{dir} sparse-checkout set #{sparse_path}")
+    raise "failed to narrow #{repo} to #{sparse_path}"
+  end
+
+  swiftlint_config = "#{dir}/.swiftlint.yml"
+  if !repo.keep_config
+    FileUtils.rm_rf(swiftlint_config)
+  end
+  if repo.config
+    File.open(swiftlint_config, 'a') do |file|
+      file.puts(repo.config)
     end
   end
+  if @only_rules_changed && @rules_changed
+    File.open(swiftlint_config, 'a') do |file|
+      file.puts('only_rules:')
+      file.puts(@rules_changed.map { |rule| "  - #{rule}" })
+    end
+  end
+  # `git -C` rather than `Dir.chdir`, which changes the working directory of the whole process
+  # and would race with the other clone threads.
+  repo.commit_hash = `git -C #{dir} rev-parse HEAD`.strip
 end
 
 def generate_reports(branch)
@@ -436,6 +484,10 @@ $working_dir = 'osscheck'
   Repo.new('Aerial', 'JohnCoates/Aerial'),
   Repo.new('Alamofire', 'Alamofire/Alamofire'),
   Repo.new('Brave', 'brave/brave-core', false, 'included: ios/brave-ios'),
+  # Purpose-built to stress the linter rather than to be an app: few very large files
+  # alongside many small ones, which is the shape rules scaling with file size react to.
+  # Its own config is kept because the custom rules and the exclusions are load-bearing.
+  Repo.new('Brigade', 'Brett-Best/Brigade', true),
   Repo.new('DuckDuckGo', 'duckduckgo/apple-browsers'),
   Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
   Repo.new('Kickstarter', 'kickstarter/ios-oss'),

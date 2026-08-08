@@ -41,6 +41,13 @@ private extension TrailingWhitespaceRule {
         private var stringLiteralLines = Set<Int>()
 
         override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+            // Cheap line scan first: most files have no trailing whitespace at all, and the
+            // comment/literal information is only needed to filter actual candidates.
+            let candidateLines = collectCandidateLines()
+            if candidateLines.isEmpty {
+                return .skipChildren
+            }
+
             // Pre-compute all comment information in a single pass if needed
             if configuration.ignoresComments {
                 precomputeCommentInformation(node)
@@ -51,20 +58,9 @@ private extension TrailingWhitespaceRule {
                 precomputeStringLiteralInformation(node)
             }
 
-            // Process each line for trailing whitespace violations
-            for lineContents in file.lines {
+            for (lineContents, trailingWhitespaceInfo) in candidateLines {
                 let line = lineContents.content
                 let lineNumber = lineContents.index // 1-based
-
-                // Calculate trailing whitespace info
-                guard let trailingWhitespaceInfo = line.trailingWhitespaceInfo() else {
-                    continue // No trailing whitespace
-                }
-
-                // Apply `ignoresEmptyLines` configuration
-                if configuration.ignoresEmptyLines, line.trimmingCharacters(in: .whitespaces).isEmpty {
-                    continue
-                }
 
                 // Apply `ignoresComments` configuration
                 if configuration.ignoresComments {
@@ -100,6 +96,19 @@ private extension TrailingWhitespaceRule {
                 ))
             }
             return .skipChildren
+        }
+
+        private func collectCandidateLines() -> [(line: Line, info: TrailingWhitespaceInfo)] {
+            file.lines.compactMap { lineContents in
+                guard let trailingWhitespaceInfo = lineContents.content.trailingWhitespaceInfo() else {
+                    return nil // No trailing whitespace
+                }
+                if configuration.ignoresEmptyLines,
+                   lineContents.content.trimmingCharacters(in: .whitespaces).isEmpty {
+                    return nil
+                }
+                return (lineContents, trailingWhitespaceInfo)
+            }
         }
 
         /// Pre-computes all comment information in a single pass for better performance

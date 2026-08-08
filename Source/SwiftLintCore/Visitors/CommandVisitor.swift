@@ -8,6 +8,11 @@ final class CommandVisitor: SyntaxVisitor {
     private(set) var commands: [Command] = []
     let locationConverter: SourceLocationConverter
 
+    // Computed once per file: `SourceLocationConverter.sourceLines` materializes every line of the
+    // file as a new `[String]` on each access, and a command is resolved against it for every
+    // command comment in the file.
+    private lazy var sourceLines = locationConverter.sourceLines
+
     init(locationConverter: SourceLocationConverter) {
         self.locationConverter = locationConverter
         super.init(viewMode: .sourceAccurate)
@@ -28,7 +33,7 @@ final class CommandVisitor: SyntaxVisitor {
                 }
                 let offset = comment.utf8.distance(from: comment.utf8.startIndex, to: lower)
                 let location = locationConverter.location(for: position.advanced(by: offset))
-                let line = locationConverter.sourceLines[location.line - 1]
+                let line = sourceLines[location.line - 1]
                 guard let character = line.characterPosition(of: location.column) else {
                     break
                 }

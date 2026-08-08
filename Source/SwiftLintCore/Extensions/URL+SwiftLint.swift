@@ -55,7 +55,18 @@ public extension URL {
     /// > Warning: Use this representation only for displaying file paths to users. It is not
     ///   suitable for file operations.
     var relativeDisplayPath: String {
-        let path = path.replacing(Self.cwd.path, with: "")
+        relativeDisplayPath(against: Self.cwd.path)
+    }
+
+    /// Path relative to `base`, which callers rendering many paths at once should resolve just the
+    /// once: `URL.cwd` reaches `FileManager.currentDirectoryPath`, and so a `getcwd` syscall, on
+    /// every access.
+    ///
+    /// - parameter base: The directory to make the path relative to.
+    ///
+    /// - returns: The path relative to `base`.
+    func relativeDisplayPath(against base: String) -> String {
+        let path = path.replacing(base, with: "")
         if path.starts(with: "/") {
             return String(path.dropFirst())
         }

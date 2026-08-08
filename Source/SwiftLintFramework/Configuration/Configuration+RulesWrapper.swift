@@ -221,6 +221,8 @@ internal extension Configuration {
                         childConfig.identifier == parentConfig.identifier
                     }
                 }
+            configuration.defaultExecutionMode = childCustomRulesRule.configuration.defaultExecutionMode
+                ?? parentCustomRulesRule.configuration.defaultExecutionMode
             var newCustomRulesRule = CustomRules()
             newCustomRulesRule.configuration = configuration
 

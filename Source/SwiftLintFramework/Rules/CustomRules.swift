@@ -77,11 +77,18 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
 
     package var configuration = CustomRulesConfiguration()
 
+    /// The mode a custom rule runs in when neither it nor the configuration names one.
+    ///
+    /// SwiftSyntax, as this rule's description and `ExecutionMode.default` both already state:
+    /// resolving kinds through SourceKit parses every file a second time, on top of the tree
+    /// SwiftLint has already built.
+    static let executionModeWhenUnspecified = RegexConfiguration<Self>.ExecutionMode.swiftsyntax
+
     /// Returns true if all configured custom rules use SwiftSyntax mode, making this rule effectively SourceKit-free.
     package var isEffectivelySourceKitFree: Bool {
         configuration.customRuleConfigurations.allSatisfy { config in
             let effectiveMode = config.executionMode == .default
-                ? (configuration.defaultExecutionMode ?? .sourcekit)
+                ? (configuration.defaultExecutionMode ?? Self.executionModeWhenUnspecified)
                 : config.executionMode
             return effectiveMode == .swiftsyntax
         }
@@ -100,6 +107,20 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
             }
         }
 
+        // Rules in SwiftSyntax mode resolve syntax kinds from the SwiftSyntax-derived map so they
+        // never trigger sourcekitd. Built lazily and shared: only rules whose regex matches at all
+        // need it, and files without kind-filtered matches never pay for it.
+        var cachedSourceKitFreeSyntaxMap: SwiftLintSyntaxMap?
+        func sourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
+            if let cachedSourceKitFreeSyntaxMap {
+                return cachedSourceKitFreeSyntaxMap
+            }
+            let syntaxMap = file.sourceKitFreeSyntaxMap()
+            cachedSourceKitFreeSyntaxMap = syntaxMap
+            return syntaxMap
+        }
+        let defaultExecutionMode = configuration.defaultExecutionMode ?? Self.executionModeWhenUnspecified
+
         return configurations.flatMap { configuration -> [StyleViolation] in
             let start = Date()
             defer {
@@ -109,7 +130,14 @@ package struct CustomRules: Rule, CacheDescriptionProvider, ConditionallySourceK
             let pattern = configuration.regex.pattern
             let captureGroup = configuration.captureGroup
             let excludingKinds = configuration.excludedMatchKinds
-            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup).map({
+            let mode = configuration.executionMode == .default ? defaultExecutionMode : configuration.executionMode
+            let matches = mode == .swiftsyntax
+                ? file.match(pattern: pattern,
+                             excludingSyntaxKinds: excludingKinds,
+                             usingSyntaxMap: sourceKitFreeSyntaxMap,
+                             captureGroup: captureGroup)
+                : file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, captureGroup: captureGroup)
+            return matches.map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,
                                location: Location(file: file, characterOffset: $0.location),

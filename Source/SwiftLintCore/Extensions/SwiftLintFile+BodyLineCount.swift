@@ -34,7 +34,9 @@ public extension SwiftLintFile {
         //     print(sum)
         //   }
         let totalNumberOfLines = 1 + endLine - startLine
-        let numberOfCommentAndWhitespaceOnlyLines = Set(startLine...endLine).subtracting(linesWithTokens).count
+        // Count directly instead of materializing `Set(startLine...endLine).subtracting(_:)`,
+        // which allocates and hashes a set of the body's size for every measured body.
+        let numberOfCommentAndWhitespaceOnlyLines = (startLine...endLine).count { !linesWithTokens.contains($0) }
         return totalNumberOfLines - numberOfCommentAndWhitespaceOnlyLines
     }
 

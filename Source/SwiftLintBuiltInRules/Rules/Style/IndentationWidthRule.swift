@@ -3,8 +3,7 @@ import SourceKittenFramework
 import SwiftLintCore
 import SwiftSyntax
 
-@DisabledWithoutSourceKit
-struct IndentationWidthRule: OptInRule {
+struct IndentationWidthRule: OptInRule, SourceKitFreeRule {
     // MARK: - Subtypes
     private enum Indentation: Equatable {
         case tabs(Int)
@@ -22,17 +21,53 @@ struct IndentationWidthRule: OptInRule {
     private struct IndentationPrefix {
         let tabCount: Int
         let spaceCount: Int
+        /// The number of leading space/tab characters. The count is the same measured in
+        /// `Character`s, UTF-16 code units, or UTF-8 bytes since the run is all ASCII.
+        let characterCount: Int
+        /// Whether the line consists solely of its leading whitespace.
+        let isWhitespaceOnlyLine: Bool
 
-        var combinedCount: Int { tabCount + spaceCount }
-
-        init(line: Line, length: Int) {
+        init(line: Line) {
             var tabs = 0
             var spaces = 0
-            for char in line.content.prefix(length) {
-                if char == "\t" { tabs += 1 } else if char == " " { spaces += 1 }
+            var firstNonWhitespaceByte: UInt8?
+            for byte in line.content.utf8 {
+                if byte == 0x20 {
+                    spaces += 1
+                } else if byte == 0x09 {
+                    tabs += 1
+                } else {
+                    firstNonWhitespaceByte = byte
+                    break
+                }
             }
-            self.tabCount = tabs
-            self.spaceCount = spaces
+            self.characterCount = tabs + spaces
+            guard let firstNonWhitespaceByte else {
+                // The line consists solely of spaces and tabs.
+                self.tabCount = tabs
+                self.spaceCount = spaces
+                self.isWhitespaceOnlyLine = true
+                return
+            }
+            if firstNonWhitespaceByte < 0x80 {
+                // An ASCII character follows the leading whitespace, so it starts a new `Character`:
+                // each space/tab in the run is its own `Character` and the line has further content.
+                self.tabCount = tabs
+                self.spaceCount = spaces
+                self.isWhitespaceOnlyLine = false
+                return
+            }
+            // A non-ASCII scalar follows the leading whitespace. It may combine with the last
+            // space/tab into a single `Character` (e.g. a combining mark), so fall back to
+            // grapheme-based counting to match `String.count` and `prefix` semantics exactly.
+            var graphemeTabs = 0
+            var graphemeSpaces = 0
+            for char in line.content.prefix(tabs + spaces) {
+                if char == "\t" { graphemeTabs += 1 } else if char == " " { graphemeSpaces += 1 }
+            }
+            self.tabCount = graphemeTabs
+            self.spaceCount = graphemeSpaces
+            self.isWhitespaceOnlyLine = line.content.count == tabs + spaces
         }
 
         func spacesEquivalent(indentationWidth: Int) -> Int {
@@ -95,14 +130,21 @@ struct IndentationWidthRule: OptInRule {
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 
-        let conditionContinuationInfo = multilineConditionInfo(in: file)
+        let visitor = IndentationWidthRuleVisitor(locationConverter: file.locationConverter)
+        visitor.walk(file.syntaxTree)
+        let conditionContinuationInfo = visitor.continuationLines
+        let commentSpans = file.commentByteRanges()
+        let stringSpans = multilineStringSpans(from: visitor.spans)
 
         for line in file.lines {
             // Skip whitespace-only lines, comments, compiler directives, multiline strings
-            let indentationCharacterCount = line.content.countOfLeadingCharacters(in: CharacterSet(charactersIn: " \t"))
-            if shouldSkipLine(line: line, indentationCharacterCount: indentationCharacterCount, in: file) { continue }
-
-            let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
+            let prefix = IndentationPrefix(line: line)
+            if shouldSkipLine(
+                line: line,
+                prefix: prefix,
+                commentSpans: commentSpans,
+                multilineStringSpans: stringSpans
+            ) { continue }
 
             if let expectedColumn = conditionContinuationInfo[line.index] {
                 if let violation = checkMultilineConditionAlignment(
@@ -144,11 +186,16 @@ struct IndentationWidthRule: OptInRule {
         return violations
     }
 
-    private func shouldSkipLine(line: Line, indentationCharacterCount: Int, in file: SwiftLintFile) -> Bool {
-        line.content.count == indentationCharacterCount ||
-            ignoreCompilerDirective(line: line, in: file) ||
-            ignoreComment(line: line, in: file) ||
-            ignoreMultilineStrings(line: line, in: file)
+    private func shouldSkipLine(
+        line: Line,
+        prefix: IndentationPrefix,
+        commentSpans: [ByteRange],
+        multilineStringSpans: [MultilineStringSpan]
+    ) -> Bool {
+        prefix.isWhitespaceOnlyLine ||
+            ignoreCompilerDirective(line: line, indentationCharacterCount: prefix.characterCount) ||
+            ignoreComment(line: line, commentSpans: commentSpans) ||
+            ignoreMultilineStrings(line: line, multilineStringSpans: multilineStringSpans)
     }
 
     private func checkIndentationChange(
@@ -211,54 +258,107 @@ struct IndentationWidthRule: OptInRule {
         )
     }
 
-    /// Returns a mapping from line index to expected indentation column for continuation lines
-    /// of multi-line conditions. When `include_multiline_conditions` is false, these lines are
-    /// skipped entirely (expected column is still stored so the line is recognized as a continuation).
-    private func multilineConditionInfo(in file: SwiftLintFile) -> [Int: Int] {
-        let visitor = MultilineConditionLineVisitor(locationConverter: file.locationConverter)
-        return visitor.walk(tree: file.syntaxTree, handler: \.continuationLines)
+    /// Returns the byte spans of all multiline string literals in the file, in source order.
+    private func multilineStringSpans(from collectedSpans: [MultilineStringSpan]) -> [MultilineStringSpan] {
+        // `visitPost` yields nested literals before the literal containing them, so sort by location
+        // and keep only outermost spans to uphold the binary search's sortedness invariant. Lines of
+        // a nested literal are within the outer literal's span, which decides for the whole region.
+        var spans = [MultilineStringSpan]()
+        let sortedSpans = collectedSpans
+            .sorted { (lhs: MultilineStringSpan, rhs: MultilineStringSpan) in lhs.range.location < rhs.range.location }
+        for span in sortedSpans {
+            if let last = spans.last, span.range.upperBound <= last.range.upperBound {
+                continue
+            }
+            spans.append(span)
+        }
+        return spans
     }
 
-    private func ignoreCompilerDirective(line: Line, in file: SwiftLintFile) -> Bool {
+    private static let compilerDirectiveKeywords = ["#if", "#elseif", "#else", "#endif"]
+
+    private func ignoreCompilerDirective(line: Line, indentationCharacterCount: Int) -> Bool {
         if configuration.includeCompilerDirectives {
             return false
         }
-        if file.syntaxMap.tokens(inByteRange: line.byteRange).kinds.first == .buildconfigKeyword {
-            return true
+        // A build configuration directive line starts with one of the `#if` family keywords after its
+        // indentation. Directive-looking content inside a multiline string is also skipped by the
+        // multiline string check, so treating it as a directive here doesn't change the outcome.
+        let content = line.content.dropFirst(indentationCharacterCount)
+        return Self.compilerDirectiveKeywords.contains { keyword in
+            guard content.hasPrefix(keyword) else {
+                return false
+            }
+            let next = content.dropFirst(keyword.count).first
+            return next.map { !$0.isLetter && !$0.isNumber && $0 != "_" } ?? true
         }
-        return false
     }
 
-    private func ignoreComment(line: Line, in file: SwiftLintFile) -> Bool {
+    private func ignoreComment(line: Line, commentSpans: [ByteRange]) -> Bool {
         if configuration.includeComments {
             return false
         }
-        let syntaxKindsInLine = Set(file.syntaxMap.tokens(inByteRange: line.byteRange).kinds)
-        if syntaxKindsInLine.isNotEmpty, SyntaxKind.commentKinds.isSuperset(of: syntaxKindsInLine) {
-            return true
+        // The line is skipped when its non-whitespace content consists solely of comments, matching
+        // the previous "every syntax token in the line is a comment kind" check. Comment extents come
+        // from syntax tree trivia; bytes between or around them on the line must all be whitespace.
+        let lineStart = line.byteRange.location.value
+        var spanIndex = commentSpans.firstIndexAssumingSorted { $0.upperBound.value > lineStart } ?? commentSpans.count
+        var sawComment = false
+        var byteOffset = 0
+        for byte in line.content.utf8 {
+            defer { byteOffset += 1 }
+            let position = lineStart + byteOffset
+            while spanIndex < commentSpans.count, commentSpans[spanIndex].upperBound.value <= position {
+                spanIndex += 1
+            }
+            if spanIndex < commentSpans.count,
+               commentSpans[spanIndex].location.value <= position {
+                sawComment = true
+                continue
+            }
+            if byte != 0x20, byte != 0x09, byte != 0x0D {
+                return false
+            }
         }
-        return false
+        return sawComment
     }
 
-    private func ignoreMultilineStrings(line: Line, in file: SwiftLintFile) -> Bool {
+    private func ignoreMultilineStrings(line: Line, multilineStringSpans: [MultilineStringSpan]) -> Bool {
         if configuration.includeMultilineStrings {
             return false
         }
 
-        // A multiline string content line is characterized by beginning with a token of kind string whose range's lower
-        // bound is smaller than that of the line itself.
-        let tokensInLine = file.syntaxMap.tokens(inByteRange: line.byteRange)
+        // A multiline string content line is characterized by starting strictly inside a string literal, just as it
+        // began with a string token whose range's lower bound was smaller than that of the line itself in SourceKit's
+        // syntax map.
+        let lineRange = line.byteRange
         guard
-            let firstToken = tokensInLine.first,
-            firstToken.kind == .string,
-            firstToken.range.lowerBound < line.byteRange.lowerBound else {
+            let spanIndex = multilineStringSpans.firstIndexAssumingSorted(
+                where: { $0.range.upperBound > lineRange.lowerBound }
+            ),
+            multilineStringSpans[spanIndex].range.lowerBound < lineRange.lowerBound else {
             return false
+        }
+        let span = multilineStringSpans[spanIndex]
+
+        // SourceKit split a literal's string token at interpolations: the token ended right before each `\(` and the
+        // next one started right after the matching parenthesis. Mirror those boundaries for identical line decisions.
+        if let interpolationStart = span.interpolationStarts.first(where: { $0 >= lineRange.lowerBound }) {
+            if interpolationStart == lineRange.lowerBound {
+                // The line starts at an interpolation's backslash, so its first token isn't a string token.
+                return false
+            }
+            if interpolationStart < lineRange.upperBound {
+                // An interpolation starts on this line, so the line contains more than one token.
+                return true
+            }
+            // The string token beginning this line ends right before the next interpolation on a later line.
+            return lineRange.upperBound < interpolationStart
         }
 
         // Closing delimiters of a multiline string should follow the defined indentation. The Swift compiler requires
-        // those delimiters to be on their own line so we need to consider the number of tokens as well as the upper
-        // bounds.
-        return tokensInLine.count > 1 || line.byteRange.upperBound < firstToken.range.upperBound
+        // those delimiters to be on their own line so the line is only skipped if the literal continues past it.
+        return lineRange.upperBound < span.range.upperBound
     }
 
     /// Validates whether the indentation of a specific line is valid based on the indentation of the previous line.
@@ -279,41 +379,5 @@ struct IndentationWidthRule: OptInRule {
                 (lastSpaceEquivalent - currentSpaceEquivalent).isMultiple(of: configuration.indentationWidth)
             ) // Allow unindent if it stays in the grid
         )
-    }
-}
-
-private final class MultilineConditionLineVisitor: SyntaxVisitor {
-    private let locationConverter: SourceLocationConverter
-    /// Maps line index → expected indentation column for continuation lines.
-    private(set) var continuationLines = [Int: Int]()
-
-    init(locationConverter: SourceLocationConverter) {
-        self.locationConverter = locationConverter
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visitPost(_ node: GuardStmtSyntax) {
-        collectContinuationLines(keyword: node.guardKeyword, conditions: node.conditions)
-    }
-
-    override func visitPost(_ node: IfExprSyntax) {
-        collectContinuationLines(keyword: node.ifKeyword, conditions: node.conditions)
-    }
-
-    override func visitPost(_ node: WhileStmtSyntax) {
-        collectContinuationLines(keyword: node.whileKeyword, conditions: node.conditions)
-    }
-
-    private func collectContinuationLines(keyword: TokenSyntax, conditions: ConditionElementListSyntax) {
-        guard conditions.count > 1 else { return }
-        let keywordLine = locationConverter.location(for: keyword.positionAfterSkippingLeadingTrivia).line
-        let firstConditionLoc = locationConverter.location(for: conditions.positionAfterSkippingLeadingTrivia)
-        let conditionsEndLine = locationConverter.location(for: conditions.endPositionBeforeTrailingTrivia).line
-        guard keywordLine < conditionsEndLine else { return }
-        // Expected column is where the first condition starts (0-based → subtract 1)
-        let expectedColumn = firstConditionLoc.column - 1
-        for lineIndex in (keywordLine + 1)...conditionsEndLine {
-            continuationLines[lineIndex] = expectedColumn
-        }
     }
 }

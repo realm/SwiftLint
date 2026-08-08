@@ -1,0 +1,5 @@
+opt_in_rules:
+  - closure_body_length
+
+opt_in_rules:
+  - closure_body_length

@@ -233,6 +233,14 @@ struct MultipleConfigurationsTests { // swiftlint:disable:this type_body_length
         #expect(config == Constants.Config._0.merged(withChild: config3, rootDirectory: config.rootDirectory))
     }
 
+    @Test(.workingDirectory(Constants.Dir.duplicateYamlKeys))
+    func nestedConfigurationWithInvalidYamlFallsBackToDefault() {
+        let config = Constants.Config._0.configuration(
+            for: SwiftLintFile(path: Constants.Swift.duplicateYamlKeysSub)!
+        )
+        #expect(config == Constants.Config._0)
+    }
+
     @Test
     func nestedConfigurationForOnePathPassedIn() {
         // If a path to one or more configuration files is specified, nested configurations should be ignored

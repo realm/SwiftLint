@@ -228,6 +228,11 @@
 
 ### Enhancements
 
+* Add `--fail-on-unfixable` flag for single-pass fix and validation.
+  [omar-y-abdi](https://github.com/omar-y-abdi)
+  [#6450](https://github.com/realm/SwiftLint/issues/6450)
+
+* Print fixed code read from stdin to stdout.
 * Treat extensions like classes in the `prefer_self_in_static_references`
   rule.  
   [itsybitsybootsy](https://github.com/itsybitsybootsy)

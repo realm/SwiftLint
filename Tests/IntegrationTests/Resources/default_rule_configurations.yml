@@ -848,7 +848,6 @@ opening_brace:
   ignore_multiline_type_headers: false
   ignore_multiline_statement_conditions: false
   ignore_multiline_function_signatures: false
-  allow_multiline_func: false
   meta:
     opt-in: false
     correctable: true

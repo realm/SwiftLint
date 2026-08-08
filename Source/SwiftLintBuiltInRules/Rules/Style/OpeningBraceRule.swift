@@ -116,7 +116,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: FunctionDeclSyntax) {
             if let body = node.body,
-               configuration.shouldIgnoreMultilineFunctionSignatures,
+               configuration.ignoreMultilineFunctionSignatures,
                hasMultilinePredecessors(body, keyword: node.funcKeyword) {
                 return
             }
@@ -126,7 +126,7 @@ private extension OpeningBraceRule {
 
         override func visitPost(_ node: InitializerDeclSyntax) {
             if let body = node.body,
-               configuration.shouldIgnoreMultilineFunctionSignatures,
+               configuration.ignoreMultilineFunctionSignatures,
                hasMultilinePredecessors(body, keyword: node.initKeyword) {
                 return
             }

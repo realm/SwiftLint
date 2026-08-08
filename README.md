@@ -479,6 +479,13 @@ Done linting! Found 0 violations, 0 serious in 490 files.
 Here you have more documentation about the usage of
 [Docker Images](https://docs.docker.com/).
 
+### MegaLinter
+
+SwiftLint is also embedded in [MegaLinter](https://megalinter.io), an
+open-source aggregator of linters for CI. See its
+[SwiftLint documentation](https://megalinter.io/latest/descriptors/swift_swiftlint/)
+for setup instructions.
+
 ## Command Line Usage
 
 ```txt

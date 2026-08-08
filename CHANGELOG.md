@@ -8,6 +8,10 @@
   Rules can now read the global `indentation` setting via `CurrentRule.configuration`.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Remove the deprecated `allow_multiline_func` option from the `opening_brace`
+  rule. Use `ignore_multiline_function_signatures` instead.  
+  [Brett-Best](https://github.com/Brett-Best)
+
 ### Experimental
 
 * None.

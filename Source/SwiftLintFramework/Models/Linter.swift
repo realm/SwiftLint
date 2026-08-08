@@ -115,6 +115,7 @@ private extension Rule {
             return CurrentRule.$configuration.withValue(globalConfiguration) {
                 performLint(
                     file: file,
+                    ruleID: ruleID,
                     regions: regions,
                     benchmark: benchmark,
                     storage: storage,
@@ -127,13 +128,12 @@ private extension Rule {
 
     // swiftlint:disable:next function_parameter_count
     private func performLint(file: SwiftLintFile,
+                             ruleID: String,
                              regions: [Region],
                              benchmark: Bool,
                              storage: RuleStorage,
                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                              compilerArguments: [String]) -> LintResult {
-        let ruleID = Self.identifier
-
         let violations: [StyleViolation]
         let ruleTime: (String, Double)?
         if benchmark {

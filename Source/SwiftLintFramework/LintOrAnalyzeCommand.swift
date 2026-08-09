@@ -34,6 +34,7 @@ package struct LintOrAnalyzeOptions {
     let paths: [URL]
     let useSTDIN: Bool
     let configurationFiles: [URL]
+    let parentConfigurationFile: URL?
     let strict: Bool
     let lenient: Bool
     let forceExclude: Bool
@@ -63,6 +64,7 @@ package struct LintOrAnalyzeOptions {
                  paths: [URL],
                  useSTDIN: Bool,
                  configurationFiles: [URL],
+                 parentConfigurationFile: URL?,
                  strict: Bool,
                  lenient: Bool,
                  forceExclude: Bool,
@@ -91,6 +93,7 @@ package struct LintOrAnalyzeOptions {
         self.paths = paths
         self.useSTDIN = useSTDIN
         self.configurationFiles = configurationFiles
+        self.parentConfigurationFile = parentConfigurationFile
         self.strict = strict
         self.lenient = lenient
         self.forceExclude = forceExclude
@@ -123,6 +126,17 @@ package struct LintOrAnalyzeOptions {
 
     var capitalizedVerb: String {
         verb.capitalized
+    }
+
+    var effectiveConfigurationFiles: [URL] {
+        guard let parentConfigurationFile else {
+            return configurationFiles
+        }
+
+        let childConfigurationFiles = configurationFiles.isEmpty
+            ? [Configuration.defaultFileName.url()]
+            : configurationFiles
+        return [parentConfigurationFile] + childConfigurationFiles
     }
 }
 

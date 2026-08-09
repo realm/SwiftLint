@@ -1,3 +1,4 @@
+import Foundation
 @testable import SwiftLintFramework
 import Testing
 
@@ -38,14 +39,46 @@ struct LintOrAnalyzeOptionsTests {
             }
         }
     }
+
+    @Test
+    func parentConfigurationFilePrecedesExplicitConfigurationFiles() {
+        let options = LintOrAnalyzeOptions(
+            configurationFiles: ["child-1.yml".url(), "child-2.yml".url()],
+            parentConfigurationFile: "parent.yml".url()
+        )
+
+        #expect(options.effectiveConfigurationFiles == [
+            "parent.yml".url(),
+            "child-1.yml".url(),
+            "child-2.yml".url(),
+        ])
+    }
+
+    @Test
+    func parentConfigurationFilePrecedesDefaultConfigurationFile() {
+        let options = LintOrAnalyzeOptions(
+            configurationFiles: [],
+            parentConfigurationFile: "parent.yml".url()
+        )
+
+        #expect(options.effectiveConfigurationFiles == [
+            "parent.yml".url(),
+            Configuration.defaultFileName.url(),
+        ])
+    }
 }
 
 private extension LintOrAnalyzeOptions {
-    init(leniency: Leniency) {
+    init(
+        leniency: Leniency = (strict: false, lenient: false),
+        configurationFiles: [URL] = [],
+        parentConfigurationFile: URL? = nil
+    ) {
         self.init(mode: .lint,
                   paths: [],
                   useSTDIN: true,
-                  configurationFiles: [],
+                  configurationFiles: configurationFiles,
+                  parentConfigurationFile: parentConfigurationFile,
                   strict: leniency.strict,
                   lenient: leniency.lenient,
                   forceExclude: false,

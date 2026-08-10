@@ -51,6 +51,12 @@
   [Arthur Liu](https://github.com/thliu21)
   [#6811](https://github.com/realm/SwiftLint/issues/6811)
 
+* Fix `no_magic_numbers` reporting the color components of SwiftUI `Color` and
+  AppKit `NSColor` initializers. The rule exempted `UIColor` only. It now also
+  accepts the `opacity` label and module-qualified names such as
+  `SwiftUI.Color`.  
+  [lechuckcaptain](https://github.com/lechuckcaptain)
+
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  
   [SimplyDanny](https://github.com/SimplyDanny)

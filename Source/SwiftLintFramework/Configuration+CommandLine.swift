@@ -293,6 +293,7 @@ extension Configuration {
             onlyRule: options.onlyRule,
             cachePath: options.cachePath
         )
+        basedOnCustomConfigurationFiles = options.configurationFiles.isNotEmpty
     }
 }
 

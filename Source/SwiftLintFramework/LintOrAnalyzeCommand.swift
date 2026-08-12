@@ -133,9 +133,14 @@ package struct LintOrAnalyzeOptions {
             return configurationFiles
         }
 
-        let childConfigurationFiles = configurationFiles.isEmpty
-            ? [Configuration.defaultFileName.url()]
-            : configurationFiles
+        let defaultConfigurationFile = Configuration.defaultFileName.url()
+        let childConfigurationFiles: [URL] = if configurationFiles.isNotEmpty {
+            configurationFiles
+        } else if defaultConfigurationFile.exists {
+            [defaultConfigurationFile]
+        } else {
+            []
+        }
         return [parentConfigurationFile] + childConfigurationFiles
     }
 }

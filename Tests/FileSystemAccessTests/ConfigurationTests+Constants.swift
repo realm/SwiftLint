@@ -33,35 +33,12 @@ enum Constants {
         static var remoteConfigLocalRef: URL { level0.appending(path: "RemoteConfig/LocalRef/") }
         static var remoteConfigCycle: URL { level0.appending(path: "RemoteConfig/Cycle/") }
         static var emptyFolder: URL { level0.appending(path: "EmptyFolder/") }
-        static let duplicateYamlKeys: URL = {
-            let directory = URL.temporaryDirectory.appending(
-                path: "SwiftLintDuplicateYamlKeys-\(UUID().uuidString)",
+        static var duplicateYamlKeys: URL {
+            URL.temporaryDirectory.appending(
+                path: "SwiftLintDuplicateYamlKeys-\(ProcessInfo.processInfo.processIdentifier)",
                 directoryHint: .isDirectory
             )
-            let subdirectory = directory.appending(path: "subdir", directoryHint: .isDirectory)
-            do {
-                try FileManager.default.createDirectory(at: subdirectory, withIntermediateDirectories: true)
-                try """
-                opt_in_rules:
-                  - closure_body_length
-
-                opt_in_rules:
-                  - closure_body_length
-                """.write(
-                    to: subdirectory.appending(path: Configuration.defaultFileName),
-                    atomically: true,
-                    encoding: .utf8
-                )
-                try "// Test file for nested configuration with invalid YAML.\n".write(
-                    to: subdirectory.appending(path: "a.swift"),
-                    atomically: true,
-                    encoding: .utf8
-                )
-            } catch {
-                fatalError("Failed to create duplicate YAML test fixture: \(error)")
-            }
-            return directory
-        }()
+        }
 
         static var exclusionTests: URL { testResourcesPath.appending(path: "ExclusionTests/") }
         static var directory: URL { exclusionTests.appending(path: "directory/") }
@@ -94,7 +71,36 @@ enum Constants {
         static var _2: URL { Dir.level2.appending(path: "Level2.swift") }
         static var _3: URL { Dir.level3.appending(path: "Level3.swift") }
         static var nestedSub: URL { Dir.nestedSub.appending(path: "Sub.swift") }
-        static var duplicateYamlKeysSub: URL { Dir.duplicateYamlKeys.appending(path: "subdir/a.swift") }
+        static var duplicateYamlKeysSub: URL {
+            let directory = Dir.duplicateYamlKeys
+            let subdirectory = directory.appending(path: "subdir", directoryHint: .isDirectory)
+            let swiftFile = subdirectory.appending(path: "a.swift")
+            do {
+                if directory.exists {
+                    try FileManager.default.removeItem(at: directory)
+                }
+                try FileManager.default.createDirectory(at: subdirectory, withIntermediateDirectories: true)
+                try """
+                opt_in_rules:
+                  - closure_body_length
+
+                opt_in_rules:
+                  - closure_body_length
+                """.write(
+                    to: subdirectory.appending(path: Configuration.defaultFileName),
+                    atomically: true,
+                    encoding: .utf8
+                )
+                try "// Test file for nested configuration with invalid YAML.\n".write(
+                    to: swiftFile,
+                    atomically: true,
+                    encoding: .utf8
+                )
+            } catch {
+                fatalError("Failed to create duplicate YAML test fixture: \(error)")
+            }
+            return swiftFile
+        }
     }
 
     // MARK: Configurations

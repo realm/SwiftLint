@@ -67,6 +67,11 @@ struct UnusedParameterRule: Rule {
             """
             func f(_a: Int) {}
             """.asExample(configuration: allowUnderscorePrefixedNames),
+            """
+            List($history) { $historyItem in
+                Foo(url: historyItem.url)
+            }
+            """,
         ]),
         triggeringExamples: #examples([
             """
@@ -157,6 +162,9 @@ private extension UnusedParameterRule {
                     continue
                 }
                 if configuration.allowUnderscorePrefixedNames, name.text.hasPrefix("_") {
+                    continue
+                }
+                if name.text.hasPrefix("$") {
                     continue
                 }
                 let startPosReplacement =

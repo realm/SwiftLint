@@ -41,6 +41,11 @@
 
 ### Bug Fixes
 
+* Fix `unused_parameter` incorrectly reporting `$`-prefixed closure parameters
+  used for projected bindings.  
+  [Hirotaka Monya](https://github.com/catlover-bot)
+  [#5740](https://github.com/realm/SwiftLint/issues/5740)
+
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)

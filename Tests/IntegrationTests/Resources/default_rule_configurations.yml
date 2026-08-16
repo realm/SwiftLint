@@ -513,7 +513,7 @@ implicit_getter:
 implicit_optional_initialization:
   severity: warning
   style: always
-  ignore_attributes: []
+  ignore_attributes: ["Parameter"]
   meta:
     opt-in: false
     correctable: true

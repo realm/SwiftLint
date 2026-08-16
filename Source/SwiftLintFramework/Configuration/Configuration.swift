@@ -72,6 +72,11 @@ public struct Configuration {
     internal var fileGraph: FileGraph
     internal private(set) var rulesWrapper: RulesWrapper
     internal var computedCacheDescription: String?
+    /// Keys explicitly specified by parsed configuration files.
+    ///
+    /// `nil` means explicit-key provenance is unavailable, in which case the
+    /// historical child-precedence merge behavior is preserved.
+    internal var explicitlyConfiguredKeys: Set<Key>?
 
     // MARK: - Initializers: Internal
     /// Initialize with all properties
@@ -126,6 +131,7 @@ public struct Configuration {
         baseline = configuration.baseline
         writeBaseline = configuration.writeBaseline
         checkForUpdates = configuration.checkForUpdates
+        explicitlyConfiguredKeys = configuration.explicitlyConfiguredKeys
     }
 
     /// Creates a `Configuration` by specifying its properties directly,

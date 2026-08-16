@@ -4,6 +4,17 @@
 
 ### Breaking
 
+* Change parent/child configuration merging so `indentation`,
+  `allow_zero_lintable_files`, `strict`, `lenient`, `baseline`,
+  `write_baseline`, and `check_for_updates` inherit the parent value when
+  omitted from a child configuration. An explicitly configured child value
+  still overrides the parent. This is a breaking change for configurations
+  that previously relied on an omitted child option resetting the parent to
+  its default.  
+  [Hirotaka Monya](https://github.com/catlover-bot)
+  [#6240](https://github.com/realm/SwiftLint/issues/6240)
+  [#5724](https://github.com/realm/SwiftLint/issues/5724)
+
 * `Configuration.IndentationStyle` moved to `SwiftLintCore.IndentationStyle`.
   Rules can now read the global `indentation` setting via `CurrentRule.configuration`.  
   [GandaLF2006](https://github.com/GandaLF2006)

@@ -2,7 +2,7 @@ import Foundation
 
 extension Configuration {
     // MARK: - Subtypes
-    internal enum Key: String, CaseIterable {
+    internal enum Key: String, CaseIterable, Hashable {
         case cachePath = "cache_path"
         case disabledRules = "disabled_rules"
         case enabledRules = "enabled_rules" // deprecated in favor of optInRules
@@ -96,6 +96,8 @@ extension Configuration {
             )
         }
 
+        let explicitlyConfiguredKeys = Self.explicitlyConfiguredKeys(in: dict)
+
         self.init(
             rulesMode: rulesMode,
             allRulesWrapped: allRulesWrapped,
@@ -116,6 +118,20 @@ extension Configuration {
                 .url(relativeTo: location, directoryHint: .notDirectory),
             checkForUpdates: dict[Key.checkForUpdates.rawValue] as? Bool ?? false
         )
+        self.explicitlyConfiguredKeys = explicitlyConfiguredKeys
+    }
+
+    private static func explicitlyConfiguredKeys(in dict: [String: Any]) -> Set<Key> {
+        let inheritableScalarKeys: Set<Key> = [
+            .indentation,
+            .allowZeroLintableFiles,
+            .strict,
+            .lenient,
+            .baseline,
+            .writeBaseline,
+            .checkForUpdates,
+        ]
+        return inheritableScalarKeys.filter { dict[$0.rawValue] != nil }
     }
 
     // MARK: - Methods: Validations

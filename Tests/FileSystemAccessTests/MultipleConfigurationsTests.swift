@@ -52,6 +52,91 @@ struct MultipleConfigurationsTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
+    func scalarOptionsInheritFromParsedParentWhenOmittedInChild() throws {
+        let parentDict: [String: Any] = [
+            "indentation": "tabs",
+            "allow_zero_lintable_files": true,
+            "strict": true,
+            "lenient": true,
+            "baseline": "ParentBaseline.json",
+            "write_baseline": "ParentWriteBaseline.json",
+            "check_for_updates": true,
+        ]
+        let parent = try Configuration(dict: parentDict)
+        let child = try Configuration(parentConfiguration: parent, dict: [:])
+
+        let merged = parent.merged(withChild: child)
+
+        #expect(merged.indentation == .tabs)
+        #expect(merged.allowZeroLintableFiles)
+        #expect(merged.strict)
+        #expect(merged.lenient)
+        #expect(merged.baseline == "ParentBaseline.json".url())
+        #expect(merged.writeBaseline == "ParentWriteBaseline.json".url())
+        #expect(merged.checkForUpdates)
+    }
+
+    @Test
+    func scalarOptionsExplicitlyConfiguredInParsedChildOverrideParent() throws {
+        let parentDict: [String: Any] = [
+            "indentation": "tabs",
+            "allow_zero_lintable_files": true,
+            "strict": true,
+            "lenient": true,
+            "baseline": "ParentBaseline.json",
+            "write_baseline": "ParentWriteBaseline.json",
+            "check_for_updates": true,
+        ]
+        let childDict: [String: Any] = [
+            "indentation": 2,
+            "allow_zero_lintable_files": false,
+            "strict": false,
+            "lenient": false,
+            "baseline": "ChildBaseline.json",
+            "write_baseline": "ChildWriteBaseline.json",
+            "check_for_updates": false,
+        ]
+
+        let parent = try Configuration(dict: parentDict)
+        let child = try Configuration(parentConfiguration: parent, dict: childDict)
+        let merged = parent.merged(withChild: child)
+
+        #expect(merged.indentation == .spaces(count: 2))
+        #expect(!merged.allowZeroLintableFiles)
+        #expect(!merged.strict)
+        #expect(!merged.lenient)
+        #expect(merged.baseline == "ChildBaseline.json".url())
+        #expect(merged.writeBaseline == "ChildWriteBaseline.json".url())
+        #expect(!merged.checkForUpdates)
+    }
+
+    @Test
+    func programmaticScalarMergeKeepsExistingChildPrecedence() {
+        let parent = Configuration(
+            indentation: .tabs,
+            allowZeroLintableFiles: true,
+            strict: true,
+            lenient: true,
+            checkForUpdates: true
+        )
+        let child = Configuration(
+            indentation: .spaces(count: 2),
+            allowZeroLintableFiles: false,
+            strict: false,
+            lenient: false,
+            checkForUpdates: false
+        )
+
+        let merged = parent.merged(withChild: child)
+
+        #expect(merged.indentation == .spaces(count: 2))
+        #expect(!merged.allowZeroLintableFiles)
+        #expect(!merged.strict)
+        #expect(!merged.lenient)
+        #expect(!merged.checkForUpdates)
+    }
+
+    @Test
     func onlyRulesMerging() {
         let baseConfiguration = Configuration(
             rulesMode: .defaultConfiguration(
@@ -196,6 +281,91 @@ struct MultipleConfigurationsTests { // swiftlint:disable:this type_body_length
             return
         }
         #expect(customRule.severityConfiguration.severity == .error)
+    }
+
+    @Test(.temporaryDirectory, arguments: ["parent_config", "child_config"])
+    func scalarOptionsInheritAcrossConfigurationReferences(_ referenceKey: String) throws {
+        let main = URL.cwd.appending(path: "main.yml")
+        let related = URL.cwd.appending(path: "related.yml")
+
+        let scalarConfiguration = """
+        indentation: tabs
+        allow_zero_lintable_files: true
+        strict: true
+        lenient: true
+        baseline: ParentBaseline.json
+        write_baseline: ParentWriteBaseline.json
+        check_for_updates: true
+        """
+
+        if referenceKey == "parent_config" {
+            try scalarConfiguration.write(to: related, atomically: true, encoding: .utf8)
+            try """
+            parent_config: related.yml
+            disabled_rules: []
+            """.write(to: main, atomically: true, encoding: .utf8)
+        } else {
+            try """
+            \(scalarConfiguration)
+            child_config: related.yml
+            """.write(to: main, atomically: true, encoding: .utf8)
+            try "disabled_rules: []\n".write(to: related, atomically: true, encoding: .utf8)
+        }
+
+        let configuration = Configuration(configurationFiles: [main])
+
+        #expect(configuration.indentation == .tabs)
+        #expect(configuration.allowZeroLintableFiles)
+        #expect(configuration.strict)
+        #expect(configuration.lenient)
+        #expect(configuration.baseline == URL.cwd.appending(path: "ParentBaseline.json"))
+        #expect(configuration.writeBaseline == URL.cwd.appending(path: "ParentWriteBaseline.json"))
+        #expect(configuration.checkForUpdates)
+    }
+
+    @Test(.temporaryDirectory)
+    func scalarOptionsInheritAcrossNestedConfiguration() throws {
+        let subdirectory = URL.cwd.appending(path: "Sub", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(
+            at: subdirectory,
+            withIntermediateDirectories: true
+        )
+
+        try """
+        indentation: tabs
+        allow_zero_lintable_files: true
+        strict: true
+        lenient: true
+        baseline: ParentBaseline.json
+        write_baseline: ParentWriteBaseline.json
+        check_for_updates: true
+        """.write(
+            to: URL.cwd.appending(path: ".swiftlint.yml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        try "disabled_rules: []\n".write(
+            to: subdirectory.appending(path: ".swiftlint.yml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        let source = subdirectory.appending(path: "File.swift")
+        try "func f() {}\n".write(to: source, atomically: true, encoding: .utf8)
+
+        let rootConfiguration = Configuration(configurationFiles: [])
+        let fileConfiguration = rootConfiguration.configuration(
+            for: SwiftLintFile(path: source)!
+        )
+
+        #expect(fileConfiguration.indentation == .tabs)
+        #expect(fileConfiguration.allowZeroLintableFiles)
+        #expect(fileConfiguration.strict)
+        #expect(fileConfiguration.lenient)
+        #expect(fileConfiguration.baseline == URL.cwd.appending(path: "ParentBaseline.json"))
+        #expect(fileConfiguration.writeBaseline == URL.cwd.appending(path: "ParentWriteBaseline.json"))
+        #expect(fileConfiguration.checkForUpdates)
     }
 
     // MARK: - Nested Configurations

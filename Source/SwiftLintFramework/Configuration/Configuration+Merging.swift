@@ -12,22 +12,61 @@ extension Configuration {
     ) -> Configuration {
         let mergedIncludedAndExcluded = mergedIncludedAndExcluded(with: childConfiguration)
 
-        return Configuration(
+        var mergedConfiguration = Configuration(
             rulesWrapper: rulesWrapper.merged(with: childConfiguration.rulesWrapper),
             fileGraph: FileGraph(rootDirectory: rootDirectory),
             includedPaths: mergedIncludedAndExcluded.includedPaths,
             excludedPaths: mergedIncludedAndExcluded.excludedPaths,
-            indentation: childConfiguration.indentation,
+            indentation: mergedScalarValue(for: .indentation, from: childConfiguration, keyPath: \.indentation),
             warningThreshold: mergedWarningTreshold(with: childConfiguration),
             reporter: reporter,
             cachePath: cachePath,
-            allowZeroLintableFiles: childConfiguration.allowZeroLintableFiles,
-            strict: childConfiguration.strict,
-            lenient: childConfiguration.lenient,
-            baseline: childConfiguration.baseline,
-            writeBaseline: childConfiguration.writeBaseline,
-            checkForUpdates: childConfiguration.checkForUpdates
+            allowZeroLintableFiles: mergedScalarValue(
+                for: .allowZeroLintableFiles,
+                from: childConfiguration,
+                keyPath: \.allowZeroLintableFiles
+            ),
+            strict: mergedScalarValue(for: .strict, from: childConfiguration, keyPath: \.strict),
+            lenient: mergedScalarValue(for: .lenient, from: childConfiguration, keyPath: \.lenient),
+            baseline: mergedScalarValue(for: .baseline, from: childConfiguration, keyPath: \.baseline),
+            writeBaseline: mergedScalarValue(
+                for: .writeBaseline,
+                from: childConfiguration,
+                keyPath: \.writeBaseline
+            ),
+            checkForUpdates: mergedScalarValue(
+                for: .checkForUpdates,
+                from: childConfiguration,
+                keyPath: \.checkForUpdates
+            )
         )
+        mergedConfiguration.explicitlyConfiguredKeys =
+            mergedExplicitlyConfiguredKeys(with: childConfiguration)
+        return mergedConfiguration
+    }
+
+    private func mergedExplicitlyConfiguredKeys(
+        with childConfiguration: Configuration
+    ) -> Set<Key>? {
+        guard let parentKeys = explicitlyConfiguredKeys,
+              let childKeys = childConfiguration.explicitlyConfiguredKeys else {
+            return nil
+        }
+        return parentKeys.union(childKeys)
+    }
+
+    private func mergedScalarValue<Value>(
+        for key: Key,
+        from childConfiguration: Configuration,
+        keyPath: KeyPath<Configuration, Value>
+    ) -> Value {
+        guard let explicitlyConfiguredKeys = childConfiguration.explicitlyConfiguredKeys else {
+            return childConfiguration[keyPath: keyPath]
+        }
+
+        return explicitlyConfiguredKeys.contains(key)
+            ? childConfiguration[keyPath: keyPath]
+            : self[keyPath: keyPath]
     }
 
     private func mergedIncludedAndExcluded(

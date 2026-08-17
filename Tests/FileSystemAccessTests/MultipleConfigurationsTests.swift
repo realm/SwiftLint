@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLintCore
 import TestHelpers
 import Testing
 
@@ -248,6 +249,68 @@ struct MultipleConfigurationsTests { // swiftlint:disable:this type_body_length
             Constants.Config.nested.configuration(for: SwiftLintFile(path: Constants.Swift.nestedSub)!)
                 == Constants.Config.nested
         )
+    }
+
+    @Test(.temporaryDirectory)
+    func nestedConfigurationExcludesRelativePath() async throws {
+        let nestedDirectory = URL.cwd.appending(path: "SubFolder", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: nestedDirectory, withIntermediateDirectories: true)
+
+        try "disabled_rules: []\n".write(
+            to: URL.cwd.appending(path: ".swiftlint.yml", directoryHint: .notDirectory),
+            atomically: true,
+            encoding: .utf8
+        )
+        try "excluded:\n  - testFile.swift\n".write(
+            to: nestedDirectory.appending(path: ".swiftlint.yml", directoryHint: .notDirectory),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        let excludedFile = nestedDirectory.appending(path: "testFile.swift", directoryHint: .notDirectory)
+        let includedFile = nestedDirectory.appending(path: "includedFile.swift", directoryHint: .notDirectory)
+        try "struct Excluded {}\n".write(to: excludedFile, atomically: true, encoding: .utf8)
+        try "struct Included {}\n".write(to: includedFile, atomically: true, encoding: .utf8)
+
+        let options = LintOrAnalyzeOptions(
+            mode: .lint,
+            paths: [URL.cwd],
+            useSTDIN: false,
+            configurationFiles: [],
+            strict: false,
+            lenient: false,
+            forceExclude: false,
+            useExcludingByPrefix: false,
+            useScriptInputFiles: false,
+            useScriptInputFileLists: false,
+            benchmark: false,
+            reporter: nil,
+            baseline: nil,
+            writeBaseline: nil,
+            workingDirectory: nil,
+            quiet: true,
+            output: nil,
+            progress: false,
+            cachePath: nil,
+            ignoreCache: true,
+            enableAllRules: false,
+            onlyRule: [],
+            autocorrect: false,
+            format: false,
+            disableSourceKit: true,
+            compilerLogPath: nil,
+            compileCommands: nil,
+            checkForUpdates: false
+        )
+        let configuration = Configuration(options: options)
+        let files = try await configuration.visitLintableFiles(
+            options: options,
+            storage: RuleStorage()
+        ) { _ in
+            // This test only checks which files are selected for linting.
+        }
+
+        #expect(files.compactMap(\.path) == [includedFile])
     }
 
     // MARK: - Child & Parent Configs

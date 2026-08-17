@@ -41,6 +41,12 @@
 
 ### Bug Fixes
 
+* Fix `excluded` paths in nested configurations being resolved twice,
+  causing files excluded relative to a nested configuration to still be linted
+  when SwiftLint is run from a parent directory.  
+  [Hirotaka Monya](https://github.com/catlover-bot)  
+  [#4765](https://github.com/realm/SwiftLint/issues/4765)
+
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the
   `unowned_variable_capture` rule accept explicit `unowned(unsafe)` captures.  
   [Yurii Bakurov](https://github.com/Yurii201811)

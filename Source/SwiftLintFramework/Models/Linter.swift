@@ -18,6 +18,35 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
+/// How rules are executed over a single file.
+enum RuleExecutionMode {
+    /// Whether the rules linting one file run concurrently with each other.
+    ///
+    /// Concurrent rule execution only pays off when few files keep the cores busy: every rule walks
+    /// the same file's syntax tree, and concurrent walks contend on the shared syntax arena's
+    /// reference counts, which slows all of them down. When many files are linted in parallel
+    /// anyway, executing rules serially within each file is faster.
+    @TaskLocal static var parallel = true
+}
+
+private let swiftVersionSupportCacheLock = NSLock()
+nonisolated(unsafe) private var swiftVersionSupportCache = [ObjectIdentifier: Bool](minimumCapacity: 512)
+
+/// Whether a rule's `minSwiftVersion` is satisfied by the current Swift version. Both sides are
+/// constant for the process lifetime, but the comparison re-parses version strings and copying
+/// `description` retains all of its fields, which is hot when evaluated per rule and file.
+private func isSupportedByCurrentSwiftVersion(_ ruleType: (some Rule).Type) -> Bool {
+    let key = ObjectIdentifier(ruleType)
+    swiftVersionSupportCacheLock.lock()
+    defer { swiftVersionSupportCacheLock.unlock() }
+    if let cached = swiftVersionSupportCache[key] {
+        return cached
+    }
+    let supported = SwiftVersion.current >= ruleType.description.minSwiftVersion
+    swiftVersionSupportCache[key] = supported
+    return supported
+}
+
 private extension Rule {
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
@@ -68,13 +97,19 @@ private extension Rule {
     }
 
     func shouldRun(onFile file: SwiftLintFile) -> Bool {
+        shouldRun(onFile: file, fileIsEmpty: file.isEmpty)
+    }
+
+    // Callers iterating all rules over one file can pass a precomputed value while standalone
+    // checks remain lazy when a rule can be rejected without reading the file.
+    func shouldRun(onFile file: SwiftLintFile, fileIsEmpty: @autoclosure () -> Bool) -> Bool {
         // We shouldn't lint if the current Swift version is not supported by the rule
-        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
+        guard isSupportedByCurrentSwiftVersion(Self.self) else {
             return false
         }
 
         // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
-        if file.isEmpty, !shouldLintEmptyFiles {
+        if !shouldLintEmptyFiles, fileIsEmpty() {
             return false
         }
 
@@ -98,6 +133,7 @@ private extension Rule {
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
     func lint(file: SwiftLintFile,
+              fileIsEmpty: Bool,
               regions: [Region],
               benchmark: Bool,
               storage: RuleStorage,
@@ -108,7 +144,7 @@ private extension Rule {
 
         // Wrap entire lint process including shouldRun check in rule context
         return CurrentRule.$identifier.withValue(ruleID) {
-            guard shouldRun(onFile: file) else {
+            guard shouldRun(onFile: file, fileIsEmpty: fileIsEmpty) else {
                 return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
             }
 
@@ -145,6 +181,75 @@ private extension Rule {
             ruleTime = nil
         }
 
+        if regions.isEmpty {
+            // Without regions, no violation can be disabled, no disable command can be superfluous
+            // and no deprecated alias can be in use. This is the common case, and the general path
+            // below computes the same result with Set and Array machinery that is hot when it runs
+            // per rule and file.
+            let enabledViolations: [StyleViolation]
+            if violations.isNotEmpty, file.contents.hasPrefix("#!") {
+                // If a violation happens on the same line as a shebang, ignore it.
+                enabledViolations = violations.filter { $0.location.line != 1 }
+            } else {
+                enabledViolations = violations
+            }
+            return LintResult(violations: enabledViolations,
+                              ruleTime: ruleTime,
+                              deprecatedToValidIDPairs: [])
+        }
+
+        // The rule identifiers only serve to restrict the regions inspected by the superfluous
+        // disable command check. Skip building them when that check inspects the unrestricted
+        // regions or returns early because the rule is disabled.
+        let regionsForSuperfluousDisableCheck: [Region]
+        if regions.count > 1, superfluousDisableCommandRule != nil {
+            let customRulesIDs: [String] = {
+                guard let customRules = self as? CustomRules else {
+                    return []
+                }
+                return customRules.customRuleIdentifiers
+            }()
+            let ruleIDs = Self.description.allIdentifiers +
+                customRulesIDs +
+                (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
+                [RuleIdentifier.all.stringRepresentation]
+            let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
+            regionsForSuperfluousDisableCheck = file.regions(restrictingRuleIdentifiers: ruleIdentifiers)
+        } else {
+            regionsForSuperfluousDisableCheck = regions
+        }
+
+        let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
+            regions: regionsForSuperfluousDisableCheck,
+            superfluousDisableCommandRule: superfluousDisableCommandRule,
+            allViolations: violations
+        )
+
+        if violations.isEmpty {
+            // With no violations to partition by region, only the superfluous disable command
+            // check can contribute results.
+            return LintResult(violations: superfluousDisableCommandViolations,
+                              ruleTime: ruleTime,
+                              deprecatedToValidIDPairs: [])
+        }
+
+        let (enabledViolations, deprecatedToValidIDPairs) = partitionViolations(
+            violations, byRegionsOf: file, regions: regions
+        )
+
+        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
+                          ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+
+    // Partitions violations into those enabled and those disabled by the file's regions, dropping
+    // enabled violations on a shebang line and pairing each deprecated rule identifier used to
+    // disable a violation with its valid identifier.
+    private func partitionViolations(
+        _ violations: [StyleViolation],
+        byRegionsOf file: SwiftLintFile,
+        regions: [Region]
+    ) -> (enabled: [StyleViolation], deprecatedToValidIDPairs: [(String, String)]) {
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { violation, region in
@@ -153,24 +258,6 @@ private extension Rule {
             }
             return true
         }
-
-        let customRulesIDs: [String] = {
-            guard let customRules = self as? CustomRules else {
-                return []
-            }
-            return customRules.customRuleIdentifiers
-        }()
-        let ruleIDs = Self.description.allIdentifiers +
-            customRulesIDs +
-            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? []) +
-            [RuleIdentifier.all.stringRepresentation]
-        let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
-
-        let superfluousDisableCommandViolations = superfluousDisableCommandViolations(
-            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,
-            superfluousDisableCommandRule: superfluousDisableCommandRule,
-            allViolations: violations
-        )
 
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
@@ -181,14 +268,12 @@ private extension Rule {
         } else {
             enabledViolations = enabledViolationsAndRegions.map(\.0)
         }
+        let ruleID = Self.identifier
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
             return identifiers.map { ($0, ruleID) }
         }
-
-        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations,
-                          ruleTime: ruleTime,
-                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+        return (enabledViolations, deprecatedToValidIDPairs)
     }
 }
 
@@ -285,11 +370,16 @@ public struct Linter {
     ///
     /// - returns: A linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
-        DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
-            let rule = rules[idx]
-            let ruleID = type(of: rule).identifier
-            CurrentRule.$identifier.withValue(ruleID) {
-                rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+        // Only `CollectingRule`s do any work in their collection step. Skip the dispatch and the
+        // per-rule bookkeeping entirely in the common case where none are enabled.
+        let collectingRules = isCollecting ? rules.filter { $0 is any AnyCollectingRule } : []
+        if collectingRules.isNotEmpty {
+            DispatchQueue.concurrentPerform(iterations: collectingRules.count) { idx in
+                let rule = collectingRules[idx]
+                let ruleID = type(of: rule).identifier
+                CurrentRule.$identifier.withValue(ruleID) {
+                    rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
+                }
             }
         }
         return CollectedLinter(from: self)
@@ -346,16 +436,19 @@ public struct CollectedLinter {
         }
 
         let regions = file.regions()
+        let fileIsEmpty = file.isEmpty
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults: [LintResult] = rules.parallelMap {
-            $0.lint(file: file, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    globalConfiguration: configuration.globalConfiguration,
-                    compilerArguments: compilerArguments)
+        let lintRule: @Sendable (any Rule) -> LintResult = { rule in
+            rule.lint(file: file, fileIsEmpty: fileIsEmpty, regions: regions, benchmark: benchmark,
+                      storage: storage,
+                      superfluousDisableCommandRule: superfluousDisableCommandRule,
+                      globalConfiguration: configuration.globalConfiguration,
+                      compilerArguments: compilerArguments)
         }
+        let validationResults = RuleExecutionMode.parallel ? rules.parallelMap(transform: lintRule)
+                                                           : rules.map(lintRule)
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)

@@ -23,7 +23,17 @@ public extension SwiftSyntaxCorrectableRule {
             return 0
         }
         if let rewriter = makeRewriter(file: file) {
+            // Detecting violations first is far cheaper than rewriting: the rewriter reconstructs
+            // the tree and serializes it back to a string even when it ends up correcting nothing.
+            // `validate(file:)` reports a superset of what the rewriter corrects, since the
+            // rewriter additionally skips violations in disabled regions.
+            if validate(file: file).isEmpty {
+                return 0
+            }
             let newTree = rewriter.visit(syntaxTree)
+            if rewriter.numberOfCorrections == 0 {
+                return 0
+            }
             file.write(newTree.description)
             return rewriter.numberOfCorrections
         }

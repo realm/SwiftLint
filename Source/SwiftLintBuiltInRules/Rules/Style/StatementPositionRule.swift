@@ -2,8 +2,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftLintCore
 
-@DisabledWithoutSourceKit
-struct StatementPositionRule: CorrectableRule {
+struct StatementPositionRule: CorrectableRule, SourceKitFreeRule {
     var configuration = StatementPositionConfiguration()
 
     static let description = RuleDescription(
@@ -109,9 +108,23 @@ private extension StatementPositionRule {
     }
 
     func defaultBraceViolationRanges(in file: SwiftLintFile) -> [NSRange] {
-        file.match(pattern: Self.defaultPattern).filter { _, syntaxKinds in
-            syntaxKinds.starts(with: [.keyword])
-        }.compactMap(\.0)
+        let contents = file.stringView
+        let matches = regex(Self.defaultPattern).matches(in: file)
+        if matches.isEmpty {
+            return []
+        }
+        let syntaxMap = file.sourceKitFreeSyntaxMap()
+
+        return matches.compactMap { match in
+            guard let matchByteRange = contents.NSRangeToByteRange(
+                start: match.range.location,
+                length: match.range.length
+            ) else {
+                return nil
+            }
+
+            return syntaxMap.kinds(inByteRange: matchByteRange).starts(with: [.keyword]) ? match.range : nil
+        }
     }
 
     func defaultGuardViolationRanges(in file: SwiftLintFile) -> [NSRange] {
@@ -124,9 +137,13 @@ private extension StatementPositionRule {
 
     func defaultGuardMatches(in file: SwiftLintFile) -> [NSTextCheckingResult] {
         let contents = file.stringView
-        let syntaxMap = file.syntaxMap
+        let allMatches = Self.defaultGuardRegex.matches(in: file)
+        if allMatches.isEmpty {
+            return []
+        }
+        let syntaxMap = file.sourceKitFreeSyntaxMap()
 
-        return Self.defaultGuardRegex.matches(in: file).filter { match in
+        return allMatches.filter { match in
             guard let elseRange = contents.NSRangeToByteRange(
                 start: match.range(at: 2).location,
                 length: match.range(at: 2).length
@@ -215,8 +232,11 @@ private extension StatementPositionRule {
 
     func uncuddledViolationRanges(in file: SwiftLintFile) -> [NSRange] {
         let contents = file.stringView
-        let syntaxMap = file.syntaxMap
         let matches = Self.uncuddledRegex.matches(in: file)
+        if matches.isEmpty {
+            return []
+        }
+        let syntaxMap = file.sourceKitFreeSyntaxMap()
         let validator = Self.uncuddledMatchValidator(contents: contents)
         let filterMatches = Self.uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
@@ -225,8 +245,11 @@ private extension StatementPositionRule {
 
     func uncuddledCorrect(file: SwiftLintFile) -> Int {
         var contents = file.contents
-        let syntaxMap = file.syntaxMap
         let matches = Self.uncuddledRegex.matches(in: file)
+        if matches.isEmpty {
+            return 0
+        }
+        let syntaxMap = file.sourceKitFreeSyntaxMap()
         let validator = Self.uncuddledMatchValidator(contents: file.stringView)
         let filterRanges = Self.uncuddledMatchFilter(contents: file.stringView, syntaxMap: syntaxMap)
         let validMatches = matches.compactMap(validator).filter(filterRanges)

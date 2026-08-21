@@ -1,4 +1,3 @@
-import SwiftIDEUtils
 import SwiftLintCore
 import SwiftSyntax
 
@@ -42,10 +41,13 @@ struct LocalDocCommentRule: SwiftSyntaxRule, OptInRule {
     )
 
     func makeVisitor(file: SwiftLintFile) -> ViolationsSyntaxVisitor<ConfigurationType> {
+        // Doc comment ranges come from the file's shared comment trivia pass, which several other
+        // rules already force, rather than from `syntaxClassifications`, which would additionally
+        // run SwiftSyntax's general-purpose classifier over every token in the file.
         Visitor(
             configuration: configuration,
             file: file,
-            classifications: file.syntaxClassifications.filter { $0.kind != .none }
+            docCommentRanges: file.docCommentRanges()
         )
     }
 }
@@ -56,10 +58,8 @@ private extension LocalDocCommentRule {
 
         init(configuration: ConfigurationType,
              file: SwiftLintFile,
-             classifications: [SyntaxClassifiedRange]) {
-            self.docCommentRanges = classifications
-                .filter { $0.kind == .docLineComment || $0.kind == .docBlockComment }
-                .map(\.range)
+             docCommentRanges: [Range<AbsolutePosition>]) {
+            self.docCommentRanges = docCommentRanges
             super.init(configuration: configuration, file: file)
         }
 

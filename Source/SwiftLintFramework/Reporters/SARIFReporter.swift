@@ -13,6 +13,8 @@ struct SARIFReporter: Reporter {
     static let swiftlintVersion = "https://github.com/realm/SwiftLint/blob/\(Version.current.value)/README.md"
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
+        // Resolved once: `URL.cwd` reaches a `getcwd` syscall on every access.
+        let cwd = URL.cwd.path
         let SARIFJson = [
             "version": "2.1.0",
             "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json",
@@ -28,7 +30,7 @@ struct SARIFReporter: Reporter {
                                 .map(dictionary(for:)),
                         ],
                     ],
-                    "results": violations.map(dictionary(for:)),
+                    "results": violations.map { dictionary(for: $0, cwd: cwd) },
                 ],
             ],
         ] as [String: Any]
@@ -52,7 +54,7 @@ struct SARIFReporter: Reporter {
         ]
     }
 
-    private static func dictionary(for violation: StyleViolation) -> [String: Any] {
+    private static func dictionary(for violation: StyleViolation, cwd: String) -> [String: Any] {
         [
             "level": violation.severity.rawValue,
             "ruleId": violation.ruleIdentifier,
@@ -60,18 +62,18 @@ struct SARIFReporter: Reporter {
                 "text": violation.reason
             ],
             "locations": [
-                dictionary(for: violation.location)
+                dictionary(for: violation.location, cwd: cwd)
             ],
         ]
     }
 
-    private static func dictionary(for location: Location) -> [String: Any] {
+    private static func dictionary(for location: Location, cwd: String) -> [String: Any] {
         // According to SARIF specification JSON1008, minimum value for line is 1
         if let line = location.line, line > 0 {
             return [
                 "physicalLocation": [
                     "artifactLocation": [
-                        "uri": location.file?.relativeDisplayPath ?? ""
+                        "uri": location.file?.relativeDisplayPath(against: cwd) ?? ""
                     ],
                     "region": [
                         "startLine": line,
@@ -84,7 +86,7 @@ struct SARIFReporter: Reporter {
         return [
             "physicalLocation": [
                 "artifactLocation": [
-                    "uri": location.file?.relativeDisplayPath ?? ""
+                    "uri": location.file?.relativeDisplayPath(against: cwd) ?? ""
                 ],
             ],
         ]

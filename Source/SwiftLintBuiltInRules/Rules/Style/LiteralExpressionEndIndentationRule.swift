@@ -1,9 +1,9 @@
 import Foundation
 import SourceKittenFramework
 import SwiftLintCore
+import SwiftSyntax
 
-@DisabledWithoutSourceKit
-struct LiteralExpressionEndIndentationRule: Rule, OptInRule {
+struct LiteralExpressionEndIndentationRule: Rule, OptInRule, SourceKitFreeRule {
     var configuration = SeverityConfiguration<Self>(.warning)
 
     static let description = RuleDescription(
@@ -225,34 +225,29 @@ extension LiteralExpressionEndIndentationRule {
         var range: ByteRange
     }
 
-    fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
-        file.structureDictionary.traverseDepthFirst { subDict in
-            guard let kind = subDict.expressionKind else { return nil }
-            guard let violation = violation(in: file, of: kind, dictionary: subDict) else { return nil }
-            return [violation]
-        }
+    fileprivate struct Literal {
+        var offset: ByteCount
+        var length: ByteCount
+        var firstElementOffset: ByteCount
+        var lastElementOffset: ByteCount
     }
 
-    private func violation(in file: SwiftLintFile,
-                           of kind: SwiftExpressionKind,
-                           dictionary: SourceKittenDictionary) -> Violation? {
-        guard kind == .dictionary || kind == .array else {
-            return nil
-        }
+    fileprivate func violations(in file: SwiftLintFile) -> [Violation] {
+        LiteralExpressionVisitor(viewMode: .sourceAccurate)
+            .walk(file: file) { $0.literals }
+            .compactMap { literal in
+                violation(in: file, literal: literal)
+            }
+    }
 
-        let elements = dictionary.elements.filter { $0.kind == "source.lang.swift.structure.elem.expr" }
-
+    private func violation(in file: SwiftLintFile, literal: Literal) -> Violation? {
         let contents = file.stringView
-        guard elements.isNotEmpty,
-              let offset = dictionary.offset,
-              let length = dictionary.length,
-              let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
-              let firstParamOffset = elements[0].offset,
-              let (firstParamLine, _) = contents.lineAndCharacter(forByteOffset: firstParamOffset),
+        let offset = literal.offset
+        guard let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
+              let (firstParamLine, _) = contents.lineAndCharacter(forByteOffset: literal.firstElementOffset),
               startLine != firstParamLine,
-              let lastParamOffset = elements.last?.offset,
-              let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: lastParamOffset),
-              case let endOffset = offset + length - 1,
+              let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: literal.lastElementOffset),
+              case let endOffset = offset + literal.length - 1,
               let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
               lastParamLine != endLine
         else {
@@ -277,6 +272,43 @@ extension LiteralExpressionEndIndentationRule {
 
         return Violation(indentationRanges: (expected: expectedRange, actual: actualRange),
                          endOffset: endOffset,
-                         range: ByteRange(location: offset, length: length))
+                         range: ByteRange(location: offset, length: literal.length))
+    }
+}
+
+private final class LiteralExpressionVisitor: SyntaxVisitor {
+    private(set) var literals: [LiteralExpressionEndIndentationRule.Literal] = []
+
+    override func visitPost(_ node: ArrayExprSyntax) {
+        appendLiteral(leftSquare: node.leftSquare,
+                      rightSquare: node.rightSquare,
+                      firstElement: node.elements.first?.expression,
+                      lastElement: node.elements.last?.expression)
+    }
+
+    override func visitPost(_ node: DictionaryExprSyntax) {
+        guard case let .elements(elements) = node.content else {
+            return
+        }
+        appendLiteral(leftSquare: node.leftSquare,
+                      rightSquare: node.rightSquare,
+                      firstElement: elements.first?.key,
+                      lastElement: elements.last?.value)
+    }
+
+    private func appendLiteral(leftSquare: TokenSyntax,
+                               rightSquare: TokenSyntax,
+                               firstElement: ExprSyntax?,
+                               lastElement: ExprSyntax?) {
+        guard let firstElement, let lastElement else {
+            return
+        }
+
+        let offset = ByteCount(leftSquare.positionAfterSkippingLeadingTrivia)
+        let endOffset = ByteCount(rightSquare.positionAfterSkippingLeadingTrivia)
+        literals.append(.init(offset: offset,
+                              length: endOffset - offset + 1,
+                              firstElementOffset: ByteCount(firstElement.positionAfterSkippingLeadingTrivia),
+                              lastElementOffset: ByteCount(lastElement.positionAfterSkippingLeadingTrivia)))
     }
 }

@@ -49,8 +49,8 @@ public extension RandomAccessCollection where Index == Int {
             midIndex = (badIndex + goodIndex) / 2
         }
 
-        // We're out of bounds, no good items in array
-        if midIndex == lastIndex {
+        // No element satisfied the predicate.
+        if goodIndex == lastIndex {
             return nil
         }
         return goodIndex

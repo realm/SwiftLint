@@ -13,20 +13,23 @@ struct CodeClimateReporter: Reporter {
     static let description = "Reports violations as a JSON array in Code Climate format."
 
     static func generateReport(_ violations: [StyleViolation]) -> String {
-        toJSON(violations.map(dictionary(for:)))
+        // Resolved once: every violation renders two relative paths, and each would otherwise
+        // reach `FileManager.currentDirectoryPath` and a `getcwd` syscall.
+        let cwd = URL.cwd.path
+        return toJSON(violations.map { dictionary(for: $0, cwd: cwd) })
             .replacingOccurrences(of: "\\/", with: "/")
     }
 
     // MARK: - Private
 
-    private static func dictionary(for violation: StyleViolation) -> [String: Any] {
+    private static func dictionary(for violation: StyleViolation, cwd: String) -> [String: Any] {
         [
             "check_name": violation.ruleName,
             "description": violation.reason,
             "engine_name": "SwiftLint",
-            "fingerprint": generateFingerprint(violation),
+            "fingerprint": generateFingerprint(violation, cwd: cwd),
             "location": [
-                "path": violation.location.file?.relativeDisplayPath ?? NSNull() as Any,
+                "path": violation.location.file?.relativeDisplayPath(against: cwd) ?? NSNull() as Any,
                 "lines": [
                     "begin": violation.location.line ?? NSNull() as Any,
                     "end": violation.location.line ?? NSNull() as Any,
@@ -37,9 +40,9 @@ struct CodeClimateReporter: Reporter {
         ]
     }
 
-    internal static func generateFingerprint(_ violation: StyleViolation) -> String {
+    internal static func generateFingerprint(_ violation: StyleViolation, cwd: String = URL.cwd.path) -> String {
         [
-            "\(violation.location.file?.relativeDisplayPath ?? "")",
+            "\(violation.location.file?.relativeDisplayPath(against: cwd) ?? "")",
             "\(violation.location.line ?? 0)",
             "\(violation.location.character ?? 0)",
             "\(violation.ruleIdentifier)",

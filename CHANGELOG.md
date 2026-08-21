@@ -45,6 +45,15 @@
   so differing operands stop at the first mismatching token.  
   [Brett-Best](https://github.com/Brett-Best)
 
+* Significantly reduce lint and correction runtimes: lint runs no longer
+  launch sourcekitd (the remaining lint-mode rules were migrated onto
+  SwiftSyntax-derived syntax information), custom rules honor
+  `execution_mode: swiftsyntax`, rewriter-based corrections skip files
+  without violations, and numerous per-rule and per-file hot paths were
+  optimized. SwiftLint's OSS-check suite lints 9-35% faster end to end.  
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6826](https://github.com/realm/SwiftLint/pull/6826)
+
 * Add `#examples` and `#corrections` macros that expand lists and
   dictionaries of code strings into `Example`s, reducing boilerplate when
   defining a rule's triggering/non-triggering examples and corrections. Adopt
@@ -68,6 +77,13 @@
   accesses whose member names are valid top-level domains.  
   [Arthur Liu](https://github.com/thliu21)
   [#6811](https://github.com/realm/SwiftLint/issues/6811)
+
+* Fix `execution_mode`/`default_execution_mode` of custom rules being ignored during
+  linting and dropped when merging parent and child configurations, and fix
+  `RandomAccessCollection.firstIndexAssumingSorted(where:)` returning `count`
+  instead of `nil` when no element matches the predicate.  
+  [Brett-Best](https://github.com/Brett-Best)
+  [#6826](https://github.com/realm/SwiftLint/pull/6826)
 
 * Fix baseline writing to store file locations as paths relative to the current working directory,
   restoring baseline portability and avoiding absolute `file://` paths in generated baseline files.  

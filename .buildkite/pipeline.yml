@@ -1,3 +1,15 @@
+# Checkout tuning cannot live here: `BUILDKITE_GIT_*` are protected variables, and setting them
+# in pipeline `env` is ignored with a warning. They have to be set in the agent configuration.
+#
+# Worth doing there: `git-clone-flags: -v --filter=blob:none`. This repository carries ~965 MB of
+# history that is almost entirely historical blobs no job reads, and each of the jobs below checks
+# out independently; a blobless clone measured 5s/15 MB against 104s/965 MB for a full one, and
+# still holds only 16 MB after oss-check's merge-base, diff and worktree operations.
+#
+# It must stay a blob filter rather than a `--depth` shallow clone: `tools/oss-check` needs real
+# history for `git merge-base origin/main` and `git worktree add --detach` on that merge base, as
+# does Danger's PR diff.
+
 steps:
   - label: "Bazel"
     commands:

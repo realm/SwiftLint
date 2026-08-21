@@ -77,8 +77,26 @@ private func autoreleasepool<T>(block: () -> T) -> T { block() }
 
 extension Configuration {
     func visitLintableFiles(with visitor: LintableFilesVisitor, storage: RuleStorage) async throws -> [SwiftLintFile] {
-        let files = try Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
+        var files = try Signposts.record(name: "Configuration.VisitLintableFiles.GetFiles") {
             try getFiles(with: visitor)
+        }
+        if visitor.parallel {
+            // Lint the largest files first. With serial per-file rule execution, a huge file
+            // dispatched near the end of the run occupies a single core while the remaining
+            // cores sit idle; dispatching it first hides its long single-file runtime behind
+            // the remaining work regardless of core count. Completion order — and therefore
+            // reporting order — is already scheduler-dependent for parallel runs.
+            files = Signposts.record(name: "Configuration.VisitLintableFiles.SortFilesBySize") {
+                files
+                    .parallelMap { file -> (file: SwiftLintFile, size: Int) in
+                        let size = file.path.flatMap {
+                            try? $0.resourceValues(forKeys: [.fileSizeKey]).fileSize
+                        }
+                        return (file, size ?? 0)
+                    }
+                    .sorted { $0.size > $1.size }
+                    .map(\.file)
+            }
         }
         let groupedFiles = try Signposts.record(name: "Configuration.VisitLintableFiles.GroupFiles") {
             try groupFiles(files, visitor: visitor)
@@ -230,9 +248,14 @@ extension Configuration {
             }
             return linter.file
         }
-        return await visitor.parallel ?
-            linters.concurrentMap(visit) :
-            linters.asyncMap(visit)
+        // With at least as many files as cores, file-level parallelism saturates the machine and
+        // concurrent rules only contend on each file's shared syntax tree.
+        let parallelizeRules = !visitor.parallel || linters.count < ProcessInfo.processInfo.activeProcessorCount
+        return await RuleExecutionMode.$parallel.withValue(parallelizeRules) {
+            await visitor.parallel ?
+                linters.concurrentMap(visit) :
+                linters.asyncMap(visit)
+        }
     }
 
     fileprivate func getFiles(with visitor: LintableFilesVisitor) throws(SwiftLintError) -> [SwiftLintFile] {

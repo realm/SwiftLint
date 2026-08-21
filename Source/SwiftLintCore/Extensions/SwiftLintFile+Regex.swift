@@ -130,6 +130,31 @@ extension SwiftLintFile {
             .map(\.0)
     }
 
+    /// Like `match(pattern:excludingSyntaxKinds:range:captureGroup:)`, but resolves syntax kinds from
+    /// the given syntax map instead of the sourcekitd-backed one. The map is only consulted when the
+    /// pattern matches at all, so callers can defer building it.
+    public func match(pattern: String,
+                      excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
+                      usingSyntaxMap makeSyntaxMap: () -> SwiftLintSyntaxMap,
+                      range: NSRange? = nil,
+                      captureGroup: Int = 0) -> [NSRange] {
+        let contents = stringView
+        let matches = regex(pattern).matches(in: contents, options: [], range: range ?? contents.range)
+        if matches.isEmpty {
+            return []
+        }
+        let syntaxMap = makeSyntaxMap()
+        return matches.compactMap { match in
+            guard let matchByteRange = contents.NSRangeToByteRange(
+                start: match.range.location, length: match.range.length),
+                syntaxKinds.isDisjoint(with: syntaxMap.tokens(inByteRange: matchByteRange).kinds)
+            else {
+                return nil
+            }
+            return match.range(at: captureGroup)
+        }
+    }
+
     public func append(_ string: String) {
         guard string.isNotEmpty else {
             return

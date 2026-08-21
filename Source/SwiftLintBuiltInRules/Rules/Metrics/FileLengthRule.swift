@@ -24,7 +24,13 @@ struct FileLengthRule: Rule {
 
 private extension FileLengthRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        override func visitPost(_ node: SourceFileSyntax) {
+        override func visit(_ node: SourceFileSyntax) -> SyntaxVisitorContinueKind {
+            collectViolation(for: node)
+            // Everything is computed from the root node, so don't walk the whole tree.
+            return .skipChildren
+        }
+
+        private func collectViolation(for node: SourceFileSyntax) {
             let lineCount = configuration.ignoreCommentOnlyLines
                 ? CommentLinesVisitor(locationConverter: locationConverter)
                     .walk(tree: node, handler: \.linesWithCode).count

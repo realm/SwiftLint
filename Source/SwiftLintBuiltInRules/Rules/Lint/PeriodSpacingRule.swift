@@ -1,6 +1,5 @@
 import Foundation
 import SourceKittenFramework
-import SwiftIDEUtils
 import SwiftLintCore
 
 struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableRule {
@@ -50,9 +49,7 @@ struct PeriodSpacingRule: SourceKitFreeRule, OptInRule, SubstitutionCorrectableR
 
     func violationRanges(in file: SwiftLintFile) -> [NSRange] {
         // Find all comment tokens in the file and regex search them for violations
-        file.syntaxClassifications
-            .filter(\.kind.isComment)
-            .map { $0.range.toSourceKittenByteRange() }
+        file.commentByteRanges()
             .compactMap { (range: ByteRange) -> [NSRange]? in
                 file.stringView
                     .substringWithByteRange(range)

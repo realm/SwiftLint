@@ -25,13 +25,6 @@ private enum Cached<T> {
     case computed(T)
 }
 
-private enum CacheLookup<T> {
-    case hit(T)
-    case miss
-    case wait(DispatchGroup)
-    case compute(DispatchGroup)
-}
-
 /// Per-file cache storing all derived artifacts. One instance lives on each `SwiftLintFile`.
 ///
 /// **Locking strategy**: a concurrent `DispatchQueue` guards all slots.
@@ -40,7 +33,7 @@ private enum CacheLookup<T> {
 /// other cached properties without risk of deadlock. Cold slots are marked as computing
 /// under a barrier so concurrent first readers wait for the same result.
 final class FileCache: @unchecked Sendable {
-    fileprivate let queue = DispatchQueue(label: "io.realm.swiftlint.fileCache", attributes: .concurrent)
+    fileprivate let lock = NSLock()
 
     fileprivate var syntaxTree = Cached<SourceFileSyntax>.notComputed
     fileprivate var locationConverter = Cached<SourceLocationConverter>.notComputed
@@ -54,6 +47,9 @@ final class FileCache: @unchecked Sendable {
     fileprivate var foldedSyntaxTree = Cached<SourceFileSyntax?>.notComputed
     fileprivate var syntaxMap = Cached<SwiftLintSyntaxMap?>.notComputed
     fileprivate var swiftSyntaxTokens = Cached<[SwiftLintSyntaxToken]?>.notComputed
+    fileprivate var sourceKitFreeSyntaxMapSlot = Cached<SwiftLintSyntaxMap>.notComputed
+    fileprivate var commentAndStringSyntaxMapSlot = Cached<SwiftLintSyntaxMap>.notComputed
+    fileprivate var commentByteRangesSlot = Cached<CommentRanges>.notComputed
     fileprivate var assertHandlerSlot = Cached<AssertHandler?>.notComputed
 
     /// Returns the cached value for a slot, computing it via `factory` on a cache miss.
@@ -63,66 +59,38 @@ final class FileCache: @unchecked Sendable {
     /// TODO: [06/05/2028] We can convert the explicit getters and setters to a keypath-based subscript once the Swift
     /// compiler bug https://github.com/swiftlang/swift/issues/69386 is resolved.
     fileprivate func getOrCompute<T>(factory: () -> T, get: () -> Cached<T>, set: (Cached<T>) -> Void) -> T {
-        // swiftlint:disable:previous cyclomatic_complexity
-
-        let initialState = queue.sync { () -> CacheLookup<T> in
-            switch get() {
-            case .computed(let value):
-                return .hit(value)
-            case .computing(let group):
-                return .wait(group)
-            case .notComputed:
-                return .miss
-            }
-        }
-
-        switch initialState {
-        case .hit(let value):
+        lock.lock()
+        switch get() {
+        case .computed(let value):
+            lock.unlock()
             return value
-        case .wait(let group):
+        case .computing(let group):
+            lock.unlock()
             group.wait()
             return getOrCompute(factory: factory, get: get, set: set)
-        case .miss, .compute:
-            break
-        }
-
-        let lookup = queue.sync(flags: .barrier) { () -> CacheLookup<T> in
-            switch get() {
-            case .computed(let value):
-                return .hit(value)
-            case .computing(let group):
-                return .wait(group)
-            case .notComputed:
-                let group = DispatchGroup()
-                group.enter()
-                set(.computing(group))
-                return .compute(group)
-            }
-        }
-
-        switch lookup {
-        case .hit(let value):
-            return value
-        case .wait(let group):
-            group.wait()
-            return getOrCompute(factory: factory, get: get, set: set)
-        case .compute(let group):
+        case .notComputed:
+            let group = DispatchGroup()
+            group.enter()
+            set(.computing(group))
+            lock.unlock()
+            // The factory runs outside the lock, so it may safely access other cached properties.
             let value = factory()
-            queue.sync(flags: .barrier) {
-                defer { group.leave() }
-                if case .computing(let currentGroup) = get(), currentGroup === group {
-                    set(.computed(value))
-                }
+            lock.lock()
+            // The slot may have been invalidated while computing; only publish the result if this
+            // computation is still the current one. On a concurrent first access the winner's
+            // result is kept; the loser's is discarded.
+            if case .computing(let currentGroup) = get(), currentGroup === group {
+                set(.computed(value))
             }
+            lock.unlock()
+            group.leave()
             return value
-        case .miss:
-            queuedFatalError("Impossible state: missed then compute")
         }
     }
 
     /// Resets all slots to `.notComputed`, forcing recomputation on next access.
     fileprivate func invalidateAll() {
-        queue.sync(flags: .barrier) {
+        lock.withLock {
             syntaxTree = .notComputed
             locationConverter = .notComputed
             commands = .notComputed
@@ -135,6 +103,9 @@ final class FileCache: @unchecked Sendable {
             foldedSyntaxTree = .notComputed
             syntaxMap = .notComputed
             swiftSyntaxTokens = .notComputed
+            sourceKitFreeSyntaxMapSlot = .notComputed
+            commentAndStringSyntaxMapSlot = .notComputed
+            commentByteRangesSlot = .notComputed
             assertHandlerSlot = .notComputed
         }
     }
@@ -144,7 +115,7 @@ extension SwiftLintFile {
     public var sourcekitdFailed: Bool {
         get { cachedResponse == nil }
         set {
-            fileCache.queue.sync(flags: .barrier) {
+            fileCache.lock.withLock {
                 fileCache.response = newValue ? .computed(nil) : .notComputed
             }
         }
@@ -158,7 +129,7 @@ extension SwiftLintFile {
                 set: { fileCache.assertHandlerSlot = $0 }
         }
         set {
-            fileCache.queue.sync(flags: .barrier) { fileCache.assertHandlerSlot = .computed(newValue) }
+            fileCache.lock.withLock { fileCache.assertHandlerSlot = .computed(newValue) }
         }
     }
 
@@ -193,6 +164,35 @@ extension SwiftLintFile {
         return value
     }
 
+    /// The byte ranges of all comment trivia pieces (line, doc-line, block, and doc-block) in the
+    /// file, in source order. Computed once per file and cached; multiple rules share the result.
+    ///
+    /// Comments are read directly off token trivia rather than via `syntaxClassifications`, which
+    /// would additionally run SwiftSyntax's general-purpose classifier over every non-comment token
+    /// in the file. Byte positions are tracked incrementally during a single visitor pass because
+    /// `SyntaxProtocol.position` and token-sequence iteration climb the tree per call, which
+    /// degrades sharply on deeply nested expression trees.
+    public func commentByteRanges() -> [ByteRange] {
+        commentRanges().all
+    }
+
+    /// The source ranges of the file's doc comments (`///` and `/** */`), in source order. Shares
+    /// the single trivia pass behind `commentByteRanges()`.
+    public func docCommentRanges() -> [Range<AbsolutePosition>] {
+        commentRanges().doc
+    }
+
+    private func commentRanges() -> CommentRanges {
+        fileCache.getOrCompute
+            { [file = self] in
+                let visitor = CommentByteRangesVisitor(viewMode: .sourceAccurate)
+                visitor.walk(file.syntaxTree)
+                return visitor.commentRanges
+            }
+            get: { fileCache.commentByteRangesSlot }
+            set: { fileCache.commentByteRangesSlot = $0 }
+    }
+
     public var syntaxClassifications: SyntaxClassifications {
         fileCache.getOrCompute
             { syntaxTree.classifications }
@@ -217,7 +217,7 @@ extension SwiftLintFile {
 
     public var syntaxTree: SourceFileSyntax {
         fileCache.getOrCompute
-            { Parser.parse(source: contents) }
+            { Self.parsedSyntaxTree(of: contents) }
             get: { fileCache.syntaxTree }
             set: { fileCache.syntaxTree = $0 }
     }
@@ -249,6 +249,29 @@ extension SwiftLintFile {
             { SwiftSyntaxKindBridge.sourceKittenSyntaxKinds(for: self) }
             get: { fileCache.swiftSyntaxTokens }
             set: { fileCache.swiftSyntaxTokens = $0 }
+    }
+
+    /// A syntax map equivalent to the sourcekitd-backed `syntaxMap`, built from the SwiftSyntax-derived
+    /// bridge tokens so that rules using it don't require SourceKit.
+    ///
+    /// Cached because it is a pure function of the file that several rules ask for independently —
+    /// `statement_position` alone builds it four times — and each call otherwise re-derives the whole
+    /// token array and syntax map.
+    /// A syntax map holding only the file's comment and string tokens, for rules that filter
+    /// matches on `SyntaxKind.commentAndStringKinds` alone. Omitting the other kinds cannot change
+    /// such a filter's result, and avoids running SwiftSyntax's general-purpose classifier.
+    public func commentAndStringSyntaxMap() -> SwiftLintSyntaxMap {
+        fileCache.getOrCompute
+            { computeCommentAndStringSyntaxMap() }
+            get: { fileCache.commentAndStringSyntaxMapSlot }
+            set: { fileCache.commentAndStringSyntaxMapSlot = $0 }
+    }
+
+    public func sourceKitFreeSyntaxMap() -> SwiftLintSyntaxMap {
+        fileCache.getOrCompute
+            { computeSourceKitFreeSyntaxMap() }
+            get: { fileCache.sourceKitFreeSyntaxMapSlot }
+            set: { fileCache.sourceKitFreeSyntaxMapSlot = $0 }
     }
 
     public var commentLines: Set<Int> {
@@ -301,5 +324,71 @@ extension SwiftLintFile {
             }
             get: { fileCache.commands }
             set: { fileCache.commands = $0 }
+    }
+}
+
+/// The comment ranges of one file, collected in a single pass.
+struct CommentRanges {
+    /// Every comment trivia piece, in source order.
+    let all: [ByteRange]
+    /// Only the doc comments (`///` and `/** */`), in source order, with directly adjacent ranges
+    /// of the same kind coalesced. Expressed as source positions, which is what their consumer
+    /// compares against syntax node ranges.
+    let doc: [Range<AbsolutePosition>]
+}
+
+private final class CommentByteRangesVisitor: SyntaxVisitor {
+    private enum DocCommentKind {
+        case line, block
+    }
+
+    private var ranges = [ByteRange]()
+    private var docRanges = [Range<AbsolutePosition>]()
+    private var position = 0
+    private var lastDocKind: DocCommentKind?
+    private var lastDocEnd = -1
+
+    var commentRanges: CommentRanges {
+        CommentRanges(all: ranges, doc: docRanges)
+    }
+
+    override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
+        // Materializing trivia re-lexes it, so only do so for tokens that actually have some.
+        if token.leadingTriviaLength.utf8Length > 0 {
+            appendCommentRanges(in: token.leadingTrivia)
+        }
+        position += token.trimmedLength.utf8Length
+        if token.trailingTriviaLength.utf8Length > 0 {
+            appendCommentRanges(in: token.trailingTrivia)
+        }
+        return .skipChildren
+    }
+
+    private func appendCommentRanges(in trivia: Trivia) {
+        for piece in trivia {
+            let length = piece.sourceLength.utf8Length
+            if piece.isComment {
+                ranges.append(ByteRange(location: ByteCount(position), length: ByteCount(length)))
+                switch piece {
+                case .docLineComment: appendDocRange(kind: .line, length: length)
+                case .docBlockComment: appendDocRange(kind: .block, length: length)
+                default: break
+                }
+            }
+            position += length
+        }
+    }
+
+    private func appendDocRange(kind: DocCommentKind, length: Int) {
+        // `syntaxClassifications`, which the doc comment consumer used to read these ranges from,
+        // coalesces directly adjacent ranges of the same kind, as `/** a *//** b */` produces.
+        let end = AbsolutePosition(utf8Offset: position + length)
+        if kind == lastDocKind, position == lastDocEnd, docRanges.isNotEmpty {
+            docRanges[docRanges.count - 1] = docRanges[docRanges.count - 1].lowerBound..<end
+        } else {
+            docRanges.append(AbsolutePosition(utf8Offset: position)..<end)
+        }
+        lastDocKind = kind
+        lastDocEnd = position + length
     }
 }

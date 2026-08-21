@@ -97,7 +97,22 @@ extension NameConfiguration {
     }
 
     func containsOnlyAllowedCharacters(name: String) -> Bool {
-        allowedSymbolsAndAlphanumerics.isSuperset(of: CharacterSet(charactersIn: name))
+        // Equivalent to testing the allowed set against `CharacterSet(charactersIn: name)`, but
+        // without building a bitmap-backed `CharacterSet` for every checked identifier. Names are
+        // overwhelmingly ASCII letters and digits, which the allowed set always contains because
+        // it is built by unioning `.alphanumerics`, so those are settled inline and only the
+        // remainder reaches Foundation.
+        for scalar in name.unicodeScalars {
+            switch scalar.value {
+            case 0x61...0x7A, 0x41...0x5A, 0x30...0x39: // a-z, A-Z, 0-9 are all alphanumerics
+                continue
+            default:
+                guard allowedSymbolsAndAlphanumerics.contains(scalar) else {
+                    return false
+                }
+            }
+        }
+        return true
     }
 }
 

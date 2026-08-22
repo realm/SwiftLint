@@ -16,7 +16,10 @@
 
 ### Bug Fixes
 
-* None.
+* Keep the formatting of multiline member chains when correcting
+  `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
+  `.aspectRatio` is no longer collapsed onto a single line.
+  [CraigSiemens](https://github.com/CraigSiemens)
 
 ## 0.65.1: Fresh Folded Fixtures
 

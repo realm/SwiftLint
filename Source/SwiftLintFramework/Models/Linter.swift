@@ -253,6 +253,7 @@ public struct Linter {
     fileprivate let cache: LinterCache?
     fileprivate let configuration: Configuration
     fileprivate let compilerArguments: [String]
+    var usesParallelRuleScheduling: Bool { compilerArguments.isEmpty }
 
     /// Creates a `Linter` by specifying its properties directly.
     ///
@@ -291,7 +292,7 @@ public struct Linter {
                 rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
             }
         }
-        if compilerArguments.isEmpty {
+        if usesParallelRuleScheduling {
             DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
                 collectRule(rules[idx])
             }
@@ -312,6 +313,7 @@ public struct CollectedLinter {
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
+    var usesParallelRuleScheduling: Bool { compilerArguments.isEmpty }
 
     fileprivate init(from linter: Linter) {
         file = linter.file
@@ -362,7 +364,7 @@ public struct CollectedLinter {
                       globalConfiguration: configuration.globalConfiguration,
                       compilerArguments: compilerArguments)
         }
-        let validationResults: [LintResult] = compilerArguments.isEmpty
+        let validationResults: [LintResult] = usesParallelRuleScheduling
             ? rules.parallelMap(transform: validateRule)
             : rules.map(validateRule)
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(

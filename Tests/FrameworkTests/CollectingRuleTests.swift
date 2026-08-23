@@ -1,3 +1,4 @@
+import Foundation
 import SourceKittenFramework
 import TestHelpers
 import Testing
@@ -84,6 +85,80 @@ struct CollectingRuleTests {
     }
 
     @Test
+    func analyzerRuleCollectionIsSerialized() {
+        let probe = SchedulingProbe()
+        let rules: [any Rule] = [
+            AnalyzerSchedulingRule<FirstSchedulingRule>(collectionProbe: probe),
+            AnalyzerSchedulingRule<SecondSchedulingRule>(collectionProbe: probe),
+        ]
+        let linter = Linter(
+            file: SwiftLintFile(contents: "let value = 1"),
+            configuration: schedulingConfiguration(rules),
+            compilerArguments: ["-module-name", "SchedulingTest"]
+        )
+
+        _ = linter.collect(into: RuleStorage())
+
+        #expect(!probe.didOverlap)
+    }
+
+    @Test
+    func analyzerRuleValidationIsSerialized() {
+        let probe = SchedulingProbe()
+        let rules: [any Rule] = [
+            AnalyzerSchedulingRule<FirstSchedulingRule>(validationProbe: probe),
+            AnalyzerSchedulingRule<SecondSchedulingRule>(validationProbe: probe),
+        ]
+        let storage = RuleStorage()
+        let linter = Linter(
+            file: SwiftLintFile(contents: "let value = 1"),
+            configuration: schedulingConfiguration(rules),
+            compilerArguments: ["-module-name", "SchedulingTest"]
+        )
+
+        let collectedLinter = linter.collect(into: storage)
+        _ = collectedLinter.styleViolations(using: storage)
+
+        #expect(!probe.didOverlap)
+    }
+
+    @Test
+    func lintRuleCollectionRemainsParallel() {
+        let probe = SchedulingProbe()
+        let rules: [any Rule] = [
+            LintSchedulingRule<FirstSchedulingRule>(collectionProbe: probe),
+            LintSchedulingRule<SecondSchedulingRule>(collectionProbe: probe),
+        ]
+        let linter = Linter(
+            file: SwiftLintFile(contents: "let value = 1"),
+            configuration: schedulingConfiguration(rules)
+        )
+
+        _ = linter.collect(into: RuleStorage())
+
+        #expect(probe.didOverlap)
+    }
+
+    @Test
+    func lintRuleValidationRemainsParallel() {
+        let probe = SchedulingProbe()
+        let rules: [any Rule] = [
+            LintSchedulingRule<FirstSchedulingRule>(validationProbe: probe),
+            LintSchedulingRule<SecondSchedulingRule>(validationProbe: probe),
+        ]
+        let storage = RuleStorage()
+        let linter = Linter(
+            file: SwiftLintFile(contents: "let value = 1"),
+            configuration: schedulingConfiguration(rules)
+        )
+
+        let collectedLinter = linter.collect(into: storage)
+        _ = collectedLinter.styleViolations(using: storage)
+
+        #expect(probe.didOverlap)
+    }
+
+    @Test
     func corrects() {
         struct Spec: MockCollectingRule, CorrectableRule {
             var configuration = SeverityConfiguration<Self>(.warning)
@@ -151,6 +226,124 @@ struct CollectingRuleTests {
         let inputs = ["foo", "baz"]
         #expect(inputs.corrections(config: Spec.configuration!).count == 1)
         #expect(inputs.corrections(config: AnalyzerSpec.configuration!, requiresFileOnDisk: true).count == 1)
+    }
+}
+
+private func schedulingConfiguration(_ rules: [any Rule]) -> Configuration {
+    Configuration(
+        rulesMode: .onlyConfiguration(Set(rules.map { type(of: $0).identifier })),
+        allRulesWrapped: rules.map { ($0, false) },
+        ruleList: RuleList(rules: rules.map { type(of: $0) })
+    )
+}
+
+private protocol SchedulingRuleMarker: Sendable {
+    static var identifier: String { get }
+}
+
+private enum FirstSchedulingRule: SchedulingRuleMarker {
+    static let identifier = "first_scheduling_rule"
+}
+
+private enum SecondSchedulingRule: SchedulingRuleMarker {
+    static let identifier = "second_scheduling_rule"
+}
+
+private struct AnalyzerSchedulingRule<Marker: SchedulingRuleMarker>:
+    MockCollectingRule, AnalyzerRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration<Self>(.warning)
+    private let collectionProbe: SchedulingProbe?
+    private let validationProbe: SchedulingProbe?
+
+    init() {
+        collectionProbe = nil
+        validationProbe = nil
+    }
+
+    init(collectionProbe: SchedulingProbe? = nil, validationProbe: SchedulingProbe? = nil) {
+        self.collectionProbe = collectionProbe
+        self.validationProbe = validationProbe
+    }
+
+    static var description: RuleDescription {
+        RuleDescription(identifier: Marker.identifier, name: "", description: "", kind: .lint)
+    }
+
+    func collectInfo(for _: SwiftLintFile, compilerArguments _: [String]) -> Bool {
+        collectionProbe?.recordInvocation()
+        return true
+    }
+
+    func validate(
+        file _: SwiftLintFile,
+        collectedInfo _: [SwiftLintFile: Bool],
+        compilerArguments _: [String]
+    ) -> [StyleViolation] {
+        validationProbe?.recordInvocation()
+        return []
+    }
+}
+
+private struct LintSchedulingRule<Marker: SchedulingRuleMarker>: MockCollectingRule, SourceKitFreeRule {
+    var configuration = SeverityConfiguration<Self>(.warning)
+    private let collectionProbe: SchedulingProbe?
+    private let validationProbe: SchedulingProbe?
+
+    init() {
+        collectionProbe = nil
+        validationProbe = nil
+    }
+
+    init(collectionProbe: SchedulingProbe? = nil, validationProbe: SchedulingProbe? = nil) {
+        self.collectionProbe = collectionProbe
+        self.validationProbe = validationProbe
+    }
+
+    static var description: RuleDescription {
+        RuleDescription(identifier: Marker.identifier, name: "", description: "", kind: .lint)
+    }
+
+    func collectInfo(for _: SwiftLintFile) -> Bool {
+        collectionProbe?.recordInvocation()
+        return true
+    }
+
+    func validate(file _: SwiftLintFile, collectedInfo _: [SwiftLintFile: Bool]) -> [StyleViolation] {
+        validationProbe?.recordInvocation()
+        return []
+    }
+}
+
+// All mutable state is private, protected by `lock`, and no mutable reference escapes.
+private final class SchedulingProbe: @unchecked Sendable {
+    private let lock = NSLock()
+    private let overlapSignal = DispatchSemaphore(value: 0)
+    private var activeInvocations = 0
+    private var invocationCount = 0
+    private var overlapDetected = false
+
+    var didOverlap: Bool {
+        lock.withLock { overlapDetected }
+    }
+
+    func recordInvocation() {
+        let invocation = lock.withLock { () -> Int in
+            invocationCount += 1
+            activeInvocations += 1
+            if activeInvocations > 1 {
+                overlapDetected = true
+                overlapSignal.signal()
+            }
+            return invocationCount
+        }
+
+        if invocation == 1 {
+            _ = overlapSignal.wait(timeout: .now() + .seconds(1))
+        }
+
+        lock.withLock {
+            activeInvocations -= 1
+        }
     }
 }
 

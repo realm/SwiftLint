@@ -19,7 +19,6 @@
 * Serialize analyzer rule collection and validation to prevent overlapping
   SourceKit requests for the same compiler context.  
   [Derek Pearson](https://github.com/dpearson2699)
-  [#553](https://github.com/dpearson2699/ios-options-wheel-tracker/issues/553)
 
 ## 0.65.1: Fresh Folded Fixtures
 

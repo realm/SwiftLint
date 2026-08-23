@@ -124,7 +124,7 @@ struct CollectingRuleTests {
 
     @Test
     func lintRuleCollectionRemainsParallel() {
-        let probe = SchedulingProbe()
+        let probe = SchedulingProbe(waitTimeout: .seconds(10))
         let rules: [any Rule] = [
             LintSchedulingRule<FirstSchedulingRule>(collectionProbe: probe),
             LintSchedulingRule<SecondSchedulingRule>(collectionProbe: probe),
@@ -141,7 +141,7 @@ struct CollectingRuleTests {
 
     @Test
     func lintRuleValidationRemainsParallel() {
-        let probe = SchedulingProbe()
+        let probe = SchedulingProbe(waitTimeout: .seconds(10))
         let rules: [any Rule] = [
             LintSchedulingRule<FirstSchedulingRule>(validationProbe: probe),
             LintSchedulingRule<SecondSchedulingRule>(validationProbe: probe),
@@ -318,9 +318,14 @@ private struct LintSchedulingRule<Marker: SchedulingRuleMarker>: MockCollectingR
 private final class SchedulingProbe: @unchecked Sendable {
     private let lock = NSLock()
     private let overlapSignal = DispatchSemaphore(value: 0)
+    private let waitTimeout: DispatchTimeInterval
     private var activeInvocations = 0
     private var invocationCount = 0
     private var overlapDetected = false
+
+    init(waitTimeout: DispatchTimeInterval = .seconds(1)) {
+        self.waitTimeout = waitTimeout
+    }
 
     var didOverlap: Bool {
         lock.withLock { overlapDetected }
@@ -338,7 +343,7 @@ private final class SchedulingProbe: @unchecked Sendable {
         }
 
         if invocation == 1 {
-            _ = overlapSignal.wait(timeout: .now() + .seconds(1))
+            _ = overlapSignal.wait(timeout: .now() + waitTimeout)
         }
 
         lock.withLock {

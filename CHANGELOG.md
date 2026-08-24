@@ -21,6 +21,11 @@
   `.aspectRatio` is no longer collapsed onto a single line.  
   [CraigSiemens](https://github.com/CraigSiemens)
 
+* Fix `unused_parameter` to treat `$`-prefixed closure parameters as used when
+  either their projected or unwrapped name is referenced.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5740](https://github.com/realm/SwiftLint/issues/5740)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

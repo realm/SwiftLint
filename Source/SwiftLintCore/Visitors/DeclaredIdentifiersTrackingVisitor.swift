@@ -35,15 +35,17 @@ public enum IdentifierDeclaration: Hashable {
     ///   - disregardBackticks: If `true`, normalize all names before comparison by removing all backticks. This is the
     ///                         default since backticks only disambiguate, but don't contribute to name resolution.
     public func declares(id: String, disregardBackticks: Bool = true) -> Bool {
-        if self == .wildcard || id == "_" {
+        if self == .wildcard || id == "_" || id == "$_" {
             // Insignificant names cannot refer to each other.
             return false
         }
         if disregardBackticks {
             let backticks = CharacterSet(charactersIn: "`")
-            return id.trimmingCharacters(in: backticks) == name.trimmingCharacters(in: backticks)
+            let id = id.trimmingCharacters(in: backticks)
+            let name = name.trimmingCharacters(in: backticks)
+            return id == name || "$\(id)" == name
         }
-        return id == name
+        return id == name || "$\(id)" == name
     }
 }
 
@@ -53,7 +55,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
     /// A type that remembers the declared identifiers (in order) up to the current position in the code.
     public typealias Scope = Stack<[IdentifierDeclaration]>
 
-    /// Whether to include class/struct/actor/enum member declarations in the scope. If `false`, only function-local 
+    /// Whether to include class/struct/actor/enum member declarations in the scope. If `false`, only function-local
     /// scopes are tracked.
     public let includeMembers: Bool
 
@@ -238,7 +240,7 @@ open class DeclaredIdentifiersTrackingVisitor<Configuration: RuleConfiguration>:
 
 private extension DeclaredIdentifiersTrackingVisitor.Scope {
     mutating func addToCurrentScope(_ decl: IdentifierDeclaration) {
-        modifyLast { $0.append(decl.name == "_" ? .wildcard : decl) }
+        modifyLast { $0.append(decl.name == "_" || decl.name == "$_" ? .wildcard : decl) }
     }
 
     mutating func openChildScope() {

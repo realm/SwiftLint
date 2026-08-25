@@ -100,6 +100,16 @@ public protocol Rule: Sendable {
     func notifyRuleDisabledOnce()
 }
 
+/// Opt-in capability for analyzer rules that can safely run against deterministic subsets of a target's sources.
+///
+/// Absence of this capability means the rule must receive the entire target. The worker coordinator uses this
+/// package-only protocol to reject unsafe target-plan batches.
+package protocol AnalyzerBatchingRule: Rule {
+    /// The largest requested-source batch that preserves the rule's analyzer semantics when the worker also receives
+    /// the complete target compilation database.
+    var analyzerBatchSize: Int { get }
+}
+
 public extension Rule {
     var shouldLintEmptyFiles: Bool {
         false

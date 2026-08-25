@@ -14,10 +14,27 @@ extension SwiftLint {
         var compilerLogPath: String?
         @Option(help: "The path of a compilation database to use when running AnalyzerRules.")
         var compileCommands: String?
+        @Option(
+            name: .customLong("target-plan"),
+            help: "The versioned target plan for process-isolated analysis."
+        )
+        var targetPlan: URL?
+        @Option(help: "The global worker-process limit used with --target-plan.")
+        var jobs = 1
+        @Option(
+            name: .customLong("execution-evidence"),
+            help: "The path where analyzer execution evidence should be written."
+        )
+        var executionEvidence: URL?
         @Argument(help: pathsArgumentDescription(for: .analyze))
         var paths = [URL]()
 
         func run() async throws {
+            if let requestPath = ProcessInfo.processInfo.environment[AnalyzerWorkerEnvironment.requestPath] {
+                try await LintOrAnalyzeCommand.runAnalyzerWorker(requestAt: URL(filePath: requestPath))
+                return
+            }
+
             // Analyze files in current working directory if no paths were specified.
             let allPaths = paths.isNotEmpty ? paths : [URL.cwd]
             let options = LintOrAnalyzeOptions(
@@ -48,7 +65,10 @@ extension SwiftLint {
                 disableSourceKit: false,
                 compilerLogPath: compilerLogPath,
                 compileCommands: compileCommands,
-                checkForUpdates: common.checkForUpdates
+                checkForUpdates: common.checkForUpdates,
+                targetPlan: targetPlan,
+                analyzerJobs: jobs,
+                executionEvidence: executionEvidence
             )
 
             try await LintOrAnalyzeCommand.run(options)

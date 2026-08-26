@@ -1,6 +1,5 @@
 @preconcurrency import Dispatch
 @preconcurrency import Foundation
-import SourceKittenFramework
 
 private let outputQueue: DispatchQueue = {
     let queue = DispatchQueue(
@@ -55,7 +54,7 @@ public func queuedPrintError(_ string: String) {
 public func queuedFatalError(_ string: String, file: StaticString = #file, line: UInt = #line) -> Never {
     outputQueue.sync {
         fflush(stdout)
-        let file = "\(file)".bridge().lastPathComponent
+        let file = "\(file)".url().lastPathComponent
         fputs("\(string): file \(file), line \(line)\n", stderr)
     }
 

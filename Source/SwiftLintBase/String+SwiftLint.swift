@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 public extension String {
     func hasTrailingWhitespace() -> Bool {
@@ -71,27 +70,6 @@ public extension String {
     /// - Returns: Number of times `character` occurs in `self`
     func countOccurrences(of character: Character) -> Int {
         reduce(0) { $1 == character ? $0 + 1 : $0 }
-    }
-
-    /// If self is a path, this method can be used to get a path expression relative to a root directory
-    func path(relativeTo rootDirectory: String) -> String {
-        let normalizedRootDir = rootDirectory.bridge().standardizingPath
-        let normalizedSelf = bridge().standardizingPath
-        if normalizedRootDir.isEmpty {
-            return normalizedSelf
-        }
-        var rootDirComps = normalizedRootDir.components(separatedBy: "/")
-        let rootDirCompsCount = rootDirComps.count
-
-        while true {
-            let sharedRootDir = rootDirComps.joined(separator: "/")
-            if normalizedSelf == sharedRootDir || normalizedSelf.hasPrefix(sharedRootDir + "/") {
-                let path = (0 ..< rootDirCompsCount - rootDirComps.count).map { _ in "/.." }.flatMap(\.self)
-                    + String(normalizedSelf.dropFirst(sharedRootDir.count))
-                return String(path.dropFirst()) // Remove leading '/'
-            }
-            rootDirComps = rootDirComps.dropLast()
-        }
     }
 
     func deletingPrefix(_ prefix: String) -> String {

@@ -1,4 +1,4 @@
-import SwiftLintCore
+import SwiftLintBase
 import SwiftParser
 import SwiftSyntax
 import Testing

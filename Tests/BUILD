@@ -78,6 +78,26 @@ swift_test(
     visibility = ["//visibility:public"],
 )
 
+# BaseTests
+
+swift_library(
+    name = "BaseTests.library",
+    package_name = "SwiftLint",
+    testonly = True,
+    srcs = glob(["BaseTests/*.swift"]),
+    copts = STRICT_COPTS,
+    module_name = "BaseTests",
+    deps = [
+        "//Tests/TestHelpers",
+    ],
+)
+
+swift_test(
+    name = "BaseTests",
+    deps = [":BaseTests.library"],
+    visibility = ["//visibility:public"],
+)
+
 # CoreTests
 
 swift_library(

@@ -36,6 +36,7 @@ swift_library(
     module_name = "SwiftLintCoreMacros",
     visibility = ["//visibility:public"],
     deps = [
+        ":SwiftLintBase",
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
@@ -47,6 +48,7 @@ swift_compiler_plugin(
     copts = STRICT_COPTS,
     module_name = "SwiftLintCoreMacros",
     deps = [
+        ":SwiftLintBase",
         "@SwiftSyntax//:SwiftCompilerPlugin_opt",
         "@SwiftSyntax//:SwiftSyntaxMacros_opt",
     ],
@@ -55,6 +57,16 @@ swift_compiler_plugin(
 universal_swift_compiler_plugin(
     name = "SwiftLintCoreMacros",
     plugin = "SwiftLintCoreMacros.underlying",
+)
+
+swift_library(
+    name = "SwiftLintBase",
+    srcs = glob(["Source/SwiftLintBase/*.swift"]),
+    copts = STRICT_COPTS,
+    module_name = "SwiftLintBase",
+    deps = [
+        "@SwiftSyntax//:SwiftSyntax_opt",
+    ],
 )
 
 swift_library(
@@ -69,6 +81,7 @@ swift_library(
     }),
     visibility = ["//visibility:public"],
     deps = [
+        ":SwiftLintBase",
         ":Yams.wrapper",
         "@FilenameMatcher",
         "@SourceKittenFramework",

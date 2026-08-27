@@ -16,6 +16,11 @@
 
 ### Bug Fixes
 
+* Inherit `allow_zero_lintable_files` from parent configuration when loaded by a
+  child configuration.  
+  [shubhransh-gupta](https://github.com/shubhransh-gupta)
+  [#6240](https://github.com/realm/SwiftLint/issues/6240)
+
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
   `.aspectRatio` is no longer collapsed onto a single line.  

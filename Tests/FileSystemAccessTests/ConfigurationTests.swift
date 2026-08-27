@@ -496,6 +496,14 @@ struct ConfigurationTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
+    func allowZeroLintableFilesMerging() throws {
+        let parentConfiguration = try Configuration(dict: ["allow_zero_lintable_files": true])
+        let childConfiguration = try Configuration(dict: [:])
+        let mergedConfiguration = parentConfiguration.merged(withChild: childConfiguration)
+        #expect(mergedConfiguration.allowZeroLintableFiles)
+    }
+
+    @Test
     func strict() throws {
         let configuration = try Configuration(dict: ["strict": true])
         #expect(configuration.strict)

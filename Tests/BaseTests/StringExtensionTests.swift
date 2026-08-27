@@ -1,22 +1,8 @@
-import SwiftLintCore
+import SwiftLintBase
 import Testing
 
 @Suite
 struct StringExtensionTests {
-    @Test
-    func relativePathExpression() {
-        #expect("Folder/Test" == "Root/Folder/Test".path(relativeTo: "Root"))
-        #expect("Test" == "Root/Folder/Test".path(relativeTo: "Root/Folder"))
-        #expect("" == "Root/Folder/Test".path(relativeTo: "Root/Folder/Test"))
-        #expect("../Test" == "Root/Folder/Test".path(relativeTo: "Root/Folder/SubFolder"))
-        #expect("../.." == "Root".path(relativeTo: "Root/Folder/SubFolder"))
-        #expect("../../OtherFolder/Test" == "Root/OtherFolder/Test".path(relativeTo: "Root/Folder/SubFolder"))
-        #expect("../MyFolder123" == "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder"))
-        #expect("../MyFolder123" == "Folder/MyFolder123".path(relativeTo: "Folder/MyFolder/"))
-        #expect("Test" == "Root////Folder///Test/".path(relativeTo: "Root//Folder////"))
-        #expect("Root/Folder/Test" == "Root/Folder/Test/".path(relativeTo: ""))
-    }
-
     @Test
     func indent() {
         #expect("string".indent(by: 3) == "   string")

@@ -67,6 +67,26 @@ struct UnusedParameterRule: Rule {
             """
             func f(_a: Int) {}
             """.asExample(configuration: allowUnderscorePrefixedNames),
+            """
+            List($history) { $_historyItem in
+                Foo()
+            }
+            """.asExample(configuration: allowUnderscorePrefixedNames),
+            """
+            List($history) { $historyItem in
+                Foo(url: historyItem.url)
+            }
+            """,
+            """
+            List($history) { $historyItem in
+                Foo(binding: $historyItem)
+            }
+            """.asExample(excludeFromDocumentation: true),
+            """
+            List($history) { $_ in
+                Foo()
+            }
+            """.asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             """
@@ -118,6 +138,11 @@ struct UnusedParameterRule: Rule {
                 return a + c
             }
             """,
+            """
+            List($history) { ↓$historyItem in
+                Foo()
+            }
+            """,
         ]),
         corrections: #corrections([
             """
@@ -134,6 +159,15 @@ struct UnusedParameterRule: Rule {
             func f(_ a: Int) {}
             """: """
             func f(_: Int) {}
+            """,
+            """
+            List($history) { $historyItem in
+                Foo()
+            }
+            """: """
+            List($history) { $_ in
+                Foo()
+            }
             """,
         ])
     )
@@ -156,7 +190,7 @@ private extension UnusedParameterRule {
                       let previousToken = name.previousToken(viewMode: .sourceAccurate) else {
                     continue
                 }
-                if configuration.allowUnderscorePrefixedNames, name.text.hasPrefix("_") {
+                if configuration.allowUnderscorePrefixedNames, name.text.hasPrefix("_") || name.text.hasPrefix("$_") {
                     continue
                 }
                 let startPosReplacement =
@@ -164,6 +198,8 @@ private extension UnusedParameterRule {
                         (previousToken.positionAfterSkippingLeadingTrivia, "_")
                     } else if case .identifier = previousToken.tokenKind {
                         (name.positionAfterSkippingLeadingTrivia, "_")
+                    } else if name.text.hasPrefix("$") {
+                        (name.positionAfterSkippingLeadingTrivia, "$_")
                     } else {
                         (name.positionAfterSkippingLeadingTrivia, name.text + " _")
                     }

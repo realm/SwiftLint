@@ -222,7 +222,7 @@ jobs:
             arch: amd64
             wix-platform: x64
             target-triple: x86_64-unknown-windows-msvc
-          - windows-version: "11-arm"
+          - windows-version: "11-vs2026-arm"
             arch-display-name: ARM64
             arch: arm64
             wix-platform: arm64

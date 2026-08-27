@@ -4,6 +4,32 @@
 
 ### Breaking
 
+* None.
+
+### Experimental
+
+* None.
+
+### Enhancements
+
+* None.
+
+### Bug Fixes
+
+* Keep the formatting of multiline member chains when correcting
+  `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
+  `.aspectRatio` is no longer collapsed onto a single line.  
+  [CraigSiemens](https://github.com/CraigSiemens)
+
+* Fix `unused_parameter` to treat `$`-prefixed closure parameters as used when
+  either their projected or unwrapped name is referenced.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+  [#5740](https://github.com/realm/SwiftLint/issues/5740)
+
+## 0.65.1: Fresh Folded Fixtures
+
+### Breaking
+
 * `Configuration.IndentationStyle` moved to `SwiftLintCore.IndentationStyle`.
   Rules can now read the global `indentation` setting via `CurrentRule.configuration`.  
   [GandaLF2006](https://github.com/GandaLF2006)

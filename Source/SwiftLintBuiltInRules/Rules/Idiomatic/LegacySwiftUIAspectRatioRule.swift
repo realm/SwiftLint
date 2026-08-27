@@ -28,6 +28,10 @@ struct LegacySwiftUIAspectRatioRule: Rule {
             "view.↓aspectRatio(contentMode: ContentMode.fill)",
             "↓aspectRatio(contentMode: .fit)",
             "↓aspectRatio(contentMode: .fill)",
+            """
+            view
+                .↓aspectRatio(contentMode: .fit)
+            """,
         ]),
         corrections: #corrections([
             "view.↓aspectRatio(contentMode: .fit)": "view.scaledToFit()",
@@ -36,6 +40,13 @@ struct LegacySwiftUIAspectRatioRule: Rule {
             "view.↓aspectRatio(contentMode: ContentMode.fill)": "view.scaledToFill()",
             "↓aspectRatio(contentMode: .fit)": "scaledToFit()",
             "↓aspectRatio(contentMode: .fill)": "scaledToFill()",
+            """
+            view
+                .↓aspectRatio(contentMode: .fit)
+            """: """
+                view
+                    .scaledToFit()
+                """,
         ])
     )
 }
@@ -55,11 +66,12 @@ private extension LegacySwiftUIAspectRatioRule {
             }
 
             numberOfCorrections += 1
+            let newName = violation.replacementFunctionName
             let calledExpression: ExprSyntax =
-                if let base = violation.calledExpressionBase {
-                    "\(base.trimmed).\(raw: violation.replacementFunctionName)"
+                if let memberAccess = violation.calledMemberAccessExpression {
+                    ExprSyntax(memberAccess.with(\.declName.baseName.tokenKind, .identifier(newName)))
                 } else {
-                    "\(raw: violation.replacementFunctionName)"
+                    "\(raw: newName)"
                 }
 
             let newNode = node
@@ -77,27 +89,27 @@ private extension LegacySwiftUIAspectRatioRule {
 
 private struct LegacySwiftUIAspectRatioViolation {
     let position: AbsolutePosition
-    let calledExpressionBase: ExprSyntax?
+    let calledMemberAccessExpression: MemberAccessExprSyntax?
     let replacementFunctionName: String
 }
 
 private extension FunctionCallExprSyntax {
     var legacySwiftUIAspectRatioViolation: LegacySwiftUIAspectRatioViolation? {
         let violationPosition: AbsolutePosition
-        let calledExpressionBase: ExprSyntax?
+        let calledMemberAccessExpression: MemberAccessExprSyntax?
 
         if let memberAccess = calledExpression.as(MemberAccessExprSyntax.self) {
             guard memberAccess.declName.baseName.text == "aspectRatio" else {
                 return nil
             }
             violationPosition = memberAccess.declName.baseName.positionAfterSkippingLeadingTrivia
-            calledExpressionBase = memberAccess.base
+            calledMemberAccessExpression = memberAccess
         } else if let declRef = calledExpression.as(DeclReferenceExprSyntax.self) {
             guard declRef.baseName.text == "aspectRatio" else {
                 return nil
             }
             violationPosition = declRef.baseName.positionAfterSkippingLeadingTrivia
-            calledExpressionBase = nil
+            calledMemberAccessExpression = nil
         } else {
             return nil
         }
@@ -114,7 +126,7 @@ private extension FunctionCallExprSyntax {
 
         return LegacySwiftUIAspectRatioViolation(
             position: violationPosition,
-            calledExpressionBase: calledExpressionBase,
+            calledMemberAccessExpression: calledMemberAccessExpression,
             replacementFunctionName: memberValue.declName.baseName.text == "fit" ? "scaledToFit" : "scaledToFill"
         )
     }

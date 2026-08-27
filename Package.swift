@@ -94,6 +94,13 @@ let package = Package(
             packageAccess: false
         ),
         .target(
+            name: "SwiftLintBase",
+            dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+            ],
+            swiftSettings: swiftFeatures + strictConcurrency
+        ),
+        .target(
             name: "SwiftLintCore",
             dependencies: [
                 .product(name: "CryptoSwift", package: "CryptoSwift", condition: .when(platforms: [.linux, .windows])),
@@ -107,6 +114,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftyTextTable", package: "SwiftyTextTable"),
                 .product(name: "Yams", package: "Yams"),
+                "SwiftLintBase",
                 "SwiftLintCoreMacros",
             ],
             swiftSettings: swiftFeatures + strictConcurrency
@@ -121,17 +129,21 @@ let package = Package(
         ),
         .target(
             name: "SwiftLintExtraRules",
-            dependencies: ["SwiftLintCore"],
+            dependencies: [
+                "SwiftLintCore",
+            ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),
-        .target(name: "DyldWarningWorkaround"),
+        .target(
+            name: "DyldWarningWorkaround"
+        ),
         .macro(
             name: "SwiftLintCoreMacros",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                "SwiftLintBase",
             ],
-            path: "Source/SwiftLintCoreMacros",
             swiftSettings: swiftFeatures + strictConcurrency
         ),
         .testTarget(
@@ -142,6 +154,14 @@ let package = Package(
             ],
             exclude: [
                 "Resources",
+            ],
+            swiftSettings: swiftFeatures + strictConcurrency
+        ),
+        .testTarget(
+            name: "BaseTests",
+            dependencies: [
+                "SwiftLintBase",
+                "TestHelpers",
             ],
             swiftSettings: swiftFeatures + strictConcurrency
         ),
@@ -240,8 +260,8 @@ let package = Package(
 package.targets.append(
     .binaryTarget(
         name: "SwiftLintBinary",
-        url: "https://github.com/realm/SwiftLint/releases/download/0.65.0/SwiftLintBinary.artifactbundle.zip",
-        checksum: "eb333bd76dfb5f46d21fdf3615fe39bb938956ca0b8e94c241c4b2db6e696b90"
+        url: "https://github.com/realm/SwiftLint/releases/download/0.65.1/SwiftLintBinary.artifactbundle.zip",
+        checksum: "c3a1d77647ca18c1b7e9be7dbc6cd4490d26422f28814b76370244ff61970869"
     )
 )
 #endif

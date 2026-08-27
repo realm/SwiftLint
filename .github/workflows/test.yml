@@ -73,7 +73,7 @@ jobs:
           - windows-version: 2025
             arch: amd64
             windows-display-name: 'Server 2025'
-          - windows-version: '11-arm'
+          - windows-version: '11-vs2026-arm'
             arch: arm64
             windows-display-name: '11 ARM'
     steps:

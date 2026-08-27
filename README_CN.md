@@ -246,11 +246,6 @@ _注意：这将隐含地信任所有的Xcode软件包插件，并绕过Xcode的
 ),
 ```
 
-### Visual Studio Code
-
-如果要在[vscode](https://code.visualstudio.com)上使用 SwiftLint，在应用市场上安装
-[`vscode-swiftlint`](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint)扩展。
-
 ### fastlane
 
 你可以用[fastlane官方的SwiftLint功能](https://docs.fastlane.tools/actions/swiftlint)来运行 SwiftLint 作为你的 Fastlane 程序的一部分。

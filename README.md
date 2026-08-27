@@ -418,12 +418,6 @@ If you've installed SwiftLint via CocoaPods the script should look like this:
 "${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
-### Visual Studio Code
-
-To integrate SwiftLint with [Visual Studio Code](https://code.visualstudio.com), install the
-[`vscode-swiftlint`](https://marketplace.visualstudio.com/items?itemName=vknabel.vscode-swiftlint)
-extension from the marketplace.
-
 ### Fastlane
 
 You can use the official

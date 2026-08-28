@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct LeadingWhitespaceRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(LeadingWhitespaceRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct LegacyCGGeometryFunctionsRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {

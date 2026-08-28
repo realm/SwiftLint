@@ -12,7 +12,14 @@
 
 ### Enhancements
 
-* None.
+* Add a new opt-in rule `inconsistent_default_argument_in_file` that flags
+  overloaded functions declared on the same type (its primary declaration and
+  any extensions of it in the same file) when a shared parameter uses different
+  default values, which is usually an accidental drift callers do not expect.
+  Nested types form their own scope, and the cross-file/semantic cases are left
+  to a potential future analyzer rule.  
+  [nenadvulic](https://github.com/nenadvulic)
+  [#6668](https://github.com/realm/SwiftLint/issues/6668)
 
 ### Bug Fixes
 

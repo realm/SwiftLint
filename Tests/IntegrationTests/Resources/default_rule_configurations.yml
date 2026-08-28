@@ -725,7 +725,7 @@ multiline_parameters:
   allows_single_line: true
   meta:
     opt-in: true
-    correctable: false
+    correctable: true
 multiline_parameters_brackets:
   severity: warning
   meta:

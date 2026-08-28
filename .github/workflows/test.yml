@@ -70,7 +70,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - windows-version: 2025
+          - windows-version: '2025-vs2026'
             arch: amd64
             windows-display-name: 'Server 2025'
           - windows-version: '11-vs2026-arm'

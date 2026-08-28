@@ -217,7 +217,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - windows-version: 2025
+          - windows-version: '2025-vs2026'
             arch-display-name: AMD64
             arch: amd64
             wix-platform: x64

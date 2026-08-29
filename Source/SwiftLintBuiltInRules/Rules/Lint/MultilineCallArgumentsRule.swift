@@ -1,9 +1,9 @@
-// swiftlint:disable file_length
-
 import Foundation
 import SourceKittenFramework
 import SwiftLintCore
 import SwiftSyntax
+
+// swiftlint:disable file_length
 
 @SwiftSyntaxRule(correctable: true, optIn: true)
 struct MultilineCallArgumentsRule: Rule {
@@ -257,12 +257,7 @@ private extension MultilineCallArgumentsRule {
         }
 
         private func reindentedText(argument: LabeledExprSyntax) -> String {
-            let indentUnit = oneLevel
-            return normalizedText(argument: argument)
-                .split(separator: "\n", omittingEmptySubsequences: false)
-                .enumerated()
-                .map { $0.offset == 0 ? String($0.element) : indentUnit + $0.element }
-                .joined(separator: "\n")
+            normalizedText(argument: argument).indent(by: oneLevel, skipFirst: true, skipEmptyLines: false)
         }
 
         private func correctCloseParen(
@@ -414,6 +409,9 @@ private extension FunctionCallExprSyntax {
                 || parent.is(FunctionCallExprSyntax.self) {
                 node = parent
                 continue
+            }
+            if parent.is(DeclSyntax.self) {
+                return false
             }
             return false
         }

@@ -14,8 +14,7 @@
 
 * Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
   and multi-line calls to one-argument-per-line, including nested calls whose closing
-  `)` would otherwise be stranded with the last argument
-  (e.g. `foo(bar(\n    a: 1\n), for: .normal)` → `foo(\n    bar(\n        a: 1\n    ),\n    for: .normal\n)`).
+  `)` would otherwise be stranded with the last argument.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Bug Fixes

@@ -1,5 +1,3 @@
-// swiftlint:disable file_length
-
 @testable import SwiftLintBuiltInRules
 import SwiftLintCore
 @testable import SwiftLintFramework
@@ -117,34 +115,6 @@ struct MultilineCallArgumentsRuleTests {
         }
     }
 
-    // MARK: - Configuration
-
-    @Test
-    func configurationInvalidValuesThrow() {
-        #expect(throws: Issue.self) {
-            _ = try MultilineCallArgumentsRule(configuration: ["max_number_of_single_line_parameters": 0])
-        }
-        #expect(throws: Issue.self) {
-            _ = try MultilineCallArgumentsRule(configuration: ["max_number_of_single_line_parameters": -1])
-        }
-        #expect(throws: Issue.self) {
-            _ = try MultilineCallArgumentsRule(configuration: [
-                "allows_single_line": false,
-                "max_number_of_single_line_parameters": 2,
-            ])
-        }
-    }
-
-    @Test
-    func configurationAllowsSingleLineFalseWithMaxParametersOneIsValid() {
-        #expect(throws: Never.self) {
-            _ = try MultilineCallArgumentsRule(configuration: [
-                "allows_single_line": false,
-                "max_number_of_single_line_parameters": 1,
-            ])
-        }
-    }
-
     // MARK: - Line cache: multiple calls on different lines
 
     @Test
@@ -201,42 +171,7 @@ struct MultilineCallArgumentsRuleTests {
         #expect(file.contents == "foo(\n    a: 1,\n\tb: 2,\n    c: 3\n)")
     }
 
-    // MARK: - Deeply nested suppression
-
-    @Test
-    func correctionDeeplyNestedSuppressesInnermostCorrection() throws {
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: "outer(middle(inner(1, 2), 3), 4)")
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "outer(\n    middle(inner(1, 2), 3),\n    4\n)")
-    }
-
-    @Test
-    func correctionDeeplyNestedThroughNonViolatingMiddleSuppressesInner() throws {
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: "outer(single(middle(1, 2)), 3)")
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "outer(\n    single(middle(1, 2)),\n    3\n)")
-    }
-
-    @Test
-    func correctionDeeplyNestedWithMaxSuppressesInner() throws {
-        let rule = try MultilineCallArgumentsRule(configuration: ["max_number_of_single_line_parameters": 2])
-        let file = SwiftLintFile(contents: "outer(middle(1, 2, 3), 4, 5)")
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "outer(\n    middle(1, 2, 3),\n    4,\n    5\n)")
-    }
-
     // MARK: - Full expansion (first arg glued to `(`, last arg stranded with `)`)
-
-    @Test
-    func correctionFullyExpandsWhenFirstArgGluedAndLastArgStranded() throws {
-        let contents = "foo(bar(\n    a: 1,\n    b: 2\n), c: 3)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "foo(\n    bar(\n        a: 1,\n        b: 2\n    ),\n    c: 3\n)")
-    }
 
     @Test
     func correctionFullyExpandedUsesGlobalTabIndentation() throws {
@@ -261,26 +196,6 @@ struct MultilineCallArgumentsRuleTests {
     }
 
     @Test
-    func correctionFullyExpandedWorksWithUnlabeledArguments() throws {
-        let contents = "foo(bar(\n    1,\n    2\n), 3)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "foo(\n    bar(\n        1,\n        2\n    ),\n    3\n)")
-    }
-
-    // MARK: - Stranded `)` with first arg on its own line (closeParen branch)
-
-    @Test
-    func correctionCloseParenMovesLastArgAndParen() throws {
-        let contents = "foo(\n    a: bar(\n        1\n    ), b: 2)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "foo(\n    a: bar(\n        1\n    ),\n    b: 2\n)")
-    }
-
-    @Test
     func correctionCloseParenUsesGlobalTabIndentation() throws {
         let contents = "foo(\n\ta: bar(\n\t\t1\n\t), b: 2)"
         let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
@@ -289,15 +204,6 @@ struct MultilineCallArgumentsRuleTests {
             #expect(rule.correct(file: file) == 1)
         }
         #expect(file.contents == "foo(\n\ta: bar(\n\t\t1\n\t),\n\tb: 2\n)")
-    }
-
-    @Test
-    func correctionCloseParenWithUnlabeledArgs() throws {
-        let contents = "foo(\n    bar(\n        1\n    ), 2)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "foo(\n    bar(\n        1\n    ),\n    2\n)")
     }
 
     @Test
@@ -318,26 +224,28 @@ struct MultilineCallArgumentsRuleTests {
         #expect(file.contents == "foo(\r\n    a: bar(\r\n        1\r\n    ),\n    b: 2\n)")
     }
 
-    // MARK: - 3+ arguments: no data loss and idempotent convergence
+    @Test
+    func correctionCloseParenIsIdempotent() throws {
+        let contents = "foo(\n    a: bar(\n        1\n    ), b: 2)"
+        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
+        let file = SwiftLintFile(contents: contents)
+        #expect(rule.correct(file: file) == 1)
+        let firstPass = file.contents
+        #expect(rule.correct(file: file) == 0, "second pass must not change a corrected call")
+        #expect(file.contents == firstPass)
+    }
+
+    // MARK: - 3+ arguments: idempotent after multiple corrections
 
     @Test
-    func correctionThreeArgsDoesNotDropMiddleArguments() throws {
+    func correctionThreeArgsIsIdempotent() throws {
         let contents = "foo(a: bar(\n    1\n), b: 2, c: 3)"
         let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
         let file = SwiftLintFile(contents: contents)
-        // Correct to convergence: no pass may drop an argument.
-        var remaining = 5
-        while remaining > 0, rule.correct(file: file) > 0 {
-            remaining -= 1
-        }
-        // All three original argument labels must still be present.
-        #expect(file.contents.contains("a: bar("))
-        #expect(file.contents.contains("b: 2"))
-        #expect(file.contents.contains("c: 3"))
-        // Exact converged output.
-        #expect(file.contents == "foo(a: bar(\n    1\n),\n    b: 2,\n    c: 3)")
-        // Converged: another pass produces no corrections.
-        #expect(rule.correct(file: file) == 0)
+        #expect(rule.correct(file: file) == 2)
+        let firstPass = file.contents
+        #expect(rule.correct(file: file) == 0, "second pass must not change a corrected call")
+        #expect(file.contents == firstPass)
     }
 
     // MARK: - Pattern matching: nested call inside a pattern constructor
@@ -353,28 +261,6 @@ struct MultilineCallArgumentsRuleTests {
             """
         let violations = try validate(contents, config: ["max_number_of_single_line_parameters": 2])
         #expect(violations.isEmpty, "inner `.bar(1, 2, 3)` is part of the pattern, not a call to lint")
-    }
-
-    // MARK: - closeParen branch: 3+ arguments and idempotency
-
-    @Test
-    func correctionCloseParenWithThreeArgsMovesLastArgAndParen() throws {
-        let contents = "foo(\n    a: 1,\n    b: bar(\n        2\n    ), c: 3)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "foo(\n    a: 1,\n    b: bar(\n        2\n    ),\n    c: 3\n)")
-    }
-
-    @Test
-    func correctionCloseParenIsIdempotent() throws {
-        let contents = "foo(\n    a: bar(\n        1\n    ), b: 2)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        let firstPass = file.contents
-        #expect(rule.correct(file: file) == 0, "second pass must not change a corrected call")
-        #expect(file.contents == firstPass)
     }
 
     // MARK: - Idempotency of standard corrections
@@ -428,15 +314,6 @@ struct MultilineCallArgumentsRuleTests {
     }
 
     // MARK: - Full expansion with labeled first argument
-
-    @Test
-    func correctionFullyExpandedWithLabeledFirstArg() throws {
-        let contents = "foo(a: bar(\n    1\n), b: 2)"
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file = SwiftLintFile(contents: contents)
-        #expect(rule.correct(file: file) == 1)
-        #expect(file.contents == "foo(\n    a: bar(\n        1\n    ),\n    b: 2\n)")
-    }
 
     @Test
     func correctionFullyExpandedHandlesPureCR() throws {

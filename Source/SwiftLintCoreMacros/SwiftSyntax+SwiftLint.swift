@@ -30,3 +30,9 @@ extension ExprSyntax {
         `as`(BooleanLiteralExprSyntax.self)?.literal.text == "true"
     }
 }
+
+extension FreestandingMacroExpansionSyntax {
+    func argumentValue(named name: String) -> String? {
+        arguments.first { $0.label?.text == name }?.expression.description
+    }
+}

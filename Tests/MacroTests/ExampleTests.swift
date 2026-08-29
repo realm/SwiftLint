@@ -34,14 +34,6 @@ struct ExampleTests {
                     print("Hello, world!")
                 }
                 \"\"\",
-                configuration: [:],
-                testMultiByteOffsets: true,
-                testWrappingInComment: true,
-                testWrappingInString: true,
-                testDisableCommand: true,
-                testOnLinux: true,
-                testOnWindows: true,
-                excludeFromDocumentation: false,
                 fileID: "TestModule/test.swift",
                 file: "test.swift",
                 line: 1

@@ -1,11 +1,7 @@
-import SwiftBasicFormat
 import SwiftLintBase
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
-
-// swiftlint:disable:next blanket_disable_command
-// swiftlint:disable fatal_error
 
 struct Example: ExpressionMacro {
     static func expansion(
@@ -15,45 +11,61 @@ struct Example: ExpressionMacro {
         guard let fileID = context.location(of: node, at: .afterLeadingTrivia, filePathMode: .fileID),
               let filePath = context.location(of: node, at: .afterLeadingTrivia, filePathMode: .filePath) else {
             context.diagnose(SwiftLintCoreMacroError.invalidSourceLocation.diagnose(at: node))
-            fatalError(SwiftLintCoreMacroError.invalidSourceLocation.message)
+            return ""
         }
 
         guard let trailingClosure = node.trailingClosure else {
             context.diagnose(SwiftLintCoreMacroError.missingExampleBody.diagnose(at: node))
-            fatalError(SwiftLintCoreMacroError.missingExampleBody.message)
+            return ""
         }
 
         let spacesCount = trailingClosure.rightBrace.leadingTrivia.countSpaces
-        let example = """
+        let example: ExprSyntax = """
             Example(
-                code: \"\"\"\(trailingClosure.statements.asExampleBody(unindentedBy: spacesCount))
-                \"\"\",
-                \(node.exampleArguments),
+                code: \"\"\"\(raw: trailingClosure.statements.asExampleBody(unindentedBy: spacesCount))
+                \"\"\",\(raw: node.exampleArguments)
                 fileID: \(fileID.file),
                 file: \(filePath.file),
                 line: \(filePath.line)
             )
-            """.indent(by: spacesCount)
-        return ExprSyntax(stringLiteral: example)
+            """
+        return CodeIndentingRewriter(style: .indentSpaces(spacesCount)).visit(example)
     }
 }
 
 private extension FreestandingMacroExpansionSyntax {
-    func argumentValue(named name: String) -> String? {
-        arguments.first { $0.label?.text == name }?.expression.description
-    }
-
     var exampleArguments: String {
-        """
-        configuration: \(argumentValue(named: "configuration") ?? "[:]"),
-        testMultiByteOffsets: \(argumentValue(named: "testMultiByteOffsets") ?? "true"),
-        testWrappingInComment: \(argumentValue(named: "testWrappingInComment") ?? "true"),
-        testWrappingInString: \(argumentValue(named: "testWrappingInString") ?? "true"),
-        testDisableCommand: \(argumentValue(named: "testDisableCommand") ?? "true"),
-        testOnLinux: \(argumentValue(named: "testOnLinux") ?? "true"),
-        testOnWindows: \(argumentValue(named: "testOnWindows") ?? "true"),
-        excludeFromDocumentation: \(argumentValue(named: "excludeFromDocumentation") ?? "false")
-        """.indent(by: 4, skipFirst: true)
+        var arguments = [String]()
+        if let configuration = argumentValue(named: "configuration") {
+            arguments.append("configuration: \(configuration)")
+        }
+        if let testMultiByteOffsets = argumentValue(named: "testMultiByteOffsets") {
+            arguments.append("testMultiByteOffsets: \(testMultiByteOffsets)")
+        }
+        if let testWrappingInComment = argumentValue(named: "testWrappingInComment") {
+            arguments.append("testWrappingInComment: \(testWrappingInComment)")
+        }
+        if let testWrappingInString = argumentValue(named: "testWrappingInString") {
+            arguments.append("testWrappingInString: \(testWrappingInString)")
+        }
+        if let testDisableCommand = argumentValue(named: "testDisableCommand") {
+            arguments.append("testDisableCommand: \(testDisableCommand)")
+        }
+        if let testOnLinux = argumentValue(named: "testOnLinux") {
+            arguments.append("testOnLinux: \(testOnLinux)")
+        }
+        if let testOnWindows = argumentValue(named: "testOnWindows") {
+            arguments.append("testOnWindows: \(testOnWindows)")
+        }
+        if let excludeFromDocumentation = argumentValue(named: "excludeFromDocumentation") {
+            arguments.append("excludeFromDocumentation: \(excludeFromDocumentation)")
+        }
+        if arguments.isEmpty {
+            return ""
+        }
+        return "\n" + arguments
+            .map { "    " + $0 }
+            .joined(separator: ",\n") + ","
     }
 }
 

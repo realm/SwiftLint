@@ -12,7 +12,12 @@
 
 ### Enhancements
 
-* None.
+* Add a target-aware analyzer execution mode with bounded isolated worker
+  processes, whole-target collecting rules, opt-in `unused_import` batches of
+  at most 32 requested files, deterministic reporting, and versioned execution
+  evidence.  
+  [Derek Pearson](https://github.com/dpearson2699)
+  [#3020](https://github.com/realm/SwiftLint/issues/3020)
 
 ### Bug Fixes
 

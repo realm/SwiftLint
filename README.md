@@ -936,6 +936,57 @@ This can be obtained by
 
 Analyzer rules tend to be considerably slower than lint rules.
 
+Analyzer work can also run in bounded, isolated SwiftLint processes. A build
+system integration supplies a versioned target plan with `--target-plan`, sets
+the global process limit with `--jobs`, and chooses where SwiftLint writes the
+run record with `--execution-evidence`. The target plan describes each target's
+complete source inventory, compilation database, configured analyzer rules,
+and any requested-source batches.
+
+For example, a plan that divides `unused_import` work into two jobs has this
+shape:
+
+```json
+{
+  "schemaIdentity": "swiftlint-analyzer-target-plan",
+  "schemaVersion": 1,
+  "compilerLogSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "workingDirectory": "/path/to/package",
+  "rules": ["unused_import"],
+  "targets": [{
+    "targetId": "application",
+    "moduleName": "FixtureApp",
+    "sourceRoot": "Sources",
+    "compileCommandsPath": "application.compile-commands.json",
+    "compileCommandsSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "sourceFiles": ["Sources/App.swift", "Sources/Model.swift"],
+    "sourceFilesSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "rulePlans": [{
+      "rule": "unused_import",
+      "mode": "batches",
+      "batches": [
+        {"batchIndex": 0, "requestedPaths": ["Sources/App.swift"]},
+        {"batchIndex": 1, "requestedPaths": ["Sources/Model.swift"]}
+      ]
+    }]
+  }]
+}
+```
+
+Replace the example digests with SHA-256 values for the compiler log and
+compilation database. `sourceFilesSha256` is the SHA-256 digest of the sorted
+`sourceFiles` array encoded as compact JSON with a trailing newline. SwiftLint
+resolves `workingDirectory` from the invocation directory, source paths from
+`workingDirectory`, and compilation database paths from the target-plan file.
+Every target and rule must appear in deterministic order.
+
+Collecting rules always receive their complete target source inventory. Other
+rules may use batches only when they explicitly declare that capability;
+`unused_import` initially permits batches of at most 32 requested files. Every
+worker still receives the complete target compilation database. SwiftLint
+cancels the remaining workers after a failure and merges successful results in
+target-plan order so reporter output remains deterministic.
+
 ## Using Multiple Configuration Files
 
 SwiftLint offers a variety of ways to include multiple configuration files.

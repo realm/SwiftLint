@@ -58,6 +58,9 @@ package struct LintOrAnalyzeOptions {
     let compilerLogPath: String?
     let compileCommands: String?
     let checkForUpdates: Bool
+    let targetPlan: URL?
+    let analyzerJobs: Int
+    let executionEvidence: URL?
 
     package init(mode: LintOrAnalyzeMode,
                  paths: [URL],
@@ -86,7 +89,10 @@ package struct LintOrAnalyzeOptions {
                  disableSourceKit: Bool,
                  compilerLogPath: String?,
                  compileCommands: String?,
-                 checkForUpdates: Bool) {
+                 checkForUpdates: Bool,
+                 targetPlan: URL? = nil,
+                 analyzerJobs: Int = 1,
+                 executionEvidence: URL? = nil) {
         self.mode = mode
         self.paths = paths
         self.useSTDIN = useSTDIN
@@ -115,6 +121,9 @@ package struct LintOrAnalyzeOptions {
         self.compilerLogPath = compilerLogPath
         self.compileCommands = compileCommands
         self.checkForUpdates = checkForUpdates
+        self.targetPlan = targetPlan
+        self.analyzerJobs = analyzerJobs
+        self.executionEvidence = executionEvidence
     }
 
     var verb: String {
@@ -146,7 +155,97 @@ package struct LintOrAnalyzeCommand {
             }
         }
         try await Signposts.record(name: "LintOrAnalyzeCommand.run") {
-            try await options.autocorrect ? autocorrect(options) : lintOrAnalyze(options)
+            if options.mode == .analyze, options.targetPlan != nil || options.executionEvidence != nil {
+                try await targetAwareAnalyze(options)
+            } else if options.autocorrect {
+                try await autocorrect(options)
+            } else {
+                try await lintOrAnalyze(options)
+            }
+        }
+    }
+
+    // Target-aware analysis deliberately keeps all final command semantics in this parent-owned stage.
+    // swiftlint:disable:next function_body_length
+    private static func targetAwareAnalyze(_ options: LintOrAnalyzeOptions) async throws {
+        let targetPlanPath = options.targetPlan?.path ?? ""
+        let executionEvidencePath = options.executionEvidence?.path ?? ""
+        try validateTargetAwareAnalyzeOptions(
+            targetPlanPath: targetPlanPath,
+            executionEvidencePath: executionEvidencePath,
+            jobs: options.analyzerJobs,
+            autocorrect: options.autocorrect
+        )
+
+        let preparedPlan = try prepareTargetAwareAnalyze(options)
+        let originalDirectory = FileManager.default.currentDirectoryPath
+        guard FileManager.default.changeCurrentDirectoryPath(preparedPlan.workingDirectory.path) else {
+            throw SwiftLintError.usageError(
+                description: "Could not enter analyzer target-plan working directory "
+                    + "'\(preparedPlan.workingDirectory.path)'."
+            )
+        }
+        defer {
+            if !FileManager.default.changeCurrentDirectoryPath(originalDirectory) {
+                queuedFatalError("Could not restore analyzer working directory '\(originalDirectory)'.")
+            }
+        }
+
+        let nativeRun = try await executeTargetAwareAnalyze(options, preparedPlan: preparedPlan)
+        let lintedFiles = nativeRun.aggregate.files.compactMap { SwiftLintFile(path: $0) }
+        guard lintedFiles.count == nativeRun.aggregate.files.count else {
+            throw AnalyzerWorkerContractError.findingsMismatch
+        }
+        if options.autocorrect {
+            try writeAnalyzerExecutionEvidence(
+                nativeRun,
+                findings: [],
+                reporterOutput: Data(),
+                to: executionEvidencePath
+            )
+            if !options.quiet {
+                printStatus(violations: [], files: lintedFiles, serious: 0, verb: options.verb)
+            }
+            return
+        }
+
+        let builder = LintOrAnalyzeResultBuilder(options)
+        let violationsBeforeBaseline = applyLeniency(
+            options: options,
+            strict: builder.configuration.strict,
+            lenient: builder.configuration.lenient,
+            violations: nativeRun.aggregate.violations
+        )
+        let baseline = try baseline(options, builder.configuration)
+        let groupedViolations = Dictionary(grouping: violationsBeforeBaseline) {
+            $0.location.file?.path ?? ""
+        }
+        let filteredViolations = groupedViolations.keys.sorted().flatMap { path in
+            let violations = groupedViolations[path, default: []]
+            return baseline?.filter(violations) ?? violations
+        }
+        builder.unfilteredViolations = violationsBeforeBaseline
+        builder.violations = filteredViolations
+        builder.report(violations: filteredViolations, realtimeCondition: true)
+
+        if let baselineOutputPath = options.writeBaseline ?? builder.configuration.writeBaseline {
+            try Baseline(violations: builder.unfilteredViolations).write(toPath: baselineOutputPath)
+        }
+        let numberOfSeriousViolations = try Signposts.record(name: "LintOrAnalyzeCommand.PostProcessViolations") {
+            try postProcessViolations(files: lintedFiles, builder: builder)
+        }
+        let reporterOutput = options.output.flatMap { try? Data(contentsOf: $0) } ?? Data()
+        try writeAnalyzerExecutionEvidence(
+            nativeRun,
+            findings: builder.violations,
+            reporterOutput: reporterOutput,
+            to: executionEvidencePath
+        )
+        if options.checkForUpdates || builder.configuration.checkForUpdates {
+            await UpdateChecker.checkForUpdates()
+        }
+        if numberOfSeriousViolations > 0 {
+            exit(2)
         }
     }
 

@@ -937,5 +937,25 @@ struct MultilineCallArgumentsRuleExamples { // swiftlint:disable:this type_body_
             b: 2,
             c: 3)
         """,
+        // MARK: - String literal containing comment-like text is corrected
+        """
+        foo(a: "/* not a comment */", ↓b: 2)
+        """.asExample(configuration: ["allows_single_line": false]): """
+        foo(
+            a: "/* not a comment */",
+            b: 2
+        )
+        """,
+        """
+        foo(a: "/* not a comment */", ↓b: "// also not")
+        """.asExample(
+            configuration: ["allows_single_line": false],
+            excludeFromDocumentation: true
+        ): """
+        foo(
+            a: "/* not a comment */",
+            b: "// also not"
+        )
+        """,
     ])
 }

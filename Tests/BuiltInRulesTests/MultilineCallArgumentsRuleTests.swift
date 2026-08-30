@@ -91,15 +91,6 @@ struct MultilineCallArgumentsRuleTests {
     }
 
     @Test
-    func correctionWithCommentInStringLiteralDoesAutoCorrect() throws {
-        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
-        let file1 = SwiftLintFile(contents: "foo(a: \"/* not a comment */\", b: 2)")
-        #expect(rule.correct(file: file1) == 1)
-        let file2 = SwiftLintFile(contents: "foo(a: \"/* not a comment */\", b: \"// also not\")")
-        #expect(rule.correct(file: file2) == 1)
-    }
-
-    @Test
     func correctionMultilineWithCommentsDoesNotAutoCorrect() throws {
         let rule = try MultilineCallArgumentsRule(configuration: [:])
         let cases = [

@@ -78,11 +78,17 @@ public extension String {
     }
 
     func indent(by spaces: Int, skipFirst: Bool = false, skipEmptyLines: Bool = true) -> String {
+        indent(by: String(repeating: " ", count: spaces), skipFirst: skipFirst, skipEmptyLines: skipEmptyLines)
+    }
+
+    func indent(by indentation: String, skipFirst: Bool = false, skipEmptyLines: Bool = true) -> String {
         let lines = components(separatedBy: "\n")
         if skipFirst, let firstLine = lines.first {
-            return firstLine + "\n" + lines.dropFirst().indent(by: spaces, skipEmptyLines: skipEmptyLines)
+            let rest = lines.dropFirst()
+            guard !rest.isEmpty else { return firstLine }
+            return firstLine + "\n" + rest.indent(by: indentation, skipEmptyLines: skipEmptyLines)
         }
-        return lines.indent(by: spaces, skipEmptyLines: skipEmptyLines)
+        return lines.indent(by: indentation, skipEmptyLines: skipEmptyLines)
     }
 
     func linesPrefixed(with prefix: Self) -> Self {
@@ -105,11 +111,15 @@ public extension String {
 
 private extension Sequence where Element == String {
     func indent(by spaces: Int, skipEmptyLines: Bool = true) -> String {
+        indent(by: String(repeating: " ", count: spaces), skipEmptyLines: skipEmptyLines)
+    }
+
+    func indent(by indentation: String, skipEmptyLines: Bool = true) -> String {
         map { line in
             if skipEmptyLines, line.isEmpty {
                 return line
             }
-            return String(repeating: " ", count: spaces) + line
+            return indentation + line
         }
         .joined(separator: "\n")
     }

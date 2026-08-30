@@ -12,7 +12,10 @@
 
 ### Enhancements
 
-* None.
+* Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
+  and multi-line calls to one-argument-per-line, including nested calls whose closing
+  `)` would otherwise be stranded with the last argument.  
+  [GandaLF2006](https://github.com/GandaLF2006)
 
 ### Bug Fixes
 

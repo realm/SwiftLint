@@ -32,7 +32,7 @@ struct DocCommentParameterRuleExamples {
         Example(code:
             """
             /// Updates the label.
-            /// - Parameter with: The new text for the label.
+            /// - Parameter text: The new text for the label.
             func updateLabel(with text: String) {}
             """),
         // Initializer with correctly documented parameters
@@ -238,6 +238,15 @@ struct DocCommentParameterRuleExamples {
             /// - Note: Uses a stable sort algorithm.
             func sort(collection: [Int]) {}
             """),
+        // Complexity callout inside Parameters block must not be mistaken for a parameter
+        Example(
+            """
+            /// Sorts the collection.
+            /// - Parameters:
+            ///   - collection: The collection to sort.
+            /// - Complexity: O(n log n).
+            func sortInPlace(collection: [Int]) {}
+            """),
         // Block comment with Parameters: block
         Example(code:
             """
@@ -291,11 +300,11 @@ struct DocCommentParameterRuleExamples {
             ///   - ↓extra: This doesn't exist.
             func doSomething(value: Int) {}
             """),
-        // Internal name used instead of external name
+        // External label used instead of internal name
         Example(code:
             """
             /// Updates the label.
-            /// - Parameter ↓text: The new text.
+            /// - Parameter ↓with: The new text.
             ↓func updateLabel(with text: String) {}
             """),
         // validate_returns: missing returns doc

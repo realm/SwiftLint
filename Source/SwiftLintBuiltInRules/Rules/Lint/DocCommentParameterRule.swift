@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import Foundation
 import SwiftLintCore
 import SwiftSyntax
@@ -10,7 +11,7 @@ struct DocCommentParameterRule: Rule {
         identifier: "doc_comment_parameter",
         name: "Doc Comment Parameter",
         description:
-            "Parameters in documentation comments should match the actual function parameters",
+            "Documentation comments should match the actual function signature",
         kind: .lint,
         nonTriggeringExamples: DocCommentParameterRuleExamples.nonTriggeringExamples,
         triggeringExamples: DocCommentParameterRuleExamples.triggeringExamples
@@ -68,18 +69,12 @@ extension DocCommentParameterRule {
             )
         }
 
-        /// Extracts the parameter name for documentation purposes.
-        /// Uses the external name (firstName) if it's not an underscore, otherwise uses the internal name.
-        /// Returns nil for truly unnamed parameters (both names are `_`) which have no documentable name.
         private func extractParameterName(_ param: FunctionParameterSyntax) -> String? {
-            let firstName = param.firstName.text
-            if firstName == "_" {
-                if let secondName = param.secondName, secondName.text != "_" {
-                    return secondName.text
-                }
-                return nil  // truly unnamed — no documentable name
+            if let secondName = param.secondName {
+                return secondName.text == "_" ? nil : secondName.text
             }
-            return firstName
+            let firstName = param.firstName.text
+            return firstName == "_" ? nil : firstName
         }
 
         private func hasDiscardableResult(in attributes: AttributeListSyntax) -> Bool {

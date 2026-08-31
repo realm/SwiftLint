@@ -19,7 +19,6 @@ struct DocCommentParameterRule: Rule {
 }
 
 private extension DocCommentParameterRule {
-    // swiftlint:disable:next type_body_length
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         override func visitPost(_ node: FunctionDeclSyntax) {
             let parameters = node.signature.parameterClause.parameters.compactMap {

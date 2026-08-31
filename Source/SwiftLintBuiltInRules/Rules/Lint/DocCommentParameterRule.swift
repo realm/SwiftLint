@@ -21,19 +21,6 @@ struct DocCommentParameterRule: Rule {
 private extension DocCommentParameterRule {
     // swiftlint:disable:next type_body_length
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
-        // swiftlint:disable force_try
-        private static let singleParamRegex = try! NSRegularExpression(
-            pattern: #"^-\s*[Pp]arameter\s+(\w+)\s*:"#)
-        private static let blockParamRegex = try! NSRegularExpression(
-            pattern: #"^-\s*(\w+)\s*:"#)
-        private static let throwsDocRegex = try! NSRegularExpression(
-            pattern: #"^-\s*[Tt]hrows\s*:"#, options: .anchorsMatchLines)
-        private static let returnsDocRegex = try! NSRegularExpression(
-            pattern: #"^-\s*[Rr]eturns\s*:"#, options: .anchorsMatchLines)
-        private static let singularParamLineRegex = try! NSRegularExpression(
-            pattern: #"- [Pp]arameter\s+\w"#)
-        // swiftlint:enable force_try
-
         override func visitPost(_ node: FunctionDeclSyntax) {
             let parameters = node.signature.parameterClause.parameters.compactMap {
                 extractParameterName($0)
@@ -192,17 +179,14 @@ private extension DocCommentParameterRule {
             -> AbsolutePosition {
             var currentPosition = node.position
             var matchCount = 0
-            let regex = Self.singularParamLineRegex
             for piece in node.leadingTrivia.pieces {
                 switch piece {
                 case .docLineComment(let text), .docBlockComment(let text):
-                    let matches = regex.matches(
-                        in: text, range: NSRange(text.startIndex..., in: text))
-                    for match in matches {
+                    for match in text.matches(of: #/- [Pp]arameter\s+\w/#) {
                         matchCount += 1
-                        if matchCount == 2, let range = Range(match.range, in: text) {
+                        if matchCount == 2 {
                             let offset =
-                                text.distance(from: text.startIndex, to: range.lowerBound) + 2  // skip "- "
+                                text.distance(from: text.startIndex, to: match.range.lowerBound) + 2
                             return currentPosition.advanced(by: offset)
                         }
                     }
@@ -244,8 +228,7 @@ private extension DocCommentParameterRule {
         }
 
         private func docHasThrowsSection(_ docComment: String) -> Bool {
-            Self.throwsDocRegex.firstMatch(
-                in: docComment, range: NSRange(docComment.startIndex..., in: docComment)) != nil
+            docComment.contains(#/(?m)^-\s*[Tt]hrows\s*:/#)
         }
 
         private func findThrowsSectionPosition(in node: some SyntaxProtocol) -> AbsolutePosition {
@@ -323,8 +306,7 @@ private extension DocCommentParameterRule {
         }
 
         private func docHasReturnsSection(_ docComment: String) -> Bool {
-            Self.returnsDocRegex.firstMatch(
-                in: docComment, range: NSRange(docComment.startIndex..., in: docComment)) != nil
+            docComment.contains(#/(?m)^-\s*[Rr]eturns\s*:/#)
         }
 
         private func findReturnsSectionPosition(in node: some SyntaxProtocol) -> AbsolutePosition {
@@ -442,20 +424,16 @@ private extension DocCommentParameterRule {
 
         /// Extracts parameter name from "- Parameter name:" syntax
         private func extractSingleParameter(from line: String) -> String? {
-            guard let match = Self.singleParamRegex.firstMatch(
-                    in: line, range: NSRange(line.startIndex..., in: line)),
-                  let range = Range(match.range(at: 1), in: line)
-            else { return nil }
-            return String(line[range])
+            guard let match = line.firstMatch(of: #/^-\s*[Pp]arameter\s+(\w+)\s*:/#) else {
+                return nil
+            }
+            return String(match.output.1)
         }
 
         /// Extracts parameter name from "- name: description" syntax within Parameters block
         private func extractParameterFromBlock(from line: String) -> String? {
-            guard let match = Self.blockParamRegex.firstMatch(
-                    in: line, range: NSRange(line.startIndex..., in: line)),
-                  let range = Range(match.range(at: 1), in: line)
-            else { return nil }
-            let name = String(line[range])
+            guard let match = line.firstMatch(of: #/^-\s*(\w+)\s*:/#) else { return nil }
+            let name = String(match.output.1)
             let excluded = [
                 "returns", "throws", "note", "warning", "important", "see",
                 "precondition", "postcondition", "requires", "invariant",

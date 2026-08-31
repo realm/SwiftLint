@@ -18,8 +18,9 @@ struct DocCommentParameterRule: Rule {
     )
 }
 
-extension DocCommentParameterRule {
-    fileprivate final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+private extension DocCommentParameterRule {
+    // swiftlint:disable:next type_body_length
+    final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         // swiftlint:disable force_try
         private static let singleParamRegex = try! NSRegularExpression(
             pattern: #"^-\s*[Pp]arameter\s+(\w+)\s*:"#)
@@ -188,8 +189,7 @@ extension DocCommentParameterRule {
         }
 
         private func findSecondSingularParameterPosition(in node: some SyntaxProtocol)
-            -> AbsolutePosition
-        {
+            -> AbsolutePosition {
             var currentPosition = node.position
             var matchCount = 0
             let regex = Self.singularParamLineRegex
@@ -280,8 +280,7 @@ extension DocCommentParameterRule {
             // Ignore Never return type — it never actually returns
             if let returnClause,
                 let identifier = returnClause.type.as(IdentifierTypeSyntax.self),
-                identifier.name.text == "Never"
-            {
+                identifier.name.text == "Never" {
                 return
             }
 
@@ -290,13 +289,11 @@ extension DocCommentParameterRule {
             if let returnClause {
                 let returnType = returnClause.type
                 if let identifier = returnType.as(IdentifierTypeSyntax.self),
-                    identifier.name.text == "Void"
-                {
+                    identifier.name.text == "Void" {
                     hasNonVoidReturn = false
                 } else if returnType.is(TupleTypeSyntax.self),
                     let tuple = returnType.as(TupleTypeSyntax.self),
-                    tuple.elements.isEmpty
-                {
+                    tuple.elements.isEmpty {
                     hasNonVoidReturn = false
                 } else {
                     hasNonVoidReturn = true
@@ -469,8 +466,7 @@ extension DocCommentParameterRule {
 
         /// Finds the position of a documented parameter in the source
         private func findParameterPosition(paramName: String, in node: some SyntaxProtocol)
-            -> AbsolutePosition
-        {
+            -> AbsolutePosition {
             // Search through the trivia to find the exact position of the parameter name
             let trivia = node.leadingTrivia
             var currentPosition = node.position
@@ -479,8 +475,7 @@ extension DocCommentParameterRule {
                 switch piece {
                 case .docLineComment(let text), .docBlockComment(let text):
                     if let range = text.range(of: "- Parameter \(paramName):") ?? text.range(
-                        of: "- parameter \(paramName):") ?? text.range(of: "- \(paramName):")
-                    {
+                        of: "- parameter \(paramName):") ?? text.range(of: "- \(paramName):") {
                         let offset = text.distance(from: text.startIndex, to: range.lowerBound)
                         // Find the parameter name within the match
                         let matchText = String(text[range])

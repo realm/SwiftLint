@@ -29,6 +29,11 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5740](https://github.com/realm/SwiftLint/issues/5740)
 
+* Fix `orphaned_doc_comment` to report documentation groups superseded by later
+  docs after a blank line.
+  [Hokila](https://github.com/Hokila)
+  [#6897](https://github.com/realm/SwiftLint/issues/6897)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

@@ -29,6 +29,12 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5740](https://github.com/realm/SwiftLint/issues/5740)
 
+* Fix `orphaned_doc_comment` to match Swift's current doc comment attachment
+  behavior by allowing ordinary comments between documentation and declarations
+  while flagging documentation groups superseded by later docs.
+  [Hokila](https://github.com/Hokila)
+  [#6897](https://github.com/realm/SwiftLint/issues/6897)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

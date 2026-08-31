@@ -239,7 +239,7 @@ struct DocCommentParameterRuleExamples {
             func sort(collection: [Int]) {}
             """),
         // Complexity callout inside Parameters block must not be mistaken for a parameter
-        Example(
+        Example(code:
             """
             /// Sorts the collection.
             /// - Parameters:

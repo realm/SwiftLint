@@ -131,6 +131,13 @@
 ### Enhancements
 
 * None.
+* Add `doc_comment_parameter` opt-in rule that validates documentation
+  comments on functions, initializers, and subscripts match their actual
+  signatures. Reports extra or missing `- Parameter` entries. Optionally
+  validates `- Returns:` and `- Throws:` sections (`validate_returns`,
+  `validate_throws`) and enforces consistent parameter documentation
+  syntax (`enforce_parameter_syntax`).  
+  [Yury Lapitsky](https://github.com/YuryLapitsky-TomTom)
 
 ### Bug Fixes
 

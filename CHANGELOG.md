@@ -29,6 +29,10 @@
   [SimplyDanny](https://github.com/SimplyDanny)
   [#5740](https://github.com/realm/SwiftLint/issues/5740)
 
+* Fix `excluded` configuration being ignored when file paths are passed as arguments.  
+  [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
+  [#6795](https://github.com/realm/SwiftLint/issues/6795)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

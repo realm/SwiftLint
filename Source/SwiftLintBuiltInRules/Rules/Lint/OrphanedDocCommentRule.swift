@@ -119,7 +119,7 @@ private extension OrphanedDocCommentRule {
 }
 
 private func orphanedDocCommentOffsets(in pieces: [TriviaPiece], isEndOfFile: Bool) -> [Int] {
-    var pendingDocCommentOffsets: [Int] = []
+    var pendingDocCommentOffset: Int?
     var orphanedDocCommentOffsets: [Int] = []
     var utf8Offset = 0
     var currentLine = 1
@@ -139,46 +139,38 @@ private func orphanedDocCommentOffsets(in pieces: [TriviaPiece], isEndOfFile: Bo
             }
 
         case .lineComment, .blockComment:
-            orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets.prefix(1))
-            pendingDocCommentOffsets.removeAll()
+            if let offset = pendingDocCommentOffset {
+                orphanedDocCommentOffsets.append(offset)
+                pendingDocCommentOffset = nil
+            }
             previousCommentEndLine = currentLine + piece.lineBreakCount
+            continue
 
         default:
             continue
         }
 
-        guard piece.isDocComment else {
-            continue
-        }
-
         if let previousCommentEndLine,
-           !pendingDocCommentOffsets.isEmpty,
+           pendingDocCommentOffset != nil,
            currentLine > previousCommentEndLine + 1 {
-            orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets.prefix(1))
-            pendingDocCommentOffsets.removeAll()
+            if let offset = pendingDocCommentOffset {
+                orphanedDocCommentOffsets.append(offset)
+                pendingDocCommentOffset = nil
+            }
         }
 
-        pendingDocCommentOffsets.append(utf8Offset)
+        pendingDocCommentOffset = pendingDocCommentOffset ?? utf8Offset
         previousCommentEndLine = currentLine + piece.lineBreakCount
     }
 
-    if isEndOfFile {
-        orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets.prefix(1))
+    if isEndOfFile, let pendingDocCommentOffset {
+        orphanedDocCommentOffsets.append(pendingDocCommentOffset)
     }
 
     return orphanedDocCommentOffsets
 }
 
 private extension TriviaPiece {
-    var isDocComment: Bool {
-        switch self {
-        case .docLineComment, .docBlockComment:
-            return true
-        default:
-            return false
-        }
-    }
-
     var lineBreakCount: Int {
         switch self {
         case .carriageReturnLineFeeds(let count), .carriageReturns(let count), .newlines(let count):

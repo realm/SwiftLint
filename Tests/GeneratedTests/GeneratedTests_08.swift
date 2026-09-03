@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct RawValueForCamelCasedCodableEnumRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(RawValueForCamelCasedCodableEnumRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct ReduceBooleanRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct SortedFirstLastRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct SortedImportsRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(SortedImportsRule.description)
     }
 }

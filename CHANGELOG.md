@@ -17,6 +17,11 @@
   `)` would otherwise be stranded with the last argument.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Add autocorrection to the `multiline_parameters` rule, expanding single-line
+  function and initializer declarations to one-parameter-per-line with brackets on
+  separate lines, and splitting multi-line declarations where parameters share a line.  
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ### Bug Fixes
 
 * Keep the formatting of multiline member chains when correcting

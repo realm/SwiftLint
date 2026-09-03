@@ -3,6 +3,8 @@ import SourceKittenFramework
 
 private let moduleToLog = ProcessInfo.processInfo.environment["SWIFTLINT_LOG_MODULE_USAGE"]
 
+private let exportedImportsResolver = ExportedImportsResolver()
+
 @DisabledWithoutSourceKit
 struct UnusedImportRule: CorrectableRule, AnalyzerRule {
     var configuration = UnusedImportConfiguration()
@@ -130,22 +132,15 @@ private extension SwiftLintFile {
                     imports.isDisjoint(with: modulesAllowedToImportCurrentModule)
             }
 
-        // Check if unused imports were used for transitive imports
-        var foundUmbrellaModules = Set<String>()
-        var foundMissingImports = Set<String>()
-        for missingImport in missingImports {
-            let umbrellaModules = configuration.allowedTransitiveImports
-                .filter { $0.transitivelyImportedModules.contains(missingImport) }
-                .map(\.importedModule)
-            if umbrellaModules.isEmpty {
-                continue
-            }
-            foundMissingImports.insert(missingImport)
-            foundUmbrellaModules.formUnion(umbrellaModules.filter(unusedImports.contains))
-        }
+        let transitiveUsage = transitiveImportUsage(
+            unusedImports: unusedImports,
+            missingImports: missingImports,
+            compilerArguments: compilerArguments,
+            configuration: configuration
+        )
 
-        unusedImports.subtract(foundUmbrellaModules)
-        missingImports.subtract(foundMissingImports)
+        unusedImports.subtract(transitiveUsage.importedModules)
+        missingImports.subtract(transitiveUsage.missingModules)
 
         let unusedImportUsages = rangedAndSortedUnusedImports(of: Array(unusedImports))
             .map { ImportUsage.unused(module: $0, range: $1) }
@@ -153,6 +148,62 @@ private extension SwiftLintFile {
         return configuration.requireExplicitImports
             ? unusedImportUsages + missingImports.sorted().map { .missing(module: $0) }
             : unusedImportUsages
+    }
+
+    func transitiveImportUsage(
+        unusedImports: Set<String>,
+        missingImports: Set<String>,
+        compilerArguments: [String],
+        configuration: UnusedImportConfiguration
+    ) -> (
+        importedModules: Set<String>,
+        missingModules: Set<String>
+    ) {
+        let detectedImports: [String: Set<String>]
+
+        if configuration.requireExplicitImports
+            || unusedImports.isEmpty
+            || missingImports.isEmpty {
+            detectedImports = [:]
+        } else {
+            detectedImports = exportedImportsResolver.exportedImports(
+                for: unusedImports,
+                compilerArguments: compilerArguments
+            )
+        }
+
+        var foundImportedModules = Set<String>()
+        var foundMissingModules = Set<String>()
+
+        for missingImport in missingImports {
+            let configuredModules = configuration.allowedTransitiveImports
+                .filter {
+                    $0.transitivelyImportedModules.contains(missingImport)
+                }
+                .map(\.importedModule)
+
+            let detectedModules = detectedImports.compactMap { entry in
+                entry.value.contains(missingImport) ? entry.key : nil
+            }
+
+            let umbrellaModules = Set(
+                configuredModules + detectedModules
+            )
+
+            guard umbrellaModules.isNotEmpty else {
+                continue
+            }
+
+            foundMissingModules.insert(missingImport)
+            foundImportedModules.formUnion(
+                umbrellaModules.filter(unusedImports.contains)
+            )
+        }
+
+        return (
+            importedModules: foundImportedModules,
+            missingModules: foundMissingModules
+        )
     }
 
     func getImportsAndUSRFragments(compilerArguments: [String]) -> (imports: Set<String>, usrFragments: Set<String>) {

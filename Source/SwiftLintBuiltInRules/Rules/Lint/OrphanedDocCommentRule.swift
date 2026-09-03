@@ -44,6 +44,11 @@ struct OrphanedDocCommentRule: Rule {
             var myGreatProperty: String!
             """,
             """
+            ↓/// The #2989 motivation.
+            // swiftlint:disable:next force_unwrapping
+            public var caseD: String! = nil
+            """,
+            """
             ↓/// Look here for more info: https://github.com.
 
 
@@ -60,7 +65,7 @@ struct OrphanedDocCommentRule: Rule {
             """
             extension Nested {
                 ↓///
-                ↓/// Look here for more info: https://github.com.
+                /// Look here for more info: https://github.com.
 
                 // Not a doc string
                 var myGreatProperty: String!
@@ -75,19 +80,13 @@ struct OrphanedDocCommentRule: Rule {
             """
             ↓/// Look here for more info: https://github.com.
 
-            /// Documentation that is attached to the declaration.
-            var myGreatProperty: String!
-            """,
-            """
-            ↓/// Look here for more info: https://github.com.
-
 
             /// Documentation that is attached to the declaration.
             var myGreatProperty: String!
             """,
             """
             ↓/// Look here for more info: https://github.com.
-            ↓/// More orphaned documentation.
+            /// More orphaned documentation.
 
             /// Documentation that is attached to the declaration.
             var myGreatProperty: String!
@@ -95,7 +94,7 @@ struct OrphanedDocCommentRule: Rule {
             """
             extension Nested {
                 ↓///
-                ↓/// Look here for more info: https://github.com.
+                /// Look here for more info: https://github.com.
 
                 /// Documentation that is attached to the declaration.
                 var myGreatProperty: String!
@@ -140,7 +139,7 @@ private func orphanedDocCommentOffsets(in pieces: [TriviaPiece], isEndOfFile: Bo
             }
 
         case .lineComment, .blockComment:
-            orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets)
+            orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets.prefix(1))
             pendingDocCommentOffsets.removeAll()
             previousCommentEndLine = currentLine + piece.lineBreakCount
 
@@ -155,7 +154,7 @@ private func orphanedDocCommentOffsets(in pieces: [TriviaPiece], isEndOfFile: Bo
         if let previousCommentEndLine,
            !pendingDocCommentOffsets.isEmpty,
            currentLine > previousCommentEndLine + 1 {
-            orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets)
+            orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets.prefix(1))
             pendingDocCommentOffsets.removeAll()
         }
 
@@ -164,7 +163,7 @@ private func orphanedDocCommentOffsets(in pieces: [TriviaPiece], isEndOfFile: Bo
     }
 
     if isEndOfFile {
-        orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets)
+        orphanedDocCommentOffsets.append(contentsOf: pendingDocCommentOffsets.prefix(1))
     }
 
     return orphanedDocCommentOffsets

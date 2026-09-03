@@ -8,6 +8,8 @@ extension SwiftLint {
 
         @OptionGroup
         var common: LintOrAnalyzeArguments
+        @Option(help: "The path to a parent SwiftLint configuration file.")
+        var parentConfig: URL?
         @Flag(help: "Lint standard input.")
         var useSTDIN = false
         @Flag(help: quietOptionDescription(for: .lint))
@@ -42,6 +44,7 @@ extension SwiftLint {
                 paths: allPaths,
                 useSTDIN: useSTDIN,
                 configurationFiles: common.config,
+                parentConfigurationFile: parentConfig,
                 strict: common.leniency == .strict,
                 lenient: common.leniency == .lenient,
                 forceExclude: common.forceExclude,

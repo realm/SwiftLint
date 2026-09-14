@@ -34,6 +34,11 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix `--working-directory` having no effect. The `defer` restoring the previous
+  directory was scoped to the `if` block, so it ran before linting started.  
+  [haruna-miyamoto](https://github.com/haruna-miyamoto)
+  [#6907](https://github.com/realm/SwiftLint/issues/6907)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

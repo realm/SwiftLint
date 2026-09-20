@@ -22,19 +22,33 @@ private func parseCLIArguments(_ string: String) -> [String] {
     let scanner = Scanner(string: string)
     var str = ""
     var didStart = false
-    while let result = scanner.scanUpToString("\"") {
+    while !scanner.isAtEnd {
+        var result: String? = scanner.scanUpToString("\"")
+        if result == nil {
+            result = ""
+        }
         if didStart {
-            str += result.replacingOccurrences(of: " ", with: escapedSpacePlaceholder)
+            str += result!.replacingOccurrences(of: " ", with: escapedSpacePlaceholder)
             str += " "
         } else {
-            str += result
+            str += result!
         }
-        _ = scanner.scanString("\"")
-        didStart.toggle()
+        if scanner.scanString("\"") != nil {
+            didStart.toggle()
+        } else {
+            let remaining = String(scanner.string[scanner.currentIndex...])
+            if didStart {
+                str += remaining.replacingOccurrences(of: " ", with: escapedSpacePlaceholder)
+            } else {
+                str += remaining
+            }
+            break
+        }
     }
-    return str.trimmingCharacters(in: .whitespaces)
+    return str.trimmingCharacters(in: .whitespacesAndNewlines)
         .replacingOccurrences(of: "\\ ", with: escapedSpacePlaceholder)
-        .components(separatedBy: " ")
+        .components(separatedBy: .whitespacesAndNewlines)
+        .filter { !$0.isEmpty }
         .map { $0.replacingOccurrences(of: escapedSpacePlaceholder, with: " ") }
 }
 
@@ -65,9 +79,12 @@ extension Array where Element == String {
             }
             let responseFile = String(arg.dropFirst())
             return (try? String(contentsOf: URL(filePath: responseFile, directoryHint: .notDirectory))).flatMap {
-                $0.trimmingCharacters(in: .newlines)
-                    .components(separatedBy: "\n")
-                    .expandingResponseFiles
+                // Response files may contain arguments separated by whitespace
+                // (spaces, newlines) with quoting for paths containing spaces.
+                // Reuse the CLI parser so both Xcode 25 (newline-separated) and
+                // Xcode 26 (space-separated via @response files) layouts are
+                // handled, including nested @ files.
+                parseCLIArguments($0).expandingResponseFiles
             } ?? [arg]
         }
     }

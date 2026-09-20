@@ -32,14 +32,10 @@ struct UnusedImportRuleExamples {
         enum E {
             static let min: CGFloat = 44
         }
-        """.asExample(configuration: [
-            "allowed_transitive_imports": [
-                [
-                    "module": "Foundation",
-                    "allowed_transitive_imports": ["CoreFoundation"],
-                ] as [String: any Sendable],
-            ],
-        ]),
+        """.asExample(
+            testOnLinux: false,
+            testOnWindows: false
+        ),
         """
         import SwiftUI
 

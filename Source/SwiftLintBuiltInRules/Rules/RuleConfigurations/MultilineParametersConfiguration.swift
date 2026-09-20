@@ -9,27 +9,25 @@ struct MultilineParametersConfiguration: SeverityBasedRuleConfiguration {
     @ConfigurationElement(key: "max_number_of_single_line_parameters")
     private(set) var maxNumberOfSingleLineParameters: Int?
 
-    // swiftlint:disable:next unneeded_throws_rethrows
     func validate() throws(Issue) {
         guard let maxNumberOfSingleLineParameters else {
             return
         }
         guard maxNumberOfSingleLineParameters >= 1 else {
-            Issue.inconsistentConfiguration(
+            throw Issue.inconsistentConfiguration(
                 ruleID: Parent.identifier,
                 message: "Option '\($maxNumberOfSingleLineParameters.key)' should be >= 1."
-            ).print()
-            return
+            )
         }
 
         if maxNumberOfSingleLineParameters > 1, !allowsSingleLine {
-            Issue.inconsistentConfiguration(
+            throw Issue.inconsistentConfiguration(
                 ruleID: Parent.identifier,
                 message: """
                          Option '\($maxNumberOfSingleLineParameters.key)' has no effect when \
                          '\($allowsSingleLine.key)' is false.
                          """
-            ).print()
+            )
         }
     }
 }

@@ -208,7 +208,8 @@ private extension ClosureExprSyntax {
     func isInvalid(restrictToStandardFunctions: Bool) -> Bool {
         guard keyPathInParent != \FunctionCallExprSyntax.calledExpression,
               let parent,
-              ![.macroExpansionExpr, .multipleTrailingClosureElement].contains(parent.kind),
+              parent.kind != .multipleTrailingClosureElement,
+              !isNestedInMacroExpansion,
               previousToken(viewMode: .sourceAccurate)?.text != "??" else {
             return true
         }
@@ -219,6 +220,22 @@ private extension ClosureExprSyntax {
         if let call = parent.as(FunctionCallExprSyntax.self) {
             // Trailing closure.
             return call.additionalTrailingClosures.isNotEmpty || restrictToStandardFunctions && !call.isStandardFunction
+        }
+        return false
+    }
+
+    /// Whether this closure lies, at any depth, inside the argument list of a macro expansion
+    /// (e.g. `#Predicate`, `#require`, `#expect`). Macro expansions can decompose a closure
+    /// argument in ways that lose type or throwing information, so rewriting such a closure to a
+    /// key path can produce code that no longer compiles even though the key path form is valid
+    /// Swift outside the macro.
+    var isNestedInMacroExpansion: Bool {
+        var currentNode: Syntax? = Syntax(self)
+        while let node = currentNode {
+            if node.is(MacroExpansionExprSyntax.self) || node.is(MacroExpansionDeclSyntax.self) {
+                return true
+            }
+            currentNode = node.parent
         }
         return false
     }

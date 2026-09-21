@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Fix `unused_parameter` false positives for module-selected calls to
+  keyword-named functions by updating SwiftSyntax.  
+  [Arthur Liu](https://github.com/thliu21)
+  [#6816](https://github.com/realm/SwiftLint/issues/6816)
+
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
   `.aspectRatio` is no longer collapsed onto a single line.  

@@ -22,6 +22,7 @@ disabled_rules:
   - contrasted_opening_brace
   - convenience_type
   - discouraged_default_parameter
+  - doc_comment_parameter
   - discouraged_optional_collection
   - explicit_acl
   - explicit_enum_raw_value

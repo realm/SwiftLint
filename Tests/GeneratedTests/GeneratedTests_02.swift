@@ -154,6 +154,14 @@ struct DiscouragedOptionalCollectionRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct DocCommentParameterRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(DocCommentParameterRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct DuplicateConditionsRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct EmptyCollectionLiteralRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(EmptyCollectionLiteralRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct EmptyCountRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(EmptyCountRule.description)
     }
 }

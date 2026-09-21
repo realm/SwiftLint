@@ -239,6 +239,14 @@ discouraged_optional_collection:
   meta:
     opt-in: true
     correctable: false
+doc_comment_parameter:
+  severity: warning
+  validate_returns: false
+  validate_throws: false
+  enforce_parameter_syntax: false
+  meta:
+    opt-in: true
+    correctable: false
 duplicate_conditions:
   severity: error
   meta:

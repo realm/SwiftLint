@@ -44,6 +44,7 @@ disabled_rules:
   - prefer_nimble
   - prefixed_toplevel_constant
   - required_deinit
+  - sorted_collection_members
   - sorted_enum_cases
   - strict_fileprivate
   - switch_case_on_newline

@@ -1141,6 +1141,12 @@ single_test_class:
   meta:
     opt-in: true
     correctable: false
+sorted_collection_members:
+  severity: warning
+  reverse: false
+  meta:
+    opt-in: true
+    correctable: false
 sorted_enum_cases:
   severity: warning
   meta:

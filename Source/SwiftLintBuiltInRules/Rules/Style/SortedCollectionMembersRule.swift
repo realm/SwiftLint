@@ -84,6 +84,46 @@ struct SortedCollectionMembersRule: Rule {
               .thingCWithComment,
             ]
             """.asExample(configuration: reverseSort),
+            // integration-style test
+            """
+            let package = Package(
+              name: "Packages",
+              platforms: [
+                ↓.macOS(.v10_15),
+                .iOS(.v26),
+              ],
+              products: [
+                ↓.library(name: "Library2", type: type, targets: ["Library2"]),
+                .library(name: "Library1", type: type, targets: ["Library1"]),
+              ],
+              dependencies: [
+                ↓.package(
+                  url: "https://github.com/qux/quiz",
+                  exact: "4.5.6"
+                ),
+                .package(
+                  url: "https://github.com/foo/bar",
+                  exact: "1.2.3"
+                ),
+              ],
+              targets: [
+                ↓.target(
+                  name: "CoolFeatureB",
+                  dependencies: [
+                    "SomeDependency",
+                    .product(name: "AnotherDependency", package: "another-dependency"),
+                  ]
+                ),
+                .target(
+                  name: "CoolFeatureA",
+                  dependencies: [
+                    ↓.dependencyB,
+                    .dependencyA,
+                  ]
+                ),
+              ]
+            )
+            """,
         ])
     )
 }
@@ -95,6 +135,7 @@ private let reverseSort: [String: any Sendable] = ["reverse": true]
 // TODO: seems like /*>*/ syntax has an off-by-one compared with ↓ syntax
 // TODO: see if we can enforce that this rule must be opt-in, and shouldn't be enabled globally.
 // TODO: find a way to opt out of visiting nodes that do not apply to us.
+// TODO: test that inline override works, so a file where this is enabled can opt-out for a single array
 
 private extension SortedCollectionMembersRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {

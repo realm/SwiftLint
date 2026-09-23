@@ -14,12 +14,16 @@ struct SortedCollectionMembersRule: Rule {
         nonTriggeringExamples: #examples([
             "[1, 2, 3]",
             "[a, b, c]",
+            "[c, b, a]".asExample(configuration: reverseSort),
             "[]",
             "[1]",
             "[a]",
             """
             ["a", "b", "c"]
             """,
+            """
+            ["c", "b", "a"]
+            """.asExample(configuration: reverseSort),
             """
             ["a"]
             """,
@@ -30,13 +34,26 @@ struct SortedCollectionMembersRule: Rule {
               // comments are ignored in sort checking
               .thingC,
             ]
+            """,
             """
+            [
+              .thingC,
+              .thingB,
+              // comments are ignored in sort checking
+              .thingA,
+            ]
+            """.asExample(configuration: reverseSort)
         ]),
         triggeringExamples: #examples([
             "[1, ↓3, 2]",
+            "[↓1, 3, 2]".asExample(configuration: reverseSort),
+            "[↓1, 2, 3]".asExample(configuration: reverseSort),
             """
             [↓"b", "c", "a"]
             """,
+            """
+            [↓"b", "c", "a"]
+            """.asExample(configuration: reverseSort),
             """
             [
               ↓.thingBNoComment,
@@ -46,18 +63,34 @@ struct SortedCollectionMembersRule: Rule {
             """,
             """
             [
+              ↓.thingANoComment,
+              .thingBNoComment,
+              .thingCNoComment,
+            ]
+            """.asExample(configuration: reverseSort),
+            """
+            [
               ↓.thingBWithComment,
               // Comments are not counted when evaluating sort order
               .thingCWithComment,
               .thingAWithComment,
             ]
             """,
+            """
+            [
+              ↓.thingAWithComment,
+              .thingBWithComment,
+              // Comments are not counted when evaluating sort order
+              .thingCWithComment,
+            ]
+            """.asExample(configuration: reverseSort),
         ])
     )
 }
 
+private let reverseSort: [String: any Sendable] = ["reverse": true]
+
 // TODO: add dictionary literal support
-// TODO: support reverse sort
 // TODO: support case-insensitive sort?
 // TODO: seems like /*>*/ syntax has an off-by-one compared with ↓ syntax
 // TODO: see if we can enforce that this rule must be opt-in, and shouldn't be enabled globally.
@@ -68,7 +101,7 @@ private extension SortedCollectionMembersRule {
         override func visit(_ node: ArrayExprSyntax) -> SyntaxVisitorContinueKind {
             let sortedNames = node.elements
                 .map(\.expression.trimmedDescription)
-                .sorted()
+                .sorted(by: configuration.reverse ? (>) : (<))
 
             let originalAndSorted = zip(zip(node.elements.indices, node.elements), sortedNames)
             for ((originalIndex, originalElement), sortedName) in originalAndSorted {

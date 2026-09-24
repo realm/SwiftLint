@@ -12,6 +12,8 @@ struct SortedCollectionMembersRule: Rule {
         description: "Please keep the elements of this collection literal sorted",
         kind: .style,
         nonTriggeringExamples: #examples([
+            // Arrays
+
             "[1, 2, 3]",
             "[a, b, c]",
             "[c, b, a]".asExample(configuration: reverseSort),
@@ -42,9 +44,45 @@ struct SortedCollectionMembersRule: Rule {
               // comments are ignored in sort checking
               .thingA,
             ]
-            """.asExample(configuration: reverseSort)
+            """.asExample(configuration: reverseSort),
+
+            // Dictionaries
+
+            "[1: 1, 2: 2, 3: 3]",
+            "[a: 200, b: 10, c: 0]",
+            "[c: 0, b: 0, a: 0]".asExample(configuration: reverseSort),
+            "[:]",
+            "[1: 1]",
+            "[a: 1]",
+            """
+            ["a": "A", "b": "B", "c": "C"]
+            """,
+            """
+            ["c": "C", "b": "B", "a": "A"]
+            """.asExample(configuration: reverseSort),
+            """
+            ["a": "A"]
+            """,
+            """
+            [
+              .thingA: "A",
+              .thingB: "B",
+              // comments are ignored in sort checking
+              .thingC: "C",
+            ]
+            """,
+            """
+            [
+              .thingC: "C",
+              .thingB: "B",
+              // comments are ignored in sort checking
+              .thingA: "A",
+            ]
+            """.asExample(configuration: reverseSort),
         ]),
         triggeringExamples: #examples([
+            // Arrays
+
             "[1, ↓3, 2]",
             "[↓1, 3, 2]".asExample(configuration: reverseSort),
             "[↓1, 2, 3]".asExample(configuration: reverseSort),
@@ -124,13 +162,58 @@ struct SortedCollectionMembersRule: Rule {
               ]
             )
             """,
+
+            // Dictionaries are unordered, but you may still want to sort dictionary
+            // literals for code style reasons, or if you're using them to construct
+            // an instance of KeyValuePairs or some other ordered dictionary-like
+            // structure.
+
+            "[1: 1, ↓3: 3, 2: 2]",
+            "[↓1: 1, 3: 3, 2: 2]".asExample(configuration: reverseSort),
+            "[↓1: 1, 2: 2, 3: 3]".asExample(configuration: reverseSort),
+            """
+            [↓"b": 0, "c": 0, "a": 0]
+            """,
+            """
+            [↓"b": 0, "c": 0, "a": 0]
+            """.asExample(configuration: reverseSort),
+            """
+            [
+              ↓.thingBNoComment: 0,
+              .thingCNoComment: 0,
+              .thingANoComment: 0,
+            ]
+            """,
+            """
+            [
+              ↓.thingANoComment: 0,
+              .thingBNoComment: 0,
+              .thingCNoComment: 0,
+            ]
+            """.asExample(configuration: reverseSort),
+            """
+            [
+              ↓.thingBWithComment: 0,
+              // Comments are not counted when evaluating sort order
+              .thingCWithComment: 0,
+              .thingAWithComment: 0,
+            ]
+            """,
+            """
+            [
+              ↓.thingAWithComment: 0,
+              .thingBWithComment: 0,
+              // Comments are not counted when evaluating sort order
+              .thingCWithComment: 0,
+            ]
+            """.asExample(configuration: reverseSort),
+
         ])
     )
 }
 
 private let reverseSort: [String: any Sendable] = ["reverse": true]
 
-// TODO: add dictionary literal support
 // TODO: support case-insensitive sort?
 // TODO: seems like /*>*/ syntax has an off-by-one compared with ↓ syntax
 // TODO: find a way to opt out of visiting nodes that do not apply to us.
@@ -147,6 +230,34 @@ private extension SortedCollectionMembersRule {
             for ((originalIndex, originalElement), sortedName) in originalAndSorted {
                 if originalElement.expression.trimmedDescription != sortedName {
                     violations.append(node.elements[originalIndex].positionAfterSkippingLeadingTrivia)
+                    // break on the first sorting violation because everything after it is necessarily not sorted
+                    break
+                }
+            }
+
+            return .visitChildren
+        }
+
+        override func visit(_ node: DictionaryExprSyntax) -> SyntaxVisitorContinueKind {
+            let content = node.content
+
+            let elements: DictionaryElementListSyntax
+            switch content {
+            case .colon:
+                // empty dictionary, so there's nothing to sort
+                return .visitChildren
+            case .elements(let dictionaryElementListSyntax):
+                elements = dictionaryElementListSyntax
+            }
+
+            let sortedNames = elements
+                .map(\.key.trimmedDescription)
+                .sorted(by: configuration.reverse ? (>) : (<))
+
+            let originalAndSorted = zip(zip(elements.indices, elements), sortedNames)
+            for ((originalIndex, originalElement), sortedName) in originalAndSorted {
+                if originalElement.key.trimmedDescription != sortedName {
+                    violations.append(elements[originalIndex].positionAfterSkippingLeadingTrivia)
                     // break on the first sorting violation because everything after it is necessarily not sorted
                     break
                 }

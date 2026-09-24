@@ -6,7 +6,7 @@ import SwiftSyntax
 struct SortedCollectionMembersRule: Rule {
     var configuration = SortedCollectionMembersConfiguration()
 
-    static let description: RuleDescription = RuleDescription(
+    static let description = RuleDescription(
         identifier: "sorted_collection_members",
         name: "Sorted Collection Members",
         description: "Please keep the elements of this collection literal sorted",
@@ -207,7 +207,6 @@ struct SortedCollectionMembersRule: Rule {
               .thingCWithComment: 0,
             ]
             """.asExample(configuration: reverseSort),
-
         ])
     )
 }
@@ -226,12 +225,11 @@ private extension SortedCollectionMembersRule {
                 .sorted(by: configuration.reverse ? (>) : (<))
 
             let originalAndSorted = zip(zip(node.elements.indices, node.elements), sortedNames)
-            for ((originalIndex, originalElement), sortedName) in originalAndSorted {
-                if originalElement.expression.trimmedDescription != sortedName {
-                    violations.append(node.elements[originalIndex].positionAfterSkippingLeadingTrivia)
-                    // break on the first sorting violation because everything after it is necessarily not sorted
-                    break
-                }
+            for ((originalIndex, originalElement), sortedName) in originalAndSorted
+                    where originalElement.expression.trimmedDescription != sortedName {
+                violations.append(node.elements[originalIndex].positionAfterSkippingLeadingTrivia)
+                // break on the first sorting violation because everything after it is necessarily not sorted
+                break
             }
 
             return .visitChildren
@@ -254,12 +252,11 @@ private extension SortedCollectionMembersRule {
                 .sorted(by: configuration.reverse ? (>) : (<))
 
             let originalAndSorted = zip(zip(elements.indices, elements), sortedNames)
-            for ((originalIndex, originalElement), sortedName) in originalAndSorted {
-                if originalElement.key.trimmedDescription != sortedName {
-                    violations.append(elements[originalIndex].positionAfterSkippingLeadingTrivia)
-                    // break on the first sorting violation because everything after it is necessarily not sorted
-                    break
-                }
+            for ((originalIndex, originalElement), sortedName) in originalAndSorted
+                    where originalElement.key.trimmedDescription != sortedName {
+                violations.append(elements[originalIndex].positionAfterSkippingLeadingTrivia)
+                // break on the first sorting violation because everything after it is necessarily not sorted
+                break
             }
 
             return .visitChildren

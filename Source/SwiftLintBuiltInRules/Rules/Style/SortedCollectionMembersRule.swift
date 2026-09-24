@@ -214,7 +214,6 @@ struct SortedCollectionMembersRule: Rule {
 
 private let reverseSort: [String: any Sendable] = ["reverse": true]
 
-// TODO: support case-insensitive sort?
 // TODO: seems like /*>*/ syntax has an off-by-one compared with ↓ syntax
 // TODO: find a way to opt out of visiting nodes that do not apply to us.
 // TODO: test that inline override works, so a file where this is enabled can opt-out for a single array

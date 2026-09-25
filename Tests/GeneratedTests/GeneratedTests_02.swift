@@ -74,6 +74,14 @@ struct CyclomaticComplexityRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct DeferBeforeUnstructuredTaskRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(DeferBeforeUnstructuredTaskRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct DeploymentTargetRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct EmptyCollectionLiteralRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(EmptyCollectionLiteralRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct EmptyCountRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(EmptyCountRule.description)
     }
 }

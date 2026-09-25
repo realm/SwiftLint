@@ -35,6 +35,7 @@ public let builtInRules: [any Rule.Type] = [
     ControlStatementRule.self,
     ConvenienceTypeRule.self,
     CyclomaticComplexityRule.self,
+    DeferBeforeUnstructuredTaskRule.self,
     DeploymentTargetRule.self,
     DirectReturnRule.self,
     DiscardedNotificationCenterObserverRule.self,

@@ -76,7 +76,7 @@ jobs:
           ref: ${{ github.ref_name }}
           persist-credentials: false
       - name: Set up Ruby and Bundler
-        uses: ruby/setup-ruby@984c0c890880bbf811283d6f09c4607c62d210a4 # v1.323.0
+        uses: ruby/setup-ruby@e8944e80fb94b20106697132f8c20c665fab29e9 # v1.325.0
         with:
           bundler-cache: true
       - name: Lint Podspec # Make sure Podspec still builds okay on CI with old release.

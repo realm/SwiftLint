@@ -217,6 +217,8 @@ To bring up a new Buildkite worker from MacStadium:
 1. Install the Buildkite agent and other tools via Homebrew:
    `brew install aria2 bazelisk htop buildkite/buildkite/buildkite-agent robotsandpencils/made/xcodes`
 1. Install latest Xcode version: `xcodes update && xcodes install 14.0.0`
-1. Add `DANGER_GITHUB_API_TOKEN` and `HOME` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`
+1. Add `DANGER_GITHUB_API_TOKEN` and `HOME` to `/opt/homebrew/etc/buildkite-agent/hooks/environment`.
+   `DANGER_GITHUB_API_TOKEN` is the access token used by Danger to comment on GitHub pull requests.
+   It is associated with the SwiftLintBot GitHub account.
 1. Configure and launch buildkite agent as described in `brew info buildkite-agent` or on
    <https://buildkite.com/organizations/swiftlint/agents#setup-macos>.

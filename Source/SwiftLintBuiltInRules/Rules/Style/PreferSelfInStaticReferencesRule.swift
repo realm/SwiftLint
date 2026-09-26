@@ -158,7 +158,8 @@ private extension PreferSelfInStaticReferencesRule {
 
         override func visitPost(_ node: DeclReferenceExprSyntax) {
             guard let parent = node.parent, !parent.is(GenericSpecializationExprSyntax.self),
-                  node.keyPathInParent != \MemberAccessExprSyntax.declName else {
+                  node.keyPathInParent != \MemberAccessExprSyntax.declName,
+                  node.moduleSelector == nil else {
                 return
             }
             if parent.is(FunctionCallExprSyntax.self), case .likeClass = parentDeclScopes.peek() {
@@ -293,7 +294,9 @@ private extension PreferSelfInStaticReferencesRule {
         }
 
         override func visitPost(_ node: IdentifierTypeSyntax) {
-            guard let parent = node.parent else {
+            // A module selector (`Module::Name`) names a type from that module,
+            // which isn't necessarily the surrounding type.
+            guard let parent = node.parent, node.moduleSelector == nil else {
                 return
             }
             // Don't flag identifiers that belong to the extension declaration

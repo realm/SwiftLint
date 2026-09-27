@@ -34,6 +34,11 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix `excluded` configuration being ignored when file paths matching a non-wildcard
+  exclusion pattern are passed as arguments.  
+  [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
+  [#6795](https://github.com/realm/SwiftLint/issues/6795)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

@@ -18,6 +18,10 @@ jobs:
       - uses: ruby/setup-ruby@984c0c890880bbf811283d6f09c4607c62d210a4 # v1.323.0
         with:
           bundler-cache: true
+      - uses: swift-actions/setup-swift@364295d9c23900ce04d4e5cc708387921b4e50f9 # v3.0.0-beta.1
+        with:
+          swift-version: "6.3.3"
+          skip-verify-signature: true
       - name: Build SwiftLint and SourceKitten
         uses: ./.github/actions/bazel-linux
         with:
@@ -35,7 +39,9 @@ jobs:
           path: .build
       - name: Generate documentation
         run: |
-          export PATH="/usr/share/swift/usr/bin:$PATH"
+          swiftly_lib_dir=$(swiftly use -p)/usr/lib
+          export LD_LIBRARY_PATH="$swiftly_lib_dir:$LD_LIBRARY_PATH"
+          export PATH="$SWIFTLY_BIN_DIR:$PATH"
           make docs_linux
       - name: Process documentation violations
         run: |

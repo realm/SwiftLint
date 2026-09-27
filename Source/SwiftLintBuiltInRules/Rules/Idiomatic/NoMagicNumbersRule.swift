@@ -4,6 +4,12 @@ import Foundation
 import SwiftLintCore
 import SwiftSyntax
 
+private let colorTypeNames: Set<String> = [
+    "UIColor", "UIKit.UIColor",
+    "NSColor", "AppKit.NSColor",
+    "Color", "SwiftUI.Color",
+]
+
 @SwiftSyntaxRule(foldExpressions: true, optIn: true)
 struct NoMagicNumbersRule: Rule {
     var configuration = NoMagicNumbersConfiguration()
@@ -139,6 +145,27 @@ struct NoMagicNumbersRule: Rule {
                 return UIColor.init(hue: 0.2, saturation: 0.8, brightness: 0.7, alpha: 0.5)
             }
             """.asExample(excludeFromDocumentation: true),
+            """
+            let swiftUIColor = Color(red: 0.1, green: 0.42, blue: 0.7)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let opaqueColor = Color(.sRGB, red: 0.1, green: 0.42, blue: 0.7, opacity: 0.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let appKitColor = NSColor(red: 0.1, green: 0.42, blue: 0.7, alpha: 0.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let memberAppKitColor = NSColor.init(white: 0.5, alpha: 1.0)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let qualifiedSwiftUIColor = SwiftUI.Color(red: 0.1, green: 0.42, blue: 0.7)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let qualifiedAppKitColor = AppKit.NSColor(red: 0.1, green: 0.42, blue: 0.7, alpha: 0.5)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let qualifiedUIKitColor = UIKit.UIColor.init(red: 0.1, green: 0.42, blue: 0.7, alpha: 0.5)
+            """.asExample(excludeFromDocumentation: true),
             "let a = b + 2".asExample(configuration: ["allowed_numbers": [2]], excludeFromDocumentation: true),
             "let a = b + 2".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
             "let a = b + 1".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
@@ -183,6 +210,16 @@ struct NoMagicNumbersRule: Rule {
             f(↓4.0)
             #endif
             """,
+            "let paint = Paint(red: ↓0.5, green: ↓0.42, blue: ↓0.7)".asExample(excludeFromDocumentation: true),
+            """
+            let namespacedColor = DesignSystem.Color(red: ↓0.5, green: ↓0.42, blue: ↓0.7)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let customColor = UIColor(rgb: ↓0x33373A, alpha: 0.16)
+            """.asExample(excludeFromDocumentation: true),
+            """
+            let faded = Color(red: 0.1, green: 0.42, blue: 0.7).opacity(↓0.42)
+            """.asExample(excludeFromDocumentation: true),
             "let a = b + ↓3".asExample(configuration: ["allowed_numbers": [2.0]], excludeFromDocumentation: true),
         ])
     )
@@ -260,7 +297,7 @@ private extension NoMagicNumbersRule {
             if node.isOperandOfFreestandingShiftOperation() {
                 return
             }
-            if node.isPartOfUIColorInitializer() {
+            if node.isPartOfColorInitializer() {
                 return
             }
             let violation = node.positionAfterSkippingLeadingTrivia
@@ -364,27 +401,19 @@ private extension ExprSyntaxProtocol {
         return false
     }
 
-    func isPartOfUIColorInitializer() -> Bool {
+    func isPartOfColorInitializer() -> Bool {
         guard let param = parent?.as(LabeledExprSyntax.self),
               let label = param.label?.text else {
             return false
         }
-        let uiColorInitializerLabels = [
-            "white", "alpha", "red", "displayP3Red", "green", "blue", "hue",
+        let colorComponentLabels = [
+            "white", "alpha", "opacity", "red", "displayP3Red", "green", "blue", "hue",
             "saturation", "brightness", "cgColor", "ciColor", "resource", "patternImage",
         ]
-        if uiColorInitializerLabels.contains(label),
-           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(FunctionCallExprSyntax.self) {
-            if let calledExpr = call.calledExpression.as(DeclReferenceExprSyntax.self),
-               calledExpr.baseName.text == "UIColor" {
-                return true
-            }
-            if let memberAccess = call.calledExpression.as(MemberAccessExprSyntax.self),
-               let baseExpr = memberAccess.base?.as(DeclReferenceExprSyntax.self),
-               baseExpr.baseName.text == "UIColor",
-               memberAccess.declName.baseName.text == "init" {
-                return true
-            }
+        if colorComponentLabels.contains(label),
+           let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(FunctionCallExprSyntax.self),
+           call.isColorInitializer {
+            return true
         }
         if ["red", "green", "blue", "alpha"].contains(label),
            let call = param.parent?.as(LabeledExprListSyntax.self)?.parent?.as(MacroExpansionExprSyntax.self),
@@ -392,6 +421,18 @@ private extension ExprSyntaxProtocol {
             return true
         }
         return false
+    }
+}
+
+private extension FunctionCallExprSyntax {
+    /// Whether this call is a direct or module-qualified color initializer as in `UIColor(…)`,
+    /// `SwiftUI.Color(…)` or `NSColor.init(…)`.
+    var isColorInitializer: Bool {
+        var callee = calledExpression.trimmedDescription
+        if callee.hasSuffix(".init") {
+            callee = String(callee.dropLast(5))
+        }
+        return colorTypeNames.contains(callee)
     }
 }
 

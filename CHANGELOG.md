@@ -34,6 +34,13 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix `no_magic_numbers` reporting the color components of SwiftUI `Color` and
+  AppKit `NSColor` initializers. The rule exempted `UIColor` only. It now also
+  accepts the `opacity` label and module-qualified names such as
+  `SwiftUI.Color`.  
+  [lechuckcaptain](https://github.com/lechuckcaptain)
+  [#6869](https://github.com/realm/SwiftLint/issues/6869)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

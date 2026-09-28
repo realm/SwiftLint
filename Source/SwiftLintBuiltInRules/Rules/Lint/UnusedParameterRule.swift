@@ -18,6 +18,16 @@ struct UnusedParameterRule: Rule {
         kind: .lint,
         // swiftlint:disable all
         nonTriggeringExamples: [
+            """
+            func f(_ x: Int) {
+                Module::as(x)
+            }
+            """.asExample(),
+            """
+            func f(_ x: Int) {
+                Module::is(x)
+            }
+            """.asExample(),
             #example {
                 func f(a: Int) {
                     _ = a

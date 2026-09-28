@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Fix `unused_import` incorrectly removing imports that re-export modules used
+  by the analyzed file.  
+  [Hirotaka Monya](https://github.com/catlover-bot)  
+  [#5528](https://github.com/realm/SwiftLint/issues/5528)
+
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
   `.aspectRatio` is no longer collapsed onto a single line.  

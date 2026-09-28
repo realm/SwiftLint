@@ -88,7 +88,7 @@ extension Configuration {
         }
         var config: Configuration
 
-        if directory == rootDirectory {
+        if directory.standardizedFileURL == rootDirectory.standardizedFileURL {
             // Use self if at level self
             config = self
         } else if configurationSearchPath.exists, !fileGraph.includesFile(atPath: configurationSearchPath) {

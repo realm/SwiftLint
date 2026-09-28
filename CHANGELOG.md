@@ -17,6 +17,12 @@
   `)` would otherwise be stranded with the last argument.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Migrate the `protocol_property_accessors_order` examples to the `#example`
+  macro so that they are compiled, which also corrects the indentation of the
+  code shown in the rule documentation.  
+  [Akhrameev](https://github.com/Akhrameev)
+  [#3348](https://github.com/realm/SwiftLint/issues/3348)
+
 ### Bug Fixes
 
 * Keep the formatting of multiline member chains when correcting

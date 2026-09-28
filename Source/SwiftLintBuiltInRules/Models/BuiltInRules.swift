@@ -19,6 +19,7 @@ public let builtInRules: [any Rule.Type] = [
     ClosureEndIndentationRule.self,
     ClosureParameterPositionRule.self,
     ClosureSpacingRule.self,
+    CognitiveComplexityRule.self,
     CollectionAlignmentRule.self,
     ColonRule.self,
     CommaInheritanceRule.self,

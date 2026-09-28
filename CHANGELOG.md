@@ -52,6 +52,11 @@
 
 ### Enhancements
 
+* Add a `--parent-config` option to the `lint` command, allowing a parent
+  configuration to be supplied without modifying the child configuration file.  
+  [LizunovSergey](https://github.com/LizunovSergey)
+  [#5421](https://github.com/realm/SwiftLint/issues/5421)
+
 * Speed up the `collection_alignment` rule, which read the whole file's
   source lines once per element of a dictionary literal.  
   [Brett-Best](https://github.com/Brett-Best)

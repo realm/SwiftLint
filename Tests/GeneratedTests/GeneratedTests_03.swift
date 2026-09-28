@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct EmptyCountRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(EmptyCountRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct EmptyEnumArgumentsRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct FlatMapOverMapReduceRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(FlatMapOverMapReduceRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct ForWhereRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(ForWhereRule.description)
     }
 }

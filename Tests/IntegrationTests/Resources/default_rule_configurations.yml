@@ -177,6 +177,11 @@ cyclomatic_complexity:
   meta:
     opt-in: false
     correctable: false
+defer_before_unstructured_task:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: false
 deployment_target:
   severity: warning
   iOSApplicationExtension_deployment_target: 7.0

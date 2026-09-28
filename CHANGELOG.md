@@ -73,6 +73,14 @@
   [arimu1](https://github.com/arimu1)
   [#6839](https://github.com/realm/SwiftLint/issues/6839)
 
+* Add `defer_before_unstructured_task` rule (opt-in) that flags a `defer`
+  block assigning to shared state right before a sibling unstructured `Task`
+  reads that same state. The `defer`red assignment runs the instant the
+  enclosing synchronous function returns, before the `Task`'s body has a
+  chance to execute, which is a common source of inverted loading-flag bugs.  
+  [alisher-zinullayev](https://github.com/alisher-zinullayev)
+  [#6619](https://github.com/realm/SwiftLint/issues/6619)
+
 ### Bug Fixes
 
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the

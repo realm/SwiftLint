@@ -156,6 +156,8 @@ public struct Baseline: Equatable {
             return []
         }
 
+        let exactViolations = Set(relativePathViolations).intersection(baselineViolations)
+
         let violationsByRuleIdentifier = relativePathViolations.groupedByRuleIdentifier(
             filteredBy: baselineViolations
         )
@@ -181,6 +183,11 @@ public struct Baseline: Equatable {
                     continue
                 }
                 if ruleViolations.count > baselineViolations.count {
+                    filteredViolations.formUnion(ruleViolations)
+                } else if ruleViolations.count == baselineViolations.count,
+                          exactViolations.contains(where: {
+                              $0.violation.ruleIdentifier == ruleIdentifier && $0.key == key
+                          }) {
                     filteredViolations.formUnion(ruleViolations)
                 }
             }

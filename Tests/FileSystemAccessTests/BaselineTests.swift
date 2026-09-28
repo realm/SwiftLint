@@ -50,6 +50,21 @@ struct BaselineTests {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
+    private static func lines(withDuplicatesAt duplicateLines: Set<Int>) -> [String] {
+        (1...30).map { line in
+            duplicateLines.contains(line) ? "// TODO: remove this" : ""
+        }
+    }
+
+    private static func duplicateViolations(at lines: [Int], in filePath: URL) -> [StyleViolation] {
+        lines.map { line in
+            StyleViolation(
+                ruleDescription: ArrayInitRule.description,
+                location: Location(file: filePath, line: line, character: 1)
+            )
+        }
+    }
+
     @Test(.temporaryDirectory)
     func writingAndReading() throws {
         try withExampleFileCreated { sourceFilePath in
@@ -101,6 +116,42 @@ struct BaselineTests {
             let violations = try Self.violations(for: sourceFilePath).lineShifted(by: 2, path: sourceFilePath)
             #expect(baseline.filter(violations).isEmpty)
         }
+    }
+
+    @Test(.temporaryDirectory)
+    func reportsSameCountReplacementOfDuplicateViolations() throws {
+        let sourceFilePath = URL.cwd.appending(path: "Example.swift", directoryHint: .notDirectory)
+        try Self.lines(withDuplicatesAt: [10, 20]).joined(separator: "\n").write(
+            to: sourceFilePath,
+            atomically: true,
+            encoding: .utf8
+        )
+        let baseline = Baseline(violations: Self.duplicateViolations(at: [10, 20], in: sourceFilePath))
+
+        try Self.lines(withDuplicatesAt: [20, 30]).joined(separator: "\n").write(
+            to: sourceFilePath,
+            atomically: true,
+            encoding: .utf8
+        )
+        let currentViolations = Self.duplicateViolations(at: [20, 30], in: sourceFilePath)
+
+        #expect(baseline.filter(currentViolations) == [currentViolations[1]])
+    }
+
+    @Test(.temporaryDirectory)
+    func ignoresUniformlyShiftedDuplicateViolations() throws {
+        let sourceFilePath = URL.cwd.appending(path: "Example.swift", directoryHint: .notDirectory)
+        try Self.lines(withDuplicatesAt: [10, 20]).joined(separator: "\n").write(
+            to: sourceFilePath,
+            atomically: true,
+            encoding: .utf8
+        )
+        let baselineViolations = Self.duplicateViolations(at: [10, 20], in: sourceFilePath)
+        let baseline = Baseline(violations: baselineViolations)
+
+        let currentViolations = try baselineViolations.lineShifted(by: 2, path: sourceFilePath)
+
+        #expect(baseline.filter(currentViolations).isEmpty)
     }
 
     @Test(.temporaryDirectory)

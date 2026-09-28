@@ -41,4 +41,26 @@ struct PreferKeyPathRuleTests {
 
         verifyRule(description)
     }
+
+    @Test
+    func closureNestedInMacroExpansionIsNotRewritten() {
+        // A closure that is a direct macro argument (e.g. `#Predicate { $0.a }`) is already
+        // covered by the rule's own nonTriggeringExamples. This covers a closure nested one or
+        // more levels deeper inside a macro expansion's arguments, such as a standard-function
+        // call passed to `#require`/`#expect`. Rewriting it to a key path can produce code that
+        // fails to compile, since these macros decompose the call in a way that loses its
+        // non-throwing guarantee.
+        let description = PreferKeyPathRule.description
+            .with(nonTriggeringExamples: #examples([
+                "#require(f.first(where: { $0.a }))",
+                "#expect(f.first(where: { $0.a }) != nil)",
+                "#require(g(f.first(where: { $0.a })))",
+            ]))
+            .with(corrections: #corrections([
+                "#require(f.first(where: { $0.a }))": // no change: nested inside a macro expansion
+                    "#require(f.first(where: { $0.a }))",
+            ]))
+
+        verifyRule(description)
+    }
 }

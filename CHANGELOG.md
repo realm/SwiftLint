@@ -34,6 +34,13 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix `prefer_key_path` to skip closures nested at any depth inside a macro
+  expansion, not only closures that are a direct macro argument. A closure such
+  as the one in `#require(items.first(where: { $0.flag }))` was still being
+  rewritten to a key path, producing code that fails to compile.  
+  [jadhavgaurav](https://github.com/jadhavgaurav)
+  [#6657](https://github.com/realm/SwiftLint/issues/6657)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

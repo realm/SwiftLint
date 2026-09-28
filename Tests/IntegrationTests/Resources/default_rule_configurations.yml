@@ -549,7 +549,7 @@ indentation_width:
   include_multiline_conditions: false
   meta:
     opt-in: true
-    correctable: false
+    correctable: true
 invalid_swiftlint_command:
   severity: warning
   meta:

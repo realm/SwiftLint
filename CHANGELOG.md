@@ -34,6 +34,12 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Keep the attributed import, e.g. `@testable import A`, when `duplicate_imports`
+  finds it alongside a plain `import A`. Previously the rule reported and removed
+  whichever came second, which could drop the `@testable` line.  
+  [Akhrameev](https://github.com/Akhrameev)
+  [#6922](https://github.com/realm/SwiftLint/issues/6922)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

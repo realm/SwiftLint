@@ -34,6 +34,12 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Stop `prefer_self_in_static_references` from reporting types referenced with
+  a module selector such as `Foundation::TimeInterval`, which name a type from
+  that module rather than the surrounding type.  
+  [SwastikTripathi](https://github.com/SwastikTripathi)
+  [#6924](https://github.com/realm/SwiftLint/issues/6924)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

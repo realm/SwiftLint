@@ -225,6 +225,19 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
             }
             """.asExample(excludeFromDocumentation: true),
+        """
+            enum TimeInterval {
+                private static func defaultInterval() -> Foundation::TimeInterval {
+                    .init()
+                }
+            }
+            """.asExample(excludeFromDocumentation: true),
+        """
+            struct Date {
+                static let reference = Foundation::Date.distantPast
+                static let parsed: Foundation::Date? = nil
+            }
+            """.asExample(excludeFromDocumentation: true),
     ])
 
     static let triggeringExamples = #examples([

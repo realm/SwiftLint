@@ -18,6 +18,27 @@ struct PreferSelfInStaticReferencesRule: Rule {
 }
 
 private extension PreferSelfInStaticReferencesRule {
+    // An extension does not encode whether its target is a class or a value type.
+    // Collect declarations from this file so return types for known value types
+    // can be handled without relaxing the class-like extension behavior.
+    private final class ValueTypeNameCollector: SyntaxVisitor {
+        private(set) var names: Set<String> = []
+
+        init() {
+            super.init(viewMode: .sourceAccurate)
+        }
+
+        override func visit(_ node: EnumDeclSyntax) -> SyntaxVisitorContinueKind {
+            names.insert(node.name.text)
+            return .visitChildren
+        }
+
+        override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {
+            names.insert(node.name.text)
+            return .visitChildren
+        }
+    }
+
     private enum ExtendedType {
         /// A type named by a plain identifier, e.g. `extension Foo`.
         case identifier(String)
@@ -60,6 +81,14 @@ private extension PreferSelfInStaticReferencesRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
         private var parentDeclScopes = Stack<ParentDeclBehavior>()
         private var variableDeclScopes = Stack<VariableDeclBehavior>()
+        private var valueTypeNames: Set<String> = []
+
+        override init(configuration: ConfigurationType, file: SwiftLintFile) {
+            super.init(configuration: configuration, file: file)
+
+            let collector = ValueTypeNameCollector()
+            valueTypeNames = collector.walk(tree: file.syntaxTree) { $0.names }
+        }
 
         override func visit(_ node: ActorDeclSyntax) -> SyntaxVisitorContinueKind {
             pushParentDeclScope(.likeClass(.identifier(node.name.text)), memberBlock: node.memberBlock)
@@ -210,11 +239,37 @@ private extension PreferSelfInStaticReferencesRule {
             parentDeclScopes.pop()
         }
 
-        override func visit(_: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
+        override func visit(_ node: ReturnClauseSyntax) -> SyntaxVisitorContinueKind {
             if case .likeStruct = parentDeclScopes.peek() {
                 return .visitChildren
             }
+            if isKnownValueTypeExtension(node) {
+                return .visitChildren
+            }
             return .skipChildren
+        }
+
+        private func isKnownValueTypeExtension(_ node: ReturnClauseSyntax) -> Bool {
+            var isStaticFunction = false
+            var ancestor = node.parent
+            while let current = ancestor {
+                if let functionDecl = current.as(FunctionDeclSyntax.self) {
+                    isStaticFunction = functionDecl.modifiers.contains(keyword: .static)
+                }
+                if let extensionDecl = current.as(ExtensionDeclSyntax.self),
+                   let identifier = extensionDecl.extendedType.as(IdentifierTypeSyntax.self) {
+                    return isStaticFunction && valueTypeNames.contains(identifier.name.text)
+                }
+                if current.is(ClassDeclSyntax.self)
+                    || current.is(StructDeclSyntax.self)
+                    || current.is(EnumDeclSyntax.self)
+                    || current.is(ActorDeclSyntax.self)
+                    || current.is(ProtocolDeclSyntax.self) {
+                    return false
+                }
+                ancestor = current.parent
+            }
+            return false
         }
 
         override func visit(_ node: StructDeclSyntax) -> SyntaxVisitorContinueKind {

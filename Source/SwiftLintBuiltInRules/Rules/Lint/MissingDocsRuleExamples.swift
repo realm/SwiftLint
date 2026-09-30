@@ -54,6 +54,12 @@ struct MissingDocsRuleExamples {
         }
         """,
         """
+        /// Documentation for MyActor.
+        public final actor MyActor {
+            public nonisolated var unownedExecutor: UnownedSerialExecutor { fatalError() }
+        }
+        """,
+        """
         /// my doc
         #if os(macOS)
         public func f() {}

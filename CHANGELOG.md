@@ -33,6 +33,7 @@
   docs after a blank line.  
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
+
 * Serialize analyzer rule collection and validation to prevent overlapping
   SourceKit requests for the same compiler context.  
   [Derek Pearson](https://github.com/dpearson2699)

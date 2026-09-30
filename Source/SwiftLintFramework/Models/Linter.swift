@@ -253,6 +253,7 @@ public struct Linter {
     fileprivate let cache: LinterCache?
     fileprivate let configuration: Configuration
     fileprivate let compilerArguments: [String]
+    var usesParallelRuleScheduling: Bool { compilerArguments.isEmpty }
 
     /// Creates a `Linter` by specifying its properties directly.
     ///
@@ -285,12 +286,18 @@ public struct Linter {
     ///
     /// - returns: A linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
-        DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
-            let rule = rules[idx]
+        let collectRule = { (rule: any Rule) in
             let ruleID = type(of: rule).identifier
             CurrentRule.$identifier.withValue(ruleID) {
                 rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
             }
+        }
+        if usesParallelRuleScheduling {
+            DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
+                collectRule(rules[idx])
+            }
+        } else {
+            rules.forEach(collectRule)
         }
         return CollectedLinter(from: self)
     }
@@ -306,6 +313,7 @@ public struct CollectedLinter {
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
+    var usesParallelRuleScheduling: Bool { compilerArguments.isEmpty }
 
     fileprivate init(from linter: Linter) {
         file = linter.file
@@ -349,13 +357,16 @@ public struct CollectedLinter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults: [LintResult] = rules.parallelMap {
-            $0.lint(file: file, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    globalConfiguration: configuration.globalConfiguration,
-                    compilerArguments: compilerArguments)
+        let validateRule: @Sendable (any Rule) -> LintResult = { rule in
+            rule.lint(file: file, regions: regions, benchmark: benchmark,
+                      storage: storage,
+                      superfluousDisableCommandRule: superfluousDisableCommandRule,
+                      globalConfiguration: configuration.globalConfiguration,
+                      compilerArguments: compilerArguments)
         }
+        let validationResults: [LintResult] = usesParallelRuleScheduling
+            ? rules.parallelMap(transform: validateRule)
+            : rules.map(validateRule)
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
             superfluousDisableCommandRule: superfluousDisableCommandRule)

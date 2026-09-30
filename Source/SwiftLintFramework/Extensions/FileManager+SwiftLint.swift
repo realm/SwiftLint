@@ -133,6 +133,6 @@ extension FileManager: LintableFileManager {
     }
 
     public func modificationDate(forFileAtPath path: URL) -> Date? {
-        (try? attributesOfItem(atPath: path.filepath))?[.modificationDate] as? Date
+        try? path.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
     }
 }

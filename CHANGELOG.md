@@ -19,6 +19,12 @@
 
 ### Bug Fixes
 
+* Measure alignment columns in `vertical_parameter_alignment_on_call` using
+  character positions instead of raw UTF-8 columns, avoiding false positives
+  when a preceding line contains multi-byte characters.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6467](https://github.com/realm/SwiftLint/issues/6467)
+
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
   `.aspectRatio` is no longer collapsed onto a single line.  

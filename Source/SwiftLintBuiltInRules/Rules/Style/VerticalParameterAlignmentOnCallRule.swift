@@ -84,6 +84,21 @@ struct VerticalParameterAlignmentOnCallRule: Rule {
                 // completion
             }
             """,
+            """
+            СreateAdUpdateShopHelper.updateShopModels(categoryModels: &categoryModels,
+                                                      contactModels: &contactModels,
+                                                      country: response.country)
+            """,
+            """
+            СreateAd😵‍💫UpdateShopHelper.updateShopModels(categoryModels: &categoryModels,
+                                                       contactModels: &contactModels,
+                                                       country: response.country)
+            """,
+            """
+            café.update(categoryModels: &categoryModels,
+                        contactModels: &contactModels,
+                        country: response.country)
+            """,
         ]),
         triggeringExamples: #examples([
             """
@@ -121,19 +136,29 @@ struct VerticalParameterAlignmentOnCallRule: Rule {
             myFunc(foo: 0, bar:
                     baz == 0, ↓baz: true)
             """,
+            """
+            СreateAd😵‍💫UpdateShopHelper.updateShopModels(categoryModels: &categoryModels,
+                                                      ↓contactModels: &contactModels)
+            """,
+            """
+            СreateAd😵‍💫UpdateShopHelper.updateShopModels(categoryModels: &categoryModels,
+                                                        ↓contactModels: &contactModels)
+            """,
         ])
     )
 }
 
 private extension VerticalParameterAlignmentOnCallRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        private lazy var sourceLines = locationConverter.sourceLines
+
         override func visitPost(_ node: FunctionCallExprSyntax) {
             let arguments = node.arguments
             guard arguments.count > 1, let firstArg = arguments.first else {
                 return
             }
 
-            var firstArgumentLocation = locationConverter.location(for: firstArg.positionAfterSkippingLeadingTrivia)
+            var firstArgumentLocation = characterLocation(for: firstArg.positionAfterSkippingLeadingTrivia)
 
             var visitedLines = Set<Int>()
             var previousArgumentWasMultiline = false
@@ -145,7 +170,7 @@ private extension VerticalParameterAlignmentOnCallRule {
                     }
 
                     let position = argument.positionAfterSkippingLeadingTrivia
-                    let location = locationConverter.location(for: position)
+                    let location = characterLocation(for: position)
                     guard location.line > firstArgumentLocation.line else {
                         return nil
                     }
@@ -174,6 +199,19 @@ private extension VerticalParameterAlignmentOnCallRule {
             let endPosition = locationConverter.location(for: expression.endPositionBeforeTrailingTrivia)
 
             return endPosition.line > startPosition.line
+        }
+
+        private func characterLocation(for position: AbsolutePosition) -> SourceLocation {
+            let location = locationConverter.location(for: position)
+            guard let prefix = String(sourceLines[location.line - 1].utf8.prefix(location.column - 1)) else {
+                return location
+            }
+            return SourceLocation(
+                line: location.line,
+                column: prefix.count + 1,
+                offset: location.offset,
+                file: location.file
+            )
         }
     }
 }

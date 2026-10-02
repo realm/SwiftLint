@@ -55,6 +55,22 @@ struct RuleTests {
         }
     }
 
+    fileprivate struct NonSuppressibleByRegionRuleMock: Rule, NonSuppressibleByRegionRule {
+        var configuration = SeverityConfiguration<Self>(.warning)
+        static let description = RuleDescription(
+            identifier: "non_suppressible_by_region_mock",
+            name: "",
+            description: "",
+            kind: .style
+        )
+
+        init() { /* conformance for test */ }
+
+        func validate(file _: SwiftLintFile) -> [StyleViolation] {
+            []
+        }
+    }
+
     fileprivate struct RuleWithLevelsMock2: Rule {
         var configuration = SeverityLevelsConfiguration<Self>(warning: 2, error: 3)
 
@@ -157,5 +173,19 @@ struct RuleTests {
     @Test
     func differentSeverityLevelRulesNotEqual() {
         #expect(!RuleWithLevelsMock().isEqualTo(RuleWithLevelsMock2()))
+    }
+
+    @Test
+    func nonSuppressibleByRegionRuleIgnoresInlineDisableCommands() throws {
+        let rule = NonSuppressibleByRegionRuleMock()
+        let commands = [
+            "// swiftlint:disable \(NonSuppressibleByRegionRuleMock.identifier)\n",
+            "// swiftlint:disable all\n",
+        ]
+
+        for command in commands {
+            let region = try #require(SwiftLintFile(contents: command).regions().first)
+            #expect(rule.isEnabled(in: region, for: NonSuppressibleByRegionRuleMock.identifier))
+        }
     }
 }

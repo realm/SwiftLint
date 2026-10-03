@@ -26,6 +26,14 @@ struct ReduceIntoRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct RedundantACLRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(RedundantACLRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct RedundantDiscardableLetRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct SortedFirstLastRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct SortedImportsRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(SortedImportsRule.description)
     }
 }

@@ -116,18 +116,38 @@ public extension Configuration {
         }
 
         internal func activateCustomRuleIdentifiers(allRulesWrapped: [ConfigurationRuleWrapper]) -> Self {
-            // In the only mode, if the custom rules rule is enabled, all custom rules are also enabled implicitly
-            // This method makes the implicitly explicit
+            // In the "only" modes the parent `custom_rules` rule and the individual custom rules are
+            // entangled: enabling `custom_rules` implies enabling every custom rule, and enabling any
+            // individual custom rule requires the parent `custom_rules` rule to be enabled too.
+            // This method makes those implicit relations explicit so that both `only_rules` (config)
+            // and `--only-rule` (command line) behave consistently — previously `--only-rule` left
+            // custom rules silently disabled, and `only_rules: [<individual_custom_rule>]` did too.
             switch self {
-            case let .onlyConfiguration(onlyRules) where onlyRules.contains {
-                $0 == CustomRules.identifier
-            }:
-                let customRulesRule = allRulesWrapped.customRules
-                return .onlyConfiguration(onlyRules.union(Set(customRulesRule?.customRuleIdentifiers ?? [])))
+            case let .onlyConfiguration(onlyRules):
+                return .onlyConfiguration(Self.withCustomRulesActivated(onlyRules, allRulesWrapped: allRulesWrapped))
+
+            case let .onlyCommandLine(onlyRules):
+                return .onlyCommandLine(Self.withCustomRulesActivated(onlyRules, allRulesWrapped: allRulesWrapped))
 
             default:
                 return self
             }
+        }
+
+        private static func withCustomRulesActivated(
+            _ onlyRules: Set<String>,
+            allRulesWrapped: [ConfigurationRuleWrapper]
+        ) -> Set<String> {
+            let customRuleIdentifiers = Set(allRulesWrapped.customRules?.customRuleIdentifiers ?? [])
+            var onlyRules = onlyRules
+            if onlyRules.contains(CustomRules.identifier) {
+                // `custom_rules` is enabled → enable all of its custom rules.
+                onlyRules.formUnion(customRuleIdentifiers)
+            } else if !onlyRules.isDisjoint(with: customRuleIdentifiers) {
+                // At least one individual custom rule is enabled → enable the parent `custom_rules` rule.
+                onlyRules.insert(CustomRules.identifier)
+            }
+            return onlyRules
         }
     }
 }

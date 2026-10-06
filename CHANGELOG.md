@@ -34,6 +34,12 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Store the line text of violations on the first line of a file in baselines.
+  Previously it was left empty, so such a violation was reported as new once
+  lines were inserted above it. Baselines containing violations on line 1
+  should be regenerated.  
+  [Akhrameev](https://github.com/Akhrameev)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

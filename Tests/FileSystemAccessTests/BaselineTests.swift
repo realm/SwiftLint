@@ -104,6 +104,21 @@ struct BaselineTests {
     }
 
     @Test(.temporaryDirectory)
+    func shiftedViolationOnFirstLine() throws {
+        try withExampleFileCreated { sourceFilePath in
+            let violations = [
+                StyleViolation(
+                    ruleDescription: ArrayInitRule.description,
+                    location: Location(file: sourceFilePath, line: 1, character: 1)
+                ),
+            ]
+            let baseline = Baseline(violations: violations)
+            let shiftedViolations = try violations.lineShifted(by: 2, path: sourceFilePath)
+            #expect(baseline.filter(shiftedViolations).isEmpty)
+        }
+    }
+
+    @Test(.temporaryDirectory)
     func newViolation() throws {
         try testViolationDetection(
             violationRuleDescriptions: Self.ruleDescriptions,

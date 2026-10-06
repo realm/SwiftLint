@@ -211,7 +211,7 @@ private struct LineCache {
 
     mutating func text(at location: Location) -> String {
         let line = (location.line ?? 0) - 1
-        if line > 0, let file = location.file, let content = cached(file: file), line < content.count {
+        if line >= 0, let file = location.file, let content = cached(file: file), line < content.count {
             return content[line]
         }
         return ""

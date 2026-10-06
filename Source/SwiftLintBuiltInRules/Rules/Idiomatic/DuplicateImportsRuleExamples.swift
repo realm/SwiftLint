@@ -93,6 +93,34 @@ internal struct DuplicateImportsRuleExamples {
 
                 """,
             """
+            ↓import A
+            @testable import A
+
+            """: """
+                @testable import A
+
+                """,
+            """
+            @testable import A
+            ↓import A
+
+            """: """
+                @testable import A
+
+                """,
+            """
+            #if DEBUG
+                ↓import A
+                @testable import A
+            #endif
+
+            """: """
+                #if DEBUG
+                    @testable import A
+                #endif
+
+                """,
+            """
             ↓import A.B.C
             import A.B
 

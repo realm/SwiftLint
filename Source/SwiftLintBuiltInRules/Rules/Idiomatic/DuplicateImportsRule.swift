@@ -193,7 +193,8 @@ private extension SwiftLintFile {
         var seen = Set<ImportPathUsage>()
 
         // Exact matches
-        for `import` in importPaths {
+        let attributedFirst = importPaths.filter(\.hasAttributes) + importPaths.filter { !$0.hasAttributes }
+        for `import` in attributedFirst {
             let path = `import`.path
             let position = `import`.position
             let rangesForPosition = ranges(for: position)

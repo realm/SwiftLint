@@ -10,18 +10,44 @@ struct ProtocolPropertyAccessorsOrderRule: Rule {
         name: "Protocol Property Accessors Order",
         description: "When declaring properties in protocols, the order of accessors should be `get set`",
         kind: .style,
-        nonTriggeringExamples: #examples([
-            "protocol Foo {\n var bar: String { get set }\n }",
-            "protocol Foo {\n var bar: String { get }\n }",
-            "protocol Foo {\n var bar: String { set }\n }",
-        ]),
-        triggeringExamples: #examples([
-            "protocol Foo {\n var bar: String { ↓set get }\n }"
-        ]),
-        corrections: #corrections([
-            "protocol Foo {\n var bar: String { ↓set get }\n }":
-                "protocol Foo {\n var bar: String { get set }\n }",
-        ])
+        // swiftlint:disable all
+        nonTriggeringExamples: [
+            #example {
+                protocol Foo {
+                    var bar: String { get set }
+                }
+            },
+            #example {
+                protocol Foo {
+                    var bar: String { get }
+                }
+            },
+            // Not valid Swift: a setter requires a getter. Kept as a string to cover the accessor count guard.
+            """
+            protocol Foo {
+                var bar: String { set }
+            }
+            """.asExample(),
+        ],
+        triggeringExamples: [
+            #example {
+                protocol Foo {
+                    var bar: String { /*>*/set get }
+                }
+            },
+        ],
+        corrections: [
+            #example {
+                protocol Foo {
+                    var bar: String { /*>*/set get }
+                }
+            }: #example {
+                protocol Foo {
+                    var bar: String { get set }
+                }
+            },
+        ]
+        // swiftlint:enable all
     )
 }
 

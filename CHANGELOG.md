@@ -15,7 +15,8 @@
 * Add `check_if_and_switch_expressions` option to the `implicit_return` rule.
   When enabled, the rule also triggers on `return` statements in all branches
   of an `if` or `switch` (including nested ones) that could be turned into an
-  `if` or `switch` expression. Defaults to `false`.  
+  `if` or `switch` expression. Closures are only checked when they declare
+  an explicit return type. Defaults to `false`.  
   [Andrew Elliott](https://github.com/andrewse02)
   [nandhinisubbu](https://github.com/nandhinisubbu)
   [#6167](https://github.com/realm/SwiftLint/issues/6167)

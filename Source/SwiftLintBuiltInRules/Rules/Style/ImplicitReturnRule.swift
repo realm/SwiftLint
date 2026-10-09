@@ -34,7 +34,12 @@ private extension ImplicitReturnRule {
 
         override func visitPost(_ node: ClosureExprSyntax) {
             if configuration.isKindIncluded(.closure) {
-                collectViolation(in: node.statements)
+                // Without an explicit return type, the branches of an `if` or `switch` expression are type-checked
+                // independently, which may fail where the `return` statements compiled fine (e.g. `1` and `nil`).
+                collectViolation(
+                    in: node.statements,
+                    checkIfAndSwitch: node.signature?.returnClause != nil
+                )
             }
         }
 
@@ -66,10 +71,10 @@ private extension ImplicitReturnRule {
             }
         }
 
-        private func collectViolation(in itemList: CodeBlockItemListSyntax) {
+        private func collectViolation(in itemList: CodeBlockItemListSyntax, checkIfAndSwitch: Bool = true) {
             if let returnStmt = itemList.onlyReturnStatement {
                 collectViolation(for: returnStmt)
-            } else if configuration.checkIfAndSwitchExpressions,
+            } else if checkIfAndSwitch, configuration.checkIfAndSwitchExpressions,
                       let returnStmts = itemList.ifOrSwitchExpressionReturnStatements {
                 returnStmts.forEach(collectViolation(for:))
             }

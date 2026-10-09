@@ -99,6 +99,23 @@ extension ImplicitReturnRuleExamples {
             }
             """.asExample(configuration: configuration),
             """
+            foo.map { value in
+                if value {
+                    return 1
+                } else {
+                    return 2
+                }
+            }
+            """.asExample(configuration: configuration),
+            """
+            let f = { (x: Int) in
+                switch x {
+                case 0: return Optional(1)
+                default: return nil
+                }
+            }
+            """.asExample(configuration: configuration),
+            """
             func f() -> Int {
                 label: switch value {
                 case 0: return 1
@@ -168,7 +185,7 @@ extension ImplicitReturnRuleExamples {
             }
             """.asExample(configuration: configuration),
             """
-            foo.map { value in
+            foo.map { value -> Int in
                 if value {
                     ↓return 1
                 } else {
@@ -220,6 +237,21 @@ extension ImplicitReturnRuleExamples {
                         } else {
                             "other"
                         }
+                    }
+                }
+                """,
+            """
+            let f = { (x: Int) -> Int? in
+                switch x {
+                case 0: return 1
+                default: return nil
+                }
+            }
+            """.asExample(configuration: configuration): """
+                let f = { (x: Int) -> Int? in
+                    switch x {
+                    case 0: 1
+                    default: nil
                     }
                 }
                 """,

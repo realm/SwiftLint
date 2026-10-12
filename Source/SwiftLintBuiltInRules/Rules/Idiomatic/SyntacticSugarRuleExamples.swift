@@ -31,6 +31,9 @@ internal enum SyntacticSugarRuleExamples {
         "let x = case Optional<Any>.none = obj",
         "let a = Swift.Optional<String?>.none",
         "func f() -> [Array<Int>.Index] { [Array<Int>.Index]() }".asExample(excludeFromDocumentation: true),
+        "let x: Foo::Array<Int>".asExample(excludeFromDocumentation: true),
+        "func x(a: Foo::Optional<Int>) -> Foo::Dictionary<String, Int>".asExample(excludeFromDocumentation: true),
+        "let x = Foo::Array<Int>()".asExample(excludeFromDocumentation: true),
     ])
 
     static let triggering = #examples([
@@ -65,6 +68,9 @@ internal enum SyntacticSugarRuleExamples {
         let dict: [String: Any] = [:]
         _ = dict["key"] as? ↓Optional<String?> ?? Optional<String?>.none
         """,
+        "let x: ↓Swift::Array<String>".asExample(excludeFromDocumentation: true),
+        "let x: Foo::Array<↓Array<Int>>".asExample(excludeFromDocumentation: true),
+        "let x = ↓Swift::Dictionary<Int, String>()".asExample(excludeFromDocumentation: true),
     ])
 
     static let corrections = #corrections([
@@ -84,5 +90,7 @@ internal enum SyntacticSugarRuleExamples {
             "let x:[[[Int: Int]: Int]: String]",
         "let x:↓Array<↓Dictionary<Int, Int>>": "let x:[[Int: Int]]",
         "let x:↓Optional<↓Dictionary<Int, Int>>": "let x:[Int: Int]?",
+        "let x: Swift::Optional<String>": "let x: String?",
+        "let x = Swift::Array<Int>()": "let x = [Int]()",
     ])
 }

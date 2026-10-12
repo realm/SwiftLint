@@ -53,6 +53,8 @@ private enum SugaredType: String {
         var typeName = typeName
         if typeName.hasPrefix("Swift.") {
             typeName.removeFirst("Swift.".count)
+        } else if typeName.hasPrefix("Swift::") {
+            typeName.removeFirst("Swift::".count)
         }
 
         self.init(rawValue: typeName)
@@ -195,7 +197,9 @@ private final class SyntacticSugarRuleVisitor: SyntaxVisitor {
         }
 
         if let simpleType = typeSyntax?.as(IdentifierTypeSyntax.self) {
-            if SugaredType(typeName: simpleType.name.text) != nil {
+            // A module selector other than `Swift::` refers to a type from that module, e.g. `Foo::Array<Int>`
+            let isSwiftType = simpleType.moduleSelector.map { $0.moduleName.text == "Swift" } ?? true
+            if isSwiftType, SugaredType(typeName: simpleType.name.text) != nil {
                 return violation(from: simpleType)
             }
 
@@ -342,7 +346,7 @@ extension IdentifierTypeSyntax: SyntaxWithGenericClause {
 
 extension GenericSpecializationExprSyntax: SyntaxWithGenericClause {
     var typeName: String? {
-        expression.as(DeclReferenceExprSyntax.self)?.firstToken(viewMode: .sourceAccurate)?.text ??
+        expression.as(DeclReferenceExprSyntax.self)?.baseName.text ??
         expression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
     }
     var genericArguments: GenericArgumentClauseSyntax? { genericArgumentClause }

@@ -34,6 +34,12 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Stop `syntactic_sugar` from reporting and correcting types referenced with a
+  module selector other than `Swift::`, such as `Foo::Array<Int>`, and report
+  `Swift::Array<Int>()` in expressions.  
+  [gxlactuss](https://github.com/gxlactuss)
+  [#6924](https://github.com/realm/SwiftLint/issues/6924)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

@@ -107,6 +107,27 @@ struct UnhandledThrowingTaskRule: Rule {
               }
             }
             """,
+            """
+            Task {
+              await toOptional(closure: { try await exec() })
+            }
+            """,
+            "Task(operation: { await toOptional(closure: { try await exec() }) })"
+                .asExample(excludeFromDocumentation: true),
+            """
+            Task {
+              let result = try? logPerformance {
+                try throwingFunc()
+              }
+            }
+            """,
+            "Task { do { try throwingFunc() } catch { await toOptional(closure: { try await exec() }) } }"
+                .asExample(excludeFromDocumentation: true),
+            "Task { Task.detached { try await exec() } }".asExample(excludeFromDocumentation: true),
+            "Task { try? save(Result { [value = try throwingFunc()] in value }) }"
+                .asExample(excludeFromDocumentation: true),
+            "Task { try! save(Result { [value = try throwingFunc()] in value }) }"
+                .asExample(excludeFromDocumentation: true),
         ]),
         triggeringExamples: #examples([
             """
@@ -183,6 +204,25 @@ struct UnhandledThrowingTaskRule: Rule {
               }
             }
             """,
+            """
+            ↓Task {
+              try [1].map { try throwingFunc() }
+            }
+            """,
+            """
+            Task {
+              ↓Task {
+                try await exec()
+              }
+            }
+            """,
+            "↓Task(operation: { try await exec() })".asExample(excludeFromDocumentation: true),
+            "↓Task { let closure = { [value = try throwingFunc()] in value } }"
+                .asExample(excludeFromDocumentation: true),
+            "↓Task(operation: ({ try await exec() }))".asExample(excludeFromDocumentation: true),
+            """
+            ↓Task(operation: { try await exec() } as @Sendable () async throws -> Void)
+            """.asExample(excludeFromDocumentation: true),
         ])
     )
 }
@@ -248,8 +288,26 @@ private extension FunctionCallExprSyntax {
     }
 
     var doesThrow: Bool {
-        ThrowsVisitor(viewMode: .sourceAccurate)
-            .walk(tree: self, handler: \.doesThrow)
+        guard let closure = trailingClosure ?? arguments.last?.expression.taskClosure else {
+            return false
+        }
+
+        return ThrowsVisitor(viewMode: .sourceAccurate)
+            .walk(tree: closure.statements, handler: \.doesThrow)
+    }
+}
+
+private extension ExprSyntax {
+    var taskClosure: ClosureExprSyntax? {
+        if let expression = `as`(TupleExprSyntax.self)?.elements.onlyElement?.expression {
+            return expression.taskClosure
+        }
+        if let elements = `as`(SequenceExprSyntax.self)?.elements,
+           elements.count == 3,
+           elements.dropFirst().first?.is(UnresolvedAsExprSyntax.self) == true {
+            return elements.first?.taskClosure
+        }
+        return `as`(ClosureExprSyntax.self)
     }
 }
 
@@ -287,26 +345,22 @@ private final class ThrowsVisitor: SyntaxVisitor {
         return .skipChildren
     }
 
-    override func visit(_ node: FunctionCallExprSyntax) -> SyntaxVisitorContinueKind {
-        // No need to continue traversing if we already throw.
-        if doesThrow {
-            return .skipChildren
+    override func visit(_ node: ClosureExprSyntax) -> SyntaxVisitorContinueKind {
+        if let capture = node.signature?.capture {
+            walk(capture)
         }
 
-        // Result initializers with trailing closures handle thrown errors.
-        if let typeIdentifier = node.calledExpression.as(DeclReferenceExprSyntax.self),
-           typeIdentifier.baseName.text == "Result",
-           node.trailingClosure != nil {
-            return .skipChildren
-        }
-
-        return .visitChildren
+        return .skipChildren
     }
 
     override func visitPost(_ node: TryExprSyntax) {
         if node.questionOrExclamationMark == nil {
             doesThrow = true
         }
+    }
+
+    override func visit(_ node: TryExprSyntax) -> SyntaxVisitorContinueKind {
+        node.questionOrExclamationMark == nil ? .visitChildren : .skipChildren
     }
 
     override func visitPost(_: ThrowStmtSyntax) {

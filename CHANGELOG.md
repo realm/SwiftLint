@@ -48,6 +48,11 @@
   [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
   [#6795](https://github.com/realm/SwiftLint/issues/6795)
 
+* Fix false positives in `unhandled_throwing_task` for errors thrown inside
+  nested closures.  
+  [Marve10s](https://github.com/Marve10s)
+  [#4987](https://github.com/realm/SwiftLint/issues/4987)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

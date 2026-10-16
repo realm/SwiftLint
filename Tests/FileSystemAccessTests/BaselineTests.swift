@@ -50,13 +50,42 @@ struct BaselineTests {
         Baseline(violations: ruleDescriptions.violations(for: filePath))
     }
 
-    @Test(.temporaryDirectory)
-    func writingAndReading() throws {
+    @Test(.temporaryDirectory, arguments: [false, true])
+    func writingAndReading(useDirectoryHint: Bool) throws {
         try withExampleFileCreated { sourceFilePath in
             let baselinePath = URL.cwd.appending(path: UUID().uuidString)
             try Baseline(violations: Self.violations(for: sourceFilePath)).write(toPath: baselinePath)
+            let directory = useDirectoryHint ? URL.cwd : URL(filePath: URL.cwd.path)
+            #expect(directory.hasDirectoryPath == useDirectoryHint)
+            try CurrentWorkingDirectory.$url.withValue(directory) {
+                let newBaseline = try Baseline(fromPath: baselinePath)
+                #expect(newBaseline == Self.baseline(for: sourceFilePath))
+                #expect(newBaseline.filter(Self.violations(for: sourceFilePath)).isEmpty)
+            }
+        }
+    }
+
+    @Test(.temporaryDirectory, arguments: [".", "folder/.."])
+    func readingAbsolutePathsWithDotComponents(_ components: String) throws {
+        try withExampleFileCreated { sourceFilePath in
+            let baseline = Self.baseline(for: sourceFilePath)
+            let baselinePath = URL.cwd.appending(path: UUID().uuidString)
+            try baseline.write(toPath: baselinePath)
+            let json = try String(contentsOf: baselinePath, encoding: .utf8)
+            let relativePath = try JSONEncoder().encode(sourceFilePath.lastPathComponent)
+            let absolutePath = try JSONEncoder().encode(
+                URL.cwd.path + "/\(components)/\(sourceFilePath.lastPathComponent)"
+            )
+            let relativePathString = try #require(String(data: relativePath, encoding: .utf8))
+            let absolutePathString = try #require(String(data: absolutePath, encoding: .utf8))
+            try json.replacingOccurrences(
+                of: relativePathString,
+                with: absolutePathString
+            ).write(to: baselinePath, atomically: true, encoding: .utf8)
+
             let newBaseline = try Baseline(fromPath: baselinePath)
-            #expect(newBaseline == Self.baseline(for: sourceFilePath))
+            #expect(newBaseline == baseline)
+            #expect(newBaseline.filter(Self.violations(for: sourceFilePath)).isEmpty)
         }
     }
 
@@ -86,6 +115,42 @@ struct BaselineTests {
             #expect(json.contains("\"folder\\/\(otherSourceFilePath.lastPathComponent)\""))
         }
     }
+
+    #if os(macOS)
+    @Test(arguments: [false, true], [false, true])
+    func writingAndReadingInPrivateDirectory(usePrivatePrefix: Bool, useSymbolicLink: Bool) throws {
+        let fixture = URL(filePath: "/private/tmp/\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: fixture, withIntermediateDirectories: false)
+        defer {
+            do {
+                try FileManager.default.removeItem(at: fixture)
+            } catch {
+                Issue.record(error)
+            }
+        }
+        var directory = usePrivatePrefix ? fixture : URL(
+            filePath: "/tmp/\(fixture.lastPathComponent)", directoryHint: .isDirectory
+        )
+        try #require(directory.isDirectory)
+        if useSymbolicLink {
+            let link = directory.appending(path: "link", directoryHint: .isDirectory)
+            try FileManager.default.createSymbolicLink(at: link, withDestinationURL: directory)
+            directory = link
+        }
+        try CurrentWorkingDirectory.$url.withValue(directory) {
+            try withExampleFileCreated { sourceFilePath in
+                let violations = Self.violations(for: sourceFilePath)
+                let baseline = Baseline(violations: violations)
+                let baselinePath = URL.cwd.appending(path: UUID().uuidString)
+                try baseline.write(toPath: baselinePath)
+
+                let newBaseline = try Baseline(fromPath: baselinePath)
+                #expect(newBaseline == baseline)
+                #expect(newBaseline.filter(violations).isEmpty)
+            }
+        }
+    }
+    #endif
 
     @Test(.temporaryDirectory)
     func unchangedViolations() throws {

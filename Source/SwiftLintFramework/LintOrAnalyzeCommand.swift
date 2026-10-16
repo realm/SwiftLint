@@ -129,13 +129,14 @@ package struct LintOrAnalyzeOptions {
 package struct LintOrAnalyzeCommand {
     package static func run(_ options: LintOrAnalyzeOptions) async throws {
         Request.disableSourceKitOverride = options.mode == .lint && options.disableSourceKit
-        if let workingDirectory = options.workingDirectory {
-            let currentDirectory = FileManager.default.currentDirectoryPath
-            defer {
-                if !FileManager.default.changeCurrentDirectoryPath(currentDirectory) {
-                    queuedFatalError("Could not change back to the original directory '\(currentDirectory)'.")
-                }
+        var currentDirectory: String?
+        defer {
+            if let currentDirectory, !FileManager.default.changeCurrentDirectoryPath(currentDirectory) {
+                queuedFatalError("Could not change back to the original directory '\(currentDirectory)'.")
             }
+        }
+        if let workingDirectory = options.workingDirectory {
+            currentDirectory = FileManager.default.currentDirectoryPath
             if !FileManager.default.changeCurrentDirectoryPath(workingDirectory) {
                 throw SwiftLintError.usageError(
                     description: """

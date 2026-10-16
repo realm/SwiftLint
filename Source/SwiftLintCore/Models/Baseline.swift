@@ -61,7 +61,14 @@ private struct BaselineViolation: Codable, Hashable, Comparable {
         }
 
         var location: Location {
-            Location(file: file?.url(), line: line, character: character)
+            var base = URL.cwd
+            if base.isDirectory {
+                base = URL(filePath: base.path, directoryHint: .isDirectory)
+            }
+            let file = file.map {
+                URL(filePath: $0, directoryHint: .notDirectory, relativeTo: base).absoluteURL.standardized
+            }
+            return Location(file: file, line: line, character: character)
         }
     }
 

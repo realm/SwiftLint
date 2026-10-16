@@ -34,6 +34,10 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix baseline matching in `/private` directories when `excluded` is non-empty.  
+  [Marve10s](https://github.com/Marve10s)
+  [#6909](https://github.com/realm/SwiftLint/issues/6909)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

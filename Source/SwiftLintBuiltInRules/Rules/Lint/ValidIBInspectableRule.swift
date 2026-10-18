@@ -3,7 +3,7 @@ import SwiftSyntax
 
 @SwiftSyntaxRule
 struct ValidIBInspectableRule: Rule {
-    var configuration = SeverityConfiguration<Self>(.warning)
+    var configuration = ValidIBInspectableConfiguration()
 
     static let description = RuleDescription(
         identifier: "valid_ibinspectable",
@@ -13,6 +13,16 @@ struct ValidIBInspectableRule: Rule {
             """,
         kind: .lint,
         nonTriggeringExamples: #examples([
+            "class Foo { @IBInspectable var angle: CLLocationDegrees }"
+                .asExample(configuration: ["additional_types": ["CLLocationDegrees"]]),
+            "class Foo { @IBInspectable var angle: Module.Angle }"
+                .asExample(configuration: ["additional_types": ["Module.Angle", "Angle", "Angle"]]),
+            "class Foo { @IBInspectable var name: String? }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
+            "class Foo { @IBInspectable var angle: Angle? }"
+                .asExample(configuration: ["additional_types": ["Angle?"]]),
+            "class Foo { @IBInspectable var angle: Angle { get { 0 } set {} } }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
             """
             class Foo {
               @IBInspectable private var x: Int
@@ -72,6 +82,19 @@ struct ValidIBInspectableRule: Rule {
             """,
         ]),
         triggeringExamples: #examples([
+            "class Foo { @IBInspectable ↓var angle: CLLocationDegrees }",
+            "class Foo { @IBInspectable ↓var angle: Angle }"
+                .asExample(configuration: ["additional_types": [String]()]),
+            "class Foo { @IBInspectable ↓var angle: Angle? }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
+            "class Foo { @IBInspectable ↓var angle: Angle! }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
+            "class Foo { @IBInspectable ↓let angle: Angle = 0 }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
+            "class Foo { @IBInspectable ↓var angle = 0 }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
+            "class Foo { @IBInspectable ↓var angle: Angle { get { 0 } } }"
+                .asExample(configuration: ["additional_types": ["Angle"]]),
             """
             class Foo {
               @IBInspectable private ↓let count: Int
@@ -157,7 +180,8 @@ private extension ValidIBInspectableRule {
         override var skippableDeclarations: [any DeclSyntaxProtocol.Type] { [FunctionDeclSyntax.self] }
 
         override func visitPost(_ node: VariableDeclSyntax) {
-            if node.isInstanceVariable, node.isIBInspectable, node.hasViolation {
+            if node.isInstanceVariable, node.isIBInspectable,
+               node.isReadOnlyProperty || !node.isSupportedType(additionalTypes: configuration.additionalTypes) {
                 violations.append(node.bindingSpecifier.positionAfterSkippingLeadingTrivia)
             }
         }
@@ -167,10 +191,6 @@ private extension ValidIBInspectableRule {
 private extension VariableDeclSyntax {
     var isIBInspectable: Bool {
         attributes.contains(attributeNamed: "IBInspectable")
-    }
-
-    var hasViolation: Bool {
-        isReadOnlyProperty || !isSupportedType
     }
 
     var isReadOnlyProperty: Bool {
@@ -200,13 +220,14 @@ private extension VariableDeclSyntax {
         }
     }
 
-    var isSupportedType: Bool {
+    func isSupportedType(additionalTypes: Set<String>) -> Bool {
         bindings.allSatisfy { binding in
             guard let type = binding.typeAnnotation else {
                 return false
             }
 
-            return ValidIBInspectableRule.supportedTypes.contains(type.type.trimmedDescription)
+            let name = type.type.trimmedDescription
+            return ValidIBInspectableRule.supportedTypes.contains(name) || additionalTypes.contains(name)
         }
     }
 }

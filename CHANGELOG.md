@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Preserve inline comments when `control_statement` removes parentheses during
+  `swiftlint --fix`.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6207](https://github.com/realm/SwiftLint/issues/6207)
+
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
   `.aspectRatio` is no longer collapsed onto a single line.  

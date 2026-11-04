@@ -101,10 +101,6 @@ jobs:
           - arch: ARM64
             runner: ubuntu-24.04-arm
             artifact_name: swiftlint-linux-arm64
-          # libxml2 2.14 bumped its soname to libxml2.so.16, and distributions
-          # shipping it (e.g. Ubuntu 26.04) have no libxml2.so.2, which the
-          # binaries above link through FoundationXML. Built where .so.16 is
-          # the system libxml2.
           - arch: AMD64 libxml2.so.16
             runner: ubuntu-26.04
             artifact_name: swiftlint-linux-libxml2-16-amd64

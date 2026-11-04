@@ -1,5 +1,3 @@
-# GitHub-hosted runners that actionlint does not know about yet. Remove once an
-# actionlint release lists them.
 self-hosted-runner:
   labels:
     - ubuntu-26.04

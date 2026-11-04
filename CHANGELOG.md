@@ -39,6 +39,10 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix nested configuration resolution when a relative file path is passed to
+  `swiftlint`.  
+  [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

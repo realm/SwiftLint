@@ -101,6 +101,16 @@ jobs:
           - arch: ARM64
             runner: ubuntu-24.04-arm
             artifact_name: swiftlint-linux-arm64
+          # libxml2 2.14 bumped its soname to libxml2.so.16, and distributions
+          # shipping it (e.g. Ubuntu 26.04) have no libxml2.so.2, which the
+          # binaries above link through FoundationXML. Built where .so.16 is
+          # the system libxml2.
+          - arch: AMD64 libxml2.so.16
+            runner: ubuntu-26.04
+            artifact_name: swiftlint-linux-libxml2-16-amd64
+          - arch: ARM64 libxml2.so.16
+            runner: ubuntu-26.04-arm
+            artifact_name: swiftlint-linux-libxml2-16-arm64
     permissions:
       contents: read
     steps:
@@ -110,7 +120,7 @@ jobs:
           ref: ${{ env.RELEASE_BRANCH }}
           persist-credentials: false
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y libcurl4-openssl-dev
+        run: sudo apt update && sudo apt install -y libcurl4-openssl-dev libxml2-dev
       - name: Build binary
         run: make --debug spm_linux_build
       - name: Upload binary
@@ -319,6 +329,8 @@ jobs:
           # Move Linux artifacts.
           mv -f swiftlint-linux-amd64/swiftlint swiftlint_linux_amd64
           mv -f swiftlint-linux-arm64/swiftlint swiftlint_linux_arm64
+          mv -f swiftlint-linux-libxml2-16-amd64/swiftlint swiftlint_linux_libxml2_16_amd64
+          mv -f swiftlint-linux-libxml2-16-arm64/swiftlint swiftlint_linux_libxml2_16_arm64
           mv -f swiftlint-linux-static-amd64/swiftlint swiftlint_static_amd64
           mv -f swiftlint-linux-static-arm64/swiftlint swiftlint_static_arm64
 

@@ -17,6 +17,13 @@
   `)` would otherwise be stranded with the last argument.  
   [GandaLF2006](https://github.com/GandaLF2006)
 
+* Publish additional Linux binaries built against `libxml2.so.16`
+  (`swiftlint_linux_{amd64,arm64}_libxml2-16.zip`) for distributions such as
+  Ubuntu 26.04, where libxml2 2.14 changed its soname and the existing binaries
+  fail to start because `libxml2.so.2` is missing.  
+  [d-date](https://github.com/d-date)
+  [#6966](https://github.com/realm/SwiftLint/issues/6966)
+
 ### Bug Fixes
 
 * Preserve inline comments when `control_statement` removes parentheses during

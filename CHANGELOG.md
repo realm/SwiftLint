@@ -12,6 +12,13 @@
 
 ### Enhancements
 
+* Add new opt-in `redundant_acl` rule that triggers on access level modifiers
+  which only restate the default access level, like `internal` on top-level
+  declarations or `public` on members of a `public extension`. It is the
+  counterpart of the `explicit_acl` rule and comes with autocorrection.  
+  [setouchi-h](https://github.com/setouchi-h)
+  [#5828](https://github.com/realm/SwiftLint/issues/5828)
+
 * Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
   and multi-line calls to one-argument-per-line, including nested calls whose closing
   `)` would otherwise be stranded with the last argument.  

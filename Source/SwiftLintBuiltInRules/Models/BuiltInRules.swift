@@ -179,6 +179,7 @@ public let builtInRules: [any Rule.Type] = [
     RawValueForCamelCasedCodableEnumRule.self,
     ReduceBooleanRule.self,
     ReduceIntoRule.self,
+    RedundantACLRule.self,
     RedundantDiscardableLetRule.self,
     RedundantFinalRule.self,
     RedundantNilCoalescingRule.self,

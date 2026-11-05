@@ -16,6 +16,11 @@ struct VerticalParameterAlignmentRule: Rule {
 
 private extension VerticalParameterAlignmentRule {
     final class Visitor: ViolationsSyntaxVisitor<ConfigurationType> {
+        // Computed once per file: `SourceLocationConverter.sourceLines` materializes every line of the
+        // file as a new `[String]` on each access, and `graphemeColumn(line:column:)` below reads it
+        // once per parameter, which is quadratic in the size of the file.
+        private lazy var sourceLines = locationConverter.sourceLines
+
         override func visitPost(_ node: FunctionDeclSyntax) {
             violations.append(contentsOf: violations(for: node.signature.parameterClause.parameters))
         }
@@ -52,7 +57,7 @@ private extension VerticalParameterAlignmentRule {
         /// by multi-byte characters (e.g. a non-ASCII function name) are compared by their visible alignment
         /// rather than by their byte offset.
         private func graphemeColumn(line: Int, column: Int) -> Int {
-            guard let graphemeClusters = String(locationConverter.sourceLines[line - 1].utf8.prefix(column - 1)) else {
+            guard let graphemeClusters = String(sourceLines[line - 1].utf8.prefix(column - 1)) else {
                 return column
             }
             return graphemeClusters.count + 1

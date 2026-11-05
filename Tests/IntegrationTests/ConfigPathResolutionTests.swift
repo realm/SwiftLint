@@ -176,6 +176,25 @@ struct ConfigPathResolutionTests {
         )
     }
 
+    @Test
+    func nestedConfigurationRootMatchesRelativeFilePath() throws {
+        let scenarioPath = fixturePath("_4_nested_basic").appending(path: "ModuleA", directoryHint: .isDirectory)
+        try CurrentWorkingDirectory.$url.withValue(scenarioPath) {
+            let config = Configuration(configurationFiles: [])
+
+            let file = try #require(
+                SwiftLintFile(path: URL(filePath: "File.swift", relativeTo: scenarioPath))
+            )
+
+            // `swiftlint File.swift` (run from `ModuleA`) should use `ModuleA/.swiftlint.yml`, not climb past it
+            // and pick up `_4_nested_basic/.swiftlint.yml`.
+            #expect(
+                Set(config.configuration(for: file).rules.map { type(of: $0).identifier })
+                    == Set(config.rules.map { type(of: $0).identifier })
+            )
+        }
+    }
+
     #if !os(Windows)
     @Test(.enabled(
         if: ProcessInfo.processInfo.environment["SWIFTLINT_BAZEL_TEST"] == nil,

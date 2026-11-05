@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Preserve inline comments when `control_statement` removes parentheses during
+  `swiftlint --fix`.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6207](https://github.com/realm/SwiftLint/issues/6207)
+
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
   `.aspectRatio` is no longer collapsed onto a single line.  
@@ -34,6 +39,9 @@
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
 
+* Fix nested configuration resolution when a relative file path is passed to
+  `swiftlint`.  
+  [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
 * Stop `prefer_self_in_static_references` from reporting types referenced with
   a module selector such as `Foundation::TimeInterval`, which name a type from
   that module rather than the surrounding type.  

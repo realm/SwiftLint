@@ -19,6 +19,8 @@ gh release create "$version" --title "$release_title" -F "$release_notes" --draf
     "SwiftLint.pkg#Universal macOS Installer"                                                   \
     "swiftlint_linux_amd64.zip#AMD64 Linux Binaries"                                            \
     "swiftlint_linux_arm64.zip#ARM64 Linux Binaries"                                            \
+    "swiftlint_linux_amd64_libxml2-16.zip#AMD64 Linux Binary for libxml2.so.16 (e.g. Ubuntu 26.04)" \
+    "swiftlint_linux_arm64_libxml2-16.zip#ARM64 Linux Binary for libxml2.so.16 (e.g. Ubuntu 26.04)" \
     "SwiftLint.amd64.zip#AMD64 Windows Binary"                                          \
     "SwiftLint.arm64.zip#ARM64 Windows Binary"                                          \
     "SwiftLint.amd64.msi#AMD64 Windows Installer"                                       \

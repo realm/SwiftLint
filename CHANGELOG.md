@@ -12,6 +12,11 @@
 
 ### Enhancements
 
+* Add `NonSuppressibleByRegionRule` for rules whose violations must not be suppressed
+  by inline `swiftlint:disable` commands. Repository configuration can still disable
+  conforming rules.  
+  [eschwieb](https://github.com/eschwieb)
+
 * Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
   and multi-line calls to one-argument-per-line, including nested calls whose closing
   `)` would otherwise be stranded with the last argument.  

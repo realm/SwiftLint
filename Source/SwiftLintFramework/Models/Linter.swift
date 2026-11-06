@@ -18,6 +18,11 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
+private struct LinterRule: Sendable {
+    let rule: any Rule
+    let supportsCurrentSwiftVersion: Bool
+}
+
 private extension Rule {
     func superfluousDisableCommandViolations(regions: [Region],
                                              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
@@ -67,14 +72,22 @@ private extension Rule {
         return superfluousDisableCommandViolations
     }
 
-    func shouldRun(onFile file: SwiftLintFile) -> Bool {
+    func shouldRun(onFile file: SwiftLintFile, supportsCurrentSwiftVersion: Bool) -> Bool {
+        shouldRun(onFile: file, supportsCurrentSwiftVersion: supportsCurrentSwiftVersion, fileIsEmpty: file.isEmpty)
+    }
+
+    // The all-rules lint path can pass one precomputed value while autocorrect keeps the read lazy
+    // when a rule can be rejected without reading the file.
+    func shouldRun(onFile file: SwiftLintFile,
+                   supportsCurrentSwiftVersion: Bool,
+                   fileIsEmpty: @autoclosure () -> Bool) -> Bool {
         // We shouldn't lint if the current Swift version is not supported by the rule
-        guard SwiftVersion.current >= Self.description.minSwiftVersion else {
+        guard supportsCurrentSwiftVersion else {
             return false
         }
 
         // Empty files shouldn't trigger violations if `shouldLintEmptyFiles` is `false`
-        if file.isEmpty, !shouldLintEmptyFiles {
+        if !shouldLintEmptyFiles, fileIsEmpty() {
             return false
         }
 
@@ -98,6 +111,8 @@ private extension Rule {
     // As we need the configuration to get custom identifiers.
     // swiftlint:disable:next function_parameter_count
     func lint(file: SwiftLintFile,
+              supportsCurrentSwiftVersion: Bool,
+              fileIsEmpty: Bool,
               regions: [Region],
               benchmark: Bool,
               storage: RuleStorage,
@@ -108,7 +123,9 @@ private extension Rule {
 
         // Wrap entire lint process including shouldRun check in rule context
         return CurrentRule.$identifier.withValue(ruleID) {
-            guard shouldRun(onFile: file) else {
+            guard shouldRun(onFile: file,
+                            supportsCurrentSwiftVersion: supportsCurrentSwiftVersion,
+                            fileIsEmpty: fileIsEmpty) else {
                 return LintResult(violations: [], ruleTime: nil, deprecatedToValidIDPairs: [])
             }
 
@@ -249,7 +266,7 @@ public struct Linter {
     public let file: SwiftLintFile
     /// Whether or not this linter will be used to collect information from several files.
     public var isCollecting: Bool
-    fileprivate let rules: [any Rule]
+    fileprivate let rules: [LinterRule]
     fileprivate let cache: LinterCache?
     fileprivate let configuration: Configuration
     fileprivate let compilerArguments: [String]
@@ -269,14 +286,22 @@ public struct Linter {
         self.configuration = configuration
         self.compilerArguments = compilerArguments
 
-        let rules = configuration.rules.filter { rule in
-            if compilerArguments.isEmpty {
-                return !(rule is any AnalyzerRule)
+        let rules = configuration.rules.compactMap { rule -> LinterRule? in
+            let shouldIncludeRule = if compilerArguments.isEmpty {
+                !(rule is any AnalyzerRule)
+            } else {
+                rule is any AnalyzerRule || rule is SuperfluousDisableCommandRule
             }
-            return rule is any AnalyzerRule || rule is SuperfluousDisableCommandRule
+            guard shouldIncludeRule else {
+                return nil
+            }
+            return LinterRule(
+                rule: rule,
+                supportsCurrentSwiftVersion: configuration.rulesWrapper.supportsCurrentSwiftVersion(type(of: rule))
+            )
         }
         self.rules = rules
-        self.isCollecting = rules.contains(where: { $0 is any AnyCollectingRule })
+        self.isCollecting = rules.contains(where: { $0.rule is any AnyCollectingRule })
     }
 
     /// Returns a linter capable of checking for violations after running each rule's collection step.
@@ -286,7 +311,7 @@ public struct Linter {
     /// - returns: A linter capable of checking for violations after running each rule's collection step.
     public func collect(into storage: RuleStorage) -> CollectedLinter {
         DispatchQueue.concurrentPerform(iterations: rules.count) { idx in
-            let rule = rules[idx]
+            let rule = rules[idx].rule
             let ruleID = type(of: rule).identifier
             CurrentRule.$identifier.withValue(ruleID) {
                 rule.collectInfo(for: file, into: storage, compilerArguments: compilerArguments)
@@ -302,7 +327,7 @@ public struct Linter {
 public struct CollectedLinter {
     /// The file to lint with this linter.
     public let file: SwiftLintFile
-    private let rules: [any Rule]
+    private let rules: [LinterRule]
     private let cache: LinterCache?
     private let configuration: Configuration
     private let compilerArguments: [String]
@@ -346,15 +371,25 @@ public struct CollectedLinter {
         }
 
         let regions = file.regions()
+        let needsEmptyFileCheck = rules.contains {
+            $0.supportsCurrentSwiftVersion && !$0.rule.shouldLintEmptyFiles
+        }
+        let fileIsEmpty = needsEmptyFileCheck && file.isEmpty
         let superfluousDisableCommandRule = rules.first(where: {
-            $0 is SuperfluousDisableCommandRule
-        }) as? SuperfluousDisableCommandRule
-        let validationResults: [LintResult] = rules.parallelMap {
-            $0.lint(file: file, regions: regions, benchmark: benchmark,
-                    storage: storage,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule,
-                    globalConfiguration: configuration.globalConfiguration,
-                    compilerArguments: compilerArguments)
+            $0.rule is SuperfluousDisableCommandRule
+        })?.rule as? SuperfluousDisableCommandRule
+        let validationResults: [LintResult] = rules.parallelMap { linterRule in
+            linterRule.rule.lint(
+                file: file,
+                supportsCurrentSwiftVersion: linterRule.supportsCurrentSwiftVersion,
+                fileIsEmpty: fileIsEmpty,
+                regions: regions,
+                benchmark: benchmark,
+                storage: storage,
+                superfluousDisableCommandRule: superfluousDisableCommandRule,
+                globalConfiguration: configuration.globalConfiguration,
+                compilerArguments: compilerArguments
+            )
         }
         let undefinedSuperfluousCommandViolations = undefinedSuperfluousCommandViolations(
             regions: regions, configuration: configuration,
@@ -393,8 +428,8 @@ public struct CollectedLinter {
             // let's assume that all rules should have the same duration and split the duration among them
             let totalTime = -start.timeIntervalSinceNow
             let fractionedTime = totalTime / TimeInterval(rules.count)
-            ruleTimes = rules.compactMap { rule in
-                let id = type(of: rule).identifier
+            ruleTimes = rules.compactMap { linterRule in
+                let id = type(of: linterRule.rule).identifier
                 return (id, fractionedTime)
             }
         }
@@ -425,10 +460,16 @@ public struct CollectedLinter {
 
         var corrections = [String: Int]()
         let globalConfiguration = configuration.globalConfiguration
-        for rule in rules.compactMap({ $0 as? any CorrectableRule }) {
+        for linterRule in rules {
+            guard let rule = linterRule.rule as? any CorrectableRule else {
+                continue
+            }
             // Set rule context before checking shouldRun to allow file property access
             let ruleCorrections = CurrentRule.$identifier.withValue(type(of: rule).identifier) { () -> Int? in
-                guard rule.shouldRun(onFile: file) else {
+                guard rule.shouldRun(
+                    onFile: file,
+                    supportsCurrentSwiftVersion: linterRule.supportsCurrentSwiftVersion
+                ) else {
                     return nil
                 }
                 return CurrentRule.$configuration.withValue(globalConfiguration) {

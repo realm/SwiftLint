@@ -1,5 +1,9 @@
 import PackagePlugin
 
+#if canImport(XcodeProjectPlugin)
+import XcodeProjectPlugin
+#endif
+
 protocol CommandContext {
     var tool: String { get throws }
 
@@ -53,8 +57,6 @@ extension PluginContext: CommandContext {
 }
 
 #if canImport(XcodeProjectPlugin)
-
-import XcodeProjectPlugin
 
 extension XcodePluginContext: CommandContext {
     var tool: String {

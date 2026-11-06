@@ -12,6 +12,11 @@
 
 ### Enhancements
 
+* Add the opt-in `imports_at_top` rule to require file-scope imports to appear
+  before other declarations.   
+  [udithaAnuranjana](https://github.com/udithaAnuranjana)
+  [#6892](https://github.com/realm/SwiftLint/issues/6892)
+
 * Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
   and multi-line calls to one-argument-per-line, including nested calls whose closing
   `)` would otherwise be stranded with the last argument.  

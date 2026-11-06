@@ -1398,6 +1398,7 @@ unused_setter_value:
     correctable: false
 valid_ibinspectable:
   severity: warning
+  additional_types: []
   meta:
     opt-in: false
     correctable: false

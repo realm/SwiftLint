@@ -62,6 +62,8 @@ struct LintOrAnalyzeArguments: ParsableArguments {
                 """
     )
     var onlyRule: [String] = []
+    @Flag(help: "Fail with a non-zero exit code if there are remaining violations after fix.")
+    var failOnUnfixable = false
 }
 
 // MARK: - Common Argument Help

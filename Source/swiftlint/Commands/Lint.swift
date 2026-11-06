@@ -31,7 +31,7 @@ extension SwiftLint {
         func run() async throws {
             Issue.printDeprecationWarnings = !silenceDeprecationWarnings
 
-            if common.fix, let leniency = common.leniency {
+            if common.fix, !common.failOnUnfixable, let leniency = common.leniency {
                 Issue.genericWarning("The option --\(leniency) has no effect together with --fix.").print()
             }
 
@@ -65,7 +65,8 @@ extension SwiftLint {
                 disableSourceKit: disableSourceKit,
                 compilerLogPath: nil,
                 compileCommands: nil,
-                checkForUpdates: common.checkForUpdates
+                checkForUpdates: common.checkForUpdates,
+                failOnUnfixable: common.failOnUnfixable
             )
             try await LintOrAnalyzeCommand.run(options)
         }

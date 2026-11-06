@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct VoidReturnRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(VoidReturnRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct WeakDelegateRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {

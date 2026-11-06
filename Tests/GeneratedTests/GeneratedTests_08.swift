@@ -186,6 +186,14 @@ struct SingleTestClassRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct SortedCollectionMembersRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(SortedCollectionMembersRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct SortedEnumCasesRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct SortedFirstLastRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(SortedFirstLastRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct SortedImportsRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(SortedImportsRule.description)
     }
 }

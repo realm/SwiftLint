@@ -520,6 +520,7 @@ implicit_optional_initialization:
 implicit_return:
   severity: warning
   included: [closure, function, getter, initializer, subscript]
+  check_if_and_switch_expressions: false
   meta:
     opt-in: true
     correctable: true

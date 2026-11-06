@@ -9,9 +9,14 @@ struct ImplicitReturnRule: Rule {
         name: "Implicit Return",
         description: "Prefer implicit returns in closures, functions and getters",
         kind: .style,
-        nonTriggeringExamples: ImplicitReturnRuleExamples.nonTriggeringExamples,
-        triggeringExamples: ImplicitReturnRuleExamples.triggeringExamples,
+        nonTriggeringExamples: ImplicitReturnRuleExamples.nonTriggeringExamples
+            + ImplicitReturnRuleExamples.IfAndSwitchExpressionExamples.nonTriggeringExamples,
+        triggeringExamples: ImplicitReturnRuleExamples.triggeringExamples
+            + ImplicitReturnRuleExamples.IfAndSwitchExpressionExamples.triggeringExamples,
         corrections: ImplicitReturnRuleExamples.corrections
+            .merging(ImplicitReturnRuleExamples.IfAndSwitchExpressionExamples.corrections) { _, _ in
+                preconditionFailure("Duplicate correction in implicit return rule examples.")
+            }
     )
 }
 
@@ -29,7 +34,12 @@ private extension ImplicitReturnRule {
 
         override func visitPost(_ node: ClosureExprSyntax) {
             if configuration.isKindIncluded(.closure) {
-                collectViolation(in: node.statements)
+                // Without an explicit return type, the branches of an `if` or `switch` expression are type-checked
+                // independently, which may fail where the `return` statements compiled fine (e.g. `1` and `nil`).
+                collectViolation(
+                    in: node.statements,
+                    checkIfAndSwitch: node.signature?.returnClause != nil
+                )
             }
         }
 
@@ -61,10 +71,16 @@ private extension ImplicitReturnRule {
             }
         }
 
-        private func collectViolation(in itemList: CodeBlockItemListSyntax) {
-            guard let returnStmt = itemList.onlyElement?.item.as(ReturnStmtSyntax.self) else {
-                return
+        private func collectViolation(in itemList: CodeBlockItemListSyntax, checkIfAndSwitch: Bool = true) {
+            if let returnStmt = itemList.onlyReturnStatement {
+                collectViolation(for: returnStmt)
+            } else if checkIfAndSwitch, configuration.checkIfAndSwitchExpressions,
+                      let returnStmts = itemList.ifOrSwitchExpressionReturnStatements {
+                returnStmts.forEach(collectViolation(for:))
             }
+        }
+
+        private func collectViolation(for returnStmt: ReturnStmtSyntax) {
             let returnKeyword = returnStmt.returnKeyword
             violations.append(
                 at: returnKeyword.positionAfterSkippingLeadingTrivia,
@@ -76,5 +92,63 @@ private extension ImplicitReturnRule {
                 )
             )
         }
+    }
+}
+
+private extension CodeBlockItemListSyntax {
+    var onlyReturnStatement: ReturnStmtSyntax? {
+        onlyElement?.item.as(ReturnStmtSyntax.self)
+    }
+
+    /// The `return` statements in all branches of the only statement in this list if it is an `if` or `switch`
+    /// that could be used as an expression after removing them. `nil` otherwise.
+    var ifOrSwitchExpressionReturnStatements: [ReturnStmtSyntax]? {
+        guard let expression = onlyElement?.item.as(ExpressionStmtSyntax.self)?.expression else {
+            return nil
+        }
+        if let ifExpr = expression.as(IfExprSyntax.self) {
+            return ifExpr.branchReturnStatements
+        }
+        if let switchExpr = expression.as(SwitchExprSyntax.self) {
+            return switchExpr.branchReturnStatements
+        }
+        return nil
+    }
+
+    /// The `return` statements that make this branch of an `if` or `switch` produce a value. Either the branch's
+    /// only statement returning a value or the returns of a nested `if` or `switch` qualifying itself.
+    var branchReturnStatements: [ReturnStmtSyntax]? {
+        if let returnStmt = onlyReturnStatement {
+            return returnStmt.expression == nil ? nil : [returnStmt]
+        }
+        return ifOrSwitchExpressionReturnStatements
+    }
+}
+
+private extension IfExprSyntax {
+    var branchReturnStatements: [ReturnStmtSyntax]? {
+        guard let thenReturns = body.statements.branchReturnStatements else {
+            return nil
+        }
+        let elseReturns: [ReturnStmtSyntax]? = switch elseBody {
+        case let .codeBlock(block): block.statements.branchReturnStatements
+        case let .ifExpr(ifExpr): ifExpr.branchReturnStatements
+        case nil: nil
+        }
+        return elseReturns.map { thenReturns + $0 }
+    }
+}
+
+private extension SwitchExprSyntax {
+    var branchReturnStatements: [ReturnStmtSyntax]? {
+        var returns = [ReturnStmtSyntax]()
+        for element in cases {
+            guard case let .switchCase(switchCase) = element,
+                  let caseReturns = switchCase.statements.branchReturnStatements else {
+                return nil
+            }
+            returns += caseReturns
+        }
+        return returns.isEmpty ? nil : returns
     }
 }

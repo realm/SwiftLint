@@ -66,7 +66,7 @@ public final class LinterCache {
 
         writeCacheLock.lock()
         // Remove the value rather than copying it out to prevent the COW that would happen when we modify it below,
-        // which is expensive if the file cache contains many entries. This makes cache(...) O(1) rather than O(n) amortized.
+        // which is expensive if the file cache contains many entries. This makes cache(...) O(1) rather than O(n).
         var filesCache = writeCache.removeValue(forKey: configurationDescription) ?? .empty
         filesCache.entries[file.filepath] = FileCacheEntry(
             violations: violations,

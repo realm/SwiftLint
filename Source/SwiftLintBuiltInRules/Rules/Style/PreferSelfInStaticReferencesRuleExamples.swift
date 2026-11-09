@@ -23,6 +23,20 @@ enum PreferSelfInStaticReferencesRuleExamples {
             }
             """,
         """
+            class ClassExtension {
+                required init() {}
+            }
+            extension ClassExtension {
+                static func make() -> ClassExtension { .init() }
+            }
+            """.asExample(excludeFromDocumentation: true),
+        """
+            struct InstanceExtension {}
+            extension InstanceExtension {
+                func make() -> InstanceExtension { self }
+            }
+            """.asExample(excludeFromDocumentation: true),
+        """
             class `Self` {
                 static let i = 0
                 func f() -> Int { Self.i }
@@ -349,6 +363,16 @@ enum PreferSelfInStaticReferencesRuleExamples {
             }
             """.asExample(excludeFromDocumentation: true),
         """
+            struct Example {
+                var value = 1
+            }
+            extension Example {
+                static func example() -> ↓Example {
+                    .init()
+                }
+            }
+            """.asExample(excludeFromDocumentation: true),
+        """
             class Outer {
                 class Inner {
                     static let i = 0
@@ -425,6 +449,25 @@ enum PreferSelfInStaticReferencesRuleExamples {
                 }
                 extension C {
                     func f() -> Int { Self.i }
+                }
+                """,
+        """
+            struct Example {
+                var value = 1
+            }
+            extension Example {
+                static func example() -> ↓Example {
+                    .init()
+                }
+            }
+            """: """
+                struct Example {
+                    var value = 1
+                }
+                extension Example {
+                    static func example() -> Self {
+                        .init()
+                    }
                 }
                 """,
         """

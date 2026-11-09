@@ -130,6 +130,9 @@ private extension MissingDocsRule {
         }
 
         override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+            if configuration.excludesInheritedTypes, node.isActorRequirement {
+                return .skipChildren
+            }
             collectViolation(from: node, on: node.bindingSpecifier)
             return .skipChildren
         }
@@ -149,6 +152,17 @@ private extension MissingDocsRule {
                 )
             }
         }
+    }
+}
+
+private extension VariableDeclSyntax {
+    var isActorRequirement: Bool {
+        guard bindings.count == 1,
+              let identifier = bindings.first?.pattern.as(IdentifierPatternSyntax.self),
+              identifier.identifier.text == "unownedExecutor" else {
+            return false
+        }
+        return parent?.parent?.parent?.parent?.is(ActorDeclSyntax.self) == true
     }
 }
 

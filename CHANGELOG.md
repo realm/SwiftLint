@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Detect under-indented closing braces using their owning declarations and
+  statements instead of the preceding line's indentation. Preserve valid empty
+  blocks, switch cases, consecutive closings and continuation delimiters.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6498](https://github.com/realm/SwiftLint/issues/6498)
 * Preserve inline comments when `control_statement` removes parentheses during
   `swiftlint --fix`.  
   [theamodhshetty](https://github.com/theamodhshetty)

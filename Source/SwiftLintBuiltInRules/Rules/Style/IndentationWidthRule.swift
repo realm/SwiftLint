@@ -55,6 +55,8 @@ struct IndentationWidthRule: OptInRule {
             "firstLine\n\tsecondLine\n\t\tthirdLine\n\n\t\tfourthLine",
             "firstLine\n\tsecondLine\n\t\tthirdLine\n\t//test\n\t\tfourthLine",
             "firstLine\n    secondLine\n        thirdLine\nfourthLine",
+            "func f() {\n    if ready {\n    }\n}",
+            "func f() {\n    switch value {\n    case .ready: work()\n    }\n}",
             """
                 guard let x = foo(),
                       let y = bar() else {
@@ -86,6 +88,7 @@ struct IndentationWidthRule: OptInRule {
             "firstLine\n        secondLine",
             "firstLine\n\tsecondLine\n\n↓\t\t\tfourthLine",
             "firstLine\n    secondLine\n        thirdLine\n↓ fourthLine",
+            "func f() {\n    if ready {\n        work()\n↓}\n}",
         ]).skipWrappingInCommentTests()
     )
 
@@ -95,7 +98,7 @@ struct IndentationWidthRule: OptInRule {
         var violations: [StyleViolation] = []
         var previousLineIndentations: [Indentation] = []
 
-        let conditionContinuationInfo = multilineConditionInfo(in: file)
+        let lineInfo = indentationLineInfo(in: file)
 
         for line in file.lines {
             // Skip whitespace-only lines, comments, compiler directives, multiline strings
@@ -104,7 +107,7 @@ struct IndentationWidthRule: OptInRule {
 
             let prefix = IndentationPrefix(line: line, length: indentationCharacterCount)
 
-            if let expectedColumn = conditionContinuationInfo[line.index] {
+            if let expectedColumn = lineInfo.continuationLines[line.index] {
                 if let violation = checkMultilineConditionAlignment(
                     line: line, expectedColumn: expectedColumn, prefix: prefix, file: file
                 ) {
@@ -128,7 +131,10 @@ struct IndentationWidthRule: OptInRule {
                 continue
             }
 
-            if let violation = checkIndentationChange(
+            if let closingBrace = lineInfo.closingBraces[line.byteRange.location],
+               let violation = checkClosingBraceIndentation(prefix: prefix, closingBrace: closingBrace, file: file) {
+                violations.append(violation)
+            } else if let violation = checkIndentationChange(
                 indentation: indentation, previousLineIndentations: previousLineIndentations, line: line, file: file
             ) {
                 violations.append(violation)
@@ -179,6 +185,21 @@ struct IndentationWidthRule: OptInRule {
         )
     }
 
+    private func checkClosingBraceIndentation(
+        prefix: IndentationPrefix, closingBrace: (line: Int, indentation: Int), file: SwiftLintFile
+    ) -> StyleViolation? {
+        let actualIndentation = prefix.spacesEquivalent(indentationWidth: configuration.indentationWidth)
+        guard actualIndentation < closingBrace.indentation else {
+            return nil
+        }
+        return StyleViolation(
+            ruleDescription: Self.description,
+            severity: configuration.severityConfiguration.severity,
+            location: Location(file: file.path, line: closingBrace.line, character: 1),
+            reason: "Closing brace should be aligned with its opening declaration or statement"
+        )
+    }
+
     private func parseIndentation(
         line: Line, prefix: IndentationPrefix, file: SwiftLintFile
     ) -> (Indentation, StyleViolation?) {
@@ -211,12 +232,11 @@ struct IndentationWidthRule: OptInRule {
         )
     }
 
-    /// Returns a mapping from line index to expected indentation column for continuation lines
-    /// of multi-line conditions. When `include_multiline_conditions` is false, these lines are
-    /// skipped entirely (expected column is still stored so the line is recognized as a continuation).
-    private func multilineConditionInfo(in file: SwiftLintFile) -> [Int: Int] {
-        let visitor = MultilineConditionLineVisitor(locationConverter: file.locationConverter)
-        return visitor.walk(tree: file.syntaxTree, handler: \.continuationLines)
+    private func indentationLineInfo(in file: SwiftLintFile) -> IndentationLineVisitor {
+        let visitor = IndentationLineVisitor(
+            locationConverter: file.locationConverter, indentationWidth: configuration.indentationWidth
+        )
+        return visitor.walk(tree: file.syntaxTree, handler: { $0 })
     }
 
     private func ignoreCompilerDirective(line: Line, in file: SwiftLintFile) -> Bool {
@@ -282,13 +302,17 @@ struct IndentationWidthRule: OptInRule {
     }
 }
 
-private final class MultilineConditionLineVisitor: SyntaxVisitor {
+private final class IndentationLineVisitor: SyntaxVisitor {
     private let locationConverter: SourceLocationConverter
+    private let indentationWidth: Int
     /// Maps line index → expected indentation column for continuation lines.
     private(set) var continuationLines = [Int: Int]()
+    /// Byte offsets keep SwiftSyntax and SourceKitten lines consistent for both LF and CRLF.
+    private(set) var closingBraces = [ByteCount: (line: Int, indentation: Int)]()
 
-    init(locationConverter: SourceLocationConverter) {
+    init(locationConverter: SourceLocationConverter, indentationWidth: Int) {
         self.locationConverter = locationConverter
+        self.indentationWidth = indentationWidth
         super.init(viewMode: .sourceAccurate)
     }
 
@@ -302,6 +326,46 @@ private final class MultilineConditionLineVisitor: SyntaxVisitor {
 
     override func visitPost(_ node: WhileStmtSyntax) {
         collectContinuationLines(keyword: node.whileKeyword, conditions: node.conditions)
+    }
+
+    override func visitPost(_ node: CodeBlockSyntax) {
+        collectClosingBrace(node.rightBrace, anchor: node.parent?.positionAfterSkippingLeadingTrivia)
+    }
+
+    override func visitPost(_ node: MemberBlockSyntax) {
+        collectClosingBrace(node.rightBrace, anchor: node.parent?.positionAfterSkippingLeadingTrivia)
+    }
+
+    override func visitPost(_ node: AccessorBlockSyntax) {
+        let declaration = node.parent?.as(PatternBindingSyntax.self)?.parent?.parent?.as(VariableDeclSyntax.self)
+        collectClosingBrace(
+            node.rightBrace,
+            anchor: declaration?.positionAfterSkippingLeadingTrivia ?? node.parent?.positionAfterSkippingLeadingTrivia
+        )
+    }
+
+    override func visitPost(_ node: SwitchExprSyntax) {
+        collectClosingBrace(node.rightBrace, anchor: node.switchKeyword.positionAfterSkippingLeadingTrivia)
+    }
+
+    private func collectClosingBrace(_ brace: TokenSyntax, anchor: AbsolutePosition?) {
+        guard brace.presence == .present, let anchor else { return }
+        let location = locationConverter.location(for: brace.positionAfterSkippingLeadingTrivia)
+        let anchorLine = locationConverter.location(for: anchor).line
+        guard anchorLine < location.line,
+              locationConverter.sourceLines[location.line - 1].utf8.prefix(location.column - 1)
+                .allSatisfy({ $0 == 32 || $0 == 9 }) else { return }
+        // A preceding line may close several nested blocks, contain an empty body, or be
+        // a switch case/continuation. Its indentation does not identify this brace's owner.
+        // Closures retain the existing grid checks; closure_end_indentation handles their anchors.
+        let prefix = locationConverter.sourceLines[anchorLine - 1].prefix(while: { $0 == " " || $0 == "\t" })
+        let indentation = prefix.reduce(0) { $0 + ($1 == "\t" ? indentationWidth : 1) }
+        // An invalid opener is already reported by the grid/mixed-indentation checks.
+        // Do not make its otherwise correctly indented closing brace a cascading violation.
+        guard indentation.isMultiple(of: indentationWidth),
+              !prefix.contains(" ") || !prefix.contains("\t") else { return }
+        let lineOffset = brace.positionAfterSkippingLeadingTrivia.utf8Offset - location.column + 1
+        closingBraces[ByteCount(lineOffset)] = (location.line, indentation)
     }
 
     private func collectContinuationLines(keyword: TokenSyntax, conditions: ConditionElementListSyntax) {

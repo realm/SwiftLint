@@ -1,3 +1,4 @@
+import Foundation
 import TestHelpers
 import Testing
 
@@ -406,6 +407,179 @@ struct IndentationWidthRuleTests {
             includeComments: includeComments, includeCompilerDirectives: includeCompilerDirectives,
             includeMultilineStrings: includeMultilineStrings,
             includeMultilineConditions: includeMultilineConditions, file: file, line: line
+        )
+    }
+}
+
+extension IndentationWidthRuleTests {
+    @Test
+    func closingBraceIndentation() {
+        assert1Violation(in: """
+            import SwiftUI
+
+            struct TestView: View {
+                var body: some View {
+                    VStack {
+                        Text("Hello")
+                    }
+                    .onTapGesture {
+                        if true {
+                            print("inside if")
+                    }
+                    }
+                }
+            }
+            """)
+
+        assertNoViolation(in: """
+            import SwiftUI
+
+            struct TestView: View {
+                var body: some View {
+                    VStack {
+                        Text("Hello")
+                    }
+                    .onTapGesture {
+                        if true {
+                            print("inside if")
+                        }
+                    }
+                }
+            }
+            """)
+    }
+
+    @Test
+    func closingBracesFollowTheirOwnBlocks() throws {
+        let examples: [(String, [Int])] = [
+            // Report the inner brace, not the correctly aligned outer brace that follows it.
+            ("func f() {\n    if ready {\n        work()\n}\n}", [4]),
+            ("struct Outer {\n    struct Inner {\n        let value = 1\n}\n}", [4]),
+            ("func f() {\n    switch value {\n    case .ready: work()\n}\n}", [4]),
+            ("struct S {\n    var value: Int {\n        return 1\n}\n}", [4]),
+            ("struct S {\n    var\n        value: Int {\n        1\n}\n}", [5]),
+            ("func f() {\n    if ready {\n}\n}", [3]),
+            ("func f() {\n    if ready {\n        work()\n}\n    if other {\n        work()\n}\n}", [4, 7]),
+        ]
+        let config = try #require(makeConfig([:], IndentationWidthRule.identifier))
+        for (source, expectedLines) in examples {
+            let actual = violations(Example(code: source + "\n"), config: config).map(\.location.line)
+            #expect(actual == expectedLines.map(Optional.some), "\(source)")
+        }
+    }
+
+    @Test
+    func validClosingDelimitersDoNotRequireOneLevelOfUnindentation() {
+        assertNoViolation(in: """
+            struct S {
+                func f() {
+                    if ready {
+                    } else {
+                    }
+                    switch value {
+                    case .ready: work()
+                    case .other: break
+                    }
+                    let values = [
+                        [1, 2],
+                    ]
+                    call(
+                        values
+                    )
+                }
+            }
+            """)
+        assertNoViolation(in: "func f() {\n    if ready { work() }\n}")
+        assertNoViolation(in: "func f() {\n    if ready {\n        if other {\n        }\n    }\n}")
+    }
+
+    @Test
+    func closingBracesUseTheStatementStartForMultilineHeaders() {
+        assertNoViolation(in: "struct S {\n    var\n        value: Int {\n        1\n    }\n}")
+        assertNoViolation(in: """
+            struct S {
+                func f(
+                    value: Int
+                ) {
+                    if let a = foo(),
+                       let b = bar() {
+                        work()
+                    }
+                    guard let a = foo(),
+                          let b = bar() else {
+                        return
+                    }
+                }
+            }
+            """)
+    }
+
+    @Test
+    func closureAndContinuationAlignmentIsUnchanged() {
+        assertNoViolation(in: """
+            func f() {
+                call(first: {
+                    work()
+                }, second: {
+                    work()
+                })
+                call(
+                    [
+                        1,
+                    ]
+                ) { value in
+                    work()
+                }
+            }
+            """)
+    }
+
+    @Test
+    func bracesInCommentsAndStringsAreNotBlocks() {
+        let source = #"""
+            func f() {
+                // }
+                /*
+            }
+                */
+                let text = """
+            }
+                """
+            }
+            """#
+        assertNoViolation(in: source, includeComments: false, includeMultilineStrings: false)
+    }
+
+    @Test
+    func closingBraceIndentationWithTabsAndCustomWidths() {
+        for width in [2, 4, 8] {
+            let indent = String(repeating: " ", count: width)
+            assert1Violation(
+                in: "func f() {\n\(indent)if ready {\n\(indent)\(indent)work()\n}\n}",
+                indentationWidth: width
+            )
+            assertNoViolation(
+                in: "func f() {\n\(indent)if ready {\n\(indent)}\n}", indentationWidth: width
+            )
+        }
+        assert1Violation(in: "func f() {\n\tif ready {\n\t\twork()\n}\n}")
+        assertNoViolation(in: "func f() {\n\tif ready {\n\t}\n}")
+    }
+
+    @Test
+    func closingBraceIndentationWithCRLFAndUnicode() throws {
+        let source = "func café() {\n    if ready {\n        print(\"😵‍💫\")\n}\n}\n"
+        let config = try #require(makeConfig([:], IndentationWidthRule.identifier))
+        for code in [source, source.replacingOccurrences(of: "\n", with: "\r\n")] {
+            #expect(violations(Example(code: code), config: config).map(\.location.line) == [4])
+        }
+    }
+
+    @Test
+    func closingBraceDoesNotCascadeFromInvalidOpener() {
+        assert1Violation(in: "func f() {\n     if ready {\n         work()\n    }\n}")
+        assertViolations(
+            in: "func f() {\n\t    if ready {\n\t\t\twork()\n\t}\n}", equals: 2
         )
     }
 }

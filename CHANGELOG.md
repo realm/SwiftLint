@@ -24,6 +24,10 @@
   when a preceding line contains multi-byte characters.  
   [theamodhshetty](https://github.com/theamodhshetty)
   [#6467](https://github.com/realm/SwiftLint/issues/6467)
+* Preserve inline comments when `control_statement` removes parentheses during
+  `swiftlint --fix`.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6207](https://github.com/realm/SwiftLint/issues/6207)
 
 * Keep the formatting of multiline member chains when correcting
   `legacy_swiftui_aspect_ratio`. The trivia between the base expression and
@@ -39,6 +43,15 @@
   docs after a blank line.  
   [Hokila](https://github.com/Hokila)
   [#6897](https://github.com/realm/SwiftLint/issues/6897)
+
+* Fix nested configuration resolution when a relative file path is passed to
+  `swiftlint`.  
+  [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
+
+* Fix `excluded` configuration being ignored when file paths matching a non-wildcard
+  exclusion pattern are passed as arguments.  
+  [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
+  [#6795](https://github.com/realm/SwiftLint/issues/6795)
 
 ## 0.65.1: Fresh Folded Fixtures
 

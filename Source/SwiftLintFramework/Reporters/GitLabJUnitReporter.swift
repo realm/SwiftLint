@@ -14,7 +14,7 @@ struct GitLabJUnitReporter: Reporter {
                 let column = violation.location.character.map(String.init)
 
                 let severity = violation.severity.rawValue
-                let rule = violation.ruleIdentifier
+                let rule = violation.ruleIdentifier.escapedForXML()
                 let reason = violation.reason.escapedForXML()
 
                 let location = [fileName, line].compactMap(\.self).joined(separator: ":")

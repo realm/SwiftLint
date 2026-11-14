@@ -48,6 +48,14 @@
   [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
   [#6795](https://github.com/realm/SwiftLint/issues/6795)
 
+* Keep `checkstyle`, `junit` and `gitlab` reports well-formed XML when a
+  reason, file path or rule identifier contains a control character, or `<`,
+  `>`, `&`, `"` or `'` followed by a combining mark. Characters that XML 1.0
+  cannot hold at all are written as U+FFFD, in `html` reports too, and the
+  `gitlab` reporter now escapes the rule identifier.  
+  [Joseph Cursio](https://github.com/Joseph-Cursio)
+  [#6965](https://github.com/realm/SwiftLint/issues/6965)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

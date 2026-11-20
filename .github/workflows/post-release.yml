@@ -81,7 +81,7 @@ jobs:
       - setup-credentials
       - merge-into-base-branch
     if: ${{ !github.event.release.prerelease }}
-    uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@fa5bb3803983c621c90721669ee7857afe139836 # v1.5.1
+    uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@1ae09341a6014e9bea052879c42392ac6b8b632c # v1.7.0
     permissions:
       contents: write
     with:

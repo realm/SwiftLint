@@ -1,6 +1,10 @@
 import Foundation
 import PackagePlugin
 
+#if canImport(XcodeProjectPlugin)
+import XcodeProjectPlugin
+#endif
+
 @main
 struct SwiftLintBuildToolPlugin: BuildToolPlugin {
     func createBuildCommands(
@@ -88,8 +92,6 @@ private func addedToEnvironment(_ new: [String: String]) -> [String: String] {
 }
 
 #if canImport(XcodeProjectPlugin)
-
-import XcodeProjectPlugin
 
 // swiftlint:disable:next no_grouping_extension
 extension SwiftLintBuildToolPlugin: XcodeBuildToolPlugin {

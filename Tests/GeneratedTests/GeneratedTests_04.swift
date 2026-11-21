@@ -130,6 +130,14 @@ struct ImplicitlyUnwrappedOptionalRuleGeneratedTests {
 }
 
 @Suite(.rulesRegistered)
+struct ImportsAtTopRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(ImportsAtTopRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct InclusiveLanguageRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct LastWhereRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(LastWhereRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct LeadingWhitespaceRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(LeadingWhitespaceRule.description)
     }
 }

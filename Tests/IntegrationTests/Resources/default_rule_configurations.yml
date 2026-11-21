@@ -529,6 +529,11 @@ implicitly_unwrapped_optional:
   meta:
     opt-in: true
     correctable: false
+imports_at_top:
+  severity: warning
+  meta:
+    opt-in: true
+    correctable: false
 inclusive_language:
   severity: warning
   meta:

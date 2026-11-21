@@ -87,6 +87,12 @@
   [arimu1](https://github.com/arimu1)
   [#6839](https://github.com/realm/SwiftLint/issues/6839)
 
+* Add `legacy_swiftui_aspect_ratio` rule to prefer `scaledToFit()` and
+  `scaledToFill()` over `aspectRatio(contentMode:)` with a constant
+  content mode.  
+  [DemiDevv](https://github.com/DemiDevv)
+  [#5713](https://github.com/realm/SwiftLint/issues/5713)
+
 ### Bug Fixes
 
 * Add an opt-in `allow_explicit_unsafe_unowned` option to let the
@@ -341,12 +347,6 @@
   [Dimitri Dupuis-Latour](https://github.com/DimDL)
   [#6268](https://github.com/realm/SwiftLint/issues/6268)
   
-* Add `legacy_swiftui_aspect_ratio` rule to prefer `scaledToFit()` and
-  `scaledToFill()` over `aspectRatio(contentMode:)` with a constant
-  content mode.  
-  [DemiDevv](https://github.com/DemiDevv)
-  [#5713](https://github.com/realm/SwiftLint/issues/5713)
-
 * Support access level modifiers on imports in `unused_imports` rule.  
   [SimplyDanny](https://github.com/SimplyDanny)
   [#6620](https://github.com/realm/SwiftLint/issues/6620)

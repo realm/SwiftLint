@@ -150,7 +150,10 @@ public extension Rule {
     }
 
     func isEnabled(in region: Region, for ruleID: String) -> Bool {
-        !Self.description.allIdentifiers.contains(ruleID) || region.isRuleEnabled(self)
+        if self is any NonSuppressibleByRegionRule {
+            return true
+        }
+        return !Self.description.allIdentifiers.contains(ruleID) || region.isRuleEnabled(self)
     }
 
     func notifyRuleDisabledOnce() {
@@ -165,6 +168,11 @@ public extension Rule {
 
 /// A rule that is not enabled by default. Rules conforming to this need to be explicitly enabled by users.
 public protocol OptInRule: Rule {}
+
+/// A rule whose violations cannot be suppressed with inline `swiftlint:disable` commands.
+///
+/// Conformance does not prevent a repository configuration from disabling the rule entirely.
+public protocol NonSuppressibleByRegionRule: Rule {}
 
 /// A rule that can correct violations.
 public protocol CorrectableRule: Rule {

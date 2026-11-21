@@ -192,12 +192,6 @@ def setup_repos
         file.puts(repo.config)
       end
     end
-    if @only_rules_changed && @rules_changed
-      File.open(swiftlint_config, 'a') do |file|
-        file.puts('only_rules:')
-        file.puts(@rules_changed.map { |rule| "  - #{rule}" })
-      end
-    end
     Dir.chdir(dir) do
       repo.commit_hash = `git rev-parse HEAD`.strip
     end
@@ -212,7 +206,12 @@ def generate_reports(branch)
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = "../builds/swiftlint-#{branch} lint --no-cache #{'--enable-all-rules' unless @only_rules_changed} --reporter json"
+      rule_options = if @only_rules_changed
+                       @rules_changed.map { |rule| "--only-rule #{rule}" }.join(' ')
+                     else
+                       '--enable-all-rules'
+                     end
+      command = "../builds/swiftlint-#{branch} lint --no-cache #{rule_options} --reporter json"
       File.open("../#{branch}_reports/#{repo}.json", 'w') do |file|
         puts "\n#{command}" if @options[:verbose]
         Open3.popen2(command) do |_, stdout, wait_thr|
@@ -271,6 +270,17 @@ def build(branch)
   perform("mv bazel-bin/swiftlint swiftlint-#{branch}", dir: dir)
 end
 
+def read_report(branch, repo)
+  path = "#{$working_dir}/#{branch}_reports/#{repo.name}.json"
+  contents = File.read(path)
+  if contents.strip.empty?
+    warn "SwiftLint produced no report for #{repo.name} with the #{branch} build, so its results " \
+         'are skipped. Check the job log for the lint output of that repository.'
+    return nil
+  end
+  JSON.parse(contents).map { |json| ReportEntry.from_json(json) }
+end
+
 def diff_and_report_changes_to_danger
   @repos.each { |repo| message repo.duration_report }
 
@@ -283,12 +293,9 @@ def diff_and_report_changes_to_danger
       next
     end
 
-    branch = JSON.parse(File.read("#{$working_dir}/branch_reports/#{repo.name}.json")).map {
-      |json| ReportEntry.from_json(json)
-    }
-    main = JSON.parse(File.read("#{$working_dir}/main_reports/#{repo.name}.json")).map {
-      |json| ReportEntry.from_json(json)
-    }
+    branch = read_report('branch', repo)
+    main = read_report('main', repo)
+    next if branch.nil? || main.nil?
 
     new_violations = branch - main
     fixed_violations = main - branch

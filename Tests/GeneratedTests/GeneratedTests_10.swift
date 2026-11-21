@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct UnneededBreakInSwitchRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(UnneededBreakInSwitchRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct UnneededEscapingRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct VoidFunctionInTernaryConditionRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(VoidFunctionInTernaryConditionRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct VoidReturnRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(VoidReturnRule.description)
     }
 }

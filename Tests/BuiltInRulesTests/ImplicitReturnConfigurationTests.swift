@@ -16,6 +16,7 @@ struct ImplicitReturnConfigurationTests {
                 "initializer",
                 "subscript",
             ],
+            "check_if_and_switch_expressions": true,
         ]
 
         try configuration.apply(configuration: config)
@@ -28,6 +29,7 @@ struct ImplicitReturnConfigurationTests {
         ])
         #expect(configuration.severityConfiguration.severity == .error)
         #expect(configuration.includedKinds == expectedKinds)
+        #expect(configuration.checkIfAndSwitchExpressions)
     }
 
     @Test

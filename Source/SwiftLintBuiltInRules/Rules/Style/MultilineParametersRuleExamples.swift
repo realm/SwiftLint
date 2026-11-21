@@ -1,6 +1,8 @@
 import SwiftLintCore
 
-internal struct MultilineParametersRuleExamples {
+// swiftlint:disable file_length
+
+internal struct MultilineParametersRuleExamples { // swiftlint:disable:this type_body_length
     static let nonTriggeringExamples: [Example] = #examples([
         "func foo() { }",
         "func foo(param1: Int) { }",
@@ -216,148 +218,292 @@ internal struct MultilineParametersRuleExamples {
 
     static let triggeringExamples: [Example] = #examples([
         """
-        func ↓foo(_ param1: Int,
-                  param2: Int, param3: Int) -> (Int) -> Int {
+        func foo(_ param1: Int,
+                 param2: Int, ↓param3: Int) -> (Int) -> Int {
            return { x in x + param1 + param2 + param3 }
         }
         """,
         """
         protocol Foo {
-           func ↓foo(param1: Int,
-                     param2: Bool, param3: [String]) { }
+           func foo(param1: Int,
+                    param2: Bool, ↓param3: [String]) { }
         }
         """,
         """
         protocol Foo {
-           func ↓foo(param1: Int, param2: Bool,
-                     param3: [String]) { }
+           func foo(param1: Int, ↓param2: Bool,
+                    param3: [String]) { }
         }
         """,
         """
         protocol Foo {
-           static func ↓foo(param1: Int,
-                            param2: Bool, param3: [String]) { }
+           static func foo(param1: Int,
+                           param2: Bool, ↓param3: [String]) { }
         }
         """,
         """
         protocol Foo {
-           static func ↓foo(param1: Int, param2: Bool,
-                            param3: [String]) { }
-        }
-        """,
-        """
-        protocol Foo {
-           class func ↓foo(param1: Int,
-                           param2: Bool, param3: [String]) { }
-        }
-        """,
-        """
-        protocol Foo {
-           class func ↓foo(param1: Int, param2: Bool,
+           static func foo(param1: Int, ↓param2: Bool,
                            param3: [String]) { }
         }
         """,
         """
-        enum Foo {
-           func ↓foo(param1: Int,
-                     param2: Bool, param3: [String]) { }
+        protocol Foo {
+           class func foo(param1: Int,
+                          param2: Bool, ↓param3: [String]) { }
+        }
+        """,
+        """
+        protocol Foo {
+           class func foo(param1: Int, ↓param2: Bool,
+                          param3: [String]) { }
         }
         """,
         """
         enum Foo {
-           func ↓foo(param1: Int, param2: Bool,
-                     param3: [String]) { }
+           func foo(param1: Int,
+                    param2: Bool, ↓param3: [String]) { }
         }
         """,
         """
         enum Foo {
-           static func ↓foo(param1: Int,
-                            param2: Bool, param3: [String]) { }
+           func foo(param1: Int, ↓param2: Bool,
+                    param3: [String]) { }
         }
         """,
         """
         enum Foo {
-           static func ↓foo(param1: Int, param2: Bool,
-                            param3: [String]) { }
+           static func foo(param1: Int,
+                           param2: Bool, ↓param3: [String]) { }
+        }
+        """,
+        """
+        enum Foo {
+           static func foo(param1: Int, ↓param2: Bool,
+                           param3: [String]) { }
         }
         """,
         """
         struct Foo {
-           func ↓foo(param1: Int,
-                     param2: Bool, param3: [String]) { }
+           func foo(param1: Int,
+                    param2: Bool, ↓param3: [String]) { }
         }
         """,
         """
         struct Foo {
-           func ↓foo(param1: Int, param2: Bool,
-                     param3: [String]) { }
+           func foo(param1: Int, ↓param2: Bool,
+                    param3: [String]) { }
         }
         """,
         """
         struct Foo {
-           static func ↓foo(param1: Int,
-                            param2: Bool, param3: [String]) { }
+           static func foo(param1: Int,
+                           param2: Bool, ↓param3: [String]) { }
         }
         """,
         """
         struct Foo {
-           static func ↓foo(param1: Int, param2: Bool,
-                            param3: [String]) { }
-        }
-        """,
-        """
-        class Foo {
-           func ↓foo(param1: Int,
-                     param2: Bool, param3: [String]) { }
-        }
-        """,
-        """
-        class Foo {
-           func ↓foo(param1: Int, param2: Bool,
-                     param3: [String]) { }
-        }
-        """,
-        """
-        class Foo {
-           class func ↓foo(param1: Int,
-                           param2: Bool, param3: [String]) { }
-        }
-        """,
-        """
-        class Foo {
-           class func ↓foo(param1: Int, param2: Bool,
+           static func foo(param1: Int, ↓param2: Bool,
                            param3: [String]) { }
         }
         """,
         """
         class Foo {
-           class func ↓foo(param1: Int,
-                          param2: Bool, param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+           func foo(param1: Int,
+                    param2: Bool, ↓param3: [String]) { }
         }
         """,
         """
         class Foo {
-           class func ↓foo(param1: Int,
-                          param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }
+           func foo(param1: Int, ↓param2: Bool,
+                    param3: [String]) { }
         }
         """,
         """
         class Foo {
-          ↓init(param1: Int, param2: Bool,
-                param3: @escaping ((Int) -> Void)? = { _ in }) { }
+           class func foo(param1: Int,
+                          param2: Bool, ↓param3: [String]) { }
         }
         """,
-        "func ↓foo(param1: Int, param2: Bool) { }".asExample(configuration: ["allows_single_line": false]),
-        "func ↓foo(param1: Int, param2: Bool, param3: [String]) { }"
+        """
+        class Foo {
+           class func foo(param1: Int, ↓param2: Bool,
+                          param3: [String]) { }
+        }
+        """,
+        """
+        class Foo {
+           class func foo(param1: Int,
+                          param2: Bool, ↓param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+        }
+        """,
+        """
+        class Foo {
+           class func foo(param1: Int,
+                          param2: Bool, ↓param3: @escaping (Int) -> Void = { (x: Int) in }) { }
+        }
+        """,
+        """
+        class Foo {
+          init(param1: Int, ↓param2: Bool,
+               param3: @escaping ((Int) -> Void)? = { _ in }) { }
+        }
+        """,
+        "func foo(param1: Int, ↓param2: Bool) { }".asExample(configuration: ["allows_single_line": false]),
+        "func foo(param1: Int, ↓param2: Bool, param3: [String]) { }"
             .asExample(configuration: ["allows_single_line": false]),
-        "func ↓foo(param1: Int, param2: Bool, param3: [String]) { }"
+        "func foo(param1: Int, param2: Bool, ↓param3: [String]) { }"
             .asExample(configuration: ["max_number_of_single_line_parameters": 2]),
         """
-        func ↓foo(param1: Int,
-                  param2: Bool, param3: [String]) { }
+        func foo(param1: Int,
+                 param2: Bool, ↓param3: [String]) { }
        """.asExample(configuration: ["max_number_of_single_line_parameters": 3]),
         """
-        func ↓foo(param1: Int, param2: Bool, param3: [String]) { }
+        func foo(param1: Int, param2: Bool, ↓param3: [String]) { }
         """.asExample(configuration: ["max_number_of_single_line_parameters": 2]),
+    ])
+
+    static let corrections: [Example: Example] = #corrections([
+        // MARK: - Single-line corrections (allows_single_line: false)
+
+        "func foo(param1: Int, ↓param2: Bool) { }"
+            .asExample(configuration: ["allows_single_line": false]):
+            """
+            func foo(
+                param1: Int,
+                param2: Bool
+            ) { }
+            """,
+
+        "func foo(param1: Int, ↓param2: Bool, param3: [String]) { }"
+            .asExample(configuration: ["allows_single_line": false]):
+            """
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: [String]
+            ) { }
+            """,
+
+        // MARK: - Single-line corrections (max_number_of_single_line_parameters)
+
+        "func foo(param1: Int, param2: Bool, ↓param3: [String]) { }"
+            .asExample(configuration: ["max_number_of_single_line_parameters": 2]):
+            """
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: [String]
+            ) { }
+            """,
+
+        // MARK: - Multi-line: two parameters on same line
+
+        """
+        func foo(_ param1: Int,
+                 param2: Int, ↓param3: Int) -> (Int) -> Int {
+            return { x in x + param1 + param2 + param3 }
+        }
+        """:
+            """
+            func foo(
+                _ param1: Int,
+                param2: Int,
+                param3: Int
+            ) -> (Int) -> Int {
+                return { x in x + param1 + param2 + param3 }
+            }
+            """,
+
+        """
+        func foo(param1: Int,
+                 param2: Bool, ↓param3: [String]) { }
+        """:
+            """
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: [String]
+            ) { }
+            """,
+
+        // MARK: - Multi-line: brackets on separate lines (clean indentation)
+
+        """
+        func foo(
+            param1: Int,
+            param2: Bool, ↓param3: [String]
+        ) { }
+        """.asExample(configuration: ["allows_single_line": false]):
+            """
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: [String]
+            ) { }
+            """,
+
+        // MARK: - Init correction
+
+        """
+        class Foo {
+            init(param1: Int, ↓param2: Bool) { }
+        }
+        """.asExample(configuration: ["allows_single_line": false]):
+            """
+            class Foo {
+                init(
+                    param1: Int,
+                    param2: Bool
+                ) { }
+            }
+            """,
+
+        // MARK: - Nested indentation (inside class)
+
+        """
+        class Foo {
+            func foo(param1: Int, ↓param2: Bool) { }
+        }
+        """.asExample(configuration: ["allows_single_line": false]):
+            """
+            class Foo {
+                func foo(
+                    param1: Int,
+                    param2: Bool
+                ) { }
+            }
+            """,
+
+        // MARK: - Multi-line with first two params on same line
+
+        """
+        func foo(param1: Int, ↓param2: Bool,
+            param3: [String]) { }
+        """:
+            """
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: [String]
+            ) { }
+            """,
+
+        // MARK: - Multi-line: both pairs share a line
+
+        """
+        func foo(
+            param1: Int, ↓param2: Bool,
+            param3: Int, ↓param4: [String]
+        ) { }
+        """.asExample(configuration: ["allows_single_line": false]):
+            """
+            func foo(
+                param1: Int,
+                param2: Bool,
+                param3: Int,
+                param4: [String]
+            ) { }
+            """,
     ])
 }

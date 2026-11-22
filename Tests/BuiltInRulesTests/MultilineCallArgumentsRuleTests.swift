@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 @testable import SwiftLintBuiltInRules
 import SwiftLintCore
 @testable import SwiftLintFramework
@@ -86,6 +88,64 @@ struct MultilineCallArgumentsRuleTests {
         let contents = "foo(a /* comment */: 1, b: 2)"
         let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
         let file = SwiftLintFile(contents: contents)
+        #expect(rule.correct(file: file) == 0)
+        #expect(file.contents == contents)
+    }
+
+    @Test
+    func correctionWithCommentBeforeRightParenDoesNotAutoCorrect() throws {
+        let contents = "foo(a: 1, b: 2\n/* c */)"
+        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
+        let file = SwiftLintFile(contents: contents)
+        #expect(!rule.validate(file: file).isEmpty)
+        #expect(rule.correct(file: file) == 0)
+        #expect(file.contents == contents)
+    }
+
+    @Test
+    func correctionWithCommentAfterLeftParenDoesNotAutoCorrect() throws {
+        let contents = "foo(/* c */ a: 1, b: 2)"
+        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
+        let file = SwiftLintFile(contents: contents)
+        #expect(!rule.validate(file: file).isEmpty)
+        #expect(rule.correct(file: file) == 0)
+        #expect(file.contents == contents)
+    }
+
+    @Test
+    func correctionWithCommentAfterRightParenStillCorrects() throws {
+        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
+        let file = SwiftLintFile(contents: "foo(a: 1, b: 2) /* c */")
+        #expect(rule.correct(file: file) == 1)
+        #expect(file.contents == "foo(\n    a: 1,\n    b: 2\n) /* c */")
+    }
+
+    @Test
+    func correctionFullyExpandedReattachesCommaOnItsOwnLine() throws {
+        let rule = try MultilineCallArgumentsRule(configuration: [:])
+        let contents = "foo(a: 1\n    , b: 2)"
+        let file = SwiftLintFile(contents: contents)
+        #expect(!rule.validate(file: file).isEmpty)
+        #expect(rule.correct(file: file) == 1)
+        #expect(file.contents == "foo(\n    a: 1,\n    b: 2\n)")
+    }
+
+    @Test
+    func correctionFullyExpandedWithCommentAfterLeftParenDoesNotAutoCorrect() throws {
+        let rule = try MultilineCallArgumentsRule(configuration: [:])
+        let contents = "foo(/* c */ a: 1\n    , b: 2)"
+        let file = SwiftLintFile(contents: contents)
+        #expect(!rule.validate(file: file).isEmpty, "the violation must still be reported")
+        #expect(rule.correct(file: file) == 0)
+        #expect(file.contents == contents)
+    }
+
+    @Test
+    func correctionNestedFullyExpandedWithCommentAfterLeftParenDoesNotAutoCorrect() throws {
+        let rule = try MultilineCallArgumentsRule(configuration: ["allows_single_line": false])
+        let contents = "foo(/* c */ bar(\n    a: 1,\n    b: 2\n), c: 3)"
+        let file = SwiftLintFile(contents: contents)
+        #expect(!rule.validate(file: file).isEmpty)
         #expect(rule.correct(file: file) == 0)
         #expect(file.contents == contents)
     }

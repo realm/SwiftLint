@@ -112,18 +112,21 @@ private extension MultilineCallArgumentsRule {
             }
 
             let hasArgsComments = arguments.contains(where: \.hasComments)
+            let hasAroundComments = callNode.hasCommentsAroundArguments
             let baseIndent = baseIndent(for: callNode)
 
             guard let violation = fullExpansionViolation(
                 arguments: arguments,
                 callNode: callNode,
                 hasComments: hasArgsComments,
+                hasCommentsAroundArguments: hasAroundComments,
                 baseIndent: baseIndent
             ) else {
                 return multilineViolations(
                     arguments: arguments,
                     callNode: callNode,
                     hasComments: hasArgsComments,
+                    hasCommentsAroundArguments: hasAroundComments,
                     baseIndent: baseIndent
                 )
             }
@@ -134,12 +137,14 @@ private extension MultilineCallArgumentsRule {
             arguments: [LabeledExprSyntax],
             callNode: FunctionCallExprSyntax,
             hasComments: Bool,
+            hasCommentsAroundArguments: Bool,
             baseIndent: String
         ) -> ReasonedRuleViolation? {
             guard
                 arguments.count == 2,
                 let rightParen = callNode.rightParen,
                 !hasComments,
+                !hasCommentsAroundArguments,
                 let comma = arguments[0].trailingComma, comma.presence != .missing,
                 !endsWithClosingToken(argument: arguments[0])
             else { return nil }
@@ -173,9 +178,11 @@ private extension MultilineCallArgumentsRule {
             arguments: [LabeledExprSyntax],
             callNode: FunctionCallExprSyntax,
             hasComments: Bool,
+            hasCommentsAroundArguments: Bool,
             baseIndent: String
         ) -> [ReasonedRuleViolation] {
             var result: [ReasonedRuleViolation] = []
+            let shouldSkipCorrection = hasComments || hasCommentsAroundArguments
             for index in arguments.indices.dropLast() {
                 let currentArgument = arguments[index]
                 let next = arguments[index + 1]
@@ -187,7 +194,7 @@ private extension MultilineCallArgumentsRule {
                 let nextStartLine = line(for: nextStart)
 
                 if currentStartLine == nextStartLine {
-                    let correction: ReasonedRuleViolation.ViolationCorrection? = if hasComments {
+                    let correction: ReasonedRuleViolation.ViolationCorrection? = if shouldSkipCorrection {
                         nil
                     } else {
                         correctNewlineAndIndent(
@@ -207,7 +214,7 @@ private extension MultilineCallArgumentsRule {
                     let commaLine = line(for: comma.positionAfterSkippingLeadingTrivia)
                     guard commaLine == nextStartLine else { continue }
 
-                    let correction: ReasonedRuleViolation.ViolationCorrection? = if hasComments {
+                    let correction: ReasonedRuleViolation.ViolationCorrection? = if shouldSkipCorrection {
                         nil
                     } else if let rightParen = callNode.rightParen,
                               index == arguments.count - 2,
@@ -256,8 +263,22 @@ private extension MultilineCallArgumentsRule {
                 .replacingOccurrences(of: "\r", with: "\n")
         }
 
-        private func reindentedText(argument: LabeledExprSyntax) -> String {
-            normalizedText(argument: argument).indent(by: oneLevel, skipFirst: true, skipEmptyLines: false)
+        private func commaSeparatedText(argument: LabeledExprSyntax, forceComma: Bool) -> String {
+            var text = normalizedText(argument: argument)
+            let hasSourceComma = argument.trailingComma.map { $0.presence != .missing } ?? false
+            if hasSourceComma {
+                while let last = text.last, last.isWhitespace || last == "," {
+                    text.removeLast()
+                }
+            }
+            if forceComma || hasSourceComma {
+                text += ","
+            }
+            return text.indent(
+                by: oneLevel,
+                skipFirst: true,
+                skipEmptyLines: false
+            )
         }
 
         private func correctCloseParen(
@@ -266,10 +287,12 @@ private extension MultilineCallArgumentsRule {
             rightParen: TokenSyntax,
             baseIndent: String
         ) -> ReasonedRuleViolation.ViolationCorrection {
-            ReasonedRuleViolation.ViolationCorrection(
+            let lastArgumentText = commaSeparatedText(argument: lastArgument, forceComma: false)
+
+            return ReasonedRuleViolation.ViolationCorrection(
                 start: comma.endPositionBeforeTrailingTrivia,
                 end: rightParen.positionAfterSkippingLeadingTrivia,
-                replacement: "\n" + baseIndent + oneLevel + reindentedText(argument: lastArgument) + "\n" + baseIndent
+                replacement: "\n" + baseIndent + oneLevel + lastArgumentText + "\n" + baseIndent
             )
         }
 
@@ -280,12 +303,13 @@ private extension MultilineCallArgumentsRule {
             baseIndent: String
         ) -> ReasonedRuleViolation.ViolationCorrection {
             let indent = baseIndent + oneLevel
-            let reindented = reindentedText(argument: firstArgument)
+            let first = commaSeparatedText(argument: firstArgument, forceComma: true)
+            let last = commaSeparatedText(argument: lastArgument, forceComma: false)
 
             return ReasonedRuleViolation.ViolationCorrection(
                 start: firstArgument.position,
                 end: rightParen.endPositionBeforeTrailingTrivia,
-                replacement: "\n" + indent + reindented + "\n" + indent + reindentedText(argument: lastArgument)
+                replacement: "\n" + indent + first + "\n" + indent + last
                 + "\n" + baseIndent + ")"
             )
         }
@@ -298,6 +322,7 @@ private extension MultilineCallArgumentsRule {
                 let firstArgument = arguments.first,
                 !shouldSuppressSingleLineCorrection(for: callNode),
                 !arguments.contains(where: \.hasComments),
+                !callNode.hasCommentsAroundArguments,
                 let rightParen = callNode.rightParen
             else { return nil }
 
@@ -305,9 +330,8 @@ private extension MultilineCallArgumentsRule {
             let indent = baseIndent + oneLevel
 
             let argLines = arguments.enumerated().map { index, arg -> String in
-                let argText = reindentedText(argument: arg)
-                let needsComma = index < arguments.count - 1 && arg.trailingComma?.presence == .missing
-                return indent + argText + (needsComma ? "," : "")
+                let argText = commaSeparatedText(argument: arg, forceComma: index < arguments.count - 1)
+                return indent + argText
             }
 
             return ReasonedRuleViolation.ViolationCorrection(
@@ -395,6 +419,11 @@ private extension LabeledExprSyntax {
 }
 
 private extension FunctionCallExprSyntax {
+    var hasCommentsAroundArguments: Bool {
+        leftParen?.trailingTrivia.containsComments == true ||
+            rightParen?.leadingTrivia.containsComments == true
+    }
+
     /// Returns `true` when this call (or a call containing this call) appears inside a
     /// pattern-matching pattern (`if case`, `switch case`, `for case`, `catch`),
     /// where SwiftSyntax wraps expressions in `ExpressionPatternSyntax`.

@@ -12,6 +12,11 @@
 
 ### Enhancements
 
+* Allow explicitly configured typealiases in `valid_ibinspectable` through the
+  `additional_types` option, preserving existing property validity checks.  
+  [Govind Yadav](https://github.com/GtechGovind)
+  [#1925](https://github.com/realm/SwiftLint/issues/1925)
+
 * Add autocorrection to the `multiline_call_arguments` rule, expanding single-line
   and multi-line calls to one-argument-per-line, including nested calls whose closing
   `)` would otherwise be stranded with the last argument.  

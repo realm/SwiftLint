@@ -1,6 +1,10 @@
 import Foundation
 import PackagePlugin
 
+#if canImport(XcodeProjectPlugin)
+import XcodeProjectPlugin
+#endif
+
 private let commandsNotExpectingPaths: Set<String> = [
     "docs",
     "generate-docs",
@@ -22,8 +26,6 @@ struct SwiftLintCommandPlugin: CommandPlugin {
 }
 
 #if canImport(XcodeProjectPlugin)
-
-import XcodeProjectPlugin
 
 extension SwiftLintCommandPlugin: XcodeCommandPlugin {
     func performCommand(context: XcodePluginContext, arguments: [String]) throws {

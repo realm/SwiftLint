@@ -10,6 +10,14 @@ import Testing
 @testable import SwiftLintCore
 
 @Suite(.rulesRegistered)
+struct MultilineParametersRuleGeneratedTests {
+    @Test
+    func withDefaultConfiguration() {
+        verifyRule(MultilineParametersRule.description)
+    }
+}
+
+@Suite(.rulesRegistered)
 struct MultipleClosuresWithTrailingClosureRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
@@ -198,13 +206,5 @@ struct OrphanedDocCommentRuleGeneratedTests {
     @Test
     func withDefaultConfiguration() {
         verifyRule(OrphanedDocCommentRule.description)
-    }
-}
-
-@Suite(.rulesRegistered)
-struct OverriddenSuperCallRuleGeneratedTests {
-    @Test
-    func withDefaultConfiguration() {
-        verifyRule(OverriddenSuperCallRule.description)
     }
 }

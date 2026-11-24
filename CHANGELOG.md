@@ -48,6 +48,10 @@
   [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
   [#6795](https://github.com/realm/SwiftLint/issues/6795)
 
+* Preserve comments attached to the parentheses of a call and re-attach commas
+  separated from their argument when correcting `multiline_call_arguments`.  
+  [GandaLF2006](https://github.com/GandaLF2006)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

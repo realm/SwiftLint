@@ -70,7 +70,7 @@ clean:
 	rm -rf "$(TEMPORARY_FOLDER)"
 	rm -rf rule_docs/ docs/ .build/
 	rm -f ./*.{zip,pkg} bazel.tar.gz bazel.tar.gz.sha256
-	rm -f swiftlint swiftlint_{linux,static}_{amd64,arm64}
+	rm -f swiftlint swiftlint_{linux,static,linux_libxml2_16}_{amd64,arm64}
 	swift package clean
 	bazel clean --expunge
 	bazel shutdown
@@ -115,7 +115,7 @@ spm_artifactbundle: swiftlint swiftlint_linux_amd64 swiftlint_linux_arm64
 	cp -f LICENSE "$(ARTIFACT_BUNDLE_PATH)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "SwiftLintBinary.artifactbundle") > "./SwiftLintBinary.artifactbundle.zip"
 
-zip_linux_release: swiftlint_linux_amd64 swiftlint_linux_arm64 swiftlint_static_amd64 swiftlint_static_arm64
+zip_linux_release: swiftlint_linux_amd64 swiftlint_linux_arm64 swiftlint_static_amd64 swiftlint_static_arm64 swiftlint_linux_libxml2_16_amd64 swiftlint_linux_libxml2_16_arm64
 	$(eval TMP_FOLDER := $(shell mktemp -d))
 	cp -f swiftlint_linux_amd64 "$(TMP_FOLDER)/swiftlint"
 	cp -f swiftlint_static_amd64 "$(TMP_FOLDER)/swiftlint-static"
@@ -124,6 +124,10 @@ zip_linux_release: swiftlint_linux_amd64 swiftlint_linux_arm64 swiftlint_static_
 	cp -f swiftlint_linux_arm64 "$(TMP_FOLDER)/swiftlint"
 	cp -f swiftlint_static_arm64 "$(TMP_FOLDER)/swiftlint-static"
 	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "swiftlint-static" "LICENSE" "LICENSE.mimalloc") > "./swiftlint_linux_arm64.zip"
+	cp -f swiftlint_linux_libxml2_16_amd64 "$(TMP_FOLDER)/swiftlint"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_amd64_libxml2-16.zip"
+	cp -f swiftlint_linux_libxml2_16_arm64 "$(TMP_FOLDER)/swiftlint"
+	(cd "$(TMP_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./swiftlint_linux_arm64_libxml2-16.zip"
 
 package: swiftlint
 	$(eval PACKAGE_ROOT := $(shell mktemp -d))

@@ -19,6 +19,11 @@
 
 ### Bug Fixes
 
+* Measure alignment columns in `vertical_parameter_alignment_on_call` using
+  character positions instead of raw UTF-8 columns, avoiding false positives
+  when a preceding line contains multi-byte characters.  
+  [theamodhshetty](https://github.com/theamodhshetty)
+  [#6467](https://github.com/realm/SwiftLint/issues/6467)
 * Preserve inline comments when `control_statement` removes parentheses during
   `swiftlint --fix`.  
   [theamodhshetty](https://github.com/theamodhshetty)

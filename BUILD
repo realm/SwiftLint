@@ -93,6 +93,7 @@ swift_library(
         "@SwiftyTextTable",
     ] + select({
         "@platforms//os:linux": ["@CryptoSwift"],
+        "@platforms//os:windows": ["@CryptoSwift"],
         "//conditions:default": [":DyldWarningWorkaround"],
     }),
 )

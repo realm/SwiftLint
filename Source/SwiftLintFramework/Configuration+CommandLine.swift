@@ -12,10 +12,10 @@ private actor CounterActor {
 }
 
 private func readFilesFromScriptInputFiles() throws(SwiftLintError) -> [SwiftLintFile] {
-    let count = try fileCount(from: "SCRIPT_INPUT_FILE_COUNT")
+    let environment = ProcessInfo.processInfo.environment
+    let count = try fileCount(from: "SCRIPT_INPUT_FILE_COUNT", in: environment)
     return (0..<count).compactMap { fileNumber in
         do {
-            let environment = ProcessInfo.processInfo.environment
             let variable = "SCRIPT_INPUT_FILE_\(fileNumber)"
             guard let path = environment[variable] else {
                 throw SwiftLintError.usageError(description: "Environment variable not set: \(variable)")
@@ -33,11 +33,11 @@ private func readFilesFromScriptInputFiles() throws(SwiftLintError) -> [SwiftLin
 }
 
 private func readFilesFromScriptInputFileLists() throws(SwiftLintError) -> [SwiftLintFile] {
-    let count = try fileCount(from: "SCRIPT_INPUT_FILE_LIST_COUNT")
+    let environment = ProcessInfo.processInfo.environment
+    let count = try fileCount(from: "SCRIPT_INPUT_FILE_LIST_COUNT", in: environment)
     return (0..<count).flatMap { fileNumber in
         var filesToLint: [SwiftLintFile] = []
         do {
-            let environment = ProcessInfo.processInfo.environment
             let variable = "SCRIPT_INPUT_FILE_LIST_\(fileNumber)"
             guard let path = environment[variable] else {
                 throw SwiftLintError.usageError(description: "Environment variable not set: \(variable)")
@@ -61,8 +61,8 @@ private func readFilesFromScriptInputFileLists() throws(SwiftLintError) -> [Swif
     }
 }
 
-private func fileCount(from envVar: String) throws(SwiftLintError) -> Int {
-    guard let countString = ProcessInfo.processInfo.environment[envVar] else {
+private func fileCount(from envVar: String, in environment: [String: String]) throws(SwiftLintError) -> Int {
+    guard let countString = environment[envVar] else {
         throw .usageError(description: "\(envVar) variable not set")
     }
     guard let count = Int(countString) else {

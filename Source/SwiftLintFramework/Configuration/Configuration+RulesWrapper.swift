@@ -9,6 +9,8 @@ internal extension Configuration {
         let allRulesWrapped: [ConfigurationRuleWrapper]
         internal let mode: RulesMode
         private let aliasResolver: (String) -> String
+        /// Swift versions are process constants, so compute each rule type's support once per shared configuration.
+        private let swiftVersionSupportByRuleType: [ObjectIdentifier: Bool]
 
         private var invalidRuleIdsWarnedAbout: Set<String> = []
         private var customRulesIdentifiers: Set<String> {
@@ -109,6 +111,10 @@ internal extension Configuration {
         ) {
             self.allRulesWrapped = allRulesWrapped
             self.aliasResolver = aliasResolver
+            swiftVersionSupportByRuleType = Dictionary(uniqueKeysWithValues: allRulesWrapped.map {
+                let ruleType = type(of: $0.rule)
+                return (ObjectIdentifier(ruleType), SwiftVersion.current >= ruleType.description.minSwiftVersion)
+            })
             let mode = mode.applied(aliasResolver: aliasResolver)
 
             // If this instance originates from a merging process, some custom rules may be treated as not activated
@@ -116,6 +122,11 @@ internal extension Configuration {
             self.mode = originatesFromMergingProcess
                 ? mode
                 : mode.activateCustomRuleIdentifiers(allRulesWrapped: allRulesWrapped)
+        }
+
+        func supportsCurrentSwiftVersion(_ ruleType: any Rule.Type) -> Bool {
+            swiftVersionSupportByRuleType[ObjectIdentifier(ruleType)] ??
+                (SwiftVersion.current >= ruleType.description.minSwiftVersion)
         }
 
         // MARK: - Methods: Validation

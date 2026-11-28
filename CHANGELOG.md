@@ -48,6 +48,9 @@
   [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
   [#6795](https://github.com/realm/SwiftLint/issues/6795)
 
+* Fix slow cache lookup due to unnecessary copying, resulting in large speed increases on when linting large number of files.
+  [ephraimkunz](https://github.com/ephraimkunz)
+
 ## 0.65.1: Fresh Folded Fixtures
 
 ### Breaking

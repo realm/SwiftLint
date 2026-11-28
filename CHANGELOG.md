@@ -43,6 +43,11 @@
   `swiftlint`.  
   [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
 
+* Speed up Xcode script input discovery when many files or file lists are
+  supplied.  
+  [ZainnQureshii](https://github.com/ZainnQureshii)
+  [#6031](https://github.com/realm/SwiftLint/issues/6031)
+
 * Fix `excluded` configuration being ignored when file paths matching a non-wildcard
   exclusion pattern are passed as arguments.  
   [Tomotaka Takahashi](https://github.com/tomotakatakahashi)
